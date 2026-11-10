@@ -1,0 +1,43 @@
+{
+  "Utc": "2026-10-11T08:10:48.821494+00:00",
+  "Repository": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Branch": "1553-storage-migration-cloud-20261008",
+  "FrozenSHA": "2f68496c5bb3df60d1143f22e9d6f36c127ee7c4",
+  "ActualRemoteSHA": "2f68496c5bb3df60d1143f22e9d6f36c127ee7c4",
+  "RecoveryDirectory": "/workspace/1553-ordinary-helper-capture-recovery-20261011-2f68496c",
+  "Method": "ONE fresh direct GitHub-only depth1/filter blob:none clone; exact selected checkout; no local source/object/cache copies",
+  "BaseSHA": "0ba4c654a363561dd10b2627c9047c4286886e22",
+  "ChangedFilesCovered": 274,
+  "CriticalFiles": 43,
+  "Overlap": 5,
+  "SelectedFiles": 312,
+  "SelectedBytes": 9514683,
+  "SelectedModePathSHA256": "46410fdc8767dba17104c7fdb6f81938326e6827b19919b57e196eafeb9585cd",
+  "SelectedModePathHashFormat": "Sorted UTF8 lines: mode SPACE path SPACE SHA256 LF",
+  "EverySelectedByteModeMatchesGit": true,
+  "EntireCheckoutExactSelectedSet": true,
+  "Archives": [
+    {
+      "Name": "ordinary-helper-capture-preparation",
+      "SourceSHA": "e49f215ebdb10e778d8f7895fc8a87b23d8ea1d3",
+      "RawPayloads": 5,
+      "ExpandedBytes": 1786529
+    },
+    {
+      "Name": "ordinary-helper-capture-actual",
+      "SourceSHA": "a08961c2ae6c4439d24fe6c0190e711c95292db6",
+      "RawPayloads": 261,
+      "ExpandedBytes": 9046079
+    }
+  ],
+  "NewRawPayloads": 266,
+  "NewRawExpandedBytes": 10832608,
+  "EveryNewRawHashLengthExactSetTracked": true,
+  "RecordedSourcePinsMatchSelectedBytes": true,
+  "Clean": true,
+  "NoAlternates": true,
+  "PromisorAwareFsckFullStrictExitCode": 0,
+  "FsckOutput": "",
+  "ProjectBuildDiscoveryRuntimeExecutedByRecovery": 0,
+  "Qualification": "SELECTED source/evidence recovery only; older unmaterialized blobs/raw are not audited. Sole ordinary invocation remains 1 FAIL and helper capture INCOMPLETE; historical UNKNOWN/WIP and performance UNQUALIFIED preserved."
+}

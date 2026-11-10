@@ -1,0 +1,30 @@
+{
+  "checkpoint": "dcdb5d3353e847ea09b6304c2b02ddbedc89aa36",
+  "publicationNative": {
+    "launch": "f4291e",
+    "session": 76363,
+    "completion": "a4546e",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "061461",
+    "session": 47985,
+    "completion": "548f66",
+    "exitCode": 0
+  },
+  "publicationReadbackSHA256": "18bdf3337d48a546735853d18ae0a39a4fcf516f0b8d1dc7a6b802aea754ecfe",
+  "selectedRecovery": {
+    "checkpoint": "dcdb5d3353e847ea09b6304c2b02ddbedc89aa36",
+    "remoteSha": "dcdb5d3353e847ea09b6304c2b02ddbedc89aa36",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2576,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2047,
+    "consumerProduction": "N1fixturecoverage+4inventorystructuralabsencecorrectedSOURCEWIP; noauthorityexpansion/productionchange; focusedclosurePENDING/compilerAPIbehaviorUNCHECKED;5componentPASS2fixtureFAILimmutable/12laterUNRUN;runtimeHELD",
+    "verifiedUtc": "2026-10-15T00:33:28.070385+00:00"
+  },
+  "independentCorrectionReview": "NEXT same retained reviewer focusedN1closure",
+  "sourceWriterSTOP": "FINAL STOPPED; no pending tools/writes",
+  "allRuntime": "HELD"
+}

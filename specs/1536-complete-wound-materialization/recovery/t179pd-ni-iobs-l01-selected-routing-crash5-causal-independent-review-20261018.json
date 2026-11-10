@@ -1,0 +1,223 @@
+{
+  "kind": "INDEPENDENT_CAUSAL_REVIEW_AND_NEXT_DIAGNOSTIC_PLAN_NOT_RUNTIME_ACCEPTANCE",
+  "reviewedUtc": "2026-10-18T16:10:26.642073+00:00",
+  "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP",
+  "carrier": "5479e8c29732c06bca1c2dad778f5ee18c472109",
+  "actual": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "compiled": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "qualifiedTargets": 52,
+  "targetUniverse": 57,
+  "evidence": {
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/archive.json",
+      "sha256": "8faf5d9eb531d104183d744709ac7d393ad399b1663301c1bb4405c52f734d24",
+      "chains": 247
+    },
+    "recordSha256": "4eb04ce91fcd6335329e5dc5a4e8ef66da3b6bdecbedd32ecc9654bfdfa9c206",
+    "recovery": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-5479e8c2.json",
+      "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37",
+      "verifiedChangedPaths": 255,
+      "remoteVerification": "Parent recovery receipt; independently checked restored bytes, not a new remote network query"
+    },
+    "independentCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-check-5479e8c2-20261018.json",
+      "bytes": 13049,
+      "sha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_crash5_causal.py",
+      "bytes": 10508,
+      "sha256": "e106b20274603fbfc675df6eb981197e33b3d96387407b4faa1fdc824bd2fe45"
+    },
+    "checkerOriginalLog": {
+      "path": "/tmp/1536-cloud-tools/review/selected-routing-crash5-causal-check-run-v1.log",
+      "bytes": 250,
+      "sha256": "1bb58d917d4610ee7e91072f1168e336def5534d735200457cfed28c2aedd0ab"
+    },
+    "derivedExcerptFormatHistory": {
+      "path": "/tmp/1536-cloud-tools/review/selected-routing-crash5-causal-check-format-history.json",
+      "bytes": 834,
+      "sha256": "85feb89e6f97055e336afd19e203f714f760ce7fea355ff6d2a82994adfe03e7"
+    }
+  },
+  "verification": {
+    "rawChains": 247,
+    "restoredChangedPaths": 255,
+    "pins": 99,
+    "productDelta": 23,
+    "managedCopies": 9,
+    "allOutputs": 1575,
+    "checksPassed": 2458,
+    "checkerFindings": [],
+    "scope": "Archived bytes and saved source/recovery read-only. No native, test, build, observer, process action, current retained-root inspection or repository write."
+  },
+  "observedOutcome": {
+    "controllerNativeExit": 124,
+    "parentControllerAssertionExit": 1,
+    "wallSeconds": 929.7918036539995,
+    "categorySeconds": 900.2562573,
+    "categoryBudgetSeconds": 900,
+    "directXunitFailures": "cut1 at xUnit 00:04:47.88 and cut2 at 00:10:57.88: System.TimeoutException at JointInterfaceCrash.cs127 (child WaitForExitAsync bound220), propagated through151 and parent fixture64. Both occur before category timeout.",
+    "children": [
+      {
+        "line": 10490,
+        "cut": 1,
+        "role": "engine-joint-interface-original-crash",
+        "pid": 53346,
+        "birthTick": 2287694,
+        "exit": 73,
+        "eof": true,
+        "joined": true,
+        "failure": null,
+        "cleanupFailure": null,
+        "retainedContainer": null,
+        "stdoutBytes": 355594,
+        "stdoutSha256": "41233da9840358890c3d98a94e47320793e6ddd9bec4a1efa814c4373712cf3a",
+        "stderrBytes": 0,
+        "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-4a774edf4c944f3eb6dcfcd38cf99bd6"
+      },
+      {
+        "line": 10493,
+        "cut": 1,
+        "role": "engine-joint-interface-resume",
+        "pid": 53405,
+        "birthTick": 2293894,
+        "exit": 137,
+        "eof": true,
+        "joined": true,
+        "failure": "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127",
+        "cleanupFailure": null,
+        "retainedContainer": null,
+        "stdoutBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrBytes": 0,
+        "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-4a774edf4c944f3eb6dcfcd38cf99bd6/tmp/boe-gameengine-turnlifecycle-207ecf8d1c7849528a29422746dabc72"
+      },
+      {
+        "line": 10508,
+        "cut": 2,
+        "role": "engine-joint-interface-original-crash",
+        "pid": 53644,
+        "birthTick": 2324194,
+        "exit": 73,
+        "eof": true,
+        "joined": true,
+        "failure": null,
+        "cleanupFailure": null,
+        "retainedContainer": null,
+        "stdoutBytes": 355645,
+        "stdoutSha256": "46e34b70e2be0c94700a8196ddc66227da0c28f330d56b48c74463beee19cc06",
+        "stderrBytes": 0,
+        "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-dcb240b9fcaa4e098b6975ce5dd599cf"
+      },
+      {
+        "line": 10511,
+        "cut": 2,
+        "role": "engine-joint-interface-resume",
+        "pid": 53685,
+        "birthTick": 2330929,
+        "exit": 137,
+        "eof": true,
+        "joined": true,
+        "failure": "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127",
+        "cleanupFailure": null,
+        "retainedContainer": null,
+        "stdoutBytes": 1135,
+        "stdoutSha256": "7807e7b6a70b2c8e77d44098d7d993ac6f1f5e47ed33fc8e68b8f54aac55db75",
+        "stderrBytes": 0,
+        "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-dcb240b9fcaa4e098b6975ce5dd599cf/tmp/boe-gameengine-turnlifecycle-0a54a5a8d0f44523813bea03b86cb004"
+      }
+    ],
+    "caseAccounting": "No TRX. Summary 0/0/0/0 is missing completion telemetry, not proof no cases ran. Planned1 descriptor/5 cases, completed0 descriptors, selection incomplete. cut0 interrupted; no completed outcome evidenced for cut3 or cut4. No partial pass qualification.",
+    "cut0PhysicalEvidence": {
+      "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37",
+      "pid": 53755,
+      "birthTick": 2352965,
+      "nonce": "eddf616f731b4c6dad00e2d9a253bb1e",
+      "cutState": "Prepared",
+      "retainedState": "Published",
+      "sameImmutableResult": true,
+      "interfaceMatchesAfter": true,
+      "mechanicalImagesUnchanged": {
+        "game_state/resources/resource_definitions.json": true,
+        "game_state/resources/resource_state.json": true,
+        "game_state/resources/resource_history.json": true,
+        "game_state/player/wounds.json": true,
+        "game_state/wounds/wound_identity_index.json": true,
+        "game_state/wounds/wound_history.json": true,
+        "game_state/effects/effect_identity_index.json": true,
+        "game_state/player/effects.json": true,
+        "game_state/control/pending_mortal_wound_occurrences.json": true,
+        "game_state/wounds/wound_opportunity_receipts.json": true,
+        "game_state/world/world_time.json": true,
+        "game_state/player/status_changes.json": true,
+        "game_state/player/experience.json": true,
+        "game_state/core/player_status.json": true,
+        "game_state/player/stat_points.json": true
+      },
+      "noResumeArtifact": true,
+      "limits": "Physical post-cut progress only; no child return, own release, common completion or successful oracle inferred."
+    },
+    "cleanup": "cut1/cut2 owned children exit137 after fixture timeout cleanup, EOF/join positive and cleanupFailure null; both case containers/class roots report removal. Outer runner own-tree/runtime cleanup true. Authoritative after census has no active/UNKNOWN but two retained roots and cleanBoundary=false; do not call cleanup globally clean.",
+    "datedBoundaryLimits": {
+      "beforeGapSeconds": 3.478353,
+      "afterGapSeconds": 1.48801,
+      "snapshots": {
+        "before": {
+          "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-before-census-20261018.json",
+          "sha256": "53b7ea9404f6d980db6926e9c373d01e1243df8852c2b02fe650dbfb2c1cf756",
+          "startedUtc": "2026-10-18T15:43:51.728234+00:00",
+          "finishedUtc": "2026-10-18T15:43:51.752626+00:00",
+          "cleanBoundary": true,
+          "ownedRoots": []
+        },
+        "after": {
+          "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-after-census-20261018.json",
+          "sha256": "75cc845a3fb8858c1e1eb4169bc64deabf2bda7084a95a2066f088a50c5842c4",
+          "startedUtc": "2026-10-18T15:59:26.510207+00:00",
+          "finishedUtc": "2026-10-18T15:59:26.553714+00:00",
+          "cleanBoundary": false,
+          "ownedRoots": [
+            "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+            "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+          ]
+        }
+      },
+      "claim": "Dated observations only. No continuous absence or instantaneous boundary claim."
+    }
+  },
+  "reachedAndUnreached": {
+    "cut1And2Reached": "Parent verified original exit73, EOF/join, producer PID+field22+nonce, contained existing root, CommonCallbacks0, runtime42, journal presence and exact cut before starting resumer. Cut2 resumer emitted auxiliary en-US ordinary timestamp rejection. Resumer timeouts were joined and recorded.",
+    "unreachedPositiveAdmission": "No parent current-resume result/exit0/Completed/actual-caller/repeat/no-fresh-authority/changing-I/culture-result acceptance. No child completed full-DATA, exact finalI, mechanical once-only, turn43, terminal cleanup or inert-repeat evidence may be inferred from silence. A child could have progressed without emitting its buffered final result.",
+    "interruptedCut0": "Archived Prepared producer result and later matching Published result/exactI afterimage establish physical progress; mechanical cut-time images remain equal. No active journal image or resume.json in archive. This does not establish owning release returned, full current DATA, atomicG, story/turn, cleanup, or repeat."
+  },
+  "causalAssessment": {
+    "proved": "The immediate failures are the protective native child wait bound, followed by the category bound. Existing child diagnostics are too late/buffered to uniquely locate the outstanding await.",
+    "notProved": "No unique product deadlock, lease defect, fixture defect, or mere slowness is proven. FileSystemManager constructor only assigns fields; EnsureDirectoryStructure is a separate synchronous acquisition. Retained cut0 publication progress excludes an all-cases constructor-only account. A budget increase or arbitrary production patch is unsupported.",
+    "sourceTrace": [
+      "JointInterfaceCrash.cs37-85: parent original proof then resumer wait;127-151:220-second wait and owned join/EOF cleanup.",
+      "JointInterfaceCrash.cs187 onward: auxiliary setup, current FileSystemManager/engine, preflight lease and snapshot/read-only refresh/images, real late call, full proof/mechanics/repeat, final result emission.",
+      "TurnLifecycle.cs885 onward: new participating Main, captured terminal evidence, current story applicability, then late completion validator.",
+      "MortalJointInterfaceResume.cs20-117: exact selected original/result proof, current own I publication/release, then current common publication and post-publication validation.",
+      "MortalJointStoryTurn.cs25-91: accepted same-engine uncertain branch routes directly; cold process has no old retained uncertainty and can use ordinary captured late completion route. Distinct paths prohibit treating accepted uncertain1 timing/result as cold-crash proof."
+    ],
+    "sufficiency": "Finite source review and frozen evidence do not justify a gameplay remedy. One instrumented isolated cut1 diagnostic is the smallest useful next experiment; it is not a retry of the whole failing five-case selection."
+  },
+  "acceptedNextPlan": {
+    "implementation": "Fixture-only new partial diagnostic file with one Fact calling the existing helper for cut1 and an optional diagnostic flag carried solely in own parent.json. Defaultfalse preserves original target assertions/behavior. No production code, authority, Ready, normalizer, compensation, ownership or retry-policy change.",
+    "instrumentation": "Immediate scalar enter/return events around fixture setup, actual preflight lease, ReadSnapshot, RefreshGameStateReadOnlyAsync, CaptureImages, first and repeat real late call, existing finalization checkpoints, catch/finally and result writing. UTC plus monotonic elapsed; cut/root/nonce/PID+kernelbirth identity; current request fingerprint once read legitimately. Flush stdout. Optional bounded live logger callback must preserve default24x2000 queue and formatter behavior and remain diagnostic-only; no recursive Describe/log loop, blocking coordination, canonical read, new lease/recovery/capability serialization. Preserve the primary native exception if diagnostic emission fails, and mark missing diagnostics explicitly.",
+    "selection": "Dedicated one-case diagnostic category/selection; excluded from original whole16desc/33methods/57cases and authored target-row ledger. Diagnostic outcome never adds a target or relabels the original crash5. New partial C# plus dedicated diagnostic selection file mean101 source pins; productDelta23 remains unless actual diff proves otherwise; update every exact guard/binding to real contents. Existing crash five identities/bijection remain unchanged.",
+    "gates": "Save/recover agreed plan and fixture WIP, independent SOURCE including default-path/body equivalence and selection, fresh BOTH/catalog discovery + whole57 PlanOnly + exact diagnostic1 PlanOnly, fresh9/full output inventories and dated authoritative v2 boundaries, saved/recovered originals and independent PREP. Only then a separately named one-case diagnostic actual. No automatic retry, next mode, crash5 release or accepted52 replay.",
+    "budgets": "Original220-second child and900-second category protective limits unchanged. Timeout/failed diagnostic freezes further runtime. Neither raised timeout nor blind full5 rerun is accepted.",
+    "isolation": "New GUID fixture TMPDIR and matching private runtime/cache paths in the same physical cloud/boot, recorded as a new run namespace/environment configuration, not a new machine. Existing two retained roots remain frozen outside that mutable namespace, never reused/deleted/killed or reclassified. Preserve archived old namespace census. Fresh global active/UNKNOWN process checks and exact new namespace root checks; no exemptions hiding an active old child. Every new fixture still owns fresh roots, container, nonce and genuinely spawned PID+birth identities with existing join/EOF/containment assertions.",
+    "afterDiagnostic": "Archive/save/recover the single original outcome and streamed stage evidence before causal follow-up. If a unique defect is then established, review the smallest remedy and affected SOURCE/PREP. Any eventual semantic split of crash5 must preserve exact five target identities/bijection and all helper assertions, and receive separate review; not authorized by this report.",
+    "retention": "Accepted52 remain at original provenance without replay or cross-build equivalence claim. Original selected-routing native124/cut1+cut2 timeouts, all historical failures and old session66529 UNKNOWN stay immutable. Final57 coverage helper remains UNRUN."
+  },
+  "readerHistory": {
+    "positiveCheckerUntouched": "check_l01_selected_routing_evidence.py c26a6564db4725a53f9653c9e14488f605cda6c338fd07b4a7c4a952ee8a23da; not used to accept this failed247-chain run.",
+    "failureChecker": "New separate failure checker completed first saved run with2458 checks and findings[]. Final reader/check excerpts only trimmed before Standard Output Messages; preserved v1 source and original run log are bound by derivedExcerptFormatHistory. No semantic assertion or checked fact changed.",
+    "explorationLimit": "Two exploratory tool output dumps were truncated; a broad pathname filter overselected retained files. No native/source/evidence mutation occurred. Final scoped archive parser processed complete bytes and avoids deriving facts from truncated displays. No suppressed failed native run or reconstructed TRX."
+  },
+  "release": "NONE. This report accepts only the next diagnostic plan; SOURCE, fresh PREP and a separate named actual gate remain mandatory."
+}

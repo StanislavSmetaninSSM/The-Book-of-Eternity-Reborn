@@ -84,11 +84,12 @@ public partial class ValidationService
                 var checkpointBytes = Encoding.UTF8.GetBytes(
                     SpiritualWoundCaptureCheckpointState.SerializeCanonical(checkpoint));
                 try { await writer(lease, checkpointPath, checkpointBytes); }
-                catch (Exception) { /* Exact read-back resolves an uncertain atomic replacement. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
 
                 byte[]? confirmedCheckpoint;
                 try { confirmedCheckpoint = await _validator._fs.ReadFileBytesAsync(lease, checkpointPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return TransportFailure("blocked", "spiritual_first_transport_checkpoint_read_failed");
@@ -107,11 +108,12 @@ public partial class ValidationService
                 var pendingBytes = Encoding.UTF8.GetBytes(
                     SpiritualWoundDecisionPendingState.SerializeCanonical(pending));
                 try { await writer(lease, pendingPath, pendingBytes); }
-                catch (Exception) { /* The committed checkpoint remains the recovery boundary. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
 
                 byte[]? confirmedPending;
                 try { confirmedPending = await _validator._fs.ReadFileBytesAsync(lease, pendingPath); }
-                catch (Exception)
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
                     RevokeUnderLease(lease);
                     return TransportFailure("repair_required", "spiritual_first_transport_pending_read_failed",

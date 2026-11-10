@@ -3169,7 +3169,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             JsonObject conflict,
             JsonObject soulState,
             decimal playerCurrent,
-            decimal oppositionCurrent)
+            decimal oppositionCurrent,
+            int spiritFocusTier = 0,
+            decimal oppositionMaximum = 6m)
     {
         var conflictRoot = new JsonObject { ["activeConflict"] = conflict.DeepClone() };
         var owners = AfterlifeResourceOwnerComposer.Compose(
@@ -3192,7 +3194,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             new SpiritFocusActionPointsFormulaInput(
                 FormulaOwner(player.Key),
                 player.AuthorityFingerprint,
-                SpiritFocusTier: 0));
+                SpiritFocusTier: spiritFocusTier));
         var oppositionResolved = ResolveActionPoints(
             definitions,
             opposition,
@@ -3200,7 +3202,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 FormulaOwner(opposition.Key),
                 opposition.AuthorityFingerprint,
                 "conflict_resource_cost",
-                AcceptedMaximum: 6m));
+                AcceptedMaximum: oppositionMaximum));
 
         var transitions = new List<ResourceTransition>
         {

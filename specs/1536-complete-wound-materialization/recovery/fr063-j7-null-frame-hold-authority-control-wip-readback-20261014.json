@@ -1,0 +1,107 @@
+{
+  "base": "fa2be03217dd99addaf6aa0a6ab1ed3362ddfa81",
+  "scope": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_exact": true,
+    "exact_old_lifecycle_by_call_reversal": true,
+    "guard_precedes_reconcile_and_resolve": true,
+    "console_null_frame_only": true,
+    "private_marker_required": true,
+    "strict_tuple_types": true,
+    "either_physical_header_matches": true,
+    "matching_header_sticky_before_second_read": true,
+    "marker_alone_not_applicable": true,
+    "no_ready_hold_evidence": true,
+    "readonly_generation_only": true,
+    "no_authority_issuance_api": true,
+    "after_identification_exception_hold": true,
+    "replacement_propagates": true,
+    "actual_digest_row": true,
+    "payload_bytes_unchanged_assertion": true,
+    "damaged_authority_afterimage_oracle": true,
+    "whole_tree_before_held_boolean": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs:protected_base_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:protected_base_exact": true,
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs:protected_base_exact": true,
+    "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:protected_base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:protected_base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs:protected_base_exact": true,
+    "tests/categories.json:protected_base_exact": true,
+    "readonly_whitespace": true
+  },
+  "checkCount": 29,
+  "allReportedObservationsPassed": true,
+  "pins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs": {
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "bytes": 5039
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": {
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "bytes": 294837
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "ff01ffe93c9a731eade1999986ff34ae77435ff1581c09f28d1b1907bb3617a3",
+      "bytes": 6681
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "0353a7ed04f099aacce3fe1715ee2615316d0d442a7a16a05e444d6b7595c350",
+      "bytes": 26792
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "87c5879cb13b29a6c2a525549c9b2a0a9209050e53c544010be95b44817a42fa",
+      "bytes": 1538959
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "f13894e63a82c9a93a05123494007d62d633252c9a520222898498704eb88be5",
+      "bytes": 1039575
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": {
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "bytes": 10353
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": {
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701
+    },
+    "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs": {
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad",
+      "bytes": 5364
+    },
+    "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs": {
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "bytes": 41585
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "5642dc3aaab639961e12ca35e716eec1e28a40272610efd63010ade676f9c784",
+      "bytes": 48341
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "inventory": {
+    "sourceMethods": 6,
+    "sourceCases": 13,
+    "theoryRows": 8,
+    "officialDiscovery": "UNRUN"
+  },
+  "compilerApiFixtureValidity": "UNCHECKED",
+  "projectExecution": "UNRUN",
+  "whitespaceOutput": ""
+}

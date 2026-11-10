@@ -1,0 +1,414 @@
+# T273 — measured source42 transport experiment
+
+T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata 22acebccb41a986632cf586b8f8d4b184dbe2099; run 20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent gpt-6-astra/high evidence/recovery review ACCEPTED at aea971007e24108a19a6b942f982ececc85fb031. Fresh GitHub recovery d2ed51d00f2c1667f0cac68ff02e5121cd774c6b:329 files/allGitblobs/clean verified independently, zero mismatches; T274-clean-recovery.json.
+
+The measured materialization cost excludes fresh production validation; both are reported separately. Source42 is a one-time preparation measurement in this run; full crash/current-owner execution is unmeasured here. The previous T263 resumer timeout is unresolved by this prototype. Source/production/native code and original budgets remain unchanged.
+
+---
+
+# T263-cut0 — actual shared-window result
+
+**Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.
+
+Run 20261020-105531-740-69100-917e6115d736405ea73d921db06b415b-categories; compiled 2c05158f9b7f37de4cb67b529bfd2704d352a386; metadata 682aa3911b4f010109b3415a6791f7dcabd2d513. Raw ZIP SHA256 A6A4369CD5392FF1BA1CF2C9569DECAAE771BC15334EB32205FDF543B11EDE8F. Historical T219 fixture retained. Callback counts describe observations, not successful physical I/O; an exhausted activity quota suppresses later samples without establishing a hang.
+
+```json
+[
+  {
+    "Pid": 80120,
+    "ExitCode": 73,
+    "Eof": true,
+    "Joined": true,
+    "Failure": null,
+    "Budget": {
+      "TotalSeconds": 820,
+      "ChildCapSeconds": 600,
+      "ElapsedAtWaitSeconds": 0.0289191,
+      "ChildWaitSeconds": 600
+    },
+    "StageCount": 4,
+    "ActivitySamples": 0,
+    "LastActivity": null,
+    "LastStage": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 80120,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "exit",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 413091.1216,
+      "ErrorType": null
+    }
+  },
+  {
+    "Pid": 63948,
+    "ExitCode": -1,
+    "Eof": true,
+    "Joined": true,
+    "Failure": "System.TimeoutException: The operation has timed out.\r\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership, Boolean observeLive, String deliveryNonce, Boolean extendedSourceProbe, Boolean extendedWindowsCrash, Nullable`1 sharedWindowsCrashStarted) in D:\\Code\\The-Book-of-Eternity-Reborn-crash5-windows-20261019\\BookOfEternityClient.IntegrationTests\\GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 317",
+    "Budget": {
+      "TotalSeconds": 820,
+      "ChildCapSeconds": 600,
+      "ElapsedAtWaitSeconds": 414.1091563,
+      "ChildWaitSeconds": 405.8908437
+    },
+    "StageCount": 41,
+    "ActivitySamples": 24,
+    "LastActivity": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 63948,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "resume-activity",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 320590.7241,
+      "ErrorType": null,
+      "ResumeActivity": {
+        "Phase": "MortalJointCustodyCaptureCompletedBeforePreparation",
+        "CanonicalInitial": 23889,
+        "ExactInitial": 0,
+        "CanonicalOpened": 0,
+        "CanonicalContended": 0,
+        "MainContended": 0,
+        "Publications": 0,
+        "Recoveries": 0,
+        "LastPublication": null,
+        "LastRecovery": null,
+        "Limited": true
+      }
+    },
+    "LastStage": {
+      "Boundary": "crash5_stage_v1",
+      "RunId": "871ed22be44f454697629e0a95c9ad86",
+      "Nonce": "34c33167a4104a678846df692c24b7a1",
+      "Pid": 63948,
+      "BirthKind": "windows-process-start-utc-ticks",
+      "Cut": 0,
+      "Stage": "resume-activity",
+      "Transition": "enter",
+      "ElapsedMilliseconds": 320590.7241,
+      "ErrorType": null,
+      "ResumeActivity": {
+        "Phase": "MortalJointCustodyCaptureCompletedBeforePreparation",
+        "CanonicalInitial": 23889,
+        "ExactInitial": 0,
+        "CanonicalOpened": 0,
+        "CanonicalContended": 0,
+        "MainContended": 0,
+        "Publications": 0,
+        "Recoveries": 0,
+        "LastPublication": null,
+        "LastRecovery": null,
+        "Limited": true
+      }
+    }
+  }
+]
+```
+
+Test failure: System.TimeoutException : The operation has timed out.
+
+---
+
+# T262 — shared Windows budget qualification
+
+**T262 PREP:** compiled2c05158f9b7f37de4cb67b529bfd2704d352a386;43/43 budget controls PASS/0skip after causal26PASS17FAIL. Fresh XML build42.88s/0errors/changedXML0; catalog valid, default PlanOnly237, explicit69cases/10descriptors. Metadata executes0tests. Both independent P2 source findings corrected and focused source review accepted; final bound PREP accepted by separate gpt-6.1-sol/xhigh at 9960a73515479cc033fff1d84c00e8b3d5e41824. Source/DLL/raw archive T262-prep.json/zip. At this historical T262 PREP checkpoint T263 was UNRUN; its completed failure is recorded above. LinuxUNRUN.
+
+42 archived files; SHA256 DE34FF35938BE5AC099652FD1D37D255C10DCC83E9070186D1E0B95D4E77908B. Separate initial GREEN remains preserved before reviewer corrections. Production/native unchanged since652bdd76a. Existing14 stage controls retain their b056 binding; they were not rerun without changed instrumentation.
+
+---
+
+# T259 — named resumer activity, still child timeout
+
+**T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
+
+Compiled b0560bbd50b95d0ad0ce1c0814748150da369a13, metadata eb8a931998ae669930b694d231956347bd5e927b, run 20261020-102105-839-22600-c80e9af709c84375ac2f43a272eb03d5-categories. Actual test duration 00:10:36.6806362; process26536 producer73, new67660 resumer-1. Raw ZIP SHAB7B5A909854861E5F89464FCE6BCC42EDC084789ADCBFE9911CDC8A006091071; unchanged3DLL. 34 resumer stage records/17 activity snapshots; no activity/global limit reached. Resumer stderr empty. No late-first return, accepted-proof result or game verdict; original assertions are not claimed passed.
+
+| Elapsed seconds | Interval | Canonical initial | Canonical/main contention | Publication callbacks |
+|---|---|---:|---:|---:|
+| 0.904 | before-finalization | 0 | 0 / 0 | 0 |
+| 7.483 | before-finalization | 317 | 0 / 0 | 0 |
+| 7.491 | LateTerminalAndIdleOperationBound | 1 | 0 / 0 | 0 |
+| 22.494 | LateTerminalAndIdleOperationBound | 2144 | 0 / 0 | 0 |
+| 32.829 | LateTerminalAndIdleOperationBound | 4251 | 0 / 0 | 11 |
+| 32.869 | MortalJointCustodyCaptureCompletedBeforePreparation | 1 | 0 / 0 | 0 |
+| 47.872 | MortalJointCustodyCaptureCompletedBeforePreparation | 1389 | 0 / 0 | 0 |
+| 62.877 | MortalJointCustodyCaptureCompletedBeforePreparation | 2483 | 0 / 0 | 0 |
+| 77.883 | MortalJointCustodyCaptureCompletedBeforePreparation | 3651 | 0 / 0 | 0 |
+| 92.885 | MortalJointCustodyCaptureCompletedBeforePreparation | 5280 | 0 / 0 | 0 |
+| 107.903 | MortalJointCustodyCaptureCompletedBeforePreparation | 6420 | 0 / 0 | 0 |
+| 122.907 | MortalJointCustodyCaptureCompletedBeforePreparation | 8065 | 0 / 0 | 0 |
+| 137.919 | MortalJointCustodyCaptureCompletedBeforePreparation | 9564 | 0 / 0 | 0 |
+| 152.92 | MortalJointCustodyCaptureCompletedBeforePreparation | 11141 | 0 / 0 | 0 |
+| 167.933 | MortalJointCustodyCaptureCompletedBeforePreparation | 12107 | 0 / 0 | 0 |
+| 182.952 | MortalJointCustodyCaptureCompletedBeforePreparation | 13368 | 0 / 0 | 0 |
+| 214.292 | MortalJointCustodyCaptureCompletedBeforePreparation | 14822 | 0 / 0 | 0 |
+
+ExactInitial remains0; this is a separate hook population, not proof of no physical I/O. The last214.292s sample follows182.952s; unobserved intervals may contain I/O or other work. Before custody,4251 canonical-initial hooks and11 publication callbacks are a different interval; do not fold them into a successful-I/O total. After custody the sampled interval contains continuing reads and no publication callback, narrowing the previously silent chain to pre-publication work in this attempt. It still does not identify the expensive method or rule out a read loop. Static analysis did not establish an infinite loop/task cycle; it did identify repeated proof validation.
+
+Candidate next investigation: reallocate unused producer allowance within the existing820s combined observation window, each child capped600s,15m category/cleanup unchanged. This can provide more than220s to a resumer after a shorter producer without enlarging the category or changing assertions. It is an experimental completion window, not a performance remedy; needs pure boundary controls, actual monotonic-clock wiring review and one gated attempt. No production change proposed.
+
+---
+
+# T258 — resumer observation qualification
+
+**T258 PREP:** compiled b0560bbd50b95d0ad0ce1c0814748150da369a13;14/14 stage controls PASS/0skip after9PASS+5causalFAIL. Fresh XML build0errors/changedXML0; catalog valid, default PlanOnly219, explicit26cases/9descriptors includes stage14 plus original/new entrypoints12. Metadata executes0tests. No production/native/timeout/assertion delta. Source/DLL/raw evidence in T258-prep.json/zip; independent gpt-6.1-sol/xhigh SOURCE/PREP accepted at c1991a398; all42 archived files and three DLLs verified. This T258 acceptance preceded the completed T259 investigation reported above.
+
+Earlier compiler overload ambiguity was a test-fixture issue, corrected before causal RED; archived separately. New APIs/test helpers use multiline XML; parent inspected comments and original proof/cleanup/budget wiring. Five causal tests cover enum identity/transitions, populations/reset, late event sampling, output quota/terminal capacity and output failure precedence. Existing9 stage/source controls remain GREEN.
+
+---
+
+# T257 — bounded static resumer investigation
+
+Separate gpt-6-astra/high consultation at fd5e8158ffc completed without edits or execution. The first callback maps to LateTerminalAndIdleOperationBound. The second is strongly consistent with MortalJointCustodyCaptureCompletedBeforePreparation; it is not directly named in T254 and must remain an inference. No accepted-proof output/third callback or late-first return exists. The silent interval includes canonical planning/publication and subsequent validation; it cannot be assigned solely to preparation.
+
+Verified chain: TurnLifecycle885→ValidationAndRepair542→MortalJointInterfaceResume12/115→MortalJointRepairCanonicalPublication49–108→MortalJointRepairCompletion93–113. Planner148–219 and registry stage validations contain repeated physical proof work. No task cycle/infinite retry established. Canonical lock retries200×50ms do not bound OS I/O. The QTE borrowed-validation change does not apply to this canonical rebuild. Existing leased ReadFileBytesAsync does not call AfterCanonicalReadAttemptAsync; that hook cannot measure completed leased reads. Proposed next investigation uses named checkpoints and separate initial/exact-read/lock/publication hook populations, keeping deadlines and assertions. Silence still means UNKNOWN.
+
+---
+
+# T227 — Windows source42 investigation
+
+Task: [T227](../../tasks.md); scope and execution limits: [plan](../../plan.md). Approved spec3 remains unchanged. This is a bounded investigation, not crash5 qualification or permission to modify game production code.
+
+## Prior evidence
+
+T219 on source5f0c08ae5: four console-observed producer timeouts at220s, no observed exit73 or resumer, fifth case interrupted by category15m, no TRX. Windows FAIL_INCOMPLETE. All four stdout streams reached the source42 response author and then “Мастер игры размышляет...”. The complete original bytes are preserved in `T219-original-child-artifacts.zip`, with hashes in its manifest; Git-normalized text copies are convenience views.
+
+Separate read-only consultation `diagnose_windows_producer_timeout`, explicitly gpt-6-astra/high, traced the actual chain without builds, tests or edits:
+
+- The producer first invokes `RunJointCompletionControlAsync`, which awaits `RunActualQteStorySourceAsync` before attaching any stage43 crash probe.
+- That source helper uses the actual `ProcessPlayerTurn`. Its Author reads the actual request/snapshot under an explicit lease, disposes the lease, then writes the original public QTE response and ready file.
+- `WaitForTerminalSignalAsync` awaits Author at `TerminalWaitStarted` before starting the polling task. The saved Status text is emitted afterward: Author returned in the four completed timeout runs.
+- The remaining interval includes inspection lease acquisition, polling/status/key settlement, terminal capture, validation/materialization and QTE handoff. Existing output cannot distinguish them. Empty live-input queue does not support a blocking native console read diagnosis.
+- Windows ordinary admission takes an additional legacy recovery path before trusted-local recovery; this and accumulated validation cost are hypotheses only. No demonstrated self-deadlock was found. Retained cut3 was interrupted before source staging and does not explain the other four cases.
+
+## Probe and provenance
+
+Source `8326d14b1fe8471d258725ae172f75bc23969d73`, metadata/evidence `3175b8e59499e8f44fe94aad17e8432c6a6dd9b5`. One Windows-only Fact, one owned child, same physicalDeclaration/max2/live-input/configuration as the common source42 helper. No stage43, resumer, simulated crash, alternative waiter or production change. Existing process220s/join10s/EOF10s, exclusive category5m. Main CI selection and original five remain unchanged.
+
+Optional test-only reporter observes existing checkpoints: first inspection lease acquired, terminal snapshot captured, accepted outcome validated; plus Author enter/return, actual QTE action entry and turn enter/return. It performs no canonical reads or awaited work. Other source-helper consumers pass null. The existing64-record/2048-byte/131072-total output limits and primary-failure precedence remain.
+
+Mapping RED: source80b4a12f9,7completed/6PASS/1expectedFAIL. GREEN: source8326d14b1,7/7PASS,0skip,21.579s,cleanup complete. Two fresh XML builds, changed XML diagnostics0; six DLL hashes match. Catalog814/11833, probePlanOnly1, ordinaryPlanOnly5. Separate gpt-6-astra/high SOURCE and PREP reviews accepted with no findings. Fresh recovery in the new recovery directory verified117 selected files against metadata3175b8e59, clean.
+
+## Observed result
+
+Run `20261019-195127-804-38496-09a24c6d473e47d8aae2f02e4644757d-categories`: planned1/completed1/failed1, no skips. The child hit220s; the five-minute category did not time out. Runner exit1, total wall242.070s. Child42552 exited-1 after original-parent cleanup; EOF/join true, no cleanup/secondary failure, both owned fixture roots removed. Six DLL hashes still match. [Outcome](T227-probe-outcome.json), [TRX](T227-probe.trx), [summary](T227-probe-summary.json), [full log](T227-probe-dotnet-test.log), [raw archive](T227-source42-raw.zip).
+
+| Actual observation | Seconds from reporter start |
+| --- | ---: |
+| Fixture returned | 0.720 |
+| ProcessPlayerTurn entered | 18.597 |
+| Author entered / returned | 83.683 / 85.641 |
+| Inspection lease acquired | 85.815 |
+| Terminal snapshot captured | 87.740 |
+| Accepted-outcome validation checkpoint | 161.501 |
+
+No QTE action entry or turn/helper return was observed before220s. The waiter and snapshot-capture path did make progress; the unknown interval is now after the actual accepted-outcome validation checkpoint and before the QTE action. The73.762s between capture and accepted-validation is a wall-time interval containing all intervening work, not an isolated measurement of one validator method. No deadlock or root cause is established by the last event alone. No unchanged retry was made. Windows5 remains FAIL_INCOMPLETE; this completed investigation result is not a sixth qualification identity. Linux remains UNRUN.
+
+## T228 — causal count through existing fixture hooks
+
+The existing fixture wires initial-read, after-read-attempt and before-mutation callbacks. Only the Windows source42 probe enabled bounded counters through those hooks; no production code or additional file reads were added. Initial and returned callbacks are distinct observations, not success counts. Source-capture and source-validated delimit intervals; snapshots are bounded and share the original stage record budget. Each interval retains at most1024 paths of length512, never emits paths or contents, and emits at eight read-count thresholds plus boundary/completion. Incomplete traces provide lower bounds.
+
+Read-only source analysis identifies a concrete amplification mechanism: `ValidationService.AcceptedTurnAndInkFeathers` repeated lookups without prevalidated override call detached authority validation, whose `PendingTurnSnapshotAuthority.BuildAuthorityPayload` recomputes hashes of all rollback before-images. The console post-materialization call supplies no prevalidated context. Earlier accepted validation does install one. Browser-only read optimizations require browser authority and cannot be enabled by changing this fixture's identity.
+
+Source25ef748ce, metadata779a8e2a8: counter RED9=7PASS/2expectedFAIL, then GREEN9/9PASS0skip22.577s. Fresh selected integration XML45.33s, changed XML diagnostics0, catalog814/11835 and probePlanOnly1. Independent SOURCE/PREP accepted. One causal-count run `20261019-200931-662-53708-059019b1da734236b481fd635758dfd7-categories` completed1/failed1 with child220s timeout, runner1, category timeout false, wall242.654s. Child49268 exit-1/EOF/join true, cleanup null, both owned roots removed. Three selected DLL hashes unchanged. [Outcome](T228-probe-outcome.json), [TRX](T228-probe.trx), [full trace](T228-probe-stages.json), [raw byte archive](T228-source42-raw.zip).
+
+| Interval | Last recorded seconds | Initial callbacks | Returned callbacks | Rollback initial callbacks | Distinct rollback paths | Repeats | Before-mutation callbacks |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Before capture (closed interval) | 87.414 | 924 | 1154 | 472 | 59 | 413 | 191 |
+| Capture to validated (closed interval) | 160.223 | 2081 | 2447 | 531 | 59 | 472 | 4 |
+| Post-validated (incomplete lower bound) | 186.508 | 1988 | 2108 | 1740 | 59 | 1681 | 1 |
+
+No path cap was reached. Repeated rollback read observations after the validation checkpoint are **confirmed**. The counters do not isolate one call site's time, prove all observations completed I/O, establish a deadlock, or prove this is the sole cause of220s. No QTE/turn return was observed. There is no justified test-fixture shortcut: setup finished around19s and subsequent work is actual production preparation/validation. Moving that work outside the child deadline, preauthoring the source, dropping validation or changing platform identity would alter the preserved contract.
+
+Next work is [spec amendment4](../../spec.md), explicitly approved by the owner from da3efec34. Its [plan2](../../plan.md) has independent document review and awaits owner plan review; the production boundary expands only as specified. It seeks a fresh, immutable, operation-scoped validation proof with preserved dependency-change detection and explicit invalidation; blindly forwarding the earlier context is not an accepted fix. No production optimization has been implemented. Independent final evidence/draft-document review accepted194b5b665 with no blocking findings. T228 is a completed investigation; Windows5 remains FAIL_INCOMPLETE and Linux UNRUN.
+
+Plan2 из bd9c8dd434 одобрен владельцем ответом «да». T230: записаны component read-budget и dependency/lifetime controls, минимальный forwarding runner ещё не реализует оптимизацию. XML build/RED в процессе; новых actual source42/five нет, Linux UNRUN. Cold ordinary включает отдельную admission authentication R; warm ordinary ограничен6, полный cold<=12/warm<=9 учитывает cohort observer.
+T230 preparation run c167c62d1: planned/completed23, FAIL23 at fixture admission (missing timestamp/playerAction); not accepted as behavioral RED. Fixed fixture binding only; original logs retained in TestResults 20261019-212918-144-65900-3fb3a31c29d04883802615fa2dde8622-categories.
+T230 causal RED accepted at ce63016d1e99f08d6a76b93817f0f728d9457b4f: planned/completed23, PASS5/FAIL18, no timeout, owned cleanup complete. Raw t230-red-ce63016d1.zip; run 20261019-213137-250-61828-741761587c6c4cf9a5f3e0e00541c927-categories. Warm N1/8/32 ordinary3/24/96 + cohort3/24/96 =6/48/192; cold ordinary6/27/99 + cohort3/24/96 =9/51/195. N1 controls PASS; N8/N32 exceed fixed bounds. Twelve durable dependency changes and copied-context/nested-writer controls fail because no refusal, as expected. XML builds unit/integration success; changed APIs have no XML diagnostics; catalog success (discovery only). Unit DLL SHA256 9DC0A4DD294A0E7C2F142B631BB65DE6D1EE07E50E6541C5FE50D65120E3C210; production DLL 84D970D2A7C6231943FB1F0C2C9847E4B9C2A7B395066F50296EDAE7AF72D138. T230 remains open for remaining negative/lifecycle coverage before acceptance. T231 implementation starts; actual game runs remain gated by T233.
+T231 WIP: common reservation identity, synchronous console scope, physical entry/final evidence and immutable DTO lookup implemented. Unit XML build success; GREEN and remaining negatives pending. GameEngine caller not wired yet. No success/qualification claimed.
+T231 initial GREEN37518b22f:23/23 PASS, warmN1/8/32 always ordinary6+cohort3=9, cold alwaysordinary9+cohort3=12. Raw t231-green-37518b22f.zip. Additional negative tests and actual engine boundary controls authored before their corresponding remaining fixes; T230/T231/T232 still open. Push initially disconnected (curl52), retry succeeded and remote37518b22f verified.
+T231/T232 additional RED at a625d9934: unit28complete,27PASS/1FAIL (BeginMainOperationClosing did not refuse); actual GameEngine caller2complete, ordinaryPASS/postMaterializationFAIL because no reserved invocation. No timeout, ownedcleanupcomplete. Raw t231-lifetime-red-a625d9934.zip and t232-caller-red-a625d9934.zip. XML comment edits after this run do not change its source binding.
+T232 WIP: exact console post-materialization caller wired after observed caller RED; BeginClosing now refuses only pending-snapshot reservation (browser close unchanged). Added direct-owner disposal refusal control, Missing/Unusable preservation, genuinely valid replacement identity/pair, and actual repair-iteration control. Further validation pending; no source42/five run.
+T232 at d6fad556d: actual engine lifecycle3/3PASS (ordinary/post source, real repair response reaches fresh second invocation; writes outside reservation). Unit31complete29PASS/2FAIL: direct owner.Dispose lacked refusal (behavioral RED); malformed JSON fixture refused by unchanged main admission before validation (setup/control mismatch, corrected to well-formed invalid hash). Direct original owner disposal guard added after RED; browser behavior untouched. Added Unusable source rollback-dependency test before its fix; XML completion in progress.
+T232 Unusable-dependency RED at1cec1565b:32complete31PASS/1FAIL, no timeout/cleanupcomplete (t232-unusable-red-1cec1565b.zip). Checker can reject before reading every declared backup; added safe missing dependencies to the same pass, without rereading captured bytes or changing checker/status semantics. Added actual ordered-issues scalar/component comparison. Final33 GREEN pending.
+T233 source-fence preparation: Windows checkout uses CRLF; unchanged OrdinaryReads raw0BB094... differs from pinned LF094D4D..., and LF-normalized hash matches exactly. Source-only guards normalize CRLF to LF; save/authority hashing is unchanged. Pins updated only for this change's sources and four explicit new/shared dependencies. Nine pre-existing source files have stale pins even after normalization; exact old/current hashes are in source-pin-audit.json. Do not blindly rebaseline those pins: independent reviewer must inspect their prior source changes and current closure. These are open SOURCE/PREP findings, not failed game tests or permission blockers.
+
+### T233 — independent review and corrective RED (2026-10-19)
+Independent reviewer: separate gpt-6-astra/high, diff bd9c8dd434..df6636c30. SOURCE changes required: shared outer original admission could dispose during a nested owner's reservation; add actual current-state issue comparison and explicit foreign lease control. PREP pending; source42/five not run.
+Tests-only e7b8dc967: pending-snapshot-validation-contracts,36 planned/completed,34 PASS/2 FAIL,0 skips,52.010s,no timeout,owned cleanup complete. Run20261019-220828-949-57464-4e3ae733af124b278044fe601490cd16-categories; raw t233-review-red-e7b8dc967.zip. OuterOriginalAdmissionCannotClose is causal RED (no exception). ForeignLeaseRefuses exposed a test expectation mismatch: foreign access correctly invalidates the invocation permanently; corrected to require own-lease positive before rejection, then sticky refusal and a fresh invocation. Actual real AfterlifeGlobalFlagPreTurnContinuity current deletion and ordered issues passed, as did df663 Unusable rollback binding.
+Unit DLL SHA256 0C9E1DFBECA2F7DED9E21EE5815C05DAD667DD612045BF71ADCC5FEE30743B25; copied production DLL BEAEE1618DD281065FC5A18DEEAB4E71A54E2881B777BA9BF666DFC45052D4C0. XML build succeeded. Earlier simultaneous unit/integration builds had a shared compiler output lock CS2012; sequential retry succeeded. This was PREP failure, not product/runtime RED. Subsequent builds are sequential.
+Correction: MainAccess now checks the reservation and removes/closes the admission under the same lock. Only the exact physical issuer during opening-failure or closed-scope teardown is exempt. Ancestor original admissions cannot close. Browser World behavior preserved. Final GREEN and affected review pending.
+Source-fence audit: independent reviewer verified all nine stale sources against pin origin54b4bc9e0, inspected intervening diffs, and accepted refresh for World/Meta closure. Added MortalQteDecisionPublication declaration pin for NpcWorldAndMeta's StatePath constant. source-pin-audit.json retains old/current evidence and reviewed current hashes. Line-ending normalization applies only to source fences; save/authority hashing unchanged.
+
+### T233 — selected runtime9c30fc6b8 and repair fixture race
+Run20261019-221214-852-36700-7448b2a7435f452293a253946c877723-categories: planned6descriptors/90cases, completed5/68,67PASS/1FAIL,0skip, no timeout,324.584s, owned cleanup complete. Raw t233-selected-9c30fc6b8.zip. Source guards3PASS; World2+World negative24PASS; pending contracts36PASS (allNwarm9/cold12, outer-owner regression GREEN, actual continuity issue and foreign-lease sticky rejection GREEN). Lifecycle2PASS/repair1FAIL; Meta22 not executed after runner fail-fast. This is not90PASS.
+Repair fixture failure: ReserveWorldRead rejected a concurrently retained original admission. Its simulated GM polled the not-yet-written repair request through FileSystemManager.FileExists, which borrows a physical admission in the copied owner context and races initial reservation. Earlier success was schedule-dependent. Correction is test-only raw File.Exists observation of that external request; all actual repairs/ready writes remain manager-mediated, and assertions require no reservation during writes plus a distinct second invocation and physical authentication. Independent reviewer accepted the narrow correction; rerun only changed lifecycle3 and unrun Meta22. Production9c30fc6b8 unchanged, source42/five still gated. Prior passed65 are preserved with their original binaries; new integration build binding will be recorded separately.
+
+### T233 — lifecycle GREEN, Meta aggregate incomplete and bounded split
+Run20261019-222021-725-60820-9f0b6f3472c7461aa8ab2151b722612e-categories at2b16ece45: lifecycle3/3PASS53.706s category time; Meta22 incomplete at180.143s with no TRX, no inferred per-case outcomes. Overall25planned/3complete/3PASS, runner124,wall248.971s,cleanup complete. Archive t233-lifecycle-green-meta-incomplete-2b16ece45.zip includes raw result and fresh integration XML build (0errors) plus current DLL hashes. Production unchanged; code correction was test observation only.
+Per repository category policy and independent review, exact original Meta six selectors split into proof7/reservation7/ownership8, each3m; aggregate retired. No assertions, source/child budgets or production changes. Snapshot selection now8descriptors/90cases. Three groups run separately for actual attribution, not inferred success. Existing65+newlifecycle3 retained; PREP and game remain gated. T233-prep.json initial6/90 fields describe the earlier discovery, not the revised catalog.
+
+### T230…T233 — qualified selected union, production9c30fc6b8 / final tests2b16ece45
+All90 distinct selected cases now PASS with0skips; this is an evidence union, not a single90-case successful run. Accepted descriptors: sourceguards3 +World2 +Worldcontrols24 +scope36 at9c; repaired lifecycle3 at2b16; Meta proof7/reservation7/ownership8 on unchanged2b16 DLLs with metadata15e. Meta category times fit original3m bounds; wall times76.260/87.430/101.548s, no timeouts, all own cleanup complete. See T233-qualified.json for exact TRX hashes/runs/binding and raw archives. AllNwarm9/cold12 confirmed at final scope run. Previous failures/incomplete artifacts retained.
+Final catalog819/11854 valid, discovery0executed; snapshotPlan8descriptors/90cases. Original source42Plan1case/5m and ordinaryPlan5cases/15m unchanged. Both XML builds passed9c; final integration test-only correction rebuilt successfully2b16 (10904 baseline warnings,0errors). No production source change since9c; final integration DLL02E7338DB0B1CBD20AC5CB43C4DE849C9D1DAD5DF86A6B47D6BF7C35ED98FAC4, production copyDD068524ADAFFFBF8A167C41826FE0A41292B0AC668D514A6986E964DAA6C731. Earlier qualified unit/World binaries retain their own9c provenance; assembly informational Git revision differs after rebuild. Final hashes rechecked unchanged. SOURCE accepted9c plus test correction2b16; final PREP verdict pending. Source42/five not yet executed; LinuxUNRUN.
+
+T233 final review at d8791bab6 accepted SOURCE/Windows PREP for exactly one unchanged source42 probe. Record runtime against final2b16 integration DLLs; evidence-only checkpoint commits do not change compiled code. T234 begins next; five gated on PASS, LinuxUNRUN.
+
+### T234 — actual source42 FAIL_CHILD_TIMEOUT, new QTE handoff reached
+Authorized single probe consumed at metadata1bf7742e4, final integration source2b16ece45 / production9c30fc6b8. Run20261019-223525-367-50580-8f61aecfeab546a39ed57ae6204e9dda-categories:1planned/1completed/1FAIL/0skip, child220s, category not timed out, runner1,wall242.093s. Original Process45820 exit-1, EOF/join true, cleanupFailure/retainedOwner null. Both recorded own fixture roots removed and absence checked; old T219 retained fixture untouched. DLL hashes unchanged. Raw zip, child output, stages and outcome are T234-*; no retry and no Windows5 run.
+Actual new progress: source-validated166.040s, source-qte192.405s, actual client story append observed and intermediate QTE success rendered. No source-turn return by220s. Last callback snapshot213.395s: post-validated initial2022/returned2074/rollback885/59distinct/826repeated/mutations109. These remain lower bounds from initial callbacks, not per-method timing or whole physical IO. At177.982s before QTE, rollback177; later885 may belong to multiple post-QTE operations. Prior T228 had no QTE by220 and last rollback1740 at186.508s; different endpoints prevent direct speedup/per-method claims.
+Read-only source follow-up: QteStoryAppend.cs records source-qte in the actual action-input callback, asserts the appended story and enqueues Enter for every registered input. QteSceneService.cs shows the rendered intermediate result followed by CompleteTerminalSceneAsync; terminal state application holds an existing canonical write lease, mutates/refreshes state, then calls ValidateQteTerminalGameStateAsync at2055. This is a candidate remaining repeated-authentication path, not proven attribution of the timeout. It lies outside plan2's unleased console post-materialization entry. No QTE optimization, new telemetry, timeout increase or additional run is implemented. T235 remains gated; draft next-scope specification will require explicit review per user AGENTS.
+
+### T236/T238 — outcome closure and draft spec5 (pending review)
+T234 consumed the single plan2 game probe; no retry or Windows5 was run. T234 checkbox records completed investigation with FAIL_CHILD_TIMEOUT, not successful source42 acceptance. QTE terminal validation under an existing lease is a source-based candidate; the aggregate trace does not identify its exclusive time/read cost. Source code and test binaries are unchanged from the accepted T233 binding.
+Spec Kit specify phase reused feature1536 per user AGENTS, retaining the approved spec4 verbatim below draft spec5. The feature-creation hook is inapplicable to an amendment of the required existing feature; optional auto-commit/context hooks are replaced by scoped explicit checkpoints. Draft records outcome, boundaries, preserved contracts, acceptance and open design decisions. No plan3/tasks implementation phase or corresponding consistency analysis is claimed complete: those require owner approval of this actual draft.
+Current document consistency checks cover immutable historical tails, exact outcome fields, task gates, code unchanged, and no new runtime authority. Independent final evidence/draft review and final remote recovery remain pending.
+
+### Final independent T234/spec5 review
+Separate gpt-6-astra/high accepted1084968cd plus the corrected child220s/stop-join10s/EOF10s wording for evidence closure and owner presentation. Original archive/TRX/stage/DLL/cleanup evidence independently matches the recorded1FAIL; no production fix or new game run is implied. Draft spec5 approval and plan3 remain pending. Final remote recovery follows before handoff.
+
+### Final remote recovery and handoff boundary
+Reviewed source/evidence/corrected draft checkpoint6fdbb39c165ec3daee925bf6cfeb2780844037e5 was pushed and independently read back from origin. The separate GitHub recovery clone was fast-forwarded to that exact revision;204 selected source/governance/document/evidence files match their Git blobs using path-aware line-ending normalization, and checkout status is clean. Recovery does not claim a build or runtime test. Final bookkeeping after this checkpoint changes only task/evidence status.
+T236 evidence/handoff work is complete with the actual FAIL outcome. T235 remains gated; original Windows5 T219 remains FAIL_INCOMPLETE; Linux T237/T222…T225 UNRUN. T238 draft spec5 is ready for owner review; approval, plan3/tasks/analyze and further code/runtime are not inferred from this delivery.
+
+### T239 — approved spec5, plan3 and read-only consistency analysis
+
+Owner approved the exact spec5 presented from f9658ae0e with «хорошо» on2026-10-20. Approval metadata was saved at43e2f0ed5; requirements were not rewritten. Actual Spec Kit setup-plan/setup-tasks resolved existing feature1536 and preserved prior artifacts. Superpowers writing-plans governs the canonical plan3; no duplicate plan was created. Draft plan/research/model/quickstart/tasks were saved and remotely read back at5801f2a39b7547767bc237a2aa4bfee421da10db. Implementation and runtime remain gated on owner review of the written plan.
+
+Read-only speckit-analyze examined approved spec5, plan3, T239…T247 and the constitution; this paragraph records its result as workflow bookkeeping. Installed check-prerequisites succeeded with Json/RequireTasks/IncludeTasks plus a separate spec existence check; unsupported RequireSpec had earlier failed parameter binding without executing actions. Optional phase hooks were replaced by explicit scoped checkpoints; no mandatory hook was omitted.
+
+| Spec5 acceptance | Plan and task coverage |
+| --- | --- |
+| 1: causal held-lease RED, R3/N1,8,32, two authentications/6 rollback reads, acquisition separate | Review Focus budget row; T240 finite inventory and compilable real-lookup RED, T241 GREEN; no production optimization if causal gate fails |
+| 2: real caller, ordered issues, current physical reads and fresh proof | Separate preexisting/final boundaries and original AcceptedStoryAppend; T241/T242 actual caller and invalid-current tests |
+| 3: exact custody and all negative/error cases | Shared reserve/mutation/close protocol; T240 negative map and two-order tests, T241/T242 custody/authority/compensation GREEN |
+| 4: XML, catalog/PlanOnly, affected tests and independent source/binary qualification | Exact file/selection map, T243; source-pin changes reviewed before update, new counts from discovery |
+| 5: one original source42, then conditional Windows five | T244/T245 preserve220/10/10,5m/15m and all original oracles; failure closes as evidence through T246, never as PASS |
+| 6: Linux qualification only in cloud | T247 separate fresh Linux PREP/controls/five; historical52/57 and local UNRUN preserved |
+
+All six acceptance criteria have tasks; all nine new task IDs are unique and have a requirement/workflow purpose. No contradictory bound, duplicate implementation route, orphan task or constitution violation was found in this parent analysis. Remaining causal attribution and complete mutation-envelope coverage are explicit T240 investigation gates, not assumed results. The old four planning-document bodies and plan2 task body match43e byte-for-byte after line-ending normalization. Production, tests, catalog and scripts have zero diff; git diff --check passed. Existing neighbor selectors resolve to actual source methods. No build, discovery or tests were run in this planning phase. Independent complex plan review is pending; this is not SOURCE/PREP acceptance for a future implementation.
+
+Independent review of5801 subsequently found two concrete gaps missed by the parent analysis: direct trusted-local coordinated publication/recovery was outside the named file map, and ordinary owner-release regressions were absent from the affected selection. Both were source-verified and corrected before owner presentation. T240 now starts from the full partial FileSystemManager family; .TrustedLocalStorage.cs guard envelopes/paused-writer cases are explicit. Three existing lease-release methods/four cases form one new2m descriptor, bringing the planned selection to15. The six-criterion task coverage and preserved budgets remain consistent; full inventory/causal outcome are still future gates. Focused independent re-review is pending. This checkpoint supports retaining one developer plus separate complex reviewer: it caught two material omissions; no cost or runtime improvement is claimed.
+
+Final focused independent review accepted3d5419f6f for owner presentation: both findings resolved, no new findings. Parent rechecked historical bodies/tasks, nine unique task IDs, selection15 consistency, unchanged production/tests/catalog/scripts and diff whitespace. T239 planning is complete; owner plan review remains required before T240. Final status records change no requirements or implementation; parent performs remote readback and clean17-file planning/governance recovery before handoff. Windows5 remains FAIL_INCOMPLETE, Linux UNRUN.
+
+### T240 — owner-approved execution and causal RED
+
+Owner approved plan3 from f368bd592 with «Ладно» on2026-10-20. Source/test seam02887fc80568cd186beeafce41547d973d172ad9 preserves scalar behavior: the new uniquely named private borrowed runner only invokes its delegate. It does not yet reserve, authenticate, acquire or dispose. Six real sync/async lookup controls run under an actual caller-owned lease, measuring original acquisition separately. Fresh unit XML build succeeded in68.70s,10014 warnings/0errors. The exact category completed6 cases:2PASS/4 expectedFAIL/0skip, no timeout, owned cleanup complete. ForN1/8/32 invocation rollback reads are3/24/96; acquisition is3warm/6cold. N8/32 fail the original≤6 bound, not admission/missing-symbol/timeout. This establishes repeated authentication on the affected held-lease lookup path; it does not establish end-to-end source42 sufficiency. Raw outcome/TRX/logs are T240-causal-red.*. Remaining negative/caller controls and SOURCE/PREP are pending; no T244 game probe has run.
+
+### T240 — finite same-lease mutation inventory
+
+Read-only agent t240_mutation_inventory (explicit gpt-6.1-sol/high) audited the complete partial FileSystemManager family at f368bd592; parent checked the concrete extra paths and acquisition/shared-access boundaries. All methods below are under BookOfEternityClient/Core; line numbers refer to that source before edits. An enclosing token starts before preparation/recovery or an awaited boundary and remains through publication, retries, rollback and cleanup. Nested tokens release only their own registration. Async forwarding wrappers must await delegated completion before releasing their token.
+
+| File / entrypoint (baseline line) | Required envelope / physical effects |
+| --- | --- |
+| FileSystemManager.cs EnsureDirectoryStructure(lease):640 | Directory creation through EnsureDirectoryStructureCore/EnsureStableDirectory |
+| .cs WriteFileAtomicWithPublicationAsync:784 and IfCurrentAuthority:812 | Intent recording through core and publication/nonpublication callbacks |
+| .cs WriteFileAtomicBytesAsync(lease):864; AppendFileAtomicAsync(lease):923 | Preparation reads/intent recording through local or legacy publication; thin append911 delegates |
+| .cs CompareExchangeFileBytesAsync:1030; conditional byte writers1097/1119 | Baseline/preparation through write/delete core and callbacks |
+| .cs WriteFileAtomicBytesCoreAsync:1152 | Before path registration1171/both hooks through temporary file, reversible publisher, rollback/cleanup/stream disposal1283; also covers private backup cores |
+| .cs DeleteDirectoryTree:1886; DeleteOriginalDirectoryTree:1903 | Routing/preparation through hooks, parent preparation and tree deletion1924 |
+| .DirectoryDeletion DeleteTrustedLocalDirectoryTreeAsync:7 | Before recovery14 through publication and structural pruning47/75 |
+| .cs MoveRuntimeDirectoryIntoCanonicalSessionAsync:1930; MoveRuntimeFileIntoCanonicalSessionAsync:2213/2269 | Before registration/hooks/preparation through rename/flush/staged-file disposal |
+| .SyntheticBundlePublication MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync:7 | Before registration/hooks through parent creation and Linux rename |
+| .cs DeleteEmptyDirectories:2328; DeleteFile(lease):2343 | Recursive empty pruning; file intent recording through local/core deletion and callbacks |
+| .cs DeleteFileIfCurrentAuthorityAsync:3499; DeleteFileCore:3648 | Before hooks/parent preparation through retry and physical deletion; core has no path registration |
+| .cs RecoverInterruptedLoadTransaction:4451 | Journal inspection through restoration, generation restoration and committed cleanup; ordinary lease is supported |
+| .cs BeginOriginalWorkerApplyTransactionAsync:4919; .WorkerPublication BeginWorkerApplyTransactionAsync:9 | Before transaction directory/before-images/hooks through journal/deferred publication and failure cleanup |
+| .cs CommitWorkerApplyTransaction:4989; RollbackWorkerApplyTransactionAsync:5019 | Whole legacy/deferred decision, recovery and cleanup |
+| .cs RecoverInterruptedWorkerApplyTransactionAsync:5042 | Inspection/preparation through nested restoration writes/deletes, journal and cleanup5218 |
+| .TrustedLocalStorage RunLegacyStorageRecoveryAsync:15 | Whole recovery callback and recovery-flag restoration; covers reversible/load/worker/browser legacy recovery during acquisition |
+| .TrustedLocalStorage RecoverTrustedLocalStorage:111 | Before recovery inspection through TrustedLocalFilePublication.Recover and generation revision update |
+| .TrustedLocalStorage BootstrapLocalStorage:127; CreateTrustedLocalGeneration:153; .cs GetOrCreateSessionGeneration:5913 | Potentially creating branch and publication; existing-generation read remains read-only |
+| .TrustedLocalStorage PublishLocalFilesAsync:167 | Before GetOrCreateSessionGeneration175 through awaited core completion |
+| .TrustedLocalStorage PublishLocalCoreAsync:181 | Before browser intent197/EnsureDirectory205 through both hooks, retries, publication/rollback/cleanup and registration release; also covers direct callers |
+| .TrustedLocalStorage ordinary write/append outcome entrypoints324/335 | Before baseline preparation through publication; direct retained-command callers exist |
+| .ImagePublication PublishLocalImageFilesAsync:7 | Before recovery13 through preparation39/hooks/publication/retry/cleanup |
+| .cs lease-taking backups6014/6046/6083 | Whole multi-step recovery/preparation/publication; private ordinary cores funnel through PublishLocalCoreAsync and legacy cores through atomic/delete cores |
+| .SessionReplacement TryRemoveEmptyCanonicalDirectory:93 | Ordinary existing lease; direct Directory.Delete107/116. Direct callers QteSceneService2543/GmWorkerProposalStore94 bypass DirectoryDeletion wrapper |
+| .DarenLocalStorage PublishStandaloneDarenProfileAsync:20 | Ordinary existing lease; hold across baseline read, generation29 and profile core30, including no-op early return. In-memory reservation does not add filesystem effects to absent→absent |
+
+Shared publisher coverage: TrustedLocalFilePublication.BeginPublication234/ApplyMembers253/CommitMembers312/RecoverCore427/Cleanup491 write/move/delete scratch, members and journals; enclosing local publication/recovery/image/worker envelopes cover these calls. Deferred begin/commit/rollback/RecoverOwned are covered by worker decision envelopes. ReversibleFilePublication.PublishAsync is covered by atomic core; RecoverPending is invoked inside the acquisition legacy-recovery envelope.
+
+Excluded/classified routes: LoadReplacement25, LoadNamespace199 and SessionReplacement publication24 require SessionReplacement purpose before effects; borrowed eligibility rejects it. Separate ordinary/replacement lease acquisition creates a physical MainAdmission; BeginMainAdmission/Retain conflicts with an existing proof, and an already acquired foreign physical frame prevents proof opening. Lease-taking overloads are covered above. Ordinary read recovery wrappers skip recovery under an ambient lease; otherwise acquire PublicationReadQuiescence. OrdinaryReadStreams/BackupLifecycle may invoke RecoverTrustedLocalStorage, whose recovery token covers effects; subsequent reads remain reads. BrowserLocalStorage profile route reads then delegates to the tokenized core. GenerationSnapshot/ConsoleRollbackEvidence/OrdinaryReads/BrowserOriginalAdmission perform read-only physical opens. Runtime staging/cleanup helpers operate on private scratch outside snapshot dependencies; they do not claim a generic independent-admission guard. Canonical load effects through those helpers are covered by replacement purpose or the load-recovery envelope. DEBUG diagnostic Export and constructor root setup are outside canonical snapshot publication and unchanged.
+
+Ruling: add only TryRemoveEmptyCanonicalDirectory and PublishStandaloneDarenProfileAsync guard envelopes in two additional filesystem partial files. Both accept the same ordinary lease; the first is a demonstrated real QTE cleanup caller, the second otherwise has a gap between generation and profile publication. This is the necessary reservation extension already authorized by spec5, with no storage algorithm/schema/game contract change. Plan file map records the decision; full implementation review must verify these boundaries. The audit closes the known inventory omission; it is not behavioral proof that tokens work. Exact owned Opening WorldRecoveryIssuance remains the sole recovery exception; borrowed scope gets no issuance. Negative writer/close controls must still fail before the corresponding implementation.
+
+### T240–T242 — implementation checkpoint before independent SOURCE review
+
+Plan3 was explicitly approved from f368bd592. T240 completed its causal and finite-inventory gate: scalar lookup N1/8/32 reads3/24/96, independent acquisition3warm/6cold; final68-case controls complete11PASS/57expectedRED, no timeout or skipped case. Exact artifacts: T240-causal-red.*, T240-initial-negatives.*, T240-final-red.*. All15 category descriptors exist; full catalog audit remains T243.
+
+T241 implements a common factory runner and immutable owned/borrowed mode. Borrowed scope requires the exact manager, physical frame, active ambient registration and existing generation; it never acquires, recovers, retains or disposes the outer lease. Shared MainAccess state arbitrates reads,40 actual writer envelopes and close. Private legacy cores register their current original physical frame; GetOrCreate's existing-generation read stays read-only and the creating branch is tokenized. PublishLocalFilesAsync now awaits its original core through token disposal. Original checker, evidence DTOs, NativeLineage/C, storage publication algorithms and game assertions are unchanged.
+
+Initial verification8422: proof24PASS, mutation26PASS, custody14PASS/1FAIL. The regression exposed a parent editing error: pre-detach guard was inserted in neighboring SessionLifecycleLease. It was moved to CanonicalWriteLease; old15 custody cases then passed. Further source audit found ReleaseWorldRead could clear its frame pointer on a foreign identity and clear it after unlocking. Added deterministic wrong-identity regression:15PASS/1expectedFAIL at4a5. Release now checks the exact identity and clears the pointer under the same state lock before admitting another proof. Final custody16PASS at a44. Earlier passing proof/mutation results are component evidence; final affected requalification remains T243. Raw development results are T241-T242-development.* and T242-ready-red.*.
+
+T242 added actual caller3, genuine StoryService accepted-story2 and scalar override/same-turn parity2. Two fixture failures were preserved, not counted as RED: live-helper source label is intentionally QTE-ineligible; changing it also requires assigning ComputeManifestPayloadHash's returned hash. The corrected fixture retains real prepared files and uses the existing authority helper for the ordinary source; only the actual StoryService issues AcceptedStoryAppend. At a44 all7 completed: parity2PASS and5expectedRED. Both story cases first passed exact valid/tampered history verdict and ordered scalar parity, then failed because no proof lifetime existed. The two real QTE calls now pass their original lease to the new overload, preserving acceptedStoryAppend and all intervening mutations/restoration. Caller GREEN and independent SOURCE/PREP pending. No game probe or Linux runtime has run in this block.
+
+T243 correction: final PREP f821 found lifecycle3=1PASS2FAIL after contracts36PASS. Shared permanent _ownerClosing wrongly outlived a completed nested participating frame. Actual nested-session regression7b239 observed custody18=16PASS2expectedFAIL, complete/no timeout/cleanup. Removed only that permanent field/assignment/disjunct; existing registered Closing/BoundClosing frames remain checked under the same lock. Independent Astra/high confirmed root cause and correction, approved only MainRunFence hash A36B26B7... in both existing lists. Earlier SOURCE acceptance superseded pending fresh GREEN/PREP. Selection remains15 categories, now178 cases. No game run consumed; LinuxUNRUN.
+
+T243 browser qualification85f4:13 categories169PASS before browser5 incomplete at180s. Raw stdout records three assertion failures before timeout (resource history/runtime and late history); no TRX, so none of these five is counted PASS. Runner-owned cleanup succeeded. Under AGENTS category-splitting rule, independent Astra/high accepts exact same three method selectors partitioned2+2+1, each3m, selection17/178; no game bounds or assertions change. Added full existing result.Error output before unchanged assertions to diagnose actual cause. BrowserOriginal scope versus local browser transaction eligibility remains a source hypothesis pending runtime evidence. Source42 unconsumed, LinuxUNRUN.
+
+T243 browser correction: diagnostic4f3c two complete failures confirm original browser transaction entered borrowed console validation before the injected late error; rollback itself restored files. Exact real BrowserLocalAccess unit negativecceef19=18PASS1expectedFAIL. New overload now preserves scalar for that original lease-bound marker; borrowed issuer rejects it. Independent Astra/high reviewed exact two condition additions and approved only ValidationService/PendingSnapshotValidationRead pins. Final SOURCE/PREP pending GREEN. Final qualification17categories179distinct: retained85f4 unaffected8groups89PASS (contracts36,lifecycle3,Meta reservation7/ownership8,World core2,source3,mutation26,QTE neighbors4), fresh9groups90 (custody19,proof24,caller7,World controls24,Meta proof7,browser2+2+1,lease release4). Source/DLL provenance must remain separate. This finite correction does not change spec or game bounds; T244 unconsumed, LinuxUNRUN.
+
+T243 generation fixture correction: fresh8617692 custody19, late-browser2 and resource-browser2 PASS. Generation1 fails before QTE on gm-main-owner.lock; its paused RunBound callback already owns participating main admission, so expecting concurrent ClearGameState to win is invalid. Dispose also failed because the paused task was not joined; raw evidence retained in T243-generation-fixture-red. Independent Astra/high confirmed unchanged baseline admission contract and approved moving pause before RunBound, preserving old generation/token, actual replacement, exact BOM bytes and original SessionReplacedException, with release/join in finally. Existing admitted-transaction contention test added to preserve the opposite ordering. No production locks/pins changed. Final selection17/180 pending discovery; retain prior89 and fresh86123 with separate bindings, run remaining68 after this fixture repair. T244 remains unconsumed; LinuxUNRUN.
+
+## T243 final SOURCE/PREP
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 ещё не запускалась; разрешена ровно одна source42 проба. T245 допускается только после её настоящего full-return PASS. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+## T243 final SOURCE/PREP и T244 outcome
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 выполнена один раз:FAIL_CHILD_TIMEOUT220,1 completed/1 failed/0skip, полного возврата хода нет; подробности и cleanup в T244-probe-outcome.json. T245 НЕ ЗАПУЩЕНА: gate не выполнен. Повтор T244 или увеличение лимита этим plan3 не разрешены. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+## T244 — фактический результат единственной пробы plan3
+
+Compiled source `1e0a5fcd7522839c869e3d603b93fb23d65b238d`, metadata HEAD `9ce2d236ce8e4ad3296b74dccc95d6c0c8600af8`; между ними нет C# изменений. Run `20261020-090414-679-55248-21ee2bfdcb954c88ac945df4e57fc482-categories`:1 planned/completed,0passed/1failed/0skip, child220s timeout, category timeout false, runner exit1, wall240.247s. Единственная попытка зафиксирована до запуска; повторов не было.
+
+Фазы: source-turn18.196s → capture87.388s → validated157.359s → QTE179.958s. Наблюдались настоящий client story append и промежуточный QTE success; source-turn return и engine return отсутствуют. Последний bounded snapshot201.285s: post-validated initial2000/returned2096, rollback708/59distinct/649repeat, mutations109, path overflow false. Это callbacks и неполный общий интервал, не число всех физических I/O и не изолированное время QTE. Разница с T234 QTE192.405s или rollback885 не доказывает ускорение на сопоставимом участке. Новая оптимизация подтверждена компонентными tests, но её достаточность для полного игрового хода НЕ подтверждена.
+
+Original child22632 exit-1, EOF/join true, secondary failures empty, cleanup failure null, retained owner absent. Оба owned fixture roots удалены, parent отдельно подтвердил отсутствие. Исторический T219 retained root сохранён; его FAIL_INCOMPLETE и исторический Linux52/57 не переписаны. T245 не запускалась из-за отсутствия T244 PASS; T247 Linux UNRUN.
+
+Evidence: [outcome](T244-probe-outcome.json), [stages](T244-probe-stages.json), [canonical raw archive](T244-source42.zip), readable [stdout](T244-child.stdout)/[stderr](T244-child.stderr). Архив содержит исходные TRX/summary/plan/logs, pre-start attempt record и принятый source/DLL binding; все шесть текущих DLL hashes совпали после запуска. Пустой stderr — наблюдение, не доказательство отсутствия причины. Дальнейшая диагностика полного хода требует отдельного согласованного шага; текущий plan3 не разрешает повтор или увеличение бюджета.
+
+T249 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh atcee572dc65e4c5e1ea59fe0c946bb9aa768f8a93; no findings. Policy17PASS, original/default/extended/five discovery verified, current3DLL hashes match. Archive T249-prep.zip SHA2568A5FE194C6481C2E1F73AD171A3935F7D4C1D32ED76B3017962E7E45B468CA12. T250 not started at this checkpoint; exactly one explicit600/10/10/12m run permitted by spec6 and user waiver. Historical T244FAIL and LinuxUNRUN unchanged.
+
+## T250 — расширенное окно: полный source42 PASS
+
+Compiled source `cee572dc65e4c5e1ea59fe0c946bb9aa768f8a93`, metadata HEAD `c6eef0b1c0a7f9c9df6b20150b83a111e4895c9e`, clean tree; run `20261020-092345-568-68084-076dd1567c104801998c1df8dd822dec-categories`. Ровно одна попытка:1 planned/completed/PASS,0failed/skip, category timeout false, runner exit0, wall279.737s. Неизменные3 DLL подтверждены после выполнения.
+
+Source-turn enter17.982s, capture81.085s, validated158.664s, QTE185.151s, source-turn return258.778s, engine return258.780s. Оба return реально записаны; оригинальные identity/nonce/source42/QTE/assertions прошли. Child76132 exit0, EOF/join true; secondary failures empty, cleanup failure null. Оба owned roots удалены, parent подтвердил отсутствие; retained T219 fixture не затронут.
+
+Вывод ограничен этой попыткой:220s недостаточно для наблюдённого выполнения;600s позволили увидеть естественное успешное завершение. Это не доказательство причины всех предыдущих timeout и не разрешение бесконечно увеличивать лимиты. T244 остаётся FAIL; original five/T245 не запускались, Linux UNRUN. Следующий обоснованный шаг — отдельно спланировать Windows five с конечным бюджетом, учитывающим измеренную подготовку, и независимыми case selections; исходные gameplay/ownership assertions и Linux NativeLineage сохранить. Пользовательский waiver действует; дополнительного согласия ждать не требуется.
+
+Evidence: [outcome](T250-probe-outcome.json), [stages](T250-probe-stages.json), [raw archive](T250-source42.zip), [stdout](T250-child.stdout)/[stderr](T250-child.stderr). ZIP SHA256 `A3D28D1155D53A7A565B7322DF790AC7F6AAD3201236E3021A4829FD1D084819`. Raw archive содержит TRX/plan/summary/logs и attempt/source/DLL binding. Итоговое review gpt-6.1-sol/xhigh на5149447e0 принято без замечаний; fresh recovery261files/clean/remoteSHA подтверждена в T251-clean-recovery.json.
+
+T253 causal RED atbc78481a2:25complete/18PASS/7expectedFAIL,0skip/timeout,cleanup true. Two600-vs220 failures and5 missing eligibility rejections; both-flags producer already rejects through existing source policy and remains GREEN. Integration XML build0errors. Raw T253-red.json/zip preserved before GREEN implementation; no gameplay run.
+
+T253 metadata refused draft22m categories at66098c1b7 before any GREEN tests/gameplay; existing catalog maximum is15m (runner overall30m is separate). User waiver permits corrected design producer600/resumer220/category15m; only producer has measured slow source preparation. Initial source review missed this catalog bound; metadata caught it. Preserve original draft RED as historical, then correction RED proves resumer220 before minimal policy fix. No test/category runner constraint is changed.
+
+T253 correction RED atd189af358:25complete/24PASS/1expectedFAIL, exact resumer expected220 versus actual600, no timeout/skip, cleanup true. Raw T253-correction-red.json/zip includes rejected draft catalog log and build. Minimal correction returns600 only for producer and220 for resumer; source eligibility/default220 and ownership unchanged. Fresh GREEN/PREP pending.
+
+T253 final PREP compiled652bdd76a45ce2abc8b94eed145bbeea628cff93:25/25PASS0skip, complete/no timeout/cleanup true. XML build50.91s/0errors/10900baseline warnings/changedXML0; four changed APIs/docs inspected. Catalog exit0; default PlanOnly205 (discovery, not execution) excludes new gameplay; combined PlanOnly12cases/8descriptors verifies original source1/5m, extended1/12m, original five5/15m and five individual Windows1/15m.3DLL hashes/versions bound; production/native diff empty. T253-prep.zip SHA256 ABD9B40EA18C1B5ECF98EA710FAD74D3299C9C6C4BE401CA68652000ACA60D47. Independent SOURCE/PREP pending; T254/T255 UNRUN.
+
+<!-- spec7-windows-results -->
+## Spec7 — текущие Windows результаты
+
+**Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
+
+| Cut | Result | Test duration | Producer / resumer exits | Evidence |
+| --- | --- | --- | --- | --- |
+| 0 | Failed | 00:10:16.9394853 | 73/-1 | [outcome](T254-cut0-outcome.json), [raw](T254-cut0-raw.zip) |
+| 1 | UNRUN | — | — | — |
+| 2 | UNRUN | — | — | — |
+| 3 | UNRUN | — | — | — |
+| 4 | UNRUN | — | — | — |
+
+Each outcome binds compiled source, metadata HEAD, one pre-start attempt, raw TRX/summary, actual child identity/EOF/join and parent fixture cleanup. Per-cut raw ZIP retains the qualified DLL binding. A timeout/failure or incomplete result is not PASS; no automatic retry. Historical T219 fixture remains out of scope.
+<!-- /spec7-windows-results -->
+
+T254 cut0 result:producer85988 reached real requested exit73 at395.163s; resumer52692 entered late-first5.237s, last existing finalization-after checkpoint29.199s and did not return before220s. Timeout does not establish whether this is slow work or an indefinite wait. Original child EOF/join and both parent owned roots cleanup confirmed; historical T219 fixture preserved. No cut1..4 run is permitted by current gate. Next step is read-only causal analysis of the resumer path before proposing instrumentation or timeout changes.

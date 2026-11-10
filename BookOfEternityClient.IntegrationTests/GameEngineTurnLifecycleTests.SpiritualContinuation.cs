@@ -475,9 +475,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     /// <summary>
-    /// Retains bounded information and warning diagnostics from the actual engine so fixture failures reveal their production phase.
+    /// Retains complete enabled engine diagnostics so fixture failures reveal their production phase.
     /// </summary>
-    private sealed class SpiritualLifecycleTestLogger : ILogger<GameEngine>
+    internal sealed class SpiritualLifecycleTestLogger(LifecyclePassiveTimingDiagnostics? persistent = null) : ILogger<GameEngine>
     {
         private readonly ConcurrentQueue<string> _messages = new();
 
@@ -494,16 +494,19 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (!IsEnabled(logLevel))
                 return;
             var message = formatter(state, exception) + (exception is null ? string.Empty : "\n" + exception);
-            _messages.Enqueue(message.Length <= 2000 ? message : message[..2000]);
-            while (_messages.Count > 24)
-                _messages.TryDequeue(out _);
+            _messages.Enqueue(message);
+            if (persistent is not null)
+            {
+                try { persistent.WriteLine(message); }
+                catch (Exception failure) { persistent.RecordClosingFailure(failure, "spiritual-lifecycle-log-forward"); }
+            }
         }
 
         /// <summary>
         /// Formats retained phase and failure messages without reading or dumping session files.
         /// </summary>
         /// <returns>
-        /// At most twenty-four messages, each bounded to two thousand characters.
+        /// Every retained message and exception in queue order, without count or text truncation.
         /// </returns>
         internal string Describe() => "Engine diagnostics:\n" + string.Join("\n", _messages);
     }

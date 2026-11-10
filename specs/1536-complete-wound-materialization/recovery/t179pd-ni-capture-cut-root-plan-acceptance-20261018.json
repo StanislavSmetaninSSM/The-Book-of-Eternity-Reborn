@@ -1,0 +1,51 @@
+{
+  "kind": "ROOT_CUT01_BOUNDED_PLAN_ACCEPTANCE_AND_TESTS_ONLY_AUTHORING_RELEASE",
+  "createdUtc": "2026-10-18T03:16:37.239197+00:00",
+  "sourceBase": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.md",
+      "bytes": 14161,
+      "sha256": "d4f2ba1e7f1dea80f2e84550592475ebd284fb85587cc38b2274ca135949e072"
+    },
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-08119f36-20261018-v2.json",
+      "bytes": 23171,
+      "sha256": "1d736fb2a89f737a6fc417ae8dd806b97060cb2440f358936a7db1f344e78720"
+    },
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-independent-review-20261018.md",
+      "bytes": 2293,
+      "sha256": "586e566edb6d3bbe96c2ddd445d1e534fe5ec6b560a67ce8af112322b3e63e6b"
+    },
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-independent-review-20261018.json",
+      "bytes": 3046,
+      "sha256": "9f740037db47285fed8325afd79f1c6dfad4e14510188a4526009939a6d0d391"
+    },
+    {
+      "path": "/tmp/t179pd-ni-capture-cut-plan-independent-check-20261018.json",
+      "bytes": 21073,
+      "sha256": "b97f8b69f66cd544444cd063bc8d8abee978326c4c6fad9962faba317896e4ad"
+    }
+  ],
+  "verdict": "ACCEPT_PLAN_FOR_TESTS_ONLY_AUTHORING",
+  "owner": "Existing per-engine nullable SessionFinalizationCheckpoint observer, append enum only and await after actual Capture returns and before preparation inside existing inner try. No capability payload or return acceptance. Current custody completion is not NI completion.",
+  "exceptionContract": "Test-owned IOException follows existing held catch and actual unreserved close (UnavailableNotReserved, not a receipt), actual lease close and finally Expire. No catch/filter/lifecycle change.",
+  "testsScope": "New stop1 + no-additional-observer/no-op2 in actual engine fixture; all actual prerequisites, guaranteed-present pending preparation-read witness, precise retained/registry/publication observations, exact current session pathset/rawbytes/G and no postcut mutations, held outcome and owned cleanup. Baseline compiles without new enum through existing checkpoint.ToString name match.",
+  "trackedTask": "#1536 T179-Pd-CUT01 in current existing plan/tasks before tests authoring",
+  "authoringRelease": "Tests/support/category/selector/source-ledger and current documentation only, exact WIP nonforce publish/remote readback/new changed-path GitHub recovery before long preparation/review. One fresh selected BOTH/catalog/PlanOnly ZERO preparation, then independent concrete SOURCE/FIXTURE/SELECTION/PREP.",
+  "nativeRelease": "NONE YET; Root must name FIRST stop1 only after saved concrete preparation SOURCE acceptance. No NotNull/setup/underfill or compilation failure can qualify causal RED.",
+  "productRelease": "NONE YET; after independently accepted causal RED, exactly append enum plus one await, fresh preparation and affected SOURCE.",
+  "affectedSelection": "Postproduct exact protected Late2 first, separately qualified, then new3; actual samepublisher caller/sharedfixture dependency. No old ordinary52/45, full HOT or broad suites. Counts discovery-bound.",
+  "precommonDesign": "Separate Prepared→Published lifecycle candidate remains design-only in independent review; not part of seam implementation, not a child2 provenance bridge.",
+  "constraints": [
+    "No full NI activation, held HOT or newQTE",
+    "Child1/oldv2 unchanged; child2 design not implemented",
+    "No CI or denied ZIP retry/alternate transfer",
+    "No main, merge, force-push, branch removal or credentials/security change",
+    "No duplicate full clone or replay of prior accepted evidence"
+  ],
+  "rootChecks": "Read exactv2 and reviewed actual null dispatcher, real factory134→146–147 and guaranteed present Reconstruct pending read; hash-verified formal independent review/support."
+}

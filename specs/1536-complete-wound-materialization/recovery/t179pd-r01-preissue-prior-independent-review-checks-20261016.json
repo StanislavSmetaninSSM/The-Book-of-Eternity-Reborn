@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/tmp/t179pd-r01-r03-original-restore-owner-independent-review-20261016.md",
+    "sha256": "ff79b1898cce18bde0f318fb025295f0d297b311113d4fb549bd95aec6ff5aad",
+    "byte_count": 12722,
+    "published_path": "specs/1536-complete-wound-materialization/recovery/t179pd-r01-r03-original-restore-owner-independent-review-20261016.md",
+    "candidate_commit": "1e34f52dab6ebbfd301d931c6ab1296b1aceadba",
+    "candidate_git_blob": "01c03246b5d0c3a359332094ea3ce6d10bd9d998",
+    "published_byte_exact": true
+  },
+  {
+    "path": "/tmp/t179pd-r01-r03-original-restore-owner-independent-review-20261016.json",
+    "sha256": "d0062c44a0ba308e2bbbe2e85ef0e7ebfde473fefc375beb45ffac55e5dcc6bf",
+    "byte_count": 38343,
+    "published_path": "specs/1536-complete-wound-materialization/recovery/t179pd-r01-r03-original-restore-owner-independent-review-20261016.json",
+    "candidate_commit": "1e34f52dab6ebbfd301d931c6ab1296b1aceadba",
+    "candidate_git_blob": "c45dcb08247006f41cb4be98aadb015ed4c70626",
+    "published_byte_exact": true
+  },
+  {
+    "path": "/tmp/t179pd-prep0-admission-history-recovery-phd01-corrected-independent-review-20261016.md",
+    "sha256": "1c14bd91d3cd7da176c542e69a708faed136f68869245c7cfa92e3c2447ff857",
+    "byte_count": 8168,
+    "published_path": "specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-phd01-corrected-independent-review-20261016.md",
+    "candidate_commit": "1e34f52dab6ebbfd301d931c6ab1296b1aceadba",
+    "candidate_git_blob": "e10fc75dbbb1d5e121b942f2238ee2b2413fb548",
+    "published_byte_exact": true
+  },
+  {
+    "path": "/tmp/t179pd-prep0-admission-history-recovery-phd01-corrected-independent-review-20261016.json",
+    "sha256": "b7684a793ef3d605074c7c38b0f2af0a3585ef53c03fa74451736441cefcdaeb",
+    "byte_count": 77418,
+    "published_path": "specs/1536-complete-wound-materialization/recovery/t179pd-prep0-admission-history-recovery-phd01-corrected-independent-review-20261016.json",
+    "candidate_commit": "1e34f52dab6ebbfd301d931c6ab1296b1aceadba",
+    "candidate_git_blob": "098be211a8a34eb252c7c3fe7564d36ce7f36322",
+    "published_byte_exact": true
+  }
+]

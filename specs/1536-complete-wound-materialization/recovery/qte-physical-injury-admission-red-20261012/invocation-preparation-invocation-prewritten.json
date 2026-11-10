@@ -1,0 +1,30 @@
+{
+  "source": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+  "phase": "catalog and fresh selected PlanOnly; test execution0",
+  "category": "qte-physical-injury-admission",
+  "selection": "tests/selections/1536-qte-physical-injury-admission.json",
+  "expectedMethods": 3,
+  "expectedCases": 31,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "noTimeoutIncrease": true,
+  "catalogCommand": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "planCommand": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-admission.json",
+    "-PlanOnly",
+    "-NoBuild"
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "kind": "static_source_design_audit_not_runtime",
+  "base": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+  "requested_checkpoint": "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+  "changed_tracked_documents": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/spec.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "7b64eb60f2b448d8e41527ab16cc1bbefd5ab422",
+      "bytes": 115087,
+      "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+      "projections": [
+        {
+          "first_line": 424,
+          "last_line": 438,
+          "text": "    private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        TurnRequest request,\n        RollbackSnapshot? rollbackSnapshot = null,\n        string? sourceLabel = null,\n        PendingPlayerActionService.Binding? browserAction = null,\n        HotOrdinaryOriginal? hotOwner = null)\n    {\n        RequireExactEngineSnapshotInventory(writeLease, rollbackSnapshot);\n        await DeleteTerminalProtocolFailureRequestAsync(writeLease);\n        if (hotOwner is null) CleanupPendingTurnSnapshot(writeLease, rollbackSnapshot?.BackupFiles.Values);\n        else CleanupHotOriginalProducerSnapshot(hotOwner, writeLease, request, rollbackSnapshot);\n        var conflictStateExistedBeforeInitialization = _fs.FileExists(\n            writeLease,\n            AfterlifeSpiritualConflictState.StatePath);\n"
+        },
+        {
+          "first_line": 2094,
+          "last_line": 2118,
+          "text": "    private async Task RestorePreTurnBackup(RollbackSnapshot snapshot)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Exception? operationFailure = null;\n        try { await RestorePreTurnBackupAsync(writeLease, snapshot); }\n        catch (Exception failure) { operationFailure = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, operationFailure); }\n        await RefreshRuntimeStateAfterExactRollbackAsync();\n    }\n\n    private async Task RestorePreTurnBackupForSessionAsync(\n        RollbackSnapshot snapshot,\n        string expectedSessionGeneration)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Exception? operationFailure = null;\n        var restored = false;\n        try\n        {\n            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);\n            await RestorePreTurnBackupAsync(writeLease, snapshot);\n            restored = true;\n            CleanupBackup(writeLease, snapshot);\n        }\n        catch (Exception failure)\n"
+        },
+        {
+          "first_line": 2405,
+          "last_line": 2435,
+          "text": "    private async Task RestorePreTurnBackupAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        RollbackSnapshot snapshot)\n    {\n        var validatedBackups = await ReadValidatedRollbackBeforeImagesAsync(writeLease, snapshot);\n        var failures = new List<Exception>();\n        foreach (var trackedFile in EnumerateRollbackTrackedFiles(writeLease))\n        {\n            if (snapshot.BaselineFiles.Contains(trackedFile))\n                continue;\n\n            try\n            {\n                if (_fs.FileExists(writeLease, trackedFile))\n                    _fs.DeleteFile(writeLease, trackedFile);\n            }\n            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n            {\n                failures.Add(new IOException(\n                    $\"Failed to delete new canonical file '{trackedFile}' during rollback.\",\n                    ex));\n            }\n        }\n\n        foreach (var (original, content) in validatedBackups)\n        {\n            try\n            {\n                await _fs.WriteFileAtomicBytesAsync(writeLease, original, content);\n            }\n            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "cd1f93a124dc1de15ed33cfa0570bf0962dd1522",
+      "bytes": 296784,
+      "sha256": "788c11e250a0f9031c36ae01dd393617ad07a7a4b91608fbdfe93347cc80fbd3",
+      "projections": [
+        {
+          "first_line": 1907,
+          "last_line": 1954,
+          "text": "        }\n        await InvokeSessionFinalizationCheckpointAsync(\n            SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);\n        var response = await BuildGameResponseFromFiles();\n\n        // Turn accepted — backup no longer needed after lifecycle readers finish:\n        // pending-turn detached authority still uses rollback backup files as tamper evidence.\n        CleanupAfterAcceptedChaosSeaMarkerTurn(action);\n\n        await _pendingTurnState.RotateAfterAcceptedTurnAsync();\n        await NormalizeRuntimeUiArtifactsAsync();\n        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(\n                backedUpFiles, browserStaged == null ? null : activeSnapshotContext))\n        {\n            _fs.DeleteFile(\"ready/turn_complete.json\");\n            _fs.DeleteFile(\"ready/turn_error.json\");\n            _fs.DeleteFile(\"output/ink_feather_action_result.json\");\n            _qteSceneService.ClearOfferFile();\n            _fs.AllowBrowserOriginalCleanup();\n            _fs.DeleteFile(\"input/turn_request.json\");\n            var restored = await RollbackRejectedAcceptedTurnAsync(\n                backedUpFiles,\n                \"[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]\");\n            if (browserStaged != null && !restored) return;\n            await CleanupPendingTurnSnapshotAsync();\n            if (browserStaged != null && restored)\n            {\n                await FinishRestoredBrowserActionAsync(browserStaged, \"originalTerminalRejectedRestored\", terminalSignals.CompletionJson!);\n                await ClassifyBrowserRecoveryAsync();\n            }\n            return;\n        }\n\n        if (playerFacingTurn)\n        {\n            _gameLoop.IncrementTurn();\n            _lastResponse = response;\n            _pendingImagePrompt = null;\n\n            // Persist turn to story file\n            var state = _stateManager.CurrentState;\n            var storyRefs = await ExtractStoryEntityRefsAsync(action);\n            StoryService.AcceptedStoryAppend? acceptedStoryAppend;\n            if (browserStaged != null)\n            {\n                browserStory = await AppendBrowserStoryAsync(browserStaged, response, state.CurrentLocation, storyRefs);\n                acceptedStoryAppend = browserStory.QteStoryAppend;\n            }\n"
+        },
+        {
+          "first_line": 2349,
+          "last_line": 2410,
+          "text": "            return null;\n\n        return text[start..end].Trim();\n    }\n\n    private async Task<(bool EarlyExit, GameResponse Response, bool AwaitingEffectResolution)> HandleAcceptedQteOfferAsync(\n        GameResponse? response,\n        ValidatedPendingTurnSnapshotContext? snapshotContext,\n        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)\n    {\n        response ??= new GameResponse();\n        var offer = await _qteSceneService.TryReadOfferAsync();\n        if (offer == null)\n        {\n            await _qteSceneService.ClearDeclineMarkerAsync();\n            return (false, response, false);\n        }\n\n        if (!QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))\n        {\n            _logger.LogError(\n                \"QTE offer {QteId} получен вне обычного игрокского хода (SourceLabel={SourceLabel}) и будет проигнорирован.\",\n                offer.QteId,\n                snapshotContext?.SourceLabel ?? \"<missing>\");\n            _qteSceneService.ClearOfferFile();\n            return (false, response, false);\n        }\n\n        if (snapshotContext is null || snapshotContext.TurnNumber <= 0)\n        {\n            _logger.LogError(\n                \"QTE offer {QteId} has no positive validated source turn and will be ignored.\",\n                offer.QteId);\n            _qteSceneService.ClearOfferFile();\n            return (false, response, false);\n        }\n\n        offer = await _qteSceneService.BindAcceptedTurnAuthorityAsync(\n            offer,\n            snapshotContext.TurnNumber);\n        var sourceTurnNumber = offer.SourceTurnNumber!.Value;\n        var decision = await _qteSceneService.PromptOfferDecisionAsync(offer);\n        if (decision == QteSceneService.QteOfferDecision.Decline)\n        {\n            await _qteSceneService.RecordDeclineAsync(offer, sourceTurnNumber);\n            _fs.DeleteFile(\"ready/turn_complete.json\");\n            _fs.DeleteFile(\"ready/turn_error.json\");\n\n            var originalAction = snapshotContext?.PlayerAction;\n            if (!string.IsNullOrWhiteSpace(originalAction) &&\n                QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))\n            {\n                var declineReminder =\n                    $\"[QTE_DECLINED:{offer.QteId}] Игрок отклонил QTE-сценарий. Разреши ту же ситуацию обычными игровыми механиками. Повторно предлагать этот qteId запрещено.\";\n                await ProcessPlayerTurn(originalAction, declineReminder);\n            }\n\n            return (true, response, false);\n        }\n\n        QtePhysicalInjurySource? physicalSource = null;\n        if (QtePhysicalInjurySource.IsDeclared(offer))\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "1b7ffbed260ee04eb19e00191e50f76a668022dc",
+      "bytes": 82146,
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "projections": [
+        {
+          "first_line": 268,
+          "last_line": 283,
+          "text": "                if (decision == \"decline\")\n                {\n                    await _qteSceneService.RecordDeclineAsync(\n                        transactionLease,\n                        offer,\n                        turnNumber);\n                    DeleteIfExists(transactionLease, \"ready/turn_complete.json\");\n                    DeleteIfExists(transactionLease, \"ready/turn_error.json\");\n                    state = await BuildStateCoreAsync(\n                        transactionLease,\n                        normalizeRuntime: false,\n                        stateOverride: \"Declined\",\n                        resolution: null,\n                        notification: \"QTE отклонено. Консольный режим повторно отправляет исходное действие GM; браузерный протокол фиксирует отказ и очищает offer.\");\n                    return;\n                }\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPlayerActionService.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "6b8f39d13803a78343efb0d58a8f1b481ee333d7",
+      "bytes": 4980,
+      "sha256": "468216f874f91d79004d822ad772dfc3b3c9daaf13d3d6d1178e66e9a42a5783",
+      "projections": [
+        {
+          "first_line": 85,
+          "last_line": 116,
+          "text": "                ? \"Сейчас ход Мастера — дождитесь завершения текущего хода.\"\n                : \"Запись заблокирована другим процессом.\";\n            return new BrowserPlayerActionResult(false, reason);\n        }\n        if (_hooks?.AfterPreflightAsync != null)\n            await _hooks.AfterPreflightAsync();\n\n        if (_fs.FileExists(writeLease, PendingPlayerActionPath))\n            return new BrowserPlayerActionResult(false, \"Предыдущее действие ещё ожидает обработки.\");\n\n        var writeRequest = new BrowserLocalWriteRequest(\n            request?.OwnerId,\n            request?.OwnerLabel ?? \"Композитор действий\",\n            \"Запись действия игрока\");\n\n        var payload = PendingPlayerActionService.PrepareQueued(\n            _fs, writeLease, text, \"browser-composer\",\n            _timeProvider.GetUtcNow().UtcDateTime.ToString(\"O\"));\n\n        var writeResult = await _coordinator.ExecuteAtomicWithinTransactionAsync(\n            writeLease,\n            writeRequest,\n            [PendingPlayerActionPath],\n            async transactionLease =>\n            {\n                await _fs.WriteFileAtomicAsync(\n                    transactionLease,\n                    PendingPlayerActionPath,\n                    JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));\n            });\n\n        if (!writeResult.Success)\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "f6addc82da35dea8d08650fd67d9fbde75e7220c",
+      "bytes": 19794,
+      "sha256": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+      "projections": [
+        {
+          "first_line": 65,
+          "last_line": 81,
+          "text": "        {\n            if (!ReferenceEquals(writerCapability, AcceptedStoryWriterCapability))\n                throw new InvalidOperationException(\"Only the accepted client story writer or validated QTE checkpoint can issue this witness.\");\n            Closed(root, \"schemaVersion\", \"writerKind\", \"source\", \"storyPath\", \"originalHistoryBindings\", \"before\", \"rowJson\", \"after\");\n            if (root[\"schemaVersion\"]!.GetValue<int>() != 1 || Exact(root, \"writerKind\") is not (\"console_turn\" or \"browser_turn\"))\n                throw new InvalidDataException(\"qte_client_story_append_invalid: unsupported schema/writer.\");\n            var source = root[\"source\"]!.AsObject();\n            Closed(source, \"sessionId\", \"requestId\", \"snapshotToken\", \"turnNumber\", \"sourceLabel\", \"sessionGeneration\");\n            foreach (var field in new[] { \"sessionId\", \"requestId\", \"snapshotToken\", \"sourceLabel\", \"sessionGeneration\" }) _ = Exact(source, field);\n            if (source[\"turnNumber\"]!.GetValue<int>() <= 0 || !QteSceneService.IsEligibleOfferSourceLabel(Exact(source, \"sourceLabel\")))\n                throw new InvalidDataException(\"qte_client_story_append_invalid: invalid original source.\");\n            var before = root[\"before\"]!.AsObject();\n            Closed(before, \"existed\", \"bytesBase64\", \"fingerprint\");\n            var existed = before[\"existed\"]!.GetValue<bool>();\n            var payload = before[\"bytesBase64\"]?.GetValue<string>();\n            if (existed != (payload != null)) throw new InvalidDataException(\"qte_client_story_append_invalid: before existence differs.\");\n            var bytes = payload == null ? null : Convert.FromBase64String(payload);\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "c99933a8bc5de098180bba4b16fd7811270fcf8f",
+      "bytes": 33511,
+      "sha256": "0ceecfb1f5d517673504e413f138bad5593065791f1f85a222238c7f19a3893d",
+      "projections": [
+        {
+          "first_line": 21,
+          "last_line": 24,
+          "text": "/// <summary>\n/// Distributes GameResponse fields to appropriate game state files per CLI API spec.\n/// Individual file publications are atomic; known failures use captured backups.\n/// The complete distribution is not a single crash-recoverable decision.\n"
+        },
+        {
+          "first_line": 145,
+          "last_line": 178,
+          "text": "                mutation.BackupPath = _fs.CreateBackup(writeLease, filePath);\n                // Even a committed backup can retain cleanup debt. Resolve it\n                // before the next ordinary read/write can obscure its outcome.\n                _fs.ResolveBackupPublicationRecovery(writeLease);\n            }\n            if (_hooks?.AfterBackupsCapturedAsync != null)\n                await _hooks.AfterBackupsCapturedAsync();\n\n            // Phase 2: Apply updates atomically per file\n            foreach (var (filePath, fields) in fileUpdates)\n            {\n                await MergeFieldsIntoFile(writeLease, filePath, fields);\n                mutations[filePath].MutationApplied = true;\n                modifiedFiles.Add(filePath);\n                if (_hooks?.AfterFileMutationAppliedAsync != null)\n                    await _hooks.AfterFileMutationAppliedAsync(filePath);\n            }\n\n            if (acceptedWoundCommand is not null)\n            {\n                await WriteAcceptedWoundCommandAsync(\n                    writeLease,\n                    acceptedWoundCommand.Root,\n                    mutations,\n                    modifiedFiles);\n            }\n\n            // Phase 3: Write output interface files\n            await WriteOutputFiles(writeLease, response, mutations);\n\n            if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })\n            {\n                var confirmation = MortalWoundTreatmentResourceComposer\n                    .ConfirmPersistedTreatmentResources(\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "44e85e5be97145d0d6d9135e3f87b42f8f5cf1c9",
+      "bytes": 23872,
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "projections": [
+        {
+          "first_line": 406,
+          "last_line": 481,
+          "text": "    private async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateCoreAsync(\n        IReadOnlyDictionary<string, string>? backups,\n        MortalItemAcceptedTurnNormalizationMode mortalItemMode,\n        AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight,\n        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,\n        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)\n    {\n        ArgumentNullException.ThrowIfNull(mortalItemMode);\n        var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);\n\n        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);\n        await NormalizeMortalItemsAsync(\n            backups,\n            mortalLocationPlan?.AcceptedStorageCoordinates,\n            mortalItemMode);\n        await NormalizeGuardiansAsync(\n            backups,\n            (acceptedMechanicsPreflight as\n                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);\n        await NormalizeGuardianAbodeResidentsAsync(backups);\n        await NormalizeShiningAbodeStateAsync(backups);\n        await NormalizeGuardianProjectsAsync(guardianProjectInputs);\n        await NormalizeCharacterChronicleAsync(backups);\n        await NormalizeAchievementsAsync(backups);\n        await NormalizeCodexAsync(backups);\n        await NormalizeQuestStateAsync(\"game_state/quests/regular_quests.json\", \"UpdateQuests\", backups);\n        await NormalizeQuestStateAsync(\"game_state/quests/soul_quests.json\", \"UpdateSoulQuests\", backups);\n        await NormalizeQuestHistoryAsync(backups);\n        await NormalizeRivalSoulArcsAsync(backups);\n        await NormalizeSoulStateAsync(backups);\n        if (spiritualPublicationReceipt is null ||\n            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))\n            await NormalizeAfterlifeSpiritualConflictStateAsync(backups);\n        if (spiritualPublicationReceipt is null ||\n            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath))\n            await NormalizeAfterlifeEntityProfilesAsync(backups);\n        await NormalizeAfterlifeActiveThreatsAsync(backups);\n        await NormalizeChaosSeaGuardianPoliticsAsync(backups);\n        await NormalizeAfterlifeChroniclesAsync(backups);\n        await NormalizeAfterlifeGlobalFlagsAsync(backups);\n        await NormalizeAfterlifeStoryOutlineAsync(backups);\n        await NormalizeSarefMainStoryStateAsync(backups);\n        await NormalizeFactionCoreChangesAsync(backups);\n        await NormalizeFactionStructureAsync(backups);\n        await NormalizeFactionResourcesAsync(backups);\n        await NormalizeFactionProjectsAsync(backups);\n        await NormalizeFactionCustomAsync(backups);\n        await NormalizeFactionChroniclesAsync(backups);\n        await NormalizeFactionCoreAsync(backups);\n        await NormalizeNpcCoreChangesAsync(\n            backups,\n            (acceptedMechanicsPreflight as\n                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);\n        await NormalizeNpcTradeCoreAsync(\n            backups,\n            (acceptedMechanicsPreflight as\n                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);\n        await NormalizeNpcJournalsAsync(backups);\n        await NormalizeNpcInteractionJournalAsync(backups);\n        await NormalizeInventoryItemsAsync(backups);\n        await NormalizeInventoryItemBondsAsync(backups);\n        await NormalizeInventoryItemTextsAsync(backups);\n        await NormalizeItemJournalsAsync(backups);\n        await NormalizeGuardianThoughtJournalAsync(backups);\n        await NormalizeGuardianSocialJournalAsync(backups);\n        await NormalizePlayerSkillStateAsync(backups);\n        return acceptedMechanicsPreflight == null\n            ? null\n            : await PublishAcceptedMechanicsAsync(\n                 backups,\n                 mortalLocationPlan,\n                 acceptedMechanicsPreflight,\n                 normalizedAcceptedCarrierBaselines: true,\n                 treatmentPublicationReceipt,\n                 spiritualPublicationReceipt);\n    }\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "projections": [
+        {
+          "first_line": 334,
+          "last_line": 448,
+          "text": "        EffectCarrierCatalogInput? preTurnCarriers = null,\n        EffectCarrierCatalogInput? acceptedCarriers = null,\n        string commandRealm = \"mortal_world\",\n        IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null)\n    {\n        var changes = rawCommands[\"effectChanges\"] as JsonArray;\n        var operationCount = changes?.Count ?? 0;\n        var acceptedExchanges = CollectNewAcceptedAfterlifeExchanges(\n            preTurnCarriers?.SpiritualConflict,\n            acceptedCarriers?.SpiritualConflict);\n        var events = new JsonArray();\n        for (var index = 0; index < Math.Max(1, operationCount); index++)\n        {\n            var ordinal = index + 1;\n            if (changes != null &&\n                index < changes.Count &&\n                changes[index] is JsonObject change &&\n                TryBuildAfterlifeExchangeEvent(\n                    change,\n                    acceptedExchanges,\n                    out var exchangeEvent))\n            {\n                events.Add(exchangeEvent);\n                continue;\n            }\n            events.Add(new JsonObject\n            {\n                [\"kind\"] = \"accepted_turn\",\n                [\"authorityId\"] = ordinal == 1\n                    ? $\"turn_{turn}\"\n                    : $\"turn_{turn}_effect_{ordinal}\",\n                [\"eventRef\"] = ordinal == 1\n                    ? $\"turn_{turn}:accepted_effect\"\n                    : $\"turn_{turn}:accepted_effect:{ordinal}\"\n            });\n        }\n        var currentTargetRealms = acceptedCarriers == null\n            ? new Dictionary<(string Kind, string TargetId), string>()\n            : CollectAcceptedTargetCurrentRealms(acceptedCarriers);\n        var lifecycleTargets = new HashSet<(\n            string Realm,\n            string CurrentRealm,\n            string Kind,\n            string TargetId)>();\n        if (string.Equals(commandRealm, \"mortal_world\", StringComparison.Ordinal))\n        {\n            lifecycleTargets.Add((\n                \"mortal_world\",\n                \"mortal_world\",\n                \"player\",\n                \"player_current\"));\n        }\n        if (acceptedCarriers != null)\n        {\n            foreach (var occurrence in EffectCarrierCatalog.Build(acceptedCarriers).Occurrences)\n            {\n                if (occurrence.Effect[\"target\"] is not JsonObject target ||\n                    !TryReadExact(occurrence.Effect[\"realm\"], out var realm) ||\n                    !TryReadExact(target[\"kind\"], out var kind) ||\n                    !TryReadExact(target[\"targetId\"], out var targetId))\n                {\n                    continue;\n                }\n                lifecycleTargets.Add((\n                    realm,\n                    currentTargetRealms.TryGetValue((kind, targetId), out var currentRealm)\n                        ? currentRealm\n                        : realm,\n                    kind,\n                    targetId));\n            }\n        }\n        if (rawCommands[\"effectChanges\"] is JsonArray effectChanges)\n        {\n            foreach (var change in effectChanges.OfType<JsonObject>())\n            {\n                if (change[\"target\"] is JsonObject target &&\n                    TryReadExact(target[\"kind\"], out var kind) &&\n                    TryReadExact(target[\"targetId\"], out var targetId))\n                {\n                    lifecycleTargets.Add((commandRealm, commandRealm, kind, targetId));\n                }\n            }\n        }\n        var lifecycleEvents = new JsonArray(lifecycleTargets\n            .OrderBy(static target => target.Realm, StringComparer.Ordinal)\n            .ThenBy(static target => target.CurrentRealm, StringComparer.Ordinal)\n            .ThenBy(static target => target.Kind, StringComparer.Ordinal)\n            .ThenBy(static target => target.TargetId, StringComparer.Ordinal)\n            .Select(target => (JsonNode)new JsonObject\n            {\n                [\"eventRef\"] = target == (\n                        \"mortal_world\",\n                        \"mortal_world\",\n                        \"player\",\n                        \"player_current\")\n                    ? $\"turn_{turn}:lifecycle:owner_turn_end:player_current\"\n                    : $\"turn_{turn}:lifecycle:owner_turn_end:{target.Realm}:{target.Kind}:{target.TargetId}\",\n                [\"turn\"] = turn,\n                [\"phase\"] = \"owner_turn_end\",\n                [\"realm\"] = target.Realm,\n                [\"target\"] = new JsonObject\n                {\n                    [\"kind\"] = target.Kind,\n                    [\"targetId\"] = target.TargetId\n                },\n                [\"triggerId\"] = null,\n                [\"currentTime\"] = currentWorldTime,\n                [\"currentSceneId\"] = null,\n                [\"sceneClosed\"] = false,\n                [\"sourceSatisfied\"] = null,\n                [\"conditionSatisfied\"] = null,\n                [\"targetSatisfied\"] = null,\n                [\"currentRealm\"] = target.CurrentRealm\n            }).ToArray());\n"
+        },
+        {
+          "first_line": 707,
+          "last_line": 737,
+          "text": "    internal static long? ReadCanonicalWorldTime(string? json)\n    {\n        if (json == null)\n            return null;\n        try\n        {\n            using var document = JsonDocument.Parse(json);\n            var root = document.RootElement;\n            if (root.ValueKind != JsonValueKind.Object)\n                return null;\n            if (root.TryGetProperty(\"setWorldTime\", out var setWorldTime) &&\n                setWorldTime.ValueKind != JsonValueKind.Null)\n            {\n                if (setWorldTime.ValueKind == JsonValueKind.Object &&\n                    TryReadNonNegativeLong(\n                        setWorldTime,\n                        \"currentTimeInMinutes\",\n                        out var acceptedAbsolute))\n                {\n                    return acceptedAbsolute;\n                }\n                return null;\n            }\n            if (TryReadNonNegativeLong(root, \"currentTimeInMinutes\", out var direct))\n                return direct;\n        }\n        catch (JsonException)\n        {\n            return null;\n        }\n        return null;\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "projections": [
+        {
+          "first_line": 770,
+          "last_line": 787,
+          "text": "    private static EffectLifetimeReductionResult AdvanceUntilTime(\n        JsonObject effect,\n        JsonObject lifetime,\n        EffectLifecycleEvent lifecycleEvent)\n    {\n        if (!TryNonNegativeLong(lifetime[\"deadline\"], out var deadline))\n        {\n            return LifetimeFailure(\n                \"effect.lifetime.deadline\",\n                \"effect_lifecycle_state_invalid\",\n                \"non-negative canonical world-time deadline\",\n                Describe(lifetime[\"deadline\"]));\n        }\n        if (!lifecycleEvent.CurrentTime.HasValue)\n            return LifetimeResult(\"no_change\", effect);\n        return lifecycleEvent.CurrentTime.Value >= deadline\n            ? LifetimeResult(\"expire\", null)\n            : LifetimeResult(\"no_change\", effect);\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "projections": [
+        {
+          "first_line": 55,
+          "last_line": 142,
+          "text": "            }\n        }\n    }\n\n    internal async Task<FrozenMortalOutcomeInputs> CaptureMortalOutcomeInputsAsync(\n        FileSystemManager.CanonicalWriteLease lease, ProgressionControl actualControl,\n        string sessionId, string requestId, int turn)\n    {\n        _fs.EnsureCanonicalWriteLeaseActive(lease);\n        if (!HasResolvedRealm(actualControl.CurrentRealm) || IsAfterlifeRealm(actualControl.CurrentRealm))\n            throw new InvalidDataException(\"Joint progression capture requires the actual Mortal original control.\");\n        var controlJson = JsonSerializer.Serialize(actualControl, JsonOpts);\n        var control = JsonSerializer.Deserialize<ProgressionControl>(controlJson, JsonOpts)!;\n        var sources = new Dictionary<string, byte[]?>(StringComparer.Ordinal);\n        foreach (var path in MortalJointCalculationSourcePaths) sources.Add(path, await _fs.ReadFileBytesAsync(lease, path));\n        var scheduleSnapshot = await ReadScheduleSnapshotAsync(lease);\n        if (sources[SchedulePath] is null || scheduleSnapshot.State != ProgressionFileReadState.Valid || scheduleSnapshot.Schedule is null)\n            throw new InvalidDataException(\"Joint progression requires an existing valid schedule; no initialization fallback.\");\n        // Freeze the actual asynchronous sanitization result and all its raw\n        // sources. Its conditional UTC fallback remains at its old source site.\n        var needsSanitizationUtc = scheduleSnapshot.Schedule.LastUpdatedUtc is null;\n        var schedule = await SanitizeScheduleAsync(scheduleSnapshot.Schedule, scheduleSnapshot.Schedule.CurrentRealm, lease);\n        var sanitizationUtc = needsSanitizationUtc ? schedule.LastUpdatedUtc : null;\n        var sanitizedJson = JsonSerializer.Serialize(schedule, JsonOpts);\n        var realm = await ResolveCurrentRealmAsync(string.Empty, lease);\n        var reportSnapshot = await ReadProcessingReportSnapshotAsync(lease);\n        var context = await ReadCurrentTurnRequestContextAsync(lease);\n        if (context is not { } current || current.SessionId != sessionId || current.RequestId != requestId || current.TurnNumber != turn)\n            throw new InvalidDataException(\"Actual progression request-context selection does not match the original.\");\n        var world = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes, writeLease: lease);\n        var validation = new List<ValidationIssue>();\n        if (!world.HasUnresolvedAbsoluteOverride)\n            ValidateMortalOutcome(control, reportSnapshot, context, world.Minutes, validation);\n        if (validation.Any(row => row.Severity == IssueSeverity.Error))\n            throw new InvalidDataException(\"Actual submitted progression report refused: \" + string.Join(\";\", validation.Select(row => row.Code)));\n        var consumed = ApplyMortalOutcomeFromInputs(schedule, control, reportSnapshot.Report,\n            reportSnapshot.State == ProgressionFileReadState.Valid && ProgressionReportMatchesCurrentTurn(reportSnapshot.Report, context), world);\n        if (HasResolvedRealm(realm)) schedule.CurrentRealm = realm;\n        // Same logical placement as Prepare: after source reads, arithmetic and\n        // realm assignment, before serialization/encoding/fingerprint generation.\n        var preparedAtUtc = DateTime.UtcNow.ToString(\"o\");\n        schedule.LastUpdatedUtc = preparedAtUtc;\n        var scheduleAfterJson = JsonSerializer.Serialize(schedule, JsonOpts);\n        var reportAfter = consumed && reportSnapshot.FilePresent ? null : sources[ReportPath];\n        var scheduleAfter = EncodeUtf8WithPreamble(scheduleAfterJson);\n        var mutationFingerprint = ComputeAcceptedOutcomeMutationFingerprint(controlJson,\n            new(true, sources[SchedulePath]), new(sources[ReportPath] is not null, sources[ReportPath]),\n            new(true, scheduleAfter), new(reportAfter is not null, reportAfter));\n        var body = new JsonObject\n        {\n            [\"version\"] = 1, [\"control\"] = JsonNode.Parse(controlJson), [\"sanitizedSchedule\"] = JsonNode.Parse(sanitizedJson),\n            [\"realmAfterTurn\"] = realm, [\"reportState\"] = reportSnapshot.State.ToString(), [\"reportPresent\"] = reportSnapshot.FilePresent,\n            [\"parsedReport\"] = reportSnapshot.Report is null ? null : JsonSerializer.SerializeToNode(reportSnapshot.Report, JsonOpts),\n            [\"requestContext\"] = new JsonObject { [\"sessionId\"] = current.SessionId, [\"requestId\"] = current.RequestId, [\"turn\"] = current.TurnNumber },\n            [\"worldMinutes\"] = world.Minutes, [\"worldUnresolvedAbsolute\"] = world.HasUnresolvedAbsoluteOverride,\n            [\"sanitizationUtc\"] = sanitizationUtc,\n            [\"preparedAtUtc\"] = preparedAtUtc, [\"scheduleAfterBase64\"] = Convert.ToBase64String(scheduleAfter),\n            [\"reportAfterBase64\"] = reportAfter is null ? null : Convert.ToBase64String(reportAfter), [\"mutationFingerprint\"] = mutationFingerprint\n        };\n        var raw = new JsonObject();\n        foreach (var (path, bytes) in sources) raw[path] = bytes is null ? null : Convert.ToBase64String(bytes);\n        body[\"sourceBytes\"] = raw;\n        var capture = new FrozenMortalOutcomeInputs(FrozenMortalInputsIssuer, this, _fs, lease, sources, body);\n        await capture.ValidateCurrentAsync(_fs, lease);\n        return capture;\n    }\n\n    // Pure calculation only. The old caller still performs its actual async\n    // source reads and captures its final UTC at the original statement below.\n    // This helper grants no mutation, publication or cold phase authority.\n    private static bool ApplyMortalOutcomeFromInputs(ProgressionScheduleState schedule,\n        ProgressionControl control, ProgressionProcessingReport? report, bool reportMatches,\n        WorldTimeResolutionResult worldTimeResolution)\n    {\n        var reportConsumed = false;\n        var resultingWorldTime = worldTimeResolution.Minutes;\n        if (worldTimeResolution.HasUnresolvedAbsoluteOverride)\n        {\n            resultingWorldTime = Math.Max(\n                resultingWorldTime,\n                Math.Max(\n                    report?.NewLastWorldSimulationTimeInMinutes ?? control.LastWorldSimulationTimeInMinutes,\n                    report?.NewLastFactionSimulationTimeInMinutes ?? control.LastFactionSimulationTimeInMinutes));\n        }\n\n        schedule.CurrentWorldTimeInMinutes = resultingWorldTime;\n\n        if (reportMatches)\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "bytes": 17372,
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "projections": [
+        {
+          "first_line": 15,
+          "last_line": 58,
+          "text": "    // Eligible cleanup only. A serialized marker, original path list, ready or\n    // story row alone grants no deletion authority. All owning proofs are freshly\n    // reread on this participating lease before capturing the exact fixed cohort.\n    private async Task<MortalJointCleanupResult> CleanupEligibleMortalJointTerminalAsync(\n        FileSystemManager.CanonicalWriteLease lease, ValidatedPendingTurnSnapshotContext frame)\n    {\n        try\n        {\n            _fs.ResolveBackupPublicationRecovery(lease);\n            var applied = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(_fs, lease,\n                frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, frame.TurnNumber);\n            if (applied.Phase != \"applied\" || _gameLoop.SessionId != frame.SessionId || _gameLoop.TurnNumber != frame.TurnNumber)\n                throw new InvalidDataException(\"joint_cleanup_phase_or_runtime_turn\");\n            var story = await _storyService.ReadMortalJointStoryAsync(lease, applied);\n            if (story.Disposition != StoryService.MortalJointStoryDisposition.AlreadyAppended || story.Proof is not { } suffix)\n                throw new InvalidDataException(\"joint_cleanup_owned_story_missing\");\n            var projection = await _charService.VerifyMortalJointProjectionAsync(lease, applied);\n            if (projection.Disposition != CharacteristicsService.JointDerivedProjectionDisposition.ExistingVerified)\n                throw new InvalidDataException(\"joint_cleanup_projection_refused: \" + projection.Failure);\n            var ready = ParseReadySignalMetadata(await _fs.ReadFileAsync(lease, \"ready/turn_complete.json\"), \"ready/turn_complete.json\");\n            if (ready is null || ready.SessionId != frame.SessionId || ready.RequestId != frame.RequestId || ready.TurnNumber != frame.TurnNumber ||\n                !HasValidTerminalSignalContract(\"turn_complete\", ready) || await _fs.ReadFileBytesAsync(lease, \"ready/turn_error.json\") is not null)\n                throw new InvalidDataException(\"joint_cleanup_terminal_not_owned\");\n\n            // Use the real destructive original/backup validator, including its\n            // hash mode and every declared source image. No path-label shortcut.\n            var authorityText = await _fs.ReadFileAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath);\n            if (!PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(\n                frame.Manifest, authorityText, SnapshotHashJsonOpts,\n                static manifest => manifest.ManifestPayloadHash,\n                static (manifest, hash) => manifest.ManifestPayloadHash = hash,\n                static manifest => manifest.SessionId, static manifest => manifest.RequestId, static manifest => manifest.TurnNumber,\n                static manifest => manifest.Files, static manifest => manifest.SnapshotFileHashes,\n                static manifest => manifest.ClientOwnedValidationHashes, static manifest => manifest.RollbackBaselineFiles,\n                static manifest => manifest.SourceLabel, static manifest => manifest.RollbackBackups,\n                path => _fs.ReadFileBytesAsync(lease, path).GetAwaiter().GetResult(), out var payload, out var failure) || payload is null ||\n                payload.ManifestPayloadHash != frame.Payload.ManifestPayloadHash ||\n                (payload.RollbackBackups.Count == 0 && payload.RollbackBaselineFiles.Count == 0))\n                throw new InvalidDataException(\"joint_cleanup_original_backup_authority: \" + failure);\n\n            var paths = payload.Files.Values.Concat(payload.RollbackBackups.Values)\n                .Concat(payload.Files.Keys.Where(path => ConsoleLocalTurnRollbackArtifacts.IsMarker(path)))\n                .Concat(new[] { PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,\n                    \"input/turn_request.json\", \"ready/turn_complete.json\", MortalWoundOpportunityAdapter.DecisionPath,\n"
+        },
+        {
+          "first_line": 76,
+          "last_line": 113,
+          "text": "                // consumed absent draft or its exact accepted public payload.\n                // Retain the same cleanup member even when its beforeimage is absent.\n                if (bytes is null && path is not (ValidationRepairRequestPath or ValidationRepairReadyPath or MortalWoundOpportunityAdapter.DecisionPath))\n                    throw new InvalidDataException(\"joint_cleanup_owned_member_missing: \" + path);\n                if (bytes is not null && path is \"input/turn_request.json\" or ValidationRepairRequestPath or ValidationRepairReadyPath)\n                    RequireMortalJointCleanupControl(bytes, frame, path);\n                members.Add(new(path, bytes?.ToArray(), null));\n            }\n            var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(applied.MarkerBefore),\n                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"validated joint cleanup inventory\")!;\n            var footprint = marker[\"publishedFootprint\"] as JsonObject ?? throw new InvalidDataException(\"joint_cleanup_footprint_missing\");\n            if (footprint.Any(pair => paths.Contains(pair.Key, StringComparer.Ordinal)))\n                throw new InvalidDataException(\"joint_cleanup_mechanical_member_overlap\");\n            var retainedPaths = footprint.Select(pair => pair.Key).Concat(payload.Files.Keys)\n                .Concat(new[] { MortalQteDecisionPublication.StatePath, suffix.StoryPath,\n                    CharacteristicsService.JointDerivedProjectionPath, \"output/narrative_response.json\", \"output/interface_updates.json\",\n                    \"output/debug_logs.json\", \"game_state/history/chat_log.json\", \"game_state/combat/combat_log.json\" })\n                .Distinct(StringComparer.Ordinal).Except(paths, StringComparer.Ordinal).ToArray();\n            var retained = new Dictionary<string, byte[]?>(StringComparer.Ordinal);\n            foreach (var path in retainedPaths) retained[path] = await _fs.ReadFileBytesAsync(lease, path);\n            var generation = _fs.ReadLocalGenerationSnapshot(lease).Binding;\n\n            // Aggregation only: do not repair mirrors, award stats or perform any\n            // lifecycle action. Full proof brackets this actual read-only API.\n            await _stateManager.RefreshGameStateReadOnlyAsync(lease);\n            if (_stateManager.CurrentState.TurnNumber != frame.TurnNumber)\n                throw new InvalidDataException(\"joint_cleanup_runtime_story_projection\");\n            var response = await ReadMortalJointCompletionResponseAsync(lease);\n            await RequireMortalJointCleanupImagesAsync(lease, members, retained, after: false);\n            await applied.ValidateCurrentAsync(_fs, lease);\n            await suffix.ValidateCurrentAsync(_fs, lease);\n            var outcome = await _fs.PublishLocalFilesAsync(lease, members,\n                validatePreparedNamespace: async () =>\n                {\n                    if (_fs.ReadLocalGenerationSnapshot(lease).Binding != generation || _gameLoop.SessionId != frame.SessionId ||\n                        _gameLoop.TurnNumber != frame.TurnNumber) throw new InvalidDataException(\"joint_cleanup_owner_changed\");\n                    await applied.ValidateCurrentAsync(_fs, lease);\n                    await suffix.ValidateCurrentAsync(_fs, lease);\n"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "revision": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+      "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "projections": [
+        {
+          "first_line": 648,
+          "last_line": 669,
+          "text": "        var fileKeys = manifest.Files.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var hashKeys = manifest.SnapshotFileHashes.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var fileExact = fileKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n        var hashExact = hashKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n\n        if (fileKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)) ||\n            hashKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)))\n        {\n            Add(\n                issues,\n                path,\n                \"pending_turn_snapshot_reader_coverage_case_mismatch\",\n                \"signed snapshot coverage contains a confusable path key\");\n            return false;\n        }\n\n        if (fileExact == 1 && hashExact == 1)\n        {\n"
+        },
+        {
+          "first_line": 961,
+          "last_line": 968,
+          "text": "    private readonly ReadOnlyCollection<string> _declaredOriginalLogicalPaths;\n\n    /// <summary>\n    /// Retains selected validated snapshot bytes and separate declared inventory metadata.\n    /// </summary>\n    /// <param name=\"sessionId\">\n    /// Original signed session identifier.\n    /// </param>\n"
+        }
+      ]
+    }
+  ],
+  "main_tasks": [
+    [
+      " ",
+      "178"
+    ],
+    [
+      " ",
+      "179"
+    ],
+    [
+      " ",
+      "180"
+    ],
+    [
+      " ",
+      "181"
+    ],
+    [
+      " ",
+      "182"
+    ],
+    [
+      " ",
+      "183"
+    ],
+    [
+      " ",
+      "184"
+    ],
+    [
+      " ",
+      "185"
+    ],
+    [
+      " ",
+      "186"
+    ],
+    [
+      " ",
+      "187"
+    ],
+    [
+      " ",
+      "188"
+    ],
+    [
+      " ",
+      "189"
+    ],
+    [
+      " ",
+      "190"
+    ],
+    [
+      " ",
+      "191"
+    ]
+  ],
+  "future_f1_rows": 15,
+  "future_r2_rows": 18,
+  "source_test_runtime_tool_catalog_workflow_governance_diff_bytes": 0,
+  "source_test_runtime_tool_catalog_workflow_governance_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "unrun": [
+    "build",
+    "discovery",
+    "tests",
+    "application",
+    "GM",
+    "console",
+    "browser",
+    "native",
+    "CI"
+  ],
+  "helper_text": "from pathlib import Path\nimport hashlib,json,re,subprocess\nr=Path('/workspace/The-Book-of-Eternity-Reborn'); p=r/'specs/1536-complete-wound-materialization'; base='0734df4c63d7f6ecd0f9efee73d0314fee822850'\ndef git(*args): return subprocess.check_output(['git','-C',str(r),*args])\nf=p/'design/lawful-active-joint-tail-b.md'; s=f.read_text()\npaths={\n'BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs':[(424,438),(2094,2118),(2405,2435)],\n'BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs':[(1907,1954),(2349,2410)],\n'BookOfEternityClient/WebUi/QteWebInteractionService.cs':[(268,283)],\n'BookOfEternityClient/WebUi/BrowserPlayerActionService.cs':[(85,116)],\n'BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs':[(65,81)],\n'BookOfEternityClient/IO/StateDistributor.cs':[(21,24),(145,178)],\n'BookOfEternityClient/Services/CanonicalStateNormalizer.cs':[(406,481)],\n'BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs':[(334,448),(707,737)],\n'BookOfEternityClient/Services/EffectLifecycleScheduler.cs':[(770,787)],\n'BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs':[(55,142)],\n'BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs':[(15,58),(76,113)],\n'BookOfEternityClient/Services/PendingTurnSnapshotReader.cs':[(648,669),(961,968)]}\npins=[]\nfor path,ranges in paths.items():\n    raw=(r/path).read_bytes(); assert raw==git('show',base+':'+path)\n    lines=raw.decode().splitlines(keepends=True)\n    pins.append({'path':path,'revision':base,'git_blob':git('rev-parse',base+':'+path).decode().strip(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'projections':[{'first_line':a,'last_line':b,'text':''.join(lines[a-1:b])} for a,b in ranges]})\nmain_tasks=re.findall(r'^- \\[([ x])\\] T(17[89]|18[0-9]|19[01])(?=\\s)', (p/'tasks.md').read_text(), re.M)\nassert len(main_tasks)==14 and len({n for _,n in main_tasks})==14 and all(c==' ' for c,_ in main_tasks)\nassert len(re.findall(r'^\\| F1\\d{2} \\|',s,re.M))==15\nr2=(p/'design/lawful-active-joint-tail-b-ordinary-outcomes.md').read_text()\nassert len(re.findall(r'^\\| R2\\d{2} \\|',r2,re.M))==18\nchanged=git('diff','--name-only',base).decode().splitlines()\nassert len(changed)==5 and all(x.startswith('specs/1536-complete-wound-materialization/') and x.endswith('.md') for x in changed)\ncontinuity=git('diff','--binary',base,'--','BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','BookOfEternityClient.WebFrontend','scripts','tests','.github','AGENTS.md','docs','.specify')\nassert not continuity\nresult={'kind':'static_source_design_audit_not_runtime','base':base,'requested_checkpoint':'c4dde0629cc17aad75196ec509d2cdaf621945a3','changed_tracked_documents':changed,'source_pins':pins,'main_tasks':main_tasks,'future_f1_rows':15,'future_r2_rows':18,'source_test_runtime_tool_catalog_workflow_governance_diff_bytes':len(continuity),'source_test_runtime_tool_catalog_workflow_governance_diff_sha256':hashlib.sha256(continuity).hexdigest(),'unrun':['build','discovery','tests','application','GM','console','browser','native','CI'],'helper_text':Path(__file__).read_text()}\nout=p/'recovery/f1-design-mandate-static-source-audit-20261017.json'; assert not out.exists();out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\\n')\nprint(json.dumps({'source_pins':len(pins),'projections':sum(len(x['projections']) for x in pins),'main_tasks':len(main_tasks),'future_f1_rows':15,'future_r2_rows':18,'non_document_delta_bytes':len(continuity)}))\n"
+}

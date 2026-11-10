@@ -1,0 +1,19 @@
+# LIVE-prefix fixture SOURCE verdict on the strict pre-preparation boundary
+
+Source `f40f222c840ce2a471625d6ff75968ff9524f01f`. Read-only inspection; no production, tests, category/selection or runtime edits.
+
+**NO executable tests-only LIVE-prefix admission on the current hooks.** This is independent of NI-COLD01, Windows and user permission. The actual existing Stage43/TREAT/correction/Ready and `attachActualOwnerProbe` are genuine prerequisites; the read observer sees the real live engine attempt and its active lease. They do not provide a post-consumer/pre-preparation stop.
+
+Publisher47 awaits Capture;48 immediately calls preparation. Existing read callbacks execute inside Capture167's Ready/source recheck. RetainHotSource and CloseCapture177 follow; Close83–88 only verifies actual owner and changes state synchronously. Generation12–44 uses direct runtime FileStream below the canonical reader and supplies no hidden hook. The existing session checkpoints are before other stages or after common/accepted outcome. Throwing in a source read interrupts the consumer before its decision returns. Waiting for preparation IO starts too late for the requested zero-preparation boundary. Scheduling a race, recursively driving the owner from a callback or constructing a pass is not a substitute.
+
+Current production has eligible N at QteDecision43 and mutating I only at Completion98. It has no returned-NI/WRITE/READY family decision yet. A physical I-image-only assertion at a current Capturing read would discriminate missing early projection, but could pass after adding an unused early-I producer. It therefore does not prove the required real consumer's ordered-source acceptance/refusal. A NotNull/API-name oracle is likewise insufficient.
+
+The existing completion fixture asserts successful common publication/completion and has only post-publication pauses. A new expected-held branch and negative mechanics/source/cleanup oracles are necessary test-support work, but tests-only changes cannot create the missing production call-return seam. No runnable fixture, category, test stub or helper is added now.
+
+## Exact future preparation contract, unimplemented
+
+One future jointly reviewed consumer/seam must expose the genuine completed NI decision on the actual Capturing owner and deterministically stop **after that decision and before preparation/reservation/take/common/effects**. The seam must only observe/control the test lifetime; it must not issue authority or activate a held HOT family. The real engine remains the N→I producer and actual publisher the consumer; WRITE beforeimage/outcome/public owning release and immutable READY transitions must come from their actual owners. Ordinary writer and fault policy stay unchanged.
+
+Then a separate tests-only source packet can author finite semantic cases: (1) genuine one-pass I with two leading tags/fallback sample before the boundary, (2) actual N achievement read followed by trailing-JSON-whitespace change at distinct I entry, causing consumer SourceChanged before any preparation, (3) actual writer preimage mismatch despite matching final projection, (4) unchanged/no-write and owned-transition positives with exact bytes/BOM/mtime. Assert real consumer outcome AND preparation/take/common/effect/progression counters/bodies, actual frame/G/Ready identity, no late/cold reach, joined callbacks and owned-root cleanup. No accepted bool, copied capability, Ready rewrite, arbitrary hook ordinal or new execution flag counts as proof.
+
+This is a source refusal and exact next dependency, not a ban on all future test preparation. A minimal production observation seam/consumer may be designed with its exact lifecycle and reviewed separately; current task forbids implementing it. Full late/cold qualification is separate. Existing completion controls remain unchanged and no old PASS is replayed.

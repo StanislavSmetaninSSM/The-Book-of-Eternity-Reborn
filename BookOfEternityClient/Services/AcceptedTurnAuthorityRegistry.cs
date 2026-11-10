@@ -20,6 +20,8 @@ internal sealed record MortalWoundTreatmentPublicationReservation(
 
 internal static partial class AcceptedTurnAuthorityRegistry
 {
+    private static readonly object DiagnosisValidatedCommonCapability = new();
+    internal static bool IsDiagnosisValidatedCommonCapability(object capability) => ReferenceEquals(capability, DiagnosisValidatedCommonCapability);
     private static readonly ConditionalWeakTable<
         CanonicalRootIdentity,
         RootAuthoritySlot> RootSlots = new();
@@ -700,6 +702,14 @@ internal static partial class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease writeLease) =>
         GetState(fileSystem, writeLease).InvalidateAll();
 
+    internal static void InvalidateSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease) =>
+        GetState(fileSystem, writeLease).InvalidateSpiritualSelfTreatment();
+
+    internal static bool HasOpenSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease, bool natural = false) =>
+        GetState(fileSystem, writeLease).HasOpenSpiritualSelfTreatment(natural);
+
     /// <summary>
     /// Forwards validated item input and its optional scoped allocator to the root-owned cache.
     /// </summary>
@@ -1069,6 +1079,140 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             return false;
         }
+    }
+
+    /// <summary>
+    /// Checks fresh existing registry state before reusing detached joint QTE calculation DATA without rebinding or restoring claims.
+    /// </summary>
+    /// <param name="files">
+    /// The filesystem whose existing root slot must remain current.
+    /// </param>
+    /// <param name="lease">
+    /// The active canonical lease expected by the accepted-state authority.
+    /// </param>
+    /// <param name="accepted">
+    /// The exact retained accepted-state authority used by the original calculation.
+    /// </param>
+    /// <param name="request">
+    /// The original recovered held request whose restoration would have to remain idempotent.
+    /// </param>
+    /// <param name="finalization">
+    /// The finalization whose request and resource companion fields must still agree.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only when binding and recovery would be idempotent for the exact current owner and held request;
+    /// otherwise, <see langword="false"/> so the original preparation performs its own ordered checks.
+    /// </returns>
+    internal static bool CanReuseMortalJointQteCalculation(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority accepted,
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+    {
+        if (files is null || lease is null || accepted is null || request is null || finalization is null)
+            return false;
+        try
+        {
+            // Lease and physical generation readers can invoke observers. Complete
+            // them before entering registry monitors, then inspect only existing state.
+            if (!accepted.IsLeaseBoundTo(files, lease))
+                return false;
+            var generation = files.ReadExistingSessionGeneration(lease);
+            if (generation is null)
+                return false;
+            var identity = files.CanonicalRootAuthorityIdentity;
+            var revision = identity.SessionGenerationRevision;
+            return RootSlots.TryGetValue(identity, out var slot) &&
+                   slot.CanReuseMortalJointQteCalculation(files, lease, generation, revision,
+                       accepted, request, finalization);
+        }
+        catch (Exception)
+        {
+            // Eligibility is optional and grants no authority. Preserve original
+            // preparation and its refusal ordering whenever this inspection is unavailable.
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Carries fresh registry facts for the non-authorizing idempotent-state policy without issuing any capability.
+    /// </summary>
+    /// <param name="CurrentAcceptedState">
+    /// The exact accepted-state identity currently registered, or <see langword="null"/> when absent.
+    /// </param>
+    /// <param name="ExpectedAcceptedState">
+    /// The accepted-state identity retained by the original calculation.
+    /// </param>
+    /// <param name="CurrentRootAndLease">
+    /// Whether the existing root slot, physical generation, revision and exact lease all remain current.
+    /// </param>
+    /// <param name="RecoveryCompleted">
+    /// Whether the registry already completed its persisted request recovery phase.
+    /// </param>
+    /// <param name="Requests">
+    /// The registry-owned recovered request array.
+    /// </param>
+    /// <param name="HeldRequests">
+    /// The registry-owned recovered held request array.
+    /// </param>
+    /// <param name="FinalizedRequests">
+    /// The registry-owned recovered finalized request array, which must be empty for this contour.
+    /// </param>
+    /// <param name="ExpectedRequest">
+    /// The exact original held request retained by the calculation.
+    /// </param>
+    /// <param name="FinalizationRequestFingerprint">
+    /// The candidate finalization's request fingerprint.
+    /// </param>
+    /// <param name="FinalizationResourceFingerprint">
+    /// The candidate finalization's resource authority fingerprint.
+    /// </param>
+    /// <param name="FinalizationReservationId">
+    /// The candidate finalization's reservation identity, including <see langword="null"/> for no reservation.
+    /// </param>
+    /// <param name="HasRestartBlocker">
+    /// Whether unresolved compensation requires a session restart.
+    /// </param>
+    /// <param name="HasValidatedHandoff">
+    /// Whether a validated treatment publication handoff is retained.
+    /// </param>
+    /// <param name="HasOpenReceipt">
+    /// Whether an unsettled treatment publication receipt is retained.
+    /// </param>
+    internal readonly record struct MortalJointQteRegistryEligibilityState(
+        object? CurrentAcceptedState, object ExpectedAcceptedState, bool CurrentRootAndLease,
+        bool RecoveryCompleted, MortalWoundTreatmentAttemptRequest[] Requests,
+        MortalWoundTreatmentAttemptRequest[] HeldRequests, MortalWoundTreatmentAttemptRequest[] FinalizedRequests,
+        MortalWoundTreatmentAttemptRequest ExpectedRequest, string FinalizationRequestFingerprint,
+        string FinalizationResourceFingerprint, string? FinalizationReservationId,
+        bool HasRestartBlocker, bool HasValidatedHandoff, bool HasOpenReceipt);
+
+    /// <summary>
+    /// Checks exact retained identities and finalization companions without issuing authority or retaining the result.
+    /// </summary>
+    /// <param name="state">
+    /// Fresh exact registry identities and recovered-set facts; these facts grant no publication authority.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for completed recovery of the same single held request under an unchanged current owner,
+    /// with matching finalization companions and no publication boundary; otherwise, <see langword="false"/>.
+    /// </returns>
+    internal static bool IsMortalJointQteCalculationStateIdempotent(MortalJointQteRegistryEligibilityState state)
+    {
+        if (!state.CurrentRootAndLease || !state.RecoveryCompleted ||
+            state.ExpectedAcceptedState is null ||
+            !ReferenceEquals(state.CurrentAcceptedState, state.ExpectedAcceptedState) ||
+            state.HasRestartBlocker || state.HasValidatedHandoff || state.HasOpenReceipt ||
+            state.ExpectedRequest is null || state.Requests is not { Length: 1 } ||
+            state.HeldRequests is not { Length: 1 } || state.FinalizedRequests is not { Length: 0 } ||
+            !ReferenceEquals(state.Requests[0], state.ExpectedRequest) ||
+            !ReferenceEquals(state.HeldRequests[0], state.ExpectedRequest))
+            return false;
+        var resource = state.ExpectedRequest.ResourceAuthority;
+        return string.Equals(state.FinalizationRequestFingerprint,
+                   state.ExpectedRequest.RequestFingerprint, StringComparison.Ordinal) &&
+               string.Equals(state.FinalizationResourceFingerprint,
+                   resource.AuthorityFingerprint, StringComparison.Ordinal) &&
+               string.Equals(state.FinalizationReservationId,
+                   resource.ReservationId, StringComparison.Ordinal);
     }
 
     internal static bool HasLiveMortalWoundProcedureReservationAgreement(
@@ -1614,6 +1758,47 @@ internal static partial class AcceptedTurnAuthorityRegistry
     }
 
     /// <summary>
+    /// Inspects one existing confirmed resource claim without restoring publication authority.
+    /// </summary>
+    internal static MortalWoundTreatmentPublicationProbeResult InspectConfirmedMortalWoundTreatmentResourceClaim(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourceFinalization finalization)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(finalization);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        var generation = fileSystem.ReadExistingSessionGeneration(writeLease);
+        if (generation is null)
+            return ConfirmedClaimInspectionFailure(
+                "mortal_wound_treatment_confirmed_claim_generation_absent",
+                "physical session generation is absent", null, null);
+
+        var identity = fileSystem.CanonicalRootAuthorityIdentity;
+        var revision = identity.SessionGenerationRevision;
+        if (!RootSlots.TryGetValue(identity, out var slot))
+            return ConfirmedClaimInspectionFailure(
+                "mortal_wound_treatment_confirmed_claim_owner_absent",
+                "no existing resource-claim owner", generation, revision);
+        return slot.InspectConfirmedTreatmentResourceClaim(generation, revision, request, finalization);
+    }
+
+    private static MortalWoundTreatmentPublicationProbeResult ConfirmedClaimInspectionFailure(
+        string code, string actual, string? generation, long? revision) => new(
+        false,
+        new[]
+        {
+            new ValidationIssue("treatmentAttempt.resources", IssueSeverity.Error,
+                "The confirmed treatment resource claim cannot be inspected for this owner.",
+                code, actor: "client", section: "wound_materialization",
+                expected: "one existing generation-bound confirmed resource claim", actual: actual)
+        },
+        null, null, null, null, null, null, null, generation, revision, null);
+
+    /// <summary>
     /// Checks existing physical generation and in-memory claims without creating an authority slot.
     /// </summary>
     /// <param name="fileSystem">
@@ -1647,12 +1832,57 @@ internal static partial class AcceptedTurnAuthorityRegistry
             identity.SessionGenerationRevision, expectedFactory, checkPlansAndItems);
     }
 
-    private sealed class RootAuthoritySlot
+    private sealed partial class RootAuthoritySlot
     {
         private readonly object _gate = new();
         private string? _generation;
         private long _revision = -1;
         private AcceptedTurnAuthorityState? _state;
+
+        /// <summary>
+        /// Inspects the existing matching root slot without creating or replacing its accepted-turn state.
+        /// </summary>
+        /// <param name="files">
+        /// The exact filesystem owning the current canonical lease.
+        /// </param>
+        /// <param name="lease">
+        /// The lease already checked against the accepted-state authority outside registry monitors.
+        /// </param>
+        /// <param name="generation">
+        /// The current physical generation read before entering the registry monitor.
+        /// </param>
+        /// <param name="revision">
+        /// The root generation revision observed after physical reads completed.
+        /// </param>
+        /// <param name="accepted">
+        /// The exact accepted-state authority retained by the calculation.
+        /// </param>
+        /// <param name="request">
+        /// The exact original recovered held request.
+        /// </param>
+        /// <param name="finalization">
+        /// The candidate finalization whose request and resource companion metadata must agree.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if this unchanged slot retains an idempotent recovery state and the lease remains active;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanReuseMortalJointQteCalculation(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string generation, long revision,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (_state is null || _revision != revision ||
+                    !string.Equals(_generation, generation, StringComparison.Ordinal) ||
+                    !ReferenceEquals(lease.Owner, files) || !lease.IsActive ||
+                    files.CanonicalRootAuthorityIdentity.SessionGenerationRevision != revision)
+                    return false;
+                return _state.CanReuseMortalJointQteCalculation(generation, revision, accepted, request, finalization) &&
+                       lease.IsActive && files.CanonicalRootAuthorityIdentity.SessionGenerationRevision == revision;
+            }
+        }
 
         /// <summary>
         /// Inspects the existing bound state without replacing a stale generation or slot.
@@ -1680,6 +1910,36 @@ internal static partial class AcceptedTurnAuthorityRegistry
                        string.Equals(_generation, physicalGeneration, StringComparison.Ordinal) &&
                        _state.CanBeginSpiritualOriginalIntake(physicalGeneration, revision,
                            expectedFactory, checkPlansAndItems);
+        }
+
+        internal MortalWoundTreatmentPublicationProbeResult InspectConfirmedTreatmentResourceClaim(
+            string physicalGeneration, long revision,
+            MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (_state is null)
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_absent",
+                        "no existing resource-claim state", physicalGeneration, revision);
+                if (_revision != revision || !string.Equals(_generation, physicalGeneration, StringComparison.Ordinal))
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_stale",
+                        "existing resource-claim owner belongs to another generation", physicalGeneration, revision);
+                return _state.InspectConfirmedTreatmentResourceClaim(physicalGeneration, revision, request, finalization);
+            }
+        }
+
+        internal JointUnattemptedCloseResult CloseOwnedJointAttemptUnattempted(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, string generation, long revision,
+            GameEngine.MortalJointPublicationAttempt attempt)
+        {
+            lock (_gate)
+            {
+                if (_state is null || _revision != revision || _generation != generation)
+                    return UnattemptedUnavailable("UnavailableOwnerLost");
+                return _state.CloseOwnedJointAttemptUnattempted(files, lease, attempt);
+            }
         }
 
         internal AcceptedTurnAuthorityState GetForGeneration(
@@ -1913,6 +2173,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
                             "detached candidate authority");
                 }
 
+                if (!RetainedDiagnosisCurrentImagesAgree(fileSystem, writeLease, candidate.Authority))
+                    return new(false, new[] { WoundIssue("mortal_diagnosis_retained_hold_changed",
+                        "the exact client-produced held pending and immutable signed command bytes", "changed retained input") }, null);
+
                 if ((_validatedTreatmentPublicationHandoff is not null ||
                      _openTreatmentPublicationReceipt is not null) &&
                     TreatmentPublicationAcceptedStateSemanticallyAgrees(
@@ -1946,17 +2210,18 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     new WoundHistoryParseResult(
                         candidate.Authority.History,
                         Array.Empty<ValidationIssue>()));
-                if (!recovery.IsValid)
+                var diagnosisRecoveryAgrees = recovery.IsValid && RebindRetainedDiagnosisAfterRecovery(candidate.Authority);
+                if (!diagnosisRecoveryAgrees)
                 {
                     _procedureDice.InvalidateAll();
                     _criticalReactions.InvalidateAll();
                     _treatmentResources.InvalidateAll();
                     ResetProcedureClaimRecovery();
                     _mortalWoundTreatmentAcceptedState = null;
-                    return new MortalWoundTreatmentAcceptedStateAuthorityResult(
-                        false,
-                        recovery.Issues,
-                        null);
+                    return recovery.IsValid
+                        ? MortalWoundTreatmentAcceptedStateAuthority.RegistryCandidateBindingFailure(
+                            "recovered diagnosis differs from its retained exact request, span, Fate or confirmed resource agreement")
+                        : new MortalWoundTreatmentAcceptedStateAuthorityResult(false, recovery.Issues, null);
                 }
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
             }
@@ -2243,7 +2508,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
                                 request.Coordinates.RouteId,
                                 StringComparison.Ordinal))
                             .ToArray();
-                        mismatch ??= routes.Length == 1
+                        mismatch ??= request.Mode == "diagnosis"
+                            ? MortalWoundTreatmentFreshAuthorityValidator.FindDiagnosisMismatch(request, history, acceptedState.CurrentWound, acceptedState)
+                            : routes.Length == 1
                             ? MortalWoundTreatmentFreshAuthorityValidator.FindMismatch(
                                 request,
                                 history,
@@ -2376,7 +2643,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         "stale, foreign, or mismatched authority");
                 }
 
-                if (string.Equals(mode, "procedure", StringComparison.Ordinal) &&
+                if (mode is "procedure" or "diagnosis" &&
                     (modeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
                      !procedure.HasLiveReservationAgreement(
                          ProcedureReservationLiveCheckCapability,
@@ -2675,6 +2942,46 @@ internal static partial class AcceptedTurnAuthorityRegistry
                    string.Equals(rollActorId, "player_current", StringComparison.Ordinal);
         }
 
+        /// <summary>
+        /// Evaluates fresh idempotent binding and recovery facts without restoring claims or probing publication permission.
+        /// </summary>
+        /// <param name="generation">
+        /// The physical generation already checked against the containing root slot.
+        /// </param>
+        /// <param name="revision">
+        /// The current generation revision already checked against the containing root slot.
+        /// </param>
+        /// <param name="accepted">
+        /// The exact accepted-state authority retained by the original calculation.
+        /// </param>
+        /// <param name="request">
+        /// The exact original recovered held request retained by the calculation.
+        /// </param>
+        /// <param name="finalization">
+        /// The candidate finalization with matching request, resource authority and reservation metadata.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only while the current registry facts satisfy the shared pure idempotence policy;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanReuseMortalJointQteCalculation(string generation, long revision,
+            MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                return IsMortalJointQteCalculationStateIdempotent(new(
+                    _mortalWoundTreatmentAcceptedState, accepted,
+                    _rootGenerationBound && _sessionGenerationRevision == revision &&
+                    string.Equals(_sessionGeneration, generation, StringComparison.Ordinal),
+                    _procedureClaimRecoveryCompleted, _recoveredTreatmentRequests,
+                    _recoveredHeldTreatmentRequests, _recoveredFinalizedTreatmentRequests, request,
+                    finalization.RequestFingerprint, finalization.ResourceAuthorityFingerprint,
+                    finalization.ReservationId, _treatmentPublicationRestartBlockerFingerprint is not null,
+                    _validatedTreatmentPublicationHandoff is not null, _openTreatmentPublicationReceipt is not null));
+            }
+        }
+
         internal bool IsCurrentMortalWoundTreatmentAcceptedState(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
@@ -2810,6 +3117,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                    input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                    return JointCommonFailure("the generic common entry cannot admit the private joint family");
+
                 var woundMismatch = GetCommonWoundStageMismatch(input);
                 if (woundMismatch is not null)
                 {
@@ -2826,7 +3137,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 }
                 try
                 {
-                    var result = _commonPlan.GetOrBuildValidated(input);
+                    var diagnosis = input.PlanningContext?.WoundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+                    var result = _commonPlan.GetOrBuildValidated(input, diagnosis?.HasCanonicalDiagnosisRequirements == true
+                        ? plan => diagnosis.BindValidatedDiagnosisPlan(plan, DiagnosisValidatedCommonCapability)
+                        : null);
                     ClearValidatedTreatmentPublicationCore();
                     return result;
                 }
@@ -2846,6 +3160,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
             ArgumentNullException.ThrowIfNull(bundle);
             lock (_gate)
             {
+                if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                    input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                    return JointCommonFailure("the generic common entry cannot admit the private joint family");
+
                 var supplied = input.PlanningContext?.WoundStageBundle;
                 if (input.WoundInput is null || supplied is null ||
                     !string.Equals(
@@ -2887,7 +3205,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
                 try
                 {
-                    var result = _commonPlan.GetOrBuildValidated(input);
+                    var diagnosis = bundle.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+                    var result = _commonPlan.GetOrBuildValidated(input, diagnosis?.HasCanonicalDiagnosisRequirements == true
+                        ? plan => diagnosis.BindValidatedDiagnosisPlan(plan, DiagnosisValidatedCommonCapability)
+                        : null);
                     ClearValidatedTreatmentPublicationCore();
                     return result;
                 }
@@ -3179,9 +3500,19 @@ internal static partial class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Compares supplied wound stages with the registry's current prepared, effect and final stages.
+        /// </summary>
+        /// <param name="input">
+        /// The complete common input whose wound stages are checked.
+        /// </param>
+        /// <returns>
+        /// A mismatch description when the stages disagree; otherwise, <see langword="null"/>.
+        /// </returns>
         private string? GetCommonWoundStageMismatch(
             AcceptedMechanicsInput input)
         {
+            using var operationTiming = FileSystemManager.MeasureCurrentOperation("JointCandidate.Registry.StageAgreement");
             ArgumentNullException.ThrowIfNull(input);
             try
             {
@@ -3275,6 +3606,18 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 _commonPlan.InvalidateValidated();
                 ClearValidatedTreatmentPublicationCore();
             }
+        }
+
+        internal void InvalidateSpiritualSelfTreatment()
+        {
+            lock (_gate)
+                _commonPlan.InvalidateSpiritualSelfTreatment();
+        }
+
+        internal bool HasOpenSpiritualSelfTreatment(bool natural)
+        {
+            lock (_gate)
+                return _commonPlan.HasOpenSpiritualCycle(natural);
         }
 
         internal bool HasCommonValidated()
@@ -3462,7 +3805,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
             EffectAcceptedTurnInput input,
             object? treatmentContinuationAuthority = null,
             object? reservationAuthority = null,
-            EffectIdentityFactory? identityFactory = null)
+            EffectIdentityFactory? identityFactory = null,
+            object? jointRepairContinuationAuthority = null)
         {
             lock (_gate)
             {
@@ -3476,7 +3820,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 if (!WoundStageReservationAgrees(
                         prepared,
                         treatmentContinuationAuthority,
-                        reservationAuthority))
+                        reservationAuthority,
+                        jointRepairContinuationAuthority))
                 {
                     return FailedWoundEffect(
                         "mortal_wound_treatment_publication_reservation_invalid",
@@ -3484,8 +3829,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         "stale or cancelled treatment publication reservation");
                 }
                 if (treatmentContinuationAuthority is not null &&
-                    !WoundAcceptedTurnPlanner.TreatmentContinuationEffectInputAgrees(
+                    !WoundAcceptedTurnPlanner.MortalProcedureEffectInputAgrees(
                         treatmentContinuationAuthority,
+                        prepared,
                         input))
                 {
                     return FailedWoundEffect(
@@ -3564,14 +3910,16 @@ internal static partial class AcceptedTurnAuthorityRegistry
             WoundPreparedAcceptedTurnPlan prepared,
             WoundEffectBatchPlanningResult effectResult,
             object? treatmentContinuationAuthority = null,
-            object? reservationAuthority = null)
+            object? reservationAuthority = null,
+            object? jointRepairContinuationAuthority = null)
         {
             lock (_gate)
             {
                 if (!WoundStageReservationAgrees(
                         prepared,
                         treatmentContinuationAuthority,
-                        reservationAuthority))
+                        reservationAuthority,
+                        jointRepairContinuationAuthority))
                 {
                     return FailedWoundFinal(
                         "mortal_wound_treatment_publication_reservation_invalid",
@@ -3951,6 +4299,25 @@ internal static partial class AcceptedTurnAuthorityRegistry
                            TreatmentResourceRegistryCapability,
                            receipt.Request,
                            receipt.Finalization).IsValid;
+            }
+        }
+
+        internal MortalWoundTreatmentPublicationProbeResult InspectConfirmedTreatmentResourceClaim(
+            string physicalGeneration, long revision,
+            MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (!_rootGenerationBound || _sessionGenerationRevision != revision ||
+                    !string.Equals(_sessionGeneration, physicalGeneration, StringComparison.Ordinal))
+                    return ConfirmedClaimInspectionFailure(
+                        "mortal_wound_treatment_confirmed_claim_owner_stale",
+                        "existing resource-claim state belongs to another generation", physicalGeneration, revision);
+                var hold = _treatmentResources.ProbeConfirmed(TreatmentResourceRegistryCapability, request, finalization);
+                return new MortalWoundTreatmentPublicationProbeResult(
+                    hold.IsValid, hold.Issues, hold.State, hold.OperationKey, hold.AttemptId,
+                    hold.RequestFingerprint, hold.ResourceAuthorityFingerprint, hold.FinalizationFingerprint,
+                    hold.AgreementFingerprint, _sessionGeneration, _sessionGenerationRevision, null);
             }
         }
 
@@ -4666,6 +5033,10 @@ internal static partial class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (_mortalWoundTreatmentPublicationReservation is JointRepairPublicationReservationAuthority ||
+                    (_commonPlan.TryPeekValidated(out _, out var jointPeek) && jointPeek.Plan?.JointRepairCommonAuthority is not null))
+                { result = null!; return false; }
+
                 var taken = _commonPlan.TryTakeValidated(
                     liveBinding,
                     out result);
@@ -4779,7 +5150,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 }
                 if (_mortalItems.HasValidated)
                     return ItemAuthorityChangedIssue();
-                if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                if (WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                         treatmentContinuationAuthority,
                         out var continuation) &&
                     continuation.ItemCommandEnvelope.IsEmpty &&
@@ -4865,7 +5236,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
                 if (!OwnsMortalWoundTreatmentPublicationReservation(
                         treatmentContinuationAuthority,
                         reservationAuthority) ||
-                    !WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                    !WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                         treatmentContinuationAuthority,
                         out var continuation) ||
                     !WoundAcceptedTurnPlanner.TryReadTreatmentSkillProjection(
@@ -5453,6 +5824,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
             MortalWoundTreatmentPublicationTakeReceipt receipt)
         {
             CloseOpenTreatmentPublicationReceipt(receipt);
+            if (_retainedMortalDiagnosis?.Request.RequestFingerprint == receipt.Request.RequestFingerprint)
+                _retainedMortalDiagnosis = null; // Terminal settlement never authorizes an outer retry.
             _mortalItems.InvalidateValidated();
             if (_validatedTreatmentPublicationHandoff is { } handoff &&
                 ReferenceEquals(handoff.PublicationAuthority, receipt.PublicationAuthority) &&
@@ -5672,6 +6045,9 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
         private void ClearMortalWoundTreatmentPublicationReservationCore()
         {
+            _openJointRepairPublicationReceipt = null;
+            _validatedJointRepairCommonAuthority = null;
+            _validatedJointRepairCommonPlan = null;
             _mortalWoundTreatmentPublicationReservation = null;
             _mortalWoundTreatmentReservedFingerprint = null;
         }
@@ -5685,7 +6061,7 @@ internal static partial class AcceptedTurnAuthorityRegistry
             ReferenceEquals(
                 _mortalWoundTreatmentPublicationReservation,
                 reservationAuthority) &&
-            WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
+            WoundAcceptedTurnPlanner.MortalProcedureReservationAgrees(
                 treatmentContinuationAuthority,
                 reservationAuthority,
                 _mortalWoundTreatmentReservedFingerprint);
@@ -5693,9 +6069,15 @@ internal static partial class AcceptedTurnAuthorityRegistry
         private bool WoundStageReservationAgrees(
             WoundPreparedAcceptedTurnPlan prepared,
             object? treatmentContinuationAuthority,
-            object? reservationAuthority)
+            object? reservationAuthority,
+            object? jointRepairContinuationAuthority = null)
         {
-            var preparedAuthority = prepared.TreatmentContinuationAuthority;
+            if (prepared.JointRepairContinuationAuthority is not null || jointRepairContinuationAuthority is not null)
+                return prepared.JointRepairContinuationAuthority is not null && treatmentContinuationAuthority is null &&
+                    prepared.RecoveryContinuationAuthority is null && reservationAuthority is not null &&
+                    ReferenceEquals(prepared.JointRepairContinuationAuthority, jointRepairContinuationAuthority) &&
+                    OwnsJointRepairPublicationReservation(jointRepairContinuationAuthority!, reservationAuthority);
+            var preparedAuthority = (object?)prepared.MortalDiagnosisAuthority ?? prepared.TreatmentContinuationAuthority;
             if (prepared.RecoveryContinuationAuthority is not null)
             {
                 return preparedAuthority is null && treatmentContinuationAuthority is null &&

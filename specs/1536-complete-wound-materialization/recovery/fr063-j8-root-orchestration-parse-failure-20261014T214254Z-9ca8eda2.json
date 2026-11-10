@@ -1,0 +1,7 @@
+{
+  "operation": "functions.exec JS orchestration of read-only finalreport/schema/status read",
+  "exactToolResult": "Script failed; Wall time0.0seconds; Script error: SyntaxError: Unexpected end of input",
+  "chunkOrSessionId": "none returned; nested exec_command not reached",
+  "effect": "no shell/source/Git/project operation started",
+  "classification": "ROOT orchestration parsing mistake; no security/transport/runtime failure"
+}

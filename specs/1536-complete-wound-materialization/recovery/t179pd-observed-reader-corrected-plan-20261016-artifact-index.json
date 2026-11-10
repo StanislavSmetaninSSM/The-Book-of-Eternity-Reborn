@@ -1,0 +1,122 @@
+{
+  "source_sha": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-reader-corrected-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories/dotnet-test.log",
+      "raw_bytes": 3377247,
+      "raw_sha256": "d7e2935b5a0e8fda514f4425c1800c496061b09e0bc09641a3d0a13bead2ae9e",
+      "stored_sha256": "6888950f1ec7367b2ee66f4eaf2c4438503023d70a04618197656d97eecbdf27"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-plan-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories/native-exit.json",
+      "raw_bytes": 165,
+      "raw_sha256": "b1f2897132aba7eb10d5c2d63522064a7ea4beb4de1f3fefec1adaf1df9bd9b1",
+      "stored_sha256": "b1f2897132aba7eb10d5c2d63522064a7ea4beb4de1f3fefec1adaf1df9bd9b1"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories/plan.json",
+      "raw_bytes": 3644,
+      "raw_sha256": "72fb5ba63cca2c30e68b94ea5e1cdd02aa8d55352799c090f3af641f727a7bc0",
+      "stored_sha256": "72fb5ba63cca2c30e68b94ea5e1cdd02aa8d55352799c090f3af641f727a7bc0"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-plan-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories/runner-stdout.log",
+      "raw_bytes": 2366,
+      "raw_sha256": "9971b04bfd05e439643086323e33c955f472ff4e6d6bd8fa15b76988fdd102b4",
+      "stored_sha256": "e193ed75d63ae19f07b7f8b80f89fe2a9da9fa5063b73f72662c293f58767796"
+    },
+    {
+      "path": "t179pd-observed-reader-corrected-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-132904-191-98211-a49b451cf0b94018aa673766a3c84c47-categories/summary.json",
+      "raw_bytes": 2716,
+      "raw_sha256": "ee2b75076336220a5ed58297705bfca1b6f0156f031481463e96b924e286b8b3",
+      "stored_sha256": "ee2b75076336220a5ed58297705bfca1b6f0156f031481463e96b924e286b8b3"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-reader",
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-observed-original-reader",
+        "reason": "One genuine original/current/G/default-reader control followed by missing observed API causal RED; no production success logic. Strict per-test finally cleanup and raw control diagnostics.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "Mandatory G5 first actual after any test/catalog/selection correction; exact existing v2 full union/story/progression/inert repeat/strict cleanup. Freeze and separate EVIDENCE before reader causal RED.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1166046,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0520525,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1360344,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0040644,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 13,
+    "WallTime": "00:00:07.5726896",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 3,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-late-completion-integration-001",
+        "fr063-observed-original-reader-unit-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

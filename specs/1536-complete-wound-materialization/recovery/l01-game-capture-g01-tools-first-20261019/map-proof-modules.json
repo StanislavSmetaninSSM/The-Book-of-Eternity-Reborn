@@ -1,0 +1,11 @@
+{
+  "SourceRoot": "/workspace/The-Book-of-Eternity-Reborn",
+  "MapModules": [
+    {
+      "Dll": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.dll",
+      "DllSha256": "b90367af2af2b1a7d8d4373dfd0d6b7ab5e95ab699067bb69f281eb607fba56b",
+      "Pdb": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.pdb",
+      "PdbSha256": "8566942e77892eec1b7104cae78228b47f8e037eaec3701aa844dd3f6f5860ad"
+    }
+  ]
+}

@@ -1,0 +1,515 @@
+{
+  "schemaVersion": 1,
+  "task": "#1536 bounded US5-RO1 final correction EVIDENCE qualification",
+  "reviewedAt": "2026-10-15 21:25:23 UTC",
+  "disposition": "ACCEPTED_US5_RO1_FOUNDATION_ONLY",
+  "blockingFindings": [],
+  "configuration": {
+    "requested": "Retained explicitly configured Astra XHigh independent reviewer",
+    "actualBackendTelemetry": "unavailable"
+  },
+  "provenance": {
+    "reviewedSource": "7c1db7294a1678a5f630cc67b0d3080cdd6e5dae",
+    "compiledGit": "bc9b88dd7ef46b3413a7edbf75786f3c6a38824f",
+    "runtimeTestedGit": "eae09c8156285ba1674940308ab88c8219cf94c9",
+    "evidenceCarrier": "681e49dd7c9208884208fa392a8b7a95fcc46002",
+    "currentPins": "Clean HEAD681 at verification; all2551 source and8 output pins matched before source-read-complete notice. Parent then released to separately authorized RO2 work; any subsequent WIP excluded.",
+    "remote": "Parent reports actualremote681 and clean GitHub recovery of40changedpaths verified; reviewer did not repeat remote/recovery."
+  },
+  "reviewerScope": {
+    "nativeBuilds": 0,
+    "nativeTests": 0,
+    "discoveryOrRunnerCalls": 0,
+    "sourceEdits": 0,
+    "subagents": 0,
+    "rootReaderExecuted": false,
+    "readOnlyChecks": "Independently reparse stored raw evidence and immutable/current bytes; unique external MD/JSON writes only."
+  },
+  "verification": {
+    "packets": [
+      {
+        "packet": "us5-ro1-refusal-binding-fresh-both-bc9b88dd7-20261015T211456Z",
+        "sha256": "daa968301029d5d0653e8a4aec6bb33e4680c3c5f4bac78f3aae28b6c0a83246",
+        "testedGit": "bc9b88dd7ef46b3413a7edbf75786f3c6a38824f",
+        "chainCount": 8,
+        "summary": {
+          "ExitCode": 0,
+          "PlanOnly": true,
+          "DiscoveryOnly": false,
+          "WallTime": "00:02:30.0437426",
+          "TimedOut": false,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 68,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "wounds-player-projection-unit-001",
+              "wounds-player-read-integration-002"
+            ],
+            "Complete": false
+          },
+          "CatalogAudit": null,
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0415479,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0384992,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.0962926,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 117.4025723,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 27.8604037,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0036585,
+              "Completed": true
+            }
+          ],
+          "CategoryResults": []
+        }
+      },
+      {
+        "packet": "us5-ro1-correct-catalog-eae09c815-20261015T211943Z",
+        "sha256": "e827fe7d72ae9ebce8b2987a4f26e056a7ae524c7cbc5795ea5fdb81edd9a5fc",
+        "testedGit": "eae09c8156285ba1674940308ab88c8219cf94c9",
+        "chainCount": 6,
+        "summary": {
+          "ExitCode": 0,
+          "PlanOnly": false,
+          "DiscoveryOnly": true,
+          "WallTime": "00:00:05.8310806",
+          "TimedOut": false,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11641,
+            "Categories": 756,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.041233,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0411729,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1003206,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0051517,
+              "Completed": true
+            }
+          ],
+          "CategoryResults": []
+        }
+      },
+      {
+        "packet": "us5-ro1-refusal-binding-exact-plan-eae09c815-20261015T211957Z",
+        "sha256": "1cc40aacbe6aa297350ba3b369a0aaef894eeb3c23d14ef99cc6ccc44eaef073",
+        "testedGit": "eae09c8156285ba1674940308ab88c8219cf94c9",
+        "chainCount": 6,
+        "summary": {
+          "ExitCode": 0,
+          "PlanOnly": true,
+          "DiscoveryOnly": false,
+          "WallTime": "00:00:04.7718235",
+          "TimedOut": false,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 68,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "wounds-player-projection-unit-001",
+              "wounds-player-read-integration-002"
+            ],
+            "Complete": false
+          },
+          "CatalogAudit": null,
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0369851,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0337688,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1062193,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.003404,
+              "Completed": true
+            }
+          ],
+          "CategoryResults": []
+        }
+      },
+      {
+        "packet": "us5-ro1-refusal-binding-actual-eae09c815-20261015T212022Z",
+        "sha256": "3c27dd8fa19d1fd146e1465a480d3c0a07052c88eac955e3712a3ee7a9d0cf7a",
+        "testedGit": "eae09c8156285ba1674940308ab88c8219cf94c9",
+        "chainCount": 8,
+        "summary": {
+          "ExitCode": 0,
+          "PlanOnly": false,
+          "DiscoveryOnly": false,
+          "WallTime": "00:00:12.7189051",
+          "TimedOut": false,
+          "Tests": {
+            "Total": 68,
+            "Executed": 68,
+            "Passed": 68,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 2,
+            "PlannedCases": 68,
+            "CompletedCases": 68,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "CatalogAudit": null,
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0361681,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0502638,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.0995018,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0037928,
+              "Completed": true
+            }
+          ],
+          "CategoryResults": [
+            {
+              "Category": "wounds-player-projection",
+              "Seconds": 2.6372728,
+              "BudgetMinutes": 3,
+              "Completed": true
+            },
+            {
+              "Category": "wounds-player-read",
+              "Seconds": 5.2305973,
+              "BudgetMinutes": 3,
+              "Completed": true
+            }
+          ]
+        }
+      }
+    ],
+    "compressedRawOriginalChains": 28,
+    "strictDuplicateKeyJson": true,
+    "sourcePins": 2551,
+    "gitBatchCalls": 2,
+    "immutableGitSHAs": [
+      "bc9b88dd7ef46b3413a7edbf75786f3c6a38824f",
+      "eae09c8156285ba1674940308ab88c8219cf94c9"
+    ],
+    "sourceInventoriesIdenticalAcrossAllPackets": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "e3a1cd3e4b1cbe3359614de4d58328370b0c9cc3c38734b7f8265914c43e6a5b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "301d18993e1d8c824fff5d5e185421fc8d533a15562d1c097b14d87a57100213"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "e3a1cd3e4b1cbe3359614de4d58328370b0c9cc3c38734b7f8265914c43e6a5b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "8898beb84042c5b671da114cc1869cf77059b5498681cff18fa1cf6de2f5d237"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      }
+    ],
+    "outputsIdenticalFromFreshBuildThroughActualAndCurrent": true,
+    "metadataOnlyChangedPaths": 40,
+    "builds": [
+      {
+        "project": "integration",
+        "warnings": 131,
+        "errors": 0,
+        "rawElapsed": "00:01:57.28"
+      },
+      {
+        "project": "unit",
+        "warnings": 35,
+        "errors": 0,
+        "rawElapsed": "00:00:27.74"
+      }
+    ],
+    "officialPlan": {
+      "methods": 34,
+      "cases": 68,
+      "descriptors": 2,
+      "projection": {
+        "methods": 26,
+        "cases": 35
+      },
+      "reader": {
+        "methods": 8,
+        "cases": 33
+      },
+      "categoryBudgetMinutes": 3,
+      "exactFiltersAndMethodCounts": true,
+      "identicalDescriptorsInFreshPlanExactPlanAndActual": true,
+      "preparationOnlyTestsExecuted": 0
+    },
+    "catalog": {
+      "Valid": true,
+      "Methods": 11641,
+      "Categories": 756,
+      "Unmapped": [],
+      "StaleSelectors": [],
+      "testsExecuted": 0
+    },
+    "trx": {
+      "fullActualXmlParsed": true,
+      "resultDefinitionExecutionEntryBijection": true,
+      "fullFrozenAttributesMatched": true,
+      "exactTestMethodClassAndCodeBase": true,
+      "uniqueTestIds": 68,
+      "uniqueExecutionIds": 68,
+      "methodCountsMatchPlan": true,
+      "countersMatch": true,
+      "skips": 0,
+      "timeouts": 0,
+      "duplicates": 0,
+      "errorInfoRows": 0,
+      "executed": 68,
+      "passed": 68,
+      "failed": 0,
+      "projectionPassed": 35,
+      "readerPassed": 33,
+      "completeDescriptors": 2,
+      "completeSelection": true,
+      "nativeExit": 0,
+      "wallSeconds": 12.7189051
+    },
+    "strictFaultCases": {
+      "count": 17,
+      "names": [
+        "duplicate",
+        "duplicate_identity",
+        "foreign_owner",
+        "invalid_effect_utf8",
+        "invalid_utf8",
+        "legacy_shape",
+        "missing_ally",
+        "missing_enemy",
+        "missing_history",
+        "missing_identity",
+        "missing_npc",
+        "missing_player",
+        "missing_profiles",
+        "missing_resources",
+        "missing_soul",
+        "stale_history",
+        "stale_identity"
+      ],
+      "allPassed": true,
+      "literalInlineDataSetMatchesActualTrx": true,
+      "assertionsReached": "Generic unavailable; empty Active and History; exact full-tree snapshot equality after read. No early-return/skipped branch in immutable tested source."
+    },
+    "bindingRealmPairs": {
+      "count": 3,
+      "realms": [
+        "mortal_world",
+        "chaos_sea",
+        "shining_abode"
+      ],
+      "actualRows": [
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_EffectRequiresExactOwnedDefinitionBinding(realm: \"shining_abode\", expectedDefinition: \"definition_spiritual_roll\")",
+          "method": "Build_EffectRequiresExactOwnedDefinitionBinding",
+          "testId": "0d33c8de-aa40-fedb-3e2d-74bc786cef78",
+          "executionId": "86dafb87-647a-4e55-9066-66295ebcd6e6",
+          "outcome": "Passed",
+          "cleanupRoot": null
+        },
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_EffectRequiresExactOwnedDefinitionBinding(realm: \"chaos_sea\", expectedDefinition: \"definition_spiritual_roll\")",
+          "method": "Build_EffectRequiresExactOwnedDefinitionBinding",
+          "testId": "01a41b4f-f14e-6b32-cbe5-a1f84bcdeeca",
+          "executionId": "2705f0b2-1817-4b5c-ba8c-76e7943d3495",
+          "outcome": "Passed",
+          "cleanupRoot": null
+        },
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_EffectRequiresExactOwnedDefinitionBinding(realm: \"mortal_world\", expectedDefinition: \"definition_wound_test_bleeding\")",
+          "method": "Build_EffectRequiresExactOwnedDefinitionBinding",
+          "testId": "e384ac47-abbe-4223-d3ef-28c93ae0b605",
+          "executionId": "c8cfec73-a5f8-4570-a4cc-4104d7b384ec",
+          "outcome": "Passed",
+          "cleanupRoot": null
+        }
+      ],
+      "assertionsReached": "Each executed theory completes both accepted exact-key positive and structurally accepted foreign-key negative; label visible only for exact root key and foreign technical key absent."
+    },
+    "cleanup": {
+      "readerReceipts": 33,
+      "perReaderCaseExactlyOne": true,
+      "fieldSet": [
+        "CleanupOwnedRoot",
+        "OwnedFixtureRemoved",
+        "LeaseInactive",
+        "CleanupFailure"
+      ],
+      "removed": true,
+      "leaseInactive": true,
+      "explicitNullFailure": true,
+      "distinctAbsoluteRoots": 33,
+      "physicalAbsenceIncludingDanglingSymlinks": true,
+      "fullRawTrxFrozenReceiptBijection": true,
+      "pureCases": 35,
+      "pureReceipts": 0,
+      "scope": "Actual isolated fixture roots and teardown, not aggregate summary-only proof."
+    },
+    "rootReadback": {
+      "sha256": "e348933359f8a2e5e05d39bf99041364d0188b4e42f063c27c6652c36e5581ff",
+      "sourceGzipSha256": "e51990105510501b0cd2183d7c9c59d52280295be1575fb443247143f19ec4de",
+      "sourceRawSha256": "84a413c7a997322fbc5c60b8ee0a21774cd1c9694ce3814d46b35ab576a3e575",
+      "sourceBytes": 5027,
+      "agreementWithIndependentChecks": true,
+      "role": "Supporting primary readback, not sole acceptance authority. Preserved Python source inspected read-only, not executed."
+    }
+  },
+  "preparationEvents": {
+    "catalogParameterRefusal": {
+      "sha256": "ed2920de70ba0caef8ee032213948125ce64f941e01f9d3463901893be49a8db",
+      "record": {
+        "testedGit": "bc9b88dd7ef46b3413a7edbf75786f3c6a38824f",
+        "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -ValidateCatalog -NoBuild",
+        "nativeExit": 1,
+        "outerExit": 1,
+        "phase": "PowerShell parameter binding before runner; no result directory/test process/discovery/cleanup owned",
+        "executed": 0,
+        "classification": "Invocation error, not catalog or runtime failure. Selection and Audit are distinct ParameterSetNames in scripts/test-csharp.ps1:3-8. Correct call is -ValidateCatalog -NoBuild without SelectionFile. No source/binary changes or rebuild needed.",
+        "stdout": {
+          "origin": "/workspace/boe-fr063-tools-20261015/us5-ro1-refusal-binding-catalog-bc9b88dd7-20261015T211856Z.stdout.log",
+          "tracked": "us5-ro1-catalog-parameter-refusal-20261015T211856Z.stdout.log.gz",
+          "rawSha256": "cc322a43f3eae4fbc49cddd3ab7a2c93ddc4ee5599ed48248064a8919019f572",
+          "compressedSha256": "98c016ea4ced56065e6e1458905af236083253c0fb932ae680c1fd14066f63a2"
+        }
+      },
+      "stdout": "test-csharp.ps1: Parameter set cannot be resolved using the specified named parameters. One or more parameters issued cannot be used together or an insufficient number of parameters were provided.\n\nNATIVE_EXIT=1\n",
+      "classification": "Preserved invocation failure, native1/outer1 before runner body. ValidateCatalog and SelectionFile belong to distinct Audit/Selection parameter sets; exact binding error matches scripts/test-csharp.ps1:3–8. No discovery/test/build result is inferred from it.",
+      "additionalVerifiedRawChain": 1
+    },
+    "correctedCatalog": "Independent standalone NoBuild Audit succeeded without changing source/binaries; qualified eight freshbc9 outputs were reused.",
+    "wrongFilenameRead": {
+      "reportedPath": "catalog-validation.json",
+      "actualArtifact": "catalog-audit.json",
+      "classification": "Read-path typo documented in checkpoint before actual execution; no runtime result or acceptance inferred from that failed read. Correct catalog-audit.json raw bytes and official summary independently inspected and agree.",
+      "exactToolReceiptIndependentlyAvailable": false
+    },
+    "priorFailures": "Earlier RED/build/runtime failures and wrapper discrepancy remain immutable; no relabeling."
+  },
+  "acceptance": {
+    "foundation": true,
+    "acceptedScope": "Unwired current-self/current-realm typed projection and coherent read service, including strict-data generic refusal and exact direct-root definition-key association, within retained source/fixture/selection gates.",
+    "noFurtherRO1RetryNeeded": true,
+    "nextAuthorizedSlice": "RO2 actual existing console/browser public status consumers with tracked guidance/examples/source guards; no separate new runtime permission implied or required by this report.",
+    "excluded": [
+      "RO2/public consumer implementation acceptance",
+      "FullUS5 guided aliases/target/provider/quote/staging workflow",
+      "Treatment-only or unproved History expansion",
+      "Full source-definition component/fingerprint or reaction-descendant validation",
+      "FullFR063/T070/#1536 closure or lawfulACTIVE architectural decision",
+      "Authority/storage/write/delete/rollback membership changes"
+    ]
+  },
+  "finalStop": {
+    "status": "FINALSTOP",
+    "reviewerWrites": "Only this external MD/JSON pair",
+    "pendingReviewerWrites": 0
+  }
+}

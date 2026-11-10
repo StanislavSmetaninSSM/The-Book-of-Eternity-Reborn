@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-15T09:44:09.862676+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configurationRequested": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "inheritedExplicitRequest": true
+  },
+  "configurationActual": "Unavailable backend/effort telemetry",
+  "readSnapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+  "productionContractBasis": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+  "observedHeadAtArtifactWrite": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+  "observedStatus": "clean",
+  "scope": "bounded future lawful ACTIVE stats/level-up/new-QTE design assessment",
+  "existingConcreteAcceptedActiveTailDesign": false,
+  "verdict": "ACTIVE_IMPLEMENTATION_REQUIRES_EXPLICIT_BOUNDED_DECISION_AND_WRITTEN_INDEPENDENT_DESIGN",
+  "existingInactiveContourAccepted": true,
+  "conditionalRuntimeRelease093108": "UNCHANGED_NOT_REVIEWED_OR_REVOKED",
+  "findings": [
+    {
+      "id": "ACTIVE_DESIGN_MISSING",
+      "classification": "confirmed future implementation/design blocker, not an observed runtime failure",
+      "trigger": "Admit actionable statsIncreased, an unprocessed level/initialization, or a new QTE offer in a joint turn",
+      "evidence": [
+        "contracts/mortal-wound-treatment.md:1103",
+        "recovery/fr063-joint-story-lifecycle-readonly-disposition-20261014.md:51",
+        "plan.md:1941"
+      ],
+      "consequence": "Existing accepted contour explicitly refuses these actions; no already-accepted concrete durable tail schema/cohort/owner proof authorizes implementation."
+    },
+    {
+      "id": "GUARD_IS_NOT_WRITE_AUTHORITY",
+      "classification": "confirmed source constraint",
+      "evidence": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs:146",
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:17",
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:226",
+        "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs:299"
+      ],
+      "consequence": "Tail paths are immutable proof inputs, not granted mutation members. Mutating them after common invalidates current full proof; guard removal or a rehashed marker would not supply once-owned action authority."
+    },
+    {
+      "id": "STATS_LEVEL_NONATOMIC",
+      "classification": "source-derived crash/replay risk, not executed",
+      "evidence": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2447",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2493",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2562",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:187",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:210",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:233"
+      ],
+      "consequence": "Base-stat change precedes command clearing; point increment precedes processed-level marker; interactive distribution changes base/point balance separately. Existing processed-level field is useful durable state but is not an atomic bound joint receipt."
+    },
+    {
+      "id": "QTE_JOINT_HANDOFF_NOT_AUTHORIZED",
+      "classification": "confirmed API/ownership incompatibility",
+      "evidence": [
+        "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs:69",
+        "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs:93",
+        "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs:157",
+        "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs:175",
+        "BookOfEternityClient/Services/QteSceneService.cs:746",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs:98"
+      ],
+      "consequence": "Existing QTE atomic acceptance is reusable machinery, but its proof accepts only real console/browser story provenance; joint row cannot be relabeled. Any retained prior continuation occupies the same root. Joint cleanup currently removes original/Ready/backups before ordinary QTE handoff would need them."
+    }
+  ],
+  "optionsNotSelected": [
+    {
+      "id": "A",
+      "name": "Keep accepted inactive contour; explicitly defer ACTIVE extension",
+      "newAuthority": false,
+      "newWriteDeleteRollbackMembers": false,
+      "newSchema": false,
+      "benefit": "No new design grant; current finite runtime proceeds unchanged.",
+      "cost": "Does not implement lawful ACTIVE support; full FR063/T070 remains open."
+    },
+    {
+      "id": "B",
+      "name": "Design fixed additional joint tail phase(s) using existing marker and existing paths",
+      "recommendedForDesignOnly": true,
+      "minimumAutomaticWriteScope": [
+        "game_state/misc/characteristics.json",
+        "game_state/player/status_changes.json",
+        "game_state/player/stat_points.json",
+        "existing same joint marker"
+      ],
+      "existingProjection": "game_state/player/computed_characteristics.json retains separately verified deterministic owner, or inclusion must be explicitly selected",
+      "requiredSchemaAuthority": "Closed before-common frozen typed stats/level basis and phase-aware current before/after proof; atomic action/ack, explicit existing-marker schema revision, no parsed-hash grant",
+      "qteSeparateClosedHandoffRequired": [
+        "genuine joint story proof variant at actual QTE boundary",
+        "exact current offer/source/original/G and previous-continuation retirement decision",
+        "existing qte_runtime and qte_deferred_effect_continuation writes, offer/Ready consumption with bounded joint ownership proof",
+        "original/request/backups retained until chosen QTE terminal ownership boundary",
+        "accept/decline/restart and interactive distribution semantics explicitly decided"
+      ],
+      "cost": "No new storage path is necessary in principle, but write/member/schema/authority expansion is real. Current immutable footprint and cleanup ordering must be redesigned within a fixed cohort; incomplete before/after classification can deadlock or duplicate work.",
+      "status": "UNSELECTED; needs concrete written independent DESIGN before source"
+    },
+    {
+      "id": "C",
+      "name": "Make the existing stats/level/QTE owners durably idempotent and delegate via typed joint handoff",
+      "requiredChanges": "Owner-specific original/G/operation-bound receipts or closed state in existing owned files, atomic award+ack and stats+consumption, named joint story acceptance and cleanup ownership transfer",
+      "benefit": "Existing owners remain the writers; potentially reusable for ordinary console/browser recovery.",
+      "cost": "Broader cross-consumer schema and replay/compatibility surface; moving authority into another owner still expands authority. Exact receipt fields/cohorts are not currently accepted; do not introduce a generic journal/storage service.",
+      "status": "UNSELECTED; broader independent design and regression scope required"
+    }
+  ],
+  "minimumCoordinatorDecision": "Choose fixed joint-tail phases versus durable delegation (or defer); explicitly allow exact member/schema/authority changes for automatic stats/award and separately bounded genuine QTE handoff; settle initialization, interactive distribution, prior continuation retirement and original retention before implementation.",
+  "newDesignSelected": false,
+  "implementationAuthorized": false,
+  "guardRelaxationAuthorized": false,
+  "runtimeClaims": "NONE; source-derived failure windows only",
+  "requiredFutureProof": [
+    "atomic stats action/consumption and crash/replay",
+    "atomic award/processed-level ack, initialization and source priority",
+    "exact before/after/unknown state classification and changed inputs",
+    "interactive allocation/prompt resume boundary",
+    "genuine joint story-to-QTE proof; accept/decline/restart",
+    "prior terminal continuation retirement and no overwrite of active/foreign authority",
+    "original/G and retained request/backups through chosen handoff",
+    "projection/story/turn once and cleanup uncertainty without mechanical rollback"
+  ],
+  "filePins": [
+    {
+      "path": "AGENTS.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 224714,
+      "sha256": "1a7431a19eac3577f4814e1eb7bfc1a56b2b65e14dffb97cc2b5cc2b6b6d18f9",
+      "gitBlob": "764e728a967c0c9102deff408c3a16bd566db6d0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 123449,
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+      "gitBlob": "26ec745d69c89724b5477fe4169041470f6a5d00"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 1667583,
+      "sha256": "66fb60bb82354e5e2500077e2c3749b01a3ddc794cc12cfad562455f1b51e1a8",
+      "gitBlob": "1f6327507e7de1b295912ac8c299f7757a4081da"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 1168199,
+      "sha256": "4724a4ea92d30fc0536789dfdd64f0cb43324de37bbf130a24e805b8df8ff413",
+      "gitBlob": "56f3912567afa393d6df71235c916dc77a6c4390"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 52388,
+      "sha256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3",
+      "gitBlob": "da5efd6b005daba3a47fc9823b4e8fc3995a7cf0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 2455,
+      "sha256": "a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45",
+      "gitBlob": "a2d2d04f4e0f3f9019b03610fe925b81c039db63"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 8903,
+      "sha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+      "gitBlob": "adad80ad447467b4b66712456f021ac65cc9579e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-independent-review-20261014.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 9900,
+      "sha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf",
+      "gitBlob": "54f8901aeb8414bc8e722fcd438d5a83a7ea1a71"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-story-lifecycle-readonly-disposition-20261014.md",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 16440,
+      "sha256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38",
+      "gitBlob": "26cce7910a0f90c8cdc2998a597af0e07219414e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 294837,
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "gitBlob": "7c9072ba03313e08f9157569ca78d83fb3db1745"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "gitBlob": "9aacb56c60f7bdc9882852dfe96b4d005c106990"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7",
+      "gitBlob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 10353,
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "gitBlob": "7f054ea23df4b5156635d9155dd176cdc86a0341"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 17372,
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "gitBlob": "04aacf85244601da516466216ff565dfefb868ae"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 38914,
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "gitBlob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 11487,
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+      "gitBlob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "gitBlob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 19794,
+      "sha256": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+      "gitBlob": "f6addc82da35dea8d08650fd67d9fbde75e7220c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+      "gitBlob": "e1f92d693ab9e066d53c2ef17b2806ded3551a31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 264036,
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "gitBlob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "snapshot": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "bytes": 49097,
+      "sha256": "f2b9b47d454f3d8fc7811404de62e641063dc00f22df782fa735268d4b0cfd85",
+      "gitBlob": "d0adeaf89a575dec982f9887d9b1fe12f0965416"
+    }
+  ],
+  "repositoryWrites": 0,
+  "reviewerBuildDiscoveryRuntimeProviderExecutions": 0,
+  "fullFR063T070": "OPEN",
+  "reportPath": "/workspace/boe-fr063-tools-20261015/fr063-lawful-active-tail-architecture-assessment-72be660ca-20261015T094409Z-completed-v2-design-review.md",
+  "reportSha256": "fac7250293b5208a7d8f547b8c8412fb1d76d36fc5f97eea73c50cf6c8b48a61",
+  "stop": "FINALSTOP; no pending writes"
+}

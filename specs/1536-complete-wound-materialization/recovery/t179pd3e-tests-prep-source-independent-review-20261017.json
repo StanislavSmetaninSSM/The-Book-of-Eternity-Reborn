@@ -1,0 +1,156 @@
+{
+  "kind": "INDEPENDENT_SOURCE_FIXTURE_SELECTION_PREPARATION_REVIEW",
+  "date": "2026-10-17",
+  "carrier": "2dcfa0dde3e2111792c39fba4b102ca51995ad62",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "baselineProduct": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "verdict": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY",
+  "sourceVerdict": "ACCEPT_ISOLATED_BOUNDARY1_SOURCE; NI-3E-S02 OPEN for semantic regression method",
+  "fixtureVerdict": "ACCEPT_BOUNDARY_SCENE_LOCAL_FIXTURE_ONLY_FOR_FIRST_OBSERVATION; no runtime qualification",
+  "selectionVerdict": "Canonical exact boundary category/FQN/one case admissible; all other44 current planned cases held",
+  "preparationVerdict": "ACCEPT_FRESH_7307_BOTH_CATALOG_PLAN_ZERO_EXECUTION_BINDING",
+  "productAcceptance": false,
+  "runtimeAuthorization": false,
+  "sourceReviewFindings": [
+    {
+      "id": "NI-3E-C01",
+      "status": "CLOSED_BY_ONE_LINE_CORRECTION_AND_SUCCESSFUL_FRESH_PREP",
+      "scope": "Initial d377 CS0121 at regression203",
+      "history": "native1 88.86742144200252s, integration build/discovery success then unit build failure; zero test execution, not causal RED. Original eight-chain failure history retained.",
+      "correction": "Only paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); indices/ordering/repeated-read assertions unchanged."
+    },
+    {
+      "id": "NI-3E-S02",
+      "severity": "MATERIAL_FOR_FULL45_NOT_BOUNDARY1",
+      "status": "OPEN_SOURCE_ORACLE_DEFECT_NO_RUNTIME_FAILURE",
+      "method": "AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "affectedRows": [
+        "Mixed",
+        "Guardian-centric"
+      ],
+      "wholeMethodHeldRows": 3,
+      "cause": "NpcWorldAndMeta.cs:1176–1182 sets DirectCanonicalGuardianDiffRequiredButSnapshotMissing for present empty guardians array and unavailable original. A:7911–7918 requires guardian scope in Guardian-centric and Mixed, with A:7701/7715/7743 ordered diagnostics.",
+      "exactExpectedCodes": {
+        "World-progression": [
+          "empty_relevant_actors_for_mode"
+        ],
+        "Mixed": [
+          "empty_relevant_actors_for_mode",
+          "guardian_scope_invalid_validated_snapshot_context",
+          "guardian_scope_missing_validated_guardians_snapshot"
+        ],
+        "Guardian-centric": [
+          "empty_relevant_actors_for_mode",
+          "guardian_scope_invalid_validated_snapshot_context",
+          "guardian_scope_missing_validated_guardians_snapshot",
+          "guardian_scope_missing_active_guardian"
+        ]
+      },
+      "requiredCorrection": "Only two expected vectors; retain actual seeded state, public Full call, first diagnostic detail checks, complete equality, method/row count and all product policy."
+    }
+  ],
+  "boundaryIsolation": {
+    "fact": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+    "owner": "fr063-reasoning-prefix-boundary",
+    "reason": "Different non-parameterized test class; own OrdinaryReasoningFixture. SeedValid const Scene-local does not invoke NonSceneModes, its per-instance fixture, mode replacements or expected vectors. No shared/static mutation. Scene-local does not require guardian scope from the missing-original flag. The fixed recorder excludes regression class.",
+    "prerequisites": [
+      "Actual public ValidateAcceptedTurnReasoningAsync() default Full returns no issues",
+      "Every seeded file retains exact presence/bytes",
+      "REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE emitted before reflection"
+    ],
+    "expectedFirstStructuralOracle": "Assert.NotNull(document) on EvaluateAcceptedReasoningDocumentPrefix, currently absent; helper/tail/delegation assertions are later and cannot be credited if NotNull fails.",
+    "qualification": "Native1 alone cannot qualify. Independently inspect exact reached assertion, prerequisites, counts, process termination, root receipt/physical absence, source/binary continuity and namespace after the separately authorized FIRST run."
+  },
+  "sourceAssessment": {
+    "immutableProduction": true,
+    "frozenSegments": "Three unique actual A spans (986/1072/7588 bytes), exact static inverse to accepted A8bde; no future partial exists yet.",
+    "composition": "Existing3d Fact adds exactly one helper invocation plus comments. Baseline branch allows only exact accepted A8bde; any altered A requires exact canonical new partial and one occurrence of all3 adapters, then whole A8bde hash. Original four3d inverses, partial comparison and original6a9 hash unchanged; oldWorld fence/inventory untouched.",
+    "ordinarySemantics": "Public Full/default selection kept; timestamp remains owner, not shared value kernel. Freshness current read and parse read distinct; actual hooks are outside respective catches. Real PrepareAsync originals and unresigned corruption preserve current policy-null rather than new Error. Current scope-error continuation, full late reads and domain malformed-vs-IO distinction reviewed; no runtime PASS inferred.",
+    "selectionSufficiency": "45 planned is bounded intended ordinary slice after S02 correction and affected production SOURCE/PREP. It covers41 new owned fixture rows,2 legacy namespace-only controls and2 source-only rows; not all45-ready now. Scope/row counts are from native Plan and declared InlineData, not executed results."
+  },
+  "preparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 52.073547478001274,
+      "categories": 793,
+      "methodsFiles": 11770,
+      "unmapped": 0,
+      "stale": 0
+    },
+    "plan": {
+      "nativeExit": 0,
+      "seconds": 5.783233119997021,
+      "categories": 5,
+      "descriptors": 5,
+      "methods": 18,
+      "plannedCases": 45,
+      "executed": 0,
+      "planSha256": "e3b94b8a8d280208372f25c65eb5ecde62271b32e5d43e517bae23f314a632df"
+    },
+    "freshCopies": 9,
+    "managedFiles": 335,
+    "frozenChains": 18,
+    "allRawStoredLiveCommittedExact": true,
+    "zeroTRX": true,
+    "discoveryUnderfillLimit": "PlanOnly Complete=false/underfilled descriptors mean planned-but-not-executed, not runtime failure.",
+    "helper": {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-ordinary-boundary-first-run.py",
+      "sha256": "9982a8579aca8c03912713d2c9e8f2d8ef1db61547d7ab9b349ef57e61e497ba",
+      "bytes": 5763,
+      "readOnlySourceInspected": true,
+      "execution": "UNRUN",
+      "fixedEligibleDescriptor": {
+        "Name": "fr063-reasoning-prefix-boundary-unit-002",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-reasoning-prefix-boundary",
+        "Categories": [
+          "fr063-reasoning-prefix-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+            "Cases": 1
+          }
+        ]
+      },
+      "prefixes": [
+        "boe-pd3e-reasoning-*",
+        "boe-guardian-system-regressions-*",
+        "boe-guardian-system-template-*"
+      ]
+    }
+  },
+  "eligibleAfterSeparateRootGate": {
+    "command": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "fr063-reasoning-prefix-boundary",
+      "-NoBuild"
+    ],
+    "cases": 1,
+    "mustFollow": "Persist this conditional decision, exact metadata carrier/remote/recovery readback and explicit named Root activation. Report itself authorizes no execution.",
+    "stop": "Preserve FIRST outcome; stop for unexpected setup/import/assertion/cleanup/source/pin/selection mismatch. No automatic next category or retry."
+  },
+  "remainingGates": [
+    "All remaining44 actual cases held, including whole3row NonScene method; no blanket SOURCE acceptance of45.",
+    "Only after independently qualified structural RED may Root admit minimal product plus separately identified exact expected-vector test correction. Fresh product BOTH/Plan and affected full SOURCE/FIXTURE/SELECTION/PREP required before broader runtime.",
+    "Exact protectedLate2 is a genuine new product dependency via MortalJointRepairCompletion.cs:99 public Full; separate fresh evidence after product, not unchanged tests-only replay.",
+    "Retain prior ordinary52/protected2, NI-S01, structuralRED2, oldWorld33 stale fence and historical failures without rerun/doublecount.",
+    "No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 or other branches acceptance."
+  ],
+  "support": {
+    "path": "/tmp/t179pd3e-tests-prep-source-independent-check-20261017.json",
+    "bytes": 38789,
+    "sha256": "becf848cd8b2d693c92e8d4597f17a88f8f754a023b9f86c4886ca186679e44d"
+  }
+}

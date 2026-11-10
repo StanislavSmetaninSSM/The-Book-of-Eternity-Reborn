@@ -1,0 +1,3155 @@
+{
+  "review": "T179-Pd / T192b INITIAL test-first SOURCE/FIXTURE/SELECTION and fresh preparation gate",
+  "timestampUtc": "2026-10-16T11:29:55.489779+00:00",
+  "reviewerConfiguration": {
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent supplied actual spawn receipt: task_name=t179pc_independent_review, fork_turns=none, model=gpt-6-astra, reasoning_effort=xhigh; tool returned /root/t179pc_independent_review.",
+    "backendResolutionTelemetry": "unavailable; not inferred"
+  },
+  "authorization": "Coordinator-confirmed user staged F1-R2/D9-D11 approval at 07:01:11 UTC, Sentinel_f3e48da025808191bdb46fab2e0b960f, retained in current spec/plan/tasks; supersedes historical design-only wording for independent stages. T197 stays conditional DESIGN.",
+  "acceptedPcBase": "fb6c1b22c9c1dee0b6fcd8dee5c017176921e27c",
+  "compiledAndReviewedSource": "cf95c60916542ab422fad5ac836dca74add72f89",
+  "evidenceCarrier": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+  "observedHead": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+  "observedWorkingTreeClean": true,
+  "verdict": "READY_FOR_FIRST_UNCHANGED_LATE2_ONLY",
+  "blockingFindings": [],
+  "scope": "Initial three-case unit specification and optional test-fixture input configuration, exact finite catalog/selection, canonical plan and source consultation. Separate T197 design changes in the full diff are inventoried but excluded from this qualification. Production, integration fixture, shared test support and runner trees are unchanged.",
+  "sourceAssessment": {
+    "causalFailure": "All three rows first require actual EffectAcceptedTurnPlanCache.GetOrBuild success, real ReduceAcceptedPlan CompletedOrdinaryReduction with valid resources/complete transcript/complete effect boundary/one registered projection, successful final common assembly and identical completed effect plan. Only then does line 59 Assert.NotNull(property) target the absent internal EffectAcceptedTurnPlan.LifecycleExecutionLedger. No invented completed ledger, replacement planner, accepted flag, private issuer construction or production scaffold exists.",
+    "advance": "Existing mortal player/quest effect has lifetime turns, remainingTurns=3 and advancePhase=owner_turn_end. The configured ordinary source event is owner_turn_end. Initial bound pass skips the non-bound mode; real final lifetime schedules 3 to 2 with outcome advance. The existing deterministic resource trigger remains the genuine boundary consumer.",
+    "noChange": "New local input configuration changes the source phase/trigger/event and causal refs to owner_damaged/on_owner_damaged. This is a valid lifecycle authority in the existing planner. The turn-end periodic trigger index yields no matching periodic activation; final lifetime still evaluates the matched turns effect and AdvanceTurns returns no_change for phase mismatch. This is a real scheduler no_change, not a fake empty plan or an until_time/null claim.",
+    "noEligible": "Only player activeEffects and the matching preturn identity entries are emptied. Actual source authority, mortal player target authority, accepted turn and raw lifecycle event are retained. The referenced effect is absent from the roster; both passes have zero matching occurrences and the actual empty resource/effect boundary can complete. Runtime success remains to be demonstrated before treating missing-property failure as causal RED.",
+    "sharedFixture": "The only shared fixture change is an optional trailing configureEffectInput=null delegate invoked before the existing cache. Existing callers omit it; null conditional/coalescing retains exactly the prior object. New rows own fresh input JSON, factories, typed context and observer per invocation. No shared mutable fixture, disk root or cleanup protocol is introduced.",
+    "futureAssertions": "After the intended RED point, the test requires the two actual pass kinds, exact source ordinal/ref coverage, genuine final evaluated advance/no_change or empty no_eligible, scheduler event presence, detached export/copy preservation, no extra identities from observation and one registered projection/cached common result.",
+    "sourceContinuity": "Production and integration/test-support/runner diffs from accepted Pc are byte-empty; no success implementation, caller change, new current source authority or activation is included. Compiled cf95 to evidence 6ee changes only plan/evidence files.",
+    "gmNoUpdate": "This initial change is unactivated client-owned test evidence only. No GM-authored schema, command, capability or Mortal/afterlife behavior changes; no prompt/example update needed at this gate. Later reachable contracts require synchronized guidance.",
+    "coherentStage": "Ledger work is the initial step of the tracked genuine submitted-current admission, S/C/raw B/pre-seal ownership, same sealed candidate, atomic common/M3 and fresh authenticated P0 hold. A ledger helper alone cannot complete T179-Pd/T192b."
+  },
+  "limitationsAndFutureObligations": [
+    "The new unit fixture is an actual ordinary planner fixture, not a genuine engine-issued active frame, source or publication authority. Static tracing supports the preconditions; the three actual rows are still UNRUN.",
+    "Payload and identity checks compare one completed plan before/after ledger observation. They establish inspection idempotence, not cross-version golden fingerprint grammar or unchanged allocation counts against pre-extraction behavior. The later wired source/evidence gate must cover that separately.",
+    "Initial three rows do not exhaustively qualify nonplayer subjects, all-filtered rows, source-bound satisfaction, expiry, until_time/null, duplicate source refs/ordinals, intervening pass roster changes, independent copy-export mutation, owner-bound construction or C retention. These remain explicit wired-stage obligations.",
+    "No runtime RED, GREEN or stage acceptance is claimed by builds/discovery. PlanOnly incomplete/underfilled completion counters are expected with zero actual tests.",
+    "T197 is separately reviewed conditional DESIGN and remains unaccepted for implementation/activation. Full T179/T192/F1, S/B/M3/P0, D4/guided/visual/Windows/D8 and new QTE/player activation remain unqualified."
+  ],
+  "diffs": {
+    "full": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "fb6c1b22c9c1dee0b6fcd8dee5c017176921e27c",
+        "cf95c60916542ab422fad5ac836dca74add72f89"
+      ],
+      "path": "/tmp/t179pd-initial-full.diff",
+      "bytes": 1064283,
+      "sha256": "a8e215ac8a7a80dbb7830a5ce3a365e6868fa33f2addfe44380c13c845e2f7ed"
+    },
+    "source-fixture-selection": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "fb6c1b22c9c1dee0b6fcd8dee5c017176921e27c",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-initial-source-fixture-selection.diff",
+      "bytes": 16386,
+      "sha256": "d35832e44dda70f9668a66412d5cb5b60b5f46bf2b9d6e0f88837cf506979266"
+    },
+    "production-integration": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "fb6c1b22c9c1dee0b6fcd8dee5c017176921e27c",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-initial-production-integration.diff",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "compiled-to-carrier": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-initial-compiled-to-carrier.diff",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "changedScopedPaths": [
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "allChangedPaths": [
+    "M\tBookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+    "A\tBookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+    "M\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+    "M\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016-diff-artifact-index.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.diff.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.md",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md",
+    "M\ttests/categories.json",
+    "M\ttests/selection.json"
+  ],
+  "sourceAndContextPins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeSha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+      "bytes": 82535,
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeSha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "fe8ba88bd9b18b858e3ce6bc1fe597f33c0d7a47",
+      "bytes": 34466,
+      "sha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeSha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "a37184ea3e89df55de5f38230eae5fbbe3141019",
+      "bytes": 21079,
+      "sha256": "a678f0d09593dad3dd65e34d116b4acdf49e1ee1687850c479032fedbf6d6e6f",
+      "workingTreeSha256": "a678f0d09593dad3dd65e34d116b4acdf49e1ee1687850c479032fedbf6d6e6f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "83e50713c08da629a8cf4a4619708b1101b4dcff",
+      "bytes": 1200,
+      "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeSha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "592773794d8e984be49a2523c903cd936afbdd0e",
+      "bytes": 5885,
+      "sha256": "62555de7d7d302a53f8c00fa49b999afa3b667d3718308dfd5df8ba3e50342d2",
+      "workingTreeSha256": "62555de7d7d302a53f8c00fa49b999afa3b667d3718308dfd5df8ba3e50342d2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.SpiritualCreation.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "9e9891060594b0838e00cfd83f345cc9ae2ec2ff",
+      "bytes": 4659,
+      "sha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeSha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "c66356b746087687f1134b2a56b974fc65ded2fd",
+      "bytes": 127127,
+      "sha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeSha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "8993bc4026381a35856ef9fc5def0230596ab031",
+      "bytes": 128856,
+      "sha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749",
+      "workingTreeSha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+      "bytes": 30382,
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeSha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeSha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "workingTreeSha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "a7ef52b2abc5049a476bcb4491fd72acf26cf007",
+      "bytes": 25860,
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4",
+      "workingTreeSha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "592d8fee9d18bdbe87bdcd898800d20c46138c76",
+      "bytes": 14420,
+      "sha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d",
+      "workingTreeSha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "90919ad023767672e3acbfed7eab8ef9ce00fea5",
+      "bytes": 45464,
+      "sha256": "60f38c1649208e7fe9e143e35ae8173619c1e4a0806e69d62549b7b288c04b7d",
+      "workingTreeSha256": "60f38c1649208e7fe9e143e35ae8173619c1e4a0806e69d62549b7b288c04b7d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "9f4732f3dcea01d262771c6ed6a81ce631fae541",
+      "bytes": 393326,
+      "sha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5",
+      "workingTreeSha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeSha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "workingTreeSha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+      "bytes": 5254,
+      "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeSha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/testing.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeSha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "workingTreeSha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "b5b85f9318f2b6b1951dd8d2a0439075050b4660",
+      "bytes": 109777,
+      "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "workingTreeSha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "7863f2b7ebd878c9bfe901b7821a6efc395e4dc6",
+      "bytes": 1968069,
+      "sha256": "a2049b18745d0f4e4412a6941335cef0f2c3eb6cdff1779292cacb43b1e6d4ba",
+      "workingTreeSha256": "5d5c805191b6555e366a2855d4a8d24c3634293ff53d703e2eb90f77847e8e3f",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+      "bytes": 229597,
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeSha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "38fc34c501438bc8887b0871fb2fc8bdf2192538",
+      "bytes": 1408074,
+      "sha256": "fc3be13fd8dc331e0adff95eda6da645e5e57fab9e1746f84997789094064fa4",
+      "workingTreeSha256": "fc3be13fd8dc331e0adff95eda6da645e5e57fab9e1746f84997789094064fa4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "58e2a0922646d39223112a379a1f3bcad90c8a0c",
+      "bytes": 1947988,
+      "sha256": "d642f95ee0527a5faeaa4c3468420d465e0268b657886118a1323594327c88fe",
+      "workingTreeSha256": "d642f95ee0527a5faeaa4c3468420d465e0268b657886118a1323594327c88fe",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "gitBlob": "3e03978e819afaa74adee8eb992c4128d617a826",
+      "bytes": 1164,
+      "sha256": "96243107d3112eb6e6d40ba8dd7e27c9638fe83f418d84abfc94fbc6690cec9a",
+      "workingTreeSha256": "96243107d3112eb6e6d40ba8dd7e27c9638fe83f418d84abfc94fbc6690cec9a",
+      "workingTreeMatches": true
+    }
+  ],
+  "carrierContextPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "86b180a1de52f089e211dcce818f761c6ac85c7c",
+      "bytes": 1969605,
+      "sha256": "5d5c805191b6555e366a2855d4a8d24c3634293ff53d703e2eb90f77847e8e3f",
+      "workingTreeSha256": "5d5c805191b6555e366a2855d4a8d24c3634293ff53d703e2eb90f77847e8e3f",
+      "workingTreeMatches": true
+    }
+  ],
+  "consultationPins": {
+    "t192-prefix-receipt-seam-20261016": {
+      "pins": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+          "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+          "gitBlob": "a2e3efbeb5c50118cd9b285cf385d06deffc1dc3",
+          "bytes": 13385,
+          "sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+          "workingTreeSha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+          "workingTreeMatches": true
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+          "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+          "gitBlob": "f23cd7efe9f22e252aa4853e0768c3b7c00f26bb",
+          "bytes": 5091,
+          "sha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+          "workingTreeSha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+          "workingTreeMatches": true
+        }
+      ],
+      "status": "Source-only future design/UNRUN; not runtime or authority evidence."
+    },
+    "t179-active-preseal-next-boundary-20261016": {
+      "pins": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+          "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+          "gitBlob": "615123f86dacc2f23eafd8d4d297ee8dac28f086",
+          "bytes": 23359,
+          "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+          "workingTreeSha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+          "workingTreeMatches": true
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+          "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+          "gitBlob": "ce8efedcd2d09b5ff027768171751810d12a3180",
+          "bytes": 17161,
+          "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+          "workingTreeSha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+          "workingTreeMatches": true
+        }
+      ],
+      "status": "Source-only future design/UNRUN; not runtime or authority evidence."
+    }
+  },
+  "evidencePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-Build-integration.log.gz",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "2bbce81b6570db9d14b66a2f226f0247fd47d884",
+      "bytes": 9195,
+      "sha256": "85a962ec1c1df0756c0e63536e087c7a0932c18ef88ef9b467f26915632c597b",
+      "workingTreeSha256": "85a962ec1c1df0756c0e63536e087c7a0932c18ef88ef9b467f26915632c597b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-Build-unit.log.gz",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "0c8bfe9e7130313bfae217cf7255d4432b672f68",
+      "bytes": 1716,
+      "sha256": "0359cb8a4be2ef69ce0f779ae66741c655140d496af3c1a3bc31ff8b6dd45b99",
+      "workingTreeSha256": "0359cb8a4be2ef69ce0f779ae66741c655140d496af3c1a3bc31ff8b6dd45b99",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-catalog-audit.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "4045e9310aaed050006b963ea6b8323516248762",
+      "bytes": 103,
+      "sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+      "workingTreeSha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-dotnet-test.log.gz",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "5875c62d1d3333acd59d918e3a958b1c3d2a4024",
+      "bytes": 385468,
+      "sha256": "0669bec057daef8aa04d0180a5a85ecab9834673e7c882eaebddc82f147c0b80",
+      "workingTreeSha256": "0669bec057daef8aa04d0180a5a85ecab9834673e7c882eaebddc82f147c0b80",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-summary.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "0e70c36f57865d6829c605267249e92b70e084ea",
+      "bytes": 1600,
+      "sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+      "workingTreeSha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-artifact-index.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "1e494b97472dc9579659ed36d6377bed764aa3b2",
+      "bytes": 4128,
+      "sha256": "d340ddac90fc492643feef1101b6933cda6a5ebf22978bcb7284589fe4b6a126",
+      "workingTreeSha256": "d340ddac90fc492643feef1101b6933cda6a5ebf22978bcb7284589fe4b6a126",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-dotnet-test.log.gz",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "62a7d452fd1ecdb3ecbd8391f5819cc0a79b6343",
+      "bytes": 374440,
+      "sha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33",
+      "workingTreeSha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-plan.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "1e3c3fd3326624020746e6fff00261e7c73ab420",
+      "bytes": 3541,
+      "sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+      "workingTreeSha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-summary.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "06aacd076572faaf46ffe761b474df799ffb6faa",
+      "bytes": 2599,
+      "sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+      "workingTreeSha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-artifact-index.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "e5593c536e7de03f6104b606af1a6a9e584fc376",
+      "bytes": 4256,
+      "sha256": "7654fe1872b4f9aef8c72f31ae69d68cdf5bdcb51f99d113eecc1b8a1527820c",
+      "workingTreeSha256": "7654fe1872b4f9aef8c72f31ae69d68cdf5bdcb51f99d113eecc1b8a1527820c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-binaries-20261016.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "085772baf00dd8e04dd790a658dc74e49b5f7520",
+      "bytes": 933,
+      "sha256": "1ab09306d122a2d8be11dee49c67ba3644baaef0bc61c7cfe7aad6b59942cd32",
+      "workingTreeSha256": "1ab09306d122a2d8be11dee49c67ba3644baaef0bc61c7cfe7aad6b59942cd32",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "75f0b45894e20f53ee38f3cd0cb4855fcc782ded",
+      "bytes": 5325,
+      "sha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+      "workingTreeSha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.json",
+      "commit": "6ee0ca0c4dfec8c8c177a4d491e3ac99c6192050",
+      "gitBlob": "6a899fd6f3e9a674fed67042efbc0312c8d3b347",
+      "bytes": 253014,
+      "sha256": "ffc9600a7c07a0b14ba4349d8c779e601965cc5c3d38eba242952c099632e42d",
+      "workingTreeSha256": "ffc9600a7c07a0b14ba4349d8c779e601965cc5c3d38eba242952c099632e42d",
+      "workingTreeMatches": true
+    }
+  ],
+  "preparation": {
+    "catalog": {
+      "index": {
+        "source_sha": "cf95c60916542ab422fad5ac836dca74add72f89",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-initial-catalog-20261016-Build-integration.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/Build-integration.log",
+            "raw_bytes": 119991,
+            "raw_sha256": "171951ba567c09610f5c1b303d877fd0abac58ecb68c492d255b9d7b6fac6aa2",
+            "stored_sha256": "85a962ec1c1df0756c0e63536e087c7a0932c18ef88ef9b467f26915632c597b"
+          },
+          {
+            "path": "t179pd-initial-catalog-20261016-Build-unit.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/Build-unit.log",
+            "raw_bytes": 26198,
+            "raw_sha256": "9207baa49cc525277e8116d784735cec5f124fb17733fb8dcc045c6663916484",
+            "stored_sha256": "0359cb8a4be2ef69ce0f779ae66741c655140d496af3c1a3bc31ff8b6dd45b99"
+          },
+          {
+            "path": "t179pd-initial-catalog-20261016-catalog-audit.json",
+            "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/catalog-audit.json",
+            "raw_bytes": 103,
+            "raw_sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+            "stored_sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c"
+          },
+          {
+            "path": "t179pd-initial-catalog-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/dotnet-test.log",
+            "raw_bytes": 3522055,
+            "raw_sha256": "3f0e8343af4b0e67c6d952fe82f40cbdd044b55a0fc58a0ac7fa49912d5abeb5",
+            "stored_sha256": "0669bec057daef8aa04d0180a5a85ecab9834673e7c882eaebddc82f147c0b80"
+          },
+          {
+            "path": "t179pd-initial-catalog-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/summary.json",
+            "raw_bytes": 1600,
+            "raw_sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+            "stored_sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            null
+          ],
+          "Reasons": [],
+          "DiscoveryOnly": true,
+          "PlanOnly": false,
+          "Revision": {
+            "Head": "cf95c60916542ab422fad5ac836dca74add72f89",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11699,
+            "Categories": 767,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0824279,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0808866,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1512038,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 96.0702746,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 16.3466241,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0041492,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 10,
+          "WallTime": "00:02:02.9640290",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedArtifactChains": [
+        {
+          "path": "t179pd-initial-catalog-20261016-Build-integration.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/Build-integration.log",
+          "raw_bytes": 119991,
+          "raw_sha256": "171951ba567c09610f5c1b303d877fd0abac58ecb68c492d255b9d7b6fac6aa2",
+          "stored_sha256": "85a962ec1c1df0756c0e63536e087c7a0932c18ef88ef9b467f26915632c597b",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-catalog-20261016-Build-unit.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/Build-unit.log",
+          "raw_bytes": 26198,
+          "raw_sha256": "9207baa49cc525277e8116d784735cec5f124fb17733fb8dcc045c6663916484",
+          "stored_sha256": "0359cb8a4be2ef69ce0f779ae66741c655140d496af3c1a3bc31ff8b6dd45b99",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-catalog-20261016-catalog-audit.json",
+          "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/catalog-audit.json",
+          "raw_bytes": 103,
+          "raw_sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+          "stored_sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-catalog-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/dotnet-test.log",
+          "raw_bytes": 3522055,
+          "raw_sha256": "3f0e8343af4b0e67c6d952fe82f40cbdd044b55a0fc58a0ac7fa49912d5abeb5",
+          "stored_sha256": "0669bec057daef8aa04d0180a5a85ecab9834673e7c882eaebddc82f147c0b80",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-catalog-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-112233-848-62685-f5323debe0cb4269a332cad9ca6faa9a-categories/summary.json",
+          "raw_bytes": 1600,
+          "raw_sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+          "stored_sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+          "verifiedRawStoredLocalCommittedBlob": true
+        }
+      ]
+    },
+    "plan": {
+      "index": {
+        "source_sha": "cf95c60916542ab422fad5ac836dca74add72f89",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-initial-plan-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/dotnet-test.log",
+            "raw_bytes": 3375375,
+            "raw_sha256": "cbbb1c4ae195f1a92054e45d94ada7f5143ee1a0909b366ec454bb2d66273114",
+            "stored_sha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33"
+          },
+          {
+            "path": "t179pd-initial-plan-20261016-plan.json",
+            "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/plan.json",
+            "raw_bytes": 3541,
+            "raw_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+            "stored_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c"
+          },
+          {
+            "path": "t179pd-initial-plan-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/summary.json",
+            "raw_bytes": 2599,
+            "raw_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+            "stored_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence",
+            "fr063-joint-late-completion"
+          ],
+          "Reasons": [
+            {
+              "category": "fr063-active-prefix-lifecycle-evidence",
+              "reason": "Initial T179-Pd/T192b test-first source only: three genuine completed planner controls reach missing LifecycleExecutionLedger assertion. No production caller or success implementation changed. Existing fixture default remains identical; optional input configuration is local to new cases. All runtime UNRUN until G5 release.",
+              "contracts": [
+                "#1536 T179/T192 coherent internal pre-seal→P0; foundation only, no activation. Independent SOURCE→firstLate2→separate EVIDENCE→expected unit RED3; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-joint-late-completion",
+              "reason": "G5 requires first actual unchanged Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE gate. Freeze/push/readback plus independent EVIDENCE before expected ledger RED; no aggregate execution.",
+              "contracts": [
+                "#1536 v2 genuine full common union/progression/story/turn/replay and strict roots remain preserved; later active work needs its own affected selection."
+              ]
+            }
+          ],
+          "DiscoveryOnly": false,
+          "PlanOnly": true,
+          "Revision": {
+            "Head": "cf95c60916542ab422fad5ac836dca74add72f89",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": null,
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.1211095,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0639054,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1304697,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0048399,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 15,
+          "WallTime": "00:00:07.2845645",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 5,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "fr063-active-prefix-lifecycle-evidence-unit-001",
+              "fr063-joint-late-completion-integration-002"
+            ],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedArtifactChains": [
+        {
+          "path": "t179pd-initial-plan-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/dotnet-test.log",
+          "raw_bytes": 3375375,
+          "raw_sha256": "cbbb1c4ae195f1a92054e45d94ada7f5143ee1a0909b366ec454bb2d66273114",
+          "stored_sha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-plan-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/plan.json",
+          "raw_bytes": 3541,
+          "raw_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+          "stored_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+          "verifiedRawStoredLocalCommittedBlob": true
+        },
+        {
+          "path": "t179pd-initial-plan-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/summary.json",
+          "raw_bytes": 2599,
+          "raw_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+          "stored_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+          "verifiedRawStoredLocalCommittedBlob": true
+        }
+      ]
+    }
+  },
+  "binaryManifest": {
+    "source_sha": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "phase": "T179-Pd T192b initial test-first fresh BOTH; zero actual tests",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "5aa16d0ee44832e791a157eeb497c10b3ed834f66068f86a669c3ea7281b7ea6"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "8d26908ea3ca997300164b7dd98e47a7c1ca1316f7632cd905a1f6ce7eb36bde"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "5aa16d0ee44832e791a157eeb497c10b3ed834f66068f86a669c3ea7281b7ea6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "0c1f6213a6b7d061926c21283df364c454ae9dc86940ab95026570f8d41c58bc"
+      }
+    ]
+  },
+  "fourCurrentDllHashesVerified": true,
+  "selection": {
+    "plan": {
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence",
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [
+        {
+          "category": "fr063-active-prefix-lifecycle-evidence",
+          "reason": "Initial T179-Pd/T192b test-first source only: three genuine completed planner controls reach missing LifecycleExecutionLedger assertion. No production caller or success implementation changed. Existing fixture default remains identical; optional input configuration is local to new cases. All runtime UNRUN until G5 release.",
+          "contracts": [
+            "#1536 T179/T192 coherent internal pre-seal→P0; foundation only, no activation. Independent SOURCE→firstLate2→separate EVIDENCE→expected unit RED3; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-joint-late-completion",
+          "reason": "G5 requires first actual unchanged Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE gate. Freeze/push/readback plus independent EVIDENCE before expected ledger RED; no aggregate execution.",
+          "contracts": [
+            "#1536 v2 genuine full common union/progression/story/turn/replay and strict roots remain preserved; later active work needs its own affected selection."
+          ]
+        }
+      ],
+      "Revision": {
+        "Head": "cf95c60916542ab422fad5ac836dca74add72f89",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 6.86771,
+      "Descriptors": [
+        {
+          "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+              "Cases": 3
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-late-completion-integration-002",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "exactExpectedCases": {
+      "fr063-active-prefix-lifecycle-evidence": 3,
+      "fr063-joint-late-completion": 2
+    },
+    "totalDescriptors": 2,
+    "totalCases": 5,
+    "pairwiseDisjointSelectedMethods": true,
+    "newMethodCatalogOwners": [
+      "fr063-active-prefix-lifecycle-evidence"
+    ],
+    "overlapAssessment": "No actual overlap for the new method at this catalog; effects-planning has explicit existing methods rather than a matching wildcard. Related metadata anticipates broader ownership only. No broad owner or Pc37 rerun is selected. Unchanged Late2 is required by the explicit G5 process, not newly impacted mechanics.",
+    "finiteInitialStepOnly": true
+  },
+  "selectedRecovery": {
+    "receiptPath": "/tmp/t179pd-initial-selected-recovery-20261016.json",
+    "receiptSha256": "ac4b5641588b91889acad34c5ef07002337a6a8226d7905e40bdf6ba485e67c8",
+    "source": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "directory": "/tmp/f1-r2-story-clean-restore",
+    "selectedFiles": 300,
+    "allCompiledBlobBytesVerified": true,
+    "clean": true,
+    "noAlternates": true,
+    "restoredBuildOrRuntime": "NOT_RUN",
+    "githubOnlyProvenance": "Coordinator receipt reports GitHub-only filtered sparse fetch and remote branch readback; reviewer independently verified local exact HEAD/blobs/file hashes and cleanliness, performed no network fetch.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "bytes": 11662,
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "96243107d3112eb6e6d40ba8dd7e27c9638fe83f418d84abfc94fbc6690cec9a",
+        "bytes": 1164,
+        "gitBlob": "3e03978e819afaa74adee8eb992c4128d617a826",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "d642f95ee0527a5faeaa4c3468420d465e0268b657886118a1323594327c88fe",
+        "bytes": 1947988,
+        "gitBlob": "58e2a0922646d39223112a379a1f3bcad90c8a0c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+        "bytes": 81688,
+        "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "docs/testing.md",
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+        "bytes": 18979,
+        "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "bytes": 66432,
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+        "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+        "bytes": 5795,
+        "gitBlob": "e4f778864060557b6a9c783238c271fa88b63645",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+        "sha256": "62555de7d7d302a53f8c00fa49b999afa3b667d3718308dfd5df8ba3e50342d2",
+        "bytes": 5885,
+        "gitBlob": "592773794d8e984be49a2523c903cd936afbdd0e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+        "sha256": "a678f0d09593dad3dd65e34d116b4acdf49e1ee1687850c479032fedbf6d6e6f",
+        "bytes": 21079,
+        "gitBlob": "a37184ea3e89df55de5f38230eae5fbbe3141019",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/ResourcePendingResolutionTests.CommonBoundary.cs",
+        "sha256": "ea71608825f4ab493288125c53072e27c5f79f6f2d53255f173bbcbb2f147047",
+        "bytes": 3308,
+        "gitBlob": "ae96f1f203abd553882ada5c3a999928e6fb5a78",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+        "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+        "bytes": 1200,
+        "gitBlob": "83e50713c08da629a8cf4a4619708b1101b4dcff",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs",
+        "sha256": "c8229c88d9c8eef71ebc0d83108405b6b5b7e7e1878f1a9dc329af36cae88874",
+        "bytes": 8619,
+        "gitBlob": "4156d343d11122b065ac833168e1a2c7eb4c2ef4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4",
+        "bytes": 12668,
+        "gitBlob": "aadf31f92b8df81b37087a0fabfc1b5a9d6c2de8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+        "bytes": 1682,
+        "gitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+        "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+        "bytes": 38927,
+        "gitBlob": "ef1c8afc047b0e79705f842cf37072acfa4731b5",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+        "sha256": "c0019711959a36075cc705835c65851bd12052120b0940046cc4f4336dccde6e",
+        "bytes": 5572,
+        "gitBlob": "4ea12bb6e74c6fdf1271c06e2b2afb1335cb9096",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+        "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+        "bytes": 71591,
+        "gitBlob": "3eb541ca7628ea2b59feb3bc1755a5c53e79122f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+        "bytes": 82535,
+        "gitBlob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+        "bytes": 1991,
+        "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "sha256": "fc3be13fd8dc331e0adff95eda6da645e5e57fab9e1746f84997789094064fa4",
+        "bytes": 1408074,
+        "gitBlob": "38fc34c501438bc8887b0871fb2fc8bdf2192538",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "sha256": "a2049b18745d0f4e4412a6941335cef0f2c3eb6cdff1779292cacb43b1e6d4ba",
+        "bytes": 1968069,
+        "gitBlob": "7863f2b7ebd878c9bfe901b7821a6efc395e4dc6",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+        "bytes": 229597,
+        "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.md",
+        "sha256": "387f12a8e59cc752ba96632b93325df91ca5547543dc379b721574a742879b3d",
+        "bytes": 12766,
+        "gitBlob": "1660343a7a8cd3af17966d22eae12f17588760d3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.json",
+        "sha256": "679da2a38700bf66e63915090c1743acb2fd5995ce206ee58a8eea26997ae513",
+        "bytes": 85678,
+        "gitBlob": "f3943538cf1b0ac12e207625d638f9cf1000dcb4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.md",
+        "sha256": "67ec54759912504d0b6ac668a1d57bee2fc315238545ba63cc4d450ad16dcfe7",
+        "bytes": 10984,
+        "gitBlob": "2337bbe9a6aacefedc98d7990421139af03f1970",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.json",
+        "sha256": "63a65041c5d575f3cdc175577d1bd00cbd7c70838a78c9baf01eac9bc1a7f018",
+        "bytes": 111045,
+        "gitBlob": "1a6131087a4630ae3ee46028da32c227466a16e8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.md",
+        "sha256": "6ccd0ae16751c68a0e5276fb35f1bc8b41d45a7ec07e358e73eee8d826d40fbd",
+        "bytes": 93910,
+        "gitBlob": "d02dd8b9fe3564c4445c9aa8a620fdd21979a61a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.json",
+        "sha256": "6962060bc352ba0f119864af453f5aa92f7f749a38a802cb2d31492b50f9c27a",
+        "bytes": 583663,
+        "gitBlob": "31676737c25be260055b3f6cb5fe81ef93929ef3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.diff.gz",
+        "sha256": "28bb083bc83dafe8c8d7631a4174743a23faa19827019437be60ab7dbf7c7af3",
+        "bytes": 65480,
+        "gitBlob": "b80fcc6bdc24c1bbc6bd58bea16b9ca0f9750046",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016-diff-artifact-index.json",
+        "sha256": "15056d373cc0e16d52de29960f86a7f7344ab4102aab336e7a271b6c3ac7e83a",
+        "bytes": 466,
+        "gitBlob": "d96e891cec752a107143c73e9718e1debac3fbde",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+        "sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+        "bytes": 13385,
+        "gitBlob": "a2e3efbeb5c50118cd9b285cf385d06deffc1dc3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+        "sha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+        "bytes": 5091,
+        "gitBlob": "f23cd7efe9f22e252aa4853e0768c3b7c00f26bb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-selected-recovery-20261016.json",
+        "sha256": "eb7b509fce3acacbec3a8d2b9f506583bb13222972f9c2373ee36cff6512e6b8",
+        "bytes": 66712,
+        "gitBlob": "67d54a2b57c9365ec24463892528d51864a750a8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md",
+        "sha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+        "bytes": 5325,
+        "gitBlob": "75f0b45894e20f53ee38f3cd0cb4855fcc782ded",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.json",
+        "sha256": "ffc9600a7c07a0b14ba4349d8c779e601965cc5c3d38eba242952c099632e42d",
+        "bytes": 253014,
+        "gitBlob": "6a899fd6f3e9a674fed67042efbc0312c8d3b347",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.md",
+        "sha256": "859b2f2e3088cf241a5a0577d5b4428ee57b8fb2349e7cb9740b796370289b15",
+        "bytes": 37866,
+        "gitBlob": "87533fadd361c9548e16860defb29d0b7b23ef9d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.json",
+        "sha256": "433594bd787f343fb532898893209bc39c0b9f7c42e05ed0fd3e24216bfc16b5",
+        "bytes": 259726,
+        "gitBlob": "73093d7ed651c942d243c9f34efed2d66eb4706c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-summary.json",
+        "sha256": "fc15000c3aaed52060b5ecd7d37ad69c62817f90dea46d8ac04a2d50527435ba",
+        "bytes": 1464,
+        "gitBlob": "27989b1ee478c9a7416f41e38e2c6dcbbcd0152b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-plan.json",
+        "sha256": "a2703d16789e18ceddee6a13872579d85f6fcd033efadac4979eac9c79094538",
+        "bytes": 1533,
+        "gitBlob": "54b4d366814b8f9dcc48aa0de6cbfed45c172893",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "b4888f6bdea1b2cac22580492a9b39f5ec457b220d2ca933824d94e15e908eb6",
+        "bytes": 4832234,
+        "gitBlob": "bf19c42c2778d7a9e7b228cd5f1180f1ec9221c2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-dotnet-test.log.gz",
+        "sha256": "25cfd92e760240cf011b6f95fd6bf9ea7689f5dee988dbeb6eeb5feb0a49df4b",
+        "bytes": 187084,
+        "gitBlob": "2e6457cbc5030ab837fb6bae82d55dba9d2d3221",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-artifact-index.json",
+        "sha256": "1e9a9106450a4592e3fb3d43f93adeb0e5be9febb7156887c72065db505c99e8",
+        "bytes": 3573,
+        "gitBlob": "d245e0468dcb2af4d752491729544cc32615c526",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-summary.json",
+        "sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+        "bytes": 6428,
+        "gitBlob": "05624a2c43c4ab094f668dbc4513a1005ba55405",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-plan.json",
+        "sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+        "bytes": 17857,
+        "gitBlob": "fc6197cf1ba1b3951cacbcf165afa8f001d41215",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+        "sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+        "bytes": 374440,
+        "gitBlob": "7468267bf2cfeadcbe2851daea872557c2937011",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-artifact-index.json",
+        "sha256": "7da743b8b781c06f037e1b1e8850b399ac57b84b724d299ebc2eade346d02da8",
+        "bytes": 8218,
+        "gitBlob": "369ee32c01144469e9cdba63b9fba63861e71a79",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-summary.json",
+        "sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+        "bytes": 1598,
+        "gitBlob": "b4f415561480c590e0535f3f0144502063b9d963",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+        "bytes": 385436,
+        "gitBlob": "15e8743c07f27ed8f2d4c0bc9b362003c1794b97",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+        "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+        "bytes": 103,
+        "gitBlob": "ad3e00ce744acce500261ba258eadecd84eacb09",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-artifact-index.json",
+        "sha256": "fe6e0aa38f4273f1b341af7d957a04be3098407b849935cb3511db6ce6b95da2",
+        "bytes": 4166,
+        "gitBlob": "df612f03eefdadbe206dfa670c7432c3200ab8d7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+        "sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+        "bytes": 1717,
+        "gitBlob": "d99ecec3a05f0abd0d81c5fcd6cf599754e93a0d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+        "sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+        "bytes": 9206,
+        "gitBlob": "c60f5d538840aab8a4e8074a51b481824d4b55db",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-binaries-20261016.json",
+        "sha256": "e37e4fa6f9aa7eea27556f3adb4c4a85cad41032f891a45b052aa314f5ecb11a",
+        "bytes": 928,
+        "gitBlob": "a599e0c9c48944d43b8fc76381eefb10f1397f1f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-summary.json",
+        "sha256": "299efccdcb82c7543388ce965473ee6fbc37676a41b59cf4806e727beef96bf7",
+        "bytes": 1487,
+        "gitBlob": "1dcc01b915a45bc8962b8d3ed5b2b4b9ad177b96",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-plan.json",
+        "sha256": "8e7563278584c309e7539fcf49ed9f3fc7e757f76df641dd704f4678aefea2b6",
+        "bytes": 1231,
+        "gitBlob": "85da0dc4a4a0afbd354a9dc03dfe4364ffdf9bb6",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+        "sha256": "26e50e4ecbcb3cd3877be9709fc567141037095c5a0ca9a6112cda65dd6b7b33",
+        "bytes": 2532380,
+        "gitBlob": "02f31ade4371d72d859842b36da394b9d7669757",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-dotnet-test.log.gz",
+        "sha256": "08c93f18b9c2dd32f619b67ccccfca06906ebeb5a2fdf86fc392ef3ab93bfe3e",
+        "bytes": 187090,
+        "gitBlob": "ea042366358f0a47a2dbfef40bb5d53be3c3b2ec",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-artifact-index.json",
+        "sha256": "b57cfb0e01b3abeaa26582fb5abd44c002f5570ef196a684f3d8985ba7324270",
+        "bytes": 3635,
+        "gitBlob": "e8c9aefac045dec70c83e385bf4686bf55106fd4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-summary.json",
+        "sha256": "0e5d58e76917dc22c5a7ab4d6ad925f4970d4720133fa2a528897d5cfa6982f2",
+        "bytes": 1475,
+        "gitBlob": "2e745eec8cab0f39cd79b314329bff9d167c90dc",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-plan.json",
+        "sha256": "315afed133e7f42c3440f56558b3cf610bacedbe7aade0d2cd4f5357ba98a3ce",
+        "bytes": 1582,
+        "gitBlob": "1146819b6a391aede0c2ae74c6368045f9b26602",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-fr063-common-resource-continuation-integration-001.trx.gz",
+        "sha256": "03315bbbf665e7c52b2f6ebc0863b0972e49e82cd166074709772264080e419e",
+        "bytes": 1581,
+        "gitBlob": "cccea85d6e42cbdb77feb8305cd128ef79e0e5bb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-dotnet-test.log.gz",
+        "sha256": "d3af98dea4d7a40c08d6d1ef139c147f18e47d6862f6bd63d41700a5e959c9f0",
+        "bytes": 187086,
+        "gitBlob": "1bc9133c1fb3fc84e1615271ace0949da42eb034",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-artifact-index.json",
+        "sha256": "5542e45d8f37a2a54c178997a17ca1cf5b71a1aa5942c19cf6bf917a1900c811",
+        "bytes": 3638,
+        "gitBlob": "7fae8d0c5aedaa108c050df8871fec6760251ac1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-summary.json",
+        "sha256": "20342f2af6142cbf8c4fd1cf1184a93478cd9580de75928e6960a3b082af7ba5",
+        "bytes": 1458,
+        "gitBlob": "fa3596134abf4ae413fb590996eff84c95add434",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-plan.json",
+        "sha256": "76035b591f727a2d8ca19f9d65395495d417e7a0e52fb888a8977721a72e74f3",
+        "bytes": 1559,
+        "gitBlob": "cc305c054acd3800c41e6ca64342f5c13aa814f1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-fr063-common-qte-consumers-integration-001.trx.gz",
+        "sha256": "4d16290c5a7b624acfec61c53311d89f6a13f95bbb086fc8dfb23bda0c358ec6",
+        "bytes": 9966,
+        "gitBlob": "c8daab3cba01fe55a611b23ac226c219b75b3f07",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-dotnet-test.log.gz",
+        "sha256": "0f0b5bd5e0c1e26e38b2b68c341a702085d245c70adb9839cf6315b3c7149304",
+        "bytes": 187077,
+        "gitBlob": "d4440ea0dee0d0ca5533abfd9d3f39f21eb84a28",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-artifact-index.json",
+        "sha256": "5cdaf12ed2549a50bd56e2b5f1b97ad9ae9d3734438ba17176210db228aadead",
+        "bytes": 3574,
+        "gitBlob": "606a3014617a27c0a1468c274f7f9fb98b6a967e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-summary.json",
+        "sha256": "b733c2c4a43fc659fc527e17cd23eafadbaba0930ed70eb2926896e680df5a56",
+        "bytes": 1481,
+        "gitBlob": "63fe267e99dce8fcd339fc2585fc199397ea941b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-plan.json",
+        "sha256": "f8c04c0995a0d88825280fc72428797228c8969956a7319ee07f853779c6994c",
+        "bytes": 4917,
+        "gitBlob": "edd1eaf643f3c2864dc4dd67c4f0166bb13a212c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-fr063-common-calculation-regression-unit-001.trx.gz",
+        "sha256": "aa9a594360b856d7ae83bfe768d9185aabd2fa8f1b2f113c31e6110bb2a11e52",
+        "bytes": 3331,
+        "gitBlob": "97a60fb125fb806b14d344aa9be9f286f9b7b8ee",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-dotnet-test.log.gz",
+        "sha256": "0fda3faad0052effd2917c574c8c5337711ffe6147a2d0501cb59f4a0c2f6b29",
+        "bytes": 188728,
+        "gitBlob": "b3d5ea8933aa07e4e374e5be1dd9f6a1f517a5e3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-artifact-index.json",
+        "sha256": "5d3750afaf1c58452c5aa8a71b2786999bc3b803b5429481cfedcd3320621e94",
+        "bytes": 3625,
+        "gitBlob": "c00b5efc6712b45e660e242523bcc8f14303f833",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-summary.json",
+        "sha256": "82de37d65a9a1f167b622b6088a696742c2f09001b78540cb37517995f5ea831",
+        "bytes": 1473,
+        "gitBlob": "359893a416d7c6c1794a8938ddba95df5cce1d17",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-plan.json",
+        "sha256": "4bd076a8d4012e0fd6e7d66a93c23db249592ae92007b311dc5549f4441d172e",
+        "bytes": 1133,
+        "gitBlob": "52b4de8a2f8e0657cfab7f5ba9b7e181c0b0c13b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-fr063-joint-c1-common-mixed-guard-unit-001.trx.gz",
+        "sha256": "dee21c9da13ad74bc74bf48d1b005c2de93f0265a9f109a5bd4a1edd1f50a635",
+        "bytes": 1343,
+        "gitBlob": "b407f48b161c52585a8d33a8ec93d96b2fc36f50",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-dotnet-test.log.gz",
+        "sha256": "069cc8ad5401e086af21a4f8d0df880b67975b47a81f1af085de6ac637f1cd99",
+        "bytes": 188722,
+        "gitBlob": "5c658dc2171259f2445ba993acc6a60d9523f992",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-artifact-index.json",
+        "sha256": "e6cc73ed0053e181bc8ba2be0913c933cde8efffff221d1dd9d7093074ac9deb",
+        "bytes": 3580,
+        "gitBlob": "bce6b5b81a6d5c9ca8a4bcdeda22c58c7348c87c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.md",
+        "sha256": "575e525521006301bbefdf2d16c6b7f9bea4295ee2afccd50dc13690c81cb1ce",
+        "bytes": 5241,
+        "gitBlob": "c9caf22c6ea9518dcc55ece57e082cfcf4fc2c80",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.json",
+        "sha256": "5bb960ca59b7a4c5294b4a33b36ccb88ecf34359e8252aaf1be73042fb2184f6",
+        "bytes": 107736,
+        "gitBlob": "91d53dad5b57614ba2bfe492da8b3c1dcc60f52e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.md",
+        "sha256": "fbab152a2f273834960347b0120e5daa3eea8cf52380e8ac6412d8d658063f30",
+        "bytes": 3711,
+        "gitBlob": "01d07fb9601233e9856698af1fe5ec18a492e3c9",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.json",
+        "sha256": "33afc9680dcde6f100403f8a565223f5488cf5a9304f358037f864ccdc25aeec",
+        "bytes": 75892,
+        "gitBlob": "df288df35cf7f7b2af98c98f5572cfd438155704",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-summary.json",
+        "sha256": "cc294318a4eac7daf49775bdc1c2bfb8de133a619d80dee7b62d9de718e9945a",
+        "bytes": 1478,
+        "gitBlob": "cef9bb026ddf97e1440d0b1b43bceedef440986a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-plan.json",
+        "sha256": "5e8ad9b4f3aafaa3d6823c139e2d340777258f72dcadf75e85a3c410106dc71c",
+        "bytes": 2433,
+        "gitBlob": "ca928947a79f7fef708605d47a0bd150395b1be6",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+        "sha256": "d82c31ae4cdb48b214dce95f5850280ff51a0ad0a72476553d0b23ed98b5570b",
+        "bytes": 2501,
+        "gitBlob": "62e76c8223d707090a2a2bb6ec181ee568c3b10c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-dotnet-test.log.gz",
+        "sha256": "9a276a2a034cc2ef17d291938f7e9afc2cd8a6a13e3fec5f1d2168564f04eb4e",
+        "bytes": 188716,
+        "gitBlob": "aa5a93db824ed013fa6a232be04c0ce661eb9e74",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-artifact-index.json",
+        "sha256": "49c88095b4e8a9c3b6abf090aa3b492286b5fec8f7c680d82e5f1d337d541f82",
+        "bytes": 3598,
+        "gitBlob": "70077c23cbce3d48644ba349e1c97fd773813207",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-summary.json",
+        "sha256": "4222f93fc86f443ea244208bc16789b6e9b0056ce04de1d15c467cfabec51dcc",
+        "bytes": 1455,
+        "gitBlob": "36f1d358c5627ef1cee278431d028c9a7fb25ddd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-plan.json",
+        "sha256": "c20b273e865a1fb62dac1b7116bcbc98cc5d89b32eda229daae796ce97096573",
+        "bytes": 1159,
+        "gitBlob": "8c385215b2fe84222cc3814298e52ace7dcb3aa5",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-fr063-joint-active-tail-integration-001.trx.gz",
+        "sha256": "386c79acebfec0a83f3e5e38ef203bed70a2b14312560030a00eeee2ad20e44d",
+        "bytes": 8209323,
+        "gitBlob": "3dc00fe279f96e67719f41244fe5914843a3a572",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-dotnet-test.log.gz",
+        "sha256": "ec8c92d4ab4ef734caf628ab648dd7bc661305fc8925d68cea80bf098cd4d906",
+        "bytes": 187074,
+        "gitBlob": "0e4a775b2d456a61407b6b89924c88073a8b0340",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-artifact-index.json",
+        "sha256": "bf791bcc40d9760fa8d35e8a9d32be415da8248c7f52420cf93cb1136eff9b7d",
+        "bytes": 3572,
+        "gitBlob": "ee5599690af8e257ecaac8b8f533bbb95afb22ce",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+        "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+        "bytes": 23359,
+        "gitBlob": "615123f86dacc2f23eafd8d4d297ee8dac28f086",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+        "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+        "bytes": 17161,
+        "gitBlob": "ce8efedcd2d09b5ff027768171751810d12a3180",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.md",
+        "sha256": "3b60c3f36928aa77c5dc77e7c48c1af70f57739444b133967564bec4260b4afe",
+        "bytes": 14477,
+        "gitBlob": "a9d7e235067150b091e4f8de11d9b7687db09de0",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.json",
+        "sha256": "1324f4ae3ad4dac3ddebe4f89c9a867bf894e066ee5b0276bd7788e64b345338",
+        "bytes": 130555,
+        "gitBlob": "f259f3b454a4436285ced82d717b8a5342bea3cd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.md",
+        "sha256": "55f46433f8069dd91173ad82c72c0ef9b62e7952492f92e8e9547f0d4ccafe5d",
+        "bytes": 9371,
+        "gitBlob": "147af509c765f5ad3aaec9b768b19e25f9156d26",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.json",
+        "sha256": "8482bb778dc576c0c4d9b1db62676ef56d58e4bdc3394d740284607fbf176aac",
+        "bytes": 54630,
+        "gitBlob": "92bc047f23eb529b3745b327598e33f7c1cba123",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.md",
+        "sha256": "42aa4c29c028feb0212e3fbe62b91a692efe1b14a72fba92d291e10aa153861c",
+        "bytes": 33884,
+        "gitBlob": "e5c4af8eeaad4449068286af86d71e0bc135206e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.json",
+        "sha256": "0b754c394dd64371a1d36045139162ab74eab3ddb029e09b18c70156206d4f60",
+        "bytes": 234797,
+        "gitBlob": "3006d236bd246c55a601b690015a9b2435532a6b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.diff.gz",
+        "sha256": "c62f333eed9cfb0f2e2a57478f90be38a283c64a066068ac96b5aadd8058c555",
+        "bytes": 6656,
+        "gitBlob": "52b0120b654d1ac0ef47461c834b9b9369b9ee77",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016-diff-artifact-index.json",
+        "sha256": "53acbd3f75898e402b1acb7296f5a1fdbd77e137a2c575e0203a87769bfc7bf7",
+        "bytes": 428,
+        "gitBlob": "4780d466e77e7d17d968bf16398e60365cfef147",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.md",
+        "sha256": "088e4bac5c708eb6a487893416658945c972a5859034608f31baf61c1eb7fbd2",
+        "bytes": 31325,
+        "gitBlob": "38a0cedc134882bd640e59fb34cfccc5a69b32da",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.json",
+        "sha256": "693bfe316f320322ef598cdd2ae8493bfd00b49c7d98e7f9264b12a00fa5711d",
+        "bytes": 227345,
+        "gitBlob": "6d113da24297e655ba3bd98d1847e1f1c637768b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-summary.json",
+        "sha256": "24011a04ef80e3e036b5a5b5a6008baf714de633d6d83277af45127e26426672",
+        "bytes": 6214,
+        "gitBlob": "f5c857412f7772970000811ddfdaadaa136b073d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-plan.json",
+        "sha256": "8fcedbe9659bf1736c493ef5ecd691b7e9a391af38324ca4785131646097d2f5",
+        "bytes": 17939,
+        "gitBlob": "82b5ad9a0da7819305ffcddad467e16b9807044d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-dotnet-test.log.gz",
+        "sha256": "9e60554210ff8820f4addb9a355bce13a502a62c75f5bf2d8f9d82e2218f06af",
+        "bytes": 374433,
+        "gitBlob": "ade3245661bcc4a4b57b8b29a3b4a9af9ccf846a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-artifact-index.json",
+        "sha256": "263775a244b78ea3076dabe43f99801aa5ff15e087aa1d3b35b0f3356b708158",
+        "bytes": 7974,
+        "gitBlob": "3904442bb0abd0472aeaa4885d34875ed8f49056",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-summary.json",
+        "sha256": "55958dadaf04d66a0cbb6679d60c28733807b634efe087b7c7b7166e0fd734ec",
+        "bytes": 1600,
+        "gitBlob": "710812b06bc7ff1526b6e9f9f1f1f5c94d154edf",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "a84f6ee1942fb9936013f172f483c7516c90d53f57780a5ee061ff3af9cf7dc2",
+        "bytes": 385416,
+        "gitBlob": "71d2fa02cb345acfad0c55a254a12f3ebc5df8ec",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-catalog-audit.json",
+        "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+        "bytes": 103,
+        "gitBlob": "ad3e00ce744acce500261ba258eadecd84eacb09",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-artifact-index.json",
+        "sha256": "a3fea5b23d24d191f691797061b720334fa29b7758aacb56802d40fb64a2dd51",
+        "bytes": 4118,
+        "gitBlob": "102ef695dcd6cd087233155b7ce0e7478f907dd7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-unit.log.gz",
+        "sha256": "74d72027eff41c4baea362699c0b98dd95e6ebbea997c79a5176ddeff3f110fd",
+        "bytes": 1711,
+        "gitBlob": "ff0ff736a100bd545801af2b34cc98b0054150f8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ad2ce8d8ab0ba352195459497314c906f4815411ca51e440436fb0c43c1136c0",
+        "bytes": 9196,
+        "gitBlob": "ab266dc52e984298ad3afb12f527f840304877a7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-binaries-20261016.json",
+        "sha256": "e5441a0a410998fee294b41db7e2a866227e0ee5e3c0ad7d64ea6a54de2a234c",
+        "bytes": 946,
+        "gitBlob": "20dcefd09b023548d00eb0b0c60e154a744f2418",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-summary.json",
+        "sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+        "bytes": 1382,
+        "gitBlob": "cf902d14177fff6786c7788ddb9e10e5985f0e06",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-plan.json",
+        "sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+        "bytes": 2433,
+        "gitBlob": "970af2cd0cdf046ae5fdc4a3bfa4b3dadcef3b7d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+        "sha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b",
+        "bytes": 3763,
+        "gitBlob": "350ed48c30c91be9ab73d97ee8ab1b23f365917e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-dotnet-test.log.gz",
+        "sha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9",
+        "bytes": 189723,
+        "gitBlob": "6ff8388877a85ce4545733a9ca4e7e7b60d4843b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-artifact-index.json",
+        "sha256": "05933c76094219a8b0e01a3225aa481a6737dea382d28d47dd8ffa88f6398479",
+        "bytes": 3468,
+        "gitBlob": "809012d1a0c669fcd5a42c0cb95d2a6c9f3466fb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-summary.json",
+        "sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+        "bytes": 1391,
+        "gitBlob": "dcfebe0904de87b3f25affefcfb3b55b2657ae29",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-plan.json",
+        "sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+        "bytes": 1231,
+        "gitBlob": "928c45304e8c47060fd727be1434e4f9542343bd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+        "sha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+        "bytes": 5065030,
+        "gitBlob": "935ae09a2f7b052b04be5242079151664d035400",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-dotnet-test.log.gz",
+        "sha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+        "bytes": 2718816,
+        "gitBlob": "cd9626c930ce8f146fc5f8325188d4d513c06ecd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-artifact-index.json",
+        "sha256": "f934d101f515c4df864bfd27015d957fa58159e7a88a602e4b80e5f4a5a02874",
+        "bytes": 3534,
+        "gitBlob": "1af336850a81b751db9ca824bb34968b13d63abd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-summary.json",
+        "sha256": "809856ea3aa3e384fda2712f9df84779281029d8b01fd8f56d9a513914f82e46",
+        "bytes": 1464,
+        "gitBlob": "77deff4c30e9711e742170541b8c0de1d5790a06",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-plan.json",
+        "sha256": "fd06c930cab065f56789a69bf3e35833f9fc5eeef76bf7ca4415016876bbacaf",
+        "bytes": 1533,
+        "gitBlob": "084fd95fb43a3daa81e4b505914240b8e1325cd8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "91aa2ffaa1379196a6b1857cd2ba608f813dbf382bf85773b60123f4ea11e541",
+        "bytes": 4829924,
+        "gitBlob": "42a22b6b1b9aed06f199610ffca16f4e00d90b91",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-dotnet-test.log.gz",
+        "sha256": "54a02d398e887ca0202400c710b7df60e6b83338c2bca22616857736a49f6302",
+        "bytes": 187087,
+        "gitBlob": "a9f0bfaf1bc0d76f919ede27077af421a17a00c2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-artifact-index.json",
+        "sha256": "6cd6b6e9e7cdc1b80ea65eebad890614b5d253691517c7aa938a8f3cb0a60d63",
+        "bytes": 3581,
+        "gitBlob": "5b23f230161224409eff2787a6072c44fdb4164f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.md",
+        "sha256": "204f01978f5279cbbd20b8380eac8d9418024015d97eaabd0912f0f0af93beb5",
+        "bytes": 6067,
+        "gitBlob": "f6751dab0f245944a203ceca1277e8b7d848ae0d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.json",
+        "sha256": "952bc768d218abb52adf11f7160ad408f3ab8acb84571f4c6cc8290a045761fc",
+        "bytes": 50838,
+        "gitBlob": "5089e1c3d43c3d19d16afc8a7534da63e7447c02",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.md",
+        "sha256": "ec6892bc91555fda01b531f8b73f167ec27d6d6239771af94c0e169b587de37d",
+        "bytes": 6924,
+        "gitBlob": "0927eda290ab34c3152405f0bd8913ac86b43e6c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.json",
+        "sha256": "0476401c3008838de06cb0e77bdde988d590fcc681ec6718dc17cdb6415b4656",
+        "bytes": 83457,
+        "gitBlob": "0c536408d1010f81d49abfaedca6128ece489e16",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.md",
+        "sha256": "582bc4489d17e20cefa9a7e7b73218ccc3e97dc63ecf050ea58bb654bf4e4ccb",
+        "bytes": 14590,
+        "gitBlob": "c6dcd80027b9008b77c662c1c59977360bc8d350",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.json",
+        "sha256": "1a9090816120836b560e541f6ceba5981c08fb1d84246d277c49f1970a36a88e",
+        "bytes": 36545,
+        "gitBlob": "7ad7e81481215f460867d55a238e542b523309de",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-summary.json",
+        "sha256": "b81ec9eab08cb9281804c612762ddd27dedb78000c36dc9635dc3698025e135b",
+        "bytes": 5449,
+        "gitBlob": "f2759f790c901574fbd55197d3e61859122d7d5e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-plan.json",
+        "sha256": "a270afd81b7d245af665f2fb2cf697cb69b8ce67756028bc2bdf6ce664f8802c",
+        "bytes": 15387,
+        "gitBlob": "448752f75e846a8f3a6308fff2d4f5020e804421",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-dotnet-test.log.gz",
+        "sha256": "0751df4c4c42fc9da55c12a4f240f977e38a8f47889befdacc3dbe90dd92d44a",
+        "bytes": 374426,
+        "gitBlob": "98a172fdd517ba9689565ef0194420c54d65cdb8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-artifact-index.json",
+        "sha256": "956a994fa4a14709a7647fadb2120feb816dcb958bd25e6113cb5a5fa0573527",
+        "bytes": 7197,
+        "gitBlob": "58436e91393961af2496cda68f06637e95c4d546",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-summary.json",
+        "sha256": "b0f6660299c29f92c425d06eb034bbfcf7f2f5f5a0d0f2e71717eb6cafec1715",
+        "bytes": 1600,
+        "gitBlob": "f4dc9c23b46d90fa6ca3d98405f1f55f75973020",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "0691963acdae5b0545553c0d63ca05592ca81820157d247fabf03c3d3e133d94",
+        "bytes": 385128,
+        "gitBlob": "c322325c7ef825362588da1748c2976187a0029c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-catalog-audit.json",
+        "sha256": "7bb1aab5de01bbba7274b7348a987d02559463f815daeadded77031516cf55be",
+        "bytes": 103,
+        "gitBlob": "38c44a7231cedb6e4bc97b09067e9d1da1282125",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-artifact-index.json",
+        "sha256": "5ba204837554bbaf11817e2f40ec617a15b9df69d37581f96e3813779c2c4eb2",
+        "bytes": 4128,
+        "gitBlob": "33ad386c1888b48971559ab465801a7ae79b2939",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-unit.log.gz",
+        "sha256": "58ce8df35b97c027e2f2a5ec1b8a93ee5ed180d9cd6afa5724e931a340a4daec",
+        "bytes": 1721,
+        "gitBlob": "f51e06c586bb4736b6980ca0b0a6e98ca5f2e8d2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-integration.log.gz",
+        "sha256": "666d26d15861b11f0eccc974af8ee1f786cfa1ca4a082e742299f442c8be0174",
+        "bytes": 8909,
+        "gitBlob": "353a1c748cbfd7db0cdd93da1eda46f8af55d68d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-binaries-20261016.json",
+        "sha256": "9266db74e8c2bc1ff05dd74ae5392b983ef72bb3e9330b1446b6948150bd8763",
+        "bytes": 934,
+        "gitBlob": "411e4d370ce1b4fd35a55218b328108a3a52e590",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+        "sha256": "a2f2076f09cc9913df3101fe00029209b3cf4aae2ab5568335a2322191e8697c",
+        "bytes": 29810,
+        "gitBlob": "3e6a900a32f988a1cfe99cb7b4ad8863ca534465",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+        "sha256": "6272be6527da1dfb069307f31044f72ddaf604450c1e566692dfbdc5b39e68c7",
+        "bytes": 19024,
+        "gitBlob": "efe47ad99256b9f9ec5602d3ddcc5cb7ef143e17",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.md",
+        "sha256": "5f7cc9c46927ea89e662769c4281a3aefaae27bda36b4869e071bdb346ac49b2",
+        "bytes": 31524,
+        "gitBlob": "ca30168c15e88116255c7a1d28e4337f8224c5ef",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.json",
+        "sha256": "ad9f520c58fda6e5783399801f9d501e2e5bd2754bb8db2a9eb793796c29cd8a",
+        "bytes": 29446,
+        "gitBlob": "54cf99b8a807041b62d74d10bb7502cfd322bbec",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.md",
+        "sha256": "0acf79729e6f65398a7b7d77139b5070433dc141077382da91bb1ae9caca2043",
+        "bytes": 17223,
+        "gitBlob": "836f78fb77078bc01edce1cc1f20c7dcbacdfeeb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.json",
+        "sha256": "2d3b80106195e235298cf8dc68ee8139030c911a7918892e8bbf8ec3ae5d1721",
+        "bytes": 36042,
+        "gitBlob": "ecd2607f7f20891dc6ebf5e3900581de394f29ad",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.md",
+        "sha256": "2dc55d211e1cef3ebdea8eed2cafd55f513eac1f73bca6de584d6f8d3f406443",
+        "bytes": 2729,
+        "gitBlob": "991de56b079fe996795db01bd38ea126fc11ce3d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.json",
+        "sha256": "99e00758c8271b444bb589dd22d19a07b71318499362011f48a955b1c08a5f22",
+        "bytes": 9830,
+        "gitBlob": "594732abed24eb47352fc61013c4789e7dddfb14",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+        "sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+        "bytes": 15301,
+        "gitBlob": "7a1749558a12a4252def568508a0cce462c2e632",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+        "sha256": "3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6",
+        "bytes": 26634,
+        "gitBlob": "0ac7c7106041c5434d2bc072b1bbfb3c7391eca1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-summary.json",
+        "sha256": "048046e04979807207fc8eaf7cae4b4c8a0e5d34551eb6be278063ad68cddce8",
+        "bytes": 1457,
+        "gitBlob": "44d102d55ae9ac61b6ce2ab97df57b7b6959f499",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-plan.json",
+        "sha256": "5c407bee32285a6d544e28cba06ea75ef053b7a2de196ee369671aa256f7e72f",
+        "bytes": 1139,
+        "gitBlob": "a8be1305d8d372b8643ebd052ac47b69b85abe85",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-fr063-joint-story-owner-integration-001.trx.gz",
+        "sha256": "b812f14986afd710c5a1bfe77c0d2a3d303110d2dfa247c146d0b3a7e6d55365",
+        "bytes": 27023338,
+        "gitBlob": "0209a1350dbd29b3d3674f3869463206463228a7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-dotnet-test.log.gz",
+        "sha256": "79522eceb0424ab223d80e43564bd23297a2981cf88c0b915656f68c19e9eb1d",
+        "bytes": 187054,
+        "gitBlob": "17468dbd35e20b7141f1f4559aa5d81b02080266",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-artifact-index.json",
+        "sha256": "fe886d267601153da666fd4597c08d42f3b433176b9364b259afd6e06b439f9d",
+        "bytes": 3562,
+        "gitBlob": "785ccad689e14e3fc7ef113a03519baf2bb30622",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-summary.json",
+        "sha256": "1f456862e01946fdd83a91e3ce0cd9953b655bac160037a359b577179c78e000",
+        "bytes": 1461,
+        "gitBlob": "aae2539d4868935c4cb7ea5cf08bf288f98c89eb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-plan.json",
+        "sha256": "95fd4d59de95fcf1b47e0f34c6c6d1fe089c6a9581ffcb9bd74e0e62850aa354",
+        "bytes": 1195,
+        "gitBlob": "7f891555bd86f84c37920c007e4b523ffa34339f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-fr063-joint-retained-story-integration-001.trx.gz",
+        "sha256": "2e7def12453cd53d977e39a68bea0d64c64c014b9722be9691048d39a16f3d2a",
+        "bytes": 10459200,
+        "gitBlob": "b82faffc17275c62d9d5cab87a2f1622c53ae2f5",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-dotnet-test.log.gz",
+        "sha256": "88817fc9dbb097782053b68569f038885914fa76b3099f87d5901cbaeb4366ab",
+        "bytes": 187052,
+        "gitBlob": "a2f6de6e2cf0938cc0350c6ba1d1d60e3c674ffb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-artifact-index.json",
+        "sha256": "a4796060d7bba4be3f4495145f4bdbc0951a1dbcd78da00aa227b4ca4c6c7b9f",
+        "bytes": 3584,
+        "gitBlob": "b0184b0688e1c4f3bb3cd100c0a4e6cb701d4336",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.md",
+        "sha256": "cd2f118a4680be3b8ff08712a8a5d12b8c0896c52966988f7f5d847378c10547",
+        "bytes": 7607,
+        "gitBlob": "cea6f33461d31cba69eaee3a611ec8ad1a747620",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.json",
+        "sha256": "86645af676dddeb1808155e9e6c66c3d845902aa2b069ffe2092bcb20691c817",
+        "bytes": 114413,
+        "gitBlob": "b19cf39ff04bcffea352cbb87cd54f539cbd7bc8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.md",
+        "sha256": "9dca2681c7bc63a909c23b3245d8db3357a9e31e0b21133ee2fc0c8134a366ba",
+        "bytes": 3074,
+        "gitBlob": "ea2763bd04612cba225217ae7716502d88852956",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.json",
+        "sha256": "b27f8025c8c475941e4c9c182b3f4c287446766e201ac3cff7fd5e1be9266be2",
+        "bytes": 25450,
+        "gitBlob": "64fc9bb33445107352c1ba2d09babd45fefbcec4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.md",
+        "sha256": "6e4cf1ab6bacc4cac85c7786c91efeae53d6275ff871a6e30d0bd289dca5e76a",
+        "bytes": 4111,
+        "gitBlob": "33e5a6b7465c52247fb3d97a85270a60100cb060",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.json",
+        "sha256": "5871dd9dc78dc7306b06638cead1a80d7c5ff8bcefd44003113e4792e669003f",
+        "bytes": 17518,
+        "gitBlob": "5d56f17597eb530e4b4e3e01990b0e96d50d8d29",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-summary.json",
+        "sha256": "2f95ee98ab511e9d9a195325dcff9f3cf46251c6f6e35ca098e78a40f8a36d87",
+        "bytes": 1464,
+        "gitBlob": "99e275002a3018e09693b2ae3b46b8d76292a386",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-plan.json",
+        "sha256": "d0a631d9311e04f774b3e57b7087ec369834540c06210fe36eaeb09c178129eb",
+        "bytes": 1533,
+        "gitBlob": "423727412f4b74e4b0c2fce68df55b79595ee83a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "d12a6af436570578f5f05da2ca29495100cd1b45542c0405c822128a7b1cc3dc",
+        "bytes": 4833093,
+        "gitBlob": "6e7fcc79397eda700ebfd544c0cc16cbd9a515d7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-dotnet-test.log.gz",
+        "sha256": "d3f5f5e7e7cb83b90c1e9aeba2624c964e059c965860984686daac94eb392754",
+        "bytes": 187052,
+        "gitBlob": "ce79acaaaf865a5386c5c349bd44e89a4bdc4d7e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-artifact-index.json",
+        "sha256": "6f242aa42d616ae57b71ed193856dff276eb4f1834b712d3bd587b2b9804894f",
+        "bytes": 3589,
+        "gitBlob": "99103d6c5992f6c296ee261e57398132147792c7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-summary.json",
+        "sha256": "65ba4698f82f67525181058fa209eeb975f18611ea10d1ccbb9dee8337b86562",
+        "bytes": 1470,
+        "gitBlob": "45f725731b645170ef7d4bb08e4d6d18ad2b472c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-plan.json",
+        "sha256": "beb1bbc061afaa8a481d0be0a0cd386bf490cba09230415d4d2a973a17d0fbd2",
+        "bytes": 4103,
+        "gitBlob": "d2d548d79170f989fca0badefe89e07153eab4b3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "fb9803596847865b498d7e4af47520929e2113edff72afb08c67da7115fb4369",
+        "bytes": 4107,
+        "gitBlob": "c9b06bca0a40d71bfc852d63df0cc5ce50b9cedc",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-dotnet-test.log.gz",
+        "sha256": "629bc87768ef062d0fb9b66d5734483902177dace3d7d3c6358f2a428e4f0e15",
+        "bytes": 188519,
+        "gitBlob": "1328ab448e08486a691f1b4bbc0803b0fc03f95f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-artifact-index.json",
+        "sha256": "012bbf1a82c20f3eb6c7ad97345062cd12adc588f36839bb6247f483de833101",
+        "bytes": 3630,
+        "gitBlob": "b6ffaad6f4a36b4983aa5a7f3dce8a6c60f5030e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+        "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+        "bytes": 22799,
+        "gitBlob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+        "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+        "bytes": 14010,
+        "gitBlob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-summary.json",
+        "sha256": "64fece84d5381fc10f6410c9f282074f5ea5c759b1dde8a91dcc396555ba9836",
+        "bytes": 3527,
+        "gitBlob": "37a83517eff77dac9d4c83a97a49d15c1aeb4ac2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-plan.json",
+        "sha256": "efb789b7cb2b169a748e8207cdc9bcaf6712baab1651ac5c71f6004be0cff94c",
+        "bytes": 8978,
+        "gitBlob": "b334de4e9e8e46d02ff1205553615312d4b4a7d4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-dotnet-test.log.gz",
+        "sha256": "886880bde159db5a85edced7a6753b25a9d58ad66c8ad025382ed8dd273c8c5b",
+        "bytes": 374145,
+        "gitBlob": "a45f11e5d75c50b61a36307040b49afab42539ab",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-artifact-index.json",
+        "sha256": "756af9320a759b0ae55626e25cbce01f8fcc00c3ad133032d48364f4bf23898b",
+        "bytes": 5214,
+        "gitBlob": "692f6f0080f1098c5409cd04820d70ac7ed1211c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-summary.json",
+        "sha256": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9",
+        "bytes": 1464,
+        "gitBlob": "35894883faca329e37dbdffd0d0b5a0ef2f86cbb",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-plan.json",
+        "sha256": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a",
+        "bytes": 1533,
+        "gitBlob": "da780d5881486b57cceea600740a412e65f5c54c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "5b0b5b637dff7856b99078b67da5a164fbed996697d2843459a9f3f409e8b7b2",
+        "bytes": 4831168,
+        "gitBlob": "5766443feec8715d61ef2774a160ac5acc552192",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-dotnet-test.log.gz",
+        "sha256": "ec9bc730e2e58981a04c775866bfb9ad2132809fa218fe32c4f1bd63c89201d0",
+        "bytes": 187059,
+        "gitBlob": "1427b8f69cf71f8cf107995225b0951cdc31a908",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-artifact-index.json",
+        "sha256": "98596a05ce014333f69eff7e77f7fc98a874cc6f403d296e9e795c5a9971a728",
+        "bytes": 3573,
+        "gitBlob": "662ff8cdf343064c113b9974c6a60c42504e9702",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-summary.json",
+        "sha256": "5ffdf837adf851d6299b59b5932869c1430625a74bd75b656112949b0f8a0a85",
+        "bytes": 1600,
+        "gitBlob": "755932503ba7d76d161aea5f9ee4130d40bc95b9",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "8b99df58348678ddeb2c2289b00f54347d07380c8abecbdfc32e3ae4ff515c81",
+        "bytes": 384915,
+        "gitBlob": "e96b43aee0a9225386c46fc3bb93251d9cbf5dde",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103,
+        "gitBlob": "553564da2d0c90ed97ee3b71671cd61faaf3e00e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-artifact-index.json",
+        "sha256": "fe4c37cff4d237ba0925fd51453bc01bb0625d6777cb01e44805e284f503e920",
+        "bytes": 4118,
+        "gitBlob": "1e851fcb591d54c87ab17d5e76864d98ac6d0d76",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-unit.log.gz",
+        "sha256": "23a8f09999e2abaed85976cc4046bcea1a8ad19e8861db2f1f5980ec4be7de89",
+        "bytes": 1710,
+        "gitBlob": "057249eafebb08fbd146743671cdaf473afb2fd3",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ba97d8120009c817d234bb6a28057924aaa97898ff174b41d8dc1e5b3b4d2514",
+        "bytes": 8930,
+        "gitBlob": "484f3cf7317c660265182cdce29fe24ae1682e5b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-binaries-20261016.json",
+        "sha256": "888a99f06367ce7430f40dfe8658e9e75f5c15c2ef2c515c399e99db946371e3",
+        "bytes": 916,
+        "gitBlob": "8ad9a1abb22b3c31eeff49b1f6541e5372cb7319",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-summary.json",
+        "sha256": "747e4f34c46c2249df204adb27f5cf1c8d2feb2d0deaace1458d0bb424404e03",
+        "bytes": 1464,
+        "gitBlob": "33afad06a6a6423979555cbf442f5aabb340bab0",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-plan.json",
+        "sha256": "d749c0b8c869214dfe8fc88d52f819ae51158195db6ed614e3096e399d9fefc3",
+        "bytes": 1533,
+        "gitBlob": "3fda39841592d167a46da8fcf2aaaede54fadd45",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "d6d3fd14706a901cbbfbcc7670c182425f11cd1d4c00df4f79256b83d831e852",
+        "bytes": 4831008,
+        "gitBlob": "5000e2acfda1ddd28225cf34610100f114870881",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-dotnet-test.log.gz",
+        "sha256": "9d1bc07e9eae52857b467e063818840b65359940ad38e0e715c57bfb6ec62602",
+        "bytes": 187056,
+        "gitBlob": "e9670706f16affe1106a376650ae7cf3b988719c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-artifact-index.json",
+        "sha256": "71c9103b6e0644432d1675d992edc8cc0d548383ae95d6966b25730a0d0bb891",
+        "bytes": 3581,
+        "gitBlob": "5ef00a133d3b8b0697ea79d144675198683851e4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.md",
+        "sha256": "af7bd1bc2a220580691f67e7d4caa75b7ac67464cfcacca822d73aed28b6114b",
+        "bytes": 5708,
+        "gitBlob": "5de8ae6554e6a2c4fb112a2783ac5cf68af4517f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.json",
+        "sha256": "458d4f56c43c2e9e58bdf14f95440fe0da2a1eb170bdac1030cb4863cc1e887b",
+        "bytes": 38200,
+        "gitBlob": "3f11fe80db575c785e088a7961c6cab887aac346",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.md",
+        "sha256": "a5e71f4144b317207a028df78796662dca5b0c97b2b527fc5cb57afbecb52333",
+        "bytes": 4768,
+        "gitBlob": "98fa438437bdbcd2cfa7fc1ec33753c934dacfc0",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.json",
+        "sha256": "02c78967947b45b1daf7f0c0949dd21829365e4945c7bc5681422b0c3dc3e019",
+        "bytes": 16807,
+        "gitBlob": "3317da4e4532d87afbf100d9abc359753ca53b7c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.md",
+        "sha256": "1c04ce1d90d4dde7d8875ae2f3d472c8f25f5c13e30d735b3729aaf087d349ba",
+        "bytes": 5052,
+        "gitBlob": "1ee701f77b37341d1688c8353f992123eff604e1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.json",
+        "sha256": "164bc8ca460681417fefddf83ca2b69c3837ec95d92129259a8fd0458518b8ab",
+        "bytes": 15531,
+        "gitBlob": "5c793e325bb4de19503a70073252addbc0b0028c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.md",
+        "sha256": "5f0d4372c9f5854bae6f60cf0d55d23594dabd65b8d3a04a43ad3d14950e68a1",
+        "bytes": 5618,
+        "gitBlob": "50bbbca5a3f5eaeb431611a69aa5ad8b22100b9b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.json",
+        "sha256": "f4b9f4b266357472d071759c10a76e6f0353b5d95fd71eeed36e5dd3c32daa4f",
+        "bytes": 11681,
+        "gitBlob": "41317bc66aea036b3633046e43adb89566a2a5ef",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.md",
+        "sha256": "aa0956be2fb4ff60648f0664e83ee9e5ca342677b88aa95605d99bc5ed076d14",
+        "bytes": 5111,
+        "gitBlob": "fec900a1d94465845c5c26cb310fdf763751899a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.json",
+        "sha256": "ea340f07d7867e66aa8db6fafb56001f9bef951b63d9af6dd85b6ec084c888c1",
+        "bytes": 20558,
+        "gitBlob": "cced8c1572255d8fcd2f8ee249f4118e99a1b0a1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-summary.json",
+        "sha256": "09cb94777b2a7daf57ef048bf5f407688002cebf60b23a69dc35f80483076e14",
+        "bytes": 1374,
+        "gitBlob": "909771b793c4a1b3174c10ecf246db8c62107901",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-plan.json",
+        "sha256": "0aa23e7bdf7d479cb905eb7b8025aaa09e3011ff2267bc2284b703ad91b1e2ff",
+        "bytes": 4102,
+        "gitBlob": "42991807a0a4d646792e555e0620ec4ca464c423",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "de9980ef310d7fa8f46f546665b2e539dab7ec1b703a02749211688e8de95bda",
+        "bytes": 5534,
+        "gitBlob": "1f61c257c8cbe44a1308901ca853ab1979890562",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-dotnet-test.log.gz",
+        "sha256": "354498825ddb86c1edfba1d5a5cef5a98030347e6ae2b8cb500ee167c7c9f3f9",
+        "bytes": 189624,
+        "gitBlob": "37c6e26f3c08a72af6d4cda702a3e4363e53ee2f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-artifact-index.json",
+        "sha256": "75887ed63ae0da8aa714a70fbd81348f79c0768ec5ffbf6c0c6970af67739a44",
+        "bytes": 3496,
+        "gitBlob": "1a5bff21c716e472d34cf5f3739a2c677993383b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-summary.json",
+        "sha256": "cec01d5def31df45a6217cf3461ac30ffae9eb1faaf0be3563cd34ad350f60c8",
+        "bytes": 3527,
+        "gitBlob": "6f7d95600815e35d465c975df990f383fdd74e24",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-plan.json",
+        "sha256": "8e5ed211837dc938bb6ce035e2e71a939670a2edb4310ba56bf923e68ae16684",
+        "bytes": 8978,
+        "gitBlob": "8357d0e0c25cb63ee410858ff1cd542a45536d28",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-dotnet-test.log.gz",
+        "sha256": "814671c00938ff60f5efe9408852defb36441e1fccda2e5e9f6f12bd027496ee",
+        "bytes": 374141,
+        "gitBlob": "4b1226bb2572f33ad2265f535b9c69c2ae35d6f1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-artifact-index.json",
+        "sha256": "332b580de494534b0f1c9930c46b454c28fb2f772935591f27eb78271b121144",
+        "bytes": 5226,
+        "gitBlob": "de461dad57ae2573fa1bc6f60a0b38dcdb71646a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-summary.json",
+        "sha256": "369d1ba3d26327a566a37268213d9ce69dd8696eb520959d63824e792388aae2",
+        "bytes": 1601,
+        "gitBlob": "69cc9fceb33beb53b0b0f0179a5b102e4789e54e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "34be7e4d7a3806471b2aa22f5f934c85aa262f394ac25a6f74b5e790f5628d23",
+        "bytes": 384943,
+        "gitBlob": "68eea15e039ec56e38fb4c95e04510c79f926ea6",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103,
+        "gitBlob": "553564da2d0c90ed97ee3b71671cd61faaf3e00e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-artifact-index.json",
+        "sha256": "cb4fe11208014243c86ba4c238f21909e6bea3e3e049c71a02927de12d6b98d2",
+        "bytes": 4139,
+        "gitBlob": "d5fd69e7de3d4a7ea45e4c0556f11c6f508148bd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-unit.log.gz",
+        "sha256": "1c2f35e18db1f487b428d9a374e75f42a16ceff31c3d619a66755c2fcc863fec",
+        "bytes": 1714,
+        "gitBlob": "f6f8937840b6af06782ae49906abc70c5c4eed75",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-integration.log.gz",
+        "sha256": "9fbaccf98f600abc3f7f3397d85c97d82f649bc8cd5b3765307ce20d60782d17",
+        "bytes": 8955,
+        "gitBlob": "42e3f249566f8ab302ca4a2bcc752f5481ee3c92",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-binaries-20261016.json",
+        "sha256": "c7a9d027e34b22065c42bac86dd128575f6f61042781508343a9faaaa9a28d38",
+        "bytes": 928,
+        "gitBlob": "bad9ac34848d812885f6dc1d09d6c7235398ce91",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-summary.json",
+        "sha256": "9f2a211d43706ae6eb5c69f42e35f46c854f15e1542476fb544bdfcc222c1b04",
+        "bytes": 1374,
+        "gitBlob": "d8a84166f84f655bfe4508f3a252ee7bc9c4dfad",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-plan.json",
+        "sha256": "88325b651e48103bbe80895e3e131cc5d96065b7df614e54ca94c9b673375f4b",
+        "bytes": 4103,
+        "gitBlob": "4db3cce985cca0cf01b18213a969889094ca6dcc",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "8c37ac1077366d767e0597e5a7eae35f0e954e5565749d78e11ee0162a1c732a",
+        "bytes": 6770,
+        "gitBlob": "287c8ac5fa0b8438aeed719ced36f858c0c61d72",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-dotnet-test.log.gz",
+        "sha256": "8a5588b909516a1f9b5fa46bb0abf53dda64efdb32b4b0a8c43dce1e5d1efbc4",
+        "bytes": 190324,
+        "gitBlob": "918da306d89621af751e71b51e86f493244db99d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-artifact-index.json",
+        "sha256": "6c5a0583db9c73deb449162c8f2803677c901a83dcc358764a872cfe7122587e",
+        "bytes": 3476,
+        "gitBlob": "2cafda3a461f9997aff849c804a7a31dabdaf1de",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.md",
+        "sha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692",
+        "bytes": 8999,
+        "gitBlob": "8b9f2032950975dfbdb7398a807a128c2b041a65",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.json",
+        "sha256": "0ca8ee93dfb74313c63d151a37ec6591dc9540ca4b633255e02f199fba3f6ab5",
+        "bytes": 9173,
+        "gitBlob": "e23a8ab41c29fc4ca62c96fde64b7b04b6914d64",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-summary.json",
+        "sha256": "4a74a4563dc286e73fe469d9e835883a40b62921599acc6ee32ee1b1a238e3f1",
+        "bytes": 3465,
+        "gitBlob": "348f87ea74abf52787857f9d1af688ad1650f971",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-plan.json",
+        "sha256": "52e3d28c22d196f582f6e6dd9e3735241b18f637e8fe34432fcc1863fb550186",
+        "bytes": 8917,
+        "gitBlob": "c21f12750e29f0849708fa4418d8c8c90ec4806b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-dotnet-test.log.gz",
+        "sha256": "bce617846165062e3c84bf656a4da8398679d686f5e5119c5cebe18d24e525f9",
+        "bytes": 374139,
+        "gitBlob": "9a983cee25bd7f7394c981bbfe4545df15bc51e5",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-artifact-index.json",
+        "sha256": "04cf1a5656b4b21b98fc08b3ec75cdba5f1eb94f1f028db1468ed596feee31e3",
+        "bytes": 5158,
+        "gitBlob": "62e2bf39cee200bdf383879764f05e98c66b727b",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-summary.json",
+        "sha256": "43d8c6a3d7e3ca0b0266cb05009027815e18beb949a888428d9158e6646393ea",
+        "bytes": 1600,
+        "gitBlob": "7348c80cb19ba57dd4bb4cf4f0cbf0fe06bc0fe2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "6ec66aa2379b02adbda2b8ce84a3e59984cba0bb06896b8284d589b0563fb002",
+        "bytes": 384863,
+        "gitBlob": "2900ea9e464cb415ecf9c4a36d0b0d1b778c3f81",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103,
+        "gitBlob": "553564da2d0c90ed97ee3b71671cd61faaf3e00e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-artifact-index.json",
+        "sha256": "6206e3019e5d71467acd15be2c7b0b173729c63b5df23b66d2635d422e5c28b1",
+        "bytes": 4128,
+        "gitBlob": "d272d37e3bc60f10dfee557e3093398a851874ba",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-unit.log.gz",
+        "sha256": "b9ea8bf6d1c47d0cc1e8cf894e68d7c726864d6e39c55b6c96e6fa908e844d4d",
+        "bytes": 1707,
+        "gitBlob": "5c16608e534663c78b331d966f62ffb9c08f3cb4",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ace288aa21b7742e4c47085b0019eb481e7658ce03e00304097de1ec1792e01f",
+        "bytes": 8885,
+        "gitBlob": "6dad56351e1a22bcd035a03593236bb78bd82833",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-binaries-20261016.json",
+        "sha256": "3408c80be46c9a69456612c8bdcd7deedd8b89339a6e656b44b93d71b781f4d9",
+        "bytes": 922,
+        "gitBlob": "6a5ee08274dbfc4595d3286e8c0201769d8c4e08",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-summary.json",
+        "sha256": "7f5277278f1e3085366e8bbf1dd7de9f6bca8d2f38b733886b5c026d219a9c60",
+        "bytes": 1464,
+        "gitBlob": "61e084baf6b845a02ff0facc07db3b4d81a3c5fe",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-plan.json",
+        "sha256": "f62d67fde923c771287dfaa1d595f349e81ec0d0a33e46b024b332dff4bbe329",
+        "bytes": 4545,
+        "gitBlob": "cd405fca520ffcf31976a86298cf0d86c09d924f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "3eeed08ffb6390f1bc0a9844eaf061fcd417e8469ba9410c7dcc3f3700275979",
+        "bytes": 150789,
+        "gitBlob": "9f8ef22d7ec7dc3dc763b46a27cc937ee96bd82a",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-dotnet-test.log.gz",
+        "sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821",
+        "bytes": 197063,
+        "gitBlob": "789f87ceec84a2d73369c4aa4fcf0f0c6f0cd36f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-artifact-index.json",
+        "sha256": "3358874268775724301d39ebbe623e64925e8edb5b293e6f18f7540e9fa06155",
+        "bytes": 537,
+        "gitBlob": "ad47137193b03160f9bc60ef8cd6803c29060a9f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-summary.json",
+        "sha256": "7b5604bfbdbd8a4c71efe8f24956e89de17d1f81ec5baa006cb1e268acc05c5f",
+        "bytes": 1464,
+        "gitBlob": "91050af579871e3b1b5c1781db0363670f9171bd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-plan.json",
+        "sha256": "2bcf819b0b0b8eb1698554a85a9430e795b2d2d80ebe487ef3ad6c6d782831f6",
+        "bytes": 5216,
+        "gitBlob": "8d5d107af408d2808cc6180d478b356ed84e0a58",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "be23a75752dcffa7a650e75bbaaf8191448030f2a73ede8228c5281a74c64b27",
+        "bytes": 76824,
+        "gitBlob": "207176c38d7c3af8f1637f5ae43621f4a5d1c003",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-dotnet-test.log.gz",
+        "sha256": "5782863a48dd15c4ca15980fa802961e0781c543072a721e3917e8435b59b2ba",
+        "bytes": 195757,
+        "gitBlob": "fc1600901669c38b1a2b30e45b758b5f4470c4bf",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-artifact-index.json",
+        "sha256": "1551506b17a4022774a8e9abb382b86d3cecc049c6a741f5e6705956e0d547ea",
+        "bytes": 2540,
+        "gitBlob": "2a4cfea429625df02299d21a85966c433d8ce08c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.md",
+        "sha256": "b89bdff92a5e1e91b34862eecd9a648e6b2bf85a7dff311297939d2f300834c5",
+        "bytes": 6101,
+        "gitBlob": "765f4c306df67298b751fe32a55fcf9240e326a0",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.json",
+        "sha256": "8bab7e26b8d4ca4b8d9779549edc25c04157f965f259bcbfa5a2b89850a26f2b",
+        "bytes": 25503,
+        "gitBlob": "752e1e67cc00905aebc6a70c0c97becdf6a9f99e",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.md",
+        "sha256": "9c21ef1b46732bdb29b892edd0a23d12507ff5e7a9ded18eee77dc7b93e1a709",
+        "bytes": 5252,
+        "gitBlob": "ff20922046c04cb1704ee66b9e21ce2188d606c1",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.json",
+        "sha256": "700c9a70de475f424d6be937a6e2beb2efd62bc2953227bd5cdf9c108c83fa0f",
+        "bytes": 37162,
+        "gitBlob": "fc7d2304e2263080f6019798d4d5f6e4876911c2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-summary.json",
+        "sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+        "bytes": 1560,
+        "gitBlob": "3994314e78d96b253f9b9b8ba25ba42e5a0375bc",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-plan.json",
+        "sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+        "bytes": 4544,
+        "gitBlob": "bb369d038936d97fb2723beda74e6715cea8e3cf",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+        "bytes": 53680,
+        "gitBlob": "988918d2d27ed04812093769b5707a2ff7897453",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-dotnet-test.log.gz",
+        "sha256": "797b3f4bba8924878f7735f8f1a4cfac05068c62e4a4cb5649ec0f9f13f193d1",
+        "bytes": 194716,
+        "gitBlob": "47bdabdb333b58edfa3be1c9e42b2e0c4308aff9",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-artifact-index.json",
+        "sha256": "3a74daa30c707341f6268429873cf226a3aeecf22cc9e3a1ae0cd0330b5b8421",
+        "bytes": 1619,
+        "gitBlob": "43ff7e233aad01892877ad86a6cb7e049ebbd2aa",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-summary.json",
+        "sha256": "d1b64d26efc20104ad72bbeca124ea09908ead3cc51e4d9d306d0f4df4e4359d",
+        "bytes": 1559,
+        "gitBlob": "381734f91a29cd3565a0c4784e986f0ad44e1551",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-plan.json",
+        "sha256": "58d3581def61f5982dad25ddcad5c4d7f2fd2e30044f18e39cb8a8768f8b563a",
+        "bytes": 5216,
+        "gitBlob": "a31821f075207cf3599d2b2bc5b210c20e3fa845",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "be8bcc0036ee5d90021cd186a5c896b65b33c3c11be84302f1146a8464715fed",
+        "bytes": 63307,
+        "gitBlob": "bfe8523dd1a634f020d06371ce8881b439578aa5",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-dotnet-test.log.gz",
+        "sha256": "79bfefc8046c567346621aff4f83d578c225645100e2c12fd6bb56275d70caf5",
+        "bytes": 194861,
+        "gitBlob": "288525e461e052b8eaddc6f9479e445717d8a69f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-artifact-index.json",
+        "sha256": "8c556065cc0236b9e3e11ea9d093c97983551667b0eadd70ca02582311e1038f",
+        "bytes": 1674,
+        "gitBlob": "ec3dc0ad06342c3436497132f2aca45670465409",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-summary.json",
+        "sha256": "e61a275091d44e10a0a0e616279a2fdcf33346f879da62d42d06335e913f5b06",
+        "bytes": 1598,
+        "gitBlob": "ffdc009bdecdf8b358b2142c215fbe7fb06067a7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-dotnet-test.log.gz",
+        "sha256": "d3b46b969762badbb9d3042073419b65d1c0c94a7a377cfa2bc9e49bb1d0026c",
+        "bytes": 377669,
+        "gitBlob": "cd296c13bbbcd3ca5d137cc1b0dd51fc741a527d",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-catalog-audit.json",
+        "sha256": "a0fc61801b09e592ab42e244578562f246f4b87b7e106ea346807ebd413d0e0b",
+        "bytes": 103,
+        "gitBlob": "b955713bb84cd739b9cf98ab6680205218608239",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-artifact-index.json",
+        "sha256": "e93cd11fc4d7d8b5d489f7b8fbbcdf8a87d8bfd24635ca57ce7817207c772549",
+        "bytes": 1407,
+        "gitBlob": "6e0884da70570a98b63c04a8fd0fab968c13f312",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-summary.json",
+        "sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+        "bytes": 1599,
+        "gitBlob": "5ff5c6deb12e163799a1671b672fd804ab710884",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-dotnet-test.log.gz",
+        "sha256": "35a147758c781fbbddc2aa12dc089c7495b4a07c5a8fde2f23417062cd5b8378",
+        "bytes": 377540,
+        "gitBlob": "e2e2c9f188647caa731e18d88cbd847581cd52e9",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-catalog-audit.json",
+        "sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+        "bytes": 103,
+        "gitBlob": "1d36ff6f253774d37e13976409b276cae8dd4c80",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-artifact-index.json",
+        "sha256": "eaad4529691ca3fbf75cb6f6766536b192d7da24c0106d7dc6f8b3f88b4a3e2a",
+        "bytes": 1338,
+        "gitBlob": "8b4c0b18099053c2cb35a1c3ef9b230d27970dfd",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-architecture-preflight-20261016.md",
+        "sha256": "b2a894f13c9c1a1f213b33441282c777cbc00d75b5d3c106c5abca3bbacff56e",
+        "bytes": 11144,
+        "gitBlob": "a18a68e18328a8befeb3297020ed3eb9a0d5273c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+        "bytes": 109777,
+        "gitBlob": "b5b85f9318f2b6b1951dd8d2a0439075050b4660",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+        "sha256": "6e0aafb3f6a57dbdf5ece5d16f11777f43a7cefd00bbf44fba41928736832ab2",
+        "bytes": 69121,
+        "gitBlob": "699a661ec3f750a2fe669e9584a2d6749f1eb5e7",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+        "bytes": 104607,
+        "gitBlob": "2a24975b00c08dde57c7ae98ea02e9d57b8712c8",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+        "bytes": 63665,
+        "gitBlob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+        "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+        "bytes": 123449,
+        "gitBlob": "26ec745d69c89724b5477fe4169041470f6a5d00",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+        "sha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+        "bytes": 20977,
+        "gitBlob": "31b5302758e6e6afe388d29e589c22b38388e638",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+        "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+        "bytes": 21662,
+        "gitBlob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+        "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+        "bytes": 5254,
+        "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+        "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+        "bytes": 13079,
+        "gitBlob": "cafdf7b047f764926bf13e11f3496a1cf0355591",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+        "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+        "bytes": 405766,
+        "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+        "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+        "bytes": 30382,
+        "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+        "sha256": "27b3754cb9ff867b3d76e913528fcd32af691daaadda9fc16c56646780cffa42",
+        "bytes": 6623,
+        "gitBlob": "9953e3e61aef414673ac694fceb36e28e96f12cc",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+        "sha256": "bdeb4200ac73f113359ba81a2b2db8a56af21d886fe2954236793ec31bb7b0cf",
+        "bytes": 4811,
+        "gitBlob": "2777ec4c498835876b2fc7bacd7d18c572f74be0",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+        "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+        "bytes": 22909,
+        "gitBlob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+        "sha256": "64c3d989c4f20fc01c9a07e09b2254da010bf9ddb6aef043004e0815ecd49e90",
+        "bytes": 5022,
+        "gitBlob": "f91b5619173ebdb261ba585ac705fa69dcdeeeea",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+        "sha256": "e628d6d382eef03a8535a3db192a27944d6a545fd797566e09c96ca8ea74ee6e",
+        "bytes": 7480,
+        "gitBlob": "20d66788fe4d760e6558602da2fb133654caa289",
+        "matchesCompiledSource": true
+      },
+      {
+        "path": ".specify/memory/constitution.md",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "bytes": 14081,
+        "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "matchesCompiledSource": true
+      }
+    ]
+  },
+  "releasedNextAction": {
+    "category": "fr063-joint-late-completion",
+    "descriptors": 1,
+    "cases": 2,
+    "sourceMustRemain": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "binaryManifest": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-binaries-20261016.json",
+    "conditions": [
+      "Run only the exact existing Late2 singleton with fresh pinned BOTH binaries; no source/test/fixture/catalog/selection changes.",
+      "Freeze complete raw stdout/log/TRX/plan/summary/native exit, per-method counts, actual owner/union/arithmetic/story/turn/inert-repeat and strict real-root cleanup evidence; checkpoint, push and verify remote SHA.",
+      "Require a separate independent EVIDENCE decision before causal lifecycle unit RED3. This report does not release RED execution.",
+      "Stop on failure, timeout, skip, duplicate, underfill, missing evidence or cleanup uncertainty. Never edit a failing fixture or implement success before preserving the full causal packet."
+    ]
+  },
+  "subsequentExpectedRedNotYetReleased": {
+    "category": "fr063-active-prefix-lifecycle-evidence",
+    "cases": [
+      "advance",
+      "no_change",
+      "no_eligible"
+    ],
+    "requiredFailure": "Only missing LifecycleExecutionLedger property Assert.NotNull at test source line 59, after every old success precondition.",
+    "unexpectedFailurePolicy": "Stop and freeze all raw evidence. Invalid fixture/bootstrap/guard/resource/projection/assembly failure is not causal RED and cannot authorize success implementation."
+  },
+  "notReleased": [
+    "Lifecycle unit RED3 before separate Late2 EVIDENCE",
+    "Success implementation before causal RED3",
+    "Any aggregate/full suite or broad category",
+    "Unchanged old Pc37 reruns without relevant impact or explicit gate",
+    "Full T179-Pd/T192b/S/C/B/M3/P0 acceptance",
+    "F1, T197, new QTE or player activation"
+  ],
+  "reviewerExecution": "Read-only repository/Git/source and raw artifact/hash inspection, plus /tmp scripts/diffs/reports only. No build/discovery/test/application runtime, repository writes, commit/push/fetch or subagent.",
+  "finalStop": true,
+  "markdownReportSha256": "91ecae98d585ace8fa96624cabe5d40c01f246964242a7c11ad29587a5874914"
+}

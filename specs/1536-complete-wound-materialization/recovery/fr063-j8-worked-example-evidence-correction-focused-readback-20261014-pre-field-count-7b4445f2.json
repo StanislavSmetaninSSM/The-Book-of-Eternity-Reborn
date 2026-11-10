@@ -1,0 +1,269 @@
+{
+  "base": "59e1d90c2ebb94f4d304c6b717fed05508b4d6d1",
+  "scope": "fresh focused text/byte observations only; not compilation/API/runtime",
+  "finding": "ROOT source observations, not executed failure",
+  "observations": [
+    {
+      "name": "initial_report_byte_exact",
+      "observed": true
+    },
+    {
+      "name": "initial_readback_byte_exact",
+      "observed": true
+    },
+    {
+      "name": "generation_capture_single_block",
+      "observed": true
+    },
+    {
+      "name": "rejected III:diagnostic_block_removed_once",
+      "observed": true
+    },
+    {
+      "name": "corrected II:diagnostic_block_removed_once",
+      "observed": true
+    },
+    {
+      "name": "packet_early_emit_single",
+      "observed": true
+    },
+    {
+      "name": "corrected_overload_single",
+      "observed": true
+    },
+    {
+      "name": "generation_after_single",
+      "observed": true
+    },
+    {
+      "name": "exact_correction_inverse_restores_initial_helper",
+      "observed": true
+    },
+    {
+      "name": "raw_G_before_doc_assertions",
+      "observed": true
+    },
+    {
+      "name": "raw_G_plus_ID_after_component",
+      "observed": true
+    },
+    {
+      "name": "full_packet_early_immediate_emit",
+      "observed": true
+    },
+    {
+      "name": "full_packet_before_comparison_and_shape",
+      "observed": true
+    },
+    {
+      "name": "rejected_diagnostic_before_result_assertion",
+      "observed": true
+    },
+    {
+      "name": "corrected_diagnostic_before_result_assertion",
+      "observed": true
+    },
+    {
+      "name": "compact_issue_projection_only",
+      "observed": true
+    },
+    {
+      "name": "Examples/E_CLI_Wound_Materialization.txt:initial_candidate_exact",
+      "observed": true
+    },
+    {
+      "name": "Examples/example_validation_manifest.json:initial_candidate_exact",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs:initial_candidate_exact",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs:initial_candidate_exact",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md:historical_tail_byte_exact",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md:checkbox_lines_exact",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md:inventory_limit_explicit",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md:historical_tail_byte_exact",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md:checkbox_lines_exact",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md:inventory_limit_explicit",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient/Services/WoundRepairPacketBuilder.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient/Services/WoundRepairPacketBuilder.PersistenceValidation.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "Examples/E_CLI_QTE_Offer.txt:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/spec.md:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md:same_current_protected_pin",
+      "observed": true
+    },
+    {
+      "name": "BookOfEternityClient/game_master_daemon.ps1:same_current_protected_pin",
+      "observed": true
+    }
+  ],
+  "authoredPins": [
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "beforeSha256": "9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0",
+      "currentSha256": "94755c63f45e4906f18ef30a12d094fae0519bc38f0317668a3e69e1e9d78375",
+      "bytes": 98121
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "beforeSha256": "ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb",
+      "currentSha256": "130baf7c1ec16124b0282d64d7876f4ff488ad9ad2764aa5cd8b1cf428212073",
+      "bytes": 184578
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+      "beforeSha256": "b38a5ef92c161b94e1fee333ed6eefc5ed2c18542394b753b1e724e2f7da0585",
+      "currentSha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2",
+      "bytes": 30297
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "beforeSha256": "b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9",
+      "currentSha256": "3be1c51566bef63723926742435085163fe42b4b5e48dea0e032cc951dfc34f3",
+      "bytes": 47208
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "beforeSha256": null,
+      "currentSha256": "33cfac7e7aa0ce68c3b834047155ad259dbf648a210810456f4d5b05482b9fa6",
+      "bytes": 11582
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "beforeSha256": "79471f052c6e828227940a3a296d8497f94be7c36afae38dad26be3bc88b04fa",
+      "currentSha256": "9d93de4e6b48f8560215f6fa70f1e6716eef9b433508d9ca805e8b37e15b763c",
+      "bytes": 1570245
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "beforeSha256": "11bcc088b93f74ef5793b1007fe3aa48cbacaad3dff95ea2fdab359e7fa5fa39",
+      "currentSha256": "29bde09e1c56caaa3f9c97b7c0dfa2e1867178144869f6f4421b97f614e3a252",
+      "bytes": 1070861
+    }
+  ],
+  "protectedCurrentPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "currentSha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerControls.cs",
+      "currentSha256": "9c7d2f6623b9d194f831350c8d47c3f63c780c0ee8c1d520c580dcd78930f66d",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "currentSha256": "e397cf86000c51503d3bd6b74cd90871769ead651d6d66b71f658c147a13a9c8",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "currentSha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.cs",
+      "currentSha256": "4d4b0eb287207011edf9596ae6af2afd4ff7e8f7ee3d7a2889b95f6315c77fdd",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundRepairPacketBuilder.PersistenceValidation.cs",
+      "currentSha256": "358fcaa3bf9dbdbaffae7cd8d1d4cf9d39e579efdb0a9d5cbb444df5960ad68c",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QtePhysicalWoundOccurrenceProducer.cs",
+      "currentSha256": "4e59c82aa3221569edf7c34c59bf3a5960b1ea64874ca40c97244fc101409164",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "Examples/E_CLI_QTE_Offer.txt",
+      "currentSha256": "691252786980c31541d02e25ea97417822916dde1043428f019a38a35cb81127",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "currentSha256": "406f9c5e00390bdd39b98b09f7643e961a88028d4754eda5ea4a096f3d2bf75b",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "currentSha256": "80f0bc0ef0f5268c3d66c0e7dba635c15e731adba604f2839aeb4ca699dc437f",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "currentSha256": "07b13a7375b042fc7659756ba9fed996777a62a7b2a34223d8baa72accdc6e44",
+      "qualification": "current pin only; ROOT owns base-byte preservation comparison"
+    }
+  ],
+  "initialRawReport": "/workspace/boe-cloud-tools-20261014/fr063-j8-genuine-severity-repair-example-source-report-20261014-initial-72717edb.md",
+  "initialRawReadback": "/workspace/boe-cloud-tools-20261014/fr063-j8-worked-example-59e1d90c-20261014-focused-readback-initial-b43724c0.json",
+  "initial48Checks": "historical initial snapshot only",
+  "failedPriorExternalCheck": "/workspace/boe-cloud-tools-20261014/fr063-j8-evidence-readback-author-syntax-failure-6c8350-20261014.json",
+  "sourceInventory": {
+    "integrationFacts": 1,
+    "unitFacts": 1,
+    "casesProvisional": 2,
+    "newHelperFacts": 0,
+    "categoriesOrSelectorsAdded": 0
+  },
+  "compilerApiFixtureClose": "UNCHECKED",
+  "projectChecks": "UNRUN"
+}

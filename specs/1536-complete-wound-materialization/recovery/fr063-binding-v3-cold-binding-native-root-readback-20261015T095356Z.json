@@ -1,0 +1,644 @@
+{
+  "source": "e8675add3c914a03dd4a574b5cf9ef45529488bd",
+  "compileSource": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+  "frozenPacket": "fr063-finite-binding-v3-frozen-e8675add3-20261015T094626Z",
+  "manifestSha256": "03e1a9ebaf463b1a78314e109976ba8df82414f4a23b93bad6ad138c5e534347",
+  "rawObservationSha256": "f79da791bff1853156d6eb02eee947c1037709332e7f9900cffb48e6c5be28ec",
+  "children": [
+    {
+      "parentLocator": "$[34].Observation",
+      "scenario": "binding_transition_rehash",
+      "entry": {
+        "ProcessId": 30397,
+        "ParentProcessId": 30142,
+        "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f9c0a727083d42b590a871f48d318eaf",
+        "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4295386ea04843d89d5b4d8a9dc7fa2c",
+        "Arguments": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "engine-mortal-joint-applied-cold",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f9c0a727083d42b590a871f48d318eaf",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f9c0a727083d42b590a871f48d318eaf/joint-applied-cold-result.json",
+          "9",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f9c0a727083d42b590a871f48d318eaf/joint-applied-cold-context.json"
+        ],
+        "DependencyContext": {
+          "paths": {
+            "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+            "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+            "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+          },
+          "sha256": {
+            "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+            "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+            "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+          },
+          "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+        },
+        "LoadedDependencies": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      "finalReportedBindings": [
+        {
+          "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        }
+      ],
+      "finalDependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "native": {
+        "ChildProcessId": 30397,
+        "ParentProcessId": 30142,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "finalOwner": {
+        "processId": 30397,
+        "actualOuterCallerInvoked": true,
+        "actualCallerEntered": true,
+        "completed": false,
+        "refusalVerified": true,
+        "failure": null,
+        "actualTurn": 42
+      },
+      "entryFinalThreeAndFiveMatchFreshPins": true,
+      "beforeAfterMapsEqual": true
+    },
+    {
+      "parentLocator": "$[70].Observation",
+      "scenario": "binding_local_rehash",
+      "entry": {
+        "ProcessId": 30252,
+        "ParentProcessId": 30142,
+        "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9add38b8b90f4f53995e2b3ee63be4c0",
+        "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4489e025ecd141d386e4d86fb1a798e2",
+        "Arguments": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "engine-mortal-joint-applied-cold",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9add38b8b90f4f53995e2b3ee63be4c0",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9add38b8b90f4f53995e2b3ee63be4c0/joint-applied-cold-result.json",
+          "9",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9add38b8b90f4f53995e2b3ee63be4c0/joint-applied-cold-context.json"
+        ],
+        "DependencyContext": {
+          "paths": {
+            "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+            "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+            "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+          },
+          "sha256": {
+            "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+            "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+            "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+          },
+          "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+        },
+        "LoadedDependencies": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      "finalReportedBindings": [
+        {
+          "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        }
+      ],
+      "finalDependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "native": {
+        "ChildProcessId": 30252,
+        "ParentProcessId": 30142,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "finalOwner": {
+        "processId": 30252,
+        "actualOuterCallerInvoked": true,
+        "actualCallerEntered": true,
+        "completed": false,
+        "refusalVerified": true,
+        "failure": null,
+        "actualTurn": 42
+      },
+      "entryFinalThreeAndFiveMatchFreshPins": true,
+      "beforeAfterMapsEqual": true
+    },
+    {
+      "parentLocator": "$[106].Observation",
+      "scenario": "binding_missing",
+      "entry": {
+        "ProcessId": 30356,
+        "ParentProcessId": 30142,
+        "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e9cdde09b4f742aca3e751d3f269378f",
+        "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d2778aea86ae416f9e261d3977f97dd6",
+        "Arguments": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "engine-mortal-joint-applied-cold",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e9cdde09b4f742aca3e751d3f269378f",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e9cdde09b4f742aca3e751d3f269378f/joint-applied-cold-result.json",
+          "9",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e9cdde09b4f742aca3e751d3f269378f/joint-applied-cold-context.json"
+        ],
+        "DependencyContext": {
+          "paths": {
+            "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+            "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+            "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+          },
+          "sha256": {
+            "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+            "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+            "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+          },
+          "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+        },
+        "LoadedDependencies": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      "finalReportedBindings": [
+        {
+          "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        }
+      ],
+      "finalDependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "native": {
+        "ChildProcessId": 30356,
+        "ParentProcessId": 30142,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "finalOwner": {
+        "processId": 30356,
+        "actualOuterCallerInvoked": true,
+        "actualCallerEntered": true,
+        "completed": false,
+        "refusalVerified": true,
+        "failure": null,
+        "actualTurn": 42
+      },
+      "entryFinalThreeAndFiveMatchFreshPins": true,
+      "beforeAfterMapsEqual": true
+    },
+    {
+      "parentLocator": "$[142].Observation",
+      "scenario": "binding_version",
+      "entry": {
+        "ProcessId": 30302,
+        "ParentProcessId": 30142,
+        "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c39da67e8d48416999d665edb18d38ea",
+        "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0741d138c205426b9b937025faca15f3",
+        "Arguments": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "engine-mortal-joint-applied-cold",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c39da67e8d48416999d665edb18d38ea",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c39da67e8d48416999d665edb18d38ea/joint-applied-cold-result.json",
+          "9",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c39da67e8d48416999d665edb18d38ea/joint-applied-cold-context.json"
+        ],
+        "DependencyContext": {
+          "paths": {
+            "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+            "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+            "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+          },
+          "sha256": {
+            "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+            "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+            "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+          },
+          "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+        },
+        "LoadedDependencies": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      "finalReportedBindings": [
+        {
+          "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        }
+      ],
+      "finalDependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "native": {
+        "ChildProcessId": 30302,
+        "ParentProcessId": 30142,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "finalOwner": {
+        "processId": 30302,
+        "actualOuterCallerInvoked": true,
+        "actualCallerEntered": true,
+        "completed": false,
+        "refusalVerified": true,
+        "failure": null,
+        "actualTurn": 42
+      },
+      "entryFinalThreeAndFiveMatchFreshPins": true,
+      "beforeAfterMapsEqual": true
+    },
+    {
+      "parentLocator": "$[178].Observation",
+      "scenario": "binding_wound_rehash",
+      "entry": {
+        "ProcessId": 30688,
+        "ParentProcessId": 30142,
+        "BorrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d27cc3985dc7408a81a3f88425f0656e",
+        "AuxiliaryFactoryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-aa6f5d31a8d44c0cb26d8afd50903c46",
+        "Arguments": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "engine-mortal-joint-applied-cold",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d27cc3985dc7408a81a3f88425f0656e",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d27cc3985dc7408a81a3f88425f0656e/joint-applied-cold-result.json",
+          "9",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d27cc3985dc7408a81a3f88425f0656e/joint-applied-cold-context.json"
+        ],
+        "DependencyContext": {
+          "paths": {
+            "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+            "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+            "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+          },
+          "sha256": {
+            "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+            "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+            "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+          },
+          "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+        },
+        "LoadedDependencies": [
+          {
+            "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "Sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+            "Sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          },
+          {
+            "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "Path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+            "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+            "LoadContext": "Default",
+            "IsDefaultContext": true
+          }
+        ]
+      },
+      "finalReportedBindings": [
+        {
+          "identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "sha256": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "sha256": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        },
+        {
+          "identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+          "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+          "sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+          "loadContext": "Default",
+          "isDefaultContext": true
+        }
+      ],
+      "finalDependencyContext": {
+        "paths": {
+          "integration": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "support": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "runtimeconfig": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+          "depsfile": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+          "immutable": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll"
+        },
+        "sha256": {
+          "integration": "9D6104E3EFC46D623BEA254F751CF4EE30182EA7E4F41075082A7573C5D8191E",
+          "support": "730109629CADEAAEE477D65EC7180443479C6C55F0E1B077E23FE07060674AAB",
+          "runtimeconfig": "8B2761E495088FCE2AE0679E6E9FADBFF452F0C27144BF60429CC7984BD6A6AD",
+          "depsfile": "2DCE1207F71BFC062AB64EBC3F9392F7DF4FB188AA652B5A8AB4C5D34341F247",
+          "immutable": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C"
+        },
+        "immutableAssemblyIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      },
+      "native": {
+        "ChildProcessId": 30688,
+        "ParentProcessId": 30142,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "finalOwner": {
+        "processId": 30688,
+        "actualOuterCallerInvoked": true,
+        "actualCallerEntered": true,
+        "completed": false,
+        "refusalVerified": true,
+        "failure": null,
+        "actualTurn": 42
+      },
+      "entryFinalThreeAndFiveMatchFreshPins": true,
+      "beforeAfterMapsEqual": true
+    }
+  ],
+  "allFiveRefusalsAndBindingsNativeVerified": true,
+  "tenActualCleanupRootsAbsent": true,
+  "perCaseCleanup": {
+    "strictReceiptCount": 10,
+    "gameEngineCaseCoverage": [
+      {
+        "testId": "8f9fec6d-0444-d2a0-73c6-4d6b7c022e5b",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_transition_rehash\")",
+        "parsedReceiptObserved": true
+      },
+      {
+        "testId": "7ca8085c-80c0-83ca-33b3-32c0313846ed",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_local_rehash\")",
+        "parsedReceiptObserved": true
+      },
+      {
+        "testId": "5a1a9c08-1bfe-6a6e-00cb-8b40a8fe805f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_missing\")",
+        "parsedReceiptObserved": true
+      },
+      {
+        "testId": "a8d3aa87-4912-9424-9461-52da5e71659c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_version\")",
+        "parsedReceiptObserved": true
+      },
+      {
+        "testId": "87a0d231-8913-553f-be32-f1f042457219",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_wound_rehash\")",
+        "parsedReceiptObserved": true
+      }
+    ],
+    "validated": true,
+    "scope": "observed strict receipts and every actual GameEngine fixture case; other pure cases grant no filesystem cleanup claim"
+  },
+  "allChildDependencies": "NOT_CLAIMED"
+}

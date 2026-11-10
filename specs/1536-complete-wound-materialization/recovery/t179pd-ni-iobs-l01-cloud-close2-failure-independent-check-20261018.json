@@ -1,0 +1,101 @@
+{
+  "kind": "INDEPENDENT_CLOSE2_FROZEN_FAILURE_CAUSAL_EVIDENCE_CHECK",
+  "checkedUtc": "2026-10-18T10:27:22.053368+00:00",
+  "carrier": "f647853f41051025969d83a5fa251d3b592a23c0",
+  "actualSource": "61e712e319e8f480b77755aebae4c2db69e1423c",
+  "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "nativeExit": 1,
+  "recordSha256": "44bd4147341b6590ecd5867a0c1719989dd4b02f7480641b1b134f6037a59219",
+  "archiveSha256": "82477104f4dc7b6e2c68b7b56300223b6d44075f811b57f0ffbded33d1e04319",
+  "archiveOriginalRawChains": 11,
+  "completeRawCoverage": true,
+  "source98Unchanged": true,
+  "binaries9AndAll1575Unchanged": true,
+  "summaryTests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "timedOut": false,
+  "seconds": 338.778737054,
+  "failedMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+  "failedDuration": "00:00:34.5502955",
+  "firstFailure": {
+    "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"Engine diagnostics:\\nCritical accepted-tur\"···\nNot found: \"L01 actual I publication owning release f\"···",
+    "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertInterfaceCloseHeld(GameEngine engine, String diagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs:line 105\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 380\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs:line 19\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs:line 25\n--- End of stack trace from previous location ---"
+  },
+  "observedPassingSibling": {
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+    "duration": "00:04:31.9920549",
+    "independentlyQualifiedHere": false
+  },
+  "actualOwnerLease": "BookOfEternityClient.Core.GameEngine+<>c__DisplayClass286_1+<<PrepareCurrentMortalJointInterfaceAsync>g__PrepareAndPublishWithOwningReleaseAsync|0>d/<>8__1/lease",
+  "publishedRetainedBeforeDiagnosticFailure": {
+    "pendingBytesExact": true,
+    "interfaceMatchesPublishedAfterImage": true,
+    "releaseCalls": 1,
+    "noFreshDataDelivered": true,
+    "noCommonOrCapture": true,
+    "turn42": true,
+    "diagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after обработки хода: 1 errors"
+  },
+  "downstreamDirectRestoreOracleReached": false,
+  "cleanup": [
+    {
+      "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-a46785449d424fd7a570819b6e74f556",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-dc06a3418d604b6294165d502d5e1e6a",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "restoredCarrierPaths": 16,
+  "sourceAnchors": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "6098dcbab770ea36ffb65808a200770d0996b25f41313aa1f2348c06d6219ded"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "sha256": "c2aaca74c30c16f577c6a6947e37578992bace327009435c656d0917554c1735"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "sha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+      "sha256": "6dd6124f66cad4857ce09356aa529d975afabb528ab38fe87c32bdd8da5f2c0a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "sha256": "4d6c1d08949055d66bd4b7091b6daedac6ce7d4776bb18476800521bd3bea94e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "sha256": "0fb47c8c1ebfce3ecb07fbf52f7966abcbb5d02ea419eb145ee95558cff3e6dd"
+    }
+  ],
+  "attribution": "PRODUCT_DIAGNOSTIC_LOSS_WHEN_DESTRUCTIVE_REFUSAL_GUARD_REPLACES_ORIGINAL_CLOSE_EXCEPTION",
+  "runtimeReplayed": false
+}

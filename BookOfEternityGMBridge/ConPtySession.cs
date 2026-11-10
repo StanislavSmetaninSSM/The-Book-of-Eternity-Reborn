@@ -31,11 +31,6 @@ internal sealed class ConPtySession : IDisposable, IOwnedTerminalSession
     private ConPtySession() { }
     private void Lose(string reason) { lock(_gate)_uncertain=true;_authorityLost.TrySetResult(reason); }
     private async Task<TerminalRootExit> ObserveRootAsync(Process process) { try { await process.WaitForExitAsync();return new(process.ExitCode); } catch { Lose("conpty-root-observation-fault");throw; } }
-    public static ConPtySession Start(string shellExe,string shellArguments,string workingDirectory,short width,short height)
-    {
-        var owner=Prepare(shellExe,shellArguments,workingDirectory,width,height,Guid.NewGuid().ToString("N"));
-        try {owner.ReleaseOriginal();return owner;}catch(Exception ex){owner.Lose("conpty-release-unconfirmed");throw new OwnedTerminalStartException(owner,ex);}
-    }
     internal static ConPtySession Prepare(string shellExe,string shellArguments,string workingDirectory,short width,short height,string runId)
     {
         if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("ConPTY requires Windows.");

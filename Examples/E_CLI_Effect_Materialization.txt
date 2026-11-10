@@ -1358,7 +1358,7 @@ private receipt rows use that one ID and distinct ordered transition IDs.
           "clockKind": "afterlife_world_time",
           "cadence": 86400,
           "currentStepProgress": 0,
-          "currentStepThreshold": 4,
+          "currentStepThreshold": 6,
           "lastTickKey": null,
           "blockers": [],
           "carryOverflow": true,
@@ -1435,8 +1435,37 @@ INVALID — explicitly rejected pre-v1 input, retained only as a negative test:
       "duration": 999
     }
   ],
-  "NPCEffectChanges": []
+  "NPCEffectChanges": [],
+  "enemiesData": [
+    {
+      "NPCId": "npc_raider",
+      "name": "Налётчик",
+      "image_prompt": "Дозорный в дорожном плаще",
+      "description": "Страж у ворот",
+      "type": "NPC",
+      "isGroup": false,
+      "actions": [],
+      "resistances": [],
+      "activeBuffs": [
+        {
+          "effectType": "WoundReference",
+          "value": "0%",
+          "description": "INVALID direct wound link",
+          "duration": 999,
+          "sourceWoundId": "missing_wound"
+        }
+      ],
+      "activeDebuffs": []
+    }
+  ]
 }
 ```
 
 This must fail before publication. There is no runtime migration. The client does not translate aliases, prose mechanics, magic duration values, direct non-empty carriers, or GM-authored identities into Effect Materialization v1.
+
+For the wound-linked combat row, raw response validation returns
+`wound_materialization_legacy_effect_unsupported` before typed projection. Do not
+repair it by supplying another wound ID or a duration sentinel. Remove the old
+link: the client derives wound-owned effects from accepted canonical wound data.
+To materialize a new wound, answer the current offered `woundDecisions[]`; the GM
+never sends its derived effects through direct combat carriers.

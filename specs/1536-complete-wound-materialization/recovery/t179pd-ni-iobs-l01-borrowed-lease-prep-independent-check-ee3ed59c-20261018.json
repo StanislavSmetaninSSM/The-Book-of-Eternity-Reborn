@@ -1,0 +1,621 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_ZERO4_PREPARATION_CHECK",
+  "checkedUtc": "2026-10-18T14:21:23.276371+00:00",
+  "carrier": "ee3ed59c1f71668f9676af4fb7c34d4ff710760f",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-preparation-813f1057-files-20261018/archive.json",
+    "sha256": "8311c105b656274c48b3876ea333b6acf230d42802c3078c52169d2ca5ff6acc",
+    "rawChains": 43,
+    "completeRawCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057/record.json",
+      "sha256": "f883613f18604329ceec86219d8011722f66f5bcb40027e1a00a1e53e0317d38",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 487.777805564001,
+      "nativeWallSeconds": 477.1698091,
+      "timeoutMinutes": 10,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057/record.json",
+      "sha256": "53be88e6749148155ce8daa62399032f8ed52c9b5a5ae1af52baf8fb6d25f036",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 31.965609930000937,
+      "nativeWallSeconds": 25.2143754,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "corrective-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+      "sha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 22.614836618999107,
+      "nativeWallSeconds": 15.9526691,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "remaining-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057/record.json",
+      "sha256": "4d884c2fea1153ef68e8d6d33a2d0eb3fdcee7f9939c344c606c72793c6e2326",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 24.265782540001965,
+      "nativeWallSeconds": 17.2075512,
+      "timeoutMinutes": 20,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "plans": {
+    "plan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective-plan": {
+      "descriptors": 2,
+      "methods": 2,
+      "cases": 5,
+      "executed": 0
+    },
+    "remaining-plan": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5,
+      "executed": 0
+    }
+  },
+  "retained": {
+    "methods": 30,
+    "cases": 47,
+    "exactPriorProvenancePreserved": true
+  },
+  "binaries": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allPhysicalPathsSizesHashesMatch": true,
+    "allPlansNoBuildExactContinuity": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "correctedClientSha256": "56253ece2b2bd986dbc3217bc14fa1bc008d94010b1e88244417d84443cc1192",
+    "selectedCopiesChangedDuringFreshCatalog": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+    ]
+  },
+  "processLaunchRecords": [
+    {
+      "mode": "catalog",
+      "pid": 38934,
+      "startTick": 1715304,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 39867,
+      "startTick": 1765552,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "corrective-plan",
+      "pid": 40113,
+      "startTick": 1771661,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "remaining-plan",
+      "pid": 40301,
+      "startTick": 1775301,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    }
+  ],
+  "originalProcessArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+  "nativeRunnerCleanup": true,
+  "ownedFixtureRootsEmpty": true,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-catalog-before-813f1057.json",
+      "sha256": "aae8d34a9096f8d7556c651657576eb50d187b87b05a092d8cd326fc63c6c892",
+      "version": 2,
+      "phase": "borrowed-lease-catalog-before",
+      "startedUtc": "2026-10-18T14:09:00.909835+00:00",
+      "finishedUtc": "2026-10-18T14:09:00.946455+00:00",
+      "entries": 101,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 38909,
+          "expectedStartTick": 1714876,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-catalog-after-813f1057.json",
+      "sha256": "e65956139c4150827e1a1ed8b3b801785e214b8c9488e79a5aec7d82d8f01612",
+      "version": 2,
+      "phase": "borrowed-lease-catalog-after",
+      "startedUtc": "2026-10-18T14:17:14.399481+00:00",
+      "finishedUtc": "2026-10-18T14:17:14.427000+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 39801,
+          "expectedStartTick": 1764231,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-whole-before-813f1057.json",
+      "sha256": "c0daa50e838e0d407f5d5955d6f26a7d7564977181f56a9c80179d4a6814207d",
+      "version": 2,
+      "phase": "borrowed-lease-whole-before",
+      "startedUtc": "2026-10-18T14:17:24.926119+00:00",
+      "finishedUtc": "2026-10-18T14:17:24.946349+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 39842,
+          "expectedStartTick": 1765286,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-whole-after-813f1057.json",
+      "sha256": "cc9044788d32fc133b015545dfc2c66e3287ebcb5885170c680c6e618d7f0c0b",
+      "version": 2,
+      "phase": "borrowed-lease-whole-after",
+      "startedUtc": "2026-10-18T14:18:01.912370+00:00",
+      "finishedUtc": "2026-10-18T14:18:01.936977+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40047,
+          "expectedStartTick": 1768975,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-corrective-before-813f1057.json",
+      "sha256": "17fb2221a44744a3133c023c332c0856951c2fcaefc9c24069f30fb3b262276f",
+      "version": 2,
+      "phase": "borrowed-lease-corrective-before",
+      "startedUtc": "2026-10-18T14:18:25.947641+00:00",
+      "finishedUtc": "2026-10-18T14:18:25.975628+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40088,
+          "expectedStartTick": 1771379,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-corrective-after-813f1057.json",
+      "sha256": "a072674b5a385a5e683626b8d0db0a548e7f00c37bcf7dc723a63aa2cdc1dd1a",
+      "version": 2,
+      "phase": "borrowed-lease-corrective-after",
+      "startedUtc": "2026-10-18T14:18:51.861526+00:00",
+      "finishedUtc": "2026-10-18T14:18:51.882016+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40235,
+          "expectedStartTick": 1773979,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-remaining-before-813f1057.json",
+      "sha256": "72c29dc8658a56542599a2925dac55aa29b83e8895c997a392f1d0b5440c27e1",
+      "version": 2,
+      "phase": "borrowed-lease-remaining-before",
+      "startedUtc": "2026-10-18T14:19:02.344492+00:00",
+      "finishedUtc": "2026-10-18T14:19:02.375426+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40276,
+          "expectedStartTick": 1774995,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-remaining-after-813f1057.json",
+      "sha256": "aa2613efce4a2db725b347588c28dd6f42038ac29f0a43aaf4af4d50c989eb4b",
+      "version": 2,
+      "phase": "borrowed-lease-remaining-after",
+      "startedUtc": "2026-10-18T14:19:30.400911+00:00",
+      "finishedUtc": "2026-10-18T14:19:30.509117+00:00",
+      "entries": 105,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40426,
+          "expectedStartTick": 1777817,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-prep-qualification-813f1057.json",
+      "sha256": "bd422b42ca421e6b8b23880a9724218e971f7fe425af05fbd22be2fe333448d4",
+      "version": 2,
+      "phase": "borrowed-lease-prep-qualification",
+      "startedUtc": "2026-10-18T14:19:53.635699+00:00",
+      "finishedUtc": "2026-10-18T14:19:53.662046+00:00",
+      "entries": 104,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 91,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 40443,
+          "expectedStartTick": 1780152,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "observerV2": {
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "bytes": 7410,
+    "exactReviewedSource": true,
+    "mandatoryBeforeAfterEveryActual": true
+  },
+  "recovery": [
+    {
+      "carrier": "ee3ed59c1f71668f9676af4fb7c34d4ff710760f",
+      "base": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+      "changedPaths": 63,
+      "receiptSha256": "6ae4503051feda8d5ef5cd95e68ab01f7682cc69f4196ce7c097ae7946ab55c3",
+      "bytesHashesBlobsModesVerified": true
+    }
+  ],
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "homeUnchanged": true,
+    "scope": "Saved correction/env evidence only; no new live boot/root/process observation"
+  },
+  "boundaryGaps": {
+    "catalog": {
+      "beforeFinishToStartSeconds": 4.079232,
+      "finishToAfterStartSeconds": 1.596708
+    },
+    "plan": {
+      "beforeFinishToStartSeconds": 2.565865,
+      "finishToAfterStartSeconds": 2.434651
+    },
+    "corrective-plan": {
+      "beforeFinishToStartSeconds": 2.620089,
+      "finishToAfterStartSeconds": 0.651016
+    },
+    "remaining-plan": {
+      "beforeFinishToStartSeconds": 2.620685,
+      "finishToAfterStartSeconds": 1.13903
+    }
+  },
+  "orchestrationEvidence": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-borrowed-phase-catalog-launch-version-reconstructed.py",
+      "sha256": "41895273e5ca8e9c26ebb8e4cff75e4e2388320d19527f43077244c913c1d127",
+      "bytes": 2157
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-borrowed-phase-noncatalog-corrected-version.py",
+      "sha256": "d599977fc89c0aebf43faae0dd1fa0333d231ed2e2227fa18c5c90868d8d33fe",
+      "bytes": 2400
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-wrapper-orchestration-correction.json",
+      "sha256": "30033dbd64987d60e6a3ddc57de115421eeb9b7fdb7359021084c4f4548d30a6",
+      "bytes": 988
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-parent-readback-3ed6a8f3.json",
+      "sha256": "9db1682f42db60dfcc270bbac22575c90d8c599de53dc89e8a26fd60faba0cc1",
+      "bytes": 864
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-readback-3ed6a8f3-20261018.json",
+      "sha256": "b4616531543596c7c9d413d029f64645b72d3104c086277dc7c9aed164be23d9",
+      "bytes": 1791
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-phase-wrapper-independent-review-20261018.json",
+      "sha256": "a75f2abf6c4f96df4862ae003e62779087aaebe53ffc1cd25be7fea0ae418f04",
+      "bytes": 2286
+    }
+  ],
+  "wrapperProvenanceLimit": "Initial wrapper saved version is an explicitly labelled later inverse reconstruction, not contemporaneous captured bytes; corrected noncatalog args only, no native retry. Actual pinned controller/process/record argv and original ZERO evidence bind each native phase.",
+  "metadataObservation": "Current borrowed-lease SOURCE accepted; original ZERO4 records and dated v2 boundaries checked; final independent PREP verdict must be separately authored.",
+  "eligibility": "CHECKER_RESULT_ONLY_NO_AUTOMATIC_PREP_ACCEPTANCE_OR_RUNTIME_RELEASE. Independent review of complete recovered ZERO4 and wrapper provenance required; each later actual separately gated.",
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "actualExecuted": 0,
+  "findings": [],
+  "limits": "Evidence/hash/source reads only. No builds/discovery/tests/controller/observer execution, process intervention or repo writes. No product runtime PASS or cross-build equivalence for retained47."
+}

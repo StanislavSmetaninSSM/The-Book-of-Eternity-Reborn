@@ -370,7 +370,7 @@ public partial class ExplorerMode
         {
             await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
             WaitForKey();
@@ -477,7 +477,7 @@ public partial class ExplorerMode
         {
             await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, request);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
             WaitForKey();

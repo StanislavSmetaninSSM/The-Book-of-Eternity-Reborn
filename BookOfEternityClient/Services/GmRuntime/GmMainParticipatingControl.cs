@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 
 // A cooperating script uses this one retained process/connection for its whole
 // operation. It is not a general writer, journal, launcher or cold recovery API.
-internal static class GmMainParticipatingControl
+internal static partial class GmMainParticipatingControl
 {
     private const int FrameLimit = 4 * 1024 * 1024;
     private sealed class Command
@@ -16,6 +16,10 @@ internal static class GmMainParticipatingControl
         public string? Action { get; set; }
         public string? Path { get; set; }
         public string? Bytes { get; set; }
+        public string? Transfer { get; set; }
+        public long Length { get; set; }
+        public long Offset { get; set; }
+        public string? Hash { get; set; }
         public MainOperationOutcome? Outcome { get; set; }
     }
 
@@ -50,9 +54,24 @@ internal static class GmMainParticipatingControl
     internal static async Task<int> RunAsync(FileSystemManager files, Stream input, Stream output)
     {
         var reader = new MainOperationReader(input);
+        using var daemon = new DaemonExchange();
         var explicitClose = false;
         long sequence = 0;
         MainOperationOutcome outcome = MainOperationOutcome.Completed;
+        var publicationUncertain = false;
+        MainOperationClose? terminalClose = null;
+        var closeObserved = false;
+        var remoteAdmission = false;
+        var localScopeCompleted = false;
+        var closeReplyAttempted = false;
+        async Task ReplyCloseAsync(bool continuationFailed)
+        {
+            closeReplyAttempted = true;
+            await MainOperationReader.WriteAsync(output,
+                new { ok = closeObserved || localScopeCompleted, state = closeObserved || localScopeCompleted ? "closed-observed" : "close-unconfirmed", sequence,
+                    completionKind = remoteAdmission ? "original-main" : "local", localScopeCompleted, effectiveOutcome = outcome,
+                    terminalClose, closeObserved, continuationFailed }, CancellationToken.None);
+        }
         try
         {
             await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>
@@ -69,19 +88,44 @@ internal static class GmMainParticipatingControl
                     if (command.Action == "close")
                     {
                         if (command.Outcome == null || !Enum.IsDefined(command.Outcome.Value)) throw new InvalidDataException("Missing close outcome.");
-                        outcome = command.Outcome.Value; explicitClose = true;
+                        outcome = publicationUncertain ? MainOperationOutcome.Uncertain : command.Outcome.Value; explicitClose = true;
                         return 0;
                     }
-                    var ok = true;
-                    try { await MutateAsync(files, command); }
-                    catch (Exception) { ok = false; }
-                    // The reply acknowledges this sequence only. A lost reply is never replayed.
-                    await MainOperationReader.WriteAsync(output, new { ok, sequence }, CancellationToken.None);
+                    var result = new CommandResult();
+                    var blockedByPriorUncertainty = publicationUncertain;
+                    if (!blockedByPriorUncertainty)
+                    {
+                        try {
+                            if(command.Action?.StartsWith("daemon-",StringComparison.Ordinal)==true)
+                                result.Fields=await daemon.HandleAsync(files,command,result);
+                            else {
+                                if(daemon.HasPending)throw new InvalidDataException("A daemon exchange is incomplete.");
+                                await MutateAsync(files, command, result);
+                            }
+                        }
+                        catch (Exception failure) { result.Failure = failure; }
+                        publicationUncertain = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Uncertain;
+                    }
+                    // Capture belongs to this command, not the whole body. A valid
+                    // uncertain reply retains this connection for its original close.
+                    var committed = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Committed;
+                    var fields=result.Fields??new Dictionary<string,object?>();
+                    fields["ok"]=!blockedByPriorUncertainty&&result.Failure==null;
+                    fields["sequence"]=sequence;
+                    fields["publicationDisposition"]=result.Publication?.Disposition.ToString();
+                    fields["cleanupPending"]=committed&&result.Publication?.Failure!=null;
+                    fields["commandFollowUpRequired"]=committed&&result.Failure!=null;
+                    fields["blockedByPriorUncertainty"]=blockedByPriorUncertainty;
+                    fields["daemonReadRefused"]=result.ReadRefused;
+                    await MainOperationReader.WriteAsync(output,fields,CancellationToken.None);
                 }
                 }
                 finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }
-            }, () => outcome);
-            await MainOperationReader.WriteAsync(output, new { ok = true, state = "closed-observed", sequence }, CancellationToken.None);
+            }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; });
+            // Successful return includes actual bound finalization and scoped
+            // disposal. A guarded local scope does not invent a remote receipt.
+            localScopeCompleted = !remoteAdmission;
+            await ReplyCloseAsync(false);
             return 0;
         }
         catch
@@ -89,11 +133,25 @@ internal static class GmMainParticipatingControl
             // SessionOperationContext marks transport loss below before finalization.
             // A reply loss after explicit close cannot reverse an owner receipt.
             if (!explicitClose) files.MarkMainOperationUnresolved();
+            else if (terminalClose != null && !closeReplyAttempted)
+            {
+                // Actual attempted close and ACK remain separate even when bound
+                // finalization failed. Never reconstruct them from the active grant.
+                try { await ReplyCloseAsync(true); } catch { /* retain the original failure */ }
+            }
             throw;
         }
     }
 
-    private static async Task MutateAsync(FileSystemManager files, Command command)
+    private sealed class CommandResult
+    {
+        internal TrustedLocalPublicationOutcome? Publication;
+        internal Exception? Failure;
+        internal bool ReadRefused;
+        internal Dictionary<string,object?>? Fields;
+    }
+
+    private static async Task MutateAsync(FileSystemManager files, Command command, CommandResult result)
     {
         var path = NormalizeControlPath(command.Path);
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
@@ -104,15 +162,16 @@ internal static class GmMainParticipatingControl
                 using (PhysicalFileAuthority.EnsureStableDirectory(files.BasePath, files.ResolvePath(path), "participating control")) { }
                 break;
             case "write":
-                await files.WriteFileAtomicBytesAsync(lease, path, Convert.FromBase64String(command.Bytes ?? throw new InvalidDataException()));
+                result.Publication = await files.PublishOrdinaryFileWithOutcomeAsync(lease, path, Convert.FromBase64String(command.Bytes ?? throw new InvalidDataException()));
                 break;
             case "append":
-                await files.AppendFileAtomicAsync(lease, path, new System.Text.UTF8Encoding(false, true).GetString(
+                result.Publication = await files.AppendOrdinaryFileWithOutcomeAsync(lease, path, new System.Text.UTF8Encoding(false, true).GetString(
                     Convert.FromBase64String(command.Bytes ?? throw new InvalidDataException())));
                 break;
-            case "delete": files.DeleteFile(lease, path); break;
+            case "delete": result.Publication = await files.PublishOrdinaryFileWithOutcomeAsync(lease, path, null); break;
             default: throw new InvalidDataException("Unknown participating mutation.");
         }
+        if (result.Publication != null) files.RequireCommittedLocalPublication(result.Publication);
     }
 
     private static string NormalizeControlPath(string? path)

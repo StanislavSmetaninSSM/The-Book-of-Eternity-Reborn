@@ -1,0 +1,69 @@
+[
+  {
+    "path": "t179pd-hot-custody-engineering-independent-design-full-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-engineering-independent-design-full-20261016.diff",
+    "raw_sha256": "c4ae542916de52a7474fac3f895fa32566b4c3bfde635ab7bb3170011ce2a9c8",
+    "raw_bytes": 480010,
+    "stored_sha256": "824d3f4eb6d1e6bfce0628ff3bbd9aa6798091648c8489a524776df0abb63ec8",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d99e45102e2fb64088d771eb473de6671617f9b6",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-engineering-independent-source-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-engineering-independent-source-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-engineering-independent-design-scoped-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-engineering-independent-design-scoped-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d99e45102e2fb64088d771eb473de6671617f9b6",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-engineering-independent-working-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-engineering-independent-working-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab"
+    ]
+  }
+]

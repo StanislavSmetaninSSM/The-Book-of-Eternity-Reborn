@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "testedSource": "895de4e4351584947a990a2efb4a6b93ff63e781",
+  "priorWholeReviewedSource": "7375c24a41430b9d578e817d07d847c1ef68cbe4",
+  "reviewedSource": "693b22ef19b35644ec56f184fa88af4ce93089ff",
+  "observedHeadAtWrite": "693b22ef19b35644ec56f184fa88af4ce93089ff",
+  "observedStatusAtWrite": "",
+  "remoteVerifiedSource": "693b22ef19b35644ec56f184fa88af4ce93089ff",
+  "evidenceVerdict": {
+    "status": "ACCEPTED",
+    "extent": "FIRST_PREPARATION_NATIVE_FAILURE only",
+    "manifestPath": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/manifest.json",
+    "manifestSha256": "930404024e39d16e1b994a3ca45595d22ce8dd640a938641c33a322e635734e4",
+    "compressedRawChains": [
+      {
+        "name": "candidate-source-pins.json.gz",
+        "uncompressedBytes": 41980,
+        "uncompressedSha256": "c43da48a8da7d102f23ea880325ff8f912fe96ce1f4070b33615eb6776fc6b9e",
+        "compressedBytes": 11673,
+        "compressedSha256": "36380c95cd7bad311546ad29a76ba79b0b6d108596ba0bf85463f2c6381fac8a",
+        "verified": true
+      },
+      {
+        "name": "preparation-console.log.gz",
+        "uncompressedBytes": 1379,
+        "uncompressedSha256": "66e6a21ec02fc973dbd7c724cc09dbf81b362eb97f0cfd75f49c8c0542b1adfa",
+        "compressedBytes": 607,
+        "compressedSha256": "55b815fac44dfc3a9ebfe1e6d975a04ecee367d01a7d5fa54c347ea847f1ecc5",
+        "verified": true
+      },
+      {
+        "name": "preparation-invocation-prewritten.json.gz",
+        "uncompressedBytes": 522,
+        "uncompressedSha256": "7aad175e510878ed88e22cac8a69ed872a582cc5e3ed0bb812d96d17f05a0720",
+        "compressedBytes": 317,
+        "compressedSha256": "920a5b96aa8142f09256ed112f0550c2b2b15c113a2f78cc09713540ee2d8c27",
+        "verified": true
+      },
+      {
+        "name": "preparation-native-process-result.json.gz",
+        "uncompressedBytes": 372,
+        "uncompressedSha256": "c22651f6c6ab055a1d35b22e1bccb3796a86853977f17fa1e0372c936b056f34",
+        "compressedBytes": 263,
+        "compressedSha256": "da3c2b186291788680ecde7babf0937f4cbcefae764cee59c4129b279e42bab7",
+        "verified": true
+      },
+      {
+        "name": "preparation-run-location.json.gz",
+        "uncompressedBytes": 431,
+        "uncompressedSha256": "4892899a2e29f0a2369efea543c2cd472744fd52fdd775da5a6d6efccfba5aef",
+        "compressedBytes": 252,
+        "compressedSha256": "b72ceec6113ad3aea18974df82ecf1f18dcbb2b1de9b2dca55ae2b8eb4317c20",
+        "verified": true
+      },
+      {
+        "name": "preparation-dotnet-test.log.gz",
+        "uncompressedBytes": 10804,
+        "uncompressedSha256": "134491ab6954108abd23818efd67355ece8104c0dd1b173590f1d8fcfa0f8f4f",
+        "compressedBytes": 2026,
+        "compressedSha256": "831f99e433bb28190feb036b77fac5be9a9eedb8efbd2aaf2bf4f87de0a4303e",
+        "verified": true
+      },
+      {
+        "name": "preparation-summary.json.gz",
+        "uncompressedBytes": 18421,
+        "uncompressedSha256": "358dcd2e6cb70e3b071ccdad1f1e3c0245b59c130aa979d5124b12a88f170da5",
+        "compressedBytes": 3670,
+        "compressedSha256": "52c68cdc1b957aac3e32664fcec5b2a294f16ba9136e4890cc7716967012bb80",
+        "verified": true
+      }
+    ],
+    "sourceGitPinsMatched": 184,
+    "nativeExitCode": 1,
+    "wallTimeSeconds": 52.9607535,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "phaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0344572,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0457098,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1133889,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 52.6997707,
+        "Completed": false
+      }
+    ],
+    "uniqueWarnings": [
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.Diagnostics.cs(437,37): warning CS9124: Parameter 'BrowserAdmissionDiagnosticCollector.Row row' is captured into the state of the enclosing type and its value is also used to initialize a field, property, or event. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs(48,71): warning CS8629: Nullable value type may be null. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs(23,18): warning CS8618: Non-nullable field '_generation' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs(28,59): warning CS8601: Possible null reference assignment. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs(150,13): warning CS8604: Possible null reference argument for parameter 'generation' in 'MortalJointRepairMechanicalAdmission.MortalJointRepairMechanicalAdmission(object issuer, FileSystemManager files, CanonicalWriteLease lease, string generation, WoundAcceptedTurnBinding binding, IReadOnlyDictionary<string, byte[]?> before)'. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs(66,13): warning CA1416: This call site is reachable on all platforms. 'Directory.CreateDirectory(string, UnixFileMode)' is unsupported on: 'windows'. (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1416) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs(26,18): warning CS8618: Non-nullable field '_generation' must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring the field as nullable. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs(31,75): warning CS8601: Possible null reference assignment. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/StoryService.MortalJointRepair.cs(166,130): warning CS8604: Possible null reference argument for parameter 'generation' in '(byte[]? Prefix, bool Appended) StoryService.ClassifyJointStoryPrefix(string path, byte[]? current, string row, IReadOnlyDictionary<string, string> histories, int turn, string requestId, string generation)'. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]",
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(445,93): warning CS8602: Dereference of a possibly null reference. [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]"
+    ],
+    "uniqueErrors": [
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs(53,20): error CS0103: The name 'StrictJsonAuthority' does not exist in the current context [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj]"
+    ],
+    "actualCaseCleanupReceipts": 0,
+    "actualCleanupClassification": "NO_CASES_EXECUTED; not runtime PASS",
+    "freshBoth": "FAILED",
+    "freshBinaryQualification": "NOT_GRANTED",
+    "unitBuild": "UNRUN",
+    "discovery": "UNRUN",
+    "catalog": "UNRUN",
+    "actualLate2": "UNRUN",
+    "freezeOrderCaveat": "ROOT recorded freeze before diagnosis; archive integrity verified independently, first-read timing not independently inferable"
+  },
+  "sourceGates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "openBlockingFindings": [],
+  "correctedFinding": "Product missing Core import missed by prior static review; existing namespace and exact generic Deserialize API now resolve by source inspection",
+  "implementationDelta": "one using BookOfEternityClient.Core; no body changes",
+  "currentFilePins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1643346,
+      "sha256": "b9795363a118071f7945fe8a585aa49ee7a891df6a16b1c4bdc67a221dcea056"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/candidate-source-pins.json.gz",
+      "bytes": 11673,
+      "sha256": "36380c95cd7bad311546ad29a76ba79b0b6d108596ba0bf85463f2c6381fac8a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/manifest.json",
+      "bytes": 2533,
+      "sha256": "930404024e39d16e1b994a3ca45595d22ce8dd640a938641c33a322e635734e4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-console.log.gz",
+      "bytes": 607,
+      "sha256": "55b815fac44dfc3a9ebfe1e6d975a04ecee367d01a7d5fa54c347ea847f1ecc5"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-dotnet-test.log.gz",
+      "bytes": 2026,
+      "sha256": "831f99e433bb28190feb036b77fac5be9a9eedb8efbd2aaf2bf4f87de0a4303e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-invocation-prewritten.json.gz",
+      "bytes": 317,
+      "sha256": "920a5b96aa8142f09256ed112f0550c2b2b15c113a2f78cc09713540ee2d8c27"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-native-process-result.json.gz",
+      "bytes": 263,
+      "sha256": "da3c2b186291788680ecde7babf0937f4cbcefae764cee59c4129b279e42bab7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-run-location.json.gz",
+      "bytes": 252,
+      "sha256": "b72ceec6113ad3aea18974df82ecf1f18dcbb2b1de9b2dca55ae2b8eb4317c20"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/preparation-summary.json.gz",
+      "bytes": 3670,
+      "sha256": "52c68cdc1b957aac3e32664fcec5b2a294f16ba9136e4890cc7716967012bb80"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1143962,
+      "sha256": "8864f91195fb3baf13adfe34cff9a78654c41e4a776de7a1e5ad4c567590af42"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "bytes": 2928,
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    }
+  ],
+  "staticInventoryUnchanged": {
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23,
+    "officialDiscovery": "UNRUN"
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "metadataCarrierPermission": {
+    "allowed": true,
+    "newPathsExactly": 2,
+    "constraints": "Only byte-identical copies of this MD and companion JSON; all previous bytes unchanged; verify remote; distinct reviewed/metadata/compiled/tested source; actual FINALSTOP prerequisite"
+  },
+  "modelRequested": "gpt-6-astra",
+  "reasoningEffortRequested": "xhigh",
+  "actualBackendTelemetry": "unavailable",
+  "reviewerExecution": "READ_ONLY; no compiler/build/discovery/tests/provider/runtime; no repository/Git writes",
+  "reviewerStatusAtWrite": "FINALIZING; coordinator must observe actual FINALSTOP",
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-A-preparation-failure-evidence-and-import-review-693b22ef1-20261015T072551Z-completed-v2-design-review.md",
+    "sha256": "1e3495c168e834391822483e0039273c745d152f78e382cb37f150bb419b80d9"
+  },
+  "createdUtc": "2026-10-15T07:25:51.426652+00:00"
+}

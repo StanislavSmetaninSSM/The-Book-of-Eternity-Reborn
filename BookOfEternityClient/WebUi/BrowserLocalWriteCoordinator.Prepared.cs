@@ -1,5 +1,6 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -25,7 +26,7 @@ public sealed partial class BrowserLocalWriteCoordinator
             {
                 var admission = await AcquireLocalWriteGuardAsync(writeLease, request);
                 if (!admission.Acquired || admission.Lease == null)
-                    return new BrowserPreparedWriteResult(BrowserPreparedWriteDisposition.Blocked, false, admission.BlockerMessage);
+                    return CapturePreparedResult(new BrowserPreparedWriteResult(BrowserPreparedWriteDisposition.Blocked, false, admission.BlockerMessage));
 
                 var result = new BrowserPreparedWriteResult(BrowserPreparedWriteDisposition.Blocked, false,
                     "Не удалось подготовить новую запись настроек.");
@@ -45,7 +46,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     // Retain every established outcome before later callbacks,
                     // owner cleanup or bound close can throw. In particular,
                     // unknown evidence cannot become an unchanged-files claim.
-                    publicationOutcome = result;
+                    publicationOutcome = CapturePreparedResult(result);
                     if (result.Disposition == BrowserPreparedWriteDisposition.Committed)
                     {
                         try
@@ -70,27 +71,45 @@ public sealed partial class BrowserLocalWriteCoordinator
                 }
                 finally
                 {
-                    if (!await TryReleaseAsync(writeLease, admission.Lease))
+                    if (result.Disposition != BrowserPreparedWriteDisposition.Uncertain &&
+                        !await TryReleaseAsync(writeLease, admission.Lease))
                         result = WithPreparedFollowUp(result);
                     if (result.Disposition != BrowserPreparedWriteDisposition.Blocked)
                         publicationOutcome = result;
                 }
-                return result.NeedsFollowUp && result.Disposition == BrowserPreparedWriteDisposition.Committed
-                    ? WithPreparedFollowUp(result) : result;
+                return CapturePreparedResult(result.NeedsFollowUp && result.Disposition == BrowserPreparedWriteDisposition.Committed
+                    ? WithPreparedFollowUp(result) : result);
             });
         }
         catch (SessionReplacedException)
         {
-            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
+            return CapturePreparedResult(publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
-                "Игровая сессия изменилась до сохранения настроек. Обновите состояние книги.");
+                "Игровая сессия изменилась до сохранения настроек. Обновите состояние книги."));
         }
         catch
         {
-            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
+            return CapturePreparedResult(publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
-                "Запрос на изменение настроек заблокирован: локальное хранилище требует проверки перед записью.");
+                "Запрос на изменение настроек заблокирован: локальное хранилище требует проверки перед записью."));
         }
+    }
+
+    private BrowserPreparedWriteResult CapturePreparedResult(BrowserPreparedWriteResult result)
+    {
+        // The original participating scope closes from this capture. An explicit
+        // publication result must be retained before runtime callbacks or cleanup.
+        if (result.Disposition == BrowserPreparedWriteDisposition.Uncertain || result.NeedsFollowUp)
+            SessionOperationContext.BlockPostOperationReadmission(_fs);
+        if (_browserDecision.Value is { } captured)
+            captured.Outcome = result.Disposition switch
+            {
+                BrowserPreparedWriteDisposition.Committed => MainOperationOutcome.Committed,
+                BrowserPreparedWriteDisposition.RolledBack => MainOperationOutcome.RolledBack,
+                BrowserPreparedWriteDisposition.Uncertain => MainOperationOutcome.Uncertain,
+                _ => MainOperationOutcome.Failed
+            };
+        return result;
     }
 
     private static BrowserPreparedWriteResult WithPreparedFollowUp(BrowserPreparedWriteResult result) => result with

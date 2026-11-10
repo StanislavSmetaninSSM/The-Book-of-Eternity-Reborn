@@ -343,8 +343,14 @@ public sealed class GuardianCorrectionService
     {
         if (turnNumber <= 0)
             throw new ArgumentOutOfRangeException(nameof(turnNumber));
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        await ApplyForNewLifeAsync(lifeIncarnation, turnNumber, writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? owningPublicationUncertainty = null;
+        try
+        {
+            await ApplyForNewLifeAsync(lifeIncarnation, turnNumber, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { owningPublicationUncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, owningPublicationUncertainty); }
     }
 
     private async Task ApplyForNewLifeAsync(

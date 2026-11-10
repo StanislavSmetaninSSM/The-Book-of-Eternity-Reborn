@@ -1,0 +1,19 @@
+{
+  "checkpoint": "7c79c3116c1159cc629f5541e9a84a47776dc13d",
+  "publicationNative": "2c943e session58741/6b1c8f exit0",
+  "recoveryNative": "754cdf session18527/a0b5a8 exit0",
+  "readbackSHA256": "f1cb2d1943e5850bbe3d9bcedef9420637bce1069cba514542b796e6a87710bf",
+  "verification": {
+    "checkpoint": "7c79c3116c1159cc629f5541e9a84a47776dc13d",
+    "remoteSha": "7c79c3116c1159cc629f5541e9a84a47776dc13d",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 3004,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2475,
+    "consumerProduction": "Owned QTE Late2 lineage refusal and full composite-guard diagnosis preserved; exact predicate UNKNOWN; all fixes/diagnostics/runtime HELD pending EVIDENCE",
+    "verifiedUtc": "2026-10-15T04:28:21.818876+00:00"
+  },
+  "sourceDiagnosticRuntime": "HELD pending independent EVIDENCE",
+  "utc": "2026-10-15T04:28:30.035180+00:00"
+}

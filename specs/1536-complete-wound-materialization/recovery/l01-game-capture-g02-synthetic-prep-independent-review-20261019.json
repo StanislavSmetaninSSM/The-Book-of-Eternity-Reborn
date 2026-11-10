@@ -1,0 +1,122 @@
+{
+  "kind": "G02_SYNTHETIC_PREP_INDEPENDENT_REVIEW",
+  "reviewedSource": "5ac48a247270abc82ef9fb0fe77ef03ee7f1c23f",
+  "prepareSource": "658a2251a7fbeefd57baf872f867abbfec5c5c78",
+  "sourceReviewed": "913453c077fd9348b51cb3462c8bed5a658dfbde",
+  "verdict": "ACCEPT_G02_PREP_ONE_SYNTHETIC",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "plannedSyntheticRunId": "3ac823b7efc444babcd176679ae51ecd",
+  "prepRecords": {
+    "tools": "1107aab0f5504be7c1193e9b1c51834ed0221028b444b089bdd7819ba5707e8f",
+    "prepare": "77b5e37e8740da928ad245ba3cc4ab358f5af03f0a3a362eeb813236900b632e"
+  },
+  "reviewer": "Independent Astra XHigh reviewer",
+  "findings": [],
+  "checks": {
+    "passed": 46,
+    "failed": 0
+  },
+  "originalEvidence": {
+    "indexPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.json",
+    "indexSha256": "8b469ac4c774c2223298cb9f90891f9ace3920ee10f56d53bda752849c32c217",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.zip",
+      "sha256": "a11339d814431dd4d6713bcb900abf181a222e757bd6c71e8af181d31e3b6441",
+      "bytes": 537294,
+      "members": 47
+    },
+    "recordHashes": {
+      "tools": "1107aab0f5504be7c1193e9b1c51834ed0221028b444b089bdd7819ba5707e8f",
+      "prepare": "77b5e37e8740da928ad245ba3cc4ab358f5af03f0a3a362eeb813236900b632e"
+    }
+  },
+  "verifiedResults": [
+    "All47 uniquely indexed original files match local originals, ZIP members, exact saved Git and clean independent restore; archive537294bytes/SHA a11339d814431dd4d6713bcb900abf181a222e757bd6c71e8af181d31e3b6441. No missing or extra member.",
+    "One ZERO prepare from clean658a2251 source: native0, no observer errors,103.558144873s. Nine command rows have original native0/raw0, join true, distinct PID+kernel births, same parent140381/UID1000, no residual session processes or termination signal. No synthetic/game/API command was invoked.",
+    "Only SyntheticOwner was compiled:3.711521318s/native0, zero errors and seven retained CS8632 nullable-annotation-context warnings. Its four output hashes/RSP/runtimeconfig match;163 reference inputs and exact reviewed single source bind the compilation. Runtime net8.0/8.0.32 with rollForward Disable.",
+    "Parent6 and current PS health26 original assertions pass with game/fixture/API counts0. Policy23 original record/source images match and are explicitly not reexecuted. Current395 installed inputs and runtime/compiler/reference inventories match their hashes.",
+    "Copied private integration460 and unit439 complete file sets/bytes/modes exactly equal their separately retained closures; integration compiled d293b3bf, unit compiled d3a1ddcf. Tools8 are byte-exact copies with original compile86bb144d in an explicitly derived reuse record. This is no fresh BOTH build or current-head integration compilation.",
+    "S01 DLL/PDB/runtimeconfig hashes, original preparation record and MVID35065df3-7a06-4e1b-8b74-ac77cd578120 remain exact. Twelve staged NuGet metadata files match. Fresh actual property bindings select the new private bins/obj paths;129 integration and127 unit preprocessed imports are individually bound, with no unknown input.",
+    "Original catalog is Valid810categories/11802methods, unmapped/stale empty, executed0. PlanOnly selects exactly fr063-joint-interface-crash-diagnostic with one fully qualified method/case and budget15min; completed0/Completefalse is expected ZERO, not runtime qualification. Both runner summaries report no timeout and owned/runtime cleanup true; no Build phase.",
+    "Original normal899 guards pass before/after and current listed bytes match the frozen inventory. Dated before/after observations show no active matching tools,35 unchanged zombie entries and5 executable-read fallbacks; they do not prove continuous absence or resolve historical zombie ancestry.",
+    "SOURCE/current173 pins and controller/bindings remain unchanged. SOURCE gate is consumed; synthetic/game gates currently HOLD. New synthetic and actual directories are absent; private root0700/UID1000, distinct synthetic/game IDs and worst-case socket lengths91/103 bytes preserve the107-byte limit."
+  ],
+  "durations": {
+    "controllerSeconds": 103.55814487300086,
+    "compilerSeconds": 3.7115213180004503,
+    "catalogWrapperSeconds": 50.018467984999006,
+    "catalogRunnerWall": "00:00:42.8502696",
+    "planWrapperSeconds": 30.50278862599953,
+    "planRunnerWall": "00:00:21.2787507"
+  },
+  "ownerOutputs": [
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.dll",
+      "bytes": 46080,
+      "sha256": "2622cc9c125f1dfc341a57fa154a79e96ce166e3dde712d69d9c2a938d2a0978"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.pdb",
+      "bytes": 14128,
+      "sha256": "36fd7c7ae6fb4a0710e08b5be851c0ae58c10734e0a86d8f4d07179a25c02a2a"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.rsp",
+      "bytes": 18588,
+      "sha256": "c194dba9a5651d7a7e0b7fbeb5bc600b4ae911e91d9e87c774090ef983e88a68"
+    }
+  ],
+  "syntheticAdmission": {
+    "status": "PREP_ACCEPTED_G02_ONE_SYNTHETIC",
+    "runId": "3ac823b7efc444babcd176679ae51ecd",
+    "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY",
+    "scope": "G02",
+    "mode": "synthetic",
+    "root": "/tmp/g2-2aa1d92a/synthetic",
+    "expectedTargets": 1,
+    "expectedOracle": "Unchanged retained S01 target with genuine ready/wait/cpu identities and STOP/native0/EOF/join",
+    "diagnosticRequestUpperBound": 1,
+    "requiredSuccess": "Exactly one common G01 observed WriteDump returns0/RETURNED; nonempty private core/readable report; unchanged S01 decoder produces four exact TID/MVID/token/IL/order oracle frames; all actor/observer/cleanup checks pass.",
+    "bounds": "Original S01 target60s; conservative prelaunch deadline; owner45s; shared watchdog request20s and cleanup5s unchanged.",
+    "futureGameAdmission": "HOLD"
+  },
+  "acceptanceSaveConditions": [
+    "Save this report/hash with unchanged sourcePinDigest/controllerSha256, exact plannedSyntheticRunId and BOTH prepRecords hashes in syntheticAdmission; separately consume only this synthetic lease before launch and recover clean acceptance metadata.",
+    "Keep sourceAdmission consumed and actualAdmission HOLD. No game lease, actual/map command or crash5 release follows from this report.",
+    "Use exactly the reviewed phase.py synthetic <clean saved acceptance SHA> G02 path. The existing fresh-root/hash/source/identity/preflight guards must pass immediately before launch; do not reuse or reset an original directory/permit.",
+    "Freeze the first synthetic native/API/observer/cleanup outcome. Cancellation/API0, failure, missing evidence or uncertainty keeps game HOLD; no blind retry or substituted source/helper.",
+    "Retain core/raw report privately in own/capture through independent sanitized EVIDENCE/final report; do not commit, attach, archive or automatically delete them. Publish only allowlisted metadata/frame evidence and hashes.",
+    "Successful synthetic evidence still requires independent review/final PREP and exact actual-gate syntheticEvidence binding before a separately saved/consumed one-game permit."
+  ],
+  "limits": [
+    "PREP only. No synthetic target, WriteDump or game has run in this G02 phase yet. Simulation of admission/fresh health does not prove game custody receipt/60-second policy, continuous capture phase or suspension duration.",
+    "Private DLL/PDB closures were read and hash-verified locally; they are not restored from the47-file Git archive. Source recovery and safe raw metadata are durable, with no private core/report publication.",
+    "Compiler/controller/runner durations have distinct scope and are retained without substitution. There is no performance or historical timeout-cause conclusion.",
+    "L01 remains52/57; old66529 permanently UNKNOWN; old G01 FAIL220/API0/ENOENT and all original outcomes/consumed permits remain immutable. No original crash5, production, Windows,403,CI or broader closure."
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-5ac48a24.json",
+    "sha256": "abd79fddf13c6bb297f56b66c53728ec8a0c62c4d3618958bdebcdc213629627"
+  },
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-synthetic-prep-checks-20261019.json",
+      "bytes": 20035,
+      "sha256": "a53c0912efc63d3557460ac56030bbbecc5e958c77caec2b021d243340bab683"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_synthetic_prep_20261019.py",
+      "bytes": 16189,
+      "sha256": "7cb0c9b0dd2bf8f31171966cf512c158312aa2793b8d82a12d6ffaf9953cf9ea"
+    }
+  ],
+  "reviewActions": "Read-only Git/archive/file hashes and static PREP/source evidence. No SDK/C#/process/procfs/diagnostic/attach/signal/API action; only report/check writes.",
+  "nextStep": "After saved/recovered acceptance and separate consumed synthetic lease, root may invoke exactly one reviewed S01-through-G01 synthetic actual capture. Stop on its first outcome for independent evidence/final PREP; game remains HOLD."
+}

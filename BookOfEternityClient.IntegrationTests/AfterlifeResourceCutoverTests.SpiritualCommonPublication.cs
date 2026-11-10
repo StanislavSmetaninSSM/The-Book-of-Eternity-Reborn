@@ -70,38 +70,45 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task OriginalSpiritualC4_PublicationFailureRestoresSignedOriginal(bool failReadBack)
     {
         var armed = false;
-        var wroteResources = false;
-        var injected = false;
+        var cuts = 0;
+        CurrentCommittedPublicationWitness? witness = null;
+        var injected = new IOException(failReadBack
+            ? "C4 publication read-back failure." : "C4 publication write failure.");
         var hooks = new FileSystemManagerHooks
         {
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (armed) witness!.Observe(phase, index);
+            },
             BeforeCanonicalMutationAsync = path =>
             {
-                if (armed && path == ResourceMaterializationContract.StatePath)
+                if (armed && !failReadBack && path == ResourceMaterializationContract.StatePath)
                 {
-                    wroteResources = true;
-                    if (!failReadBack && !injected)
-                    {
-                        injected = true;
-                        armed = false;
-                        throw new IOException("C4 publication write failure.");
-                    }
+                    cuts++;
+                    armed = false;
+                    throw injected;
                 }
                 return Task.CompletedTask;
             },
             BeforeCanonicalReadOpenAsync = path =>
             {
-                if (armed && failReadBack && wroteResources && !injected &&
-                    path == SpiritualWoundOpportunityReceiptState.StatePath)
+                if (armed && failReadBack && path == SpiritualWoundOpportunityReceiptState.StatePath &&
+                    witness!.Has(ResourceMaterializationContract.StatePath) &&
+                    witness.Has(SpiritualWoundOpportunityReceiptState.StatePath))
                 {
-                    injected = true;
+                    witness.RequireSingleCurrent(ResourceMaterializationContract.StatePath);
+                    witness.RequireSingleCurrent(SpiritualWoundOpportunityReceiptState.StatePath);
+                    cuts++;
                     armed = false;
-                    throw new IOException("C4 publication read-back failure.");
+                    throw injected;
                 }
                 return Task.CompletedTask;
             }
         };
-        await using var context = await CreateCompleteConflictFrameContextAsync(hooks,
+        var context = await CreateCompleteConflictFrameContextAsync(hooks,
             seedOriginalInputs: SeedOriginalIntakeBaselinesAsync);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var originals = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         foreach (var path in CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(new[]
         {
@@ -111,13 +118,32 @@ public sealed partial class AfterlifeResourceCutoverTests
             originals.Add(path, await context.FileSystem.ReadFileBytesAsync(path));
         await PrepareSpiritualC4PublicationAsync(context);
         var backups = await ReadSpiritualC4BackupsAsync(context);
+        witness = new(context.FileSystem, ResourceMaterializationContract.StatePath,
+            SpiritualWoundOpportunityReceiptState.StatePath);
 
         armed = true;
-        await Assert.ThrowsAnyAsync<IOException>(() =>
+        var failure = await Record.ExceptionAsync(() =>
             AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
                 context.FileSystem, context.Normalizer, context.Validator, backups));
-
-        Assert.True(injected);
+        armed = false;
+        witness.AssertRestored("spiritual-original-committed-rollback",
+            originals.ToDictionary(pair => context.FileSystem.ResolvePath(pair.Key), pair => pair.Value,
+                StringComparer.Ordinal), failure, _storageOutput.WriteLine);
+        Assert.Equal(1, cuts);
+        if (failReadBack)
+        {
+            Assert.True(witness.Has(ResourceMaterializationContract.StatePath));
+            Assert.True(witness.Has(SpiritualWoundOpportunityReceiptState.StatePath));
+            Assert.Same(injected, failure);
+        }
+        else
+        {
+            Assert.False(witness.Has(ResourceMaterializationContract.StatePath));
+            Assert.False(witness.Has(SpiritualWoundOpportunityReceiptState.StatePath));
+            var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
+            Assert.Equal(ResourceMaterializationContract.StatePath, writeFailure.RelativePath);
+            Assert.Same(injected, writeFailure.InnerException);
+        }
         foreach (var pair in originals)
             Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(pair.Key));
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();

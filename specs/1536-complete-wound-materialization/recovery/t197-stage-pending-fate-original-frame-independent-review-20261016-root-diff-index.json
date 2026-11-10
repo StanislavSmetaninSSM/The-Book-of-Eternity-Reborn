@@ -1,0 +1,59 @@
+[
+  {
+    "path": "t197-stage-pending-fate-original-frame-independent-review-20261016-author_pair.diff.gz",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "e6796dc3b5454cceb1591ccc634b54dbb1021bd6",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.json"
+    ],
+    "raw_sha256": "6e8d14589cb593c7671ca2ef0931a64090b51cd0ee6feb2c8a18b581a7aec267",
+    "raw_bytes": 175089,
+    "stored_sha256": "9bcde1f4be7b143822878a2875ee5847deb5f9048306ae58d3974eab04c1e99b"
+  },
+  {
+    "path": "t197-stage-pending-fate-original-frame-independent-review-20261016-selected_four.diff.gz",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "e6796dc3b5454cceb1591ccc634b54dbb1021bd6",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.json",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "raw_sha256": "65e46e7f91ca9a6f12d5a6f450e2c9b575b10b61c7f04f3716a1948ac22c98ba",
+    "raw_bytes": 180527,
+    "stored_sha256": "a07d03bbc50c9d37acd7633aa49edda1915b93eb2540d3a264227c54ad82754b"
+  },
+  {
+    "path": "t197-stage-pending-fate-original-frame-independent-review-20261016-full_carrier.diff.gz",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "e6796dc3b5454cceb1591ccc634b54dbb1021bd6",
+      "--"
+    ],
+    "raw_sha256": "d8b5b679395196d31efe8cbb72e64746d15cb0370dd8fef92757cb13a35fa924",
+    "raw_bytes": 380927,
+    "stored_sha256": "0d9eb1c540a415abb44856dee5972a284daeee35eba55abd4bab540da6f6211e"
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "SHA": "8f9bf9ea03fc0581dd8b69bb479edbc11af89d9e",
+  "Base": "5d4bef64ac89449838c1ef6bfb4ef0fe5f7c62a4",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1597067,
+      "SHA256": "3416aab77d395193d65957d1e292c53fe32095c2e58ac9e19267097c4f05f830",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-bound-remote.json",
+      "Bytes": 1217,
+      "SHA256": "c26ce5b47ac68479079f183eb3373e602a53a749240224a37242f06a1b5efa1e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-deadline-remote.json",
+      "Bytes": 543,
+      "SHA256": "8da93240468bb657107ace2ef4df8a765230954303673b629c99ac9829c123d5",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/manifest.json",
+      "Bytes": 1069,
+      "SHA256": "c18f6ffbafa6796da2ce8798706af96f8ae50070be052ce95aa13a66cfcc1109",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/runner/Build-unit.log.gz",
+      "Bytes": 2839,
+      "SHA256": "725184f3647f1228afafcf53fc297e116af21e094eea6ffc26e856b472e09cbe",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/runner/dotnet-test.log.gz",
+      "Bytes": 186821,
+      "SHA256": "b9c6e16bc0ba387ec632289220bdacd709bbafd23ce0ecc6926c48b1b6fe01e2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/runner/plan.json.gz",
+      "Bytes": 509,
+      "SHA256": "cd2b95ced9b93c16dbc9baaf2f55fbcb73ce6f257c79c70a9dca181776f0c201",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-fresh-plan/runner/summary.json.gz",
+      "Bytes": 624,
+      "SHA256": "4cb5210347a12a7495572c162513ec4c0adf9f21b2cf3f17bcca66e2e4f166b7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-source-remote.json",
+      "Bytes": 1123,
+      "SHA256": "647e01b2ad2af11712554d05ca5b3eeef70ae92cf5d179bb31e072fc0e3972ff",
+      "RemoteExact": true
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "source_sha": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories/dotnet-test.log",
+      "raw_bytes": 1683096,
+      "raw_sha256": "ac346077dd827d011fb99132ac3d334ce1348b3c08bc20d17c969bcbe874e37c",
+      "stored_sha256": "f9d50cbf18c0b02bc536baff3b5e30b1106ac7995fcaedc5ac60c84314d5f0b8"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories/native-exit.json",
+      "raw_bytes": 566,
+      "raw_sha256": "af6db553e2bdcdd3dd7627cf257ea65edfdc9b5fad8031b6083c5a17e981ac32",
+      "stored_sha256": "af6db553e2bdcdd3dd7627cf257ea65edfdc9b5fad8031b6083c5a17e981ac32"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories/plan.json",
+      "raw_bytes": 4322,
+      "raw_sha256": "bd21725f122c9fc18d201d140334e898ea29f20cd9ca526ab47b734a89f7bd80",
+      "stored_sha256": "bd21725f122c9fc18d201d140334e898ea29f20cd9ca526ab47b734a89f7bd80"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories/stdout.log",
+      "raw_bytes": 2415,
+      "raw_sha256": "b8b55b3d9180253f008dbcb5066ad6281cb309cc02452ad4027098e325a6bdc7",
+      "stored_sha256": "4217655fe66b9452ef51586b96e31eec9a7deae8afb7688c810947e95f6b4f4e"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-174847-698-196315-ad1f3adc054f405f9e2ee8f6599f9a07-categories/summary.json",
+      "raw_bytes": 3360,
+      "raw_sha256": "0f6613ad228f9a0df265ce455f5a1cbca5b493e841e76818e9ada532265750a6",
+      "stored_sha256": "0f6613ad228f9a0df265ce455f5a1cbca5b493e841e76818e9ada532265750a6"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion",
+      "fr063-hot-joint-attempt-ownership"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 FIRST only: both protected method bodies unchanged; default helper branch must retain actual v2 union/source/G/held request/native cohort/story/progression/turn/inert and strict cleanup before separate EVIDENCE.",
+        "contracts": [
+          "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+        ]
+      },
+      {
+        "category": "fr063-hot-joint-attempt-ownership",
+        "reason": "One genuine missing-private-custody-result causal RED after actual ProcessPlayerTurn/Stage43, post-original submitted changes, repair/Ready and existing v2 held/refusal/no-consequence preconditions. Not released before separate Late2 EVIDENCE.",
+        "contracts": [
+          "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1154369,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0493557,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1357167,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0054366,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 15,
+    "WallTime": "00:00:04.7608232",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 3,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-hot-joint-attempt-ownership-integration-001",
+        "fr063-joint-late-completion-integration-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

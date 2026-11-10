@@ -1,0 +1,84 @@
+{
+  "kind": "EXACT_FIRST_CUT01_STOP1_RAW_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-18T03:36:43.911581+00:00",
+  "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "nativeExit": 1,
+  "rawChainCount": 9,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/558c7ec0a683dad0586a1dd599676fd291193ef2-cut01-stop1.FIRST.json",
+      "storedPath": "000-558c7ec0a683dad0586a1dd599676fd291193ef2-cut01-stop1.FIRST.json.gz",
+      "bytes": 289,
+      "sha256": "4feb788b13ea1643abfe50b97ef517855aa81f1f30184e0947e921fcb7c92783",
+      "storedBytes": 237,
+      "storedSha256": "b45bcdf919afe885ff9666e354121ca96d4fc13c957a0d037e038ef7c118d7da"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 736,
+      "sha256": "8c4945471c994c16061a5062028e72edfdb1a0a65f674215b3819099adfb50a2",
+      "storedBytes": 384,
+      "storedSha256": "82f169b95c90d04ad7da7190773b5cd86eea2507bf20372683f2cd98e8a81440"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 13068,
+      "sha256": "d2185787bf5c7c7c266efd6605327e52463ccfbeb39c68f2d621e2872f4d6037",
+      "storedBytes": 3813,
+      "storedSha256": "afa3b0ea2c751fd68651a09c7d291eaa39e93998d41dbcd606bdb95766b46ddb"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 19197,
+      "sha256": "de3c33f8fffcc4cc196f7999f95ea4a187566a9c95cb3fdf844dab3f373e08ce",
+      "storedBytes": 5473,
+      "storedSha256": "1e0b3db9548c20afbfb2c86304d7267e46cff20048470bfb8aa423aa7ff112c1"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-stop-first-558c7ec0-20261018/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 7003903,
+      "sha256": "5bd315721e611b13d9c4619f8b1510e37e55c80bda5390978c82990eee901b04",
+      "storedBytes": 2551644,
+      "storedSha256": "75edd937f007d1046bf9de7a9401ef4f7d9416541b6cc9b6b621278c35acf840"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 8692461,
+      "sha256": "1fce98ef5d8652272f29dca9b313e3a5c088833bf78ff748c8a52e752f001798",
+      "storedBytes": 2738936,
+      "storedSha256": "039382ff26fc830c6f2cd8a170e091fe0b3895a891cfcff2b467cf00dfe2103c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/fr063-joint-capture-cut-stop-integration-001.trx",
+      "storedPath": "006-fr063-joint-capture-cut-stop-integration-001.trx.gz",
+      "bytes": 14011632,
+      "sha256": "faabb4a89014b189b07c52d6fc0c78769d3d07d91c108e399b1cef8f39f480c1",
+      "storedBytes": 5102527,
+      "storedSha256": "d6bcb8e05bff9330f5e4bd4f8dddbd61c48d29370e2aed30514d0f848833cd76"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1181,
+      "sha256": "24ae77a3504da3d0a918e16476426084f9e227d2b5cc77e7571a1c9d16ad0533",
+      "storedBytes": 539,
+      "storedSha256": "45ace9793a4997ae3e2e4bd7ce6b6470773ade2672125e927bfdfd6bd4420901"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-033455-749-187295-7a70e18415b24605a6888859b9bde564-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1368,
+      "sha256": "1ac773f797fdaa9d44abd22bf82179fa349ad4873e9a3d21750544ed2a6c8818",
+      "storedBytes": 590,
+      "storedSha256": "e65e0bbd169955fe20e18014c83de676188f74351b6821e5933b274d3a7996ba"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only exact FIRST boundary raw archive; no retry, execution or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_CUT01_STOP1_RAW_NOT_CAUSAL_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel']),record_path.parent/'source-binding.json']\nfor d in record['resultDirectories']:paths.extend(p for p in sorted(Path(d).rglob('*')) if p.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_FIRST_CUT01_STOP1_RAW_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],nativeExit=record['nativeExit'],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome."
+}

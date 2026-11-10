@@ -179,7 +179,17 @@ public partial class CanonicalStateNormalizer
 
         try
         {
-            await _fs.WriteFileAtomicAsync(_writeLease, path, content);
+            if (_spiritualLocalityNormalizationOwner?.OwnsLocalityPath(path) == true)
+                await _spiritualLocalityNormalizationOwner.PublishOwnedLocalityNormalizationAsync(_fs, _writeLease,
+                    path, content, async before =>
+                    {
+                        if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, _writeLease,
+                                new CoordinatedStateWriteHelper.PlannedWrite(path, null, content,
+                                    RequireCurrentBaseline: true, ExactPrevious: before)))
+                            throw new InvalidDataException("The owned locality beforeimage changed before the normalizer write.");
+                    });
+            else
+                await _fs.WriteFileAtomicAsync(_writeLease, path, content);
         }
         catch (SessionReplacedException)
         {
@@ -193,7 +203,7 @@ public partial class CanonicalStateNormalizer
         {
             throw;
         }
-        catch (Exception exception)
+        catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
         {
             throw new CanonicalStateWriteException(path, exception);
         }

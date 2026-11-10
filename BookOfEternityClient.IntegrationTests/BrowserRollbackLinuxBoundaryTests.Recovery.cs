@@ -64,16 +64,19 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
         {
             await ExplorerLocalTurnRollbackArtifacts.StageBrowserWriteTransactionAsync(files, lease, [Member], "browser_write");
             var selected = false;
+            var cutHits = 0;
             _mutation = path => { selected = path == Member; return Task.CompletedTask; };
             _publication = (phase, _) =>
             {
                 if (selected && phase == TrustedLocalPublicationPhase.MemberPublished)
                 {
+                    cutHits++;
                     File.WriteAllBytes(files.ResolvePath(Member), [110]);
                     throw new InvalidOperationException("owned member publication cut");
                 }
             };
-            await Assert.ThrowsAsync<InvalidDataException>(() => files.WriteFileAtomicBytesAsync(lease, Member, After));
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => files.WriteFileAtomicBytesAsync(lease, Member, After));
+            Assert.Equal(1, cutHits);
             Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
             File.WriteAllBytes(files.ResolvePath(Member), After); // Restore the declared image for the controlled continuation.
         }
@@ -95,16 +98,19 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
             var manifest = files.ResolvePath(transaction.ManifestPath);
             var before = File.ReadAllBytes(manifest);
             var selected = false;
+            var cutHits = 0;
             _mutation = path => { selected = path == transaction.ManifestPath; return Task.CompletedTask; };
             _publication = (phase, _) =>
             {
                 if (selected && phase == TrustedLocalPublicationPhase.MemberStaged)
                 {
+                    cutHits++;
                     File.WriteAllBytes(manifest, [42]);
                     throw new InvalidOperationException("owned metadata stage cut");
                 }
             };
-            await Assert.ThrowsAsync<InvalidDataException>(() => files.WriteFileAtomicBytesAsync(lease, Member, After));
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => files.WriteFileAtomicBytesAsync(lease, Member, After));
+            Assert.Equal(1, cutHits);
             Assert.True(Directory.EnumerateFiles(files.ResolvePath(transaction.TransactionRoot), ".boe-local-*.stage").Any());
             File.WriteAllBytes(manifest, before); // Restore declared current image while retaining exact owned scratch.
         }

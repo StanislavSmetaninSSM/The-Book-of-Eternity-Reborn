@@ -1,0 +1,70 @@
+{
+  "source": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "sha256": "ab4c1770bccb370847bb3cb82db4a8545070cbce1266bf90438c70f86fac2881",
+      "bytes": 26253
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+      "bytes": 584183
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "bytes": 7722
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "sha256": "28d7114a73fefa461d4e8502fd88d2d661c4a664f26a9767840556d1b0f37c31",
+      "bytes": 378511
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "5a5fc696e72df7b4c0970eab6a5b371918f749a94ad915485c1356cd8484ceba",
+      "bytes": 259097
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "sha256": "c9bd53f0ad72d1135cbe630b44150793a29c4dabe8a2e3cda41b90174a2e4894",
+      "bytes": 46958
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "497e76a895206495a90924bc6adfd2a6f35015563a0c1f9bd06617c86eccfdb0",
+      "bytes": 281014
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "660ee721a0b60d6eee3bcc478f52c625c75d427967bd31725683c6d31d0e60fd",
+      "bytes": 111583
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d",
+      "bytes": 42609
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+      "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433",
+      "bytes": 9350
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "c4de28feb493916df3015c27cd9cfd8187c341d39a2d165f7752542e43113664",
+      "bytes": 1759139
+    },
+    {
+      "path": "tests/selections/1536-qte-physical-injury-admission.json",
+      "sha256": "86889ad9e1f71d6760be5f2ef7cdcf27e118e11fa382e1f6a127c2c432877954",
+      "bytes": 1026
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "bytes": 81688
+    }
+  ]
+}

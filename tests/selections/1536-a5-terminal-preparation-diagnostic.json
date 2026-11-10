@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "mortal-physical-terminal-preparation-diagnostic",
+      "reason": "Separate genuine terminal setup/replay and isolated copy costs before considering another full A5 run; preserve uncapped full passive capture and ordinary owned cleanup.",
+      "contracts": [
+        "Genuine terminal stage DATA, two independent detached copies, unchanged current owner/generation and source bytes; no common binding or gameplay-contract change."
+      ]
+    }
+  ]
+}

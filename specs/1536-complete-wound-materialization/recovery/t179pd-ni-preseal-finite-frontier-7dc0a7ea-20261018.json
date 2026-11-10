@@ -1,0 +1,78 @@
+{
+  "kind": "DERIVED_SOURCE_DESIGN_FINITE_FUTURE_FRONTIER_NO_TESTS_AUTHORITY",
+  "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "status": "WIP_UNREVIEWED_NO_TESTS_BUILD_NATIVE",
+  "fixedDraft": {
+    "markdownSha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27",
+    "jsonSha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449"
+  },
+  "freshFrameBinding": "Iteration begins at VR542 but remains unbound. Eligible branch resolves freshSnapshot565 and activeSnapshotContext566 BEFORE N572; bind actual private owner to this returned frame/G, not prior loop argument. Upstream-error skipped branch cannot mint a pass. Revalidate same frame/G at I and Capturing.",
+  "supplementalSourcePin": {
+    "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+    "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+    "mode": "100644",
+    "gitBlob": "a7ac75403ea26423545a62b02186c00956f6195c",
+    "bytes": 84042,
+    "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d"
+  },
+  "supplementalProjection": {
+    "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+    "firstLine": 744,
+    "lastLine": 802,
+    "bytes": 2514,
+    "sha256": "7fa4540c96f454ca80cc56fcf78f8121f84d74ffa5d7a9c12c37cfd0dcd6b725",
+    "fact": "Current achievements read746 precedes catch; JsonDocument.Parse753 and collector770 use semantic JSON, trailing whitespace is preserved in physical input but does not change parsed data."
+  },
+  "controls": [
+    {
+      "id": "before-first-preparation",
+      "contract": "Genuine Stage43/TREAT/corrected Ready; object option with two recognized leading tags and useful blank timestamp. Observe actual I return/afterimage BEFORE first preparation/common, then no repeated live I projection/sample/write. Baseline actual order must be observed, not a missing-API oracle.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "new-dependency-drift",
+      "contract": "Present UTF8 achievements source actually read by N; append one trailing 0x20 AFTER N consumed it at genuine later I-entry/read, not N prose interface read. Preserve BOM/original/manifest and parsed content. Exact real Capturing consumer SourceChanged before preparation/common; unchanged counterpart. Actual baseline pre-common guard reach needs SOURCE/FIRST qualification.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "writer-overwrite-hidden-drift",
+      "contract": "Actual public-read hook changes I before writer ownlease. Final projection still matches; actual writer preimage mismatch must invalidate owned transition without changing ordinary write into CAS/refusal.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "legitimate-owned-and-no-write",
+      "contract": "Actual same-invocation normalization joins before→real branch outcome→public owning release→after; unchanged raw/BOM/UTF16/mtime retains no-write. No Ready rewrite/reseed or fake transition.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "missing-fault-iteration",
+      "contract": "Engine Skipped/no invocation; N Error/warning omission; I Error; source fault before catch; current frame/G/Ready/iteration mismatch; public-write release versus outer operation finalization. No prior corrected/rejected-pass reuse.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "live-late-after-expiry",
+      "contract": "Non-capability bound committed data survives attempt Expire; exact image/proof recheck replaces late I call only, never revives lease. Later actual read-only N diagnostics and changed relative-I order qualified explicitly.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    },
+    {
+      "id": "old-and-new-cold",
+      "contract": "Legacy child1 full current-v2 proof remains unchanged/no NI history. Prospective NI-aware child uses genuine persisted CLOSED-publication returned-I data, never a new current-only semantic/clock/projector fallback, after total memory loss. Exact child/common/cold physical authentication is NI-COLD01 and remains unclosed.",
+      "status": "FUTURE_UNAUTHORED_UNRUN"
+    }
+  ],
+  "sourceOnlyLimits": [
+    "Current achievements path is outside HotInput6/Output3/Control5, but no baseline runtime/reach is assumed.",
+    "Fixture must record actual N return and I entry; no guessed hook ordinal, fake acceptance, original rewrite or test callback authority.",
+    "Boundary/common/effect/order/mutation source must be reviewed from actual fixture before any eligibility; no guessed row count.",
+    "No new test-only stage admitted until NI-COLD01 and exact associations are source-closed."
+  ],
+  "runtime": "NONE; no build/discovery/test/CI/ZIP",
+  "utc": "2026-10-18T02:37:02.928443+00:00",
+  "rootDerivedSingleChoice": {
+    "path": "t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+    "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea",
+    "choice": "Prospective NI-aware child consumes genuine persisted CLOSED-publication returned I data only, not the frozen draft current-only alternative. Existing child1 legacy cold remains unchanged.",
+    "authenticationGap": "Cold ReadJointCompletedProof inputFingerprint222 checks syntax only; actual common/taken crosslink312–313 is live-only. Need cold substitution+rehash rejection via actual common/issuer/effects physical proof; child selfhash/afterimage equality alone is not historical authentication.",
+    "designStatus": "DESIGN_NOT_READY; NI-COLD01 unclosed, no tests-only/native admission"
+  }
+}

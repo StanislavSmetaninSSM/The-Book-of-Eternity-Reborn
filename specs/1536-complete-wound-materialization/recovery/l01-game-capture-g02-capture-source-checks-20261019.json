@@ -1,0 +1,373 @@
+{
+  "kind": "G02_CAPTURE_AFFECTED_SOURCE_READONLY_CHECKS",
+  "reviewedSource": "8b9d08f0242ebaec76e74a1fbe28351fd1f6681e",
+  "previousSource": "c0a05c8eef5f4de73fb03272bb1855090eaf60ab",
+  "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
+  "sourcePinDigest": "288c6cd3ce40a2bf3f83eaaa9238e04b519303794fd8aeb1dce08f11f038aa5d",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "checks": [
+    {
+      "name": "exact_saved_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "canonical173digest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "173_saved_Git_source_pins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "173_independent_restore_pins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "22_affected_delta_paths_feature_only",
+      "passed": true,
+      "detail": [
+        "specs/1536-complete-wound-materialization/design/l01-corrective-g02-plan-20261019.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/check_g02_c0_source_20261019.py",
+        "specs/1536-complete-wound-materialization/recovery/check_g02_c0_source_20261019_v1.py",
+        "specs/1536-complete-wound-materialization/recovery/g02-c0-source-reader-history-20261019.json",
+        "specs/1536-complete-wound-materialization/recovery/g02-c0-source-reader-v1-failure-20261019.txt",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-checks-20261019.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-independent-review-20261019.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-independent-review-20261019.md",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/capture-role-green.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/check_role.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/control.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/source-packet.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/synthetic-admission-green.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/synthetic-admission-red.json",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ]
+    },
+    {
+      "name": "22_affected_restore_bytes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no_production_integration_or_catalog_change",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "only_three_shared_g01_changes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "historical_g01_packet_control_bindings_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_three_current_g01_delta_hashes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "seven_original_hold_support_bytes_preserved",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_source_synthetic_actual_gates_hold",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "separate_one_request_budgets",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "old_outcomes_limits_retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unchanged_unit_metadata_reuse_oracle_bindings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "395_inputs_only_current_watchdog_collect_deltas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_role_seven_inert_cases",
+      "passed": true,
+      "detail": [
+        {
+          "name": "real",
+          "passed": true
+        },
+        {
+          "name": "synthetic",
+          "passed": true
+        },
+        {
+          "name": "missing",
+          "passed": true
+        },
+        {
+          "name": "string",
+          "passed": true
+        },
+        {
+          "name": "wrong-contract",
+          "passed": true
+        },
+        {
+          "name": "synthetic-real",
+          "passed": true
+        },
+        {
+          "name": "real-synthetic",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "exact_actual_evidence_validator_eight_inert_cases",
+      "passed": true,
+      "detail": [
+        {
+          "name": "success",
+          "passed": true
+        },
+        {
+          "name": "source",
+          "passed": true
+        },
+        {
+          "name": "run",
+          "passed": true
+        },
+        {
+          "name": "native",
+          "passed": true
+        },
+        {
+          "name": "api0",
+          "passed": true
+        },
+        {
+          "name": "frames",
+          "passed": true
+        },
+        {
+          "name": "eof",
+          "passed": true
+        },
+        {
+          "name": "missing",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "synthetic_evidence_exact_hash_review_path_before_launch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "separate_consumed_permits_and_actual_false",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "real_role_and_watchdog_cleanup_unchanged_except_role_rename",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "single_common_API_after_final_guard_no_synthetic_earlyreturn",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "S01_launch_accounting_precedes_identity",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "S01_direct_owned_fallback_is_explicit_and_bounded",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "S02_native_recording_now_precedes_drains_assertions",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "S02_natural_and_forced_exit_reconciliation_separate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "remaining_S02_unguarded_final_publication",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic_deadline_before_launch60_and_outer45",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "positive_request_return_core_report_and_stop_eof_required",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "original_S01_decode_source_unchanged_and_fourframes_required",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained_binaries_source_graph_and_separate_closures",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "new_owner_only_compile_for_G02",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fresh_private_binding_catalog_plan_ZERO",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "parent6_health26_and_retained_policy23_guards",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "same_game_case_original_900_controller_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no_core_rawreport_publication_or_auto_delete_in_new_owner",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 36,
+  "failed": 0,
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-8b9d08f0.json",
+    "sha256": "fb272010ce0a9a3c626a4d5760f710ad99349f066840c0db2ea892df6f44d9c4"
+  },
+  "sourceReadSet": {
+    "specs/1536-complete-wound-materialization/design/l01-corrective-g02-plan-20261019.md": {
+      "bytes": 5592,
+      "sha256": "728f26df3793b888765493fff6b66fef4c09f24e18beff32a9ca92baed8ba6d3"
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "bytes": 2539053,
+      "sha256": "06278e3bedec7b957b86ab7c04c6b83864098f51dc59ca140661ae217cae18f2"
+    },
+    "specs/1536-complete-wound-materialization/recovery/check_g02_c0_source_20261019.py": {
+      "bytes": 8938,
+      "sha256": "189f45ec06d93deb39fa86d0fc936645da54cc999058ccf5d4ae5bdbfa15ac8c"
+    },
+    "specs/1536-complete-wound-materialization/recovery/check_g02_c0_source_20261019_v1.py": {
+      "bytes": 8561,
+      "sha256": "3353c014aae8f701c2efc76781827116155ee05b93e5d564da0445c8c8640416"
+    },
+    "specs/1536-complete-wound-materialization/recovery/g02-c0-source-reader-history-20261019.json": {
+      "bytes": 629,
+      "sha256": "ba3c55eff0edc2e235bb35ae5d2c11b8bcc681990502d011968c6d996d44bfd7"
+    },
+    "specs/1536-complete-wound-materialization/recovery/g02-c0-source-reader-v1-failure-20261019.txt": {
+      "bytes": 301,
+      "sha256": "bff383d53c96224074adde2f8e1c702587fcd1f843330e0df91954f6604d4692"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1": {
+      "bytes": 10325,
+      "sha256": "bbfb301e4028d4ff5c0e39c73a60035e12eaca3e291ce520bed7bc454a3171a9"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py": {
+      "bytes": 28469,
+      "sha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py": {
+      "bytes": 17310,
+      "sha256": "68ff8cd3c45560cc2a0ee2cd9fb708e6710a235e15908cf92eb90d97794235e5"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-checks-20261019.json": {
+      "bytes": 8868,
+      "sha256": "bf3a563b97503fb9a089dde2544893756244791ac2aca4a41579e6a4d3757d28"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-independent-review-20261019.json": {
+      "bytes": 9421,
+      "sha256": "67c7db574b9ee95fcd136a4a6e006f4174d5ce3f52da59247a60e55dd188a0ea"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-source-independent-review-20261019.md": {
+      "bytes": 3027,
+      "sha256": "1cbd0554d6d197a636e264f2516c00ebdc33761c2ca47ad3aeea2285b7a968d7"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs": {
+      "bytes": 14160,
+      "sha256": "c2874468229d1ca084b93ae622bf6094e06f3e47526ba09964c59c3166477eda"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json": {
+      "bytes": 216029,
+      "sha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/capture-role-green.json": {
+      "bytes": 558,
+      "sha256": "e80e9b661d8141ddad45388666ba3a943ad4899771c2f1a0c418c53dc96d44df"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/check_role.py": {
+      "bytes": 3809,
+      "sha256": "f7b556f25409087f2287d3f94840d2e54bf439ed17182acb979f9154803b5b89"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/control.json": {
+      "bytes": 895,
+      "sha256": "e28a4d43ad06a2648116ceb4b1d6ed9da867b71226d3e47d8e49cf1eb04788f5"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/source-packet.json": {
+      "bytes": 40905,
+      "sha256": "e6b95349fb328339362d8e55cb6c1fabcc240c8ea42dd58741a9393dc88b1c5d"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/synthetic-admission-green.json": {
+      "bytes": 1072,
+      "sha256": "03ff798e9d85891862fe9c47928dd538a1f4e1531df5980a4e6c19a3cda68cca"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/synthetic-admission-red.json": {
+      "bytes": 652,
+      "sha256": "ee083a1b30a88b36cf9a60a5ac32bcd7120981856fbfcd325264c683b1166566"
+    },
+    "specs/1536-complete-wound-materialization/spec.md": {
+      "bytes": 248362,
+      "sha256": "63dcbfe17a4a25fa0f5afd8b7f506e1c2816304052bce2627787ae639d1e1ed1"
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "bytes": 1619198,
+      "sha256": "0ef5ab7c6ee639b0136daa22a564dfba0fe2316a0d92210613e3b963d6f1a84a"
+    }
+  },
+  "executionScope": "Static source/Git/hash reads plus actual request_role/validate_synthetic AST with inert dictionaries. No SDK/C#/process target/API/procfs or signal actions. Defect-presence flags are not acceptance."
+}

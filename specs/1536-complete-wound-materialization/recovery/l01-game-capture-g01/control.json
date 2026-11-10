@@ -1,0 +1,216 @@
+{
+  "kind": "G01_PENDING_CAPTURE_ORCHESTRATION_CONTROL",
+  "base": "c1668efba8ccf9bb041e8b764d561fe7bed0bc6f",
+  "status": "QUALIFIED_POSTRUN_SOURCE_FIX_GAME_FAIL_CAPTURE_BLOCKED_RUNTIME_CLOSED",
+  "sourceReview": "ACCEPT_G01_POSTRUN_ENV_PARENT_SOURCE_AND_PURE_ONLY",
+  "affectedIntegrationPrep": "ORIGINAL_PREP_RETAINED_CSHARP_UNCHANGED",
+  "gameplayRelease": "NONE",
+  "snapshotRelease": "NONE_CONSUMED_FIRST_RUN",
+  "crash5Release": "NONE",
+  "actualGameCasesExecuted": 1,
+  "diagnosticRequests": 0,
+  "dumpArtifactsCreated": 0,
+  "purePolicy": {
+    "initialRedSource": "57afc2cc7e160fd72a3a76c1bf8de41c07dbc759",
+    "firstGreenFailureSource": "17684f613fea24d9236105e43be0709001cc7744",
+    "correctedSource": "c2be74b2171481bb06e82264510e1a09117a92e2",
+    "correctedCases": 23,
+    "correctedPassed": 23,
+    "correctedNativeExit": 0,
+    "independentAffectedReview": "ACCEPT_RAW_TIMESTAMP_FIX_AND_FIRST_PURE23_ONLY_G01_BLOCKED",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-policy-corrected-affected-independent-review-20261018.json",
+    "reviewSha256": "b3b4da02b7860142fcfc463495bd021756ad01b071d10ef2c0b257d8223faaf7",
+    "reviewedCarrier": "307f8663c9f334d0e452fddc35c094fe4714bed3",
+    "correctedRecordSha256": "ef57bcd8dacf2b19dbbcf8a8f70bddb86b286889ababb2bde2e095fc39d75305"
+  },
+  "phaseClarification": {
+    "latestInstruction": "health/identity/phase uncertainty cancels capture",
+    "existingSource": "JointInterfaceDiagnosticDelivery.Health.CapturePhase => UNKNOWN; receipt is a discrete marker, source-emission completeness UNKNOWN",
+    "dependentActualBlocked": false,
+    "resolution": "EXACT_RECEIPT_FRESH_STICKY_HEALTH_CAPTURE_PHASE_UNKNOWN_ALLOWED",
+    "userChoice": 1,
+    "limits": "Identity/ownership/delivery/order/sticky-health uncertainty cancels; CapturePhase UNKNOWN alone does not. No continuous-phase proof mechanism; retain observed interval/races/UNKNOWN plus real mapped frames."
+  },
+  "dumpLifecycle": {
+    "root": "New private disposable own/capture only",
+    "retention": "Through independent minimal sanitized EVIDENCE and final run report; uncertain ownership/cleanup retains root",
+    "commitAttachArchive": "FORBIDDEN_CORE_OR_RAW_REPORT",
+    "automaticDeletion": "NONE"
+  },
+  "unimplemented": [],
+  "unrunWipSources": [],
+  "allOldOutcomesAndBroaderHoldsUnchanged": true,
+  "currentNextAction": "REPORT_FINITE_ENDPOINT_NO_FURTHER_RUNTIME_AUTHORIZED",
+  "sourceAdmission": {
+    "status": "HOLD_NEW_USER_AUTHORIZED_RUN_PLAN_AND_RELEVANT_PREP_REQUIRED",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-accepted-review-20261019.json",
+    "reviewSha256": "49a12866715b264a38de2e50572a1f012dce956653035ed437703cd8d5b3cf76",
+    "reviewedSource": "e520663f7918e536c2ae0675cb79a774be637655"
+  },
+  "actualAdmission": {
+    "status": "CONSUMED_G01_FIRST_OUTCOME",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-final-prep-independent-review-20261019.json",
+    "reviewSha256": "64718976c1b316de6f388c431132773ce1c39f29d8144a395e8b706c9b5b47e2",
+    "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
+    "prepRecords": {
+      "tools": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+      "prepare": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4"
+    },
+    "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY"
+  },
+  "originalWholeSourceReview": {
+    "candidate": "9d8d08093bb769f85ec79a88d98669f1570e0d57",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-source-independent-review-20261019.json",
+    "reviewSha256": "7c1721d2b264027af887f122df483a6e2f8d1791386bb7198c46f95501023839",
+    "readOnlyChecks": 49,
+    "verdict": "HOLD_G01_WHOLE_SOURCE"
+  },
+  "sourceCorrections": {
+    "findings": [
+      "G01-S01",
+      "G01-S02",
+      "G01-S03",
+      "G01-S04"
+    ],
+    "pureFakeLifecycleFinalPassed": 5,
+    "finalProof": "watchdog-fault-green-budget-guard.json",
+    "nativeTools": {
+      "status": "PASSED_AND_INDEPENDENTLY_REVIEWED",
+      "evidenceReference": "toolsEvidence"
+    },
+    "affectedPrep": {
+      "status": "PASSED_AND_INDEPENDENTLY_REVIEWED",
+      "evidenceReference": "prepEvidence",
+      "reviewReference": "actualAdmission"
+    },
+    "advancingClockPassed": 4,
+    "advancingClockProof": "deadline-fault-green.json"
+  },
+  "affectedSourceHold": {
+    "candidate": "223a5e09a3998e528e2d6e514ecc91589b5c57c8",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-affected-source-review-223a-20261019.json",
+    "reviewSha256": "0a02972bea1a5241deeb768a51803381ad7669fdcc97acebbae480ff531ae062",
+    "readOnlyChecks": 31,
+    "verdict": "HOLD_G01_AFFECTED_SOURCE"
+  },
+  "toolsEvidence": {
+    "source": "86bb144d834e29e6e300c24609bc9743561f0e07",
+    "recordPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-first-20261019/record.json",
+    "recordSha256": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+    "nativeExit": 0,
+    "parentCases": 6,
+    "collectorHealthCases": 26,
+    "mapCases": 5,
+    "durationSeconds": 9.650486927996099,
+    "independentReview": {
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-tools-partial-prep-review-20261019.json",
+      "reviewSha256": "fc95db06a28b155e182141091e19531f5d5607a21a393a438f363c9a28b7b779",
+      "checks": 43
+    }
+  },
+  "prepEvidence": {
+    "compiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+    "recordPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-prep-first-20261019/phase/record.json",
+    "recordSha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4",
+    "nativeExit": 0,
+    "durationSeconds": 400.6719431300007,
+    "integrationFiles": 460,
+    "unitFiles": 439,
+    "unitCompiledSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+    "catalogCategories": 810,
+    "catalogMethods": 11802,
+    "plannedDescriptors": 1,
+    "plannedCases": 1,
+    "executedCases": 0
+  },
+  "firstGameEvidence": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-first-game-sanitized-evidence-20261019.json",
+    "sha256": "9def23e0fcbd33ad00645853b5cae7edcc6ce91cac64e698bb5a93181a4f3204",
+    "nativeExit": 1,
+    "executedCases": 1,
+    "passed": 0,
+    "failed": 1,
+    "collectorLaunches": 0,
+    "observedApiRequests": 0,
+    "apiOutcome": "UNREACHED",
+    "gameSource": "275586f399bee346acf6773ecbff2d95f1ec2ba4"
+  },
+  "evidenceReview": {
+    "verdict": "ACCEPT_FIRST_OUTCOME_FACTS_CAPTURE_BLOCKED",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-first-outcome-independent-review-20261019.json",
+    "reviewSha256": "6aab0ec48aa95032ca79ac31875446a3fd22d3a03e94f27a9e8b6c920cf1adb1",
+    "checks": 38,
+    "pureFilesystemChecks": 4,
+    "gameFAIL": true,
+    "captureBLOCKED": true,
+    "newRuntimeRelease": "NONE"
+  },
+  "terminalDrainAddendum": {
+    "parentConsumedEvents": 22,
+    "custodySourceElapsedMilliseconds": 9757,
+    "acceptedSourceElapsedMilliseconds": 207334,
+    "sourceMarkerGapSeconds": 197.577,
+    "receivedMarkerGapSeconds": 197.580955067,
+    "parentFinalHealthScope": "Snapshot when parent cancelled at accepted marker; Eof=false/AcceptedSeen=true/LateReturnSeen=false, no observed gaps.",
+    "terminalDrainDiagnosticEvents": 24,
+    "terminalDeliveryHealth": {
+      "Candidates": 24,
+      "Published": 24,
+      "Dropped": 0,
+      "Malformed": 0,
+      "Oversize": 0,
+      "IncompleteTail": 0,
+      "IdentityRejected": 0,
+      "Duplicates": 0,
+      "ElapsedRegressions": 0,
+      "TrackingExhausted": 0,
+      "Uncertain": false,
+      "Eof": true,
+      "RawReadFault": false,
+      "CustodySeen": true,
+      "AcceptedSeen": true,
+      "LateReturnSeen": false,
+      "ObserverFailure": null,
+      "SourceEmissionCompleteness": "UNKNOWN",
+      "CapturePhase": "UNKNOWN",
+      "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+    },
+    "postParentStopDiagnosticEvents": [
+      {
+        "Stage": "completed-proof-lease-return",
+        "SourceElapsedMilliseconds": 207346,
+        "LineOrdinal": 23,
+        "RawLineSha256": "d8e3628188008beb5524870b9e838e40b33021cccad7b6449cadb6a4de36e182"
+      },
+      {
+        "Stage": "finalization-return",
+        "SourceElapsedMilliseconds": 207678,
+        "LineOrdinal": 26,
+        "RawLineSha256": "47c2e6f77c9141cbb31bb279f01c94da0ab953630698b5bb356e5454e1b0e821"
+      }
+    ],
+    "postParentStopControlDetail": "AcceptedOutcomeValidatedBeforeMaterialization",
+    "privateRawTrxSha256": "7cb68faeb872a096cee5b20f55ca05ce20e1050d3cc29b81e5b74f45ba5c404f",
+    "interpretation": "The lease-return207346ms and accepted finalization-return207678ms occur after the parent22-event interval. Therefore its last lease-enter cannot establish a blocked lease. The terminal delivery has EOF and no late-first-return marker; no unique managed blocking operation, useful-work remainder or completion bound is proven."
+  },
+  "postRunEnvParentFix": {
+    "status": "ACCEPT_G01_POSTRUN_ENV_PARENT_SOURCE_AND_PURE_ONLY",
+    "watchdogSha256": "0fcd99aefab4a1b23414b0435c3f721deb04d511bcf5e9bd8439ce9b7c5fd2e9",
+    "proofPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/environment-prefix-green.json",
+    "proofSha256": "a739e0f8e52d593cd058df4c1870e832890d058356dcb0ae702b2b40ef58f3aa",
+    "sourcePinDigest": "a6fc0b4308f6d0ae173f4fd41eefccfd73b0fb294dda935f2ab37fb081942b13",
+    "unchangedBinaryProof": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/postrun-env-parent-equivalence.json",
+    "runtimeRelease": "NONE",
+    "newGameCases": 0,
+    "newDiagnosticRequests": 0,
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-env-parent-affected-independent-review-20261019.json",
+    "reviewSha256": "136d0ed142bd7c8d9f75a396c1e9665177f93608eaad3afe8eb5828baaab112b",
+    "checks": 24
+  },
+  "mappingStatus": "BLOCKED_NO_REPORT_MAPPER_NOT_INVOKED",
+  "remainingBlockers": [
+    "Managed snapshot/target MethodDef+IL frames absent; timeout cause/completion bound unproved.",
+    "Original L01 crash5 still unqualified;52of57 original evidence only.",
+    "Consumed run never retries; any future runtime requires distinct user-authorized plan/newroot/run and relevant SOURCE/PREP."
+  ]
+}

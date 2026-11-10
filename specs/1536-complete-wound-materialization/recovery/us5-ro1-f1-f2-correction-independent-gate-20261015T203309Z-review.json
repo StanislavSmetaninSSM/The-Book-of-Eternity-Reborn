@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-15T20:34:09Z",
+  "disposition": "ACCEPT_F1_F2_THROUGH_2844_FRESH_BOUNDED_VERIFICATION_RELEASED_GREEN_UNRUN",
+  "baseGit": "4fb82ae6b740a9333712a3d4e451a4ddf46dfb28",
+  "reviewedGit": "2844f5422f90ccbf9e22fa46f7d2d450bbbfe5ba",
+  "requestedReviewerConfiguration": "Astra XHigh",
+  "actualBackendTelemetry": "unavailable",
+  "sourcePins": {
+    "BookOfEternityClient/Services/WoundPlayerReadService.cs": "42dae3059514b6df83ec6f5163831621ad7cdd5652ca66a086811c31de361e21",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs": "8257625a19cb666bc7751a81f6fc05f88f60c933a86418504412dc366306b620",
+    "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs": "cd5dad4bcb0bda9c68e4a5ce882ce32696b3637c06acd9f8533e843b01ff1d8f"
+  },
+  "findingsResolution": {
+    "F1": "corrected: direct unique visible noncontained items plus existing accepted identity; nine real-reader cases",
+    "F2": "corrected: two nonempty accepted afterlife effect cases, five internal scenarios per realm",
+    "materialBlockers": []
+  },
+  "precisionNote": {
+    "blocking": false,
+    "topic": "proposal fixture",
+    "resolvedAtGit": "2844f5422f90ccbf9e22fa46f7d2d450bbbfe5ba",
+    "text": "Affected-only follow-up replaces conflicting sealed-item variant with exact original three-field proposal. Only fixture object and plan/tasks fronts changed; production/assertions/selection/budgets unchanged. Accepted in this report.",
+    "pendingFollowupGate": false
+  },
+  "selection": {
+    "unchanged": true,
+    "categories": [
+      "wounds-player-projection",
+      "wounds-player-read"
+    ],
+    "budgetsMinutes": 3,
+    "sourcePredictionsNotDiscovery": {
+      "projectionMethods": 25,
+      "projectionCases": 32,
+      "readerMethods": 8,
+      "readerCases": 33
+    },
+    "release": "Fresh selected BOTH builds; official zero-execution Plan/catalog; bounded exact two-category native verification at reviewed source.",
+    "laterSourceEditRequiresAffectedGate": true,
+    "aggregateOrHistoricalRerun": false
+  },
+  "limits": {
+    "compileRuntimeProven": false,
+    "green": false,
+    "publicConsumerAcceptance": false,
+    "fullHistoryAcceptance": false,
+    "authorityStorageMembershipExpansion": false,
+    "reviewerRepositoryWrites": false,
+    "reviewerBuildTestsPlanDiscoveryNativeCalls": false,
+    "remoteVerificationIndependentlyRepeated": false,
+    "ro2MustFollow": true,
+    "fullFeatureClosure": false
+  },
+  "finalState": "FINALSTOP_NO_PENDING_REVIEWER_WRITES",
+  "correctionGit": "9f98889bc58ad05b4859bb635a9665966d780ef0"
+}
+

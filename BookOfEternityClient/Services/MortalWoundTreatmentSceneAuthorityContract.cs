@@ -14,33 +14,59 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
         "player", "npc", "combatant", "combatant_member"
     };
 
-    internal static bool IsRecognized(JsonElement row)
+    private static readonly HashSet<string> SpiritualActorKinds = new(StringComparer.Ordinal)
+    {
+        "player_soul", "guardian", "resident", "radiant_actor", "afterlife_actor"
+    };
+
+    internal static bool IsRecognized(JsonElement row) => IsRecognized(row, spiritual: false);
+
+    internal static bool IsSpiritualDiagnosisRecognized(JsonElement row) => IsRecognized(row, spiritual: true);
+
+    private static bool IsRecognized(JsonElement row, bool spiritual)
     {
         if (row.ValueKind != JsonValueKind.Object)
             return false;
         var kindKey = ExactIdentifierConfusableKey.Build("kind");
+        var kinds = spiritual ? new[] { SpiritualDiagnosisSceneAuthorityContract.FacilityKind,
+            SpiritualDiagnosisSceneAuthorityContract.EnvironmentKind, SpiritualDiagnosisSceneAuthorityContract.ConsentKind }
+            : new[] { FacilityKind, EnvironmentKind, ConsentKind };
         return row.EnumerateObject().Any(property =>
             string.Equals(
                 ExactIdentifierConfusableKey.Build(property.Name),
                 kindKey,
                 StringComparison.Ordinal) &&
             property.Value.ValueKind == JsonValueKind.String &&
-            property.Value.GetString() is FacilityKind or EnvironmentKind or ConsentKind);
+            kinds.Any(kind => spiritual
+                ? ExactIdentifierConfusableKey.Build(property.Value.GetString()!) == ExactIdentifierConfusableKey.Build(kind)
+                : property.Value.GetString() == kind));
     }
 
     internal static MortalWoundTreatmentSceneAuthorityResult Parse(
         JsonElement customStates,
-        string context)
+        string context) => ParseCore(customStates, context, spiritual: false);
+
+    // This is shared closed grammar DATA only. It issues no Mortal snapshot,
+    // actor membership, current locality or execution/publication authority.
+    internal static MortalWoundTreatmentSceneAuthorityResult ParseSpiritualDiagnosis(
+        JsonElement customStates, string context) => ParseCore(customStates, context, spiritual: true);
+
+    private static MortalWoundTreatmentSceneAuthorityResult ParseCore(
+        JsonElement customStates, string context, bool spiritual)
     {
+        var facilityKind = spiritual ? SpiritualDiagnosisSceneAuthorityContract.FacilityKind : FacilityKind;
+        var environmentKind = spiritual ? SpiritualDiagnosisSceneAuthorityContract.EnvironmentKind : EnvironmentKind;
+        var consentKind = spiritual ? SpiritualDiagnosisSceneAuthorityContract.ConsentKind : ConsentKind;
+        var actorKinds = spiritual ? SpiritualActorKinds : ActorKinds;
         var issues = new List<ValidationIssue>();
         var facilities = new List<MortalWoundTreatmentSceneFacility>();
         var environments = new List<MortalWoundTreatmentSceneEnvironment>();
         var consents = new List<MortalWoundTreatmentSceneConsent>();
         var identities = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal)
         {
-            [FacilityKind] = new(StringComparer.Ordinal),
-            [EnvironmentKind] = new(StringComparer.Ordinal),
-            [ConsentKind] = new(StringComparer.Ordinal)
+            [facilityKind] = new(StringComparer.Ordinal),
+            [environmentKind] = new(StringComparer.Ordinal),
+            [consentKind] = new(StringComparer.Ordinal)
         };
 
         if (customStates.ValueKind != JsonValueKind.Array)
@@ -56,7 +82,7 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
             if (row.ValueKind != JsonValueKind.Object)
                 continue;
 
-            if (!IsRecognized(row))
+            if (!IsRecognized(row, spiritual))
                 continue;
 
             var kindProperties = row.EnumerateObject()
@@ -69,11 +95,16 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
             }
 
             var kind = kindProperties[0].Value.GetString()!;
+            if (kind != facilityKind && kind != environmentKind && kind != consentKind)
+            {
+                AddInvalid(issues, path + ".kind", "one exact reserved kind value", kind);
+                continue;
+            }
 
             var expectedFields = kind switch
             {
-                FacilityKind => new[] { "kind", "schemaVersion", "facilityId", "displayName", "available" },
-                EnvironmentKind => new[] { "kind", "schemaVersion", "environmentId", "displayName", "state" },
+                var value when value == facilityKind => new[] { "kind", "schemaVersion", "facilityId", "displayName", "available" },
+                var value when value == environmentKind => new[] { "kind", "schemaVersion", "environmentId", "displayName", "state" },
                 _ => new[]
                 {
                     "kind", "schemaVersion", "consentRef", "displayName", "providerKind",
@@ -86,7 +117,8 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
                 continue;
             }
 
-            if (!TryReadExactInt(row, "schemaVersion", out var schemaVersion) || schemaVersion != 1)
+            if (spiritual && row.GetProperty("schemaVersion").ValueKind != JsonValueKind.Number ||
+                !TryReadExactInt(row, "schemaVersion", out var schemaVersion) || schemaVersion != 1)
             {
                 AddInvalid(issues, path + ".schemaVersion", "1", ReadRaw(row, "schemaVersion"));
                 continue;
@@ -101,7 +133,7 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
             string identity;
             switch (kind)
             {
-                case FacilityKind:
+                case var facilityValue when facilityValue == facilityKind:
                     if (!TryReadIdentifier(row, "facilityId", out identity) ||
                         !TryReadBoolean(row, "available", out var available))
                     {
@@ -112,7 +144,7 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
                         continue;
                     facilities.Add(new(identity, displayName, available));
                     break;
-                case EnvironmentKind:
+                case var environmentValue when environmentValue == environmentKind:
                     if (!TryReadIdentifier(row, "environmentId", out identity) ||
                         !TryReadIdentifier(row, "state", out var state))
                     {
@@ -130,8 +162,10 @@ internal static class MortalWoundTreatmentSceneAuthorityContract
                         !TryReadDiagnosticText(row, "targetKind", out var targetKind) ||
                         !TryReadIdentifier(row, "targetId", out var targetId) ||
                         !TryReadDiagnosticText(row, "status", out var status) ||
-                        !ActorKinds.Contains(providerKind) ||
-                        !ActorKinds.Contains(targetKind) ||
+                        !actorKinds.Contains(providerKind) ||
+                        !actorKinds.Contains(targetKind) ||
+                        spiritual && (providerKind == "player_soul" && providerId != "player_soul" ||
+                            targetKind == "player_soul" && targetId != "player_soul") ||
                         status is not ("granted" or "withdrawn"))
                     {
                         AddInvalid(issues, path, "closed consent row with recognized actor kinds/status", row.GetRawText());

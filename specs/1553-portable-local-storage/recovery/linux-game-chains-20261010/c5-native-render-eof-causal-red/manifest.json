@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "312333094b1ea573fab0684261a9524592c0d643",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation",
+  "Status": "FAIL",
+  "Scope": "14=10PASS4FAIL36.3377738s complete0skipduplicateTimeout cleanup complete;2CtrlD+2rendered tabs/wide/combining/wrap negatives.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "1666c690551f5dc484abded8807b92c372e11413b34d0f4a57c6019b6f1267df",
+      "RawBytes": 3510
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-001.trx.gz",
+      "RawSHA256": "db60c135746a819dd15872b12616d3d99bdf842f044fc8503b0701646105dce6",
+      "RawBytes": 31961
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "d5467e4b411dbee0e7b639e9d49e1db873730892080145e9cdf5177c2d926f24",
+      "RawBytes": 1471
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "1ff9798ccce8ba42fb77feb19d91d259bc3d2803a9d4255d5bc37c4652603707",
+      "RawBytes": 43429
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "00fee74da34143f8f19b32c2581b0e6312800b17c3c3b27c4914562087cc2fd9",
+      "RawBytes": 1711967
+    }
+  ]
+}

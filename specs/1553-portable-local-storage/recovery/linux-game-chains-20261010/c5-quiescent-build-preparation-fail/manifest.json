@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "f1d781ffad07923e9d1fff3b95cd2a6a860e1fb7",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-completed-recovery\",\"c5-original-browser-quiescent-opening\",\"c5-original-client-admission\")'",
+  "Status": "BUILD_FAIL",
+  "Scope": "Missing Services namespace in native fixture;0tests37.1866371s; no production behavior executed",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "108675a815abd28058c249795c18051975cf37e4d109d56e80e6a9dafbfae44e",
+      "RawBytes": 1417
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "815123841d95b93b3bb9fc9880a392e73dc9fab8c8ae9c57041c3275f8931096",
+      "RawBytes": 52703
+    }
+  ]
+}

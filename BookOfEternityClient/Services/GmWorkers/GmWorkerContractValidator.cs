@@ -1516,7 +1516,10 @@ public static class GmWorkerContractValidator
         }
 
         var values = new List<string> { task.Instructions };
-        values.AddRange(task.ContextFiles.Select(file => file.Path));
+        var hasPinnedMortalPublicContext = HasPinnedMortalQtePublicRepairContext(task);
+        values.AddRange(task.ContextFiles
+            .Where(file => !hasPinnedMortalPublicContext || file.Path != AfterlifeRealmAuthorityContract.StatePath)
+            .Select(file => file.Path));
         values.AddRange(task.AcceptanceCriteria);
 
         if (task.AuthoringRequest != null)
@@ -1543,6 +1546,41 @@ public static class GmWorkerContractValidator
             value.Contains("game_state/meta/guardians", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/meta/afterlife", StringComparison.OrdinalIgnoreCase) ||
             value.Contains("game_state/meta/soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HasPinnedMortalQtePublicRepairContext(WorkerTaskPacket task)
+    {
+        // This recognizes the existing closed public repair task, not a realm
+        // authority grant. Dispatch independently reads the pinned actual soul
+        // context under its lease and requires the current Mortal realm.
+        const string scenePath = "output/narrative_response.json";
+        const string requestPath = "input/turn_request.json";
+        if (task.TaskType != WorkerTaskType.ValidationRepair || task.AfterlifeContract is not null ||
+            task.SpiritualWoundContinuation is not null || task.AllowedProposalPaths.Count != 1 ||
+            task.ValidationIssues.Count == 0)
+            return false;
+        var target = task.AllowedProposalPaths[0];
+        var draftOnly = target == MortalWoundOpportunityAdapter.DecisionPath;
+        if (!draftOnly && target != scenePath)
+            return false;
+        var contextPaths = draftOnly
+            ? new[] { target, requestPath, AfterlifeRealmAuthorityContract.StatePath }
+            : new[] { target, MortalWoundOpportunityAdapter.DecisionPath, requestPath, AfterlifeRealmAuthorityContract.StatePath };
+        if (task.ContextFiles.Count != contextPaths.Length || task.ContextFiles.Any(file =>
+                !contextPaths.Contains(file.Path, StringComparer.Ordinal)) ||
+            contextPaths.Any(path => task.ContextFiles.Count(file => file.Path == path) != 1))
+            return false;
+        foreach (var file in task.ContextFiles)
+            if (!IsSha256(file.Sha256) && !(file.Path == target && IsMissingHash(file.Sha256)))
+                return false;
+        return task.ValidationIssues.All(issue =>
+            issue.Section != MortalWoundOpportunityAdapter.PrivateSourceIssueSection &&
+            !string.Equals(issue.Actor, "Client", StringComparison.OrdinalIgnoreCase) &&
+            (draftOnly
+                ? issue.Path == target || issue.Path == "woundDecisions[0]" ||
+                    issue.Path.StartsWith("woundDecisions[0].", StringComparison.Ordinal)
+                : issue.Path == scenePath + ".response" &&
+                    issue.Code is "wound_acquisition_narration_missing" or "wound_acquisition_narration_contradiction"));
     }
 
     private static bool IsMortalWorldSubstitutePath(string path) =>

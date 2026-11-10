@@ -1,0 +1,13 @@
+{
+  "Recipe": "bridge",
+  "Attempt": "a1",
+  "State": "PASS runtime, independent evidence pending",
+  "RuntimeCheckoutHead": "8ddcc6de5823039115d0494116c27703bb690aa3",
+  "CompiledProjectOrigins": {
+    "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+    "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+    "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+  },
+  "Qualification": "Native Windows required bodies",
+  "NoSourceEdit": true
+}

@@ -36,6 +36,8 @@ public partial class ValidationService
             }
             foreach (var contribution in _mechanicsContext.Contributions)
             {
+                if (_ordinaryPressureGroup?.Isolates(_mechanicsContext, contribution, conflict, exchange) == true)
+                    continue;
                 var side = contribution.ResolvedSide;
                 var operation = ResolveWoundOperation(exchange, side);
                 var actor = side == "player" ? ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) :
@@ -68,6 +70,29 @@ public partial class ValidationService
                 }
                 if (contribution.Profile == "spiritual_position_burden")
                     continue; // The position consumer validates the exact current actor and operation.
+                if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
+                    contribution.Actor.Kind == "player" && ConflictTokenEquals(operation, "pressure", "maneuver", "guard",
+                        "binding", "force_binding", "recover_spiritual_power",
+                        "counter", "break_binding", "incarnation_resistance") &&
+                    IsSuccessfulArtOutcome(AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"])))
+                    continue; // This burden changes failed operations only; ordinary source validation still follows.
+                if (contribution.Profile == "spiritual_strain_burden" &&
+                    _livePressureProjection is { } pressure && pressure.Data.AffectedSide == side &&
+                    pressure.Isolation.MatchesSelectedContribution(_mechanicsContext, contribution, conflict))
+                {
+                    if (!pressure.Data.MatchesActual(exchange))
+                        issues.Add(SourceIssue(coordinate + ".after." + side + "SideStrain",
+                            "spiritual_wound_strain_correction_required", "the exact owner-derived actual pressure exchange"));
+                    continue;
+                }
+                if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
+                    _mechanicsContext.ReadOwnedStrainCorrection(conflict, exchange) is { } strain)
+                {
+                    if (!strain.IsCorrected(exchange))
+                        issues.Add(SourceIssue(coordinate + ".after.playerSideStrain",
+                            "spiritual_wound_strain_correction_required", strain.ExpectedStrain));
+                    continue;
+                }
                 if (contribution.Profile != "spiritual_roll_hindrance")
                 {
                     issues.Add(SourceIssue(coordinate, "spiritual_wound_profile_integration_required",

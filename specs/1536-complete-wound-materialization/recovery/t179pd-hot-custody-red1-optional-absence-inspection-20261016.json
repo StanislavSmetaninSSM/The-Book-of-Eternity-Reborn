@@ -1,0 +1,737 @@
+{
+  "schema": "independent-read-only-source-addendum-inspection/v1",
+  "source": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+  "historical_evidence_carrier": "eac4e7e0dd695770d86f776d89f90ae9a2d7f822",
+  "observed_head_only": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "review_scope": "ROOT-HS01-F02 only; no current worktree correction acceptance",
+  "source_pins": [
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+      "git_blob": "8adb8116641dfdd7e10d05f2bb2cf52ca3be82bc",
+      "bytes": 13185,
+      "sha256": "e98c747a4e0024c5357bb506e1bae66458cc801061356bbef04014fb2d8d98bf"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md",
+      "git_blob": "2bddfa8ce550ca2a323863742c6f5a3d7777088e",
+      "bytes": 48906,
+      "sha256": "90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "git_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "bytes": 20289,
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7"
+    },
+    {
+      "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "git_blob": "c57ce2784d3eafbc7f2422cd070d69f3a6807a65",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7"
+    }
+  ],
+  "projections": [
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+        "git_blob": "8adb8116641dfdd7e10d05f2bb2cf52ca3be82bc",
+        "bytes": 13185,
+        "sha256": "e98c747a4e0024c5357bb506e1bae66458cc801061356bbef04014fb2d8d98bf"
+      },
+      "first_line": 20,
+      "last_line": 59,
+      "bytes": 2218,
+      "sha256": "08fd541b4c8e77092c6ef1811bd537027ec5ec3c32015e6fa62acb5c0343aaf3",
+      "text": "    private static readonly string[] HotJointInputPaths =\n    [\n        \"game_state/player/status_changes.json\", \"game_state/player/experience.json\",\n        \"game_state/core/player_status.json\", \"game_state/meta/soul_state.json\",\n        \"game_state/misc/characteristics.json\", \"game_state/player/stat_points.json\"\n    ];\n\n    // Detached fixture expectations only. No private issuer, accepted flag,\n    // source frame, acknowledgment or publication capability is authored here.\n    private sealed record HotJointSubmissionFixture(\n        string Generation,\n        Dictionary<string, byte[]?> OriginalInputs,\n        Dictionary<string, byte[]?> CurrentInputs,\n        Dictionary<string, byte[]> AuthoredPublicInputs);\n\n    private async Task<HotJointSubmissionFixture> AuthorHotJointSubmissionAfterOriginalAsync(\n        FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority actualOriginal)\n    {\n        var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,\n            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(\n                [\"game_state/meta/soul_state.json\"],\n                HotJointInputPaths.Where(path => path != \"game_state/meta/soul_state.json\")));\n        Assert.True(read.Success, DescribeValidationIssues(read.Issues));\n        var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);\n        Assert.Equal(actualOriginal.SessionId, original.SessionId);\n        Assert.Equal(actualOriginal.RequestId, original.RequestId);\n        Assert.Equal(actualOriginal.SnapshotToken, original.SnapshotToken);\n        Assert.Equal(43, original.TurnNumber);\n        var originalInputs = new Dictionary<string, byte[]?>(StringComparer.Ordinal);\n        foreach (var path in HotJointInputPaths)\n        {\n            if (original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))\n                originalInputs.Add(path, original.ReadRequiredBytes(path).ToArray());\n            else\n            {\n                Assert.Contains(path, original.AbsentLogicalPaths);\n                originalInputs.Add(path, null);\n            }\n            Assert.Equal(originalInputs[path], await _fs.ReadFileBytesAsync(lease, path));\n        }\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs",
+        "git_blob": "8adb8116641dfdd7e10d05f2bb2cf52ca3be82bc",
+        "bytes": 13185,
+        "sha256": "e98c747a4e0024c5357bb506e1bae66458cc801061356bbef04014fb2d8d98bf"
+      },
+      "first_line": 196,
+      "last_line": 208,
+      "bytes": 690,
+      "sha256": "9904fa78167b713f2f0c74c36fec356d6c52c77d6d96c1465148f0b9edb1ee29",
+      "text": "    private static void AssertHotCustodyImageRows(JsonNode? value, IReadOnlyDictionary<string, byte[]?> expected)\n    {\n        var rows = Assert.IsType<JsonArray>(value);\n        Assert.Equal(expected.Keys.Order(StringComparer.Ordinal), rows.Select(row => row![\"path\"]!.GetValue<string>()).Order(StringComparer.Ordinal));\n        foreach (var row in rows)\n        {\n            var bytes = expected[row![\"path\"]!.GetValue<string>()];\n            Assert.Equal(bytes is not null, row[\"present\"]!.GetValue<bool>());\n            if (bytes is null) Assert.Null(row[\"base64\"]);\n            else Assert.Equal(bytes, Convert.FromBase64String(row[\"base64\"]!.GetValue<string>()));\n        }\n    }\n}\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 8,
+      "last_line": 50,
+      "bytes": 2166,
+      "sha256": "727fa64aca06ce839ad34f828b1e58cbd93db1ce41a2593a680a7ef4f90c7f4a",
+      "text": "internal static class PendingTurnSnapshotPathPresenceV1\n{\n    private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =\n        Array.AsReadOnly(new[]\n        {\n            \"game_state/meta/soul_state.json\",\n            \"game_state/resources/resource_definitions.json\",\n            \"game_state/resources/resource_state.json\",\n            \"game_state/resources/resource_history.json\",\n            \"game_state/resources/resource_owner_authority.json\",\n            \"game_state/meta/afterlife_spiritual_conflict_state.json\",\n            \"game_state/meta/afterlife_entity_profiles.json\",\n            \"game_state/meta/shining_abode_state.json\",\n            \"game_state/core/game_settings.json\",\n            \"game_state/effects/effect_identity_index.json\",\n            \"game_state/wounds/wound_identity_index.json\",\n            \"game_state/wounds/wound_history.json\",\n            \"game_state/player/wounds.json\",\n            \"game_state/npcs/npc_wounds.json\",\n            \"game_state/combat/enemies.json\",\n            \"game_state/combat/allies.json\"\n        });\n\n    private static readonly ReadOnlyCollection<string> PreviousClosedLogicalPaths =\n        Array.AsReadOnly(LegacyClosedLogicalPaths\n            .Concat([SpiritualWoundCaptureCheckpointState.StatePath,\n                     SpiritualWoundDecisionPendingState.StatePath])\n            .ToArray());\n\n    private static readonly ReadOnlyCollection<string> BeforeMortalClosedLogicalPaths =\n        Array.AsReadOnly(PreviousClosedLogicalPaths\n            .Concat([SpiritualWoundOpportunityReceiptState.StatePath])\n            .ToArray());\n\n    private static readonly ReadOnlyCollection<string> BeforeCompletionClosedLogicalPaths =\n        Array.AsReadOnly(BeforeMortalClosedLogicalPaths\n            .Concat([MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath])\n            .ToArray());\n\n    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =\n        Array.AsReadOnly(BeforeCompletionClosedLogicalPaths.Concat([MortalQteDecisionPublication.StatePath]).ToArray());\n\n    internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 152,
+      "last_line": 166,
+      "bytes": 630,
+      "sha256": "762dbacfeec8b1bbc14a6293bcc0a8caa6743c11be53d30607f143fca895b531",
+      "text": "        IReadOnlyCollection<string> requiredLogicalPaths,\n        OriginalSourceReadSession? sourceSession)\n    {\n        ArgumentNullException.ThrowIfNull(fs);\n        ArgumentNullException.ThrowIfNull(lease);\n        ArgumentNullException.ThrowIfNull(requiredLogicalPaths);\n        fs.EnsureCanonicalWriteLeaseActive(lease);\n\n        var issues = new List<ValidationIssue>();\n        var selection = ValidatePathSelection(requiredLogicalPaths, issues);\n        if (issues.Count != 0)\n            return Failure(issues);\n\n        if (sourceSession is not null && !sourceSession.Begin(issues))\n            return Failure(issues);\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 452,
+      "last_line": 472,
+      "bytes": 1054,
+      "sha256": "a80d3c98e2a3515767159cc493eba90b1996e1f8e7ee85f758aec0796a591568",
+      "text": "        if (requireSignedAbsenceForMissingOptionalPaths)\n        {\n            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths\n                .ToHashSet(StringComparer.Ordinal);\n            foreach (var path in result.Where(optional.Contains))\n            {\n                if (observed.Contains(path))\n                    continue;\n                Add(\n                    issues,\n                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,\n                    \"pending_turn_snapshot_reader_required_paths_invalid\",\n                    $\"observed optional path is outside originalPathPresenceV1: {path}\");\n            }\n            if (issues.Count != 0)\n                return PendingTurnSnapshotValidatedPathSelection.Empty;\n        }\n        return new PendingTurnSnapshotValidatedPathSelection(\n            Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),\n            Array.AsReadOnly(result.Where(optional.Contains).ToArray()),\n            requireSignedAbsenceForMissingOptionalPaths);\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 475,
+      "last_line": 516,
+      "bytes": 1522,
+      "sha256": "9cd6a78cde9da174343e55bf1d1b8f172f0f4e031ea6224d81142633eb58b277",
+      "text": "    private static IReadOnlyList<string> ResolveSelectedPaths(\n        PendingTurnSnapshotValidatedPathSelection selection,\n        LiveTurnPendingSnapshotManifest manifest,\n        ICollection<ValidationIssue> issues,\n        out IReadOnlyList<string> absentLogicalPaths)\n    {\n        var result = new List<string>(\n            selection.RequiredLogicalPaths.Count + selection.OptionalLogicalPaths.Count);\n        var absent = new List<string>();\n        foreach (var path in selection.RequiredLogicalPaths)\n        {\n            if (!TryResolveExactCoverage(\n                    path,\n                    manifest,\n                    optional: false,\n                    requireSignedAbsence: false,\n                    issues,\n                    out var selected,\n                    out _))\n            {\n                continue;\n            }\n            if (selected)\n                result.Add(path);\n        }\n        foreach (var path in selection.OptionalLogicalPaths)\n        {\n            if (!TryResolveExactCoverage(\n                    path,\n                    manifest,\n                    optional: true,\n                    selection.RequireSignedAbsenceForMissingOptionalPaths,\n                    issues,\n                    out var selected,\n                    out var observedAbsent))\n                continue;\n            if (selected)\n                result.Add(path);\n            if (observedAbsent)\n                absent.Add(path);\n        }\n        absentLogicalPaths = Array.AsReadOnly(\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 641,
+      "last_line": 704,
+      "bytes": 2353,
+      "sha256": "fdee98f61017715693f467809c0f8f00db78f9d44d12c5c1a684319b4983587e",
+      "text": "        bool requireSignedAbsence,\n        ICollection<ValidationIssue> issues,\n        out bool selected,\n        out bool observedAbsent)\n    {\n        selected = false;\n        observedAbsent = false;\n        var fileKeys = manifest.Files.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var hashKeys = manifest.SnapshotFileHashes.Keys\n            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))\n            .ToArray();\n        var fileExact = fileKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n        var hashExact = hashKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));\n\n        if (fileKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)) ||\n            hashKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)))\n        {\n            Add(\n                issues,\n                path,\n                \"pending_turn_snapshot_reader_coverage_case_mismatch\",\n                \"signed snapshot coverage contains a confusable path key\");\n            return false;\n        }\n\n        if (fileExact == 1 && hashExact == 1)\n        {\n            selected = true;\n            return true;\n        }\n\n        if (optional && fileExact == 0 && hashExact == 0)\n        {\n            if (!requireSignedAbsence)\n                return true;\n            if (manifest.OriginalPathPresenceV1 is not null &&\n                manifest.OriginalPathPresenceV1.TryGetValue(path, out var present) &&\n                !present)\n            {\n                observedAbsent = true;\n                return true;\n            }\n            Add(\n                issues,\n                path,\n                \"pending_turn_snapshot_reader_absence_unproven\",\n                \"optional logical path is uncovered without authenticated original absence\");\n            return false;\n        }\n\n        Add(\n            issues,\n            path,\n            \"pending_turn_snapshot_reader_coverage_missing\",\n            optional\n                ? \"optional logical path has incomplete signed snapshot coverage\"\n                : \"required logical path is absent or ambiguous in signed snapshot coverage\");\n        return false;\n    }\n\n    private static bool HasDuplicateJsonProperties(string json)\n    {\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      "first_line": 1055,
+      "last_line": 1104,
+      "bytes": 2093,
+      "sha256": "a9f6f50ac5f2e7d5f705389e286a5174ceac7c70dbe67c963f1b0720fec9d98e",
+      "text": "/// the exact signed subset of optional canonical roots. It deliberately implements\n/// the frozen reader's existing third-parameter contract.\n/// </summary>\ninternal sealed class PendingTurnSnapshotPathSelection : IReadOnlyCollection<string>\n{\n    private readonly ReadOnlyCollection<string> _allLogicalPaths;\n\n    internal PendingTurnSnapshotPathSelection(\n        IEnumerable<string> requiredLogicalPaths,\n        IEnumerable<string> optionalLogicalPaths)\n        : this(\n            requiredLogicalPaths,\n            optionalLogicalPaths,\n            requireSignedAbsenceForMissingOptionalPaths: false)\n    {\n    }\n\n    private PendingTurnSnapshotPathSelection(\n        IEnumerable<string> requiredLogicalPaths,\n        IEnumerable<string> optionalLogicalPaths,\n        bool requireSignedAbsenceForMissingOptionalPaths)\n    {\n        ArgumentNullException.ThrowIfNull(requiredLogicalPaths);\n        ArgumentNullException.ThrowIfNull(optionalLogicalPaths);\n        RequiredLogicalPaths = Array.AsReadOnly(requiredLogicalPaths.ToArray());\n        OptionalLogicalPaths = Array.AsReadOnly(optionalLogicalPaths.ToArray());\n        _allLogicalPaths = Array.AsReadOnly(\n            RequiredLogicalPaths.Concat(OptionalLogicalPaths).ToArray());\n        RequireSignedAbsenceForMissingOptionalPaths =\n            requireSignedAbsenceForMissingOptionalPaths;\n    }\n\n    internal static PendingTurnSnapshotPathSelection CreateWithObservedOptionalPaths(\n        IEnumerable<string> requiredLogicalPaths,\n        IEnumerable<string> optionalLogicalPaths) =>\n        new(\n            requiredLogicalPaths,\n            optionalLogicalPaths,\n            requireSignedAbsenceForMissingOptionalPaths: true);\n\n    internal IReadOnlyList<string> RequiredLogicalPaths { get; }\n    internal IReadOnlyList<string> OptionalLogicalPaths { get; }\n    internal bool RequireSignedAbsenceForMissingOptionalPaths { get; }\n    public int Count => _allLogicalPaths.Count;\n    public IEnumerator<string> GetEnumerator() => _allLogicalPaths.GetEnumerator();\n    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();\n}\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md",
+        "git_blob": "2bddfa8ce550ca2a323863742c6f5a3d7777088e",
+        "bytes": 48906,
+        "sha256": "90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f"
+      },
+      "first_line": 110,
+      "last_line": 120,
+      "bytes": 4441,
+      "sha256": "b2da505d22d3078de75a100848f23e3b2906b13c46c3ec4eb4e920d34672ffb5",
+      "text": "\nAt VR3460, if the engine retains an eligible actual Stage origin, replace only this fixed-path text read with the following owning operation. **There are three separate leases**, not one scope held through context resolution or trajectory publication:\n1. **Read lease Lr (VR8373 wrapper):** check actual G/current engine origin, call existing `ReadFileSnapshotAsync(lease, ValidationRepairReadyPath)` once, and decode that exact Content with existing `FileSystemManager.DecodeFileBytes`. This is the same final physical snapshot read and BOM behavior used by ReadFileAsync; no second substitute read. Return raw snapshot plus decoded text after Lr closes. Missing and present-empty differ. Then call existing ReadValidationRepairReady and ResolveActivePendingTurnSnapshotContextAsync in their unchanged order. Malformed/mismatched branches do not call the new accepted-capture method.\n2. **Capture lease Lc (new private wrapper, only after existing match succeeds, immediately before AppendAccepted trajectory):** acquire a fresh actual lease, check G/current origin/current browser condition, read Ready physically and require exact agreement with Lr's bytes. Run the genuine ReadObservedCurrent for the six original paths (soul required; the other five optional under the existing path-selection policy), all its actual authority/context/rollback closure, and compare its real binding to the actual matching resolution and original producer. Capture the fixed nine current roles and current repair request/final input/turn_complete/G under Lc. The six input/current output files are custody bytes; do not add a new JSON/level validator here. Existing Ready/original parsers retain their policy. Capture every operation, physically recheck it and Evidence.RequireCurrent before closing the provisional object. Close Lc; if closure faults, this optional HOT channel is Unavailable. No live reader authority survives Lc.\n3. Keep the existing AppendAcceptedValidationRepairTrajectoryAsync call in its exact position, using the same arguments and its own existing ownership. It must not run under Lc or be folded into a claimed transaction. Its returned result is an observed route event, not Full validation.\n4. **Deletion lease Ld (VR8336 owner):** use the existing actual deletion wrapper with a private accepted-custody overload. Check G; if provisional custody exists, physically compare Ready and the fixed source/original/control closure with Lc's detached observations before the existing deletion. Obtain a genuine new original-reader result if the original closure is checked, never revive Lc's evidence. Any mismatch/fault invalidates HOT custody; keep existing v2 deletion behavior and diagnostic order. Then perform the same fixed Ready deletion. Mark the custody Consumed only **after** deletion returns and ReleaseOwnedLeaseAsync returns successfully. A finally/release throw, loss of return, replacement or uncertainty cannot issue consumption. No inference from absent Ready.\n5. At the later canonical attempt use another fresh actual lease Lp and genuine observed original evidence. Require exact unchanged submitted/original/request/control/G observations and Ready absent, which is a current condition linked to the actual completed consumption event, never its substitute. New/mismatched Ready, intervening source change, fault or unsupported route makes HOT unavailable.\n\nNo lease is held across the user/GM wait, generic context resolver, trajectory publication or return to the canonical loop. Lr/Lc/Ld observations are historical in-memory data tied to this private invocation/origin. Only Lp's exact Snapshot+Evidence can satisfy the new live canonical consumer. Added reads are confined to the optional HOT channel and cannot become gameplay acceptance. Closure failures do not preserve a partial success.\n\nRead-source faults used only by this new *optional custody* channel latch HotUnavailable and cannot become successful absence. Do not translate them into new ordinary semantic errors or suppress old ordinary diagnostics. Existing physical SessionReplaced/coordinated-publication uncertainty still propagates by its owning path; the channel cannot catch those and continue as accepted. The original Ready parser/current-context/trajectory/deletion logic remains authoritative for v2 behavior. No extra clock sample is needed for custody; existing snapshot mtime is an observation only, not a freshness policy.\n"
+    },
+    {
+      "source": {
+        "commit": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md",
+        "git_blob": "2bddfa8ce550ca2a323863742c6f5a3d7777088e",
+        "bytes": 48906,
+        "sha256": "90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f"
+      },
+      "first_line": 152,
+      "last_line": 162,
+      "bytes": 1823,
+      "sha256": "f34415da0c5b53ef8ae2b7a5d9b6ee539970169a700f0fe724702e9af60f844e",
+      "text": "The six exact logical paths are:\n`game_state/player/status_changes.json`,\n`game_state/player/experience.json`,\n`game_state/core/player_status.json`,\n`game_state/meta/soul_state.json`,\n`game_state/misc/characteristics.json`,\n`game_state/player/stat_points.json`.\nThe three output paths are `output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json`. Original/current malformed JSON in an otherwise readable file remains exact custody bytes and may later be rejected by existing ordinary validation; custody introduces no new JSON acceptance policy. Original reader retains its actual manifest/authority/rollback callbacks/all three context-presence+text operations/selected original operations, in real order. These nested operations are not capped by the six logical selections and are never reconstructed from a map.\n\nEach occurrence retains role, original/current provenance, actual internally derived coordinate, presence, exact bytes, decoding status, ordinal and outcome. Ready snapshot's LastWriteTimeUtc is retained as an observation without turning it into a new freshness rule; no clock sample is added. A private collection may store these; there is no constructor/import API from such data and no generic path-reader exposed to callers. Callback/rollback physical paths come only from the accepted original reader. Original absence, missing declared artifact, unreadable current, empty bytes and JSON null are different states. Every observed fault latches; every repeated read is real; final source recheck runs before a successful custody object. Later canonical matching repeats physical checks and observes actual G/current MainAdmission. No directory reader, metadata freshness authority, seven-root validator or arbitrary current-root fallback is introduced in this unit.\n\n"
+    }
+  ],
+  "historical_index_pin": {
+    "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-fixture-first-late-20261016-artifact-index.json",
+    "git_blob": "c2aa590661e7dc02da1ac833f9114456f7841fb3",
+    "bytes": 4816,
+    "sha256": "3c61b212448fd21e4688f72a86f141917e4063c9fdbcc280e89f632061b01be7"
+  },
+  "historical_trx_pin": {
+    "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-fixture-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+    "git_blob": "c0b476a591464a609404e41736d2f2f6df808c4c",
+    "bytes": 4828310,
+    "sha256": "1455812f2ab3bc30f3c9b43c4a04b77028629e0a8a15d30054a9f287c1700dbb"
+  },
+  "chain": {
+    "index_entry": {
+      "path": "t179pd-observed-green-default-fixture-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-162854-506-166954-f74cd78206ac48c0b0ca796ae09dd18e-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976522,
+      "raw_sha256": "1a2bb8054bb9122bc5448fef13a8f48c199f7a23952ec5cca1ffb37a9ca503b2",
+      "stored_sha256": "1455812f2ab3bc30f3c9b43c4a04b77028629e0a8a15d30054a9f287c1700dbb"
+    },
+    "stored_matches_git_and_index": true,
+    "raw_matches_local_and_index": true,
+    "historical_carrier_bytes_unchanged": true,
+    "raw_sha256": "1a2bb8054bb9122bc5448fef13a8f48c199f7a23952ec5cca1ffb37a9ca503b2",
+    "raw_bytes": 13976522
+  },
+  "historical_cases": [
+    {
+      "test_name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "test_id": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+      "execution_id": "2bcf065f-dd86-4d53-8957-de3b5490c6cd",
+      "outcome": "Passed",
+      "structural_inventory": {
+        "Path": "game_state/player/status_changes.json",
+        "OriginalCovered": false,
+        "InManifestFiles": false,
+        "InSnapshotFileHashes": false,
+        "InRollbackBackups": false,
+        "InRollbackBaselineFiles": false,
+        "Scope": "validated signed-inventory/rollback structural absence; no signed presence authority"
+      },
+      "manifest_observations": [
+        {
+          "milestone_ordinal": 0,
+          "milestone_path": "game_state/control/validation_repair_request.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31009,
+          "sha256": "e9bf1a3ff8d673ce90171194da0457e595ad9bed82f65652f96837dd78e8b411",
+          "sessionId": "session_qte_story_append",
+          "requestId": "95f2d7c4f0df49a7a1353c8fa4e282b7",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        },
+        {
+          "milestone_ordinal": 1,
+          "milestone_path": "game_state/wounds/mortal_qte_decision_publication.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31009,
+          "sha256": "e9bf1a3ff8d673ce90171194da0457e595ad9bed82f65652f96837dd78e8b411",
+          "sessionId": "session_qte_story_append",
+          "requestId": "95f2d7c4f0df49a7a1353c8fa4e282b7",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        },
+        {
+          "milestone_ordinal": 2,
+          "milestone_path": "game_state/wounds/mortal_qte_decision_publication.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31009,
+          "sha256": "e9bf1a3ff8d673ce90171194da0457e595ad9bed82f65652f96837dd78e8b411",
+          "sessionId": "session_qte_story_append",
+          "requestId": "95f2d7c4f0df49a7a1353c8fa4e282b7",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "test_name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "test_id": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+      "execution_id": "6ee09197-ada1-4440-a4ab-94fe1022c038",
+      "outcome": "Passed",
+      "structural_inventory": {
+        "Path": "game_state/player/status_changes.json",
+        "OriginalCovered": false,
+        "InManifestFiles": false,
+        "InSnapshotFileHashes": false,
+        "InRollbackBackups": false,
+        "InRollbackBaselineFiles": false,
+        "Scope": "validated signed-inventory/rollback structural absence; no signed presence authority"
+      },
+      "manifest_observations": [
+        {
+          "milestone_ordinal": 0,
+          "milestone_path": "game_state/control/validation_repair_request.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31010,
+          "sha256": "bac4b2b47ad04159f308398649bbc707f461c839f7f76348a77f59000fe99ddf",
+          "sessionId": "session_qte_story_append",
+          "requestId": "d361dfef25e2444da5f9228e3fa7ae8f",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        },
+        {
+          "milestone_ordinal": 1,
+          "milestone_path": "game_state/wounds/mortal_qte_decision_publication.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31010,
+          "sha256": "bac4b2b47ad04159f308398649bbc707f461c839f7f76348a77f59000fe99ddf",
+          "sessionId": "session_qte_story_append",
+          "requestId": "d361dfef25e2444da5f9228e3fa7ae8f",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        },
+        {
+          "milestone_ordinal": 2,
+          "milestone_path": "game_state/wounds/mortal_qte_decision_publication.json",
+          "image_path": "game_state/control/pending_turn_snapshot.json",
+          "bytes": 31010,
+          "sha256": "bac4b2b47ad04159f308398649bbc707f461c839f7f76348a77f59000fe99ddf",
+          "sessionId": "session_qte_story_append",
+          "requestId": "d361dfef25e2444da5f9228e3fa7ae8f",
+          "turnNumber": 43,
+          "presence_keys": [
+            "game_state/combat/allies.json",
+            "game_state/combat/enemies.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/soul_state.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/player/wounds.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/resources/resource_state.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json"
+          ],
+          "presence_count": 22,
+          "status_presence_key": false,
+          "input_coverage": {
+            "game_state/player/status_changes.json": {
+              "in_files": false,
+              "in_hashes": false,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/experience.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/core/player_status.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/meta/soul_state.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": true,
+              "presence_value": true
+            },
+            "game_state/misc/characteristics.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            },
+            "game_state/player/stat_points.json": {
+              "in_files": true,
+              "in_hashes": true,
+              "in_presence": false,
+              "presence_value": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "prior_reports": {
+    "md": {
+      "path": "/tmp/t179pd-hot-custody-red1-source-independent-review-20261016.md",
+      "bytes": 8625,
+      "sha256": "18886ecd532776f9658c3f77c0c05863ebbc3606161265bc3d785d3398155c31",
+      "unchanged": true
+    },
+    "json": {
+      "path": "/tmp/t179pd-hot-custody-red1-source-independent-review-20261016.json",
+      "bytes": 45287,
+      "sha256": "8389138cb51f6b644ab7e120f4704c93d3beff5ad0ea12cfbcfbdd324735fc37",
+      "unchanged": true
+    }
+  },
+  "first_failure": {
+    "test_line": 42,
+    "reader_lines": [
+      152,
+      164,
+      452,
+      467
+    ],
+    "issue_code": "pending_turn_snapshot_reader_required_paths_invalid",
+    "issue_actual_prefix": "observed optional path is outside originalPathPresenceV1: ",
+    "offending_optional_paths": [
+      "game_state/player/status_changes.json",
+      "game_state/player/experience.json",
+      "game_state/core/player_status.json",
+      "game_state/misc/characteristics.json",
+      "game_state/player/stat_points.json"
+    ],
+    "issue_count_from_static_control_flow": 5,
+    "before_manifest_read": true,
+    "later_absence_unproven_branch_not_reached": true
+  },
+  "secondary_wrong_assertion": {
+    "test_line": 55,
+    "assertion": "Assert.Contains(path, original.AbsentLogicalPaths)",
+    "reason": "Ordinary optional uncovered path grants neither bytes nor signed absence."
+  },
+  "runtime_performed": false,
+  "repository_mutated": false
+}

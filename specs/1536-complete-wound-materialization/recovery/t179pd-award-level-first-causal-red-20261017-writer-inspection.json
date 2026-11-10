@@ -1,0 +1,262 @@
+{
+  "kind": "A2_FIRST_CAUSAL_BOUNDARY_WRITER_INSPECTION",
+  "classification": "QUALIFIED_STRUCTURAL_MISSING_AWARD_POLICIES_RED2_PENDING_INDEPENDENT_EVIDENCE",
+  "actualSource": "38ea3f830e80e88de98110a84459aa286cd1eeb7",
+  "compiledSource": "40ed288b88a365b072deb81420f6e937565852f8",
+  "nativeExit": 1,
+  "tests": {
+    "total": 2,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2
+  },
+  "missingHelperAssertionLine": 32,
+  "rawChainCount": 6,
+  "strictOwnedRoots": [
+    "/tmp/boe-gameengine-turnlifecycle-6b517bb8bc4c4807baa99d677443ee31",
+    "/tmp/boe-gameengine-turnlifecycle-5932e807f1014e8c916f9bdee67560fb"
+  ],
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+      "bytes": 9503232
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+      "bytes": 29179904
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-award-level-policy-boundary"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "38ea3f830e80e88de98110a84459aa286cd1eeb7",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-award-level-policy-boundary",
+        "Seconds": 2.0409667,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0322703,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0379935,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1016371,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:04.8447113",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-award-level-policy-boundary"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "38ea3f830e80e88de98110a84459aa286cd1eeb7",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.5316636,
+    "Descriptors": [
+      {
+        "Name": "fr063-award-level-policy-boundary-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-award-level-policy-boundary",
+        "Categories": [
+          "fr063-award-level-policy-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy",
+            "Cases": 2
+          }
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy(method: \"ReadAwardStatusLevel\", experience: \"{\\\"level\\\":1}\", status: \"{\\\"level\\\":2}\", expectedReads: \"e,s,p\")",
+      "owner": {
+        "Boundary": "ordinary_award_level_owner",
+        "Context": "ReadAwardStatusLevel",
+        "Root": "/tmp/boe-gameengine-turnlifecycle-6b517bb8bc4c4807baa99d677443ee31",
+        "Supplied": [
+          "{\"level\":1}",
+          "{\"level\":2}",
+          "{\"unspentStatPoints\":0,\"levelUpStatPointsAwardedThroughLevel\":10}",
+          "{\"playerLevel\":1,\"unspentStatPoints\":0,\"characteristics\":{\"strength\":1}}",
+          "{\"strength\":1,\"dexterity\":1,\"constitution\":1,\"intelligence\":1,\"wisdom\":1,\"faith\":1,\"attractiveness\":1,\"trade\":1,\"persuasion\":1,\"perception\":1,\"luck\":1,\"speed\":1}"
+        ],
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/player/stat_points.json"
+        ],
+        "Mutations": [],
+        "InputReads": 0,
+        "BeforeLastKnown": 1,
+        "AfterLastKnown": 2,
+        "ExpectedError": null,
+        "WarningTypes": [],
+        "SameReadFault": false,
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "F23B9962F66F0BA0373DDBA7DAD00AA2EAA42751D58985573B78F4EBF522C273"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+          },
+          {
+            "Path": "game_state/player/stat_points.json",
+            "Present": true,
+            "Sha256": "AA1DEAAD1BAC8D2A9BE77474E5CA732CE7AFE0566988F753A0D9E212937C66FE"
+          },
+          {
+            "Path": "game_state/player/computed_characteristics.json",
+            "Present": true,
+            "Sha256": "F8442061DE40DA89EEE2D4A760F011ED9DDB8753306CAE4D27BE67CF1B5AF446"
+          },
+          {
+            "Path": "game_state/misc/characteristics.json",
+            "Present": true,
+            "Sha256": "427627CA9ABDF37463549AC7CAD317247081C18A7152CC645E8587DF0D21C6C3"
+          }
+        ]
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6b517bb8bc4c4807baa99d677443ee31",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "failure": "Assert.NotNull missing named award helper after all realowner/byte/read/noUI/no-write/strictcleanup assertions complete"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AwardContextAndStrictBytes_PrecedeMissingParsedPolicy(method: \"ReadAwardExperienceLevel\", experience: \"{\\\"level\\\":2}\", status: \"{\\\"level\\\":7}\", expectedReads: \"e,p\")",
+      "owner": {
+        "Boundary": "ordinary_award_level_owner",
+        "Context": "ReadAwardExperienceLevel",
+        "Root": "/tmp/boe-gameengine-turnlifecycle-5932e807f1014e8c916f9bdee67560fb",
+        "Supplied": [
+          "{\"level\":2}",
+          "{\"level\":7}",
+          "{\"unspentStatPoints\":0,\"levelUpStatPointsAwardedThroughLevel\":10}",
+          "{\"playerLevel\":1,\"unspentStatPoints\":0,\"characteristics\":{\"strength\":1}}",
+          "{\"strength\":1,\"dexterity\":1,\"constitution\":1,\"intelligence\":1,\"wisdom\":1,\"faith\":1,\"attractiveness\":1,\"trade\":1,\"persuasion\":1,\"perception\":1,\"luck\":1,\"speed\":1}"
+        ],
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/player/stat_points.json"
+        ],
+        "Mutations": [],
+        "InputReads": 0,
+        "BeforeLastKnown": 1,
+        "AfterLastKnown": 2,
+        "ExpectedError": null,
+        "WarningTypes": [],
+        "SameReadFault": false,
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+          },
+          {
+            "Path": "game_state/player/stat_points.json",
+            "Present": true,
+            "Sha256": "AA1DEAAD1BAC8D2A9BE77474E5CA732CE7AFE0566988F753A0D9E212937C66FE"
+          },
+          {
+            "Path": "game_state/player/computed_characteristics.json",
+            "Present": true,
+            "Sha256": "F8442061DE40DA89EEE2D4A760F011ED9DDB8753306CAE4D27BE67CF1B5AF446"
+          },
+          {
+            "Path": "game_state/misc/characteristics.json",
+            "Present": true,
+            "Sha256": "427627CA9ABDF37463549AC7CAD317247081C18A7152CC645E8587DF0D21C6C3"
+          }
+        ]
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5932e807f1014e8c916f9bdee67560fb",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "failure": "Assert.NotNull missing named award helper after all realowner/byte/read/noUI/no-write/strictcleanup assertions complete"
+    }
+  ],
+  "proofLimit": "Only the two matching absent named award seams after actual ordinarylevel2/read/pre-postbytes/noUI/no-write/strictcleanup witnesses; no helper semantic/fullfamily/production acceptance.",
+  "checkerText": "from pathlib import Path\nimport sys,json,gzip,hashlib,xml.etree.ElementTree as ET,subprocess,datetime\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn');rec=repo/'specs/1536-complete-wound-materialization/recovery';prefix,actual=sys.argv[1:];compiled='40ed288b88a365b072deb81420f6e937565852f8';category='fr063-award-level-policy-boundary'\np=rec/(prefix+'.json');packet=json.loads(p.read_text());assert len(packet['files'])==6 and len(packet['commands'])==1;cmd=packet['commands'][0];assert cmd['mode']=='actual' and cmd['argv']==['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1','-Category',category,'-NoBuild'] and cmd['nativeExit']==1\nassert cmd['sourceHead']==cmd['headAfter']==actual and cmd['statusAfter']=='' and cmd['ownedPrefixesBefore']==cmd['ownedPrefixesAfter']==[]\nprep=json.loads((rec/'t179pd-award-level-red-preparation-20261017.json').read_text())['commands'][0];assert prep['sourceHead']==compiled and cmd['binaryBefore']==cmd['binaryAfter']==prep['binaryAfter'] and len(prep['binaryAfter'])==4\nraw={}\nfor row in packet['files']:\n stored=(repo/row['storedPath']).read_bytes();b=gzip.decompress(stored);assert hashlib.sha256(stored).hexdigest()==row['storedSha256'] and len(b)==row['bytes'] and hashlib.sha256(b).hexdigest()==row['sha256'] and Path(row['rawPath']).read_bytes()==b;raw[Path(row['rawPath']).name]=b\nsummary=json.loads(raw['summary.json']);plan=json.loads(raw['plan.json']);assert summary['Revision']['Head']==actual and summary['Revision']['ChangedFiles']==0 and summary['ExitCode']==1 and not summary['TimedOut'] and not summary['DuplicateTests'] and summary['OwnedTreeCleanupSucceeded'] and summary['RuntimeCleanupSucceeded'];assert summary['Tests']==dict(Total=2,Executed=2,Passed=0,Failed=2);assert summary['Selection']==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=2,CompletedCases=2,UnderfilledDescriptors=[],Complete=True)\nassert len(plan['Descriptors'])==1 and plan['Descriptors'][0]['Category']==category and plan['Descriptors'][0]['EstimatedCases']==2 and plan['Descriptors'][0]['BudgetMinutes']==5\nsource=subprocess.check_output(['git','show',compiled+':BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs'],cwd=repo,text=True);notNullLine=source.splitlines().index('        Assert.NotNull(policy);')+1\ntrx=ET.fromstring(next(v for k,v in raw.items() if k.endswith('.trx')));rs=trx.findall('.//{*}UnitTestResult');assert len(rs)==2 and all(r.attrib['outcome']=='Failed' for r in rs);assert len({r.attrib['testId'] for r in rs})==len({r.attrib['executionId'] for r in rs})==2\ncases=[];roots=[];contexts=[]\nfor r in rs:\n text='\\n'.join(r.itertext());assert 'Assert.NotNull() Failure' in text and 'GameEngineTurnLifecycleTests.AwardLevelPolicy.cs:line '+str(notNullLine) in text\n output=r.find('./{*}Output/{*}StdOut');stdout='' if output is None else ''.join(output.itertext());rows=[]\n for line in stdout.splitlines():\n  try:v=json.loads(line.strip())\n  except ValueError:continue\n  if isinstance(v,dict):rows.append(v)\n owner=next(x for x in rows if x.get('Boundary')=='ordinary_award_level_owner');cleanup=next(x for x in rows if 'CleanupOwnedRoot' in x);method=owner['Context'];assert method in r.attrib['testName'];contexts.append(method)\n expectedFirst=['{\"level\":2}','{\"level\":7}'] if method=='ReadAwardExperienceLevel' else ['{\"level\":1}','{\"level\":2}'];expectedReads=['game_state/player/experience.json']+([] if method=='ReadAwardExperienceLevel' else ['game_state/core/player_status.json'])+['game_state/player/stat_points.json'];assert owner['Supplied'][:2]==expectedFirst and owner['Reads']==expectedReads and owner['BeforeLastKnown']==1 and owner['AfterLastKnown']==2 and owner['Mutations']==[] and owner['InputReads']==0 and owner['ExpectedError'] is None and owner['WarningTypes']==[] and not owner['SameReadFault']\n assert len(owner['Images'])==len(owner['Supplied'])==5\n for supplied,image in zip(owner['Supplied'],owner['Images'],strict=True):assert supplied is not None and image['Present'] and image['Sha256']==hashlib.sha256(b'\\xef\\xbb\\xbf'+supplied.encode()).hexdigest().upper()\n root=Path(owner['Root']);assert str(root)==cleanup['CleanupOwnedRoot'] and root.parent==Path('/tmp') and root.name.startswith('boe-gameengine-turnlifecycle-') and cleanup['OwnedFixtureRemoved'] and cleanup['CleanupFailure'] is None and not root.exists();roots.append(str(root));cases.append(dict(testName=r.attrib['testName'],owner=owner,cleanup=cleanup,failure='Assert.NotNull missing named award helper after all realowner/byte/read/noUI/no-write/strictcleanup assertions complete'))\nassert set(contexts)=={'ReadAwardExperienceLevel','ReadAwardStatusLevel'} and len(set(roots))==2\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,actual],cwd=repo,text=True).splitlines())\nout=dict(kind='A2_FIRST_CAUSAL_BOUNDARY_WRITER_INSPECTION',classification='QUALIFIED_STRUCTURAL_MISSING_AWARD_POLICIES_RED2_PENDING_INDEPENDENT_EVIDENCE',actualSource=actual,compiledSource=compiled,nativeExit=1,tests=dict(total=2,executed=2,passed=0,failed=2),missingHelperAssertionLine=notNullLine,rawChainCount=6,strictOwnedRoots=roots,binaries=cmd['binaryAfter'],summary=summary,plan=plan,cases=cases,proofLimit='Only the two matching absent named award seams after actual ordinarylevel2/read/pre-postbytes/noUI/no-write/strictcleanup witnesses; no helper semantic/fullfamily/production acceptance.',checkerText=Path(__file__).read_text(),inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat());p=rec/(prefix+'-writer-inspection.json');p.write_text(json.dumps(out,indent=2)+'\\n');print('A2_FIRST_RED_RAW_VERIFIED:2expectedNotNullFAILED/realExperience+StatusownerlastKnown1to2/5exactBOMpreimagesandpostassertions/noUI-no-write/2strictroots/fourDLLstable')\n",
+  "inspectedUtc": "2026-10-17T02:30:55.894302+00:00"
+}

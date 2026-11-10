@@ -1,0 +1,44 @@
+{
+  "kind": "DERIVED_RESULT_ORIGIN_FRESH_COLD_PRECISION",
+  "source": "447bc1210c507742758243e1c254860bea0c4539",
+  "contractMdSha256": "eed71ed8bb685da3f40868e0fa08c2b912f3cdacf6365e6a975b4535496708ed",
+  "status": "PART_OF_RECOMMENDED_CONTRACT_FOR_WHOLE_VERTICAL_REVIEW_NOT_RUNTIME_ACCEPTANCE",
+  "freshPreparation": {
+    "issuer": "Private actual FIRST checkpoint2 issuer, associated with current actual Main/frame and retained through real corrected Ready; never a caller flag, JSON field or recreated cache capability.",
+    "consumption": "Consume one-shot preparation permission at first I preparation START, before I reads/projector/UTC. Any later failure is sticky for this owner; absent durable result is not permission to reacquire/recompute.",
+    "noResultRestart": "Absent capability after process loss or disposal plus checkpoint2/missing result => HELD. Do not upgrade checkpoint1 or rewrite/reseed Ready.",
+    "earlyFailureOwner": "Typed hold/destructive-fallback protection must cover the precommon I phase before the existing common publisher is entered; callback success or current bytes cannot mask owning release/outer finalization failure.",
+    "errorResult": "Retain an exact Error-bearing computed result; no no-Error common admission, generic repair replacement, Ready reseed or automatic re-projection. Whole-vertical implementation must explicitly place that held disposition before any automatic continuation rather than infer success from storage."
+  },
+  "reconstruction": {
+    "prepared": "A newly admitted current Main/lease/physical graph owner can finish publishing only the stored result bytes; it cannot recreate the original preparation permission, old Stage/Ready/capture owner or historical public return.",
+    "published": "Current stable recovery and exact image/link proof authorize a DATA view, not an old returned-I event. Actual new reader/adapter return and its owning release are transient observations.",
+    "common": "Requires NEW actual original/checkpoint/request/claim/mechanical/common/take owners. Stored ordinals are history, not live capabilities. Failure to obtain current owners holds; no fallback normalization or synthetic authority."
+  },
+  "acyclicOrder": [
+    "immutable computed result and Published record",
+    "child3 output basis",
+    "common authority",
+    "planning/prepared input",
+    "actual private take",
+    "niPublication2 projection",
+    "parent fingerprint"
+  ],
+  "coldVerifiable": {
+    "afterPendingConsumption": [
+      "Strict child3/origin definition declares checkpoint2/protocol1 route; fixed version dispatch must enforce that interpretation.",
+      "Retained record binding, exact result/record hashes, parent jointTreatment repairCheckpointFingerprint and operation/attempt/request links.",
+      "Child/output-basis and niPublication result/record/input links; current original generation/frame, existing accepted history/footprint/progression and exact I-after."
+    ],
+    "notReconstructed": [
+      "Full consumed checkpoint/pending graph, unless future concrete schema explicitly retains it; the selected minimal contract does not.",
+      "Unretained common plan/prepared payload or consumed private take.",
+      "Historic public I return, writer close, Ready/Stage invocation or complete live NI availability from hashes."
+    ],
+    "liveObligation": "Actual private factory checks the real version2 checkpoint and complete pending graph before freeze; live readback compares niPublication with the same actual taken candidate before settlement. Cold relies on retained consistency plus existing current physical proof under the accepted trusted-local model.",
+    "substitutionTests": "Reject stale/partial/cross-operation assemblies that violate actual retained links, including useful partial outer-rehash cases. Do not require protection against coherent owner rewriting of the complete supported state."
+  },
+  "noRepositoryEdits": true,
+  "noNativeRuns": true,
+  "noNewAuthorization": true
+}

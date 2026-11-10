@@ -1,0 +1,11 @@
+{
+  "reviewedSource": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+  "decision": "ACCEPTED_BOUNDED_A1_DESIGN",
+  "wholePins": 17,
+  "projections": 18,
+  "exactDiffs": 6,
+  "localReadOnlyRecords": 7,
+  "markdownSha256": "1aa518f2a79cf7eaa074cc30f2795bbd807c64daa017068510173c9141c70728",
+  "jsonSha256": "587683c64cbb5b2f42b0e3ce5b490208903433ac1b84f99b8874ce38d7bd8313",
+  "runtime": "NOT_RUN"
+}

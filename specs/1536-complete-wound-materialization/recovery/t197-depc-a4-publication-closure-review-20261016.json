@@ -1,0 +1,185 @@
+{
+  "report": "t197-depc-a4-publication-closure-review-20261016",
+  "date_utc": "2026-10-16T12:23:41.023389+00:00",
+  "type": "narrow independent publication/status closure readback",
+  "reviewer_configuration": {
+    "actual_configured": "gpt-6-astra / xhigh",
+    "original_fork_turns": "none",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "candidate": "05f39661739e6bae26da5af428d9d182e132b1c5",
+  "direct_parent": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+  "original_design_review_commit": "e4a729e04380f6c380d7e56f048628c66d782248",
+  "observed_head_metadata_only": "05f39661739e6bae26da5af428d9d182e132b1c5",
+  "verdict": {
+    "publication_status_closure": "ACCEPTED",
+    "material_discrepancies": [],
+    "complete_engineering_contract": "NOT_ACCEPTED_INCOMPLETE",
+    "implementation_released": false,
+    "transition_qualified": false
+  },
+  "semantic_scope": [
+    "T197 canonical paragraph changed status, linked preserved review, six closures, next design slice, O1 precision",
+    "new T197 entries in plan/tasks",
+    "byte equality of preserved review pair and unchanged author proposal pair"
+  ],
+  "excluded": [
+    "T179 test corrections",
+    "T179 diagnosis report artifacts and plan/tasks ledger metadata",
+    "new separate B01 design",
+    "all ordinary F1 code/runtime qualification"
+  ],
+  "selected_document_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.json"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+    "sha256": "8866205f6319ef98f5be13de6b8b50bf39b8c7a862428ba93bf7524423251b58",
+    "bytes": 78546,
+    "semantic_exclusion": "adjacent T179 plan/tasks text is inside these path blobs/diff but outside review"
+  },
+  "whole_carrier_identity_only": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "--"
+    ],
+    "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+    "sha256": "3dd93d0c0cf461426317aba5ca035977fbd5832c6e04fb64a97da6df1f3d4637",
+    "bytes": 149547,
+    "not_code_or_evidence_acceptance": true
+  },
+  "selected_diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "document_pins": [
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "blob": "c8d9637e009faebd230d9ecae5f8575532b18c1e",
+      "sha256": "aca133abb2a50a5d5b44cfc0bad0631050e0ca6ff89cb46afa3eb390377a8216",
+      "bytes": 71017,
+      "lines": 273
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "blob": "372e3e1128198d08fa895dbd9aca7c15255f596e",
+      "sha256": "68577b373ddf987dc393462a7e56551f44168a410b82b775085ff7c346ee188d",
+      "bytes": 1991671,
+      "lines": 22637
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "blob": "9db65125ce8bbd71df5e1efb24e6a1dd452d0c0f",
+      "sha256": "be9877030c8a3bcccaa1dbbd3b0ac0f7a68d5599f5b6574a4bbc33827b9a36b4",
+      "bytes": 1410238,
+      "lines": 14725
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.md",
+      "blob": "2775edb6e4352df4b956f74f4570e899a8405324",
+      "sha256": "693d1987affa688ac284b60320e1b2ea48544b0981ac3b7a21c58d2f58ac4a34",
+      "bytes": 19051,
+      "lines": 58
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.json",
+      "blob": "16b1292df25efcff80f4b43014a287cf6bf1bf01",
+      "sha256": "8a2910a4c8cf9478552f8dfaca88e42749d1d6fbad0e8540b5a62b3e52ee401e",
+      "bytes": 45457,
+      "lines": 1227
+    }
+  ],
+  "preserved_review_copies": [
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.md",
+      "blob": "2775edb6e4352df4b956f74f4570e899a8405324",
+      "sha256": "693d1987affa688ac284b60320e1b2ea48544b0981ac3b7a21c58d2f58ac4a34",
+      "bytes": 19051,
+      "lines": 58,
+      "original_path": "/tmp/t197-depc-a4-targeted-independent-review-20261016.md",
+      "byte_identical": true
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-independent-review-20261016.json",
+      "blob": "16b1292df25efcff80f4b43014a287cf6bf1bf01",
+      "sha256": "8a2910a4c8cf9478552f8dfaca88e42749d1d6fbad0e8540b5a62b3e52ee401e",
+      "bytes": 45457,
+      "lines": 1227,
+      "original_path": "/tmp/t197-depc-a4-targeted-independent-review-20261016.json",
+      "byte_identical": true
+    }
+  ],
+  "unchanged_author_proposal_pins": [
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.md",
+      "blob": "183c079de96d8939758371b900efaadd76470b04",
+      "sha256": "ec43864fec0f3800980989366744e4ca5a275d4c10374c9644d1f85c6a97cdcd",
+      "bytes": 69264,
+      "lines": 271,
+      "unchanged_from": "e4a729e04380f6c380d7e56f048628c66d782248"
+    },
+    {
+      "commit": "05f39661739e6bae26da5af428d9d182e132b1c5",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-a4-targeted-design-20261016.json",
+      "blob": "e077ba66e9332e70fa29ac351d33357d468de3aa",
+      "sha256": "25cef182df647d50e403714562b5c159018ac9a352598213cacd4ce3e7f5bfad",
+      "bytes": 84819,
+      "lines": 653,
+      "unchanged_from": "e4a729e04380f6c380d7e56f048628c66d782248"
+    }
+  ],
+  "future_checks": {
+    "count": 28,
+    "status": "UNRUN"
+  },
+  "remaining_engineering_closures": [
+    "actual A1 executor/transport/pre-effect enrollment",
+    "actual finite source debt leaves/adapters",
+    "strict codec/main version/retirement ACK cuts",
+    "endpoint caller authorization separate from server identity",
+    "original-custodian loss/cold/reboot/migration/distinct-root issuer",
+    "platform/target/handoff qualification"
+  ],
+  "runtime_build_discovery_tests": false,
+  "repository_mutation": false,
+  "delegation": false,
+  "outputs": [
+    "/tmp/t197-depc-a4-publication-closure-review-20261016.md",
+    "/tmp/t197-depc-a4-publication-closure-review-20261016.json"
+  ],
+  "markdown_report": {
+    "sha256": "a15beccead02e8d87555feb679b3f2700ca4a98835f25a589045a49132f44ccb",
+    "bytes": 4772,
+    "path": "/tmp/t197-depc-a4-publication-closure-review-20261016.md"
+  },
+  "json_self_hash": "Delivered out-of-band after serialization.",
+  "final_stop": true,
+  "pending_writes": false
+}

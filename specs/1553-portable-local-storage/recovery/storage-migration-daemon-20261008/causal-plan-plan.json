@@ -1,0 +1,67 @@
+{
+  "Categories": [
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-delivery-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d376a266ff77b9ab84df40755ba7bd4214866837",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 35.6628683,
+  "Descriptors": [
+    {
+      "Name": "portable-gm-daemon-qte-storage-causal-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-qte-storage-causal-linux",
+      "Categories": [
+        "portable-gm-daemon-qte-storage-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-daemon-storage-delivery-neighbors-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-storage-delivery-neighbors",
+      "Categories": [
+        "portable-gm-daemon-storage-delivery-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

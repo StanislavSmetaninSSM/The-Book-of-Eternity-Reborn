@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-accepted-normalization-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c923359324dddebb664315ace90bc2708c5eb923",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.0784375,
+  "Descriptors": [
+    {
+      "Name": "portable-accepted-normalization-outcomes-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-accepted-normalization-outcomes",
+      "Categories": [
+        "portable-accepted-normalization-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

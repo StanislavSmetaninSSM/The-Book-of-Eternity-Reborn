@@ -154,6 +154,8 @@ internal sealed class ExampleValidationManifest
     public List<ActorMaterializationExampleCoverage> ResourceMaterializationCoverage { get; set; } = new();
     public List<ExampleContractCoverage> TrainingShowcaseCoverage { get; set; } = new();
     public List<ExampleContractCoverage> GmWorkerBridgeCoverage { get; set; } = new();
+    public QtePhysicalOpportunityProjectionExampleCoverage QtePhysicalOpportunityProjectionCoverage { get; set; } = new();
+    public QtePhysicalDecisionDraftExampleCoverage QtePhysicalDecisionDraftCoverage { get; set; } = new();
 
     public static ExampleValidationManifest Load()
     {
@@ -176,6 +178,27 @@ internal sealed class ExampleValidationManifest
 
     public bool IsShapeExempt(ExampleSnippet snippet) =>
         ShapeExemptions.Any(exemption => exemption.Matches(snippet));
+}
+
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
+internal sealed class QtePhysicalOpportunityProjectionExampleCoverage
+{
+    public string ContractId { get; set; } = "";
+    public string File { get; set; } = "";
+    public string InputSurface { get; set; } = "";
+    public string ValidationRoute { get; set; } = "";
+    public string CoverageLimit { get; set; } = "";
+}
+
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
+internal sealed class QtePhysicalDecisionDraftExampleCoverage
+{
+    public string ContractId { get; set; } = "";
+    public string File { get; set; } = "";
+    public string OutputSurface { get; set; } = "";
+    public string[] Examples { get; set; } = [];
+    public string ValidationRoute { get; set; } = "";
+    public string CoverageLimit { get; set; } = "";
 }
 
 internal sealed class ExampleContractCoverage

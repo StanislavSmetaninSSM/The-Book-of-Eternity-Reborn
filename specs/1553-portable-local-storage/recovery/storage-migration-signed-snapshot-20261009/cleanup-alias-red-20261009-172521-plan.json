@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-signed-preparation-cleanup-alias-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "beac97e8093889f96be8ef1a711902bd6c92d743",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 52.8526578,
+  "Descriptors": [
+    {
+      "Name": "portable-signed-preparation-cleanup-alias-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-signed-preparation-cleanup-alias-linux",
+      "Categories": [
+        "portable-signed-preparation-cleanup-alias-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SignedSnapshotExactPathTests.OriginalLivePreparationRefusesCleanupPathAliasBeforeOldEvidenceCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

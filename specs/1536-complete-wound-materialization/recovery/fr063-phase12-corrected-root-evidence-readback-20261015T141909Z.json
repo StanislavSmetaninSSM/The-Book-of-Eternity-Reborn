@@ -1,0 +1,679 @@
+{
+  "createdUtc": "2026-10-15T14:19:09.839878+00:00",
+  "kind": "ROOT_PHASE12_NATIVE_RAW_BINDING_AND_CLEANUP_QUALIFICATION",
+  "testedSource": "13f355c3f509c91bb1e63b750dcd8966578612d3",
+  "compiledSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+  "packet": "fr063-finite-phase-corrected-v7-frozen-13f355c3f-20261015T140328Z",
+  "manifestSha256": "dee55aaca4cc6e4faf93e24987b353d34f4b427ff489a7b8e59ae01ffc28d569",
+  "chainsVerified": 36,
+  "gitSourcePinsVerified": 530,
+  "currentBinaryPayloadsVerified": 11,
+  "native": {
+    "exitCode": 0,
+    "timedOut": false,
+    "methods": 1,
+    "cases": 12,
+    "descriptors": 1,
+    "tests": {
+      "Total": 12,
+      "Executed": 12,
+      "Passed": 12,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 12,
+      "CompletedCases": 12,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallTime": "00:12:30.5533888"
+  },
+  "rawTrx": [
+    {
+      "name": "fr063-joint-phase-refusal-integration-001.trx",
+      "sha256": "ce800a7f8c5c03bec2cfb77add9056d6a7f10f81bc44cc2401a09f5b1306b0a8"
+    }
+  ],
+  "actualColdOwners": [
+    {
+      "testId": "63629cb8-1c59-85c5-f9c1-47af7babf62d",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"authority_payload_digest\")",
+      "scenario": "authority_payload_digest",
+      "pid": 64268,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64268,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        0,
+        1
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "0d0ebf57-513b-c141-d9a5-fe2e79045f3b",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mutation_fingerprint\")",
+      "scenario": "mutation_fingerprint",
+      "pid": 64801,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64801,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        2,
+        3
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "ad9ca65a-d5bd-f285-4299-ac14e331309f",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"world_time\")",
+      "scenario": "world_time",
+      "pid": 64346,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64346,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        4,
+        5
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "325a51ec-1e85-8bc1-8398-b13f71453f36",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"missing_marker\")",
+      "scenario": "missing_marker",
+      "pid": 64172,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64172,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        6,
+        7
+      ],
+      "captureImages": 220,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "9b5c54c4-1724-797a-16d9-7485d55b2a12",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_report\")",
+      "scenario": "mixed_report",
+      "pid": 64508,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64508,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        8,
+        9
+      ],
+      "captureImages": 222,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration",
+        "game_state/control/progression_report.json"
+      ]
+    },
+    {
+      "testId": "2ea55d4d-df4a-f338-ec47-f2a881a8f54d",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_malformed\")",
+      "scenario": "input_malformed",
+      "pid": 64619,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64619,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        10,
+        11
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "1508ba94-4e99-1411-0d61-ae4254ab8f6c",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"basis_fingerprint\")",
+      "scenario": "basis_fingerprint",
+      "pid": 64419,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64419,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        12,
+        13
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "d9405da3-d317-d4d6-2cc3-58b1d09e6554",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_missing\")",
+      "scenario": "input_missing",
+      "pid": 64747,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64747,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        14,
+        15
+      ],
+      "captureImages": 220,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "cebfa736-f81a-89d8-abaa-414f79903a2a",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"input_control\")",
+      "scenario": "input_control",
+      "pid": 64687,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64687,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        16,
+        17
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "af069e07-5d9b-be11-5783-28c97337ecd3",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_malformed\")",
+      "scenario": "manifest_malformed",
+      "pid": 64845,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64845,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": false,
+      "handled": null,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        18,
+        19
+      ],
+      "captureImages": 225,
+      "expectedExceptionType": "System.Text.Json.JsonReaderException : JsonException",
+      "origin": "FileSystemManager.PreflightBrowserOriginalAdmission",
+      "inGameBefore": false,
+      "inGameAfter": false,
+      "rawTargetGenerationRuntimeNamesDirectoriesBytesExact": true,
+      "fullRawImages": 225,
+      "parentPhysicalAfterAllDigestsMatched": true,
+      "malformedManifestOneByteRetained": true,
+      "storyBytesRetained": true,
+      "scope": "Complete session/runtime filenames, directories and bytes except contents of three inert lock streams; names retained"
+    },
+    {
+      "testId": "87a0b998-557a-1428-2d40-6345f56feecd",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"mixed_schedule\")",
+      "scenario": "mixed_schedule",
+      "pid": 64584,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64584,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        20,
+        21
+      ],
+      "captureImages": 221,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    },
+    {
+      "testId": "fc45fc5c-3c36-62cf-df31-0cf51903dec4",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AppliedJointRefusalPreservesEntireAfterTamperTree(corruption: \"manifest_missing\")",
+      "scenario": "manifest_missing",
+      "pid": 64911,
+      "parentPid": 63880,
+      "native": {
+        "ChildProcessId": 64911,
+        "ParentProcessId": 63880,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3DefaultAnd5ContextPinsMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "cleanupReceiptIndices": [
+        22,
+        23
+      ],
+      "captureImages": 220,
+      "scope": "Existing captured session-file+G held-owner oracle; not whole-runtime preservation",
+      "capturedBeforeAfterExact": true,
+      "parentAll220OriginallyPausedPathsMatched": true,
+      "parentUnprojectedChildEntries": [
+        "$sessionGeneration"
+      ]
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-1dd4363722d742d0a863eeba993680b1",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f643883cabc1473fa07888397b96725c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3c938a2cf1814f558cd79aabcc0badc0",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4744626774014e789695b3d1d3fbb225",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c720d37d61124684a51b450fb39634ab",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0ecd2e3493fc463fb6b1194d01407a4d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-585e67748b8f42b292132523559ab28e",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ee27485843b84359b11a074bcb653418",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-dfdd20b5c9e84af2bbf5590af62449a8",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d95f15d76d924f0c9bc3cab2c097cfe6",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9db71be748b543269a514ab979d3c2f7",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-884fb2ef3bba4380b066362692d1d0c4",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ddf267487812487a9431d4299bc0c337",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-726d4aa4c681425c95ef59e88444ae51",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-24ee3591caee415189e8b99a6011be2d",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cbffc1d9cae4430e8d3b91cdba85b49c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-70ff73d886e345228dd26d69501dc606",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-8f586f4691a045e1a570191afc7f39bd",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e22cdd399bff41fb9ccc5cec348162f7",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-854f27df53be422aa7714e03685e50f1",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e6eac0b9ebff4e4a8e1b240d1b0021ec",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-2ed6c2d95ff84fed9440a6f7f7d1e495",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-257600de63034b24b2cffa18db61f262",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cf6e430c13014f40a43d4e2064ff810c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strictCleanupOrigins": [
+    {
+      "receiptIndex": 0,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 1,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/63629cb8-1c59-85c5-f9c1-47af7babf62d#line=36"
+    },
+    {
+      "receiptIndex": 2,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 3,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/0d0ebf57-513b-c141-d9a5-fe2e79045f3b#line=36"
+    },
+    {
+      "receiptIndex": 4,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 5,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/ad9ca65a-d5bd-f285-4299-ac14e331309f#line=36"
+    },
+    {
+      "receiptIndex": 6,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 7,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/325a51ec-1e85-8bc1-8398-b13f71453f36#line=36"
+    },
+    {
+      "receiptIndex": 8,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 9,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/9b5c54c4-1724-797a-16d9-7485d55b2a12#line=36"
+    },
+    {
+      "receiptIndex": 10,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 11,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/2ea55d4d-df4a-f338-ec47-f2a881a8f54d#line=36"
+    },
+    {
+      "receiptIndex": 12,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 13,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/1508ba94-4e99-1411-0d61-ae4254ab8f6c#line=36"
+    },
+    {
+      "receiptIndex": 14,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 15,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/d9405da3-d317-d4d6-2cc3-58b1d09e6554#line=36"
+    },
+    {
+      "receiptIndex": 16,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 17,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/cebfa736-f81a-89d8-abaa-414f79903a2a#line=36"
+    },
+    {
+      "receiptIndex": 18,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=35/Observation/FullChildLog#line=6"
+    },
+    {
+      "receiptIndex": 19,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/af069e07-5d9b-be11-5783-28c97337ecd3#line=36"
+    },
+    {
+      "receiptIndex": 20,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 21,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/87a0b998-557a-1428-2d40-6345f56feecd#line=36"
+    },
+    {
+      "receiptIndex": 22,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=35/Observation/FullChildLog#line=5"
+    },
+    {
+      "receiptIndex": 23,
+      "origin": "fr063-joint-phase-refusal-integration-001.trx/fc45fc5c-3c36-62cf-df31-0cf51903dec4#line=36"
+    }
+  ],
+  "all24DistinctRootsActuallyAbsent": true,
+  "optionalColdReaderExecuted": false,
+  "manualReadbackCorrection": "Initial ad-hoc assertion overclaimed the parent originally-paused path list. Before emitting this supplement it was corrected to its actual220 captured paths, explicit missing leaves and excluded G/new mixed_report leaf. Child full captured session+G before==after remains separately verified. No source/evidence mutation or runtime retry.",
+  "independentEvidence": "PENDING; six successors HELD",
+  "old11Pass1FailPacket": "Preserved immutable; this corrected run does not rewrite historical failure"
+}

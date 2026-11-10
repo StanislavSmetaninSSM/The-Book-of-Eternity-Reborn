@@ -1,0 +1,22 @@
+{
+  "kind": "NEW_EMPTY_GITHUB_ONLY_FULL_TREE_RECOVERY_VERIFIED",
+  "source": "b59bf2e6787a926cef2344fb87c4e17db2dba892",
+  "root": "/workspace/boe-fr063-recovery-fresh-20261015T1541",
+  "fetchNativeExit": 0,
+  "checkoutNativeExit": 0,
+  "comparison": "Every tracked byte compared directly with git cat-file --batch blob stream; modes/size/path set checked; SHA256 recorded",
+  "trackedFiles": 51950,
+  "totalBytes": 2635928392,
+  "clean": true,
+  "ignoredOrUntrackedDryRunEmpty": true,
+  "objectAlternatesAbsent": true,
+  "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "shallowDepth": 1,
+  "ancestryScope": "This recovery verifies exact commit/tree; complete ancestry was separately verified in primary",
+  "fullManifest": "fr063-fresh-GitHub-full-tree-b59-20261015T161320Z.json.gz",
+  "compressedBytes": 3108431,
+  "compressedSha256": "239130ea0ffdd8441c840908bc5969e3d62decc3f524578d0b9f80f97d0cd5eb",
+  "uncompressedBytes": 19162017,
+  "uncompressedSha256": "8eb94c3f1e8c931d3e1c8bb9e51eb6beb7a072dc5f3fcbbf3df71a16f4dea166",
+  "utc": "2026-10-15T16:13:20.978501+00:00"
+}

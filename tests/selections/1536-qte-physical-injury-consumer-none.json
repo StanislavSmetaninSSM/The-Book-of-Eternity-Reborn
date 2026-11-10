@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-physical-injury-consumer-none",
+      "reason": "Exactly one first genuine NONE consumer causal cohort after accepted producer1b and read-only projection4d34e29. Category5/default10; fresh source/fixture/selection gate, selected build/PlanOnly and ownership audit precede first actual. No passing producer/projection selection is repeated. All new checks UNRUN.",
+      "contracts": [
+        "Actual existing QTE source42 -> positive finalized health Damage5/health155/one original-source occurrence/strict source terminal cleanup; new actual complete ordinary N43 with source/ref/closed raw NONE/ready evidence under the existing owner.",
+        "Official signed-observed absence remains pristine; no empty canonical receipt/history/wound initialization or live fallback. Raw exact request/draft/ready, source/byte and failure observations are preserved before the causal receipt oracle.",
+        "AcceptedOutcomeValidatedBeforeMaterialization records admission only; actual ProcessPlayerTurn return, GameLoop43 and matching appended story row must precede first missing durable receipt predicate. No premature postcondition at the pre-normalization checkpoint.",
+        "One valid NONE receipt binds genuine source42 and decision43, correct offered occurrence/ref, null wound/transition IDs; pending consumes, identity/carrier/history remain unchanged, draft and WoundCommand consume in common publication. No CREATE/replay/atomicity/archive qualification from this Fact.",
+        "Existing per-test own root/live input disposed before strict cleanup; no new worker/harness/provider; fixture or ingress failures are prerequisites, never reported as consumer causal RED."
+      ]
+    }
+  ]
+}

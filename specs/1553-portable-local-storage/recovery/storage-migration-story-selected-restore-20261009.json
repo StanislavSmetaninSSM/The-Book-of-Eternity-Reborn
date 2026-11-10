@@ -1,0 +1,913 @@
+{
+  "source": "5cabbfeca0871288734bda73ad1b31362948cd40",
+  "branch": "1553-storage-migration-cloud-20261008",
+  "remoteRef": "5cabbfeca0871288734bda73ad1b31362948cd40",
+  "directory": "/workspace/boe-story-selected-restore-5cabbfeca087",
+  "method": "Direct exact-commit GitHub raw bytes in new empty directory; every Git blob verified. No local source/object/cache copying.",
+  "scope": "Selected Story runtime/test/evidence plus instructions/spec/plan/tasks/inventory only. Not a full Git checkout, build, test, or restoration of the full migration branch. Full checkout is capacity constrained (prior comparable clean checkout ~905MiB; current free space below455MiB). All archived Story artifacts and historical source pins were additionally fetched/verified from exact commits, still no full checkout or build.",
+  "files": [
+    {
+      "path": ".agents/skills/speckit-analyze/SKILL.md",
+      "blob": "77fb9bdbc1139368f5f87169332fa48424bc3ed6",
+      "sha256": "2740b8aeab8d0104527384ca74106e252e0a20df89355c8f36be25a62130d6d6",
+      "bytes": 10866
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081
+    },
+    {
+      "path": "AGENTS.md",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "blob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "bytes": 7722
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs",
+      "blob": "4ec218d9a9baacdf45ee5cfc1d680c74006f5eb5",
+      "sha256": "7cc018b4ce253d7473be08a5bba89660dded5d587709fe61c7f287f802ec37c0",
+      "bytes": 160270
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+      "blob": "fadeee8d451a13541eb3faa19d0ccd662daf65cc",
+      "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172",
+      "bytes": 87736
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs",
+      "blob": "bf527c2fde62517bc8b080a47c5f7bb31f9fa523",
+      "sha256": "19edb1f605a0878de4f4351f5eea32425d8ae357dd37a296c1320b7e3ada1a1b",
+      "bytes": 646730
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/StoryReadExportAdmissionTests.cs",
+      "blob": "7592ecbf8d0ddde1c862fbfc1674090a75af95d9",
+      "sha256": "39a3e6e500256c5420e6677c6f3253f82c29add6afbdc5252cecdcb8ac614d40",
+      "bytes": 17214
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+      "blob": "4afd2b2390f1204267f9d2a96f9f315bd71b0986",
+      "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516",
+      "bytes": 8655
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "blob": "50d27cdda5445abd0fce65cd708789307416b860",
+      "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90",
+      "bytes": 17062
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "blob": "b296c497fdd335985733db6be12cab43b3e167d6",
+      "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060",
+      "bytes": 234916
+    },
+    {
+      "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+      "blob": "57233417fe7afcc235be3c0d3f161d7d53e5d21c",
+      "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e",
+      "bytes": 5452
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "blob": "b0bc7d9724e986e1ffebbee0d3a155b8bd860ffd",
+      "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1",
+      "bytes": 22263
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "blob": "c8f5458f9e7e00c96e4294bc16a991134c63aedf",
+      "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b",
+      "bytes": 30619
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "blob": "c4c9d46904efd9361c02e690d6d142c799e9d672",
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "bytes": 17671
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "blob": "5093ae94d1f4e2341c3a7b4f18176360130c67ae",
+      "sha256": "9f2980aa35b6306198e5ef87056005a3734927204924b8d96d24abf3728b419f",
+      "bytes": 12035
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "blob": "12d1e3bd14f978e9259dd12ff3933bdd4ce85acb",
+      "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b",
+      "bytes": 17501
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "blob": "606e0428b85cf1828ef207223e19be697e6c5717",
+      "sha256": "ac0e110db4b6c8ed1186687fdca6b90fa979f58951066ffd777cb7d7b6a90b94",
+      "bytes": 77243
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "blob": "d47a41f57d378d64030fa1cd38381bf99872f130",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a",
+      "bytes": 92485
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "blob": "b072a9e3408abb45115a31d51560021c95828f17",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68",
+      "bytes": 192030
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432
+    },
+    {
+      "path": "docs/testing.md",
+      "blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "bytes": 18979
+    },
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "blob": "88c71bd5450b4cc2a205003880afec2412bb010f",
+      "sha256": "3920711c5a4642737cdb83ddf1ec64a3cf483431df837b1b0b29f2c8af76af43",
+      "bytes": 1147108
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/catalog-plan-Build-integration.log.gz",
+      "blob": "91731756c6b076fbe32c4d9d9550f1671dcf98ce",
+      "sha256": "68b6582f97e2c83d0767151f3320788e1c2cad95f6354e573bc5ff329724c611",
+      "bytes": 1870
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/catalog-plan-Build-unit.log.gz",
+      "blob": "ebea3389705f5aa936608749bb863ca3e1184cfd",
+      "sha256": "e2d6ec9e6080f11872cc6364133cbc4931fdae0bbce8125d03092317b8123003",
+      "bytes": 1566
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/catalog-plan-catalog-audit.json",
+      "blob": "0fe8bfc5f05f0d6ffca9c5fc32a7ae74074d36be",
+      "sha256": "933a91572b160cb7721ce1caae0954cd4d25245aa61a921bda5d0cf7239f3f27",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/catalog-plan-dotnet-test.log.gz",
+      "blob": "7d2fe70108d5b5899f7ab3bd7a7438ef1e78a759",
+      "sha256": "70b20ccd4bdb8bd4acd74ce68368d0c488a674b0874e2fd01ada1eb2c91b0993",
+      "bytes": 361493
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/catalog-plan-summary.json",
+      "blob": "b5b6dead20b0b76eda6efdff239084693b165686",
+      "sha256": "3966a6f0040a919f5e5f3944f04938f35540868a7a665ba7d4871bce1f0f8c2e",
+      "bytes": 1598
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-actual-dotnet-test.log.gz",
+      "blob": "ccc8c54c63fefd8f0d95eda98cb7f7df6516b8f9",
+      "sha256": "95507b3f3245d1a77ec8276877010ae6485837bee640cfc51bc82bdef0449622",
+      "bytes": 176542
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-actual-plan.json",
+      "blob": "a52ec5c0bef34acf4737840e976582aabd3e99e3",
+      "sha256": "e9762c472e01e37ce36a4e129d8a6b64dcaf9918ce5edf634ed1d73661d13203",
+      "bytes": 2306
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-actual-portable-story-read-export-known-integration-001.trx.gz",
+      "blob": "819fab31efd4ad71c384da966592e38bfdc87345",
+      "sha256": "ae0e62faaaa04e0df48f26e0736f549a7e2129b6bdaaa09bfd1d3d3f7de5926d",
+      "bytes": 1389
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-actual-portable-story-read-export-linux-integration-002.trx.gz",
+      "blob": "4f69d27cf2beb16605c886a720e62de965cb06eb",
+      "sha256": "9e0b583fe0f13f16f67b7bcf3441e9e1ef177475096ecb130625510aafde235a",
+      "bytes": 15887
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-actual-summary.json",
+      "blob": "e84f40c83d880b6d9eb5f6640b17ffb5fee5581c",
+      "sha256": "97f781012099c621fc532cd2d1c2caa11f1b13eb843eafc762e30af2a43fa5a1",
+      "bytes": 1660
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-plan-Build-integration.log.gz",
+      "blob": "876a542d3df78aad344b8dca2d1a2002fda7b0d1",
+      "sha256": "9762c81ff3fa0301f0c7801dd4302284b113a8f993c5d71a19516868df24377d",
+      "bytes": 1869
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-plan-dotnet-test.log.gz",
+      "blob": "ae05e00122e360511b88b77848e3c853557b6e0b",
+      "sha256": "7af3d5e4e9c8880eda91091788c712db4a571b10bc03748e6860d354a089a6ab",
+      "bytes": 178156
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-plan-plan.json",
+      "blob": "5d9e42ce6ede68cb5c9dcd3cb1040d7e253901d9",
+      "sha256": "04b1418f3714a9ca1dd51013d3f59418c0d3f42e44b0000597ee69069c7eaab8",
+      "bytes": 2308
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-plan-summary.json",
+      "blob": "90f0c80bbd9ab76151d4065b6e10ec35810029aa",
+      "sha256": "49b4eb482328f148e697c6241914f1ae421fc70b22bd361cc156e8990ba23141",
+      "bytes": 1587
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-0-0-journal.bin.gz",
+      "blob": "4c9840acfbd36c945d6c7c9d4a1d6ae95e341cb8",
+      "sha256": "edb28b344250dfc50b74a62b2c174e4a3f5f6139acca6f80bf02ce6481bc27f0",
+      "bytes": 334
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-0-0.json.gz",
+      "blob": "81ee8d690903389204aa6a40bdbf3f46c3711986",
+      "sha256": "06011292b745a37953e01419a99e246740e7978a46f572ca46d94cc6c3dcf3bb",
+      "bytes": 3065
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-0-1.json",
+      "blob": "b1d0fddcf7362664f2eccb75392063eb728dc714",
+      "sha256": "50f85c4d5c8989ba53163fe0b16557ffa05a9930e1e1c70c8409e220e0f763ec",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-1-0.json",
+      "blob": "ae5c6fa6b51a2632c87a64a8574f2cd587342b4c",
+      "sha256": "2e41d57942878194b9716f67660b5cd6a013191afeb68178778a99560f2ba6cb",
+      "bytes": 6340
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-1-1.json",
+      "blob": "a6f31e37f4c42999ef55e2923b55cffa737a492f",
+      "sha256": "30b3dc7dfa963dc37a9e5862ee813b99efb3c822ceb5ff50927a36afcd19d9bd",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-2-0-journal.bin.gz",
+      "blob": "35f69eebc07ef7d7c3e52523d25ecfb7d6874140",
+      "sha256": "1e9d58961fa57fc2d780e08761576cd6177a673886c274c1d60a4951ad44e13f",
+      "bytes": 333
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-2-0.json.gz",
+      "blob": "774a1638553e9aee4dff8028a7ed3e117a298cec",
+      "sha256": "ff574a1caea39f7520c1b3a4e465f0dc7b0e94249e999555f76fa03d74e43ed9",
+      "bytes": 3039
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-2-1.json",
+      "blob": "dc0c21161dc57ebdf107ccdaa42fbbb7f082faf9",
+      "sha256": "5fb385bcb525b91fa37d149d480bf7747cc9fbf3cb2d00ac3f7f1b415a92919c",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-3-0-journal.bin.gz",
+      "blob": "1bdd21118cce02d9e402401a1a547ef04ffbd28e",
+      "sha256": "5cb44424e279ad9123319d1c4901a281b12c41b89b76b98d61146a0f526e6661",
+      "bytes": 333
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-3-0.json.gz",
+      "blob": "fbc6840f0e4c017f19891c6f858a0455a7377863",
+      "sha256": "bcb1217f50c40dab190536b1f6d7ba1f21a0ab3e99b72daee02e1849bd9a8fe4",
+      "bytes": 3059
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-3-1.json",
+      "blob": "7ae22012973803869e1641bbbcd37a271103d57a",
+      "sha256": "04116fecc4b78ea1731fca4d6885eb8661605eab8b5d134072df5cc7b4c67d41",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-4-0.json",
+      "blob": "7a5a761a561f36df153a345550262cca6fd57278",
+      "sha256": "4ad3f25e397d1bff5e79b8a71186d8b1680d3eea06bc29cbd2291e626edac708",
+      "bytes": 5206
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-4-1.json",
+      "blob": "d8beaba9c3cb0a3d533d125415b89a73cfc62c13",
+      "sha256": "00a6cbef799d6d6ebf7456fc713dc95a6e427eab4bee36f31252e07835bbd838",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-5-0.json",
+      "blob": "2aa842bf80c02b5630af6fad5b9262a8c768646f",
+      "sha256": "73cc868e14e55fc290374610438702e65c031756682d361f5558a6cfd406f880",
+      "bytes": 8388
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-5-1.json",
+      "blob": "200629075345c0a7d2219a8e8fb7db2e531fabaf",
+      "sha256": "23aa78ff08e7dc11f9c1af001eab1604b4dae24d6a4a03cbaa56c70825b1a9f4",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-6-0-journal.bin.gz",
+      "blob": "0edde05b7939c356fd268f634b82d92537331ba1",
+      "sha256": "faa3a702479a60e172bac2c06717dd4c31f42c22f6b0fa7f70adb68f05b69779",
+      "bytes": 736
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-6-0.json.gz",
+      "blob": "0c986af6eb940e76553c41f2028a0fecd949d582",
+      "sha256": "2de7655fd0f5450d72e48daf708379e63420cbd11acd42e02198b5d18d8de258",
+      "bytes": 4523
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-6-1.json",
+      "blob": "8bab47cf09fcd7837fb0b24fec6c763c611212fc",
+      "sha256": "004fe2017a72781d008c955a5d676a9eec16023f009b5386c2e3941848bb8ef2",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-7-0.json",
+      "blob": "5d6e77904e71113c94019538aeaca065cb54c697",
+      "sha256": "37a1263b35b8a353680138ac2d920ef73227b79a9682a5c680f7f0b8c1779d82",
+      "bytes": 8514
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-7-1.json",
+      "blob": "6e8e6ff349d0cf67ad7dfd8d6917f0a68295ab2e",
+      "sha256": "ab60bc3798ea2bc3e97b0b0d6f6acb1bb735365e5f84f374b08ed4bd75997a39",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-8-0.json",
+      "blob": "0d39cefbc07088fe6d3528b9e535a51385571a13",
+      "sha256": "37ef5340e4de17baea4372c84f9a497c61124c7edfa21621dba87d3805070acb",
+      "bytes": 8465
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-8-1.json",
+      "blob": "c472b85565e39766ea997ce33b6b46e600bad0ce",
+      "sha256": "25e16da817d41e62d55e308cf764aa265822b790ba9881086e1ab6ce3c176a6e",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-9-0-journal.bin.gz",
+      "blob": "df398b1f09066e78e2868bf78ea89dad17143b6d",
+      "sha256": "2482390e7d90665b18c02e73cfcad8a4b7c6bacf980a4439e6f523ffec090690",
+      "bytes": 795
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-9-0.json.gz",
+      "blob": "bc36ff15394abc456aa672ab6c0e2278093849af",
+      "sha256": "87e3894faa528f54e4e852d0457e20d0a6c5e12cc1ee9b76618393a71cbbf1ba",
+      "bytes": 4529
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/green-row-portable-story-read-export-linux-integration-002-9-1.json",
+      "blob": "c5de6b2164d3380ead06880a7ca6dbbdfefb45ed",
+      "sha256": "ab46b43e7ad811989e30b7a07e7c489093cfc7937c1d5f1aa29c8545e89218a7",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
+      "blob": "fabccc2ae4966717cfab815ea59a5be8d872c110",
+      "sha256": "097e5064fc1324c643bb087d98b2921c90cebce6dc7970e058db28059ec8a96b",
+      "bytes": 40055
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-actual-dotnet-test.log.gz",
+      "blob": "ce45256bdff41f90465557139235eb55749b6813",
+      "sha256": "04d76dd0f70ca404cf4e8508fa72a1a65891ef90a0ecec59df8b826f3e726a01",
+      "bytes": 184200
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-actual-plan.json",
+      "blob": "ad07ffc33b12abfa913ee6c990bd3d4442760b0b",
+      "sha256": "618c92c8b83424a7db182e57ce04ff9e87d16660e2380cd311583cf5c6989074",
+      "bytes": 1141
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-actual-portable-story-read-export-linux-integration-001.trx.gz",
+      "blob": "25bfd09280a3a564a731b0729793f0c0299e0a17",
+      "sha256": "5be00a0ebcdb588c815deec9c975dcedcaebd24f870d593eb8f00b464b842350",
+      "bytes": 17820
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-actual-summary.json",
+      "blob": "5e8e8676a944b60a84d113f055aaa5d1678aaa29",
+      "sha256": "4f405674db4528ce7236c5226d54058510c5399b7dba03c82bf1e1cbb9e41078",
+      "bytes": 1378
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-plan-Build-integration.log.gz",
+      "blob": "147c2dfb17d8afd7aad3f4042f16d1729e9f7a28",
+      "sha256": "7e52f7082a1f471b97590f9725c99a0ff9fcf70f11aea60a385198d7abf98024",
+      "bytes": 1869
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-plan-dotnet-test.log.gz",
+      "blob": "bf24d9367f13f9945cc4a549de82fe8ee233f607",
+      "sha256": "5dd711b58e89e74f8d4f8d91a2fd4392c7d3b949312079ef2552ed0c56899f02",
+      "bytes": 178158
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-plan-plan.json",
+      "blob": "9035decdf6cd81cc8884da794d1dfa9dd2c6db9e",
+      "sha256": "eb4053d3d31da7c856bae69a33b048dc1d725ccc70a7e54a2243d9863a74ed6a",
+      "bytes": 1142
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-plan-summary.json",
+      "blob": "91b10d171dd8d6ff413190216061e3072cf70122",
+      "sha256": "f07dc70535914ba7ebc2bffbc203be72b6c3b263412dad2eeb87fbc6b6d39b65",
+      "bytes": 1488
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-0-0.json",
+      "blob": "6825355eecb2e6534c1d21b89630bcb2cd9a8de9",
+      "sha256": "77ed95439cdd03ba00dbcf3066d437b7e03111e370efbf033daed9a78e22e92f",
+      "bytes": 6209
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-0-1.json",
+      "blob": "bb89d2ec67b71dc6d582377b4b5ea3c17749a054",
+      "sha256": "3eccf4a37c1e82d8aa6270899089ae0a21a54443da31707a09a85c8e5cadb42b",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-1-0.json",
+      "blob": "9a78f17872918760cd2c4142261d8b2d1c8b2a5b",
+      "sha256": "f0f609b99c08c24ae11d1e7543a8ba53ca14a608ec45952c25ff651f63b3f337",
+      "bytes": 8938
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-1-1.json",
+      "blob": "7e6b847e7d070baa0778fed1614adbc464a0696f",
+      "sha256": "ecc84067ed3a54b8a8e15eedf9b01af7d652c16682294a2169d2d068c498301b",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-2-0-journal.bin.gz",
+      "blob": "1624722955da65754dcb8d6dd4bf596e7c86a155",
+      "sha256": "6406cd1c355dd4fa40a5a7f8ac95f1a65c49d2e824fb886faf468ae7dddf46a9",
+      "bytes": 337
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-2-0.json.gz",
+      "blob": "d62ba3d7f992a6d7720d5174c0980a75f3d4a775",
+      "sha256": "30f9b809bc9506f4a0d42b7b94faa5ecc684897ad951c61aa1d8c843046610c9",
+      "bytes": 2883
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-2-1.json",
+      "blob": "5d7037673f7a285c5275b9701cf888b91ba87421",
+      "sha256": "2022cb7eec9f5838a8c7e1b48e7827fe9fa2eab2af0c6f589b05337d4e37f591",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-3-0.json",
+      "blob": "310cd481761b04f39c40d8932e64a9cd19c01e93",
+      "sha256": "37d648a988349b2c955bfd936517fbed63ea356db6eb7dd7e79667544d2d62d1",
+      "bytes": 6213
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-3-1.json",
+      "blob": "b280071beba62c8c873dca1dbad0afb59e034d84",
+      "sha256": "ccb0f8572c19966a788f426a4c3ed31184a623aa225d93ecb83c5945110e94d5",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-4-0-journal.bin.gz",
+      "blob": "312f3490253db66157ec577467cf3189d0a38c0f",
+      "sha256": "96ef42cece613e3b5eb4965a972d8d89f40a2c9551d6b09c313334ccbb42efa6",
+      "bytes": 336
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-4-0.json",
+      "blob": "2423d8a50f7b9d2070ed531800fd501cfaf348a1",
+      "sha256": "8af3aafae39e5d3b040a5f9a413703daff22f7dc36bb2056407c6f063a3d804a",
+      "bytes": 9692
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-4-1.json",
+      "blob": "310e245a4058ee0ffff419880b1391413e28633e",
+      "sha256": "074786acdbd9f82b9f6c5958c660dbd10844ebeac1a6f95120c865d766ebe57c",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-5-0.json",
+      "blob": "1bb9a5494ad16d84f55c68e0d863624d0199f9ac",
+      "sha256": "6b3ed374ece7544da7b081edf14e5b7903ddcc041fc8b982867465450095aec8",
+      "bytes": 8087
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-5-1.json",
+      "blob": "df1e385ebce41afcce94ff9356dd8ae141d8812e",
+      "sha256": "cba07b892af99163e052901437505bc810c586fddb5fc680d5174dd2fe346117",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-6-0.json",
+      "blob": "0cb29e57bc1376ccf27c770e4156db16ea2025a0",
+      "sha256": "0c2d38d2da80e0eb7f508b38db1c16abdf9d33ba1245ee4007a1e33b608beb3a",
+      "bytes": 7941
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-6-1.json",
+      "blob": "5d9f492bbd239a5e61f605e877b5257de9a959bc",
+      "sha256": "26611e5c65f04299341cfacb023e411be8f68c8af689af0cc95b61f84d496277",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-7-0-journal.bin.gz",
+      "blob": "521e02986aa091a2ef0e83e2cb1f766550beed6f",
+      "sha256": "37e2edac43f4be617867dfb120ae6ffb73c466706841534f31e151fdc48a2518",
+      "bytes": 337
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-7-0.json.gz",
+      "blob": "7077be80cfa8696f5d5a7bb0a1a720882bad7704",
+      "sha256": "6f0c4da09fbb1eb9de06e8ddf4a616b75215b16cdd42eeef81557f77cfb4d140",
+      "bytes": 2906
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-7-1.json",
+      "blob": "4e0e82254dad9b8e7c4ea74879cc05c23e421c09",
+      "sha256": "e05bbfe25b902fa2183299f6abf7d588b2a448a2f420762e18c06f03629cc55a",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-8-0.json",
+      "blob": "43bb8922d96898cf9a086b8d113ba904d4fd4aad",
+      "sha256": "0f7fddf546e2121629403cb9098fc1d8685b2037850b0bb58fb089483b65f4ae",
+      "bytes": 7066
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-8-1.json",
+      "blob": "ed9c2fa6cc9e3137d5421033241c8b78515fbc73",
+      "sha256": "d25f4ce630846a7c5ae478680e87b47814cc192120eb9e1169510c44b8db24c8",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-9-0.json",
+      "blob": "a40b68a847d03cd3841ad6be058dec0e7ad87701",
+      "sha256": "7d21591793148d338894d0ee9e8dfbc3d7d34b84e2132bca0449383471b252e3",
+      "bytes": 5805
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/red-row-portable-story-read-export-linux-integration-001-9-1.json",
+      "blob": "0609e5f74fee64a5d32844dfa6ee64174f6bb0ba",
+      "sha256": "f6abcc645298da2e614402cb7a10c65391705d48b6dcef254d9be8081aa741dd",
+      "bytes": 145
+    },
+    {
+      "path": "specs/1553-portable-local-storage/spec.md",
+      "blob": "a65f8fe7d5d2e68812f3f246e0c9672ae290ae42",
+      "sha256": "6bbbbc5cd5253cbb53e95646690b257def7c0a574dd65d0fdf20a0a8693d84da",
+      "bytes": 75087
+    },
+    {
+      "path": "specs/1553-portable-local-storage/storage-migration-inventory.md",
+      "blob": "e99c795092ce2c07a50126617ecdaace9eb95f8f",
+      "sha256": "58cd598a690283ac3c5151e3f6b84b2385a6c89b26c7916a9b162ea530ff82e6",
+      "bytes": 64570
+    },
+    {
+      "path": "specs/1553-portable-local-storage/tasks.md",
+      "blob": "4883de9bcbb800a1b2576a27953c607d06a6573d",
+      "sha256": "d9641e12889c04cd3affe21781a20976512c703243506e268d0cd10a09880f5b",
+      "bytes": 104846
+    },
+    {
+      "path": "tests/categories.json",
+      "blob": "93a680cfa4e33b91b59eee6854809b4746f9adc5",
+      "sha256": "5b2cbcec13a4148723be4a0aebbce6aa4d3a612d92ed25eb046513d2912fc46c",
+      "bytes": 1344483
+    },
+    {
+      "path": "tests/selection.json",
+      "blob": "0207aca82be2d6d5546492187ea86264625da339",
+      "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1",
+      "bytes": 44398
+    }
+  ],
+  "verifiedStoredAndExpandedArtifacts": 70,
+  "frozenSourcesFromGitHub": [
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "sha256": "085188b7382511b7608daa93d30c3be227180f8953574b35f4f9cd3e839d721b"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "sha256": "792c74d2d95396816d539128e7e2b95afa3fb66fce9de2c07b203461b83b4de3"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+      "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.IntegrationTests/StoryReadExportAdmissionTests.cs",
+      "sha256": "39a3e6e500256c5420e6677c6f3253f82c29add6afbdc5252cecdcb8ac614d40"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+      "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs",
+      "sha256": "7cc018b4ce253d7473be08a5bba89660dded5d587709fe61c7f287f802ec37c0"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+      "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs",
+      "sha256": "19edb1f605a0878de4f4351f5eea32425d8ae357dd37a296c1320b7e3ada1a1b"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "tests/categories.json",
+      "sha256": "5b2cbcec13a4148723be4a0aebbce6aa4d3a612d92ed25eb046513d2912fc46c"
+    },
+    {
+      "source": "68f267b6213bbc7c2fd542aa2591f04a981be4ac",
+      "path": "tests/selection.json",
+      "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "sha256": "9f2980aa35b6306198e5ef87056005a3734927204924b8d96d24abf3728b419f"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "sha256": "ac0e110db4b6c8ed1186687fdca6b90fa979f58951066ffd777cb7d7b6a90b94"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+      "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.IntegrationTests/StoryReadExportAdmissionTests.cs",
+      "sha256": "39a3e6e500256c5420e6677c6f3253f82c29add6afbdc5252cecdcb8ac614d40"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+      "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs",
+      "sha256": "7cc018b4ce253d7473be08a5bba89660dded5d587709fe61c7f287f802ec37c0"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+      "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs",
+      "sha256": "19edb1f605a0878de4f4351f5eea32425d8ae357dd37a296c1320b7e3ada1a1b"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "tests/categories.json",
+      "sha256": "5b2cbcec13a4148723be4a0aebbce6aa4d3a612d92ed25eb046513d2912fc46c"
+    },
+    {
+      "source": "a5d9684e426d1b5d0d1da8a7f0df5bba3ecb6132",
+      "path": "tests/selection.json",
+      "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "sha256": "9f2980aa35b6306198e5ef87056005a3734927204924b8d96d24abf3728b419f"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "sha256": "ac0e110db4b6c8ed1186687fdca6b90fa979f58951066ffd777cb7d7b6a90b94"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "sha256": "6346c115661ec1537ee830fcc093e795d9349740f95d4d60416a50a0ca20a76a"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "sha256": "e2f0ab5e1eb53718e5870d1b7c7d4e0d9cb921955e1d6a9f8d274f2711a03a68"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c9005bfb3ba5238c59953409ec0123429e712334127abb1fbb8eeee1cfbcf060"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Core/LocalSettingsPreparation.cs",
+      "sha256": "16be91c521661274b2d7f06883f59c678f831d66b96bba663c71adaeca5a306e"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.IntegrationTests/StoryReadExportAdmissionTests.cs",
+      "sha256": "39a3e6e500256c5420e6677c6f3253f82c29add6afbdc5252cecdcb8ac614d40"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+      "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.GeneralPanels.cs",
+      "sha256": "7cc018b4ce253d7473be08a5bba89660dded5d587709fe61c7f287f802ec37c0"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+      "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.cs",
+      "sha256": "19edb1f605a0878de4f4351f5eea32425d8ae357dd37a296c1320b7e3ada1a1b"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "tests/categories.json",
+      "sha256": "5b2cbcec13a4148723be4a0aebbce6aa4d3a612d92ed25eb046513d2912fc46c"
+    },
+    {
+      "source": "c92f24327e1fd399c9afab444205c28987d6e24b",
+      "path": "tests/selection.json",
+      "sha256": "42514e00621c7444ca996715023e348c54efa055ca04f8085ad213b19d1a65d1"
+    }
+  ]
+}

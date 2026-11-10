@@ -1,0 +1,11 @@
+{
+  "kind": "ROOT_NAMED_FRESH_PRODUCT_PREPARATION_ACTIVATION",
+  "actualSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "pins": 55,
+  "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-f766d9d0-20261017.json",
+  "controller": "/tmp/t179pd3e-product-preparation-run.py",
+  "controllerSha256": "dc95995b1ed3c2c79dca3dc09906bdcb56547a018b9a7cb3d1499b55ed10cadd",
+  "scope": "Exactly once fresh selectedBOTH PlanOnly without NoBuild;6owners20methods47 planned; ZERO test executions. Assert4fixture namespaces empty first. Preserve any failure, no retries. Source reviewer may inspect frozen WIP concurrently but final SOURCE needs completed fresh prep. Save raw+recovery before SOURCE final verdict/actual activation.",
+  "utc": "2026-10-17T18:20:50.202723+00:00"
+}

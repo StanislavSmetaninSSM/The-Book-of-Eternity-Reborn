@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "8ee1d6c3321d49c2a89170cf36513276e43cfad8",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category guardian-musings-publication",
+  "Status": "6 specific raw negative PASS / 10 preparation FAIL; 16 complete; 55.3618455s",
+  "Scope": "Strict shared/current guardian prerequisites Resolved. Positive refresh reaches normalizer guardian-project backup requirement; empty caller mapping refuses before completion. Not behavioral publication RED; no consumer qualification.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "afeaf162170decb025db4638eed5f74aeedb5d3cbbfbd70e8c3c6daf28d11ad5",
+      "RawBytes": 2193
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "29cb1b2040c9d6555a8b419654744a9259e5d7df118bb605b20f504f60dc945b",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "0855411565b37306e95544d84d7611ad4c12ae3f68627d53ab4329970b6d2dcf",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "a5c7ce47bc2b3bbe55ddf031509e266ecf31b0f1d97efd536a29bab40ef7151c",
+      "RawBytes": 1697608
+    },
+    {
+      "Path": "runner/guardian-musings-publication-integration-001.trx.gz",
+      "RawSHA256": "07eb12772904f6e35cdf6661eb9b125396a70bd99d49609c4769335b40ebd7ea",
+      "RawBytes": 100906
+    }
+  ]
+}

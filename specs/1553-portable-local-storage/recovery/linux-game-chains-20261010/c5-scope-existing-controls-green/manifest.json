@@ -1,0 +1,27 @@
+{
+  "SourceSHA": "357b2aa7c6fd35b929f0750f53b22904077758f6",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-original-decoded-state-controls -NoBuild -TimeoutMinutes 5",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-original-decoded-state-controls-integration-001.trx.gz",
+      "RawSHA256": "cf422e854d54666758c62580eb16f0656a8f7e5101ed17da76d0cd8bf881ae22",
+      "RawBytes": 14456
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "9363dd7e04f8b9a7c80cc7b684fa7e1595c3e7b457dcbd601143027a062b4995",
+      "RawBytes": 1620585
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "3ea57866fbea427919b8040f5c80d8286d563c8c3a270d7f4e193071b2f4d425",
+      "RawBytes": 1878
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "7e69d21e20dd0a50683d14f0a7655d35c8ac5ed6221d003ffeba876cbe6701ed",
+      "RawBytes": 1474
+    }
+  ]
+}

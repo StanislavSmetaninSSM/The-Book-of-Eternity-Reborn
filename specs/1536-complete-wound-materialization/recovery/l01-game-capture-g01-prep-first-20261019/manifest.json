@@ -1,0 +1,238 @@
+{
+  "kind": "G01_FIRST_FRESH_INTEGRATION_ZERO_PREP_EVIDENCE",
+  "source": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "files": [
+    {
+      "path": "phase/bind-integration.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-integration.record.json",
+      "bytes": 758,
+      "sha256": "af60595fe1347598f2c980a7005376efd148a3a4a1f2d79f6325a13ed5c688bd"
+    },
+    {
+      "path": "phase/bind-integration.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-integration.started.json",
+      "bytes": 522,
+      "sha256": "54ce1ab63a98bc3935d84f6748a953810c50ef68a355543d8f3d6211435ebe9b"
+    },
+    {
+      "path": "phase/bind-integration.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-integration.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/bind-integration.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-integration.stdout",
+      "bytes": 551,
+      "sha256": "71bf2b325c6e491da42ce8d1eb0e115b1c655eecc55a89de77f2071c246d57e6"
+    },
+    {
+      "path": "phase/bind-unit.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-unit.record.json",
+      "bytes": 736,
+      "sha256": "67a796d6d128147c5ddb089c6ff7c9f2ac84a695d6471ac4642c56a10f5e3aaf"
+    },
+    {
+      "path": "phase/bind-unit.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-unit.started.json",
+      "bytes": 500,
+      "sha256": "081b1dd0954224da8ff6ff44dcfff2480eddef00be2b61d6d62bbd46cd99bc6f"
+    },
+    {
+      "path": "phase/bind-unit.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-unit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/bind-unit.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/bind-unit.stdout",
+      "bytes": 496,
+      "sha256": "02057f7095b9afc0c62c23ae578b943f6b7e10378e3242f53fdd3c6ade841a22"
+    },
+    {
+      "path": "phase/catalog.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/catalog.record.json",
+      "bytes": 654,
+      "sha256": "aa00109913eed4bf5357efafe2c17dc27dd2e0112c58c55b21dc07f8f31b365f"
+    },
+    {
+      "path": "phase/catalog.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/catalog.started.json",
+      "bytes": 418,
+      "sha256": "0ad46aeb254fc315c035fd1b3d20bc242f71d988f53ff7f589c546d604debf12"
+    },
+    {
+      "path": "phase/catalog.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/catalog.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/catalog.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/catalog.stdout",
+      "bytes": 714,
+      "sha256": "341d9741eb86b5d9c0348236aa085c711af4503aee4f46208a0a3fd573743f2e"
+    },
+    {
+      "path": "phase/fresh-integration-build.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/fresh-integration-build.record.json",
+      "bytes": 856,
+      "sha256": "7deeaada8231d78e26df03b62b73b46ff1a85cf720a819d2eb17ddb7b6b4b294"
+    },
+    {
+      "path": "phase/fresh-integration-build.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/fresh-integration-build.started.json",
+      "bytes": 620,
+      "sha256": "069e6f8df3ba2d8fbbf54d54ba656f52ef5e050620c95ad44ca68d56c6c63cbb"
+    },
+    {
+      "path": "phase/fresh-integration-build.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/fresh-integration-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/fresh-integration-build.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/fresh-integration-build.stdout",
+      "bytes": 154451,
+      "sha256": "c675d1fff7cf66788fc5aa39537a87d0bb85db56eac476547d3fd63e3b13ff9e"
+    },
+    {
+      "path": "phase/imports-integration.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-integration.record.json",
+      "bytes": 694,
+      "sha256": "bc207d97a23a86a858637053fa11a8765e4aed36d3bfa49d8473289831f1afa2"
+    },
+    {
+      "path": "phase/imports-integration.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-integration.started.json",
+      "bytes": 457,
+      "sha256": "984e8c6f75fa813359e42707f1d5c35b7e7ab5f061749336e48815af2fd32416"
+    },
+    {
+      "path": "phase/imports-integration.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-integration.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/imports-integration.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-integration.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/imports-unit.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-unit.record.json",
+      "bytes": 665,
+      "sha256": "b1aa6a3a05406abca5c21620a3839635e6b4ad777d7312953c339de845830b22"
+    },
+    {
+      "path": "phase/imports-unit.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-unit.started.json",
+      "bytes": 429,
+      "sha256": "d439592b5a95c4442b133d5c4e9dc0ec1d2bbb4109cd7659502c28806ad197d3"
+    },
+    {
+      "path": "phase/imports-unit.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-unit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/imports-unit.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/imports-unit.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/integration.project.xml",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/integration.project.xml",
+      "bytes": 1605997,
+      "sha256": "8d455916e963758671d8a0764e51e9c460cd1875c64c1d43f4d43915cb66c77b"
+    },
+    {
+      "path": "phase/plan.record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/plan.record.json",
+      "bytes": 710,
+      "sha256": "4655f070d1ef86855645216e00edf40fd40d5ceb7c9a96856f7c845b1afe7783"
+    },
+    {
+      "path": "phase/plan.started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/plan.started.json",
+      "bytes": 473,
+      "sha256": "d850fab2df47f677ee30319637f03aa5bca17e3bf722320a08002465c85243c5"
+    },
+    {
+      "path": "phase/plan.stderr",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/plan.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "phase/plan.stdout",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/plan.stdout",
+      "bytes": 1392,
+      "sha256": "0189d9b649971a6105ead1244a7b5b503d635677a6cc85d36f2e15487af4b391"
+    },
+    {
+      "path": "phase/record.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/record.json",
+      "bytes": 277221,
+      "sha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4"
+    },
+    {
+      "path": "phase/started.json",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/started.json",
+      "bytes": 589,
+      "sha256": "0bc2f7027bf2300b3068fc79560e924894c5bcc34b18e50d4948490c1a663af3"
+    },
+    {
+      "path": "phase/unit.project.xml",
+      "originalPath": "/tmp/g-a91f6d2c7b30/prepare/unit.project.xml",
+      "bytes": 1545962,
+      "sha256": "858eb619e0024104267e7b165c15c11fd5506fc22777da95ac0bc65d521db242"
+    },
+    {
+      "path": "catalog/catalog-audit.json",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002903-391-128742-26d28bd90adf40a3991b67e623bfba46-categories/catalog-audit.json",
+      "bytes": 103,
+      "sha256": "fc0db80502c3e490323c35cbf5d6b6aa60b34138d523dfb44c577a0696c57e97"
+    },
+    {
+      "path": "catalog/dotnet-test.log",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002903-391-128742-26d28bd90adf40a3991b67e623bfba46-categories/dotnet-test.log",
+      "bytes": 3424889,
+      "sha256": "8929c3190260eb9ee68ca14c8514d417480037d7dea3f0a22baae28c3aae5018"
+    },
+    {
+      "path": "catalog/summary.json",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002903-391-128742-26d28bd90adf40a3991b67e623bfba46-categories/summary.json",
+      "bytes": 1405,
+      "sha256": "15fbc2c58174bc4611a415c535ff929c79106ce03db78bda425054c756f69bc9"
+    },
+    {
+      "path": "plan/dotnet-test.log",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002928-112-128911-e195e2456f684026b2a703f2012db9c4-categories/dotnet-test.log",
+      "bytes": 1695123,
+      "sha256": "87fb245838d4d89167c00ccad11b424c6381c74f5941e175caa8d6175cf50ac4"
+    },
+    {
+      "path": "plan/plan.json",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002928-112-128911-e195e2456f684026b2a703f2012db9c4-categories/plan.json",
+      "bytes": 1210,
+      "sha256": "984838e790b6ecd8db3562716854cab7099e69e6c02e9c133cee23edad178dcf"
+    },
+    {
+      "path": "plan/summary.json",
+      "originalPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-002928-112-128911-e195e2456f684026b2a703f2012db9c4-categories/summary.json",
+      "bytes": 1398,
+      "sha256": "1d8763fd85832ac9d81e080b19ba5eae3fb3bd5203d9cd5e1203d711f085c3a3"
+    }
+  ],
+  "recordSha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4",
+  "privateBinClosuresNotPublished": true,
+  "gameCases": 0,
+  "apiRequests": 0
+}

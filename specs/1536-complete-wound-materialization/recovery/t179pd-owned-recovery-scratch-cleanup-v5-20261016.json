@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-16T19:14:20.765717+00:00",
+  "reason": "Retire only historical 4e expanded-design and f13 HS01RED clean reconstructable clones after final APD01 and HS01 independent reviews; preserve their committed reports/receipts/raw evidence and all52 dependencies in newer f71/fbc recoveries.",
+  "removed": [
+    {
+      "directory": "/tmp/f1-r2-automatic-policy-design-accepted-expanded-github-20261016",
+      "head": "4eab2a1ce9832306a44534c8e03f6c05cf7de5b4",
+      "count": 1166,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-policy-design-accepted-expanded-recovery-20261016.json",
+      "receipt_sha256": "dc82a145dd1ba3014ef168cf7fb9fb7c492d234e5bf570f3f25c1b25e88f1dba",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "fbcf407c2755d4ce063a35184e8011adc03b2840",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-absence-hs01-red-github-20261016",
+      "head": "f13fba34c73c61eedff413c32723d2703d95fc55",
+      "count": 1124,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-hs01-red-recovery-20261016.json",
+      "receipt_sha256": "213a5f667e6a2353ecb00e9e4117819ab1c28cdf87e855415686366d57cc9f75",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "fbcf407c2755d4ce063a35184e8011adc03b2840",
+      "removed": true
+    }
+  ],
+  "preserved": "writer/allreceipts/reports/rawactualevidence/currentf71+fbcclones/3fdacceptedreaderclone/allremoterefs",
+  "no_product_or_security_change": true,
+  "no_remote_branch_deletion": true
+}

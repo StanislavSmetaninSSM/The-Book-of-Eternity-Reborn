@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "portable-ordinary-publication-outcomes",
+    "portable-ordinary-outcome-notice",
+    "portable-browser-rollback-outcomes"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "22b465e1ef2e926016e090b8f2bf428580f75482",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0549419,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0454282,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0836378,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 41.6440168,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 10.7712682,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0058174,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:59.8061718",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 19,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-browser-rollback-outcomes-integration-001",
+      "portable-ordinary-outcome-notice-integration-002",
+      "portable-ordinary-publication-outcomes-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

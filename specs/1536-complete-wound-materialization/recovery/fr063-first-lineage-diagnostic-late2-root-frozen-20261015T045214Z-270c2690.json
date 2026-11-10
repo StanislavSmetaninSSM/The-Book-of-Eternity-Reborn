@@ -1,0 +1,55 @@
+{
+  "source": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+  "compileSource": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+  "packet": "/workspace/boe-cloud-tools-20261014/fr063-first-lineage-diagnostic-late2-outcome-frozen-e666887b-20261015T045156Z-cd75631b",
+  "manifestSha256": "6cf800c02aa9a791cd2c65c22722efdadc7305d3659e2cf2d4e934d94a211f04",
+  "artifacts": 49,
+  "actualNative": {
+    "launch": "efb197",
+    "session": 32450,
+    "completion": "7451fe",
+    "exitCode": 1
+  },
+  "freezeNative": "b53e13 session58530/4953bb exit0",
+  "actual": {
+    "run": "20261015-044939-321-655836-ed2e37fde9c14311ac167e5228afe61a-categories",
+    "wallTime": "00:02:04.3600557",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 161,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1e4dc3b7280d43be849bb4f89a638ad3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-12722fc2624641adb8b8e813c3b8c003",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true
+  },
+  "freshPrerequisites": "BOTH127.9590702s/Plan4.9942733s/catalog5.3063234s allnative0/0exec/Valid746-11588",
+  "rawFrozenBeforeDiagnosisOrMetadata": true,
+  "boundedReadback": "/workspace/boe-cloud-tools-20261014/fr063-first-lineage-diagnostic-bounded-readback-20261015T045214Z-270c2690.json",
+  "boundedReadbackSHA256": "6542e1a900ee4fd52fd307e45dafaa802531d31522a7809079bba341e2361a3b",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "consumerFixRuntime": "HELD",
+  "later12": "UNRUN"
+}

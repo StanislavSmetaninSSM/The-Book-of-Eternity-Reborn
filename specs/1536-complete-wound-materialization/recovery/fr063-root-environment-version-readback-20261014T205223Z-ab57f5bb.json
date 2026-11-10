@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-14T20:52:23.345933+00:00",
+  "checkpoint": "ac9bc9cf9a70fabb9ee31cb3087a346395480fbc",
+  "environment": "same selected freshcloud Linux, notHOME-PC",
+  "host": "28b8447448e8",
+  "bootId": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+  "os": "Debian13.6",
+  "kernel": "Linux6.18.44x86_64",
+  "sourceEnv": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "versions": {
+    "dotnetSDK": "10.0.401",
+    "dotnetASPNetRuntimes": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "powershell": "7.6.6",
+    "node": "24.19.0",
+    "python": "3.12.14",
+    "git": "2.52.0"
+  },
+  "operations": [
+    {
+      "chunkId": "ce2104",
+      "exitCode": 0,
+      "commands": [
+        "source existingenv.sh",
+        "dotnet --version",
+        "dotnet --list-runtimes",
+        "pwsh PSVersionTable query"
+      ]
+    },
+    {
+      "chunkId": "10eb68",
+      "exitCode": 0,
+      "commands": [
+        "node --version",
+        "python3 --version",
+        "git --version"
+      ]
+    }
+  ],
+  "projectExecution": "UNRUN; version queries only",
+  "qualification": "UNQUALIFIED"
+}

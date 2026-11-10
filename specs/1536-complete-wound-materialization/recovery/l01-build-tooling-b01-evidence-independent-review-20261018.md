@@ -1,0 +1,13 @@
+# B01 first build-only evidence — ACCEPT
+
+Reviewed carrier `c20a9cf0bcb29c4dcea8853e77b390eeb7c50611`; actual source `d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7`. **68 independent checks passed; no findings.** The four original files, saved/restored archive, exact admitted runner, five private primary DLL hashes and all 899 unchanged normal-bin files match.
+
+The one isolated five-project unit build returned native/controller **0**, joined, with no observer errors: **282.271 s controller wall**, build-reported **281.67 s**, **94 warnings / 0 errors**. It stayed within the original 600-second limit. Tests, game, fixture targets, synthetic runs and diagnostic requests were zero. The terminal own-session/tool observations were empty; 35 zombie entries and five executable fallbacks are retained as dated visibility limits.
+
+131 samples cover ten PID/birth identities; maximum observation gap is 5.552 s. The observed individual/summed RSS maxima are 2,918,567,936 / 3,562,098,688 bytes, not exclusive physical peaks. Waited-child CPU includes preflight Git. The shared mounted cgroup reports zero memory-event increments and 141.044 s accumulated throttling, which is neither build-exclusive paused time nor proof of old-run exhaustion. Project timings overlap. `CoreCompile` is a **target** summary (270576 ms/5 calls), while `Csc` is a **task** summary (270535 ms/5 calls).
+
+This establishes current isolated unit-build capability. It does not identify the cause of original catalog124/unit137, establish general environment health, or require migration to a fresh cloud. The changed private-output/server-disabled/local-feed conditions are not a controlled single-variable comparison. Private DLLs remain private; source/log recovery does not claim their exact binary restoration.
+
+The next finite recommendation is **PLAN ONLY**: review a coherent fresh BOTH/catalog ZERO design using a new private artifacts namespace and the demonstrated build conditions, explicitly binding both project outputs to discovery and later NoBuild PlanOnly. Preserve the aggregate 600-second deadline; no guarantee of fit, budget reset, B01-output promotion or blind retry is justified. Any necessary test-tooling path change requires SOURCE review before command admission, then original-result preservation and independent PREP.
+
+**The one B01 permit is consumed. No build, catalog/PREP, synthetic or gameplay release follows.** D01 PREP remains held; L01 remains52/57, old66529UNKNOWN and all original failures/platform/broader holds remain unchanged. The JSON report binds exact source, archive, receipt and checker hashes. No new process observation or native work was performed by this review.

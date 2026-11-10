@@ -1,0 +1,828 @@
+{
+  "kind": "T197_DEP_L_INDEPENDENT_DESIGN_DISCUSSION_REVIEW",
+  "status": "READY_FOR_CONDITIONAL_DISCUSSION_UNACCEPTED_BLOCKED",
+  "created_utc": "2026-10-16T09:57:08.853356+00:00",
+  "reviewed_commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+  "base_commit": "49ea7d7cbde45a9793502f6beacf508fd31c7688",
+  "candidate_parent": "49ea7d7cbde45a9793502f6beacf508fd31c7688",
+  "author_source_commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+  "observed_checkout_head_unreviewed": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+  "repository": "/workspace/The-Book-of-Eternity-Reborn",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "reviewer": {
+    "agent": "/root/t197_independent_review",
+    "configured_model": "gpt-6-astra",
+    "configured_reasoning_effort": "xhigh",
+    "original_fork_turns": "none",
+    "configuration_provenance": "Explicit parent confirmation of actual initial spawn invocation",
+    "backend_telemetry": "UNKNOWN_NOT_OBSERVABLE",
+    "authored_proposal": false,
+    "subagents": "NONE"
+  },
+  "authorization": {
+    "scope": "T197 DESIGN only; parent sole repository writer",
+    "reported_later_user_approval": "07:01:11 UTC Sentinel_f3e48da025808191bdb46fab2e0b960f хорошо, parent-reported staged F1-R2/D9–D11 plus parallel T197 DESIGN",
+    "approval_independently_verified_from_original_conversation": false,
+    "report_grants_implementation": false,
+    "routine_d11_missing_api_implies_new_grant": false,
+    "depc_gc_accepted": false
+  },
+  "diff": {
+    "scope": "Complete candidate-versus-parent diff, exactly five documentation paths",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--full-index",
+      "49ea7d7cbde45a9793502f6beacf508fd31c7688",
+      "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "sha256": "58deee74d5eac43f5a07bc4a617e09456eee391ab7bef5b52b5064fe0dcf57c1",
+    "bytes": 57688,
+    "paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "diff_check_returncode": 0
+  },
+  "candidate_document_pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "git_blob": "9bda12ea65c215c066001a18d6de3878670ec8c2",
+      "sha256": "8a04a1aedcf7c05d0aabea5c073f2fd5fcbbe29c61367cde6b71f0be87925219",
+      "bytes": 65921
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "git_blob": "f82922aa5d1f499eb5f8b8d8ac04e021d5be1337",
+      "sha256": "b4ba41d92398dc5d6b2655133ff9a857476a5a119672a44d41304f71670f08c9",
+      "bytes": 1929633
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+      "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "git_blob": "efe47ad99256b9f9ec5602d3ddcc5cb7ef143e17",
+      "sha256": "6272be6527da1dfb069307f31044f72ddaf604450c1e566692dfbdc5b39e68c7",
+      "bytes": 19024
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+      "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "git_blob": "3e6a900a32f988a1cfe99cb7b4ad8863ca534465",
+      "sha256": "a2f2076f09cc9913df3101fe00029209b3cf4aae2ab5568335a2322191e8697c",
+      "bytes": 29810
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+      "git_blob": "8758649012330b07b7133d78b21cf2b297cb59cc",
+      "sha256": "400695ff657e16a6212fa96e826312595e60ee9d2478b10083bf5b83e850fc03",
+      "bytes": 1403216
+    }
+  ],
+  "source_and_context_pins": [
+    {
+      "path": "AGENTS.md",
+      "author_source": {
+        "path": "AGENTS.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "bytes": 11662
+      },
+      "reviewed_candidate": {
+        "path": "AGENTS.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "bytes": 11662
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "author_source": {
+        "path": "docs/development-workflow.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "bytes": 66432
+      },
+      "reviewed_candidate": {
+        "path": "docs/development-workflow.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "bytes": 66432
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "author_source": {
+        "path": ".specify/memory/constitution.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "bytes": 14081
+      },
+      "reviewed_candidate": {
+        "path": ".specify/memory/constitution.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "bytes": 14081
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "author_source": {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "c43d0c7cfa989b1c8d0d729a5f11442bad3c568f",
+        "sha256": "f8f37d80cc8297e2db450b82b7774a1cd48dd3badc1410f72fe4a6cde911ae56",
+        "bytes": 1927338
+      },
+      "reviewed_candidate": {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "f82922aa5d1f499eb5f8b8d8ac04e021d5be1337",
+        "sha256": "b4ba41d92398dc5d6b2655133ff9a857476a5a119672a44d41304f71670f08c9",
+        "bytes": 1929633
+      },
+      "unchanged_from_author_source": false,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "author_source": {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "0061557eb7096199570d9654fba027fb4a038217",
+        "sha256": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+        "bytes": 92738
+      },
+      "reviewed_candidate": {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "0061557eb7096199570d9654fba027fb4a038217",
+        "sha256": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+        "bytes": 92738
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "author_source": {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "0a1f5f70727526673b654caeffffb7ee9e9250b1",
+        "sha256": "be964590808cb0ea90e76e8ad9b83ccfe606ff59577072b5871b36249e78597a",
+        "bytes": 65068
+      },
+      "reviewed_candidate": {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "9bda12ea65c215c066001a18d6de3878670ec8c2",
+        "sha256": "8a04a1aedcf7c05d0aabea5c073f2fd5fcbbe29c61367cde6b71f0be87925219",
+        "bytes": 65921
+      },
+      "unchanged_from_author_source": false,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+      "author_source": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "53e13fa361d3237f9f5f407cc6ab35ab15f59233",
+        "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+        "bytes": 16372
+      },
+      "reviewed_candidate": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "53e13fa361d3237f9f5f407cc6ab35ab15f59233",
+        "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+        "bytes": 16372
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "author_source": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+        "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+        "bytes": 15874
+      },
+      "reviewed_candidate": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+        "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+        "bytes": 15874
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "8b920d6026268123d80cc65e1e178eb558b7b075",
+        "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+        "bytes": 67034
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "8b920d6026268123d80cc65e1e178eb558b7b075",
+        "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+        "bytes": 67034
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "460dffbea3364bbc98e2f6011668554b40bd907d",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982",
+        "bytes": 19635
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "460dffbea3364bbc98e2f6011668554b40bd907d",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982",
+        "bytes": 19635
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+        "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+        "bytes": 27722
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+        "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+        "bytes": 27722
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+        "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+        "bytes": 241343
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+        "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+        "bytes": 241343
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+        "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a",
+        "bytes": 15169
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+        "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a",
+        "bytes": 15169
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+        "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+        "bytes": 6154
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+        "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+        "bytes": 6154
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+        "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+        "bytes": 33582
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+        "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+        "bytes": 33582
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+        "sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
+        "bytes": 36016
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+        "sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
+        "bytes": 36016
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "f8a990edc821b0758b03145a4cacbf27710d1b93",
+        "sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+        "bytes": 25187
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "f8a990edc821b0758b03145a4cacbf27710d1b93",
+        "sha256": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+        "bytes": 25187
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "cf1161032cd7b8973f778a9e21bc64362496e3c4",
+        "sha256": "3d831a22f3fc3bacfbf51f6bc4126d2ff35e8b7a05f24abfe9b9e2e8a07fe884",
+        "bytes": 8520
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "cf1161032cd7b8973f778a9e21bc64362496e3c4",
+        "sha256": "3d831a22f3fc3bacfbf51f6bc4126d2ff35e8b7a05f24abfe9b9e2e8a07fe884",
+        "bytes": 8520
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionProtocol.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionProtocol.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "ab442c7069330264855e0c1b4bd4eafe4b9113b7",
+        "sha256": "8633c78bf0c31039848e4030d433960f1e2e94e9195f79db534cd0d894413f57",
+        "bytes": 740
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionProtocol.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "ab442c7069330264855e0c1b4bd4eafe4b9113b7",
+        "sha256": "8633c78bf0c31039848e4030d433960f1e2e94e9195f79db534cd0d894413f57",
+        "bytes": 740
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+      "author_source": {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "0e7a7d002419e59c87f2797feb8aeb63a443899c",
+        "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43",
+        "bytes": 9114
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "0e7a7d002419e59c87f2797feb8aeb63a443899c",
+        "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43",
+        "bytes": 9114
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.LoadLifecycle.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.LoadLifecycle.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "8e665f39dc36e0107319cb702df8993aeab5569e",
+        "sha256": "ba8bc0a64ac59084ea0863925c2348c6fdfc1cc742a4c89ed2020f399a7475cf",
+        "bytes": 2634
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.LoadLifecycle.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "8e665f39dc36e0107319cb702df8993aeab5569e",
+        "sha256": "ba8bc0a64ac59084ea0863925c2348c6fdfc1cc742a4c89ed2020f399a7475cf",
+        "bytes": 2634
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
+        "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
+        "bytes": 167823
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "28eb2e6f689a3e32a516197c0e94d4256cb6d996",
+        "sha256": "d3abcf0564e40cbaf4d1775d8678df0f2e7ecf8dce333dc750ba0d2c1016ceed",
+        "bytes": 167823
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "b393b154604c43e797a814486a113ae01cf00689",
+        "sha256": "3af0179ee02e06e17ef35cd2acc998feeafe8ed1884a7209b62148387376631d",
+        "bytes": 56398
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "b393b154604c43e797a814486a113ae01cf00689",
+        "sha256": "3af0179ee02e06e17ef35cd2acc998feeafe8ed1884a7209b62148387376631d",
+        "bytes": 56398
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+        "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+        "bytes": 112701
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+        "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+        "bytes": 112701
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.LoadLifecycle.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.LoadLifecycle.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "ad12b915f110d0acec448d13c7b38695aeeaf0dc",
+        "sha256": "2469f744f25cba8197c927b50a4f52c782dc16627acccc532e4a031d509a8306",
+        "bytes": 8906
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.LoadLifecycle.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "ad12b915f110d0acec448d13c7b38695aeeaf0dc",
+        "sha256": "2469f744f25cba8197c927b50a4f52c782dc16627acccc532e4a031d509a8306",
+        "bytes": 8906
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "1b4c79829f2d0dc889862cd60ac556ab60767152",
+        "sha256": "519127ac828a9dd63fecf814afe6505a1dc4da7ca8c20dfcfea8ebb1e9a5ed28",
+        "bytes": 36707
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "1b4c79829f2d0dc889862cd60ac556ab60767152",
+        "sha256": "519127ac828a9dd63fecf814afe6505a1dc4da7ca8c20dfcfea8ebb1e9a5ed28",
+        "bytes": 36707
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
+        "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
+        "bytes": 30336
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
+        "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
+        "bytes": 30336
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "891790255c832f7c7b3685043cb3dde3670a6c1e",
+        "sha256": "1b550662c9757f7804940a69e424409f4c5a453f67eff019bb35b23c204895cc",
+        "bytes": 3567
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/WebUi/BrowserPendingTurnInspector.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "891790255c832f7c7b3685043cb3dde3670a6c1e",
+        "sha256": "1b550662c9757f7804940a69e424409f4c5a453f67eff019bb35b23c204895cc",
+        "bytes": 3567
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+        "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+        "bytes": 5388
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+        "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+        "bytes": 5388
+      },
+      "unchanged_from_author_source": true,
+      "role": "inherited governance/context or affected source inspection"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "author_source": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "commit": "f130982be486ac997d32aa7d2701b83e26b8071c",
+        "git_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+        "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+        "bytes": 24413
+      },
+      "reviewed_candidate": {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "commit": "3b7c5c547c0487e6300f7c3ae5fa96827abaf516",
+        "git_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+        "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+        "bytes": 24413
+      },
+      "unchanged_from_author_source": true,
+      "role": "additional inspected source: BeginStop drain and ConfirmSettledStop, lines 295-354"
+    }
+  ],
+  "historical_author_pin_verification": {
+    "count": 29,
+    "all_git_blob_sha256_byte_lengths_match": true,
+    "unchanged_at_reviewed_candidate_count": 27,
+    "changed_paths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    ],
+    "extra_inspected_source_pins": 1
+  },
+  "confirmed_material_defects": [],
+  "minor_metadata_observations": [
+    {
+      "id": "O-L1",
+      "introduced_by_this_diff": false,
+      "subject": "DEP-I reviewed heading/tasks coexist with stale independent-review-pending text in plan bullet and canonical link",
+      "blocks_depl_discussion": false,
+      "requested_action": "Reconcile in parent metadata carrier; parent notified"
+    }
+  ],
+  "remaining_questions": [
+    {
+      "id": "Q-L1",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L2",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L3",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L4",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L5",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L6",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    },
+    {
+      "id": "Q-L7",
+      "status": "OPEN_BLOCKS_COMPLETION"
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "L01",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L02",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L03",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L04",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L05",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L06",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L07",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L08",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L09",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L10",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L11",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L12",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L13",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    },
+    {
+      "id": "L14",
+      "status": "UNRUN",
+      "kind": "future responsibility, not discovered test ID"
+    }
+  ],
+  "verdict": {
+    "suitable_for_conditional_discussion": true,
+    "proposal_amendment_required_before_discussion_by_material_findings": false,
+    "complete_dep_l": false,
+    "complete_t197_design_release_prerequisite": false,
+    "transition_qualified": false,
+    "full_target_catalog_complete": false,
+    "new_qte_activated": false,
+    "archive_contract_accepted": false,
+    "lifecycle_grant_accepted": false,
+    "f2_selected": false
+  },
+  "blocked": [
+    "DEP-L",
+    "DEP-C/G-C",
+    "DEP-I",
+    "complete target/member catalogs",
+    "global H2 remaining-work qualification",
+    "H3 source release",
+    "new joint QTE"
+  ],
+  "verification_limits": {
+    "read_only_git_source_document_checks": "PERFORMED",
+    "runtime_build_test_discovery": "NOT_PERFORMED",
+    "all_actual_t197_checks": "UNRUN",
+    "browser_guided_visual_windows_platform": "UNRUN",
+    "unrelated_parent_stage_results_used_as_t197_evidence": false,
+    "network_remote_readback": "NOT_PERFORMED_BY_REVIEWER",
+    "repo_writes_commits_push": "NONE",
+    "prior_reports_modified": false
+  },
+  "final_stop": true,
+  "pending_writes_after_report_completion": false,
+  "markdown": {
+    "path": "/tmp/t197-depl-independent-review-20261016.md",
+    "sha256": "582bc4489d17e20cefa9a7e7b73218ccc3e97dc63ecf050ea58bb654bf4e4ccb",
+    "bytes": 14590
+  }
+}

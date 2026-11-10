@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-observed-original-barrier",
+    "-NoBuild"
+  ],
+  "native_exit": 1,
+  "actual_head": "ce8d80e042f31adbc6ac3921b2b8a1b6c9f847d8",
+  "compiled_source": "9aa339141ec8ebec301b18679aa021d018250b0f"
+}

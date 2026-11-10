@@ -1,0 +1,63 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC2_SOURCE_FEEDBACK_BEFORE_ADMISSION",
+  "checkedUtc": "2026-10-18T17:16:39.585105+00:00",
+  "candidate": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+  "verdict": "HOLD_SOURCE_FOR_EXTERNAL_WRAPPER_NATIVE_OUTCOME_PRIORITY_CORRECTION",
+  "staticBindingCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+    "bytes": 10179,
+    "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+  },
+  "unchanged": {
+    "sourcePins": 101,
+    "productPaths": 23,
+    "qualifiedTargets": 52,
+    "old66529": "UNKNOWN/unavailable",
+    "nativeRunsByReviewer": 0
+  },
+  "findings": [
+    {
+      "id": "WRAPPER_OUTCOME_PRIORITY",
+      "severity": "SOURCE_BLOCKER",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+      "lines": [
+        60,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "evidence": "after=census(after), profile_out.read_bytes(), and status creation/write may throw before the independent controllerExit summary and final return. A controller nonzero can therefore be externally replaced by an observer exception. Original native record is not rewritten, but wrapper return/summary loses declared outcome precedence.",
+      "minimalCorrection": "Retain controller exit immediately; capture post-native observer/status failures separately; independently emit the native result; preserve nonzero native controller exit and explicitly hold zero-native observer failure. Exercise simulated capture/finish/profile-read/status-write/after-census failures with fake child/census/sampler only, one invocation and after-census before finish."
+    },
+    {
+      "id": "CGROUP_ATTRIBUTION",
+      "severity": "EVIDENCE_SCOPE_CONDITION",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+      "lines": [
+        64,
+        152,
+        153,
+        154
+      ],
+      "evidence": "Fixed /sys/fs/cgroup counters have no recorded own/target membership or mount-root mapping. The node is a shared dated observation; target-governing quota/memory scope is not established by these bytes alone.",
+      "minimalCorrectionOrLimit": "Record sufficient read-only membership/mapping plus gaps, or explicitly constrain subsequent interpretation to unattributed shared root-node observations. No target pressure/exhaustion claim without the mapping."
+    },
+    {
+      "id": "CURRENT_LEDGER_POINTER",
+      "severity": "METADATA_ACCEPTANCE_CONDITION",
+      "evidence": "packet.ledger.currentRuntimePointer still names diagnostic1.",
+      "minimalCorrection": "Preserve prior pointer in historicalDiagnostic1LedgerRuntimePointer; current pointer names diagnostic2 SOURCE/PREP/orchestration. Authored ledger bytes unchanged."
+    }
+  ],
+  "positiveReview": [
+    "Missing file now gets stat reprobe; known PID+birth reconciled each scan; task incomplete/disappearance/truncation retained as gaps.",
+    "Exactly one unchanged diagnostic Fact cut1; 220/900, assertions, genuine-child identity and original coverage unchanged.",
+    "New GUID namespace, same cloud/boot, unchanged observer and frozen-root byte/file-set gates; no signal, game lease or process intervention.",
+    "Predeclared accounting windows are descriptive only; no inference of lock ownership from low CPU/futex; user joint three-way stop after one run.",
+    "Writer 25 fake-proc checks bind exact sampler and cover positive identity, CPU ticks, nonce/escape, read denial, disappear/reuse, malformed stat, thread cap and birth race. They do not test wrapper failure paths."
+  ],
+  "utilityHistory": "Prepared static checker ran once successfully. No reviewer native, sampler, wrapper, fake-proc, build, observer or live retained-root execution. An exploratory rg included an absent guessed helper filename; actual helper source is in JointInterfaceCrash.cs and was read directly. No source or outcome change.",
+  "eligibility": "No ZERO or actual admission until corrected saved/recovered external candidate and affected SOURCE verdict."
+}

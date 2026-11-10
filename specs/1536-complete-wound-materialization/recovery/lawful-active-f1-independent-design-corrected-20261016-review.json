@@ -1,0 +1,427 @@
+{
+  "review_type": "Independent affected F1 correction review",
+  "recommendation": "READY_FOR_USER_DISCUSSION",
+  "baseline_sha": "b6ba27556852253df121f6f89a7c394a66d52cd6",
+  "intermediate_reviewed_sha": "62e7de2e9c54e5ca3a87130084a573d5492adffe",
+  "reviewed_sha": "564424a92469555a807f0f77f53002ff1f7e621f",
+  "diff_sha256": "35c60492ffa80ca2e07dad9f5146b62549a4dfe01454be93aef06ef9863a8c51",
+  "diff_command": "git diff --binary b6ba27556852253df121f6f89a7c394a66d52cd6 564424a92469555a807f0f77f53002ff1f7e621f",
+  "completed_at_utc": "2026-10-16T04:58:39.784634+00:00",
+  "model": {
+    "requested": "gpt-6-astra",
+    "requested_reasoning_effort": "xhigh",
+    "configured": "gpt-6-astra",
+    "configured_reasoning_effort": "xhigh",
+    "fork_turns": "none",
+    "configuration_evidence": "Parent confirmed explicit spawn arguments through collaboration message.",
+    "backend_resolution_telemetry": "unavailable; not inferred"
+  },
+  "scope": "F1-D01–F1-D05 and affected dependencies only; no general re-review or implementation qualification.",
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "F1-D01",
+      "status": "resolved_for_design_discussion",
+      "locations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:88",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:117-136",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:800-838",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:907-912",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:972-975",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:123",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:175"
+      ],
+      "evidence": "Named F1 output/time acceptance now covers only narrative/interface/debug and supported remaining-time world_time images, with exact before/submitted/accepted images and child mechanics ack. Parent initial outputBinding/P4 are reconstructed from retained evidence; child output and one additional n+1 row have separate witnesses. Accepted-QTE/D8 remains separate. Progression reads the accepted child time image and only writes schedule/report. FileMapping.cs:62-63 and ProgressionScheduleService.MortalJointBasis.cs:167-185 confirm the cited existing time surface/resolver; the F1 acceptance protocol remains proposed.",
+      "future_coverage": [
+        "F111",
+        "B08 output/time/two-story regression",
+        "B11 cold cleanup proof"
+      ]
+    },
+    {
+      "id": "F1-D02",
+      "status": "resolved_for_design_discussion",
+      "locations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:637-699",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:752-756",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:117-123",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:326-330",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:359-364"
+      ],
+      "evidence": "The design explicitly rejects JointRepairCommonAuthority for ordinary children and adds a normalizer-issued ValidatedPlan|ValidatedEmpty capability. Plan follows genuine ordinary input/build/binding/take; Empty independently proves no required contribution plus a nonempty verified result and receives an atomic output/time+M ack. NoPlan/null/raw DTO cannot issue authority. The true AcceptedMechanics partial, registry, GameResponse/parser/source-kind consumers and distinct F1 cleanup capability are named. AcceptedTurnAuthorityRegistry.cs:227-240,4753-4773 provides the stated ordinary build/take APIs and refuses joint impersonation; parent settlement clears the prior reservation at AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs:107-126. Current ordinary publication is still not claimed atomic. The residual B11 transfer-only/QTE-closure wording at intermediate 62e7de2e was removed by exactly two successor lines at 564424a9; no-offer, ACCEPT and DECLINE now require their own complete proofs.",
+      "future_coverage": [
+        "F112",
+        "B08 real non-QTE/effect-resource-only/validated-empty cases",
+        "B11 F1CompletedCleanupCapability and actual completion only"
+      ]
+    },
+    {
+      "id": "F1-D03",
+      "status": "resolved_for_design_discussion",
+      "locations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:503-568",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:320-330"
+      ],
+      "evidence": "The client-bound closed structural coordinate now contains originBinding, producerKind, sourceOrdinal, operationOrdinal, family and canonical target. One pre-P0 inventory/partition binds committed versus unresolved operations; child capability consumes only an admitted row and cannot mint a new cause by relabelling transport IDs. The text honestly leaves narrative/causal classification to GM authorship and refuses ambiguous inventory. It no longer claims a hash or prose comparison detects semantically equivalent fabricated descriptions.",
+      "future_coverage": [
+        "F101",
+        "F102",
+        "F113",
+        "B08 source relabel regression"
+      ]
+    },
+    {
+      "id": "F1-D04",
+      "status": "resolved_for_design_discussion",
+      "locations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:684",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:711-736",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:972-975",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:120",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:329"
+      ],
+      "evidence": "FD M is proof-only and excluded from child rollback/restore/delete membership along with current M, headers, request, G and source artifacts. Named candidate-only repair uses fixed owner catalogs, exact baseline images, own-bound control transitions and a current-M repair receipt. Once a child phase is accepted, generic restore/resubmission is prohibited; publisher/phase recovery owns continuation. Thus the old RestorePreTurnBackupAsync path can no longer be called unchanged on F1 and cannot erase FT or applied child receipts.",
+      "future_coverage": [
+        "F106",
+        "F109",
+        "F114",
+        "B08 invalid-first-response and post-mechanics repair cases"
+      ]
+    },
+    {
+      "id": "F1-D05",
+      "status": "resolved_for_design_discussion",
+      "locations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:572-598",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md:608-629",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:121",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:175",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:329"
+      ],
+      "evidence": "The allocation linearization point is now FD: request ID, n+1, UTC, fresh dice and computed-context binding are stored atomically in the existing M. Before-FD pure values may be discarded only with no accepted decision/exposure; committed FD survives every FT rollback/retry with exact reservation values. pending_dice_state is guard-only; GetOrCreate/Rotate/Reveal/Rewrite are prohibited in the F1 child and gacha is null. This is explicitly a proposed pure extraction, not an existing bound dice API or a claim that the whole ordinary dice lifecycle is fixed.",
+      "future_coverage": [
+        "F115",
+        "B08 FD reservation/FT rollback regression"
+      ]
+    }
+  ],
+  "intermediate_residual": {
+    "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "line": 363,
+    "issue": "Old B11 wording allowed transfer-only cleanup and required accepted-QTE proof for decline.",
+    "resolved_by_sha": "564424a92469555a807f0f77f53002ff1f7e621f",
+    "verification": "Exactly Interfaces and branch-specific release lines changed; explicit no-offer/ACCEPT/DECLINE proofs and no transfer-only release."
+  },
+  "initial_report_integrity": {
+    "external_and_repository_bytes_equal": true,
+    "markdown_sha256": "65bdd2ee4389bfcca001d561f3f6d6e21ff6a71d596ffb3e67f77df9c87d1456",
+    "json_sha256": "73ef02fc10a37b05db18ce791facc7b8433404a1e5b66da233dd6f48b7aa1bb5"
+  },
+  "inspected_source_pins": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "head_blob_sha1": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "baseline_blob_sha1": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "head_blob_sha1": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "baseline_blob_sha1": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "head_blob_sha1": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "baseline_blob_sha1": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "docs/testing.md",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "head_blob_sha1": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "baseline_blob_sha1": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "d70f7abad41de9e7914b786b13d73d53e804afa0ab0bef31c519f74d13aa8e8c",
+      "head_blob_sha1": "febdd04ea2ae13765826158a2884c276c12deadb",
+      "baseline_blob_sha1": "febdd04ea2ae13765826158a2884c276c12deadb",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "637cb22c80a87c399f5e8d3f913c49184b7719a17a5e763df22c01b71d8524ab",
+      "head_blob_sha1": "6bda468c4d21042ee8d6cacf321561065b7b8955",
+      "baseline_blob_sha1": "6bda468c4d21042ee8d6cacf321561065b7b8955",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "head_blob_sha1": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "baseline_blob_sha1": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "head_blob_sha1": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "baseline_blob_sha1": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "head_blob_sha1": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "baseline_blob_sha1": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "head_blob_sha1": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "baseline_blob_sha1": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs",
+      "sha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d",
+      "head_blob_sha1": "44546e2e3a97ce16b01c952d49fa936a01993b8f",
+      "baseline_blob_sha1": "44546e2e3a97ce16b01c952d49fa936a01993b8f",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "head_blob_sha1": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "baseline_blob_sha1": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Models/GameResponse.cs",
+      "sha256": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+      "head_blob_sha1": "d12d8cfe75ec76aa474c0ed34c614197121d2a44",
+      "baseline_blob_sha1": "d12d8cfe75ec76aa474c0ed34c614197121d2a44",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "head_blob_sha1": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "baseline_blob_sha1": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "head_blob_sha1": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "baseline_blob_sha1": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "head_blob_sha1": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "baseline_blob_sha1": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
+      "head_blob_sha1": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "baseline_blob_sha1": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "head_blob_sha1": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "baseline_blob_sha1": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "head_blob_sha1": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "baseline_blob_sha1": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "head_blob_sha1": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
+      "baseline_blob_sha1": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "sha256": "226fd4843afec175f4101373b70de20e00524d3d402c92a88018a17010105c50",
+      "head_blob_sha1": "5c12e4b8c893a3cbda7495ad4bbdf6a8c2668de7",
+      "baseline_blob_sha1": "5c12e4b8c893a3cbda7495ad4bbdf6a8c2668de7",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "sha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d",
+      "head_blob_sha1": "c93281051e0c4259220acb874ea881ab025cb410",
+      "baseline_blob_sha1": "c93281051e0c4259220acb874ea881ab025cb410",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "sha256": "a121aebacc17b814f17ada92d528c04c09492be0383e680b2b7f4b36cdfc8762",
+      "head_blob_sha1": "ec1a6f4bd7511b41dbfa98dd77d380f98ddf90ed",
+      "baseline_blob_sha1": "ec1a6f4bd7511b41dbfa98dd77d380f98ddf90ed",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceProducer.cs",
+      "sha256": "fb47dc0aeb162712d5852b5a6db586434e450830718986c36b6b452f138f5c4d",
+      "head_blob_sha1": "341c1501298edd2ab5562899f971ece2a953d441",
+      "baseline_blob_sha1": "341c1501298edd2ab5562899f971ece2a953d441",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOccurrenceState.cs",
+      "sha256": "8429906352687b5e54b2d85b620187d9083778303d497de3aa811648395e5e9d",
+      "head_blob_sha1": "ffb2f1ebc749929c5a4aa5d397df88720772a1ec",
+      "baseline_blob_sha1": "ffb2f1ebc749929c5a4aa5d397df88720772a1ec",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "head_blob_sha1": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "baseline_blob_sha1": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/QtePhysicalInjurySource.cs",
+      "sha256": "56115c27300bd945c068bed94307b2658b69fe143258f9d5f8101328a7d3be59",
+      "head_blob_sha1": "c8551f190d959fd7ee3c3cf325e14a0b72bb679f",
+      "baseline_blob_sha1": "c8551f190d959fd7ee3c3cf325e14a0b72bb679f",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+      "head_blob_sha1": "e1f92d693ab9e066d53c2ef17b2806ded3551a31",
+      "baseline_blob_sha1": "e1f92d693ab9e066d53c2ef17b2806ded3551a31",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "head_blob_sha1": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "baseline_blob_sha1": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "head_blob_sha1": "1b7ffbed260ee04eb19e00191e50f76a668022dc",
+      "baseline_blob_sha1": "1b7ffbed260ee04eb19e00191e50f76a668022dc",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "sha256": "0f13b58a03edad9607e68677a4d8ef8dd8b28c855a862d883c4ece32e155abd1",
+      "head_blob_sha1": "4f6b946bff7ebc2d2e36247f1ecbe2d7ab70d6d9",
+      "baseline_blob_sha1": "4f6b946bff7ebc2d2e36247f1ecbe2d7ab70d6d9",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-b-independent-plan-20261016T002003Z-review.md",
+      "sha256": "37a932fe669cc7dc3b3a21a3cc7e39fe164e06095c60f47c9ee15807e9fd9914",
+      "head_blob_sha1": "ea0aa23f1ac49c36e1478902837f5758c24db31c",
+      "baseline_blob_sha1": "ea0aa23f1ac49c36e1478902837f5758c24db31c",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-b-corrected-independent-plan-20261016T002709Z-review.md",
+      "sha256": "f67fc50dcb79cdf178d9a609553e50b4a1b7be08abaeeb8762fd073ad46a474e",
+      "head_blob_sha1": "0b1badcb32f0d6725d5def12a36093f065f20f51",
+      "baseline_blob_sha1": "0b1badcb32f0d6725d5def12a36093f065f20f51",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-b-corrected-independent-design-20261015T235115Z-review.md",
+      "sha256": "ead87ef45cbe1b7571d074083bc99f8d59c6c819596c39e9519c737d44e66bf3",
+      "head_blob_sha1": "531b97cfcf01c567790a340a5943afd5d7700259",
+      "baseline_blob_sha1": "531b97cfcf01c567790a340a5943afd5d7700259",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "sha256": "20a17442b9a027f8f57c1ce1ca8bc15f6fcd6598a0b97a85022be622aae97f2f",
+      "head_blob_sha1": "d15ab4648acb81654e9bf2fc08e5f5553cd865c5",
+      "baseline_blob_sha1": "d15ab4648acb81654e9bf2fc08e5f5553cd865c5",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe",
+      "head_blob_sha1": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
+      "baseline_blob_sha1": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "sha256": "7ae0231ad50a41a70ed9f8a6b592601d004b936b3210001f9c1aa50de6dbb43c",
+      "head_blob_sha1": "93e11c4a97046736db4af6c1f88f83bafdc5cf29",
+      "baseline_blob_sha1": "93e11c4a97046736db4af6c1f88f83bafdc5cf29",
+      "unchanged_from_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/FileMapping.cs",
+      "sha256": "0e657357c315ffe740983d3f9c3347475dc1907d84f059753eddcf95f707b538",
+      "head_blob_sha1": "874055dd1984edd660c62cecf1f8dc73ae519cbc",
+      "baseline_blob_sha1": "874055dd1984edd660c62cecf1f8dc73ae519cbc",
+      "unchanged_from_baseline": true
+    }
+  ],
+  "changed_paths": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-independent-design-initial-20261016-review.json",
+    "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-independent-design-initial-20261016-review.md",
+    "specs/1536-complete-wound-materialization/spec.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "static_checks": {
+    "clean_final_head": true,
+    "git_diff_check": "PASS",
+    "previous_34_source_pins_unchanged": true,
+    "additional_source_pins_unchanged": 4,
+    "T178_T191_unique_unchecked": 14,
+    "F101_F115_unique_future_rows": 15,
+    "source_runtime_test_catalog_selection_files_changed": false
+  },
+  "check_audit_scope": "Proposed bounded numeric profile, GM judgments explicit; no universal narrative/Rule12 engine claim. Implementation/formula tests remain future.",
+  "unrun": [
+    "build",
+    "C# tests",
+    "frontend tests/typecheck/build",
+    "test discovery/catalog validation/Plan runner",
+    "runtime tools/native owners",
+    "actual GM resolution",
+    "console/browser/agent interaction",
+    "DOM/visual qualification",
+    "Linux/Windows crash and recovery execution"
+  ],
+  "remaining_gates": [
+    "Written F1 contract/schema/member/issuer/cleanup/turn-policy acceptance.",
+    "Affected implementation plan acceptance and separate implementation authorization.",
+    "Actual implementation, independent source/fixture/selection/evidence reviews and finite runtime/platform qualification.",
+    "D4 allocator, guided US5, frontend DOM/visual and full FR063/US5 completion remain open."
+  ],
+  "actions": "Read-only Git/source/hash inspection; wrote only /tmp corrected report pair. No repository/Git mutation; initial pair unchanged.",
+  "markdown_report_sha256": "350f2e5842e8b393ffcafa5daf706d2c5561eeac50d0aecdade2e3694d77d4a0",
+  "FINALSTOP": "No pending writes. Report pair is immutable after this completion."
+}

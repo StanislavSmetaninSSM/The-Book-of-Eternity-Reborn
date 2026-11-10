@@ -1,0 +1,87 @@
+{
+  "entries": [
+    {
+      "entryId": "lore_current_world_world_setting_01",
+      "title": "Королевство Валендрия",
+      "category": "history",
+      "content": "Валендрия - позднесредневековое королевство, где редкая магия остается политической силой и предметом страха. Текущая жизнь начинается в столице Этернии, среди дворянских интриг и слухов о северной угрозе.",
+      "discoveredAt": "2026-06-19T00:00:00Z",
+      "discoveryContext": "Стартовая тестовая фикстура смертного мира",
+      "incarnation": 2,
+      "sourceFile": "current_world/world_setting.json",
+      "tags": [
+        "bootstrap",
+        "world"
+      ]
+    },
+    {
+      "entryId": "lore_current_world_geography_01",
+      "title": "Этерния и северные пустоши",
+      "category": "geography",
+      "content": "Столица Этерния лежит на туманных торговых дорогах. Северные пустоши отделены цепью укреплений и старых трактов, по которым все чаще приходят тревожные вести.",
+      "discoveredAt": "2026-06-19T00:00:00Z",
+      "discoveryContext": "Стартовая тестовая фикстура смертного мира",
+      "incarnation": 2,
+      "sourceFile": "current_world/geography.json",
+      "tags": [
+        "bootstrap",
+        "geography"
+      ]
+    },
+    {
+      "entryId": "lore_current_world_history_01",
+      "title": "Нашествие Теней",
+      "category": "history",
+      "content": "В хрониках Валендрии уже были периоды, когда с севера приходили темные существа. Нынешние слухи похожи на первые признаки старого бедствия.",
+      "discoveredAt": "2026-06-19T00:00:00Z",
+      "discoveryContext": "Стартовая тестовая фикстура смертного мира",
+      "incarnation": 2,
+      "sourceFile": "current_world/history.json",
+      "tags": [
+        "bootstrap",
+        "threat"
+      ]
+    },
+    {
+      "entryId": "lore_current_world_cultures_01",
+      "title": "Дворянство и купеческие гильдии",
+      "category": "cultures",
+      "content": "Дворянские дома Валендрии держатся за честь, браки и старые долги. Купеческие гильдии богатеют на поставках и умеют покупать молчание не хуже титулованных семей.",
+      "discoveredAt": "2026-06-19T00:00:00Z",
+      "discoveryContext": "Стартовая тестовая фикстура смертного мира",
+      "incarnation": 2,
+      "sourceFile": "current_world/cultures.json",
+      "tags": [
+        "bootstrap",
+        "culture"
+      ]
+    },
+    {
+      "entryId": "lore_current_world_threats_01",
+      "title": "Северные тени",
+      "category": "creatures",
+      "content": "Темные существа из пустошей редко нападают открыто. Сначала исчезают курьеры, затем появляются странные печати, и только потом начинается настоящая охота.",
+      "discoveredAt": "2026-06-19T00:00:00Z",
+      "discoveryContext": "Стартовая тестовая фикстура смертного мира",
+      "incarnation": 2,
+      "sourceFile": "current_world/threats.json",
+      "tags": [
+        "bootstrap",
+        "threat"
+      ]
+    }
+  ],
+  "totalEntries": 5,
+  "categories": {
+    "cosmology": 0,
+    "geography": 1,
+    "history": 2,
+    "cultures": 1,
+    "creatures": 1,
+    "characters": 0,
+    "artifacts": 0,
+    "factions": 0,
+    "magic": 0,
+    "other": 0
+  }
+}

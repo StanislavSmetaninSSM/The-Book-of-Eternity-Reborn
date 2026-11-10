@@ -10,6 +10,65 @@ namespace BookOfEternityClient.Services;
 /// </summary>
 internal static class SpiritualWoundSourceWitness
 {
+    // Pure composition shared by the admitted producer and durable comparison.
+    // These helpers issue no capture/selection or original-guarantee capability.
+    internal static string HarmEventKey(string session, string request, string token,
+        string conflict, string exchange, string side) => WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_wound_source_event", "1", session, request, token, conflict, exchange, side })[7..];
+
+    internal static WoundOpportunityEventEvidence HarmEventEvidence(string key, int maximumRank) =>
+        new("formal", "spiritual_exchange_side", key, "harmful", maximumRank, "Духовное воздействие в обмене конфликта.");
+
+    internal static WoundOpportunityCompositionResult ComposeOpportunityData(WoundAcceptedTurnBinding binding,
+        WoundOwnerCoordinate owner, string sourceKind, string sourceId, WoundOpportunityEventEvidence evidence,
+        int maximumRank, WoundOpportunityWorseningTargetEvidence? target) =>
+        WoundOpportunityAuthority.Compose(new(binding, "spiritual_wound_" + evidence.AuthorityId,
+            "spiritual_wound_" + evidence.AuthorityId, "spiritual_wound_event_" + evidence.AuthorityId,
+            owner, "spiritual", "afterlife_strain_transition_v1", sourceKind, sourceId, "active", evidence,
+            maximumRank, null, new WoundOpportunitySafeContext("Участник духовного конфликта", evidence.ReadableCause,
+                new[] { "anatomical", "systemic", "mental", "spiritual_axis", "other" }), target));
+
+    internal static string GuaranteeSourceFingerprint(string actor, string operation, string? artJson) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_original_guarantee_source", "1", actor, operation, artJson });
+
+    internal static string GuaranteeAuthorityFingerprint(string claimsFingerprint, string sourceFingerprint,
+        string coordinate, string exchangeJson, int turn, string triggerId) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        { "book_of_eternity.spiritual_original_guarantee", "1", claimsFingerprint, sourceFingerprint, coordinate,
+            exchangeJson, turn.ToString(System.Globalization.CultureInfo.InvariantCulture), triggerId });
+
+    /// <summary>Retains actual prepared strings; parsing must not replace the hash preimage.</summary>
+    internal static JsonObject CaptureGuaranteePreimage(string exchangeJson, string specialArtJson)
+    {
+        Parse(exchangeJson);
+        Parse(specialArtJson);
+        var utf8 = new UTF8Encoding(false, true);
+        return new JsonObject
+        {
+            ["exchangeJsonBase64"] = Convert.ToBase64String(utf8.GetBytes(exchangeJson)),
+            ["specialArtJsonBase64"] = Convert.ToBase64String(utf8.GetBytes(specialArtJson))
+        };
+    }
+
+    /// <summary>Returns retained comparison DATA, never an original-guarantee capability.</summary>
+    internal static (string ExchangeJson, string SpecialArtJson) ReadGuaranteePreimage(JsonObject source)
+    {
+        Integer(source["guaranteedSeverityRank"], 1, 4);
+        var preimage = Object(source["guaranteePreimage"]);
+        Closed(preimage, "exchangeJsonBase64 specialArtJsonBase64");
+        try
+        {
+            var utf8 = new UTF8Encoding(false, true);
+            return (utf8.GetString(DecodeBase64(preimage["exchangeJsonBase64"])),
+                utf8.GetString(DecodeBase64(preimage["specialArtJsonBase64"])));
+        }
+        catch (DecoderFallbackException error)
+        {
+            throw new FormatException("Strict UTF-8 guarantee preimage required.", error);
+        }
+    }
+
     private const string Fields = "sourceId coordinate conflictId exchangeId turnEvidence sourceOrdinal exchangeOrdinal " +
         "affectedSide actingActor affectedActor operation appliedArtId appliedArtKind appliedArtTier targetResilienceTier " +
         "priorStrainRank destinationStrainRank extraStrainJumps harmfulMargin maximumSeverityRank guaranteedSeverityRank " +
@@ -27,10 +86,19 @@ internal static class SpiritualWoundSourceWitness
     /// <returns>
     /// Recomputed comparison result, never source admission or a wound command.
     /// </returns>
-    internal static SpiritualWoundCalculation Validate(JsonObject source)
+    internal static SpiritualWoundCalculation Validate(JsonObject source) => ValidateAndReadStrainData(source, out _);
+
+    /// <summary>Validates once and returns already parsed comparison DATA for a containing receipt join.</summary>
+    /// <param name="source">Detached source witness; no current permission is supplied.</param>
+    /// <param name="strain">Intrinsic comparison DATA, absent for ordinary sources and never publication authority.</param>
+    /// <returns>The same recomputed source calculation used by ordinary witness validation.</returns>
+    internal static SpiritualWoundCalculation ValidateAndReadStrainData(JsonObject source,
+        out SpiritualStrainPreimageData? strain)
     {
+        strain = null;
         ArgumentNullException.ThrowIfNull(source);
-        Closed(source, Fields);
+        Closed(source, (source["guaranteedSeverityRank"] is null ? Fields : Fields + " guaranteePreimage") +
+            (source.ContainsKey("strainPreimage") ? " strainPreimage" : ""));
         var digest = Hash(source, "source", "sourceId", "sourceFingerprint");
         Require(Fingerprint(source["sourceFingerprint"]) == digest &&
             Text(source["sourceId"]) == "spiritual_source_" + digest[7..], "Source digest or identity differs.");
@@ -61,11 +129,17 @@ internal static class SpiritualWoundSourceWitness
         foreach (var marker in new[] { "turnNumber", "exchangeAtTurn", "resolvedAtTurn" })
             if (exchange.ContainsKey(marker))
                 Require(Integer(exchange[marker], 1) == Integer(evidence["turn"]), "Exchange turn differs.");
+        var strainVersion = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadVersion(source) : 0;
+        Require(strainVersion is 0 or 5 or 7 || !exchange.ContainsKey(SpiritualWoundFailedAction.Property),
+            "Existing player comparison versions cannot carry guardian attribution.");
         var issues = new List<ValidationIssue>();
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateSpiritualWoundSourceActionShape(exchange, "retainedSource.exchange", issues);
-        ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
-        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues);
+        var noRoll = SpiritualWoundNoRollMargin.Read(exchange, side);
+        if (!noRoll.IsVoluntaryNoRoll)
+            ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
+        var checkedStrain = strainVersion is 1 or 2 ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
+        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, checkedStrain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
         var sourceOperation = side == "opposition" ? exchange["operationType"] :
             exchange["matchupAudit"]?["oppositionOperation"] ??
@@ -97,13 +171,24 @@ internal static class SpiritualWoundSourceWitness
             Integer(source["destinationStrainRank"], 0, 4) == nextRank, "Retained strain differs.");
         Require(Integer(source["extraStrainJumps"], 0, 3) == Math.Max(0, nextRank - priorRank - 1),
             "Extra strain jumps differ.");
-        var audit = Object(exchange["diceAudit"]);
-        var player = Integer(audit["playerTotal"], int.MinValue, int.MaxValue);
-        var opposition = Integer(audit["oppositionTotal"], int.MinValue, int.MaxValue);
-        Require(Integer(audit["margin"], long.MinValue, long.MaxValue) == player - opposition, "Exchange margin differs.");
-        var margin = side == "opposition" ? player - opposition : opposition - player;
+        long margin;
+        if (noRoll.IsVoluntaryNoRoll)
+        {
+            Require(noRoll.ChosenMargin.HasValue, "Explicit GM harmful margin required.");
+            margin = noRoll.ChosenMargin!.Value;
+            Require(source["selectedDiceIndices"] is JsonArray { Count: 0 } &&
+                evidence["diceClaims"] is JsonArray { Count: 0 }, "No-roll source cannot claim dice.");
+        }
+        else
+        {
+            var audit = Object(exchange["diceAudit"]);
+            var player = Integer(audit["playerTotal"], int.MinValue, int.MaxValue);
+            var opposition = Integer(audit["oppositionTotal"], int.MinValue, int.MaxValue);
+            Require(Integer(audit["margin"], long.MinValue, long.MaxValue) == player - opposition, "Exchange margin differs.");
+            margin = side == "opposition" ? player - opposition : opposition - player;
+            ValidateDiceSelection(source, evidence, audit);
+        }
         Require(Integer(source["harmfulMargin"], long.MinValue, long.MaxValue) == margin, "Affected-side margin differs.");
-        ValidateDiceSelection(source, evidence, audit);
 
         var kind = Text(source["appliedArtKind"]);
         Require(kind is "standard" or "special", "Invalid applied art kind.");
@@ -137,7 +222,26 @@ internal static class SpiritualWoundSourceWitness
         var guarantee = source["guaranteedSeverityRank"] is null ? (int?)null :
             (int)Integer(source["guaranteedSeverityRank"], 1, envelope.MaximumSeverityRank);
         Require(guarantee == envelope.GuaranteedSeverityRank, "Source guarantee differs from original art.");
+        if (guarantee is not null)
+        {
+            var preimage = ReadGuaranteePreimage(source);
+            Require(Canonical(Parse(preimage.ExchangeJson)) == Canonical(exchange),
+                "Guarantee exchange preimage differs from its retained semantic payload.");
+            Require(Canonical(Parse(preimage.SpecialArtJson)) == Canonical(art),
+                "Guarantee art preimage differs from its retained semantic payload.");
+        }
         ValidateTarget(source, exchange, affected, Text(evidence["realm"]), side);
+        if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
+        {
+            Require(strainVersion is 0 or 5 or 7, "Existing player comparison versions cannot carry guardian attribution.");
+            _ = SpiritualWoundFailedAction.ReadRetained(source, exchange);
+        }
+        if (strainVersion is 3 or 4 or 6)
+            checkedStrain = SpiritualStrainPreimageData.ReadPressureIntrinsic(source, exchange, calculated!);
+        else if (strainVersion is 5 or 7)
+            checkedStrain = SpiritualStrainPreimageData.ReadGuardianPressureIntrinsic(source, exchange, calculated!);
+        // No partially validated comparison DATA escapes a failed actual or ordinary witness.
+        strain = checkedStrain;
         return calculated!;
     }
 

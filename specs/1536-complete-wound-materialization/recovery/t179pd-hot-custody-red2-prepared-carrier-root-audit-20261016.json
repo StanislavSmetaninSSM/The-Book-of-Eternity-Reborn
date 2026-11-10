@@ -1,0 +1,123 @@
+{
+  "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840",
+  "compiled_source": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+  "successful_raw_artifact_chains": [
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-Build-integration.log.gz",
+      "raw_sha256": "bec5854eea5608ab16f768a1987373aafb6ac8364f6a3c587343bb37fb308238",
+      "stored_sha256": "d0ea65c9b5cb561585db63a5640373922b10f355ec658a6b846820b7fd2347ed",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-Build-unit.log.gz",
+      "raw_sha256": "7e8d125cad1b493773280744569685793c5dbdbf2fae46e541d0925dfe86481e",
+      "stored_sha256": "5fb3d782c9d27581219f8fadd00d6eb6bab85255233e155171e680e7e1b8d96f",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-catalog-audit.json",
+      "raw_sha256": "e5d032a1e1e24323e39d4dd285b8a88479ab6b78a1fd31e72f8b4dc0bd7f0edc",
+      "stored_sha256": "e5d032a1e1e24323e39d4dd285b8a88479ab6b78a1fd31e72f8b4dc0bd7f0edc",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-dotnet-test.log.gz",
+      "raw_sha256": "af811c4312d8185891f16d13192819f46934227533a277939eb39a5276659317",
+      "stored_sha256": "073af11f8ba9cbbb59b447965462ba2ecb39d88eea4fe4e1f07a7eef523d6045",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-native-exit.json",
+      "raw_sha256": "49e2c411ea7ea43ef1ad7e67d4a1b92900606b417fb210b366a0c450d852629b",
+      "stored_sha256": "49e2c411ea7ea43ef1ad7e67d4a1b92900606b417fb210b366a0c450d852629b",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-stdout.log.gz",
+      "raw_sha256": "d066da4c91c2d53ede27aa32b396fdb3a917ca48688813310fc5bf4a6ad86a10",
+      "stored_sha256": "ea170d70be0221b4f9e19273e86e506a12046905b2762c346f4ef325c0e45839",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red2-prep-catalog-20261016-summary.json",
+      "raw_sha256": "13f0cba4f4a78e9a85d61019e9f62217c3d7d9314d7aa954e0acae2454240f9f",
+      "stored_sha256": "13f0cba4f4a78e9a85d61019e9f62217c3d7d9314d7aa954e0acae2454240f9f",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_sha256": "e08aa392ca035e482b5fe1213e93d6e2401a5882e1ba08023e7885589b36e1cb",
+      "stored_sha256": "f7b8cba543deb039b2b734817900d8a72e47fa1407f9f913c8a5bee85808af5f",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-native-exit.json",
+      "raw_sha256": "6586102d77923a16cb2c09d2048c7731b48c496b89d619cc5660afe34715d781",
+      "stored_sha256": "6586102d77923a16cb2c09d2048c7731b48c496b89d619cc5660afe34715d781",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-plan.json",
+      "raw_sha256": "023a3415b459c9d9eca39df4c22fdb87f09d5c5212ee14736f1ee5486a7a48c1",
+      "stored_sha256": "023a3415b459c9d9eca39df4c22fdb87f09d5c5212ee14736f1ee5486a7a48c1",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-stdout.log.gz",
+      "raw_sha256": "ec78e3cdbf749577b47abd61c6e50b391301581e09e447eeaae72bdad3bbae11",
+      "stored_sha256": "5f7c92fe4943958ede6a80cdea4ce0598c7b165624faaf3a9114f02c1886e234",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red2-prep-plan-20261016-summary.json",
+      "raw_sha256": "271b064a906609c89d1d6cd2029a1a56ffe3eff1a596b374aafd497cc527bb74",
+      "stored_sha256": "271b064a906609c89d1d6cd2029a1a56ffe3eff1a596b374aafd497cc527bb74",
+      "carrier": "fbcf407c2755d4ce063a35184e8011adc03b2840"
+    }
+  ],
+  "chain_count": 12,
+  "exact_methods": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+  },
+  "planned_descriptors": 2,
+  "planned_cases": 5,
+  "actual_executions": 0,
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "1b5b52467f2fac85564aacb44f921794db046b8da2742ae67a58d3c0ef157e43"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "e0468e4e9e94bfb0f3eb099c047f0d4ca9acaf86a3e6481b15b5df97211f3b49"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "1b5b52467f2fac85564aacb44f921794db046b8da2742ae67a58d3c0ef157e43"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "60958c9b1204bfc947bbfd0d46919181b5c99720f2328778cc62e005f0eb5463"
+    }
+  ],
+  "catalog_wall": "00:02:07.8312534",
+  "plan_wall": "00:00:04.3987315",
+  "source_to_carrier_only_task_documents": true,
+  "scope": "preparation verification only; no SOURCE/EVIDENCE or runtime release"
+}

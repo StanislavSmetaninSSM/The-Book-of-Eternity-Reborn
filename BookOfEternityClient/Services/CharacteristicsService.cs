@@ -12,7 +12,7 @@ namespace BookOfEternityClient.Services;
 /// equipment, passive skills, soul relics, and temporary effects.
 /// Writes computed results to game_state for GM reference.
 /// </summary>
-public class CharacteristicsService
+public partial class CharacteristicsService
 {
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
@@ -135,7 +135,7 @@ public class CharacteristicsService
             await WriteComputedFile(result);
             _logger.LogDebug("Характеристики пересчитаны и записаны");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка при пересчёте характеристик");
         }
@@ -246,7 +246,7 @@ public class CharacteristicsService
         foreach (var name in Characteristics.All)
             result[name] = 1; // default base
 
-        var json = await _fs.ReadFileAsync("game_state/misc/characteristics.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/misc/characteristics.json");
         if (json == null) return result;
 
         try
@@ -265,6 +265,7 @@ public class CharacteristicsService
         }
         catch (Exception ex)
         {
+            if (_jointProjectionRead is not null) throw;
             _logger.LogWarning(ex, "Ошибка чтения characteristics.json");
         }
 
@@ -282,48 +283,42 @@ public class CharacteristicsService
     private async Task<int> GetPlayerLevel()
     {
         // Prefer experience.json because local systems such as QTE can advance level there.
-        var json = await _fs.ReadFileAsync("game_state/player/experience.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/player/experience.json");
         if (json != null)
         {
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
-                if (doc.RootElement.TryGetProperty("playerLevel", out var playerLvl) &&
-                    playerLvl.ValueKind == JsonValueKind.Number)
-                    return playerLvl.GetInt32();
+                if (ReadTrainingExperienceLevel(doc.RootElement) is { } level)
+                    return level;
             }
-            catch { /* fallthrough */ }
+            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }
 
         // Try player_status next, then soul_state
-        json = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        json = await ReadCharacteristicsSourceAsync("game_state/core/player_status.json");
         if (json != null)
         {
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)
+                    return level;
             }
-            catch { /* fallthrough */ }
+            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }
 
         // Fallback: check soul_state for level
-        json = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        json = await ReadCharacteristicsSourceAsync("game_state/meta/soul_state.json");
         if (json != null)
         {
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    return lvl.GetInt32();
+                if (ReadTrainingSingleLevel(doc.RootElement) is { } level)
+                    return level;
             }
-            catch { /* fallthrough */ }
+            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }
         }
 
         return 1;
@@ -362,7 +357,7 @@ public class CharacteristicsService
 
     private async Task<JsonObject> LoadStatPointsRootAsync()
     {
-        var json = await _fs.ReadFileAsync("game_state/player/stat_points.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/player/stat_points.json");
         if (string.IsNullOrWhiteSpace(json))
             return new JsonObject();
 
@@ -372,6 +367,7 @@ public class CharacteristicsService
         }
         catch
         {
+            if (_jointProjectionRead is not null) throw;
             return new JsonObject();
         }
     }
@@ -406,7 +402,7 @@ public class CharacteristicsService
     /// </summary>
     private async Task CollectSoulRelicBonuses(Dictionary<string, List<BonusSource>> permanent)
     {
-        var json = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/meta/soul_state.json");
         if (json == null) return;
 
         try
@@ -414,11 +410,8 @@ public class CharacteristicsService
             if (JsonNode.Parse(json) is not JsonObject soulRoot)
                 return;
 
-            var lifeTransitionsJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
-            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
-                _fs,
-                lifeTransitionsJson,
-                soulRoot);
+            var lifeTransitionsJson = await ReadCharacteristicsSourceAsync("game_state/control/life_transitions.json");
+            var hasCanonicalTriggerLifeEnd = await ReadCharacteristicsLifeEndAuthorityAsync(lifeTransitionsJson, soulRoot);
 
             if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
                     soulRoot,
@@ -427,6 +420,7 @@ public class CharacteristicsService
                     out _,
                     out var failureDescription))
             {
+                if (_jointProjectionRead is not null) throw new InvalidDataException("joint_projection_soul_relics: " + failureDescription);
                 _logger.LogWarning(
                     "Пропускаю бонусы реликвий: current soul_state.soulRelics нечитаем для strict guardian-policy path ({FailureDescription})",
                     failureDescription);
@@ -466,6 +460,7 @@ public class CharacteristicsService
         }
         catch (Exception ex)
         {
+            if (_jointProjectionRead is not null) throw;
             _logger.LogWarning(ex, "Ошибка чтения бонусов реликвий");
         }
     }
@@ -478,7 +473,7 @@ public class CharacteristicsService
         Dictionary<string, List<BonusSource>> permanent,
         Dictionary<string, List<BonusSource>> temporary)
     {
-        var json = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/inventory/items.json");
         if (json == null) return;
 
         try
@@ -492,6 +487,7 @@ public class CharacteristicsService
                     out var equipmentState,
                     out _))
             {
+                if (_jointProjectionRead is not null) throw new InvalidDataException("joint_projection_equipment_authority");
                 return;
             }
 
@@ -500,6 +496,7 @@ public class CharacteristicsService
                 !doc.RootElement.TryGetProperty("items", out var items) ||
                 items.ValueKind != JsonValueKind.Array)
             {
+                if (_jointProjectionRead is not null) throw new InvalidDataException("joint_projection_equipment_shape");
                 return;
             }
 
@@ -519,6 +516,7 @@ public class CharacteristicsService
         }
         catch (Exception ex)
         {
+            if (_jointProjectionRead is not null) throw;
             _logger.LogWarning(ex, "Ошибка чтения бонусов экипировки");
         }
     }
@@ -530,7 +528,7 @@ public class CharacteristicsService
         Dictionary<string, List<BonusSource>> permanent,
         Dictionary<string, List<BonusSource>> temporary)
     {
-        var json = await _fs.ReadFileAsync("game_state/player/skills_passive.json");
+        var json = await ReadCharacteristicsSourceAsync("game_state/player/skills_passive.json");
         if (json == null) return;
 
         try
@@ -554,6 +552,7 @@ public class CharacteristicsService
         }
         catch (Exception ex)
         {
+            if (_jointProjectionRead is not null) throw;
             _logger.LogWarning(ex, "Ошибка чтения бонусов пассивных навыков");
         }
     }
@@ -569,7 +568,7 @@ public class CharacteristicsService
     {
         try
         {
-            var snapshot = await EffectMechanicsSnapshot.LoadAsync(_fs);
+            var snapshot = await ReadCharacteristicsEffectsAsync();
             if (!snapshot.IsAccepted)
             {
                 _logger.LogWarning(
@@ -624,6 +623,7 @@ public class CharacteristicsService
                     temporary[characteristic].Sum(static source => (long)source.Value);
                 if (!double.IsFinite(baseline) || baseline is < int.MinValue or > int.MaxValue)
                 {
+                    if (_jointProjectionRead is not null) throw new InvalidDataException("joint_projection_characteristic_bounds: " + characteristic);
                     _logger.LogWarning(
                         "Временные эффекты не применены: baseline характеристики {Characteristic} вышел за числовые границы",
                         characteristic);
@@ -639,7 +639,10 @@ public class CharacteristicsService
                         baseline,
                         playerVisibleModifiers[characteristic],
                         out var visibleProjection))
+                {
+                    if (_jointProjectionRead is not null) throw new InvalidDataException("joint_projection_effect_modifier_bounds: " + characteristic);
                     return;
+                }
 
                 projectedTemporary[characteristic] = fullProjection;
                 projectedPlayerVisibleTemporary[characteristic] = visibleProjection;
@@ -654,6 +657,7 @@ public class CharacteristicsService
         }
         catch (Exception ex)
         {
+            if (_jointProjectionRead is not null) throw;
             _logger.LogWarning(ex, "Ошибка чтения временных эффектов");
         }
     }

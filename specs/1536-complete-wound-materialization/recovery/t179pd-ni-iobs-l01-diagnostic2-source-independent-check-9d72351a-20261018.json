@@ -1,0 +1,260 @@
+{
+  "kind": "DIAGNOSTIC2_SOURCE_STATIC_BINDING_CHECK_ONLY_NOT_SOURCE_VERDICT",
+  "checkedUtc": "2026-10-18T17:14:30.236072+00:00",
+  "carrier": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+  "base": "9793e320bef881462ef7dbac847f748e645ab324",
+  "sourcePins": 101,
+  "productPaths": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "qualified": 52,
+  "static": {
+    "sampler": {
+      "sha256": "fbfb06927ebf3a27c7538c2f47a7a096abec7e829d7b94ca2d22685dc308883a",
+      "bytes": 12279,
+      "imports": [
+        "pathlib",
+        "datetime",
+        "hashlib",
+        "json",
+        "os",
+        "time"
+      ],
+      "calledNames": [
+        "Path",
+        "ValueError",
+        "add",
+        "all",
+        "append",
+        "argv_bytes",
+        "close",
+        "decode",
+        "dict",
+        "dumps",
+        "emit",
+        "endswith",
+        "flush",
+        "gap",
+        "getpid",
+        "hexdigest",
+        "int",
+        "is_relative_to",
+        "isdigit",
+        "isoformat",
+        "items",
+        "iterdir",
+        "join",
+        "keys",
+        "len",
+        "loads",
+        "map",
+        "max",
+        "missing",
+        "monotonic",
+        "now",
+        "one",
+        "open",
+        "parse_stat",
+        "process_time",
+        "read_bytes",
+        "read_header",
+        "read_text",
+        "repr",
+        "resolve",
+        "rfind",
+        "set",
+        "setdefault",
+        "sha",
+        "sha256",
+        "sorted",
+        "split",
+        "splitlines",
+        "startswith",
+        "str",
+        "sysconf",
+        "target",
+        "type",
+        "utc",
+        "write"
+      ],
+      "parsedWithoutExecution": true
+    },
+    "wrapper": {
+      "sha256": "fd0af867d603d81b7601744db05ad6c18af571cb9c65c2545c6ea3dc7e3c5dbe",
+      "bytes": 6731,
+      "imports": [
+        "pathlib",
+        "sys",
+        "json",
+        "subprocess",
+        "os",
+        "hashlib",
+        "datetime",
+        "time",
+        "importlib.util"
+      ],
+      "calledNames": [
+        "Path",
+        "Popen",
+        "Sampler",
+        "any",
+        "append",
+        "capture",
+        "census",
+        "check_output",
+        "dict",
+        "dump",
+        "dumps",
+        "exec_module",
+        "exists",
+        "exit",
+        "finish",
+        "getuid",
+        "hexdigest",
+        "is_dir",
+        "is_file",
+        "is_relative_to",
+        "isoformat",
+        "items",
+        "len",
+        "loads",
+        "max",
+        "module_from_spec",
+        "monotonic",
+        "now",
+        "open",
+        "poll",
+        "print",
+        "read_bytes",
+        "read_text",
+        "repr",
+        "resolve",
+        "rglob",
+        "run",
+        "set",
+        "sha256",
+        "spec_from_file_location",
+        "split",
+        "stat",
+        "str",
+        "strip",
+        "wait",
+        "write",
+        "write_text"
+      ],
+      "parsedWithoutExecution": true
+    }
+  },
+  "environment": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+    "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+    "exports": {
+      "PATH": "/tmp/1536-cloud-tools/pwsh:/tmp/1536-cloud-tools/dotnet:$PATH",
+      "DOTNET_ROOT": "/tmp/1536-cloud-tools/dotnet",
+      "NUGET_PACKAGES": "/tmp/1536-cloud-tools/nuget",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "TMPDIR": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+      "XDG_RUNTIME_DIR": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/runtime",
+      "DOTNET_CLI_HOME": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/tooling/cli",
+      "XDG_CACHE_HOME": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/tooling/cache",
+      "XDG_CONFIG_HOME": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/tooling/config",
+      "XDG_DATA_HOME": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/tooling/data"
+    }
+  },
+  "fakeProof": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-check-20261018.json",
+    "sha256": "bbe9978766b3272727e1376c11fdc11d1b112347ef0232269de814da7de1783a",
+    "topLevelKeys": [
+      "kind",
+      "source",
+      "sourceSha256",
+      "checkerSha256",
+      "checksPassed",
+      "checks",
+      "findings",
+      "gameNativeExecuted"
+    ],
+    "requiresManualCaseAssertionsAndFailureReview": true
+  },
+  "discriminators": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+    "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+    "requiresManualPredeclaredOneRunDecisionReview": true
+  },
+  "criteria": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+    "bytes": 6394,
+    "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+  },
+  "recovery": [
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-7816b0c8.json",
+        "bytes": 6380,
+        "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+      },
+      "sha": "7816b0c85290cdbb1a4d7820eede601b130ad60e",
+      "base": "9793e320bef881462ef7dbac847f748e645ab324",
+      "paths": 17
+    },
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-9d72351a.json",
+        "bytes": 3766,
+        "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+      },
+      "sha": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+      "base": "7816b0c85290cdbb1a4d7820eede601b130ad60e",
+      "paths": 9
+    }
+  ],
+  "checksPassed": 550,
+  "findings": [],
+  "manualReviewRequired": [
+    {
+      "id": "SCOPE_BINDING",
+      "requirement": "All101 original pins/product23, fixtures/assertions/catalog/selection and220/900 limits remain exact. Bind separately versioned sampler/wrapper/env/parser tests/proof/discriminator bytes in current packet. Preserve all old raw outcomes52/UNKNOWN and snapshot historical metadata."
+    },
+    {
+      "id": "POSITIVE_SELECTION",
+      "requirement": "Exact dotnet exec/dependency argv, producer/resumer role, cut1, direct canonical GUID container under newde0f namespace, correct output path and immutable parent nonce. No foreign argv retention or game-state/capability access. No generalized process selection."
+    },
+    {
+      "id": "IDENTITY_RACES",
+      "requirement": "Double process stat+argv and task stat birth checks around each sample. Reconcile known identities every scan. Reused/changed/unreadable identity is explicit; FNF requires a fresh identity probe. Confirmed absence differs from still-live, changed or unobservable state."
+    },
+    {
+      "id": "OBSERVATION_GAPS",
+      "requirement": "Read/permission/parse/malformed/partial samples, lost tasks, skipped reads and256-thread truncation are retained with scope and timing. No zero-value fallback. Every target observation failure or unattributed interval is represented in final status and prevents automatic causal closure."
+    },
+    {
+      "id": "ACCOUNTING",
+      "requirement": "Capture raw CPU user/system ticks with actual clock frequency, per-thread identities, bounded wchan, I/O/status, UTC/monotonic intervals and sampler overhead. Process totals already include threads; never sum both. Shared cgroup usage/throttle/pressure/memory counters retain scope and interval-delta limits."
+    },
+    {
+      "id": "ONE_NONOVERLAPPING_LOOP",
+      "requirement": "One nominal1Hz non-overlapping scan, actual lateness/missed intervals retained and no catch-up bursts. Exactly one controller invocation; no retry, next mode or reused FIRST sentinel. New compiled/source identity must be fresh and exact."
+    },
+    {
+      "id": "NATIVE_OUTCOME_PRIORITY",
+      "requirement": "Sampler creation failure before native prevents launch. Once native starts, sampler failure cannot interrupt, replace or hide its outcome; record error, keep polling original child, capture immediate after-census before potentially prolonged finalization, preserve original native exit separately from utility/observer status."
+    },
+    {
+      "id": "NO_PROCESS_INTERVENTION",
+      "requirement": "No signal/kill/ptrace/debugger attachment/affinity/scheduler/cgroup mutation. Sampler only reads declared proc/cgroup fields and its positively selected fixture parent manifest, writes only exclusive-created diagnostic outputs, and never acquires a game lease or accesses user saves."
+    },
+    {
+      "id": "FINITE_DISCRIMINATORS",
+      "requirement": "Predeclare observations and decision limits before the one run: CPU/I/O progress, predominantly waiting with unresolved cause, and measured cgroup pressure/exhaustion. Futex/leaderwchan or lowCPU alone cannot prove a managed lock defect; current quotas/cumulative counters cannot reconstruct old outcomes."
+    },
+    {
+      "id": "JOINT_STOP_DECISION",
+      "requirement": "After exactly one new original and its profile are archived/recovered, issue the user-requested concrete joint verdict: supported defect+narrow fix, separately justified environment-budget proposal with explicit performance hold, or honest bounded blocker. No continuing diagnostic chain or target qualification from diagnostic PASS/budget changes."
+    },
+    {
+      "id": "ISOLATION_AND_PREP",
+      "requirement": "NewGUID same physical cloud/boot, frozen237 roots unchanged/outside mutable namespace, before/after authoritativev2 global/newroot boundaries, no old66529 access. Fresh BOTH809/11801 catalog, whole16/33/57 and separatediagnostic1/1/1 ZERO with exactnine/full outputs then independent PREP and separate saved/recovered release."
+    }
+  ],
+  "eligibility": "No SOURCE/PREP/runtime admission from checker. Independent semantic review and saved acceptance required. Never imports or runs reviewed programs."
+}

@@ -1,0 +1,47 @@
+{
+  "git": "d565fe2120d9f3044a22504a1d30bf2fb258fc2c",
+  "utc": "2026-10-15T22:28:58.665812+00:00",
+  "freshPreparation": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261015-222712-774-193124-8133f710fde84e41a421fc0abca1572b-categories",
+  "binaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "e1a38120c7c78450df34c467023c65b23f98e44484a46dedd84c93d0d398b67f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "2c8b99f63e6fe1440c2cd69a93a078a81eaee485aa224da9fab0933a162d4663"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "dae708e5fb05a1ed923e8837bb6b81a84aedb590a953c8325b8ade819e137f27"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+      "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "e1a38120c7c78450df34c467023c65b23f98e44484a46dedd84c93d0d398b67f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "2c8b99f63e6fe1440c2cd69a93a078a81eaee485aa224da9fab0933a162d4663"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "2c9f012c538fa46eb867c45d319145ae40551da9c82546a4f23b538d7a80af0b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+      "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-output-basis",
+      "reason": "Closed six-field output basis, exact detached UTF8/BOM/hash/shape and projector fixed point. Pure parser tests grant no completion authority.",
+      "contracts": [
+        "#1536 FR063 output binding A"
+      ]
+    }
+  ]
+}

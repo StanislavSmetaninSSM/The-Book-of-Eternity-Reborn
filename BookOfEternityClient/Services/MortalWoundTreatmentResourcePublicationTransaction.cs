@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -44,6 +45,9 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
                 "operationKey", "attemptId", "requestFingerprint", "request"
             },
             StringComparer.Ordinal);
+
+    private static readonly IReadOnlySet<string> GuidedPendingRowFields =
+        new HashSet<string>(["kind", "inputFingerprint", "operationKey", "attemptId", "requestFingerprint", "request"], StringComparer.Ordinal);
 
     internal static Result RemoveExactRequestRows(
         JsonObject command,
@@ -123,10 +127,16 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string attemptId,
         string requestFingerprint)
     {
-        if (pending["submittedTreatmentRequests"] is not JsonArray rows)
-            return false;
-
         var changed = false;
+        if (pending["guidedTreatmentRequest"] is JsonObject guided &&
+            IsExactGuidedPendingRow(guided, operationKey, attemptId, requestFingerprint))
+        {
+            pending.Remove("guidedTreatmentRequest");
+            changed = true;
+        }
+        if (pending["submittedTreatmentRequests"] is not JsonArray rows)
+            return changed;
+
         for (var index = rows.Count - 1; index >= 0; index--)
         {
             if (rows[index] is JsonObject row && IsExactPendingRow(
@@ -161,12 +171,23 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string operationKey,
         string attemptId,
         string requestFingerprint) =>
+        pending["guidedTreatmentRequest"] is JsonObject guided && IsExactGuidedPendingRow(guided, operationKey, attemptId, requestFingerprint) ||
         pending["submittedTreatmentRequests"] is JsonArray rows &&
         rows.OfType<JsonObject>().Any(row => IsExactPendingRow(
             row,
             operationKey,
             attemptId,
             requestFingerprint));
+
+    private static bool IsExactGuidedPendingRow(JsonObject row, string operationKey, string attemptId, string requestFingerprint) =>
+        HasExactFields(row, GuidedPendingRowFields) && StringEquals(row, "kind", "guided_treatment_hold") &&
+        row["inputFingerprint"] is JsonValue input && input.TryGetValue<string>(out var fingerprint) &&
+        ResourceMaterializationContract.IsAuthorityFingerprint(fingerprint) &&
+        StringEquals(row, "operationKey", operationKey) && StringEquals(row, "attemptId", attemptId) &&
+        StringEquals(row, "requestFingerprint", requestFingerprint) && row["request"] is JsonObject request &&
+        request["mode"] is JsonValue mode && mode.TryGetValue<string>(out var treatmentMode) && treatmentMode is "procedure" or "course" or "guaranteed" &&
+        request["coordinates"] is JsonObject coordinates && StringEquals(coordinates, "purpose", "treatment") &&
+        RequestCoordinatesAgree(request, operationKey, attemptId, requestFingerprint);
 
     private static bool IsExactCommandRow(
         JsonObject row,
@@ -234,7 +255,7 @@ internal static class MortalWoundTreatmentDurableSurfaceQuarantine
         string.Equals(actual, expected, StringComparison.Ordinal);
 }
 
-internal sealed class MortalWoundTreatmentResourcePublicationTransaction
+internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
     : IAsyncDisposable
 {
     private const string TokenMismatchCode =
@@ -262,6 +283,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     private int _progressionAgreementAdvanced;
     private int _rearmed;
     private int _closed;
+    private ExceptionDispatchInfo? _publicationUncertainty;
 
     private MortalWoundTreatmentResourcePublicationTransaction(
         FileSystemManager fileSystem,
@@ -298,6 +320,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(binding);
         ArgumentNullException.ThrowIfNull(receipt);
         ArgumentNullException.ThrowIfNull(beforeImages);
+        if (!receipt.IsTerminalReleaseOnly)
+            RequireCompleteBeforeImageCoverage(plan, beforeImages);
 
         var authority = plan.TreatmentResourcePublicationAuthority;
         if (authority is null ||
@@ -326,17 +350,50 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             beforeImages);
     }
 
+    /// <summary>
+    /// Requires original coverage for every path the actual common plan may
+    /// publish or consume. Shared by pre-take capture and this transaction factory
+    /// for nonterminal publication receipts. The existing sealed terminal-only
+    /// receipt cannot publish or rearm and retains its current cleanup before-images;
+    /// coverage DATA alone grants no live receipt or publication authority.
+    /// </summary>
+    internal static void RequireCompleteBeforeImageCoverage(AcceptedMechanicsPlan plan,
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
+    {
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(beforeImages);
+        var paths = beforeImages.Select(row => row.Path).ToHashSet(StringComparer.Ordinal);
+        foreach (var path in plan.TouchedPaths)
+            if (!paths.Contains(path))
+                throw new InvalidDataException("Treatment publication lacks rollback coverage for touched path '" + path + "'.");
+    }
+
     internal async Task<MortalWoundTreatmentPublicationProbeResult> ProbeAsync(
         FileSystemManager fileSystem)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
-        await using var writeLease =
+        var writeLease =
             await fileSystem.AcquireCanonicalWriteLeaseAsync();
-        return AcceptedTurnAuthorityRegistry
-            .ProbeTakenMortalWoundTreatmentPublication(
-                fileSystem,
-                writeLease,
-                _receipt);
+        Exception? operationFailure = null;
+        try
+        {
+            return AcceptedTurnAuthorityRegistry
+                .ProbeTakenMortalWoundTreatmentPublication(
+                    fileSystem,
+                    writeLease,
+                    _receipt);
+        }
+        catch (Exception failure)
+        {
+            operationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fileSystem, writeLease, completed: false, operationFailure);
+        }
     }
 
     internal async Task<IReadOnlyList<ValidationIssue>>
@@ -344,6 +401,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager fileSystem,
             IReadOnlyList<ValidationIssue> issues)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(issues);
         var publicationAuthority = _plan.TreatmentResourcePublicationAuthority;
@@ -353,6 +411,9 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             !ReferenceEquals(fileSystem, _fileSystem) ||
             Volatile.Read(ref _closed) != 0 ||
             itemAuthority is null ||
+            !issues.Any(static issue => issue.Severity == IssueSeverity.Error &&
+                issue.Code == "npc_existing_inventory_resend_forbidden" && issue.Section == "NPCInventory" &&
+                MortalWoundTreatmentItemPublicationAuthority.TryParseNpcInventoryIssuePath(issue.FilePath, out _, out _)) ||
             !ReferenceEquals(_plan, _receipt.Plan) ||
             !ReferenceEquals(publicationAuthority, _receipt.PublicationAuthority) ||
             !publicationAuthority!.HasValidSeal() ||
@@ -401,13 +462,14 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             return issues;
         }
 
+        var comparison = itemAuthority.CaptureExactPublishedNpcInventoryComparison(publishedNpcRoot);
+        if (comparison is null) return issues;
+
         var matchingIndex = -1;
         var matchingCount = 0;
         for (var index = 0; index < issues.Count; index++)
         {
-            if (!itemAuthority.ProvesExactPublishedNpcInventoryContinuityIssue(
-                    issues[index],
-                    publishedNpcRoot))
+            if (!comparison.Proves(issues[index]))
             {
                 continue;
             }
@@ -436,6 +498,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         if (_receipt.IsTerminalReleaseOnly ||
@@ -474,11 +537,14 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             ProgressionScheduleService progressionSchedule,
             ProgressionControl control)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(progressionSchedule);
         ArgumentNullException.ThrowIfNull(control);
         if (_receipt.IsTerminalReleaseOnly)
             return TerminalReleaseOnlyFailure("advance progression publication");
+        var diagnosis = _receipt.PublicationAuthority.ContinuationAuthority as WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
+        var diagnosisControl = diagnosis is null ? null : JsonSerializer.SerializeToNode(control);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
         var ownsAdvance = false;
@@ -506,6 +572,19 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 return PublishedAgreementChangedFailure();
             }
             ownsAdvance = true;
+
+            if (diagnosis is not null)
+            {
+                var published = Volatile.Read(ref _publishedAgreement) ?? throw new InvalidDataException("Missing diagnosis published agreement.");
+                diagnosis.RequirePublishedProgressionData(diagnosisControl!, published);
+                // The common transaction already committed T1 and its ordinary
+                // schedule/report images atomically with knowledge/resources.
+                // Authenticate that exact settled state; do not run time again.
+                advanced = true;
+                result = new(true, Array.Empty<ValidationIssue>(), 1,
+                    MortalWoundTreatmentPublicationTransactionOutcome.PublishedAgreementAdvanced);
+                return result;
+            }
 
             var mutation = await progressionSchedule
                 .PrepareAcceptedTurnOutcomeMutationAsync(writeLease, control);
@@ -535,6 +614,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     .PublishedAgreementAdvanced);
             return result;
         }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            throw;
+        }
         finally
         {
             if (ownsAdvance && !advanced)
@@ -543,7 +627,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             {
                 await DisposeLeaseAsync(
                     writeLease,
-                    result is not null && ClosesReceipt(result));
+                    result is not null &&
+                    (ClosesReceipt(result) ||
+                     result is { IsValid: true, Outcome:
+                         MortalWoundTreatmentPublicationTransactionOutcome.PublishedAgreementAdvanced }));
             }
         }
     }
@@ -602,17 +689,35 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                         value.Bytes))
             .ToArray();
 
+    internal Task<MortalWoundTreatmentPublicationOperationResult> CompleteAsync(FileSystemManager fileSystem) =>
+        CompleteAsync(fileSystem, ownedLeaseCloseContext: null);
+
+    /// <summary>
+    /// Completes the same publication with an optional dependency owned by its actual acquired lease.
+    /// Null preserves the ordinary completion path; a suppressed close failure never changes finalized settlement.
+    /// </summary>
+    /// <param name="fileSystem">The actual publication filesystem.</param>
+    /// <param name="ownedLeaseCloseContext">
+    /// Optional close dependency. It remains caller-owned until successful attachment, and is then disposed only by the lease.
+    /// </param>
+    /// <returns>The existing settlement result; completed validation DATA requires observed successful closure.</returns>
     internal async Task<MortalWoundTreatmentPublicationOperationResult>
-        CompleteAsync(FileSystemManager fileSystem)
+        CompleteAsync(FileSystemManager fileSystem, IDisposable? ownedLeaseCloseContext)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         if (_receipt.IsTerminalReleaseOnly)
             return TerminalReleaseOnlyFailure("finalize publication");
+        using var suppression = ownedLeaseCloseContext is null ? null : FileSystemManager.SuppressValidationReuse();
         FileSystemManager.CanonicalWriteLease? writeLease = null;
+        IDisposable? closeReservation = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
+        CompletedItemValidation? completion = null;
         try
         {
             writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
+            if (ownedLeaseCloseContext is not null)
+                closeReservation = fileSystem.AttachOwnedLeaseCloseContext(writeLease, ownedLeaseCloseContext);
             result = ToOperationFailure(AcceptedTurnAuthorityRegistry
                 .ProbeTakenMortalWoundTreatmentPublication(
                     fileSystem,
@@ -633,16 +738,23 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     writeLease,
                     _receipt);
             ObserveClosure(result);
+            if (result.IsValid && result.Issues.Count == 0 && result.ChangedCount == 1 &&
+                result.Outcome == MortalWoundTreatmentPublicationTransactionOutcome.Finalized)
+                completion = CaptureCompletedItemValidation(fileSystem, writeLease);
             return result;
         }
         finally
         {
-            if (writeLease is not null)
+            try
             {
-                await DisposeLeaseAsync(
-                    writeLease,
-                    result is not null && ClosesReceipt(result));
+                if (writeLease is not null)
+                {
+                    var closed = await DisposeLeaseAndObserveAsync(writeLease, result is not null && ClosesReceipt(result));
+                    if (closed && completion is not null)
+                        Volatile.Write(ref _completedItemValidation, completion);
+                }
             }
+            finally { closeReservation?.Dispose(); }
         }
     }
 
@@ -673,6 +785,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     internal async Task<MortalWoundTreatmentPublicationOperationResult>
         CompensateAsync(FileSystemManager fileSystem)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
@@ -705,6 +818,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager fileSystem,
             string reason)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
@@ -738,6 +852,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager.CanonicalWriteLease writeLease,
             string reason)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
@@ -763,6 +878,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         var result = _receipt.IsTerminalReleaseOnly
@@ -784,7 +900,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (Volatile.Read(ref _closed) != 0)
+        if (Volatile.Read(ref _closed) != 0 || Volatile.Read(ref _publicationUncertainty) is not null)
             return;
 
         var result = await CompensateAsync(_fileSystem);
@@ -801,6 +917,35 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     private async Task<MortalWoundTreatmentPublicationOperationResult>
         RestoreAndSettleAsync(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ThrowIfPublicationUncertain();
+        try
+        {
+            return await RestoreAndSettleCoreAsync(fileSystem, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            try
+            {
+                var failure = AcceptedTurnAuthorityRegistry.FailTakenMortalWoundTreatmentPublicationTerminal(
+                    fileSystem, writeLease, _receipt);
+                ObserveClosure(failure);
+                uncertain.Data["TreatmentPublicationTerminalFence"] = failure;
+            }
+            catch (Exception fencingFailure)
+            {
+                // A secondary in-memory fencing diagnostic cannot replace the actual storage decision.
+                uncertain.Data["TreatmentPublicationTerminalFenceFailure"] = fencingFailure;
+            }
+            throw;
+        }
+    }
+
+    private async Task<MortalWoundTreatmentPublicationOperationResult>
+        RestoreAndSettleCoreAsync(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease)
     {
@@ -829,7 +974,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 writeLease,
                 forceDurablePublication: true);
         }
-        catch (Exception exception)
+        catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
         {
             var failure = AcceptedTurnAuthorityRegistry
                 .FailTakenMortalWoundTreatmentPublicationTerminal(
@@ -861,7 +1006,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         {
             await WriteQuarantinedDurableSurfacesAsync(fileSystem, writeLease);
         }
-        catch (Exception quarantineException)
+        catch (Exception quarantineException) when (quarantineException is not CoordinatedStatePublicationUncertainException)
         {
             Exception? restorationFailure = null;
             try
@@ -870,6 +1015,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     fileSystem,
                     writeLease,
                     forceDurablePublication: false);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                uncertain.Data["TreatmentPublicationOriginalFailure"] = quarantineException;
+                throw;
             }
             catch (Exception exception)
             {
@@ -904,7 +1054,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 writeLease,
                 forceDurablePublication: false);
         }
-        catch (Exception restorationException)
+        catch (Exception restorationException) when (restorationException is not CoordinatedStatePublicationUncertainException)
         {
             throw new AggregateException(
                 "Treatment publication quarantine settlement failed and its durable authority could not be restored.",
@@ -916,6 +1066,38 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     private async Task<MortalWoundTreatmentPublicationOperationResult>
         ReleaseTerminalWithLeaseAsync(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string reason,
+            bool fromRearmed)
+    {
+        ThrowIfPublicationUncertain();
+        try
+        {
+            return await ReleaseTerminalWithLeaseCoreAsync(fileSystem, writeLease, reason, fromRearmed);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            try
+            {
+                var failure = fromRearmed
+                    ? AcceptedTurnAuthorityRegistry.FailRearmedMortalWoundTreatmentPublicationTerminal(fileSystem, writeLease, _receipt)
+                    : AcceptedTurnAuthorityRegistry.FailTakenMortalWoundTreatmentPublicationTerminal(fileSystem, writeLease, _receipt);
+                ObserveClosure(failure);
+                uncertain.Data["TreatmentPublicationTerminalFence"] = failure;
+            }
+            catch (Exception fencingFailure)
+            {
+                // A secondary in-memory fencing diagnostic cannot replace the actual storage decision.
+                uncertain.Data["TreatmentPublicationTerminalFenceFailure"] = fencingFailure;
+            }
+            throw;
+        }
+    }
+
+    private async Task<MortalWoundTreatmentPublicationOperationResult>
+        ReleaseTerminalWithLeaseCoreAsync(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             string reason,
@@ -954,7 +1136,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 forceDurablePublication: false);
             await WriteQuarantinedDurableSurfacesAsync(fileSystem, writeLease);
         }
-        catch (Exception cleanupException)
+        catch (Exception cleanupException) when (cleanupException is not CoordinatedStatePublicationUncertainException)
         {
             Exception? restorationFailure = null;
             try
@@ -963,6 +1145,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     fileSystem,
                     writeLease,
                     forceDurablePublication: false);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                uncertain.Data["TreatmentPublicationOriginalFailure"] = cleanupException;
+                throw;
             }
             catch (Exception exception)
             {
@@ -1194,7 +1381,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     beforeImage.Path,
                     expected);
             }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
             {
                 failures.Add(new InvalidOperationException(
                     $"Failed to restore exact treatment-publication before-image for '{beforeImage.Path}'.",
@@ -1242,7 +1429,9 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         }
 
         var commandText = DecodeUtf8(command);
-        if (!ContainsDurableCoordinates(commandText))
+        var diagnosis = _receipt.PublicationAuthority.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation;
+        var guided = _receipt.PublicationAuthority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput;
+        if (!diagnosis && !guided && !ContainsDurableCoordinates(commandText))
         {
             return false;
         }
@@ -1256,6 +1445,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         try
         {
             using var commandDocument = JsonDocument.Parse(commandText);
+            if (diagnosis)
+                MortalWoundDiagnosisInputCodec.RequireRequestMatches(
+                    JsonNode.Parse(commandText)!.AsObject(), _receipt.Request);
+            if (guided)
+                MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(JsonNode.Parse(commandText)!.AsObject(), _receipt.Request);
             var history = WoundHistoryState.Parse(
                 DecodeUtf8(historyBytes),
                 WoundHistoryState.HistoryPath);
@@ -1280,7 +1474,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                    catalog.HeldRequests.Count(RequestAgrees) == 1 &&
                    !catalog.FinalizedRequests.Any(RequestAgrees);
         }
-        catch (JsonException)
+        catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException)
         {
             return false;
         }
@@ -1329,6 +1523,28 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 "The exact durable treatment request could not be quarantined from its durable roots.");
         }
 
+        if (_receipt.PublicationAuthority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput)
+        {
+            // This is the real terminal receipt's captured selection/hold, not
+            // a serialized kind exemption. Restore only its authenticated earlier
+            // images together; a surviving real wave must settle with its owner.
+            MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(command, _receipt.Request);
+            if (!_receipt.IsTerminalReleaseOnly || !quarantine.PendingChanged || pending is null ||
+                pending["repairPackets"] is not JsonArray { Count: 0 } || pending["repairReceipts"] is not JsonArray { Count: 0 } ||
+                pending.ContainsKey("guidedTreatmentRequest") || pending.ContainsKey("submittedTreatmentRequests") || pending.Count != 6)
+                throw new InvalidDataException("Terminal physical cleanup cannot discard another pending owner or surviving repair wave.");
+            var owner = _receipt.PublicationAuthority.AcceptedStateAuthority;
+            var originalCommand = owner.ReadDiagnosisOriginalCommandBeforeImage();
+            var originalPending = owner.ReadDiagnosisOriginalPending();
+            fileSystem.RequireCommittedLocalPublication(await fileSystem.PublishLocalFilesAsync(writeLease,
+            [
+                new CanonicalLocalFileChange(AcceptedMechanicsPlan.WoundCommandPath, commandBytes, originalCommand.Bytes),
+                new CanonicalLocalFileChange(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, pendingBytes, originalPending.Bytes)
+            ]));
+            if (!await DurableTreatmentAuthorityAbsentAsync(fileSystem, writeLease))
+                throw new InvalidDataException("Terminal physical cleanup retained a durable copy of the cancelled request.");
+            return;
+        }
         if (quarantine.CommandChanged)
         {
             await fileSystem.WriteFileAtomicAsync(
@@ -1556,6 +1772,16 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
             StringComparison.Ordinal);
 
+    // Local stop only: an uncertainty observed after another scope's lease ended does
+    // not consume the original receipt or release its held claims. No recovery is run.
+    internal void ObservePublicationUncertainty(CoordinatedStatePublicationUncertainException uncertain)
+    {
+        ArgumentNullException.ThrowIfNull(uncertain);
+        Interlocked.CompareExchange(ref _publicationUncertainty, ExceptionDispatchInfo.Capture(uncertain), null);
+    }
+
+    private void ThrowIfPublicationUncertain() => Volatile.Read(ref _publicationUncertainty)?.Throw();
+
     private static bool ClosesReceipt(
         MortalWoundTreatmentPublicationOperationResult result) =>
         result.Outcome is
@@ -1580,18 +1806,19 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             Interlocked.Exchange(ref _closed, 1);
     }
 
-    private static async Task DisposeLeaseAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        bool suppressFailure)
+    private async Task DisposeLeaseAsync(FileSystemManager.CanonicalWriteLease writeLease, bool suppressFailure) =>
+        _ = await DisposeLeaseAndObserveAsync(writeLease, suppressFailure);
+
+    private async Task<bool> DisposeLeaseAndObserveAsync(FileSystemManager.CanonicalWriteLease writeLease, bool suppressFailure)
     {
-        try
+        try { await writeLease.DisposeAsync(); return true; }
+        catch (Exception closingFailure) when (suppressFailure || Volatile.Read(ref _publicationUncertainty) is not null)
         {
-            await writeLease.DisposeAsync();
-        }
-        catch when (suppressFailure)
-        {
-            // The one-use registry state is already terminal. A lock-handle close
-            // failure must not turn an exact resource commit into a second spend.
+            if (Volatile.Read(ref _publicationUncertainty) is { } uncertainty)
+                uncertainty.SourceException.Data["TreatmentPublicationLeaseCloseFailure"] = closingFailure;
+            // Keep the established finalized settlement, but expose no completed
+            // validation DATA unless the actual physical close returned.
+            return false;
         }
     }
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "path": "t179pd-hot-custody-hcd01-verification-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-hcd01-verification-20261016.diff",
+    "raw_sha256": "5adf364c7c45b25f2c40eae65b211836af11ab1889a4698db943e677278a017e",
+    "raw_bytes": 1102576,
+    "stored_sha256": "7d6a26dcca5de29a21ea48942733d2d813c894bbf92d668e97e71a15f71fab1c",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "d149d37577a3367ae6ca249640353a194934300e"
+    ]
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "route": "baseline",
+  "mode": "literal_backslash",
+  "root": "/tmp/boe-gameengine-turnlifecycle-8c8409679ddc4f5cbab21167f14baaa6",
+  "names": [
+    "lore/odd\\leaf.json"
+  ],
+  "failure": "System.IO.InvalidDataException: Signed snapshot path is not exactly representable: 'lore/odd\\leaf.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 122\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson[TManifest](TManifest manifest, JsonSerializerOptions manifestHashOptions, Func`2 getHash, Action`2 setHash, Func`2 getSessionId, Func`2 getRequestId, Func`2 getTurnNumber, Func`2 getFiles, Func`2 getSnapshotFileHashes, Func`2 getClientOwnedValidationHashes, Func`2 getRollbackBaselineFiles, Func`2 getSourceLabel, Func`2 getRollbackBackups, Func`2 readRelativeFileBytes, Boolean hashSnapshotBytesExactly) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 399\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(CanonicalWriteLease writeLease, TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 524\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 393\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 395\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11383\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass329_2.<<OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence>b__2>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs:line 63\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "before": {
+    "lore/odd\\leaf.json": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "after": {
+    "lore/odd\\leaf.json": "//57AH0AIAA=",
+    "game_state/meta/afterlife_global_flags.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZmxhZ3MiOiBbXQp9",
+    "game_state/meta/afterlife_chronicles.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiY2hyb25pY2xlcyI6IFtdCn0=",
+    "game_state/meta/afterlife_entity_profiles.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicHJvZmlsZXMiOiBbXQp9",
+    "game_state/meta/afterlife_spiritual_conflict_state.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiYWN0aXZlQ29uZmxpY3QiOiBudWxsLAogICJyZWNlbnRDb25mbGljdHMiOiBbXQp9",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/lore/odd\\leaf.json": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiYWN0aXZlQ29uZmxpY3QiOiBudWxsLAogICJyZWNlbnRDb25mbGljdHMiOiBbXQp9",
+    "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZmxhZ3MiOiBbXQp9",
+    "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAicHJvZmlsZXMiOiBbXQp9",
+    "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiY2hyb25pY2xlcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJlOTdiMGVmMmY5NzU0Y2VhYTg4ZGUxYzYxNmI2ZjQ0NSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJlOTdiMGVmMmY5NzU0Y2VhYTg4ZGUxYzYxNmI2ZjQ0NSJ9",
+  "resultReturned": false
+}

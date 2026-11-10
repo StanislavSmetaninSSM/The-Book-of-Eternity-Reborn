@@ -1,0 +1,34 @@
+{
+  "root": "sole writer",
+  "reports": [
+    {
+      "report": "t179pd-preparation-control-purpose-lifetime-design-20261016",
+      "source": "a85a726229e74465f986af69ca00a8e0225c0dea",
+      "exact_source_projections_verified": 95
+    },
+    {
+      "report": "t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016",
+      "source": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "exact_source_projections_verified": 30
+    }
+  ],
+  "audit_pin_diff_tmp_entries": [
+    81,
+    3,
+    10,
+    0
+  ],
+  "audit_scope": "all59 methods/131 cases; source boundary audit is not runtime or affected source acceptance",
+  "review_pin_diff_tmp_entries": [
+    31,
+    4,
+    9,
+    0
+  ],
+  "purpose_design_pin_diff_tmp_entries": [
+    85,
+    0,
+    1,
+    0
+  ]
+}

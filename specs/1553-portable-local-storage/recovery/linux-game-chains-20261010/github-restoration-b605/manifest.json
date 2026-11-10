@@ -1,0 +1,23 @@
+{
+  "SourceSHA": "b605633bd08d018272d783501bc00242ed06f0e1",
+  "Status": "PASS",
+  "Scope": "GitHub-only fresh scratch clone initially20317cad, then GitHub-only fetch/clean checkout to exactb605; restored verifier alltracked/raw integrity plus broader originalstoragepins, not runtime or clean-source catalog acceptance",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "checkpoint-integrity.json.gz",
+      "RawSHA256": "0ccfa34f269a81d8fa707f22d49f6b63426bc1feb3a86372219a25c91208081b",
+      "RawBytes": 1753
+    },
+    {
+      "Path": "historical-storage-pins.json.gz",
+      "RawSHA256": "ae2fcf8f6ce66a6a37bc8cbddeb0f4fae2e043a22e2db30a5e6c3865bc025f75",
+      "RawBytes": 462
+    },
+    {
+      "Path": "optimized-verifier-refusal.json.gz",
+      "RawSHA256": "73f62d472433d304bd454ece94d217d7c32abfbc0f45e065fb25714b809a64cc",
+      "RawBytes": 769
+    }
+  ]
+}

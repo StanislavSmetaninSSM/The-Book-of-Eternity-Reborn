@@ -1,0 +1,102 @@
+{
+  "kind": "ROOT_FINAL_EXISTING_PREINTAKE_ROUTE_SOURCE_HANDOFF_CHECKPOINT",
+  "head": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceBase": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+  "sourceReviewedWip": "5e3bfaded1bc854a6bb49a871e625d9d794fc542",
+  "remote": {
+    "refs/heads/1536-wound-b2-cloud-20261012": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+    "refs/heads/main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4"
+  },
+  "clean": true,
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "localMainRefPresent": false,
+  "rootVerifierCorrection": {
+    "firstAttemptExitCode": 1,
+    "cause": "Verifier incorrectly assumed refs/heads/main exists in branch-only recovered checkout; remote main exactcheck already succeeded.",
+    "correction": "Only assert local main when present; always assert actual GitHub main ref and exact task ref. No repository/runtime/test source change or replay."
+  },
+  "verdict": "BOUNDED_SOURCE_ASSESSMENT_HANDOFF_ACCEPTED_AND_SAVED_ONLY",
+  "testsOnlyVerdict": "NO_NEW_TESTS_ONLY_STAGE_ON_THIS_CANDIDATE",
+  "evidenceVerdict": "ZERO_NEW_TEST_EXECUTION_PASS_RED; all historical evidence unchanged",
+  "result": "Existing pre-intake narrative producer identified before FIRST/eligible correction intake. Exact realread/projector/writereturn and engineiteration/sourcebinding hooks and cost recorded. Corrected route lacks complete prepublication N→I pass; mandatory newrawintakebinding would add admission semantics, intendedpreseal NI consumer remains open. No production/test/runtime/tool changes.",
+  "remaining": "Actual new-observation consumer effect or lawful NI-complete intendedpreseal path; HOT/sourcehistory/fullS/B/M3/F1/T197/Windows/A3 holds retained.",
+  "artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md",
+      "bytes": 9461,
+      "sha256": "0d4c5a7cd9bb39333b78d4499f1ab8aed080a1c59f9d1e1091391db7ac8cb056"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json",
+      "bytes": 26258,
+      "sha256": "10e012f5bc70812bcc568b9919e607fb5629e16b8143aaae06453f62ef6baf14"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.md",
+      "bytes": 3139,
+      "sha256": "d03a41447e2cc1ec13c585f54354908710e3311d0e30518e50f94a32e33b2a90"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+      "bytes": 4237,
+      "sha256": "f8e3610d268a206690e34a6b85d5ba94197f551abf42a17ca5b4b2f9ab629a4c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-check-20261017.json",
+      "bytes": 43053,
+      "sha256": "9e556469ddcc55270dbda7245a804c740b687b31f01f642dad778d26a0b59c7c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-acceptance-5e3bfade-20261017.json",
+      "bytes": 4776,
+      "sha256": "4ed20cd072e3b5f20dbf8fe1d3b985ca898560d54e420fc6fb2b9fe57a444fa7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-inspection-1afc3072-20261017.json",
+      "bytes": 1156,
+      "sha256": "ecb39d57a350f180b9d2c041d58a6b6958de010028dc0187c623a1e410fd64d8"
+    }
+  ],
+  "changedPathsFromSourceBase": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-final-delta-github-1afc3072-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-acceptance-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-inspection-1afc3072-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-wip-delta-github-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-root-final-checkpoint-1afc3072-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-1afc3072-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "finalSavePaths": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-acceptance-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-check-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-wip-delta-github-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-5e3bfade-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "recovery": {
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "consecutiveDeltas": 65,
+    "trackedPaths": 55118,
+    "newGithubFiles": 13,
+    "newChangedPaths": 9,
+    "newReceipt": "/tmp/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+    "newReceiptSha256": "508a8379e65c9804b7389e73db993ec0f83cbf44418acca66d4624872fc839bc",
+    "composition": "/tmp/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+    "compositionSha256": "ca961daff4a60005116d2fcfd051f0d7a16d23a88f60d5626f34f78c61ca08ed",
+    "scope": "Root independently verified immediate newdelta physicalbytes/Gitblob/mode/Gitshow/pathset plus retainedreceipt-hash+metadata fulltree composition. No new clone/oldraw or oldtest replay."
+  },
+  "utc": "2026-10-17T19:24:46.763676+00:00"
+}

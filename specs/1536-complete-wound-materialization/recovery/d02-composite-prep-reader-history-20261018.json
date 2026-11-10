@@ -1,0 +1,21 @@
+{
+  "kind": "INDEPENDENT_READ_ONLY_READER_CORRECTION",
+  "originalScript": "/tmp/1536-cloud-tools/review/check_d02_composite_prep_v1.py",
+  "originalSha256": "e63c1711f8fd8001386350fa85820fc0946ecafc47417801c7102bbef62ea25a",
+  "failure": "/tmp/1536-cloud-tools/review/d02-composite-prep-reader-v1-error-20261018.txt",
+  "failureSha256": "8f46ae79d7f8597fa0f9c358a2831674a916896529278732de213a47522270ac",
+  "originalToolSession": 69738,
+  "nativeExit": 1,
+  "scope": "Read-only reader failed parsing GNU timeout argv. No source/native/PREP result changed. Index correction only; semantic checks unchanged.",
+  "correctedScript": "/tmp/1536-cloud-tools/review/check_d02_composite_prep.py",
+  "correctedSha256": "87ac757c0eb71a1e0dce040e05e8158d65f8f8ccc17105a7c2bfc384c36ecc9b",
+  "secondReaderCorrection": {
+    "originalScript": "/tmp/1536-cloud-tools/review/check_d02_composite_prep_v2.py",
+    "originalSha256": "50e4c703c5d850a1fa298b9af3db248ffd4bb7af0b4ae98bfdcd43be6956f5ff",
+    "failure": "/tmp/1536-cloud-tools/review/d02-composite-prep-reader-v2-error-20261018.txt",
+    "failureSha256": "18a5e4688d06f722de45a7afdd2492abd6b72ada34d9db22e38810d47ceaf0bf",
+    "toolSession": 82177,
+    "readerExit": 1,
+    "scope": "Exact member addressing via originalPath-index mapping; no semantic assertion/source/native change."
+  }
+}

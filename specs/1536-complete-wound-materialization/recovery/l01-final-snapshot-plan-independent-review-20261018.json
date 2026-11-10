@@ -1,0 +1,167 @@
+{
+  "kind": "FINAL_CONDITIONAL_CUSTODY_ACCEPTED_SNAPSHOT_PLAN_INDEPENDENT_DOCUMENTATION_REVIEW",
+  "candidate": "f2f835c13056c87df5c25faf85ba053f560a2079",
+  "base": "be89497c746d8393470d2ff9789c262c1d60ed5a",
+  "verdict": "ACCEPT_CONDITIONAL_SINGLE_SNAPSHOT_PLAN_DOCUMENTATION_ONLY",
+  "reviewedPlan": {
+    "path": "specs/1536-complete-wound-materialization/design/l01-future-custody-accepted-single-run-plan-20261018.md",
+    "bytes": 11321,
+    "sha256": "d92dda57efddd32f1537b3d46bbd8b5a1b8b846a43cad3bef43fd619ffb402a0"
+  },
+  "findings": [],
+  "conclusion": "The plan is accepted as a bounded conditional proposal and stop boundary. It accurately distinguishes qualified D01 own-synthetic delivery from unimplemented game capture orchestration. This review does not authorize capture implementation, gameplay, a snapshot request, crash5, or any native action.",
+  "evidenceAcceptanceSave": {
+    "verdict": "ACCEPT_EXACT_NARROW_SYNTHETIC_EVIDENCE_METADATA",
+    "copiedArtifacts": {
+      "l01-delivery-d02-synthetic-independent-review-20261018.json": "1bdc0c5b159b4b27f2f6ffa99e68d4ce184401f2230a57384cac990428a25cef",
+      "l01-delivery-d02-synthetic-independent-review-20261018.md": "b7283bd493d52fbaf955443f1088c0efc4c84128f5634bcef40a3506d48d3e1b",
+      "l01-delivery-d02-synthetic-independent-checks-20261018.json": "0d3e6c0c226e71cc098c27c263e4595402aa4615e87a40b3660a1d6bb69b2cd7",
+      "check_d02_synthetic_evidence.py": "a4aff5df945f4107fef2aee02a3512bfe32bb3aad3e9a30ecd89a0de94e35c31"
+    },
+    "allFourExactByteCopies": true,
+    "acceptedSyntheticVerdict": "ACCEPT_D01_DELIVERY_OWN_SYNTHETIC_0_7_ONLY",
+    "original73PassedFlagsRetained": true,
+    "current149PinsUnchanged": true,
+    "originalEvidenceIndexZipControllerBindingsUnchanged": true,
+    "sourceZeroPermits": "CONSUMED",
+    "syntheticPermit": "CONSUMED_EVIDENCE_ACCEPTED_NO_RETRY",
+    "retryRelease": "NONE"
+  },
+  "checks": {
+    "passed": 38,
+    "findings": [],
+    "path": "/tmp/1536-cloud-tools/review/l01-final-snapshot-plan-independent-checks-20261018.json",
+    "sha256": "43fc7cb1c95a7eeed874e1403f2292d14778af20cbc47ce569312590e0b97689",
+    "checkerPath": "/tmp/1536-cloud-tools/review/check_d02_final_snapshot_plan.py",
+    "checkerSha256": "566ed2aed65cd9a82d6909d29f0d76165df54704bbc7915a0c95668f45f82ece",
+    "nativeActions": 0,
+    "procfsReads": 0,
+    "repositoryWrites": 0
+  },
+  "sourceBackedAssessment": [
+    {
+      "topic": "Exact route and ownership",
+      "assessment": "The separate diagnostic Fact at JointInterfaceCrashDiagnostic.cs13\u201314 calls cut1 with diagnostic=true. Crash.cs44\u201346 creates the nonce and parent.json;65\u201366 passes the same independent context to the resumer.113\u2013114 contain the documented real resumer role/argument/dependency shape. This differs from S01 nonce-in-argv; the plan correctly requires a new exact role predicate and immutable parent-file binding."
+    },
+    {
+      "topic": "Live attachment and deadline",
+      "assessment": "Delivery.Start is installed in the owning parent at132\u2013134; Reader/ReadHealth are available at137, before the unchanged220s WaitForExit at139. The plan requires that wait and the consumer start promptly and concurrently, with a single monotonic deadline and no collector await before the wait. This ordering remains a future SOURCE proof, not current behavior."
+    },
+    {
+      "topic": "Trigger, freshness and cancellation",
+      "assessment": "The helper exposes Reader, ReadHealth and QueueResidence. Its exact custody-return, accepted enter/return and late-return markers support the proposed typed trigger and sticky cancellation. Zero unhealthy counters and local residence<=1s are admission safeguards. The60s timer is anchored to parent receive timestamp; the plan explicitly refuses to treat the60s-old trigger, silence or UTC difference as evidence of current phase or source latency."
+    },
+    {
+      "topic": "One request and concurrent limits",
+      "assessment": "At most one CAS-admitted collector is proposed after live identity/health recheck and at least25s remaining under the same220s deadline. The20s external collector bound plus5s owned cleanup never extends220/900. Consumer/raw draining remain independent. Accepted/exit races during collection are retained; phase stays UNKNOWN unless actual ordering proves a narrower statement."
+    },
+    {
+      "topic": "Owned cleanup and outcome priority",
+      "assessment": "The external watchdog must stay responsive while resumer threads may be suspended. Only the verified collector/runtime-created createdump may be stopped, with exact identity/argument revalidation. Collector exit does not prove target resumption. Unresolved ownership/join/EOF retains the disposable root and stops. Native game result, observer errors, API reach, collector result and cleanup remain separate using existing accounting patterns."
+    },
+    {
+      "topic": "Evidence usefulness and publication",
+      "assessment": "A source-mapped method/MVID/MethodDef/IL/native-TID snapshot may identify an operation or managed wait site, but cannot prove progress, a lock owner, async causality, work remaining or a completion bound. Private core/raw report, small sanitized publication, UNKNOWN timing/phase limits and one-outcome stop are appropriate. No additional run follows missing/unhelpful evidence."
+    }
+  ],
+  "nonblockingDocumentationCorrection": {
+    "location": "design/l01-future-custody-accepted-single-run-plan-20261018.md: existing parent wait citation",
+    "reviewedText": "GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:137",
+    "correction": "GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:137\u2013139",
+    "reason": "137 is the live-consumer comment;139 is the actual WaitForExitAsync().WaitAsync(220s). The intended ordering is already explicit.",
+    "severity": "REFERENCE_PRECISION_ONLY",
+    "parentAcknowledged": true,
+    "allowedInAcceptanceSave": true
+  },
+  "futureReadiness": "NOT_IMPLEMENTED_NOT_PREPARED_NOT_RELEASED. Accepted S01 capability and D01 delivery are prerequisite evidence only. Future capture tooling requires its own bounded SOURCE, fresh affected build/catalog/exact PlanOnly and source-bound observer-fault/teardown proof as appropriate, followed by a separately saved/recovered explicit one-run admission. No unchanged historical replay is implied.",
+  "acceptanceSaveConditions": [
+    "Copy this report/MD/checker/checks byte-exact and retain the reviewed candidate/plan SHA. Apply only the acknowledged137\u2013139 citation clarification and acceptance/status metadata; preserve the correction as distinct from the reviewed plan bytes.",
+    "Mark final conditional plan documentation review complete and D01 own-synthetic qualification narrowly accepted. Keep every ZERO/synthetic permit consumed and retry/gameplay/snapshot/crash5 NONE.",
+    "Preserve exact original outcomes, accepted EVIDENCE copies, compile provenance,149 current pins and historical ledgers. Do not convert the plan into an implementation or runtime admission.",
+    "Save/push/exact remote readback/independent clean recovery of the final documentation checkpoint; then STOP before gameplay, snapshot or crash5."
+  ],
+  "sourceReferences": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "sha256": "dd4d1b1db97288f619b7d97fb9795ff93e4df9f091aed9b8d9605e821abadd35",
+      "relevantLines": [
+        44,
+        45,
+        46,
+        65,
+        66,
+        108,
+        113,
+        114,
+        132,
+        133,
+        134,
+        137,
+        139,
+        147,
+        148,
+        149,
+        150,
+        151,
+        154,
+        165,
+        179
+      ]
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "sha256": "c4909c88decc51ac95b2d3ef8e74c35e23625da051d732c324080c270d4d2804",
+      "relevantLines": [
+        12,
+        13,
+        14,
+        29,
+        31,
+        32,
+        33,
+        36
+      ]
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c",
+      "relevantLines": [
+        20,
+        21,
+        50,
+        184,
+        185,
+        186,
+        187,
+        204,
+        211,
+        214
+      ]
+    }
+  ],
+  "recovery": {
+    "receipt": "/tmp/1536-cloud-tools/d01-carrier-recovery-f2f835c1.json",
+    "receiptSha256": "ce9fe93dafc3a951a4bb2c38f5a1b40db3c4de71626c603d87c3fd35b5aad804",
+    "remoteVerifiedByReceipt": true,
+    "writerAndIndependentCloneExactClean": true,
+    "recoveredTotalPaths": 168,
+    "changedPathsThisBlock": 10
+  },
+  "preserved": {
+    "L01": "52/57",
+    "old66529": "UNKNOWN_UNAVAILABLE",
+    "originalCatalog": 124,
+    "originalUnit": 137,
+    "originalBindingFailure": "FROZEN",
+    "gameplayRelease": "NONE",
+    "snapshotRelease": "NONE",
+    "crash5Release": "NONE",
+    "syntheticRetryRelease": "NONE",
+    "platformHolds": [
+      "cloud Linux game qualification",
+      "future Windows five-case qualification",
+      "Windows artifact403 blocked/no retry"
+    ],
+    "broaderHolds": "FullNI/HOT/F1/M3/T197/E01/T148/Phase10/A3 and CI restrictions unchanged."
+  }
+}

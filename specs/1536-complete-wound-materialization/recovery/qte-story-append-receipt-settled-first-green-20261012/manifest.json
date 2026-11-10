@@ -1,0 +1,145 @@
+{
+  "scope": "#1536 bounded story prerequisite receipt only; exact affected case genuine ordinary QTE handoff/no-receipt idle/correlated receipt/finalized health/strict original cleanup",
+  "runtimeSource": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "compileSource": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "acceptedSourceGate": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "runs": {
+    "plan": "20261012-135845-090-303478-ab3a0289f86f4530a32ac6d3b9b24fad-categories",
+    "catalog": "20261012-140116-531-303706-8503a831095548a3be3a191d92e5f6d8-categories",
+    "actual": "20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories"
+  },
+  "thisSourceActualInvocations": 1,
+  "allReceiptFixtureActualInvocations": 3,
+  "counts": {
+    "plannedMethods": 1,
+    "plannedCases": 1,
+    "plannedDescriptors": 1,
+    "completedDescriptors": 1,
+    "executed": 1,
+    "passed": 1,
+    "failed": 0,
+    "complete": true
+  },
+  "categoryBudgetMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "wallTime": "00:00:13.8621120",
+  "timedOut": false,
+  "skipped": 0,
+  "duplicateTestIds": 0,
+  "genuineOriginalRequestId": "09f8e12bab2d462f820c7765735bac38",
+  "genuineSnapshotToken": "E3840439717BEE6E3EE3A9F6F0CD042277110BB281BA4D239A54FDD489DD8E24",
+  "sourceTurn": 42,
+  "actualNoReceiptIdle": "REACHED/PASS awaiting_receipt, turn42, exact story/resources/wounds/original100 artifacts retained",
+  "actualCorrelatedReceiptResume": "REACHED/PASS actual recreated engine idle, canonical selected Damage5 plus bounded2 health160->153, same story,100 original artifacts removed",
+  "strictOwnedCleanupRoots": 2,
+  "allRootsActuallyAbsent": true,
+  "sourcePins": 44,
+  "binaryPins": 5,
+  "priorFirstOutcomes": "initial15 completed13PASS2FAIL plus1incomplete timeout preserved; current1PASS is separate, not rewritten original cohort",
+  "producer": "NOT_IMPLEMENTED",
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-135845-090-303478-ab3a0289f86f4530a32ac6d3b9b24fad-categories/summary.json",
+      "sha256": "07a646fd01b120f32dc370949c28ab9386f01d2ab7ab6afa8d785a12e90d6c8a",
+      "originalSha256": "07a646fd01b120f32dc370949c28ab9386f01d2ab7ab6afa8d785a12e90d6c8a"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-135845-090-303478-ab3a0289f86f4530a32ac6d3b9b24fad-categories/plan.json",
+      "sha256": "dfbc90e4b52ef4f60d62c8ac867ef622d6eccdfb1b45ef033b57e22f9d8a707d",
+      "originalSha256": "dfbc90e4b52ef4f60d62c8ac867ef622d6eccdfb1b45ef033b57e22f9d8a707d"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-135845-090-303478-ab3a0289f86f4530a32ac6d3b9b24fad-categories/dotnet-test.log",
+      "sha256": "13c6cee4fc225bcf593ecbfe58532cc44851a8a2abc5cd521ea3b2d914d4d077",
+      "originalSha256": "eca2cfbc702c34dd8270d49795d30f2cbff5180953d83cc44c60b390b6a1913b"
+    },
+    {
+      "path": "catalog-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140116-531-303706-8503a831095548a3be3a191d92e5f6d8-categories/summary.json",
+      "sha256": "dbea076487be86476e305315861374b9bb3166d5744c91af7119b6805edad906",
+      "originalSha256": "dbea076487be86476e305315861374b9bb3166d5744c91af7119b6805edad906"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140116-531-303706-8503a831095548a3be3a191d92e5f6d8-categories/dotnet-test.log",
+      "sha256": "97ba62cc6b37c1cf6ab75afe7e762a52a3812b6ea063b6a3cfa5a51abe6628c6",
+      "originalSha256": "6a72ea9dc7a101c74fb8b9f13a4a1393fa24b6f540586f5bdc336c0ba968fd87"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories/summary.json",
+      "sha256": "ef672959b63339d0b28b83f8d31dae6c528d23c32c86d9e97526fa5309c7fdf5",
+      "originalSha256": "ef672959b63339d0b28b83f8d31dae6c528d23c32c86d9e97526fa5309c7fdf5"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories/plan.json",
+      "sha256": "910b5fa6bd60e66acc81bb3391b38ace8ac8f402b52f94cff7e1d724fc048c89",
+      "originalSha256": "910b5fa6bd60e66acc81bb3391b38ace8ac8f402b52f94cff7e1d724fc048c89"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories/dotnet-test.log",
+      "sha256": "14c8e30f257b66926205668de59c667b7c26851aa8778b935176fddb7da57d05",
+      "originalSha256": "dcdbcd89a9e805fc28e66c912874847df13b597c70293eab8ae6e0226b084d6a"
+    },
+    {
+      "path": "actual-qte-story-append-receipt-integration-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-140225-029-303899-ab931e082b204a679d8da090d2aa78ea-categories/qte-story-append-receipt-integration-001.trx",
+      "sha256": "aca3900ac7a365e716955adfc1d1aef109b02fd91c10ec836ca613b36597fae0",
+      "originalSha256": "ec7550098f0066bf5f326afa69e6fc451e062814855013bf82857e9c1305cdaa"
+    },
+    {
+      "path": "receipt-settled-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-plan-invocation-prewritten.json",
+      "sha256": "d9a0cff6d91e77537f36357c2ab16d95c6483aa99dd4ea7daf36eed20d9802eb",
+      "originalSha256": "d9a0cff6d91e77537f36357c2ab16d95c6483aa99dd4ea7daf36eed20d9802eb"
+    },
+    {
+      "path": "receipt-settled-catalog-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-catalog-invocation-prewritten.json",
+      "sha256": "c5251e3c97544520770d7e055c568e51c068824be7e2c3e12f1f2c6385b7df4c",
+      "originalSha256": "c5251e3c97544520770d7e055c568e51c068824be7e2c3e12f1f2c6385b7df4c"
+    },
+    {
+      "path": "receipt-settled-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-actual-invocation-prewritten.json",
+      "sha256": "3fe275444f3cd68b6871000cc1fa7b342bf837f9137b878f486e5505d3b5d503",
+      "originalSha256": "3fe275444f3cd68b6871000cc1fa7b342bf837f9137b878f486e5505d3b5d503"
+    },
+    {
+      "path": "receipt-settled-source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-source-pins.json",
+      "sha256": "844e31526ea7239dab2c0c80fa8cce4fa77e70a8d744f37b8614c033fb6f6ff6",
+      "originalSha256": "844e31526ea7239dab2c0c80fa8cce4fa77e70a8d744f37b8614c033fb6f6ff6"
+    },
+    {
+      "path": "receipt-settled-fresh-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-fresh-binaries.json",
+      "sha256": "d1bd6b159a09e73a6831213d5f419f7cc4a4923fe2d1cc8d371eb66c7ca9dfdb",
+      "originalSha256": "d1bd6b159a09e73a6831213d5f419f7cc4a4923fe2d1cc8d371eb66c7ca9dfdb"
+    },
+    {
+      "path": "receipt-settled-preparation-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-preparation-readback.json",
+      "sha256": "6c3b9eef0ffbc6c4d96f1434d369fe1f93cc0bdda49df3fcf56a82dffc3dd76e",
+      "originalSha256": "6c3b9eef0ffbc6c4d96f1434d369fe1f93cc0bdda49df3fcf56a82dffc3dd76e"
+    },
+    {
+      "path": "receipt-settled-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-first-actual-readback.json",
+      "sha256": "1696278678450389e3de3772c667f7e0b06d4c6d3001069d856e2d6561600bd6",
+      "originalSha256": "1696278678450389e3de3772c667f7e0b06d4c6d3001069d856e2d6561600bd6"
+    },
+    {
+      "path": "receipt-settled-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-settled-actual-console.log",
+      "sha256": "d591b82ea96558ae4b14e29ec08055ee352331c56c7bea1c3441b130a4fd55e7",
+      "originalSha256": "91e641116611a6c69acbc928c519a53b5c6282240bc75f15936596c8f8565c83"
+    }
+  ]
+}

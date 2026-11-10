@@ -208,7 +208,7 @@ internal static class EffectAcceptedEventReportCatalog
         if (request is null ||
             acceptedState is null ||
             !request.HasMatchingFingerprint() ||
-            !string.Equals(request.Mode, "procedure", StringComparison.Ordinal) ||
+            request.Mode is not ("procedure" or "diagnosis") ||
             request.MilestoneOrdinal is not null ||
             request.ModeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
             !request.Coordinates.MatchesAcceptedState(acceptedState) ||

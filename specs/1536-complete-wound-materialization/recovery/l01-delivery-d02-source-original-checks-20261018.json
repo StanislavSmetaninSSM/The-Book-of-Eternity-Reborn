@@ -1,0 +1,380 @@
+{
+  "kind": "D02_ORIGINAL_SOURCE_STATIC_AND_FAKE_FAULT_CHECKS",
+  "candidate": "96f08c8bb2d534c00bcbca4ff5a279554445d58d",
+  "controllerSha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388",
+  "bindingsSha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e",
+  "checks": [
+    {
+      "name": "exact source and pure-check binding",
+      "passed": true
+    },
+    {
+      "name": "nine bounded paths",
+      "passed": true,
+      "detail": [
+        "specs/1536-complete-wound-materialization/design/l01-delivery-composite-prep-plan-20261018.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/bindings.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/checks-result.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/checks.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/control.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ]
+    },
+    {
+      "name": "149 original pins untouched",
+      "passed": true
+    },
+    {
+      "name": "two closed gates and no game",
+      "passed": true
+    },
+    {
+      "name": "source digest/current root",
+      "passed": true
+    },
+    {
+      "name": "nonfeature Git tree e56782962f6620584c59566381c22d813d409896",
+      "passed": true
+    },
+    {
+      "name": "nonfeature Git tree d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+      "passed": true
+    },
+    {
+      "name": "nonfeature Git tree d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+      "passed": true
+    },
+    {
+      "name": "360 frozen helper/evidence/SDK/package inputs exact",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "unique input paths",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound l01-delivery-d01/phase.py",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound l01-build-tooling-unit-once-20261018.py",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "pre-import input bound l01-delivery-d01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "name": "integration exact complete source closure",
+      "passed": true
+    },
+    {
+      "name": "integration safe unique relative manifest paths",
+      "passed": true
+    },
+    {
+      "name": "integration distinct own three metadata files",
+      "passed": true
+    },
+    {
+      "name": "integration metadata exact",
+      "passed": true
+    },
+    {
+      "name": "integration target runtime/config",
+      "passed": true
+    },
+    {
+      "name": "integration direct dependency files present",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "integration no unaccounted RID runtime targets",
+      "passed": true
+    },
+    {
+      "name": "unit exact complete source closure",
+      "passed": true
+    },
+    {
+      "name": "unit safe unique relative manifest paths",
+      "passed": true
+    },
+    {
+      "name": "unit distinct own three metadata files",
+      "passed": true
+    },
+    {
+      "name": "unit metadata exact",
+      "passed": true
+    },
+    {
+      "name": "unit target runtime/config",
+      "passed": true
+    },
+    {
+      "name": "unit direct dependency files present",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "unit no unaccounted RID runtime targets",
+      "passed": true
+    },
+    {
+      "name": "423 shared relative names remain unmerged with four known differences",
+      "passed": true
+    },
+    {
+      "name": "24 common deps library records identical",
+      "passed": true
+    },
+    {
+      "name": "integration460 anchored in original failure snapshot",
+      "passed": true
+    },
+    {
+      "name": "successful integration and original failed catalog coexist",
+      "passed": true
+    },
+    {
+      "name": "B01 anchor BookOfEternityClient",
+      "passed": true
+    },
+    {
+      "name": "B01 anchor BookOfEternityClient.TestSupport",
+      "passed": true
+    },
+    {
+      "name": "B01 anchor PortableStorageCrashHost",
+      "passed": true
+    },
+    {
+      "name": "B01 anchor BookOfEternityClient.Tests",
+      "passed": true
+    },
+    {
+      "name": "four in-tree B01 primary anchors including storage host",
+      "passed": true,
+      "detail": [
+        "BookOfEternityClient",
+        "BookOfEternityClient.TestSupport",
+        "PortableStorageCrashHost",
+        "BookOfEternityClient.Tests"
+      ]
+    },
+    {
+      "name": "SOURCE and PREP review/hash gates",
+      "passed": true
+    },
+    {
+      "name": "input hashes before helper imports",
+      "passed": true
+    },
+    {
+      "name": "source copy no merge",
+      "passed": true
+    },
+    {
+      "name": "per-project compilation provenance",
+      "passed": true
+    },
+    {
+      "name": "fresh root and phase once-only",
+      "passed": true
+    },
+    {
+      "name": "properties target exact staged paths",
+      "passed": true
+    },
+    {
+      "name": "preprocess plus frozen import closure",
+      "passed": true
+    },
+    {
+      "name": "ordinary aggregate deadline and separate original csc60",
+      "passed": true
+    },
+    {
+      "name": "new process session wrapper and bounded join",
+      "passed": true
+    },
+    {
+      "name": "no direct arbitrary signal calls",
+      "passed": true
+    },
+    {
+      "name": "catalog and plan are no-build",
+      "passed": true
+    },
+    {
+      "name": "ZERO and no hidden build guards",
+      "passed": true
+    },
+    {
+      "name": "exact single diagnostic method/case",
+      "passed": true
+    },
+    {
+      "name": "normal899 retained before/after",
+      "passed": true
+    },
+    {
+      "name": "reuse exact actual_case separately gated",
+      "passed": true
+    },
+    {
+      "name": "finalizer and raw negative mapping retained",
+      "passed": true
+    },
+    {
+      "name": "original four pure copy checks source-bound",
+      "passed": true
+    },
+    {
+      "name": "fake proof baseline and output-close retain exact native",
+      "passed": true
+    },
+    {
+      "name": "D02-S01 original persistence defect reproduced for all four native statuses",
+      "passed": true
+    },
+    {
+      "name": "exact recovered source receipt",
+      "passed": true
+    },
+    {
+      "name": "new nine files exact Git/clone copies",
+      "passed": true
+    }
+  ],
+  "passed": 60,
+  "failed": [],
+  "faultProof": [
+    {
+      "native": 0,
+      "fault": "none",
+      "returned": true,
+      "returnedNative": 0,
+      "observerErrors": []
+    },
+    {
+      "native": 0,
+      "fault": "record-persist",
+      "returned": false,
+      "escaped": "OSError('fake final command record persistence failure')",
+      "lastPublication": {
+        "path": "root/command.record.json",
+        "nativeExit": 0
+      }
+    },
+    {
+      "native": 0,
+      "fault": "output-close",
+      "returned": true,
+      "returnedNative": 0,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ]
+    },
+    {
+      "native": 7,
+      "fault": "none",
+      "returned": true,
+      "returnedNative": 7,
+      "observerErrors": []
+    },
+    {
+      "native": 7,
+      "fault": "record-persist",
+      "returned": false,
+      "escaped": "OSError('fake final command record persistence failure')",
+      "lastPublication": {
+        "path": "root/command.record.json",
+        "nativeExit": 7
+      }
+    },
+    {
+      "native": 7,
+      "fault": "output-close",
+      "returned": true,
+      "returnedNative": 7,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ]
+    },
+    {
+      "native": 124,
+      "fault": "none",
+      "returned": true,
+      "returnedNative": 124,
+      "observerErrors": []
+    },
+    {
+      "native": 124,
+      "fault": "record-persist",
+      "returned": false,
+      "escaped": "OSError('fake final command record persistence failure')",
+      "lastPublication": {
+        "path": "root/command.record.json",
+        "nativeExit": 124
+      }
+    },
+    {
+      "native": 124,
+      "fault": "output-close",
+      "returned": true,
+      "returnedNative": 124,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ]
+    },
+    {
+      "native": -9,
+      "fault": "none",
+      "returned": true,
+      "returnedNative": -9,
+      "observerErrors": []
+    },
+    {
+      "native": -9,
+      "fault": "record-persist",
+      "returned": false,
+      "escaped": "OSError('fake final command record persistence failure')",
+      "lastPublication": {
+        "path": "root/command.record.json",
+        "nativeExit": -9
+      }
+    },
+    {
+      "native": -9,
+      "fault": "output-close",
+      "returned": true,
+      "returnedNative": -9,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ]
+    }
+  ],
+  "semanticFinding": "D02-S01: final unguarded per-command write prevents known native result return; correction required.",
+  "nativeActions": 0,
+  "sourceSnapshot": "/tmp/1536-cloud-tools/review/d02-phase-original-source-96f08c8b.py",
+  "recoveryReceiptSha256": "b254f41830e1887e2a2787046a11c795e9929b19da271ad2639b02b735906c74"
+}

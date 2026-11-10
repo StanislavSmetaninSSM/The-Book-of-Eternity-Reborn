@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static string BuildValidationRepairRequestInstructions(
         PendingTurnSnapshotResolution pendingSnapshot,
         bool fullTurnResubmissionRequired = false,
@@ -297,15 +296,43 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairFilesAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        DeleteValidationRepairFiles(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            DeleteValidationRepairFiles(writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
     private async Task DeleteValidationRepairFilesForSessionAsync(string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        DeleteValidationRepairFiles(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            DeleteValidationRepairFiles(writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private void DeleteValidationRepairFiles(FileSystemManager.CanonicalWriteLease writeLease)
@@ -336,15 +363,68 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairReadyCoreAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
-    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration)
+    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration,
+        HotRepairReadyRead? hotRead = null)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            if (hotRead is not null)
+            {
+                hotRead.ReadyObservedBeforeDelete = hotRead.Bytes is not null;
+                if (!hotRead.Faulted)
+                {
+                    try { await RecheckHotReadySourceAsync(writeLease, hotRead, requireReadyAbsent: false); }
+                    catch (Exception error) when (IsOptionalHotFailure(error)) { hotRead.Fail("SourceChanged"); }
+                }
+            }
+            if (_mortalJointInterfaceReady is { } interfaceReady && ReferenceEquals(interfaceReady.ActualRead, hotRead))
+                await RecheckMortalJointInterfaceReadyAsync(writeLease, interfaceReady, requireReadyAbsent: false);
+            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+            if (hotRead is not null) hotRead.ReadyDeleteReturned = true;
+            if (_mortalJointInterfaceReady is { } consumed && ReferenceEquals(consumed.ActualRead, hotRead)) consumed.DeleteReturned = true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            FailMortalJointInterfaceReady(hotRead);
+            hotRead?.Fail("ReadyDeletionUncertain");
+            uncertainty = failure;
+            throw;
+        }
+        catch { FailMortalJointInterfaceReady(hotRead); hotRead?.Fail("ReadyDeletionDidNotReturn"); throw; }
+        finally
+        {
+            try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+            catch { FailMortalJointInterfaceReady(hotRead); hotRead?.Fail("ReadyReleaseDidNotReturn"); throw; }
+        }
+        if (_mortalJointInterfaceReady is { DeleteReturned: true } released && ReferenceEquals(released.ActualRead, hotRead))
+            released.ReleaseReturned = true;
+        if (hotRead is not null)
+        {
+            hotRead.ReadyReleaseReturned = true;
+            if (!hotRead.Faulted && hotRead.Source is not null && hotRead.ReadyDeleteReturned)
+            { hotRead.Status = "ConsumedReadyMatched"; hotRead.Reason = "ActualMatchingDeletionAndReleaseReturned"; }
+        }
     }
 
     private async Task WriteValidationRepairFileForSessionAsync(
@@ -352,9 +432,15 @@ public partial class GameEngine
         string content,
         string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        await _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            await _fs.WriteFileAtomicAsync(writeLease, relativePath, content);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private async Task<string?> ReadValidationRepairFileForSessionAsync(

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wound-procedure-postwrite-rollback-current",
+      "reason": "Historical B.5 aggregate does not qualify current shared treatment dependencies. Current guaranteed mixed rollback and snapshot inventory receipts do not exercise procedure reservation and Fate Shield claim preservation. One existing exact Fact only, 180-second ceiling.",
+      "contracts": [
+        "#1536 T154/T177 procedural wound treatment atomic rollback and same-claim rearm",
+        "T070b5 procedure publication Step 4 compound failure boundary"
+      ]
+    }
+  ]
+}

@@ -60,31 +60,110 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
+    private Action<TrustedLocalPublicationPhase, int>? _consolePublicationObserver;
+    private Action<string>? _consoleMutationObserver;
+    private readonly LifecycleFixtureReadObservers _readObservers;
+    /// <summary>
+    /// Attaches the existing initial read sink through the fixture's explicit observation contract.
+    /// </summary>
+    private Func<string, Task>? _consoleCanonicalReadObserver
+    {
+        get => _readObservers.InitialObserver;
+        set => _readObservers.InitialObserver = value;
+    }
+    private Func<Task>? _consoleSessionClosingObserver
+    {
+        get => _readObservers.ClosingObserver;
+        set => _readObservers.ClosingObserver = value;
+    }
+    /// <summary>
+    /// Attaches the existing returned read sink through the fixture's explicit observation contract.
+    /// </summary>
+    private Func<string, Task>? _consoleReturnedCanonicalReadObserver
+    {
+        get => _readObservers.ReturnedObserver;
+        set => _readObservers.ReturnedObserver = value;
+    }
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
 
-    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null)
+    /// <summary>
+    /// Creates an isolated initialized world for a lifecycle test.
+    /// </summary>
+    /// <param name="output">
+    /// The diagnostic destination, or <see langword="null"/> when no test sink is needed.
+    /// </param>
+    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null) : this(output, null)
+    {
+    }
+
+    /// <summary>
+    /// Creates a fixture around a new world or caller-owned materialized seed data.
+    /// </summary>
+    /// <param name="output">
+    /// The diagnostic destination, or <see langword="null"/> when no test sink is needed.
+    /// </param>
+    /// <param name="adoptedRoot">
+    /// An existing validated owned copy to preserve; <see langword="null"/> initializes a fresh world.
+    /// </param>
+    /// <param name="operationTimingObserver">
+    /// Passive observer of the fixture's actual manager; <see langword="null"/> keeps ordinary fixtures unobserved.
+    /// </param>
+    /// <param name="readObservers">
+    /// Explicit read observation and passive counts, or <see langword="null"/> to preserve ordinary late-attachable observers.
+    /// </param>
+    /// <param name="passiveOperationTimings">
+    /// A sealed passive recorder, or <see langword="null"/> to omit aggregate timing.
+    /// </param>
+    internal GameEngineTurnLifecycleTests(ITestOutputHelper? output, string? adoptedRoot,
+        Action<string, string, TimeSpan>? operationTimingObserver = null,
+        LifecycleFixtureReadObservers? readObservers = null,
+        OperationTimingAccumulator? passiveOperationTimings = null)
     {
         _directGachaOutput = output;
-        _rootPath = Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(_rootPath);
+        _readObservers = readObservers ?? new LifecycleFixtureReadObservers();
+        _rootPath = adoptedRoot is null
+            ? Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"))
+            : Path.GetFullPath(adoptedRoot);
+        if (adoptedRoot is null) Directory.CreateDirectory(_rootPath);
+        else if (!Directory.Exists(_rootPath)) throw new DirectoryNotFoundException("The owned materialized seed directory is missing.");
         _fs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync
+                OperationTimingObserver = operationTimingObserver,
+                PassiveOperationTimings = passiveOperationTimings,
+                BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
+                PassiveCanonicalReads = readObservers?.CanonicalSources,
+                AfterCanonicalReadInitialValidationAsync = _readObservers.AfterInitialValidationAsync,
+                SessionOperationClosingAsync = _readObservers.AfterSessionClosingAsync,
+                AfterCanonicalReadAttemptAsync = _readObservers.AfterReadAttemptAsync,
+                LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });
-        _fs.EnsureDirectoryStructure();
-        _fs.WriteFileAtomicAsync(
+        if (adoptedRoot is null)
+        {
+            _fs.EnsureDirectoryStructure();
+            _fs.WriteFileAtomicAsync(
                 MortalItemIdentityState.StatePath,
                 MortalItemIdentityState.CreateEmptyRoot()
                     .ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))
             .GetAwaiter()
             .GetResult();
+        }
     }
+
+    /// <summary>
+    /// Gets the actual fixture manager for typed diagnostic controls on independently adopted files.
+    /// </summary>
+    internal FileSystemManager DiagnosticFiles => _fs;
+
+    /// <summary>
+    /// Gets the same typed observer holder installed in the actual fixture manager.
+    /// </summary>
+    internal LifecycleFixtureReadObservers DiagnosticReadObservers => _readObservers;
 
     [Fact]
     public void TryDescribeInvalidTriggerLifeEndRuntimeContext_MortalPreTurnAndMortalCurrent_IsReadable()
@@ -725,7 +804,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal()
+    public async Task WaitForGmResponse_GenerationChangesBeforeTerminalInspection_DoesNotConsumeReplacementSignal()
     {
         const string sessionId = "session-terminal-inspection-race";
         const string requestId = "request-terminal-inspection-race";
@@ -744,65 +823,25 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             turnNumber
         });
 
-        var inspectionLeaseAcquired = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseInspection = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var firstInspection = 0;
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired ||
-                        Interlocked.Exchange(ref firstInspection, 1) != 0)
-                    {
-                        return;
-                    }
-
-                    inspectionLeaseAcquired.TrySetResult();
-                    await releaseInspection.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
-
-        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
-        await inspectionLeaseAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        var replaceTask = Task.Run(async () =>
-        {
-            await _fs.ClearGameStateAsync();
-            await WriteJsonAsync("input/turn_request.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1,
-                status = "success"
-            });
-        });
-
-        await Task.Yield();
-        releaseInspection.TrySetResult();
-        await replaceTask.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.True(_fs.FileExists("input/turn_request.json"));
-        Assert.True(_fs.FileExists("ready/turn_complete.json"));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(engine, "WaitForGmResponse"));
+        probe.Verify(failure);
     }
 
     [Fact]
-    public async Task WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal()
+    public async Task WaitForGmResponse_GenerationChangesAfterTerminalSnapshot_DoesNotReadReplacementSignal()
     {
         const string sessionId = "session-terminal-snapshot-race";
         const string requestId = "request-terminal-snapshot-race";
@@ -825,147 +864,131 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             sessionId,
             requestId,
             turnNumber,
-            status = "success"
+            status = "success",
+            timestamp = "2026-10-09T00:00:00Z",
+            filesModified = new[] { trackedPath }
         });
 
-        var snapshotCaptured = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseResolution = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
-                        return;
-
-                    snapshotCaptured.TrySetResult();
-                    await releaseResolution.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels());
                 }
             });
-
-        var waitTask = InvokePrivateAsync<bool>(engine, "WaitForGmResponse");
-        await snapshotCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await _fs.ClearGameStateAsync();
-        await WriteJsonAsync("input/turn_request.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1
-        });
-        await WriteJsonAsync("ready/turn_complete.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1,
-            status = "success"
-        });
-
-        releaseResolution.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(engine, "WaitForGmResponse"));
+        probe.Verify(failure);
     }
 
     [Fact]
     public async Task LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string replacementPath = "game_state/world/late-idle-replacement.json";
-        var operationBound = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldOperation = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (!string.Equals(
-                            checkpoint.ToString(),
-                            "LateTerminalAndIdleOperationBound",
-                            StringComparison.Ordinal))
-                    {
-                        return;
-                    }
-
-                    operationBound.TrySetResult();
-                    await releaseOldOperation.Task;
+                    if (checkpoint == SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound)
+                        await probe.RotateAsync(checkpoint.ToString(), new Dictionary<string, byte[]>
+                        {
+                            [replacementPath] = Encoding.UTF8.GetBytes("""{"owner":"replacement"}""")
+                        }, ["game_state/control/pending_turn_snapshot.json"]);
                 }
             });
-        var method = typeof(GameEngine).GetMethod(
-            "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        Assert.NotNull(method);
-        var oldOperation = Assert.IsAssignableFrom<Task<bool>>(method!.Invoke(engine, null));
-
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        await _fs.ClearGameStateAsync();
-        await _fs.WriteFileAtomicAsync(replacementPath, "{\"owner\":\"replacement\"}");
-        releaseOldOperation.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Equal(
-            "{\"owner\":\"replacement\"}",
-            await _fs.ReadFileAsync(replacementPath));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateAsync<bool>(
+            engine, "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync"));
+        probe.Verify(failure);
     }
 
     [Fact]
     public async Task HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement()
     {
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        const string soulPath = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(soulPath,
             """{ "soulName": "Старая душа", "currentRealm": "Chaos Sea" }""");
-        await GetOrCreateSessionGenerationAsync();
-
-        var operationBound = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOperation = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+        var originalGeneration = await GetOrCreateSessionGenerationAsync();
+        var rotated = false;
+        var checkpoints = 0;
+        var committedRotations = 0;
+        var laterReads = new List<string>();
+        var laterMutations = new List<string>();
+        byte[]? rotationJournal = null;
+        byte[]? committedGenerationImage = null;
+        string? replacementGeneration = null;
+        Dictionary<string, byte[]>? sentinels = null;
+        var journalPath = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterCanonicalReadInitialValidationAsync = path =>
+                { if (rotated) laterReads.Add(path); return Task.CompletedTask; },
+                BeforeCanonicalMutationBoundaryAsync = path =>
+                { if (rotated) laterMutations.Add(path); return Task.CompletedTask; },
+                LocalPublicationObserver = (phase, _) =>
+                {
+                    if (phase != TrustedLocalPublicationPhase.Committed) return;
+                    var bytes = File.ReadAllBytes(journalPath);
+                    using var metadata = CleanupPublicationCut.Metadata(bytes);
+                    var before = metadata.RootElement.GetProperty("GenerationBefore").GetProperty("Id").GetString();
+                    var after = metadata.RootElement.GetProperty("GenerationAfter").GetProperty("Id").GetString();
+                    if (before == after) return;
+                    Assert.Equal(originalGeneration, before);
+                    Assert.False(string.IsNullOrWhiteSpace(after));
+                    committedRotations++;
+                    rotationJournal = bytes;
+                    committedGenerationImage = File.ReadAllBytes(_fs.SessionGenerationPath);
+                }
+            });
+        var input = new LoreRealmInput([], 0);
+        var engine = CreateGameEngine(input, fileSystem: files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound)
-                        return;
-
-                    operationBound.TrySetResult();
-                    await releaseOperation.Task;
+                    if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound) return;
+                    checkpoints++;
+                    // Original local admission is borrowed; no concurrent Clear or new binding is invented.
+                    await using var lifecycle = await files.AcquireSessionLifecycleLeaseAsync();
+                    await using var lease = await files.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
+                    await files.WriteFileAtomicAsync(lease, soulPath,
+                        """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea" }""");
+                    await files.WriteFileAtomicAsync(lease, WorldDirectiveService.PendingSetupPath,
+                        """{ "worldDescription": "replacement sentinel" }""");
+                    sentinels = new[] { soulPath, WorldDirectiveService.PendingSetupPath }
+                        .ToDictionary(path => path, path => File.ReadAllBytes(files.ResolvePath(path)));
+                    replacementGeneration = files.RotateSessionGeneration(lease);
+                    rotated = true;
                 }
             });
-
-        var incarnationTask = InvokePrivateTaskAsync(engine, "HandleIncarnation");
-        await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));
-
-        await _fs.ClearGameStateAsync();
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            """{ "soulName": "Новая душа", "currentRealm": "Chaos Sea" }""");
-        await _fs.WriteFileAtomicAsync(
-            WorldDirectiveService.PendingSetupPath,
-            """{ "worldDescription": "replacement sentinel" }""");
-        releaseOperation.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => incarnationTask.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement sentinel",
-            await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "Новая душа",
-            await _fs.ReadFileAsync("game_state/meta/soul_state.json"),
-            StringComparison.Ordinal);
+        // Directly await the original operation: no blocked background actor or timeout proxy survives cleanup.
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(engine, "HandleIncarnation"));
+        var afterSentinels = new[] { soulPath, WorldDirectiveService.PendingSetupPath }
+            .ToDictionary(path => path, path => CleanupPublicationCut.ReadOptional(files.ResolvePath(path)));
+        var generationAfter = File.ReadAllBytes(files.SessionGenerationPath);
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { originalGeneration, replacementGeneration,
+            checkpoints, committedRotations, rotationJournal, committedGenerationImage, generationAfter,
+            sentinels, afterSentinels, laterReads, laterMutations, input.KeyReads, input.LineReads,
+            OriginalTaskJoined = true, Failure = failure?.ToString() }));
+        Assert.Equal(1, checkpoints); Assert.Equal(1, committedRotations); Assert.NotNull(rotationJournal);
+        Assert.True(rotated); Assert.NotEqual(originalGeneration, replacementGeneration);
+        Assert.Equal(committedGenerationImage, generationAfter);
+        var replaced = Assert.IsType<SessionReplacedException>(failure);
+        Assert.Equal(originalGeneration, replaced.ExpectedGeneration);
+        Assert.Equal(replacementGeneration, replaced.ActualGeneration);
+        Assert.Empty(laterReads); Assert.Empty(laterMutations); input.AssertCompleted();
+        foreach (var path in sentinels!.Keys) Assert.Equal(sentinels[path], afterSentinels[path]);
     }
 
     [Fact]
@@ -6544,120 +6567,94 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement()
+    public async Task ProcessPlayerTurn_GenerationChangesAfterAcceptedValidation_AbortsBeforeMutatingReplacement()
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
-        var acceptedValidationReached = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldFinalizer = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var engine = CreateGameEngine(
-            new QueuedConsoleInputSource([]),
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var terminalStarts = 0;
+        GenerationFinalizerState? stateAtCheckpoint = null;
+        GameEngine? engine = null;
+        engine = CreateGameEngine(
+            probe.ObserveInput(new QueuedConsoleInputSource([])), configureSettings: InertRealmSettings,
+            fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
-                    if (checkpoint != SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
-                        return;
-
-                    acceptedValidationReached.TrySetResult();
-                    await releaseOldFinalizer.Task;
-                }
-            });
-        var gmOutputTask = Task.Run(async () =>
-        {
-            var request = await WaitForTurnRequestAsync();
-            var outputTimestamp = DateTime.UtcNow.ToString("o");
-            await WriteJsonAsync("output/narrative_response.json", new
-            {
-                response = "Старый ход успешно прошёл проверку, но не должен затронуть загруженную сессию.",
-                timestamp = outputTimestamp
-            });
-            await WriteJsonAsync("output/interface_updates.json", new
-            {
-                dialogueOptions = new[]
-                {
-                    new
+                    if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
                     {
-                        text = "Продолжить.",
-                        category = "neutral"
+                        terminalStarts++;
+                        Assert.Equal(1, terminalStarts);
+                        var requestJson = await probe.Files.ReadFileAsync("input/turn_request.json");
+                        var request = JsonSerializer.Deserialize<TurnRequest>(requestJson!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                        Assert.NotNull(request);
+                        var outputTimestamp = DateTime.UtcNow.ToString("o");
+                        await WriteJsonAsync("output/narrative_response.json", new
+                        {
+                            response = "Старый ход успешно прошёл проверку, но не должен затронуть загруженную сессию.",
+                            timestamp = outputTimestamp
+                        });
+                        await WriteJsonAsync("output/interface_updates.json", new
+                        {
+                            dialogueOptions = new[]
+                            {
+                                new
+                                {
+                                    text = "Продолжить.",
+                                    category = "neutral"
+                                }
+                            },
+                            timestamp = outputTimestamp
+                        });
+                        await WriteJsonAsync("output/debug_logs.json", new
+                        {
+                            timestamp = outputTimestamp,
+                            gm_thoughts_markdown = string.Join(
+                                "\n",
+                                "## NPC Scope",
+                                "- Mode: Scene-local",
+                                "- Relevant actors: нет",
+                                "- Why relevant: Синтетический ход без акторов проверяет session fence.",
+                                "- Actors outside scope: нет",
+                                "- Why outside scope: Структурные акторы не меняются.",
+                                "",
+                                "## Reasoning",
+                                "- Accepted result is paused before materialization.")
+                        });
+                        await WriteJsonAsync("ready/turn_complete.json", new
+                        {
+                            sessionId = request.SessionId,
+                            requestId = request.RequestId,
+                            turnNumber = request.TurnNumber,
+                            timestamp = outputTimestamp,
+                            status = "success",
+                            filesModified = new[]
+                            {
+                                "output/narrative_response.json",
+                                "output/interface_updates.json",
+                                "output/debug_logs.json"
+                            }
+                        });
+                        return;
                     }
-                },
-                timestamp = outputTimestamp
-            });
-            await WriteJsonAsync("output/debug_logs.json", new
-            {
-                timestamp = outputTimestamp,
-                gm_thoughts_markdown = string.Join(
-                    "\n",
-                    "## NPC Scope",
-                    "- Mode: Scene-local",
-                    "- Relevant actors: нет",
-                    "- Why relevant: Синтетический ход без акторов проверяет session fence.",
-                    "- Actors outside scope: нет",
-                    "- Why outside scope: Структурные акторы не меняются.",
-                    "",
-                    "## Reasoning",
-                    "- Accepted result is paused before materialization.")
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = request.SessionId,
-                requestId = request.RequestId,
-                turnNumber = request.TurnNumber,
-                timestamp = outputTimestamp,
-                status = "success",
-                filesModified = new[]
-                {
-                    "output/narrative_response.json",
-                    "output/interface_updates.json",
-                    "output/debug_logs.json"
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)
+                    {
+                        stateAtCheckpoint = CaptureGenerationFinalizerState(engine!);
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels(),
+                            ["output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json", "game_state/combat/combat_log.json"]);
+                    }
                 }
             });
-        });
-
-        var oldTurn = InvokePrivateTaskAsync(
-            engine,
-            "ProcessPlayerTurn",
-            "Проверить финализацию старого хода.",
-            null);
-        try
-        {
-            await acceptedValidationReached.Task.WaitAsync(
-                TimeSpan.FromSeconds(30));
-
-            await _fs.ClearGameStateAsync();
-            await WriteJsonAsync("input/turn_request.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1
-            });
-            await WriteJsonAsync("ready/turn_complete.json", new
-            {
-                sessionId = "replacement-session",
-                requestId = "replacement-request",
-                turnNumber = 1,
-                status = "success"
-            });
-        }
-        finally
-        {
-            releaseOldFinalizer.TrySetResult();
-        }
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldTurn.WaitAsync(TimeSpan.FromSeconds(30)));
-        await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(30));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("input/turn_request.json"),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
-        Assert.False(_fs.FileExists("stories/story.md"));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
+            engine, "ProcessPlayerTurn", "Проверить финализацию старого хода.", null));
+        var stateAfterFailure = CaptureGenerationFinalizerState(engine);
+        probe.Verify(failure, new { terminalStarts, stateAtCheckpoint, stateAfterFailure });
+        Assert.NotNull(stateAtCheckpoint);
+        Assert.Same(stateAtCheckpoint.Response, stateAfterFailure.Response);
+        Assert.Equal(stateAtCheckpoint, stateAfterFailure);
+        Assert.Equal(1, terminalStarts);
+        Assert.False(File.Exists(probe.Files.ResolvePath("stories/story.md")));
     }
 
     [Fact]
@@ -9180,7 +9177,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement()
+    public async Task CheckLifeTransitions_GenerationChangesAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement()
     {
         const string acceptedSessionId = "session_life_eval_rotation";
         const string acceptedRequestId = "request_life_eval_rotation";
@@ -9198,7 +9195,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             pendingMemoryLegacy = (object?)null
         };
 
-        await SeedMortalLifeTransitionAuthorityAsync(preTurnSoul);
+        var seededSoul = JsonSerializer.SerializeToNode(preTurnSoul)!.AsObject();
+        seededSoul[AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+            AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
+        await SeedMortalLifeTransitionAuthorityAsync(seededSoul);
+        const string emptyWoundIdentity = """{"schemaVersion":1,"entries":[]}""";
+        const string emptyWoundHistory = """{"schemaVersion":1,"nextOrdinal":1,"transitions":[]}""";
+        Assert.True(WoundIdentityState.Parse(emptyWoundIdentity, WoundIdentityState.StatePath).IsValid);
+        Assert.True(WoundHistoryState.Parse(emptyWoundHistory, WoundHistoryState.HistoryPath).IsValid);
+        await _fs.WriteFileAtomicAsync(WoundIdentityState.StatePath, emptyWoundIdentity);
+        await _fs.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, emptyWoundHistory);
         await WriteCurrentSoulStateToPendingSnapshotAsync();
         await WriteJsonAsync("input/turn_request.json", new
         {
@@ -9227,18 +9233,42 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             summary = "Добровольное завершение тестовой смертной жизни."
         });
 
-        var rawValidationReached = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseOldFinalizer = new TaskCompletionSource(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-        var engine = CreateGameEngine(
-            new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4)),
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        var lifeRequests = 0;
+        var responseWritten = false;
+        var repairDispatchAttempts = 0;
+        var repairCleanupIntents = 0;
+        var repairPath = probe.Files.ResolvePath("game_state/control/validation_repair_request.json");
+        probe.PublicationObserved = (phase, _) =>
+        {
+            if (!responseWritten || phase != TrustedLocalPublicationPhase.IntentPublished) return;
+            using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(Path.Combine(
+                probe.Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            foreach (var member in journal.RootElement.GetProperty("Members").EnumerateArray())
+            {
+                if (member.GetProperty("Path").GetString() != repairPath) continue;
+                if (!member.GetProperty("After").GetProperty("Exists").GetBoolean())
+                {
+                    repairCleanupIntents++;
+                    continue;
+                }
+                repairDispatchAttempts++;
+                Assert.Fail("The current Life response must validate without dispatching provider repair.");
+            }
+        };
+        GenerationFinalizerState? stateAtCheckpoint = null;
+        GameEngine? engine = null;
+        engine = CreateGameEngine(
+            probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
+            configureSettings: InertRealmSettings, fileSystem: probe.Files,
             finalizationHooks: new GameEngineSessionFinalizationHooks
             {
                 AtCheckpointAsync = async checkpoint =>
                 {
                     if (checkpoint == SessionFinalizationCheckpoint.LifeEvaluationRequestDispatchedBeforeWait)
                     {
+                        lifeRequests++;
                         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
                         Assert.False(string.IsNullOrWhiteSpace(requestJson));
                         using var requestDoc = JsonDocument.Parse(requestJson);
@@ -9251,17 +9281,26 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                             requestRoot.GetProperty("sessionId").GetString(),
                             requestRoot.GetProperty("requestId").GetString(),
                             requestRoot.GetProperty("turnNumber").GetInt32());
+                        responseWritten = true;
+                        var validator = new ValidationService(probe.Files, NullLogger<ValidationService>.Instance);
+                        var errors = (await validator.ValidateGameStateAsync())
+                            .Where(issue => issue.Severity == IssueSeverity.Error)
+                            .Select(issue => new { issue.Code, issue.FilePath, issue.Expected, issue.Actual })
+                            .ToArray();
+                        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+                        {
+                            kind = "f18-life-response-seed-validation", root = _rootPath, errors
+                        }));
+                        Assert.Empty(errors);
                         return;
                     }
 
-                    if (checkpoint !=
-                        SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
+                    if (checkpoint == SessionFinalizationCheckpoint.RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites)
                     {
-                        return;
+                        stateAtCheckpoint = CaptureGenerationFinalizerState(engine!);
+                        await probe.RotateAsync(checkpoint.ToString(), SessionGenerationCheckpointFixture.ReplacementTerminalSentinels(),
+                            ["output/narrative_response.json", "output/interface_updates.json"]);
                     }
-
-                    rawValidationReached.TrySetResult();
-                    await releaseOldFinalizer.Task;
                 }
             });
         var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
@@ -9271,39 +9310,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             manifest,
             true);
 
-        var oldTransition = InvokePrivateTaskAsync(
-            engine,
-            "CheckLifeTransitions",
-            acceptedSnapshotContext);
-        await rawValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(12));
-
-        await _fs.ClearGameStateAsync();
-        await WriteJsonAsync("input/turn_request.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1
-        });
-        await WriteJsonAsync("ready/turn_complete.json", new
-        {
-            sessionId = "replacement-session",
-            requestId = "replacement-request",
-            turnNumber = 1,
-            status = "success"
-        });
-        releaseOldFinalizer.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(
-            () => oldTransition.WaitAsync(TimeSpan.FromSeconds(5)));
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("input/turn_request.json"),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "replacement-session",
-            await _fs.ReadFileAsync("ready/turn_complete.json"),
-            StringComparison.Ordinal);
-        Assert.False(File.Exists(Path.Combine(_fs.GameSessionPath, "error_log.txt")));
+        var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
+            engine, "CheckLifeTransitions", acceptedSnapshotContext));
+        var stateAfterFailure = CaptureGenerationFinalizerState(engine);
+        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts, repairCleanupIntents, stateAtCheckpoint, stateAfterFailure });
+        Assert.NotNull(stateAtCheckpoint);
+        Assert.Same(stateAtCheckpoint.Response, stateAfterFailure.Response);
+        Assert.Equal(stateAtCheckpoint, stateAfterFailure);
+        Assert.Equal(0, repairDispatchAttempts);
+        Assert.Equal(1, lifeRequests);
+        Assert.False(File.Exists(Path.Combine(probe.Files.GameSessionPath, "error_log.txt")));
     }
 
     [Fact]
@@ -9678,6 +9694,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string firstPath = "game_state/core/a_atomic_snapshot.json";
         const string laterPath = "game_state/world/z_atomic_snapshot.json";
         const string firstBaseline = """{"version":"first-baseline"}""";
@@ -9687,14 +9704,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         await _fs.WriteFileAtomicAsync(laterPath, laterBaseline);
 
         var writerContended = NewSignal();
+        var mainAdmissionContentions = 0;
         var writerFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                CanonicalWriteLockContendedAsync = () =>
+                MainOwnerLockContendedAsync = () =>
                 {
+                    Interlocked.Increment(ref mainAdmissionContentions);
                     writerContended.TrySetResult(true);
                     return Task.CompletedTask;
                 }
@@ -9730,14 +9749,26 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             request,
             null,
             "atomic snapshot test");
-        await firstCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var writerTask = writerFs.WriteFileAtomicAsync(laterPath, laterConcurrent);
-        await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(writerTask.IsCompleted);
-
-        releaseSnapshot.TrySetResult(true);
-        await snapshotTask;
-        await writerTask;
+        Task? writerTask = null;
+        try
+        {
+            await firstCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            writerTask = writerFs.WriteFileAtomicAsync(laterPath, laterConcurrent);
+            await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(writerTask.IsCompleted);
+        }
+        finally
+        {
+            releaseSnapshot.TrySetResult(true);
+            await Task.WhenAll(snapshotTask, writerTask ?? Task.CompletedTask);
+        }
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+        {
+            mainAdmissionContentions,
+            SnapshotJoined = snapshotTask.IsCompletedSuccessfully,
+            WriterJoined = writerTask?.IsCompletedSuccessfully == true
+        }));
+        Assert.True(mainAdmissionContentions > 0);
 
         Assert.Equal(
             firstBaseline,
@@ -10334,6 +10365,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string trackedPath = "lore/current_world/world_setting.json";
         const string baselineJson = """{ "worldName": "Baseline" }""";
         const string changedJson = """{ "worldName": "Changed" }""";
@@ -10546,6 +10578,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     [Fact]
     public async Task RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string path = "game_state/world/weather.json";
         const string backupPath = path + ".rollback.corrupt_evidence";
         await _fs.WriteFileAtomicAsync(path, """{"weather":"baseline"}""");
@@ -10950,7 +10983,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="logger">
     /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
     /// </param>
-    /// <param name="loadHooks">Optional cuts in the real save loader.</param>
+    /// <param name="loadHooks">
+    /// Optional cuts in the real save loader; <see langword="null"/> leaves them disabled.
+    /// </param>
     /// <returns>
     /// An engine using real lifecycle services and the supplied test overrides.
     /// </returns>
@@ -10962,7 +10997,57 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
         SaveLoadServiceHooks? loadHooks = null)
     {
-        var fs = fileSystem ?? _fs;
+        return CreateGameEngineRuntime(
+            fileSystem ?? _fs,
+            inputSource,
+            configureSettings,
+            finalizationHooks,
+            logger,
+            loadHooks).Engine;
+    }
+
+    /// <summary>
+    /// Builds real lifecycle services for the supplied filesystem and exposes their shared runtime objects.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The non-null canonical filesystem used by every constructed service.
+    /// </param>
+    /// <param name="inputSource">
+    /// Console input override, or <see langword="null"/> for the engine's default input source.
+    /// </param>
+    /// <param name="configureSettings">
+    /// Optional settings customization applied before service construction.
+    /// </param>
+    /// <param name="finalizationHooks">
+    /// Optional hooks for accepted-session finalization; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <param name="logger">
+    /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
+    /// </param>
+    /// <param name="loadHooks">
+    /// Optional cuts in the real save loader; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <param name="qteInputSource">
+    /// Optional independent QTE input; <see langword="null"/> preserves the original system source.
+    /// </param>
+    /// <param name="explorerConsole">
+    /// Optional explorer input; <see langword="null"/> preserves the existing test console.
+    /// </param>
+    /// <returns>
+    /// The engine and the same state, loop, audio, validation, QTE and hooks supplied during construction.
+    /// </returns>
+    internal static GameEngineTestRuntime CreateGameEngineRuntime(
+        FileSystemManager fileSystem,
+        IConsoleInputSource? inputSource = null,
+        Action<GameSettings>? configureSettings = null,
+        GameEngineSessionFinalizationHooks? finalizationHooks = null,
+        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
+        SaveLoadServiceHooks? loadHooks = null,
+        IConsoleInputSource? qteInputSource = null,
+        IExplorerConsole? explorerConsole = null)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        var fs = fileSystem;
         var settings = new GameSettings();
         configureSettings?.Invoke(settings);
         var stateManager = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
@@ -10972,7 +11057,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var progressionSchedule = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
         var gameInterface = new GameInterface(localization, settings);
         var clipboardService = new TestClipboardService();
-        var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
+        var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService,
+            console: explorerConsole ?? new TestExplorerConsole());
         var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance, loadHooks);
         var imageService = new ImageService(fs, settings, localization, NullLogger<ImageService>.Instance);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
@@ -11002,7 +11088,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             validator,
             normalizer,
             stateManager,
-            NullLogger<QteSceneService>.Instance);
+            NullLogger<QteSceneService>.Instance,
+            qteInputSource);
 
         var engine = new GameEngine(
             fs,
@@ -11036,7 +11123,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
-        return engine;
+        return new GameEngineTestRuntime(engine, stateManager, gameLoop, audioService, validator, qteSceneService, finalizationHooks)
+        { Explorer = explorer };
     }
 
     private void ArmCanonicalWriteFailure(string relativePath, int matchingWrite = 1)
@@ -11051,6 +11139,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
     private Task BeforeCanonicalMutationAsync(string relativePath)
     {
+        _consoleMutationObserver?.Invoke(relativePath);
         if (_armedCanonicalWriteFailurePath == null ||
             !string.Equals(
                 relativePath,
@@ -11137,6 +11226,19 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         public void AssertCompleted()
         {
         }
+    }
+
+    private sealed record GenerationFinalizerState(
+        int TurnNumber, GameResponse? Response, string? ResponseJson, string? ImagePrompt);
+
+    private static GenerationFinalizerState CaptureGenerationFinalizerState(GameEngine engine)
+    {
+        var response = GetPrivateFieldValue<GameResponse?>(engine, "_lastResponse");
+        return new GenerationFinalizerState(
+            GetPrivateField<GameLoop>(engine, "_gameLoop").TurnNumber,
+            response,
+            response is null ? null : JsonSerializer.Serialize(response, SnapshotHashJsonOpts),
+            GetPrivateFieldValue<string?>(engine, "_pendingImagePrompt"));
     }
 
     private static T GetPrivateField<T>(object instance, string fieldName) where T : class

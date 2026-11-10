@@ -1,0 +1,624 @@
+{
+  "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+  "classification": null,
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-all-json-observations-raw.json.gz",
+      "uncompressedBytes": 4231640,
+      "uncompressedSha256": "1f698e9f125525e707bf99264fac786d7794b2fceba051a933b1b6c6eba55a95",
+      "compressedBytes": 1450022,
+      "compressedSha256": "fab967f76dae1f599639bd58cf55e9741c195ee08a6b8e1b4c34b1bf5c14535e"
+    },
+    {
+      "name": "actual-all-trx-results-raw.json.gz",
+      "uncompressedBytes": 15515,
+      "uncompressedSha256": "211f28c0fa0f4b8871267982c2a32d768d5f0cbe168021d246c4c90d57a09780",
+      "compressedBytes": 1977,
+      "compressedSha256": "5f52134353572768b33b9afd9fcb26ca6bc827b2db77f789e1b0874262082861"
+    },
+    {
+      "name": "actual-child-evidence-containers-raw.json.gz",
+      "uncompressedBytes": 3,
+      "uncompressedSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "compressedBytes": 23,
+      "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 4204607,
+      "uncompressedSha256": "468ffcea5bc59e8bc6eb752995efddf83a151b3a7d9a9e1d5b3c9468f0373796",
+      "compressedBytes": 1455281,
+      "compressedSha256": "e82b2ffd71cda144b368f67fd2ce5bc1a0e64f6b75b1e006e2fc6bbd3bc88438"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 4187234,
+      "uncompressedSha256": "62812ae669e6e3aa8a70625ac897c99523ba2c70529219fe8039ff1512250db0",
+      "compressedBytes": 1450980,
+      "compressedSha256": "692d83f76825560379fb558c4673007f6956552e9dc85881dc7d6136a4f2c1af"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "8bb9aa4658738f37e8da3e479630c327c1008622519ef2cda2542fc08cb884b3",
+      "compressedBytes": 314,
+      "compressedSha256": "6fa2a818d86737f89ef39e817f1575f6f2a67f87df5d932d36a1def0bf2a84c3"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 4231314,
+      "uncompressedSha256": "174605f1dc0430ae7f9171e75ce27bae9ffcc4d53728a644add4aca383ce62db",
+      "compressedBytes": 1449841,
+      "compressedSha256": "fde8ac7af87faa82e4c1caa3a87e2986d5a6557fc44c326fc8daaa4a97209584"
+    },
+    {
+      "name": "actual-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "69940801499373cdd3ae45372edd7db32cbb9faa9434d34a91178c0c90d80d5e",
+      "compressedBytes": 279,
+      "compressedSha256": "e0ec6e6c6388d04434a6b69c790fa1a14131d316427d7ea7d3b9567105f589f1"
+    },
+    {
+      "name": "actual-pre-assertion-root-observations.json.gz",
+      "uncompressedBytes": 18672,
+      "uncompressedSha256": "7331a4deb0bdda523be8180256323709385cfc6de4feb335b2b783c623c094a5",
+      "compressedBytes": 3132,
+      "compressedSha256": "055dcfbef04d39c3b7c133dbf858e25553f0b753bec8baf88edf36ac8ea934a1"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 18672,
+      "uncompressedSha256": "7331a4deb0bdda523be8180256323709385cfc6de4feb335b2b783c623c094a5",
+      "compressedBytes": 3132,
+      "compressedSha256": "055dcfbef04d39c3b7c133dbf858e25553f0b753bec8baf88edf36ac8ea934a1"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "e5fbabc341097bb402e729e952fc570d19b4acd1aff79edcfb9115a06c50edc2",
+      "compressedBytes": 269,
+      "compressedSha256": "6bad84049552b3428897ade77b64ebe9a03a810ee2b01d35e056b7fdd3423cd9"
+    },
+    {
+      "name": "actual-runner-summary-raw.json.gz",
+      "uncompressedBytes": 2353,
+      "uncompressedSha256": "257623c37e834b71984f230c3d9f84491cc1c906533bf4f413a0205e6f83471d",
+      "compressedBytes": 985,
+      "compressedSha256": "8c2211a0dbbe165a855e4bae48ff9c839d023ba29dbf5ae81c6c05f35d2cc350"
+    },
+    {
+      "name": "actual-strict-cleanup-origins-raw.json.gz",
+      "uncompressedBytes": 285,
+      "uncompressedSha256": "c19e1a27af7b1ebe66974f78b9f8dc7c6bc6d260204b49eb349f6bde910b1745",
+      "compressedBytes": 181,
+      "compressedSha256": "02637514885b3fbdbdc6178932c7ffee9cea5756b1857ed1f91b3effee925ec8"
+    },
+    {
+      "name": "actual-strict-cleanup-receipts-raw.json.gz",
+      "uncompressedBytes": 329,
+      "uncompressedSha256": "629b41660b8bd64265d499521fdc7af36f307393e749ddc3e92a06a915748722",
+      "compressedBytes": 182,
+      "compressedSha256": "8f05b1b0b2667be79f4f65dc948600dee247c9d9562a57582f2b4b9405c72a9e"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 36436,
+      "uncompressedSha256": "24d8386d8bcfa10eef8b05483b7cddf08e155f0f9ca1d378efbeb4c839316d37",
+      "compressedBytes": 10245,
+      "compressedSha256": "0a421553103deb773f8c133d0cb237b1b1aeb7ef70099927682c4d3ec15e2f97"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "aa255c28db520826471e51fdf0c47a137ce01849d622b5f55770e749153502ca",
+      "compressedBytes": 409,
+      "compressedSha256": "facada5651aaae7b873c4385e002cd48e11999c80652004d9c3a54b602f8648a"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 432,
+      "uncompressedSha256": "0ca85836683503f0429882725e234485fdcd1d7434d7b5a8f08dd5b9c64d8861",
+      "compressedBytes": 281,
+      "compressedSha256": "2f70b4c4504ac87f8c51bf326635da33688ff96055fba26dda89d26bc3c0d539"
+    },
+    {
+      "name": "catalog-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "a0a8ce7694a1f7bd588b7b1def759b1ef15d6a5487086982015b7670bd16f540",
+      "compressedBytes": 279,
+      "compressedSha256": "656aec5cc9dd24789cf0c198f0a49e4642770020233cdace1a4e8bf878072af2"
+    },
+    {
+      "name": "catalog-root-readback.json.gz",
+      "uncompressedBytes": 1323,
+      "uncompressedSha256": "e5e88e463cfc959d05123cc6f1ce41f2d5f9fd1122d6fd9df91d6d83da7d5935",
+      "compressedBytes": 628,
+      "compressedSha256": "aabb4692e547c4b6b2486c0b9cc2c9a14c7bc5ecc25c95dac9c17479217ffca6"
+    },
+    {
+      "name": "catalog-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "b95a1e541359e1033649bb048855bf9a1d7b15619313affbb35a43ec7ce0544d",
+      "compressedBytes": 270,
+      "compressedSha256": "b75cc323b43b5efd63111498cecae402d94af32cf85f4bceb00ed9b92c78e1dc"
+    },
+    {
+      "name": "catalog-runner-summary-raw.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "7a14d62ef57b31164320932897cd4ceae04a208084379f9c1db728e2b90e581e",
+      "compressedBytes": 601,
+      "compressedSha256": "85e22eb9cae2836d63f00ea3dd3a59836fcda9337dc862c175575d1244f444cc"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "2b4794635bed33b93b19ac9a8145f0edfcd0067f132f5b9aa2df1a547d50ebcf",
+      "compressedBytes": 2503,
+      "compressedSha256": "1a2e4e06bea450cf6fa3e3eaadc8314786547615f6e96fb64d89cadce0130d12"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 539,
+      "uncompressedSha256": "79bc0248a7a838760b3884b3303b866b4174ba1309cd4dca3afe1834a1c8952e",
+      "compressedBytes": 322,
+      "compressedSha256": "11a45e3ec89184bf3d3bb33103300f3d8488379dead98c65924efc9680b06afd"
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "ac267fd4f1d25607e1e5216a777ec8e10421aa8f1092aae8e14d4c41f6a854b6",
+      "compressedBytes": 280,
+      "compressedSha256": "45930629188b9a000b998cd275eaa76a46510ba4b32e869b5e8174143455eab4"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 2210,
+      "uncompressedSha256": "6597c8625df3a4c19a39cd8310347c7d00acc1f373d5afe3f06120d9e0750fb9",
+      "compressedBytes": 864,
+      "compressedSha256": "ccfa5fcb13bf5b97c27f30ec715aa7b0b02e1da5338aab54ceba3d53cd0e1bde"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "41c6007e8f15318016f517ae30571ac61e39822b88bdbba755bd68ccd173c8f4",
+      "compressedBytes": 270,
+      "compressedSha256": "b42d44a6564321b826d6f3a3eb4038388c93c242b85520ea60d2684c0314d78f"
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17371,
+      "uncompressedSha256": "c138f4ddf32937538d82d5a0050e08303d16c5551b511e988013afdd0756beaa",
+      "compressedBytes": 3655,
+      "compressedSha256": "167cff303e0f1fe365a67bd4ff5b9b38bc31ab42ab24e5aae25f1a3aa5bf1c9a"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2719,
+      "uncompressedSha256": "fd44c01006b5b1921b7873bf9425e6f9218e302bed3ce2634c929e6eae0bd49c",
+      "compressedBytes": 723,
+      "compressedSha256": "4511391e735c6c4d1a27819dc278b5299d9699e8f88638a6a99f79e9acedbaf0"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "f20c0553d6ffa5a1e480470f527b062b3d1419d3646b9cdc1b8e577c89375da0",
+      "compressedBytes": 2503,
+      "compressedSha256": "60d736d3876e1df3bf2ed64cd5c1bbd33361c4c7aae0adb9863a7af7f79de50e"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "9a4a84b28d9b89eaca1336020bdb41dd3ecba91c0e1d2e89769c276d8d052904",
+      "compressedBytes": 318,
+      "compressedSha256": "bb3ef1e1e7f90756c34f0e38317bfeca2f1c40566182fdc9d45847dd8cd7897c"
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "6ee788a80cd24f4b4441760ab3a385785e3de80ae5eb7739e22538e48e087152",
+      "compressedBytes": 279,
+      "compressedSha256": "606b4410b0ee30bf03a4bf50ba19aeda5897e7c1f6fa7a80ca56490661b94880"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2360,
+      "uncompressedSha256": "5b532926d6f619f41ec8fb5a1ca76b2766a903cdb09a88ea28a1560af5ce43a8",
+      "compressedBytes": 907,
+      "compressedSha256": "a775951fc72a1dbba3cbadc6e113e8bc321134fe242c6273f3688709cd10cc49"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "97c7ec4b2b41d00aa11f781b59f37cfb3a7d33a0da60cbea6192c35eb94777dc",
+      "compressedBytes": 268,
+      "compressedSha256": "699e32a456343ccc2e6950fae47f576f19a924b172843a5d3bf2bab107faa8c3"
+    },
+    {
+      "name": "preparation-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17564,
+      "uncompressedSha256": "97e65d0a119ccb56d68f7c70295d869c0de32bbd6e9c1a28c69d8e87321f2f3a",
+      "compressedBytes": 3686,
+      "compressedSha256": "654c9761aa36c9c773f43abcdc5ecf23ba88c255668e26b6d1b7b1ccbdb16ad6"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 5873403,
+      "uncompressedSha256": "89176db08a7f1555296590446dcdab44f1aac7d25044e408646e87148730e6d4",
+      "compressedBytes": 1643126,
+      "compressedSha256": "1e4f14e57afb9048c1f502b6791d6193d89a093a02deb4b7146cbb091b93af7e"
+    },
+    {
+      "name": "actual-fr063-joint-late-completion-integration-001.trx.gz",
+      "uncompressedBytes": 8418732,
+      "uncompressedSha256": "86e4f4af8e7c74a87bc49045e900c1b2470dc25b1a1cec02b7cee26b4fc4c0c1",
+      "compressedBytes": 2913522,
+      "compressedSha256": "12b175c3ddf725c49d0fa18dac47d719132d4d8b83aefbe66813636ccf941794"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2520,
+      "uncompressedSha256": "813e51075f5b5abb9d909940e948b083e1a618c8675e6888ced57dd5614de442",
+      "compressedBytes": 969,
+      "compressedSha256": "9e8357a7ff07c502dad167ffc1a03439639efc3d2f78452e099f552574749d72"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2353,
+      "uncompressedSha256": "257623c37e834b71984f230c3d9f84491cc1c906533bf4f413a0205e6f83471d",
+      "compressedBytes": 985,
+      "compressedSha256": "8c2211a0dbbe165a855e4bae48ff9c839d023ba29dbf5ae81c6c05f35d2cc350"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "75bfe15ca6feba1ba51dc365cc186fea319a674df545ef49fe7a5a805d439516",
+      "compressedBytes": 103,
+      "compressedSha256": "136016b12f27f723aad8e59eeb0843a1dd583749c75536e6e421e44d6502faca"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3337240,
+      "uncompressedSha256": "e2f7a0d8bf746ab7a6a8d9cd0626794e74a3a67822a390632f6be230ac6fe4e9",
+      "compressedBytes": 369423,
+      "compressedSha256": "ef2dccb8f84a60bb37a6737bdc76125c01729ec33e541254ae8d9ef92bb81ec2"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "7a14d62ef57b31164320932897cd4ceae04a208084379f9c1db728e2b90e581e",
+      "compressedBytes": 601,
+      "compressedSha256": "85e22eb9cae2836d63f00ea3dd3a59836fcda9337dc862c175575d1244f444cc"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 3337765,
+      "uncompressedSha256": "374f606a8cacd71e021bc37cf17a7a23ad28ed2ce170c5fce64d581a7a8ba749",
+      "compressedBytes": 369611,
+      "compressedSha256": "60c81a0cda62b2aab0f4caaf049a43271c08627cb7c512742238e6a15046ae2b"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 35688,
+      "uncompressedSha256": "be4fb7ed11eb04865ce3c0948678e7e1b92bd21ecc1454acffc9894e150cf6b5",
+      "compressedBytes": 5090,
+      "compressedSha256": "2f221135ec370faeecc2f0d0319f48ba0aca4539bcea93d5d11f9fa1bdb920c1"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 17371,
+      "uncompressedSha256": "c138f4ddf32937538d82d5a0050e08303d16c5551b511e988013afdd0756beaa",
+      "compressedBytes": 3655,
+      "compressedSha256": "167cff303e0f1fe365a67bd4ff5b9b38bc31ab42ab24e5aae25f1a3aa5bf1c9a"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 130910,
+      "uncompressedSha256": "f0a02dbfe8612bae5291892d9a4b6847fdf1123e7ea4a17973cd532072e4d207",
+      "compressedBytes": 9105,
+      "compressedSha256": "6cdb073367e172ec41a086649fae1d7d0b2054db3c6b339b08f7475e18bea6e9"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "e33f72a07320feedc9230e7c11927ffc958f514a2766490419734db3ddfec1e2",
+      "compressedBytes": 1752,
+      "compressedSha256": "5fcc30ac8317503276381802c23bafc749c0e7a7d13fcc5793c4612d85124007"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3499346,
+      "uncompressedSha256": "27e64a3cfd5d5c16567c87b10964ab053ebe163117d150c59a8096c5a619b579",
+      "compressedBytes": 380638,
+      "compressedSha256": "bbb7c1ae2bd7c741b70bb1daccd61f448a1f8e94d62219e2476d3ed68b68c1c5"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 35690,
+      "uncompressedSha256": "2a3ddc1f0d81841cb2840181aec1be46fd272c2c50d43a0ece1a671f60e0e88e",
+      "compressedBytes": 5092,
+      "compressedSha256": "f91398d87ffa99418c223f0e74549d4cf298f4e461e7470f11dd896f998f2945"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 17564,
+      "uncompressedSha256": "97e65d0a119ccb56d68f7c70295d869c0de32bbd6e9c1a28c69d8e87321f2f3a",
+      "compressedBytes": 3686,
+      "compressedSha256": "654c9761aa36c9c773f43abcdc5ecf23ba88c255668e26b6d1b7b1ccbdb16ad6"
+    }
+  ],
+  "frozenUtc": "2026-10-15T03:37:20.118859+00:00",
+  "preparation": {
+    "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "compileSource": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "run": "20261015-033229-831-617644-125bb802b6844e20b6202060564efe4c-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-033229-831-617644-125bb802b6844e20b6202060564efe4c-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T03:34:35.883427+00:00",
+    "classification": "Fresh BOTH zeroexecution; official32methods58cases18descriptors; newsource runtimeUNRUN",
+    "wallTime": "00:02:06.0056663",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T03:34:54.766682+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {
+      "Build-integration.log": 130,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "compileSource": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "run": "20261015-033455-643-617956-ce4c5478a8894244bafa98d00de044ad-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-033455-643-617956-ce4c5478a8894244bafa98d00de044ad-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T03:35:00.344932+00:00",
+    "classification": "Official NoBuild PlanOnly inventory32-58-18; zeroexecution",
+    "wallTime": "00:00:04.6621692",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T03:35:09.778511+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {},
+    "errors": {}
+  },
+  "catalog": {
+    "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "compileSource": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "run": "20261015-033510-544-618159-01ab0b54bab44cf6bceb84d0c78f8ab3-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-033510-544-618159-01ab0b54bab44cf6bceb84d0c78f8ab3-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-15T03:35:15.741469+00:00",
+    "classification": "Fresh NoBuild catalog valid746categories11588methods; zeroexecution",
+    "wallTime": "00:00:05.1519939",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T03:35:28.620299+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11588,
+      "Categories": 746,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "compileSource": "9a57b34c2de70a42217b58b318b91f556b03826c",
+    "run": "20261015-033529-448-618361-1440c9bd07d44638abad229c62dcf4e8-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261015-033529-448-618361-1440c9bd07d44638abad229c62dcf4e8-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-15T03:37:03.881989+00:00",
+    "classification": "First complete-current-guards corrected Late2 native1; first outcome frozen before diagnosis; further fixes/runs HELD",
+    "wallTime": "00:01:34.3916783",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 160,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-15T03:37:19.063002+00:00",
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "7e0e660b-1ae9-4d13-9d32-de6e0035f086",
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:34.5639002",
+        "startTime": "2026-10-15T03:37:03.3607826+00:00",
+        "endTime": "2026-10-15T03:37:03.3607828+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7e0e660b-1ae9-4d13-9d32-de6e0035f086",
+        "errorMessage": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_aa7580465612b536ea2bf5f87d377d64, OperationId = resource_operation_a2d55ea93e75195f10b6312bf03df702, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "677e7123-2874-4760-8b73-78f5223709f6",
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:54.7239660",
+        "startTime": "2026-10-15T03:36:28.7986003+00:00",
+        "endTime": "2026-10-15T03:36:28.7986143+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "677e7123-2874-4760-8b73-78f5223709f6",
+        "errorMessage": "Assert.Single() Failure: The collection did not contain any matching items\nExpected:   (predicate expression)\nCollection: [ResourceTransition { TransitionId = transition_energy_initialize_t070b3, OperationId = operation_energy_initialize_t070b3, EventRef = turn_1:resource:t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, PolicyFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_health_initialize_t070b3, OperationId = operation_health_initialize_t070b3, EventRef = turn_1:resource:health_t070b3, OriginKind = bootstrap_materialization, OriginId = mortal_incarnation_1, Phase = RegisteredSystemOutcome, Priority = 40, ExecutionSequence = 1, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Initialize, RequestedAmount = 0, AppliedAmount = 0, Outcome = Applied, CapacityDisposition = InitializeFromDefinition, BeforeState = , AfterState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = bootstrap_materialization, SourceId = mortal_incarnation_1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, PolicyFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, ReceiptId = , Turn = 1 }, ResourceTransition { TransitionId = transition_energy_spend_t070b3, OperationId = operation_energy_spend_t070b3, EventRef = turn_2:resource:t070b3, OriginKind = action_cost, OriginId = wound_fixture_energy_t070b3, Phase = DirectOutcome, Priority = 100, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = energy }, Operation = Spend, RequestedAmount = 8, AppliedAmount = 8, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, AfterState = ResourceStateSnapshot { Current = 2, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_energy_capacity_v1, AuthorityFingerprint = sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = action_cost, SourceId = wound_fixture_energy_t070b3, AuthorityFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb }, PolicyFingerprint = sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, ReceiptId = , Turn = 2 }, ResourceTransition { TransitionId = resource_transition_a8b92ddf7d2143fa00c0aa5200834063, OperationId = resource_operation_175f8cea39cf2f9b3ab5c2bf5050ddb9, EventRef = turn_42:qte_terminal:1:resource:1, OriginKind = narrative_outcome, OriginId = turn_42:qte_terminal:1:resource:1, Phase = DirectOutcome, Priority = 110, ExecutionSequence = 0, Coordinate = ResourceCoordinate { Realm = mortal_world, OwnerKind = Player, ResourceOwnerId = player_current, ResourceKey = health }, Operation = Damage, RequestedAmount = 5, AppliedAmount = 5, Outcome = Applied, CapacityDisposition = , BeforeState = ResourceStateSnapshot { Current = 10, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, AfterState = ResourceStateSnapshot { Current = 5, Maximum = 10, CapacityBinding = ResourceCapacityBinding { Kind = RegisteredFormula, AuthorityKey = mortal_health_capacity_v1, AuthorityFingerprint = sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc }, State = Active }, SourceEvidence = ResourceSourceEvidence { SourceKind = narrative_outcome, SourceId = turn_42:qte_terminal:1:resource:1, AuthorityFingerprint = sha256:b2afc79100fa12faa2a2849d66b57b2fc9dac68fab228d80b17297549254e12f }, PolicyFingerprint = sha256:2ac72244c1b284868f5f34c78ccb11d8cdc69a41e653164bcc12f3480f131477, ReceiptId = , Turn = 42 }]",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 60,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 2,
+      "qte_story_actual_client_append": 2,
+      "qte_story_actual_engine_result": 2,
+      "qte_physical_actual_occurrence": 2,
+      "fr063_joint_actual_prior42_inactive_tail": 2,
+      "fr063_joint_natural_stage43_image_before_assert": 38,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+      "fr063_confirmed_claim_inspection": 2,
+      "fr063_joint_completion_actual_prerequisites": 2,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+      "fr063_joint_completion_actual_owner_outcome": 2
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-85f378a2562d40ca954734a588a9a147",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-dbba67bf48ee4e4e9037ca384b2f0e38",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "strictCleanupObservation": "OBSERVED_PARSED_RECEIPTS_ONLY",
+    "childEvidenceCoverage": "NO_NAMED_CHILD_CONTAINERS_OBSERVED",
+    "strictCleanupReceiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=31"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=31"
+      }
+    ],
+    "childEvidenceContainerCount": 0,
+    "binaryProvenanceScope": "selected10artifacts+declaredchildImmutable; actualchildloadedbindings need separate evidence inspection",
+    "allJsonObservationCount": 62,
+    "evidenceReview": "PENDING"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-image-storage-operations-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7c30c6e730d9215d2695547795f9a6dfa83352db",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 89.1073691,
+  "Descriptors": [
+    {
+      "Name": "portable-image-storage-operations-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-storage-operations-linux",
+      "Categories": [
+        "portable-image-storage-operations-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageStorageOutcomeTests.OriginalImageOperationsPreserveStorageOutcomeAndExactTargets",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageStorageOutcomeTests.OriginalImageOperationsPreserveStorageOutcomeAndExactTargets",
+          "Cases": 12
+        }
+      ]
+    }
+  ]
+}

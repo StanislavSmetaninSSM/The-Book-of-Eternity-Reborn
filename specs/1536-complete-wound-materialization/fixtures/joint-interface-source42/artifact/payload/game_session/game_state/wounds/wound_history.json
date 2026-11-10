@@ -1,0 +1,27 @@
+﻿{
+  "schemaVersion": 1,
+  "nextOrdinal": 2,
+  "transitions": [
+    {
+      "transitionId": "wound_transition_test_001",
+      "woundId": "wound_test_torn_side",
+      "ordinal": 1,
+      "woundTransitionOrdinal": 1,
+      "kind": "create",
+      "turn": 42,
+      "eventRef": "turn_42:wound_opened",
+      "operationKey": "operation_test_wound_001",
+      "beforeFingerprint": "sha256:ac7c62f16d70a5a9f2597812df943f9c5f0fc797ff4fa8951220900e3b44f4dc",
+      "afterFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+      "sourceFingerprint": "sha256:7a33a4c5c14c6843da5480a59c2f5ca5ec0b470b82296ccb4f9738cc520fd31b",
+      "attemptId": null,
+      "courseId": null,
+      "courseMilestoneOrdinal": null,
+      "cycleKey": null,
+      "paymentFingerprint": null,
+      "outputFingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "readableSummary": "Рана зафиксирована после подтверждённого события.",
+      "terminal": false
+    }
+  ]
+}

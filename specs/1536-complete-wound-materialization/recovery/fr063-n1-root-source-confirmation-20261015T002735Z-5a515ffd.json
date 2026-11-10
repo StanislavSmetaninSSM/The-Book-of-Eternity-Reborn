@@ -1,0 +1,20 @@
+{
+  "checkpoint": "405e684c6d6a176f6cc42f2c93c23f04acd00de8",
+  "reviewReportSHA256": "cee734a6136db3cc549543e14c14c021cffc8a9786e1a592f525b5703b391666",
+  "reviewReadbackSHA256": "b3de619020d73ed009cc6ffcb81115aa6c771fb09e6766873d473ca73df4fdfb",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "rootConfirmation": "4b2189 read exact readerclosedset and651-669; missingtailpresence+requireSignedAbsence inevitablyabsence_unproven",
+  "classification": "newsourceprovenfixtureblocker; no executednewfailure orproductiondefect",
+  "minimalFixRelease": "same solewriter; existingcoverage reader+validated4inventoryabsence assertions; exactpresentoriginalbackup/all7current+physicalabsence; no authorityexpansion",
+  "runtime": "HELD; first5PASS2FAILimmutable;12laterUNRUN",
+  "rootReadDiagnostic": {
+    "chunk": "1f4046",
+    "exitCode": 2,
+    "operation": "rg -n class/ObservedOptional/absence_unproven/QteOfferPath/AbsentLogicalPaths BookOfEternityClient/Core/PendingTurnSnapshot* BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "error": "rg: BookOfEternityClient/Core/PendingTurnSnapshot*: No such file or directory (os error 2)",
+    "correction": "rg --files -g *PendingTurnSnapshot* ea1abf then exactServicesreads4b2189",
+    "projectExecution": false,
+    "securityRefusal": false
+  },
+  "remaining": "focusedN1fixreview+freshpreparation/pins beforefailedpairretry"
+}

@@ -1,0 +1,755 @@
+{
+  "kind": "PD3E_ORDINARY_PREFIX_FINITE_TESTS_ONLY_LEDGER_NOT_DISCOVERY_OR_ACCEPTANCE",
+  "base": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "status": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_PENDING",
+  "counts": {
+    "categories": 6,
+    "methods": 20,
+    "declaredRows": 47,
+    "ordinaryRows": 45,
+    "protectedRows": 2,
+    "actualExecutedOnCurrentProduct": 47,
+    "separateActualScopes": {
+      "ordinaryQualifiedPassed": 45,
+      "ordinaryMethods": 18,
+      "protectedQualifiedPassed": 2,
+      "protectedMethods": 2,
+      "distinctQualifiedCases": 47,
+      "distinctQualifiedMethods": 20,
+      "separateFirstExecutions": 2,
+      "aggregate47NativeExecution": false
+    }
+  },
+  "methods": [
+    {
+      "category": "fr063-reasoning-prefix-boundary",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.PublicFullOwner_ConsumesSharedDocumentAndScopePrefix",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
+      "line": 17,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-source",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningPolicyBoundaryTests.SharedReasoningExtraction_ComposesWithStrictHistoricalOrdinaryInverse",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs",
+      "line": 50,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_PreservesExistingRootLookupAndEarlyReturns",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 17,
+      "declaredRows": 12,
+      "inlineData": [
+        "\"absent\", \"missing_gm_thoughts\"",
+        "\"blank\", \"missing_gm_thoughts\"",
+        "\"malformed\", \"invalid_debug_logs_json\"",
+        "\"array\", \"invalid_debug_logs_json_root\"",
+        "\"null-root\", \"invalid_debug_logs_json_root\"",
+        "\"empty-object\", \"debug_logs_missing_timestamp,missing_gm_thoughts\"",
+        "\"null-thoughts\", \"missing_gm_thoughts\"",
+        "\"numeric-thoughts\", \"missing_gm_thoughts\"",
+        "\"wrong-case-thoughts\", \"missing_gm_thoughts\"",
+        "\"duplicate-last-empty\", \"missing_gm_thoughts\"",
+        "\"duplicate-last-valid\", \"\"",
+        "\"underscore\", \"\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullDocument_KeepsTimestampUnknownAndMissingIssueOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 58,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeHeadingOnly_PreservesFiveMissingFieldsInOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 90,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 101,
+      "declaredRows": 3,
+      "inlineData": [
+        "\"World-progression\"",
+        "\"Guardian-centric\"",
+        "\"Mixed\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFullScope_KeepsDeclarationDiagnostics",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 124,
+      "declaredRows": 7,
+      "inlineData": [
+        "\"no-heading\", \"missing_npc_scope\"",
+        "\"missing-mode\", \"missing_scope_mode\"",
+        "\"unknown-mode\", \"invalid_scope_mode\"",
+        "\"no-relevant-field\", \"missing_relevant_actors_field\"",
+        "\"no-relevance-reason\", \"missing_scope_relevance_reason\"",
+        "\"no-outside-field\", \"missing_out_of_scope_actors_field\"",
+        "\"no-outside-reason\", \"missing_scope_out_of_scope_reason\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.ScopeParser_UsesFirstHeadingAndDeduplicatesActors",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 151,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MissingScopeStopsButParsedScopeErrorContinuesToActualDependencies",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 167,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.EmptySceneLocalFull_StillReadsStructuredFamiliesInOriginalOrder",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 191,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.MalformedStructuredNpc_RemainsInsideExistingBestEffortDomainCatch",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 209,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.PublicFull_NoWritePreservesRawEncodingAndMtime",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 219,
+      "declaredRows": 4,
+      "inlineData": [
+        "\"utf8\"",
+        "\"utf16\"",
+        "\"malformed-utf8\"",
+        "\"malformed-utf16\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.CurrentDebugReadFault_RemainsOutsideJsonParseCatch",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 253,
+      "declaredRows": 2,
+      "inlineData": [
+        "false",
+        "true"
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuinePreparedOriginal_PreservesFreshnessWarningAndPolicyNull",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 267,
+      "declaredRows": 3,
+      "inlineData": [
+        "\"unchanged\"",
+        "\"changed\"",
+        "\"corrupt-original\""
+      ],
+      "kind": "Theory"
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "project": "unit",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.GenuineOriginal_FreshnessAndParseKeepSeparateCurrentReads",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "line": 297,
+      "declaredRows": 1,
+      "inlineData": [],
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-existing",
+      "project": "integration",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_DirectlyNamedCanonicalNpcCannotBeHiddenByEmptyScope",
+      "path": "BookOfEternityClient.IntegrationTests/GuardianSystemRegressionTests.ActorBrain.cs",
+      "declaredRows": 1,
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-reasoning-prefix-existing",
+      "project": "integration",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE",
+      "fqn": "BookOfEternityClient.Tests.GuardianSystemRegressionTests.AcceptedTurnReasoning_MortalRelevantNpcWithPersistenceDoesNotReportError",
+      "path": "BookOfEternityClient.IntegrationTests/MortalFactPersistenceValidationTests.cs",
+      "declaredRows": 1,
+      "kind": "Fact"
+    },
+    {
+      "category": "fr063-ordinary-output-policy-source",
+      "project": "unit",
+      "fqn": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs",
+      "declaredRows": 1,
+      "kind": "Fact",
+      "status": "QUALIFIED_NEW_PRODUCT_ORDINARY_PASS_INDEPENDENT_EVIDENCE"
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "project": "integration",
+      "fqn": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "declaredRows": 1,
+      "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
+      "status": "QUALIFIED_NEW_PRODUCT_PROTECTED_PASS_SEPARATE_EVIDENCE"
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "project": "integration",
+      "fqn": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "declaredRows": 1,
+      "kind": "Unchanged existing staged/Late Fact; fresh new-product actual/EVIDENCE required",
+      "status": "QUALIFIED_NEW_PRODUCT_PROTECTED_PASS_SEPARATE_EVIDENCE"
+    }
+  ],
+  "fixtures": {
+    "newOwnedPrefix": "boe-pd3e-reasoning-*",
+    "newCleanup": "Each fixture Dispose emits actual root/removed PD3E_REASONING_STRICT_CLEANUP; later recording must verify physical absence. No raw or cleanup assertion has run yet.",
+    "legacyPrefix": "boe-guardian-system-regressions-*",
+    "legacyCleanup": "Existing Dispose swallows cleanup failures; namespace census proves physical absence only, not invented per-case strict receipts.",
+    "realOriginal": "LiveTurnPreparationService.PrepareAsync produces request/manifest/detached authority/raw debug original; diagnostic output retains exact base64. Corrupt original by physical append without resigning; existing reader null is not a new ordinary Error.",
+    "inFlight": "NONE"
+  },
+  "futureProductGate": "Only after actual extraction and accepted SOURCE/PREP: exact genuinely changed protected Late2 separate FIRST/EVIDENCE, then ordinary selection; no unchanged52 replay before causal RED.",
+  "scopeHolds": [
+    "Full3e observed/HOT source/history/completed-musings provided lease/volatile projection ownership",
+    "Full3d/HOT/F1/M3/T197 activation",
+    "World33 pin Fact held with nine historical stale values",
+    "A3 NO-PROCEED",
+    "Windows ZIP403/CI and other branches"
+  ],
+  "acceptedSourceDecision": {
+    "verdict": "ACCEPT_BOUNDARY1_ONLY_FULL45_NOT_READY",
+    "carrier": "2dcfa0dde3e2111792c39fba4b102ca51995ad62",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.md",
+        "bytes": 4710,
+        "sha256": "ff954088d2bf868299f5458fea38fe5a2555622c96c269b86bb52fd428a061fa"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-review-20261017.json",
+        "bytes": 9137,
+        "sha256": "a72ce6362c993e5d0019a7fde68c58c64fb60b45dd5e5f9fe5e6427f9de3458a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-tests-prep-source-independent-check-20261017.json",
+        "bytes": 38789,
+        "sha256": "becf848cd8b2d693c92e8d4597f17a88f8f754a023b9f86c4886ca186679e44d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-source-boundary1-conditional-2dcfa0dd-20261017.json",
+        "bytes": 2668,
+        "sha256": "687a49ff4aca540ec0137a57f4cc6d4d86a3ddf62d930c8a29ae922cee6580d6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-prep-delta-github-2dcfa0dd-20261017.json",
+        "bytes": 25490,
+        "sha256": "f44bd99ea7dbe092a7b0274558744b63f921b12e6c2f2e494c5f6cdc7a5e26fb"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2dcfa0dd-20261017.json",
+        "bytes": 17887,
+        "sha256": "e0d3c2a92c050659711256679dc053a0bc4a7b470e4c2c17e53aafa36d0d5d23"
+      }
+    ],
+    "sourceEligibleRows": 1,
+    "otherHeldRows": 44,
+    "actualExecuted": 0,
+    "category": "fr063-reasoning-prefix-boundary",
+    "scope": "Independent SOURCE/FIXTURE/SELECTION/PREP accepts isolated Scene-local public Full structural boundary1 only. No native command or product change authorized by this conditional decision. Persist/push/exactremote/new GitHub recovery and Root verification precede separately named exact successor activation.",
+    "S02": "OPEN material expected-vector defect for future full45; whole3row method and all other44 actuals held. Only after qualified structuralRED may exact two vector correction join minimal product WIP as separate test capsule before fresh product BOTH/Plan and complete affected SOURCE.",
+    "C01": "CLOSED by sole lambda correction and fresh catalog0/Plan0; original d377 compile failure and eight raw chains remain immutable, never semantic RED.",
+    "qualification": "Actual public Full success, exact seeded presence/bytes, prerequisite marker must precede final missing document helper; strict actual root receipt/physical absence/process/counts/source54/nine fresh DLLs required. Native1 alone not causal proof; later helper/delegation assertions unreached on first NotNull failure. No retry or other owner.",
+    "phase": "HISTORICAL_TESTS_ONLY_BOUNDARY_ELIGIBILITY_NOT_CURRENT_PRODUCT_SOURCE"
+  },
+  "firstBoundaryOutcome": {
+    "actualSource": "479a23a95436351960916a2dde065c577e962202",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "nativeExit": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "status": "ACCEPTED_STRUCTURAL_CAUSAL_RED_1_NOT_GREEN_OR_PRODUCT_ACCEPTANCE",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-files-20261017/archive.json",
+      "sha256": "cefdbb8fe08c3c57d653576904744b75f421c8d7bc58b44f973ed77983b82e83",
+      "rawChains": 9
+    },
+    "otherActualsHeld": 44
+  },
+  "acceptedCausalDecision": {
+    "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY",
+    "carrier": "25fe58aa6c3ef766f62f29f2050d6b64fd33c33a",
+    "actualSource": "479a23a95436351960916a2dde065c577e962202",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.md",
+        "sha256": "1c66224a243a9183d33eb676952fbb7a70e2153f9dc708e134343c6be2a54079",
+        "bytes": 3071
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.json",
+        "sha256": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187",
+        "bytes": 5245
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-check-20261017.json",
+        "sha256": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a",
+        "bytes": 19840
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-causal-red-acceptance-25fe58aa-20261017.json",
+        "sha256": "54f59d2235b491dfa6a5bff8f2194eaa515b059e5229d8dc082cc6d29a18e6d2",
+        "bytes": 2525
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary-delta-github-25fe58aa-20261017.json",
+        "sha256": "014713bae4187534fe3d44586d30d5db981eb5bd728748629eb8cf182ac2c4e6",
+        "bytes": 17640
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-25fe58aa-20261017.json",
+        "sha256": "7c47c64ae1625bf2f4a8ddf9ca53937f3a22e9610bfc4a3461e408ec446ed58b",
+        "bytes": 18570
+      }
+    ],
+    "acceptedCases": 1,
+    "rawPass": 0,
+    "rawFail": 1,
+    "classification": "Structural missing seam after successful actual public Full and seed byte/presence prerequisites; not gameplay defect or GREEN.",
+    "limits": "Unknown/scope/delegation assertions were unreached. Deleted seed payload bodies/hashes/mtime were not separately frozen; source-bound reached assertions and marker support byte preservation. No genuine original/preparer authority claim from this row.",
+    "remainingActualsHeld": 44,
+    "S02": "OPEN source-only two expected-code vectors inside conditional Assert.Equal expression; same three single-mode InlineData rows/signature/fixture/full equality and first-field checks, World unchanged. Correction only in a separately identifiable future product capsule after Root saved-decision activation.",
+    "nextGate": "Nonforce publish/exact remote/full immediate GitHub recovery and Root readback before separately named minimal product+two-vector correction activation. Fresh selected BOTH/Plan6owners20methods47 then complete affected SOURCE; separately protectedLate2/EVIDENCE before ordinary45. No product/test edit or new native authorized by this persistence task.",
+    "phase": "ACCEPTED_HISTORICAL_STRUCTURAL_RED1_RETAINED_WITHOUT_REPLAY"
+  },
+  "historicalTestsOnlyCounts": {
+    "categories": 5,
+    "methods": 18,
+    "declaredRows": 45,
+    "actualExecuted": 1
+  },
+  "S02Correction": {
+    "status": "CLOSED_AT_AFFECTED_SOURCE_AND_BOUND_RUNTIME_THREE_MODE_ROWS",
+    "capsule": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-edit-capsule-e9f55c14-20261017.json",
+      "sha256": "c815875b11baefecd46d50fd3bb571e1583e7f8847c5698061baea337685a777",
+      "bytes": 3621
+    },
+    "scope": "Only two ordered expected-code vectors inside existing Assert.Equal; same3InlineData/signature/fixture/full equality/first-field assertions and unchanged World vector.",
+    "qualifiedBy": "Newordinary45actual406compiledf766;World/Mixed/Guardian-centricfullorderedassertionsPASSandindependentEVIDENCEaccepted."
+  },
+  "historicalTestsOnlyFirstCausalRed": {
+    "category": "fr063-reasoning-prefix-boundary",
+    "methods": 1,
+    "rows": 1,
+    "prerequisites": "Real public Full returns no issues; all seeded files retain exact presence/bytes; REAL_PUBLIC_FULL_PREFIX_PREREQUISITES_COMPLETE; strict owned cleanup before qualification.",
+    "finalOracle": "Assert.NotNull on actual private EvaluateAcceptedReasoningDocumentPrefix. Missing scaffold/import/compile/setup cannot qualify. The new source Fact is postproduct, not another causal RED."
+  },
+  "historicalTestsOnlyFirstPreparation": {
+    "nativeExit": 1,
+    "rawChains": 8,
+    "actualExecuted": 0,
+    "planOnly": "NOT_STARTED",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-preparation-stop-files-20261017/archive.json",
+      "sha256": "28c95fecfbe5f72113056f3155686eda442ee4e21dd88b8d9789acd5cb3d0759",
+      "rawChains": 8
+    }
+  },
+  "historicalTestsOnlySourceCorrection": {
+    "status": "ONE_LINE_SOURCE_CORRECTED_UNCOMPILED_UNRUN",
+    "failure": "FIRST d377 native1/88.867421442s/0cases sole CS0121 at test203, two diagnostics from same build; not causal structural RED. PlanOnly never started. Original eight raw chains/record unchanged.",
+    "correction": "paths.Select(reads.IndexOf) -> paths.Select(path => reads.IndexOf(path)); all test/data/assertion/product bytes otherwise unchanged.",
+    "authority": "Root explicit saved-failure/readback condition met at c0ba then one-line authoring+new FIRSTzero-PREP released; no native testcase/production release.",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-prep-stop-inspection-d377f91c-20261017.json",
+        "sha256": "9ccfddca5b3dc40c36b0e2455d23be79c7f1783573f2f14d14137f1f285d682e",
+        "bytes": 3806
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-prep-stop-delta-github-c0ba4299-20261017.json",
+        "sha256": "40f044cc0b2680d3d6929be31086e28c60c1cebd35c0b4cac90370304c25612f",
+        "bytes": 17554
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-c0ba4299-20261017.json",
+        "sha256": "b272bc7317fd226dbee1e1523491ccdc907e9c6d9bf9ec83d3f382685a24e1b4",
+        "bytes": 17211
+      }
+    ]
+  },
+  "historicalTestsOnlyCorrectedPreparation": {
+    "actualSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-corrected-first-preparation-files-20261017/archive.json",
+      "sha256": "6c563dcfa8e17db72a48b1867853e09d87a4a96603e0c6a91baff1dd1175f805",
+      "rawChains": 18
+    },
+    "nativeExits": [
+      0,
+      0
+    ],
+    "actualExecuted": 0
+  },
+  "historicalTestsOnlySourceKnownFindings": [
+    {
+      "id": "NI-3E-S02",
+      "status": "SOURCE_CONFIRMED_EXPECTED_VECTOR_DEFECT_HELD_NOT_A_NATIVE_FAILURE",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+      "affectedData": [
+        "Mixed",
+        "Guardian-centric"
+      ],
+      "exactCause": "Present canonical guardians:[] with missing original sets N1181 DirectCanonicalGuardianDiffRequiredButSnapshotMissing even empty. Existing Mixed/Guardian tail reports invalid validated snapshot context and missing validated guardians snapshot; Guardian additionally missing_active_guardian. Authored expected vector omits existing diagnostics.",
+      "safeBoundary": "Separate public Full boundary class/Scene-local fixture remains unchanged and unaffected. Seek eligibility ONLY structural boundary1; no semantic execution/acceptance of known-wrong regression method or blanket45-source acceptance.",
+      "disposition": "Root selected preserving7307/PREP byteimmutable. After independently qualified structuralRED only, exact expected-vector correction may join minimal product WIP as explicit separate test diff capsule, before new fresh product BOTH/Plan and complete affected SOURCE review. No edit now. World row is unchanged but whole3row method held."
+    }
+  ],
+  "freshProductPreparation": {
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "actualExecuted": 0,
+    "counts": {
+      "categories": 6,
+      "descriptors": 6,
+      "methods": 20,
+      "plannedRows": 47,
+      "ordinaryRows": 45,
+      "protectedRows": 2,
+      "executed": 0
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-preparation-files-20261017/archive.json",
+      "sha256": "b14e77a923a5639718359f0e52cd9a40f72864ba73e7f1a8a620f3f764683c63",
+      "rawChains": 10
+    }
+  },
+  "productionSourceAcceptance": {
+    "verdict": "ACCEPT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_WITH_SEPARATE_RUNTIME_GATES",
+    "carrier": "b197cb2be439f110d0f5a4a6934a593c5731ec11",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-review-20261017.md",
+        "bytes": 3742,
+        "sha256": "22f627dce75eb793261b8b63880d1503ebd646080888d5981d7611cb65843942"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-review-20261017.json",
+        "bytes": 7690,
+        "sha256": "aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-check-20261017.json",
+        "bytes": 33077,
+        "sha256": "329065d832c8de3cbf004f61181228e56bd9e746b1f75e6a75711c0e272e0fd1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-affected-source-acceptance-b197cb2b-20261017.json",
+        "bytes": 2014,
+        "sha256": "863d3917deeb0d0c1f3ca8e4d48fc1a4b2bdd03083833223d555566dfb332cd4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-prep-delta-github-b197cb2b-20261017.json",
+        "bytes": 19284,
+        "sha256": "1ce7558b372e8bb38c7407bdb376cc2b5aa2aecae6136c4a96cc8230bfbf5223"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-b197cb2b-20261017.json",
+        "bytes": 19587,
+        "sha256": "093b24217d0c8a5351b37188c9da7a06d8ba4fa4c12ff2bd9d1412127f26f610"
+      }
+    ],
+    "S02": "CLOSED_AT_SOURCE_ONLY_NOT_YET_RUNTIME_QUALIFIED",
+    "actualProductExecuted": 0,
+    "plannedOrdinary": 45,
+    "plannedProtected": 2,
+    "next": "Persist/push/exactremote/new GitHub recovery/Root readback, then only separately named FIRST protectedLate2; save/qualify separate new evidence before ordinary45 activation. No new code/build/retry or actual authorized by this persistence.",
+    "nonmaterialReviewMetadata": "Immutable SOURCE JSON generic UNRUN controller labels are historical; raw/MD/Root establish prepdc959 andread-onlypreparchive0461 once, then actuala679 ran ONCEpermode protected2+ordinary45 andread-only023d froze BOTH9+13chainoutcomes. Original reports staybyteexact. Current toolstatus and finalBoundedAcceptance describe completed usage.",
+    "scope": "Only ordinary document/unknown/scope shared prefix/actual ordinary consumers. No HOT/history/Full-family/S/B/M3/F1/T197/Windows/CI/A3 authority or old52/Late2 replay.",
+    "phase": "HISTORICAL_ACCEPTED_SOURCE_DECISION_BEFORE_PRODUCT_RUNTIME_CURRENT_EVIDENCE_SEPARATE"
+  },
+  "firstProtectedLate2": {
+    "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "passed": 2,
+    "failed": 0,
+    "status": "INDEPENDENT_EVIDENCE_ACCEPTED_NEW2PASS_ONLY",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-late2-files-20261017/archive.json",
+      "sha256": "9e253dcbd49c31c6b9a3f459df0fb77e164bb0e6e59e51160c0567f00d7ea06c",
+      "rawChains": 9
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.md",
+        "sha256": "3d6bb865b9018d4374817b9eafc5ffb6747e6781a64fea17eefdf5484a140df2",
+        "bytes": 2580
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.json",
+        "sha256": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc",
+        "bytes": 4695
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-check-20261017.json",
+        "sha256": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10",
+        "bytes": 27372
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-new-late2-evidence-acceptance-2f39b078-20261017.json",
+        "sha256": "5c790493535a6d19cc1c2e0bba5660a41d4e9455361afe6f649c193f0109d724",
+        "bytes": 1527
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-late2-delta-github-2f39b078-20261017.json",
+        "sha256": "cb057e90b5754a14d897407c0bb76b4ec58cdaa66848b59e2e79ccfc6e863057",
+        "bytes": 18484
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-2f39b078-20261017.json",
+        "sha256": "a867edfb9b79444f34006e5c0990ad7ae730fa727ea1a8c599b6f0203c31c1ee",
+        "bytes": 20265
+      }
+    ]
+  },
+  "firstOrdinary45": {
+    "status": "ACCEPT_NEW_PRODUCT_ORDINARY45_EVIDENCE_ONLY",
+    "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+    "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "nativeExit": 0,
+    "wallSeconds": 18.01654913800303,
+    "runnerWallTime": "00:00:17.3104676",
+    "tests": {
+      "Total": 45,
+      "Executed": 45,
+      "Passed": 45,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 5,
+      "PlannedCases": 45,
+      "CompletedCases": 45,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-product-first-ordinary45-files-20261017/archive.json",
+      "sha256": "b0f6a1768ba3409b4b8133175b494e34e4532fddfb567609a5f7c45fb839efbc",
+      "rawChains": 13
+    },
+    "record": {
+      "originalPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/record.json",
+      "sha256": "9cff04ff1b39b53f0f99129af8fad7796eb8d3c5df703b005b94acebf122ad72"
+    },
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-activation-406ac844-20261017.json",
+        "sha256": "7217472e933bdbbf07bb6bf576d9b5084e263262f48a46040aa4e2480c5230db",
+        "bytes": 1123
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-first-ordinary45-inspection-406ac844-20261017.json",
+        "sha256": "58ee00b94b78458d22bff43954ad12375eb7043d9825b1a2ca8082ad92e84a47",
+        "bytes": 64459
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-late2-evidence-decision-delta-github-406ac844-20261017.json",
+        "sha256": "e845b8a3074fa75b768d14881e335a608c10e9f183a1943778464abfe04b70dd",
+        "bytes": 11841
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-406ac844-20261017.json",
+        "sha256": "16785d111f557ca83b98ce3c8c6ed683fd0c8c6051455441bd07aae682964d41",
+        "bytes": 20627
+      }
+    ],
+    "rootChecker": {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd3e-root-inspect-ordinary45.py",
+      "sha256": "cd3fa876b6eccc7875466e602e1d364a0b72570fcea963184f0d4578d677b085"
+    },
+    "proofLimits": "41new strict distinct physicallyabsent roots; legacy2 namespace-only cleanup; source2N/A. Fourgenuinepreparer original emissions arepremutation frozenauthority. Latercorrupt/currentafterimages andmtimes are reachedcompiledsource assertions, notseparatelyfrozen deletedbodies. Ordinary45 independentlyaccepted; protected2 independentlyacceptedseparately, never aggregate47native/oldPASSreplay.",
+    "S02": "SOURCE_AND_RUNTIME_CLOSED_THREE_MODE_ROWS_FULL_ORDERED_EQUALITY",
+    "independentEvidence": {
+      "verdict": "ACCEPT_NEW_PRODUCT_ORDINARY45_EVIDENCE_ONLY",
+      "references": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md",
+          "bytes": 3046,
+          "sha256": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json",
+          "bytes": 9606,
+          "sha256": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+          "bytes": 110911,
+          "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-bounded-ordinary-prefix-acceptance-44951f9d-20261017.json",
+          "bytes": 2864,
+          "sha256": "765389241b9b36005f49f10c68908f197a209fea837af74d8696c52e63417eaf"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+          "bytes": 21947,
+          "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+          "bytes": 20963,
+          "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+        }
+      ]
+    }
+  },
+  "finalBoundedAcceptance": {
+    "status": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_PENDING",
+    "verdict": "ROOT_ACCEPT_BOUNDED_ORDINARY3E_PREFIX_IMPLEMENTATION_AND_SEPARATE_EVIDENCE",
+    "references": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md",
+        "bytes": 3046,
+        "sha256": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json",
+        "bytes": 9606,
+        "sha256": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+        "bytes": 110911,
+        "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-root-bounded-ordinary-prefix-acceptance-44951f9d-20261017.json",
+        "bytes": 2864,
+        "sha256": "765389241b9b36005f49f10c68908f197a209fea837af74d8696c52e63417eaf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+        "bytes": 21947,
+        "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+        "bytes": 20963,
+        "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+      }
+    ],
+    "compiledProductSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "ordinaryActualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+    "protectedActualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+    "counts": {
+      "ordinaryCases": 45,
+      "ordinaryMethods": 18,
+      "ordinaryDescriptors": 5,
+      "ordinaryNative": 0,
+      "ordinaryWrapperSeconds": 18.01654913800303,
+      "ordinaryRunnerSeconds": 17.3104676,
+      "protectedCases": 2,
+      "protectedMethods": 2,
+      "protectedNative": 0,
+      "protectedWrapperSeconds": 121.93179388899443,
+      "distinctCases": 47,
+      "distinctMethods": 20,
+      "separateFirstExecutions": 2
+    },
+    "S02": "CLOSED_SOURCE_AND_BOUND_RUNTIME3_MODES_FULL_ORDERED_EQUALITY",
+    "cleanup": "41new ordinary strict physicallyabsent roots; legacy2namespaceonly/source2N/A; separately2protectedstrictroots",
+    "genuineOriginals": "4pre-mutation preparer observations joined; later corrupted/current afterimages andmtime are reachedsource assertions, not separatelyfrozen deletedbodies",
+    "scope": "Only ordinarydocument/orderedunknownfields/scopeprefix sharedpure stages+realpublicFullconsumer+namedaffectedcontrols complete. FullT179-Pd.3eOPEN; no broaderFull/HOT/history/S/B/M3/F1/T197/World33/Windows/CI/A3/fullwounds completion.",
+    "held": [
+      "OldWorld33 fence",
+      "HOT/source/history/broaderFull/S/B/M3/F1/T197",
+      "Windows EVIDENCE ZIPForbidden; no rerun/workaround",
+      "CI/A3 NO-PROCEED/fullwounds completion"
+    ],
+    "finalPublication": "Exactnonforcepush/cleanremote+completeimmediateGitHubdelta andRootfinalreadback mustconfirmthischeckpoint. Rootexternalfinalreceipt may satisfythisprospectiveconditionwithoutselfreferentialcommit. No furthernative/build/sourcechangeauthorized."
+  }
+}

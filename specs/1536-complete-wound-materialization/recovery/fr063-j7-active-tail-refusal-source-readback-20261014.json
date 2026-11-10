@@ -1,0 +1,117 @@
+{
+  "owningBase": "20287353cd7af092a365bbc049b94d19f90440ff",
+  "status": "SOURCE WIP / FINAL STOPPED",
+  "authoredPins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "a972c4f4e475ecd9c166bfe5bf0e011c5f0276bcadbc541910b2be92c1fe25d6",
+      "bytes": 51724
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs": {
+      "sha256": "7858daa6dd304a756eefe0736c085b010b347644e811440f7d5934eeca943bf1",
+      "bytes": 10571
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "5e52970ec6fe85788406f340056d9e5dce2abf16e23a55d0d0f94795992b6a27",
+      "bytes": 1555635
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "104c8a977430455abda89775e07927c71ca957223884220889785daa05f5f2f9",
+      "bytes": 1056251
+    }
+  },
+  "protectedPins": {
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs": {
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "bytes": 35308
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": {
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "bytes": 26937
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "345badb6cb329d3304463431c5c382260f5c01d5da4bd437209fdc58efcd8f2e",
+      "bytes": 37575
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs": {
+      "sha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075",
+      "bytes": 6872
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+      "bytes": 7553
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs": {
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "bytes": 9437
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs": {
+      "sha256": "f3f048f61988f644f4816fb06cddccb71022be48985dbf347cc7ae64bacee175",
+      "bytes": 10082
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs": {
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "bytes": 5207
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": {
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "bytes": 294837
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "observations": {
+    "head_base_exact": true,
+    "finite_three_rows": true,
+    "one_new_theory": true,
+    "prior42_before_active_input_before_stage43": true,
+    "processed_ack_no_write": true,
+    "seven_original43_images_preserved": true,
+    "strict_positive_predicate_preserved": true,
+    "actual_late_caller_unchanged": true,
+    "new_qte_from_existing_raw_builder": true,
+    "existing_supported_level_shape": true,
+    "raw_outcome_before_negative_assertions": true,
+    "exact_three_refusal_messages": true,
+    "same_confirmed_agreement_reader": true,
+    "full_request_pending_and_command_oracles": true,
+    "complete_namespace_compare": true,
+    "no_common_history_turn_settlement": true,
+    "old_positive_outcome_body_exact": true,
+    "old_fact_attributes_exact": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": true,
+    "protected_exact:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs": true,
+    "protected_exact:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs": true,
+    "protected_exact:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs": true,
+    "protected_exact:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": true,
+    "protected_exact:tests/categories.json": true,
+    "md2_exact_reverse:specs/1536-complete-wound-materialization/plan.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/plan.md": true,
+    "md2_exact_reverse:specs/1536-complete-wound-materialization/tasks.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/tasks.md": true,
+    "whitespace_exit_zero": true,
+    "four_path_scope": true
+  },
+  "observationCount": 35,
+  "allTrue": true,
+  "whitespace": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "compilerApiStage43RetentionGateReachFixture": "UNCHECKED",
+  "projectChecks": "UNRUN",
+  "officialInventory": "UNRUN; provisional12 methods/25 cases",
+  "compatibilityAndActiveSupport": "lawful active combinations/freshPID already-bad authority OPEN",
+  "backendModelEffort": "unavailable; no new agent/model override"
+}

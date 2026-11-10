@@ -33,6 +33,7 @@ internal sealed class DesktopHelpersFixture : IDisposable
     {
         Directory.CreateDirectory(Root);
         Files = new(Root, NullLogger<FileSystemManager>.Instance);
+        Files.EnsureDirectoryStructure();
         State = new(Files, Settings, NullLogger<StateManager>.Instance);
         Mods = new(Files, Settings, NullLogger<SystemModService>.Instance);
         Opener = new(start =>

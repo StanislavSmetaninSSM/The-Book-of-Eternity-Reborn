@@ -1,0 +1,22 @@
+{
+  "ExpectedSHA": "31a9a26d86e0ea7392d3b00f6f72935c83b15437",
+  "RestoredSHA": "31a9a26d86e0ea7392d3b00f6f72935c83b15437",
+  "Tree": "6415227795f350596afaf86c2fee0be6f0875676",
+  "DirectParentSHAs": [
+    "34194525ca0866d281e38fee9a3ae2ce77ee9bea"
+  ],
+  "CloneInitialSHA": "34194525ca0866d281e38fee9a3ae2ce77ee9bea",
+  "TrackedFilesAllGitBlobBytesVerified": 41489,
+  "TrackedExpandedBytes": 888971238,
+  "Clean": true,
+  "ArchiveManifestsVerified": 27,
+  "ArchivePayloadsVerified": 1058,
+  "ExpandedArchiveBytesVerified": 74998296,
+  "RestoredDirectory": "/workspace/1553-performance-recovery-check-20261011-34194525",
+  "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Method": "One direct official GitHub depth1 single-branch clone in a new empty directory, followed by a GitHub fetch of the plan-only carrier. No local checkout, Git objects, stash or source cache copied.",
+  "ShallowFetchNotice": "Fetch printed forced update because depth1 graph boundary changed; the fetched commit object directly records parent34194525. Only clone/fetch/checkout operations executed, no push.",
+  "ProjectBuildDiscoveryOrTestsExecuted": 0,
+  "GitFsckFullStrictExitCode": 0,
+  "GitFsckToolResultChunk": "b64736"
+}

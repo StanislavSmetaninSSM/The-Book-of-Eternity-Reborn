@@ -1,0 +1,37 @@
+{
+  "OwnedRoot": "/tmp/gc-4e85de465ffc",
+  "Result": "PASS actual retained bytes/tuple/task/pin/cold/physical checks",
+  "CanonicalInventoryCount": 81,
+  "PhysicalByteCopiesVerified": 243,
+  "Snapshots": 25,
+  "RollbackBackups": 24,
+  "ZIPs": [],
+  "ActualOriginalPID": 82401,
+  "ColdPID": 82420,
+  "OriginalRun": {
+    "RootKey": "/tmp/gc-4e85de465ffc/neutral-session-a82ef480c42841698bf537059d4b2924",
+    "RunId": "46e04f4a9b994a288a43e21b509c900f",
+    "GenerationId": "20b3eb834f8c4fa99d2343c884b9f03a",
+    "Epoch": 1,
+    "Backend": 2,
+    "HostInstanceId": "61b320c11b1f4f7e8dc8f75a6c82b835",
+    "BootId": "a3d9e3c8-0f9e-46d3-96aa-bf800ee674d0"
+  },
+  "PinIdentity": {
+    "PinId": "eae4b373172c47a8abf3068caa90195b",
+    "CloseId": "5d336189b32446e8a9f78eb86a7ad916",
+    "OperationId": "71bb1afaf67b41c985e378936eda7ac8",
+    "Identity": {
+      "RootKey": "/tmp/gc-4e85de465ffc/neutral-session-a82ef480c42841698bf537059d4b2924",
+      "RunId": "46e04f4a9b994a288a43e21b509c900f",
+      "GenerationId": "20b3eb834f8c4fa99d2343c884b9f03a",
+      "Epoch": 1,
+      "Backend": 2,
+      "HostInstanceId": "61b320c11b1f4f7e8dc8f75a6c82b835",
+      "BootId": "a3d9e3c8-0f9e-46d3-96aa-bf800ee674d0"
+    },
+    "Outcome": 0,
+    "ClosingFailed": false
+  },
+  "Limits": "Raw comparison, no new runtime/test or authority issuance; original portable integrity, not external authenticity."
+}

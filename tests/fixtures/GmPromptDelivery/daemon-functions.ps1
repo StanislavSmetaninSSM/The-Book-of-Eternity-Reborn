@@ -14,6 +14,18 @@ try {
     # This fixture verifies unchanged T042 delivery identity only. It does not
     # qualify main pins; its controlled file effects remain in fixtureRoot.
     function Invoke-GmParticipatingConsumer {param($SessionPath,[scriptblock]$Body) & $Body}
+    # Delivery-only collaborator: these inert fixture files do not claim storage
+    # admission. The real admitted daemon scenarios own that separate evidence.
+    function Test-GmDaemonPath {param($Path) Test-Path -LiteralPath $Path}
+    function Assert-GmNotDaemonReadFailure {param($Failure) if($Failure.Exception.Data.Contains('GmDaemonReadRefused')){throw $Failure}}
+    function Get-GmDaemonFileObservation {
+        param($Path)
+        if(-not [IO.File]::Exists($Path)){return [pscustomobject]@{kind='Missing';bytes=$null;hash=$null;lastWriteTimeUtc=$null}}
+        $bytes=[IO.File]::ReadAllBytes($Path)
+        return [pscustomobject]@{kind='File';bytes=[Convert]::ToBase64String($bytes);hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant();lastWriteTimeUtc=[IO.File]::GetLastWriteTimeUtc($Path)}
+    }
+    function Get-GmDaemonFileBytes {param($Path) if([IO.File]::Exists($Path)){return ,([IO.File]::ReadAllBytes($Path))}}
+
     function Write-GmCanonicalText {param($SessionPath,$Path,$Value,[switch]$Append) if($Append){Add-Content -LiteralPath $Path -Value $Value -Encoding utf8}else{Set-Content -LiteralPath $Path -Value $Value -Encoding utf8}}
     function Remove-GmCanonicalFile {param($SessionPath,$Path) Remove-Item -LiteralPath $Path -ErrorAction SilentlyContinue}
     $script:FixtureErrors = @()

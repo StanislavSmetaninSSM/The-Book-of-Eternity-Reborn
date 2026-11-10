@@ -1,0 +1,162 @@
+{
+  "source_sha": "901435333b00ad7e92cef80429ce99ef010c7db9",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/dotnet-test.log",
+      "raw_bytes": 3375084,
+      "raw_sha256": "0f8b332076ccd96390af53f3145ecdb08a349d3d72192a8d346d6678627f0b8f",
+      "stored_sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960"
+    },
+    {
+      "path": "t179pc-wired-corrected-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/plan.json",
+      "raw_bytes": 17857,
+      "raw_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+      "stored_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e"
+    },
+    {
+      "path": "t179pc-wired-corrected-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/summary.json",
+      "raw_bytes": 6428,
+      "raw_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+      "stored_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-common-boundary-calculation",
+      "fr063-joint-retained-common-calculation",
+      "fr063-common-calculation-regression",
+      "fr063-common-qte-consumers",
+      "fr063-joint-late-completion",
+      "fr063-joint-active-tail",
+      "fr063-joint-c1-common-mixed-guard",
+      "fr063-common-resource-continuation"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-common-boundary-calculation",
+        "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-common-calculation",
+        "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-common-calculation-regression",
+        "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the actual original-context capacity/mutation adapters and exact identity replay. Ordinary tests cover the detached projection overload; unchanged original-spiritual routing/projection wrapper is statically reviewed and excluded from runtime qualification.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-common-qte-consumers",
+        "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-active-tail",
+        "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-common-mixed-guard",
+        "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-common-resource-continuation",
+        "reason": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
+        "contracts": [
+          "#1536 T179-Pc shared ordinary pending/reaction behavior; finite exact actuals after fresh BOTH/source/firstLate2/EVIDENCE."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0661265,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0569394,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1324956,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004195,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.1717913",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 8,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 37,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-common-boundary-calculation-unit-001",
+        "fr063-common-calculation-regression-unit-002",
+        "fr063-common-qte-consumers-integration-003",
+        "fr063-common-resource-continuation-integration-004",
+        "fr063-joint-active-tail-integration-005",
+        "fr063-joint-c1-common-mixed-guard-unit-006",
+        "fr063-joint-late-completion-integration-007",
+        "fr063-joint-retained-common-calculation-integration-008"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

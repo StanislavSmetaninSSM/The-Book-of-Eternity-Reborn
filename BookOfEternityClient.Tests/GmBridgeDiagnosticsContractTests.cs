@@ -88,9 +88,10 @@ public sealed class GmBridgeDiagnosticsContractTests
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
 
-        Assert.Contains("ResolveGmBridgeShellWorkingDirectory", source, StringComparison.Ordinal);
-        Assert.Contains("config.GmBridgeShellWorkingDirectory", source, StringComparison.Ordinal);
-        Assert.Contains("_status.ShellWorkingDirectory = workingDirectory;", source, StringComparison.Ordinal);
+        var windowsLaunch = ReadRepoFile("BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs");
+        Assert.Contains("ResolveGmBridgeShellWorkingDirectory", windowsLaunch, StringComparison.Ordinal);
+        Assert.Contains("config.GmBridgeShellWorkingDirectory", windowsLaunch, StringComparison.Ordinal);
+        Assert.Contains("_status.ShellWorkingDirectory=workingDirectory;", windowsLaunch, StringComparison.Ordinal);
         Assert.Contains("public string ShellWorkingDirectory { get; set; } = string.Empty;", source, StringComparison.Ordinal);
         Assert.DoesNotContain("var workingDirectory = Directory.Exists(_repoRoot)", source, StringComparison.Ordinal);
     }

@@ -1,0 +1,1052 @@
+{
+  "kind": "ROOT_FIRST_ORDINARY52_LITERAL_NEW_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE",
+  "actualSource": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "nativeExit": 0,
+  "wallSeconds": 17.11551696099923,
+  "summary": {
+    "Categories": [
+      "fr063-ordinary-output-policy-boundary",
+      "fr063-ordinary-output-policy-source",
+      "fr063-ordinary-output-policy-regression",
+      "fr063-ordinary-output-existing",
+      "fr063-ordinary-output-projection"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-ordinary-output-existing",
+        "Seconds": 2.0448358,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "fr063-ordinary-output-policy-boundary",
+        "Seconds": 1.811376,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "fr063-ordinary-output-policy-regression",
+        "Seconds": 2.81367,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "fr063-ordinary-output-policy-source",
+        "Seconds": 1.6085924,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "fr063-ordinary-output-projection",
+        "Seconds": 3.0138711,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0326966,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0375352,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0960991,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0028279,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:16.4291338",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 5,
+      "PlannedCases": 52,
+      "CompletedCases": 52,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 52,
+      "Executed": 52,
+      "Passed": 52,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-ordinary-output-policy-boundary",
+      "fr063-ordinary-output-policy-source",
+      "fr063-ordinary-output-policy-regression",
+      "fr063-ordinary-output-existing",
+      "fr063-ordinary-output-projection"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "31fe14faf5f1c2d2ef0bf22ff18296d71b4ab78d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 4.8549098,
+    "Descriptors": [
+      {
+        "Name": "fr063-ordinary-output-existing-unit-001",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-ordinary-output-existing",
+        "Categories": [
+          "fr063-ordinary-output-existing"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 13,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-ordinary-output-policy-boundary-unit-002",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-ordinary-output-policy-boundary",
+        "Categories": [
+          "fr063-ordinary-output-policy-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
+            "Cases": 2
+          }
+        ]
+      },
+      {
+        "Name": "fr063-ordinary-output-policy-regression-unit-003",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-ordinary-output-policy-regression",
+        "Categories": [
+          "fr063-ordinary-output-policy-regression"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 33,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
+            "Cases": 4
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+            "Cases": 5
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
+            "Cases": 4
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+            "Cases": 8
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess",
+            "Cases": 2
+          }
+        ]
+      },
+      {
+        "Name": "fr063-ordinary-output-policy-source-unit-004",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-ordinary-output-policy-source",
+        "Categories": [
+          "fr063-ordinary-output-policy-source"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 1,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+            "Cases": 1
+          }
+        ]
+      },
+      {
+        "Name": "fr063-ordinary-output-projection-integration-005",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-ordinary-output-projection",
+        "Categories": [
+          "fr063-ordinary-output-projection"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
+        "Adapter": "integration",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 3,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "rawChains": 13,
+  "archiveSha256": "0d21b8b01b7afe2c9be6807e730cebe807c2e83bd43b01185a66a815fb5ac426",
+  "expectedMethods": {
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies": 4,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy": 5,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic": 4,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime": 8,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource": 1,
+    "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity": 2,
+    "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages": 1
+  },
+  "actualMethodCounts": {
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic": 4,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies": 4,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy": 5,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime": 8,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal": 2,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak": 1,
+    "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource": 1,
+    "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages": 1,
+    "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity": 2
+  },
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinarySkillAndQuestListing",
+      "outcome": "Passed",
+      "testId": "7ac4f554-dfae-75df-369e-4249719c54c0",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsListedButUnchangedSkillDelta",
+      "outcome": "Passed",
+      "testId": "5b4843d1-fd7e-f080-573c-2e98212dbfe7",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsExplicitNoProgressRationale",
+      "outcome": "Passed",
+      "testId": "0c5f1850-a044-d063-8ca0-ff93f9972071",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesAfterlifeSpiritualActionTagToInputValue",
+      "outcome": "Passed",
+      "testId": "185e56fa-c593-d860-a9a2-8ab011d96e5f",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_MovesSimilarActionControlTagToInputValue",
+      "outcome": "Passed",
+      "testId": "4199816d-30c3-20a7-d3d2-bde1486b856c",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+      "outcome": "Passed",
+      "testId": "fc7fadc3-8ba0-1f53-6c2e-8c3b5dda9907",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_AddsMissingTimestampForUsefulPayload",
+      "outcome": "Passed",
+      "testId": "e798e1de-ce7b-0d0f-519e-0ca5ed44d526",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsKnownSkillUseWithoutStateDeltaOrRationale",
+      "outcome": "Passed",
+      "testId": "456debb1-e146-c1a3-0a6e-46d4dfed4a79",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsTechnicalRepairLeakInPlayerNarrative",
+      "outcome": "Passed",
+      "testId": "96997a49-2eb5-82f2-37f2-955a88851308",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_AllowsOrdinaryFantasyUseOfSimilarWords",
+      "outcome": "Passed",
+      "testId": "56b93413-1fd4-a6ba-5d49-a0c5c4b09d83",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnInterfacePayloadNormalizationTests.ValidateAcceptedTurnInterfacePayloadAsync_NormalizesStringDialogueOptionsIntoObjects",
+      "outcome": "Passed",
+      "testId": "64b63eff-bb45-c566-b2ed-5cfd54007487",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_RejectsQuestClueWithoutQuestStateDeltaOrRationale",
+      "outcome": "Passed",
+      "testId": "02c9d0c6-e4db-29ae-0f09-0bbe1285b728",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativePayloadValidationTests.ValidateAcceptedTurnNarrativePayloadAsync_NormalizesPowerShellLineBreakArtifactsInPlace",
+      "outcome": "Passed",
+      "testId": "d47752d0-9765-b347-fb34-828e744c846c",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Narrative\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
+      "outcome": "Passed",
+      "testId": "badd991a-2b78-2ffd-300c-804731e61f58",
+      "stdoutSha256": "8660d8a13b9ec830ab17528c2dd147e96375cc1473296764842719a534fa0c1e",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-bab310659a094ce791315bb3298a1ead",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Interface\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages",
+      "outcome": "Passed",
+      "testId": "bb4ceeaf-5ab6-4222-ee8c-365891403f5b",
+      "stdoutSha256": "f49bee461314fc12265b1aa2915b880ef2b3304bacb7a7741e93378639be4b04",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-dd5f32f9cf6444a8a2e7b1b95341f548",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups(owner: \"Interface\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups",
+      "outcome": "Passed",
+      "testId": "37cee453-ea68-8a66-4401-f9fcd8e18c0e",
+      "stdoutSha256": "fd9037b157b3a57f54ecd8bf444aed5b965a51da0a0d470d18ab65b363215ac6",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-ddcde79515574574ad92d0d01c66cf2c",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic(owner: \"Narrative\", json: \"[]\", code: \"accepted_turn_invalid_narrative_json_root\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
+      "outcome": "Passed",
+      "testId": "1891491e-e9c1-4b3c-d8ef-3427ab75189d",
+      "stdoutSha256": "49ccdb66f671dfe25c7d3e1f7918fd7bb0f01d97b6d4cd51c54f5471cd14832e",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-74aaf9cf6ddf434dad9101ad54515128",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass(owner: \"Narrative\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass",
+      "outcome": "Passed",
+      "testId": "ece83259-3c8d-7691-499e-84888295ab4f",
+      "stdoutSha256": "9b367799326bb02aa013b2aa58df8700b75a2d261a2dcfeaacf667f705ef8f72",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-8edc660d8fa34f6ba5ad1313816adbf2",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies(payload: \"\\\"dialogueOptions\\\":[7]\", issuePath: \"output/interface_updates.json.dialogueOptions[0]\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
+      "outcome": "Passed",
+      "testId": "20bb2bc8-3971-44c6-bd2d-882f4d3b0f90",
+      "stdoutSha256": "70c7e7b15b3de1f9a9dff584d332bb61075a978a19fac35fd98ed6a018f28ce0",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-01767d8693464546bcc7adaa26274f45",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic(owner: \"Interface\", json: \"[]\", code: \"accepted_turn_invalid_interface_updates_root\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
+      "outcome": "Passed",
+      "testId": "b6482322-3937-4bd5-0db9-9e7293eb66e9",
+      "stdoutSha256": "147ad7502fda62fb0725e90738feb8d22fd3a313eec0d93c1457a14eaed8af16",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-a566286b97e24144a6a6a708d3d622dc",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic(owner: \"Narrative\", json: \"null\", code: \"accepted_turn_invalid_narrative_json_root\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
+      "outcome": "Passed",
+      "testId": "121e34bb-e826-ce5b-38d1-d05c1c43e449",
+      "stdoutSha256": "c42d88c4104c711332ed16369959c9d7909bfce3e55f3802318d5294f1ff72bf",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-30899fe32039484d94be5fa0caaeb35f",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies(payload: \"\\\"dialogueOptions\\\":42\", issuePath: \"output/interface_updates.json.dialogueOptions\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
+      "outcome": "Passed",
+      "testId": "a3f1aa80-3e51-c30b-f802-2de3446a12d1",
+      "stdoutSha256": "7fe9ee013598016c0539a3e5dcca3f8a0c2353f19a9c2e9c9fc91ff9739bba17",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-5aaaaae2f7914b55892631cf36182bc2",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy(timestamp: \"\\\" \\\"\", code: \"\", changed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+      "outcome": "Passed",
+      "testId": "ac05e615-9eaf-4696-f6dc-9c01f5b98b46",
+      "stdoutSha256": "220686dd384c5e2fefe58770761393584bfbe6afa069098828eae7fc322c25a7",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-60def9a37c7241e9b68a73073927b733",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Narrative\", encoding: \"utf16\", malformed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "c88f0abd-2f77-f734-5338-39430c59fc7a",
+      "stdoutSha256": "14816ded07d3ba172861d25a81561a5d028ff7a8a2c98020304f0d18bbf732e0",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-b8c0f24c849849cf9ba65c2aaf03fc08",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Narrative\", encoding: \"utf8\", malformed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "c956abf5-a9b8-9f61-776e-b7e46bf268be",
+      "stdoutSha256": "50ffca74466396c346aa9e98cf337844af43dd376bb8012a41fe464d35115217",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-f7f3939329794dd791f410f49f1ea7c5",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass(owner: \"Interface\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass",
+      "outcome": "Passed",
+      "testId": "ce7a1bf7-b028-89fc-d031-b1fd9bb203e0",
+      "stdoutSha256": "c6da0331d748a0b7a38aa93243db0d57ac9b65dc2be2e942ca0270b27e905b77",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-07b16a1749984c37bc3e0703362a093c",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch",
+      "outcome": "Passed",
+      "testId": "4ef128f2-33e6-51e8-81fb-56a8cf133c65",
+      "stdoutSha256": "f4aed42f64259b0d9e4e18ecd506a2bffd561b3de2c691f5ae6990a6da99f103",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-691b4e42f2f045b994c088c335494c2d",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.DownstreamJsonException_IsStillCaughtByNarrativeOuterBoundary",
+      "outcome": "Passed",
+      "testId": "b87c04aa-59a4-541e-4906-2e09bd9949a2",
+      "stdoutSha256": "d42ec7e298097c2ae68924ab00cbec084439da70b6ad0cca69b0a720779ce995",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-34e7ca547dff4cf5a3258e2432f78d68",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy(timestamp: \"42\", code: \"interface_updates_missing_timestamp\", changed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+      "outcome": "Passed",
+      "testId": "aad8b9ee-a724-9d19-7d7d-a1382000077a",
+      "stdoutSha256": "102b55c9a4533d89b28c50db84089c27f68c72b9c2d34984a833b476f72fc8e6",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-fce4b31dc75c47f584630fdfffe67468",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.ReadOnlyNarrative_ReportsRequiredProjectionWithoutWriting",
+      "outcome": "Passed",
+      "testId": "f1e333a3-1528-1dd8-1d1d-bacada4f898d",
+      "stdoutSha256": "7ed68ea3aeca3e26664adad16342b7a615a7d95aedafb99bf6b1262a2c2d95ed",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-6d616bcfe6104655baf9c694211bc160",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic(owner: \"Interface\", json: \"null\", code: \"accepted_turn_invalid_interface_updates_root\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NonObjectRoot_ReturnsOnlyOriginalRootDiagnostic",
+      "outcome": "Passed",
+      "testId": "2b100021-903b-43a6-fcd1-f3b70827a565",
+      "stdoutSha256": "d53245969cd9a5269a8d509e9468890a2d2db8ca0dfc5fca7d0fb33880b9a313",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-98392ec0ff6b4ec1a5928b1c1f829132",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Interface\", encoding: \"utf8\", malformed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "2851de67-4b5a-d482-3fe6-96ab97eefd78",
+      "stdoutSha256": "5c4f3f0a13e649b4b8084835c83ff3d73c02b5f7fd715e7d93301f4208609f47",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-9692667984dd41e88c7a5127831d8c8d",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies(payload: \"\\\"image_prompt\\\":42\", issuePath: \"output/interface_updates.json.image_prompt\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
+      "outcome": "Passed",
+      "testId": "ebff15bc-fb64-9f28-eae4-a380f926e380",
+      "stdoutSha256": "1a9258a33b4797575de36bcbae0f8559f4f65806a2ed9eb06a084880d5af3f7f",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-0dccad1e05fb42aeb60afe47a174085f",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups(owner: \"Narrative\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.OrderedDiagnostics_PreserveFullFieldsAndCaseSensitiveLookups",
+      "outcome": "Passed",
+      "testId": "5111e761-6d3c-7d20-2c4e-23f78cebef5b",
+      "stdoutSha256": "04c6a2355a9d1297778e010206cbda5ee658c03d3142d8c1e7dc412938615a5f",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-06c00af5ee2d4615886fcbe1386b5495",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy(timestamp: \"null\", code: \"\", changed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+      "outcome": "Passed",
+      "testId": "e0681561-afd4-4224-750a-015819f39d49",
+      "stdoutSha256": "75cdd5a04d1cc5692e862a4cca80998d9aa946f9aabe647cc0c982380bff24ec",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-0183496e241842f5ae069d6cc7e49539",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy(timestamp: \"{}\", code: \"interface_updates_missing_timestamp\", changed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+      "outcome": "Passed",
+      "testId": "065da1b9-837f-7a68-dfd0-4f449f1d2071",
+      "stdoutSha256": "a389495e4585809a06e160e42dc0d86caf2604ad792b44332db1e6131fa52751",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-9cf23e216a4f469080f3281932204aa3",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess(owner: \"Interface\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess",
+      "outcome": "Passed",
+      "testId": "99db22b1-4cf2-fd9a-ced1-a9aca0f8c046",
+      "stdoutSha256": "178a933727d4a1bdcc02cc8933ea5af07d7b445b4de04e287adc1dbe356656bd",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-47c5409afdef4b4691570e258ec82010",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Interface\", encoding: \"utf8\", malformed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "fa1ed870-a940-fb34-3350-5ca77ee0b006",
+      "stdoutSha256": "e9ae25ec318f7d0fd03738026f8d6ae0b3ead9dcbb23f0c3b4243e3e90021b6a",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-8a497be9279149fe8d201c38a30f4751",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal(failAchievements: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal",
+      "outcome": "Passed",
+      "testId": "0749893c-4623-3d01-2dc0-ca06ac0aaa4b",
+      "stdoutSha256": "180b7024c46d672f1309a2c357e6d9088fb050136fcfff78aae839fea336c413",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-2ae85e464f88405b96c495f143837b20",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NarrativeTail_LeavesAchievementDiagnosticsAfterTimestampUnknownAndLeak",
+      "outcome": "Passed",
+      "testId": "c12fa11f-c1a4-a4c0-9b7a-9fe5c2c6ff38",
+      "stdoutSha256": "6cbf237767a29219bf5d16677e05025d8e53835f14494eac124217199289fb28",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-8c64e05935054333a5596dce377aa393",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess(owner: \"Narrative\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.RealWriteFailure_PropagatesWithoutDiagnosticCoercionOrByteSuccess",
+      "outcome": "Passed",
+      "testId": "229d070a-cd62-5b3f-72e0-d12d20e7a8cd",
+      "stdoutSha256": "5b734be67fd6f23840b5a7429866eebe94dae01378f279e6301747e86afa0752",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-c9c8b7c603544065bc989a9b1829663e",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies(payload: \"\\\"DialogueOptions\\\":null\", issuePath: \"output/interface_updates.json\")",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfacePayload_KeepsNullableWrongTypeAndExactPresencePolicies",
+      "outcome": "Passed",
+      "testId": "7bcd058d-4c99-8d6b-48ac-c2cc53d5a917",
+      "stdoutSha256": "679b807256236144fd24a3830dfddddbc56f1eb67d502e8c35a6ce54ba7aa33e",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-3a9693e3e49d4fdfa22ce5554db2aacd",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Interface\", encoding: \"utf16\", malformed: True)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "8443c30d-abb6-bc36-e169-a0488075bc39",
+      "stdoutSha256": "25933b9c01f5fc865ffb658e251dd31985c04a56feb5e02e1c81e8712c673e7f",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-4d4e194ae1d94a59b7dab1f00df1efa7",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy(timestamp: \"\\\"not-a-time\\\"\", code: \"interface_updates_invalid_timestamp\", changed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.InterfaceTimestamp_FallbackOnlyForExistingUsefulBlankPolicy",
+      "outcome": "Passed",
+      "testId": "93bed51d-cf25-cc86-486e-c79d636f2dd5",
+      "stdoutSha256": "eb8c5fa149b2b6d145c879ac5811ff4b6707525b11c5d4ef80ad9f8ea3779679",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-e9e3261508b14fee82fd52397ca479b0",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal(failAchievements: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.Narrative_ReadOrderAndJsonExceptionBoundaryRemainOriginal",
+      "outcome": "Passed",
+      "testId": "11aa75c0-f7b3-2a56-27fd-774215925926",
+      "stdoutSha256": "1e2a839e137e542cd468b54bf1fb332201d37c48dadcd550ab6504a7471c0717",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-98a9af7b0cc74738916b7a5cb84a7cf6",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Narrative\", encoding: \"utf8\", malformed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "ed09cb39-f9e1-0d5c-d8b3-ea279ee39cb2",
+      "stdoutSha256": "8f80716aac0a71ff908feb482fc4d2120866b3aac32b634c31c81b37339709c1",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-7ea4c42e23ad48bf8b4057337b18aed3",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Narrative\", encoding: \"utf16\", malformed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "d7624551-4680-f511-a891-77c4ae9e443e",
+      "stdoutSha256": "c8f49dbf049dce8ffdea502cbadcd0c051990252a362772986777e5fa5fb93a0",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-f6127fc2573649a9bd85fce701943b38",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime(owner: \"Interface\", encoding: \"utf16\", malformed: False)",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.NoWrite_PreservesExactEncodingBytesAndMtime",
+      "outcome": "Passed",
+      "testId": "c97e8279-ea5a-eb92-22e5-234d3d2d0028",
+      "stdoutSha256": "d3cb8e9bd2e644671f84ac4834d95a925242e180c7f35f053b2a5ae23f42b39f",
+      "strictReceipts": [
+        {
+          "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+          "root": "/tmp/boe-pd3d-ordinary-71cd4c888bf14a3eab8e20590484f98f",
+          "removed": true
+        }
+      ]
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "method": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.SharedExtraction_ReversesToExactReviewedOrdinarySource",
+      "outcome": "Passed",
+      "testId": "220581f0-706b-48fd-758c-d58b7af0d96c",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
+      "method": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_WritesOnlyChangedSharedImages",
+      "outcome": "Passed",
+      "testId": "d3a0faec-a506-b70c-bbd3-7e2177202e97",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity(timestampJson: \"\\\"not-a-time\\\"\", expectedCode: \"interface_updates_invalid_timestamp\")",
+      "method": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity",
+      "outcome": "Passed",
+      "testId": "c4487bc8-5630-6126-14d1-3cde16304ca1",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity(timestampJson: \"42\", expectedCode: \"interface_updates_missing_timestamp\")",
+      "method": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OrdinaryOutputProjection_PreservesStaleWarningAndTimestampSeverity",
+      "outcome": "Passed",
+      "testId": "8154c4c5-a10f-1b80-ed5f-699c7fabdfb4",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "strictReceipts": []
+    }
+  ],
+  "failures": [],
+  "distinctNewStrictPhysicallyAbsentRoots": [
+    "/tmp/boe-pd3d-ordinary-bab310659a094ce791315bb3298a1ead",
+    "/tmp/boe-pd3d-ordinary-dd5f32f9cf6444a8a2e7b1b95341f548",
+    "/tmp/boe-pd3d-ordinary-ddcde79515574574ad92d0d01c66cf2c",
+    "/tmp/boe-pd3d-ordinary-74aaf9cf6ddf434dad9101ad54515128",
+    "/tmp/boe-pd3d-ordinary-8edc660d8fa34f6ba5ad1313816adbf2",
+    "/tmp/boe-pd3d-ordinary-01767d8693464546bcc7adaa26274f45",
+    "/tmp/boe-pd3d-ordinary-a566286b97e24144a6a6a708d3d622dc",
+    "/tmp/boe-pd3d-ordinary-30899fe32039484d94be5fa0caaeb35f",
+    "/tmp/boe-pd3d-ordinary-5aaaaae2f7914b55892631cf36182bc2",
+    "/tmp/boe-pd3d-ordinary-60def9a37c7241e9b68a73073927b733",
+    "/tmp/boe-pd3d-ordinary-b8c0f24c849849cf9ba65c2aaf03fc08",
+    "/tmp/boe-pd3d-ordinary-f7f3939329794dd791f410f49f1ea7c5",
+    "/tmp/boe-pd3d-ordinary-07b16a1749984c37bc3e0703362a093c",
+    "/tmp/boe-pd3d-ordinary-691b4e42f2f045b994c088c335494c2d",
+    "/tmp/boe-pd3d-ordinary-34e7ca547dff4cf5a3258e2432f78d68",
+    "/tmp/boe-pd3d-ordinary-fce4b31dc75c47f584630fdfffe67468",
+    "/tmp/boe-pd3d-ordinary-6d616bcfe6104655baf9c694211bc160",
+    "/tmp/boe-pd3d-ordinary-98392ec0ff6b4ec1a5928b1c1f829132",
+    "/tmp/boe-pd3d-ordinary-9692667984dd41e88c7a5127831d8c8d",
+    "/tmp/boe-pd3d-ordinary-0dccad1e05fb42aeb60afe47a174085f",
+    "/tmp/boe-pd3d-ordinary-06c00af5ee2d4615886fcbe1386b5495",
+    "/tmp/boe-pd3d-ordinary-0183496e241842f5ae069d6cc7e49539",
+    "/tmp/boe-pd3d-ordinary-9cf23e216a4f469080f3281932204aa3",
+    "/tmp/boe-pd3d-ordinary-47c5409afdef4b4691570e258ec82010",
+    "/tmp/boe-pd3d-ordinary-8a497be9279149fe8d201c38a30f4751",
+    "/tmp/boe-pd3d-ordinary-2ae85e464f88405b96c495f143837b20",
+    "/tmp/boe-pd3d-ordinary-8c64e05935054333a5596dce377aa393",
+    "/tmp/boe-pd3d-ordinary-c9c8b7c603544065bc989a9b1829663e",
+    "/tmp/boe-pd3d-ordinary-3a9693e3e49d4fdfa22ce5554db2aacd",
+    "/tmp/boe-pd3d-ordinary-4d4e194ae1d94a59b7dab1f00df1efa7",
+    "/tmp/boe-pd3d-ordinary-e9e3261508b14fee82fd52397ca479b0",
+    "/tmp/boe-pd3d-ordinary-98a9af7b0cc74738916b7a5cb84a7cf6",
+    "/tmp/boe-pd3d-ordinary-7ea4c42e23ad48bf8b4057337b18aed3",
+    "/tmp/boe-pd3d-ordinary-f6127fc2573649a9bd85fce701943b38",
+    "/tmp/boe-pd3d-ordinary-71cd4c888bf14a3eab8e20590484f98f"
+  ],
+  "nineFreshBeforeAfterCurrentExact": true,
+  "namespaceEmptyBeforeAfter": true,
+  "scope": "New52 only; independent final EVIDENCE/publication/recovery still required. Exactly35newfixture rows have emitted strict per-root cleanup. Legacy13unit disposal and3SP best-effort rows have namespaceabsence, no invented per-case root identities. Source-only1 has nofixture root. Behavioral byte/mtime/fault assertions are source-bound reached assertions, deleted payload bodies were not separately frozen. ProtectedLate2 separate accepted proof, not counted among52. No oldWorld/HOT/fullF1/Windows claim.",
+  "helperSource": "from pathlib import Path\nimport json,sys,hashlib,gzip,xml.etree.ElementTree as E,subprocess,datetime,os,collections\nR=Path('/workspace/The-Book-of-Eternity-Reborn');rp=Path(sys.argv[1]);AD=Path(sys.argv[2]);c=json.loads(rp.read_text());ar=json.loads((AD/'archive.json').read_text());h=lambda b:hashlib.sha256(b).hexdigest();assert c['kind']=='FIRST_PD3D_PRODUCT_RAW_NOT_EVIDENCE_ACCEPTANCE' and c['mode']=='ordinary52';A=c['actualSource'];S=c['compiledSource'];assert S=='0f00ee256797a4e21b6f314a2a0053ec6084f972' and c['headAfter']==A and not c['statusAfter']\nexpected={str(rp),c['stdoutPath'],c['processRecord'],c['firstSentinel'],str(rp.parent/'source-binding.json')}\nfor d in c['resultDirectories']:expected.update(str(p)for p in Path(d).rglob('*')if p.is_file())\nassert expected=={f['rawPath']for f in ar['files']};raws={}\nfor f in ar['files']:\n b=Path(f['rawPath']).read_bytes();z=(AD/f['storedPath']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256'];assert len(z)==f['storedBytes'] and h(z)==f['storedSha256'];assert gzip.decompress(z)==b;assert Path(f['rawPath']).name not in raws;raws[Path(f['rawPath']).name]=b\nassert json.loads(raws['record.json'])==c and h(raws['stdout.log'])==c['stdoutSha256'];assert c['binaryBefore']==c['binaryAfter'] and len(c['binaryAfter'])==9\nfor f in c['binaryAfter']:\n b=(R/f['path']).read_bytes();assert len(b)==f['bytes'] and h(b)==f['sha256']\nassert c['namespaceBefore']==c['namespaceAfter']==dict(ownedRoots=[]);assert all(p.startswith('specs/1536-complete-wound-materialization/')for p in subprocess.check_output(['git','diff','--name-only',S,A],cwd=R,text=True).splitlines());s=json.loads(raws['summary.json']);plan=json.loads(raws['plan.json']);expectedmethods={m['Name']:m['Cases']for d in c['expectedDescriptors']for m in d['ExpectedMethodCounts']};assert len(expectedmethods)==29 and sum(expectedmethods.values())==52\nrows=[];ids=[];executions=[];actualmethods=collections.Counter();roots=[];failures=[]\nfor name,b in raws.items():\n if not name.endswith('.trx'):continue\n x=E.fromstring(b);ns={'t':x.tag.split('}')[0].lstrip('{')};defs={v.attrib['id']:v.find('t:TestMethod',ns)for v in x.findall('.//t:TestDefinitions/t:UnitTest',ns)}\n for v in x.findall('.//t:UnitTestResult',ns):\n  tid=v.attrib['testId'];d=defs[tid];method=d.attrib['className'].split(',')[0]+'.'+d.attrib['name'];actualmethods[method]+=1;ids.append(tid);executions.append(v.attrib['executionId']);out=v.findtext('t:Output/t:StdOut','',ns);receipt=[]\n  for ln in out.splitlines():\n   try:j=json.loads(ln)\n   except json.JSONDecodeError:continue\n   if isinstance(j,dict)and j.get('kind')=='PD3D_ORDINARY_STRICT_CLEANUP':receipt.append(j)\n  row=dict(name=v.attrib['testName'],method=method,outcome=v.attrib['outcome'],testId=tid,stdoutSha256=h(out.encode()),strictReceipts=receipt)\n  if v.attrib['outcome']!='Passed':row.update(message=v.findtext('t:Output/t:ErrorInfo/t:Message','',ns),stack=v.findtext('t:Output/t:ErrorInfo/t:StackTrace','',ns));failures.append(row)\n  for j in receipt:assert j['removed'] and j['root'].startswith('/tmp/boe-pd3d-ordinary-')and not os.path.lexists(j['root']);roots.append(j['root'])\n  rows.append(row)\nassert len(ids)==len(set(ids)) and len(executions)==len(set(executions))\nif c['nativeExit']==0:\n assert s['Tests']==dict(Total=52,Executed=52,Passed=52,Failed=0);assert len(rows)==52 and not failures;assert dict(actualmethods)==expectedmethods;assert s['Selection']['Complete'] and s['Selection']['PlannedDescriptors']==s['Selection']['CompletedDescriptors']==5 and s['Selection']['PlannedCases']==s['Selection']['CompletedCases']==52 and not s['Selection']['UnderfilledDescriptors'];assert s['OwnedTreeCleanupSucceeded']and s['RuntimeCleanupSucceeded']and not s['TimedOut']and not s['DuplicateTests'];assert len(roots)==len(set(roots))==35\n for row in rows:\n  wanted=row['method'].startswith('BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfaceOrdinaryTests.')or row['method'].endswith('.PublicOrdinaryOwner_ConsumesSharedPolicyStages');assert len(row['strictReceipts'])==(1 if wanted else 0)\nobj=dict(kind='ROOT_FIRST_ORDINARY52_LITERAL_NEW_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE',actualSource=A,compiledSource=S,nativeExit=c['nativeExit'],wallSeconds=c['wallSeconds'],summary=s,plan=plan,rawChains=len(ar['files']),archiveSha256=h((AD/'archive.json').read_bytes()),expectedMethods=expectedmethods,actualMethodCounts=dict(actualmethods),rows=rows,failures=failures,distinctNewStrictPhysicallyAbsentRoots=roots,nineFreshBeforeAfterCurrentExact=True,namespaceEmptyBeforeAfter=True,scope='New52 only; independent final EVIDENCE/publication/recovery still required. Exactly35newfixture rows have emitted strict per-root cleanup. Legacy13unit disposal and3SP best-effort rows have namespaceabsence, no invented per-case root identities. Source-only1 has nofixture root. Behavioral byte/mtime/fault assertions are source-bound reached assertions, deleted payload bodies were not separately frozen. ProtectedLate2 separate accepted proof, not counted among52. No oldWorld/HOT/fullF1/Windows claim.',helperSource=Path(__file__).read_text(),utc=datetime.datetime.now(datetime.timezone.utc).isoformat());p=Path('/tmp/t179pd3d-root-first-ordinary52-inspection-'+A[:8]+'-20261017.json');assert not p.exists();p.write_text(json.dumps(obj,indent=2)+'\\n');print(p,h(p.read_bytes()))\n",
+  "utc": "2026-10-17T17:14:09.151326+00:00"
+}

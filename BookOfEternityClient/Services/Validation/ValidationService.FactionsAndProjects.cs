@@ -1283,6 +1283,7 @@ public partial class ValidationService
 
     private HashSet<string> CollectKnownPermanentFactionNames(JsonElement root)
     {
+        RequireWorldCacheAccess();
         if (_knownCanonicalFactionNamesCache != null)
             return _knownCanonicalFactionNamesCache;
 

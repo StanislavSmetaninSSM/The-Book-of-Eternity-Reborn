@@ -1,0 +1,48 @@
+{
+  "utc": "2026-10-12T10:50:22.236354+00:00",
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "actualRun": "20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories",
+  "ownedFixtureRoot": "/tmp/boe-gameengine-turnlifecycle-aa7c84ba9a954666a344a58bc37b043e",
+  "observations": [
+    {
+      "path": "input/turn_request.json",
+      "present": true,
+      "sha256": "759f9eb9cea23f50baaa6c0a3a9dee25c1b89541b09c377533aabff5194f98a3",
+      "bytes": 60146,
+      "correlation": {
+        "sessionId": "session_qte_physical_finalization",
+        "requestId": "552d63e9255747258b90e75b5383e596",
+        "turnNumber": 42
+      }
+    },
+    {
+      "path": "game_state/control/pending_turn_snapshot.json",
+      "present": true,
+      "sha256": "47ebe4d3db226b7b2520812796718a6a26db5de6195b32dcd72a6898e9c66f44",
+      "bytes": 22064,
+      "correlation": {
+        "sessionId": "session_qte_physical_finalization",
+        "requestId": "552d63e9255747258b90e75b5383e596",
+        "turnNumber": 42,
+        "sourceLabel": "обработки хода"
+      }
+    },
+    {
+      "path": "output/qte_offer.json",
+      "present": false
+    },
+    {
+      "path": "ready/turn_complete.json",
+      "present": false
+    },
+    {
+      "path": "ready/turn_error.json",
+      "present": false
+    },
+    {
+      "path": "game_state/control/validation_repair_request.json",
+      "present": false
+    }
+  ],
+  "classification": "Live read-only diagnostics; actual still running. Source snapshot files physically present, but officialReader milestone/finalizedharm not yet reached. Fresh outside GM task lease conflicts with continuous ordinary main owner suspected; no production edits."
+}

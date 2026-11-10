@@ -1,0 +1,13 @@
+{
+  "kind": "G02_PURE_CONFIG_SHAPE",
+  "passed": 0,
+  "cases": [
+    {
+      "name": "validate_config-required",
+      "passed": false
+    }
+  ],
+  "targets": 0,
+  "requests": 0,
+  "nativeExit": 1
+}

@@ -1,0 +1,18 @@
+{
+  "SHA": "5d4bef64ac89449838c1ef6bfb4ef0fe5f7c62a4",
+  "Base": "01e886ef25ce54d6b1b0d091a2b69f15f10c29ec",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1595892,
+      "SHA256": "83407a644c6fe51f2dd729bac42f02ea4881f12827c029f77791fc6e2adf11e4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "Bytes": 51383,
+      "SHA256": "c6b8cd5289a39b06136f3cea78c0b77dfb0d89fa0690d03b579056ef885c43f6",
+      "RemoteExact": true
+    }
+  ]
+}

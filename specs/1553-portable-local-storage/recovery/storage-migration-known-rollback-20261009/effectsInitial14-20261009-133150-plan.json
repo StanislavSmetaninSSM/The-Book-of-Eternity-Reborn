@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-effect-original-rollback-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "efd664687f85a40b38b37eb1d1942cbc5eef4f4f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.7754426,
+  "Descriptors": [
+    {
+      "Name": "portable-effect-original-rollback-publication-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-effect-original-rollback-publication",
+      "Categories": [
+        "portable-effect-original-rollback-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PlayerPublicationFailureRestoresEntireTrackedSet|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_PlayerPublicationFailureRestoresEntireTrackedSet",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectSkillScopeLifecycleTests_FocusedPublicationFailureRollsBackEveryTrackedSurface",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

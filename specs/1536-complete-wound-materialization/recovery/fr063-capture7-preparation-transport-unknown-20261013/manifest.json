@@ -1,0 +1,36 @@
+{
+  "source": "b3bdd4af7547f5dc28ed03c3580e76f2eef14767",
+  "classification": "PREPARATION UNKNOWN, actualUNRUN; first transport-partial preserved",
+  "artifacts": [
+    {
+      "name": "partial-preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 1139,
+      "uncompressedSha256": "fbf95c64a7e681ff88c6871f417c5b4881b31b4718afdb45db357cd84f43f6aa",
+      "compressedBytes": 364,
+      "compressedSha256": "79e8caa0f51a99694a7caa8360fe3b6337fa42936a5bb2d603d2bcdd81188ae3"
+    },
+    {
+      "name": "source-report.md.gz",
+      "uncompressedBytes": 17759,
+      "uncompressedSha256": "69790c0357a217f33616eeeace17bca565e9ce9eb3ddd0cec8feafc032ae52ee",
+      "compressedBytes": 5370,
+      "compressedSha256": "3711dae363f3121fde804d4bb988b87c09461712d2626e017bf26c5bd3bcbb96"
+    },
+    {
+      "name": "source-review.md.gz",
+      "uncompressedBytes": 7874,
+      "uncompressedSha256": "772b3b6a48a13f383228f30fea8bb1e769c7eafa6c87850a0197e265a5e161d2",
+      "compressedBytes": 3765,
+      "compressedSha256": "6cf41819dbe157c14210e513130e2a79b0f22ad4f574b701aa00edb817c95743"
+    },
+    {
+      "name": "preparation-selection.json.gz",
+      "uncompressedBytes": 2657,
+      "uncompressedSha256": "f81a119ed73a64ddceb1370706ee825ddb97a9b1d6acfe9c86030693cd99c90d",
+      "compressedBytes": 1230,
+      "compressedSha256": "5edafc261dee5a42b6082d329af29fdb106157111a59199a6a122c45965c62cd"
+    }
+  ],
+  "frozenUtc": "2026-10-13T18:27:25.838960+00:00",
+  "evidenceReview": "PENDING status/recovery review, no completed build/test claimed"
+}

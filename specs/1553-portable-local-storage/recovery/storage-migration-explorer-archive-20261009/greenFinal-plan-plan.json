@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-explorer-forge-unknown-current",
+    "portable-explorer-reroll-current-fixture"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4e31b15e3eaf391f18ad41300f51940309c1596c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.0919632,
+  "Descriptors": [
+    {
+      "Name": "portable-explorer-forge-unknown-current-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-forge-unknown-current",
+      "Categories": [
+        "portable-explorer-forge-unknown-current"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-explorer-reroll-current-fixture-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-reroll-current-fixture",
+      "Categories": [
+        "portable-explorer-reroll-current-fixture"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

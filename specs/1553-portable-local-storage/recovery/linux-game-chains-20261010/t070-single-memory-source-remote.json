@@ -1,0 +1,30 @@
+{
+  "SHA": "ecad1cfdc78f62cc9ef5174f8cf6f6da28d259c4",
+  "Base": "d9365fbc825921b7ec92af0f93c69a87b3c1741b",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualRepair.cs",
+      "Bytes": 27098,
+      "SHA256": "fe1c880f9545283745ea84a8578efa9152e3560d855017923389aa976a9cc4f7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1624841,
+      "SHA256": "12dc5467b0695d1fdd4f0d75f4c9d7174cb1c609cca0ab6b605fcf642facd7b7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-red-remote.json",
+      "Bytes": 18981,
+      "SHA256": "e38c04a2295f32710469265c54e6ed9449b2368375709bbb450e8244cd682add",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-repair-red-readonly-restore.json",
+      "Bytes": 20307,
+      "SHA256": "253dd9832d6c65a36e4c400092afde49cdeb9259347faef7e69b35daadd110ba",
+      "RemoteExact": true
+    }
+  ]
+}

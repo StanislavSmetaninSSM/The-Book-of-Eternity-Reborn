@@ -1,0 +1,43 @@
+{
+  "owningBase": "8656d87cfb986a45ed31d284f88ea4cf3dcf6880",
+  "checkpoint": "Unpublished eligible cleanup API WIP; caller unwired",
+  "authorTextChecks": {
+    "fresh_phase_owner": true,
+    "applied_actual_runtime_required": true,
+    "exact_owned_story_required": true,
+    "projection_semantics_required": true,
+    "actual_correlated_ready_contract": true,
+    "actual_destructive_original_backup_validator": true,
+    "signed_artifact_only_inventory": true,
+    "unsupported_backup_or_storage_refused": true,
+    "foreign_controls_refused": true,
+    "unresolved_protocol_evidence_retained": true,
+    "mechanical_delete_overlap_refused": true,
+    "actual_readonly_runtime_refresh": true,
+    "one_trusted_publication": true,
+    "full_precommit_callback": true,
+    "debt_resolved_before_classification": true,
+    "exact_all_members_retained_readback": true,
+    "no_sequential_cleanup_or_rollback": true,
+    "unknown_cleanup_blocked": true,
+    "old_docs_tail_checkbox_exact": true
+  },
+  "authoredPins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs": "11c529dda6825c9ea4bf50bf3af220138247f9072f94411f7705096590b4914c",
+    "specs/1536-complete-wound-materialization/plan.md": "c34aa30b344109a63157d78c94d18ecd5902fcb7dc22cd14da3548370e0f81e8",
+    "specs/1536-complete-wound-materialization/tasks.md": "f21f281894d5b5ada52438f9bd32433a0ece4d98728b3489c1436d53a75178a3"
+  },
+  "protectedBaseByteEqualPins": {
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": "81693ccae1c8af2296400c5f4b487a2782edff75c84d5bc64aa8a1a24b642bb6",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "331a99900daf3924f9ab49835efbbe3262458e6764552b5849e25936f5475cc2",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+    "BookOfEternityClient/Core/StateManager.cs": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+    "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+    "tests/categories.json": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+  },
+  "projectChecks": "UNRUN",
+  "open": "Caller/display/malformed-family/terminal-session-cold/J7/normative/GM; partial cleanup not qualified recoverable."
+}

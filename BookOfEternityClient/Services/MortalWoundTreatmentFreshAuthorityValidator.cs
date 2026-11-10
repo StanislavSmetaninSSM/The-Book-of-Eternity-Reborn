@@ -60,6 +60,24 @@ internal static class MortalWoundTreatmentFreshAuthorityValidator
         }
     }
 
+    internal static string? FindDiagnosisMismatch(MortalWoundTreatmentAttemptRequest request,
+        WoundHistoryParseResult history, WoundMaterializationEnvelope before, MortalWoundTreatmentAcceptedStateAuthority accepted)
+    {
+        try
+        {
+            accepted.RequireOriginalDiagnosisRequest(request);
+            if (request.Mode != "diagnosis" || !accepted.MatchesCompleteHistory(history) || !accepted.MatchesCurrentWound(before) ||
+                !request.Coordinates.MatchesAcceptedState(accepted) || !MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+                request.ModeAuthority is not MortalWoundProcedureCheckAuthority check) return "diagnosis_request";
+            var requirements = MortalWoundTreatmentRequirementAuthorityBundle.CreateForDiagnosis(accepted, request.Coordinates, before);
+            if (!requirements.IsValid || requirements.Authority is null || !SemanticEquals(requirements.Authority, request.RequirementAuthority))
+                return "diagnosis_requirements";
+            return check.MatchesFreshDiagnosis(accepted, request.Coordinates, before, requirements.Authority) ? null : "diagnosis_check";
+        }
+        catch (Exception exception) when (exception is InvalidOperationException or ArgumentException or InvalidDataException or System.Text.Json.JsonException)
+        { return "diagnosis_" + exception.GetType().Name; }
+    }
+
     private static string? FindProcedureMismatch(
         MortalWoundTreatmentAttemptRequest request,
         WoundMaterializationEnvelope before,

@@ -1,0 +1,201 @@
+{
+  "kind": "INDEPENDENT_UNCERTAIN1_FROZEN_POSITIVE_RESUME_FAILURE_CHECK",
+  "checkedUtc": "2026-10-18T13:40:01.063184+00:00",
+  "carrier": "4dbdb144c1862941f48df53136ae78cbf4a8f25c",
+  "actualSource": "90fbb068817257a670c0ac99f6d1bbfd6cbfc19b",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "recordSha256": "dd4eed9571317b93eea673c5c36855afb7c00d1084ba608c6ace5a2c7a3598be",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-uncertain1-frozen-813f1057-files-20261018/archive.json",
+    "sha256": "849e8ec81489c66948b6837bad04f92bead79b1decef8b1229315815883acd6e",
+    "rawChains": 11,
+    "rawBytes": 25551669,
+    "completeOriginalCoverage": true,
+    "storedRawRestoredExact": true
+  },
+  "sourcePinCount": 98,
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "productDeltaPaths": 21,
+  "nativeExit": 1,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "categoryResult": {
+    "Category": "fr063-joint-interface-uncertain-current",
+    "Seconds": 74.8504636,
+    "BudgetMinutes": 10,
+    "Completed": false
+  },
+  "wallSeconds": 101.70918841999992,
+  "noTimeout": true,
+  "nineAndFull1575OutputsExact": true,
+  "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+  "testDuration": "00:00:58.6990585",
+  "error": "Assert.NotNull() Failure: Value is null",
+  "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertUncertainCurrentResumeAsync(GameEngine engine, String firstDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 67\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 364\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 15\n--- End of stack trace from previous location ---",
+  "initialHeldState": {
+    "disposition": "PublicationUncertain",
+    "issueProjectionSha256": "DD6C1C15B4A661B7E3FBBD85CCDEEADB263106D53EE78F9DDC284479AE91838B",
+    "issue": {
+      "Index": 0,
+      "Code": {
+        "Value": "mortal_joint_repair_admission_refused",
+        "OriginalLength": 37,
+        "Truncated": false,
+        "FullUtf8Sha256": "BEB9C2640F8A0A27C1326A7AD6CB224A782654BAADAA4E2E9D72C22F7456FFDA"
+      },
+      "FilePath": {
+        "Value": "acceptedTurn.wounds",
+        "OriginalLength": 19,
+        "Truncated": false,
+        "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+      },
+      "Message": {
+        "Value": "L01 one-shot existing completed capture checkpoint; preparation not entered.",
+        "OriginalLength": 76,
+        "Truncated": false,
+        "FullUtf8Sha256": "DBA6D6D8A0D9BEB4D3C3ABBC948ED8DDE83ADE69A1975BC09096B72A6719397A"
+      }
+    },
+    "interfaceChangingCohorts": 1,
+    "captureCallbacks": 1,
+    "commonMarkerCommits": 0,
+    "mechanicalPathsRetained": 15,
+    "directRestoreImagePathsRetained": 222
+  },
+  "assertionScope": {
+    "reached": [
+      "genuine confirmed held42/natural original43 without precomposed common plan",
+      "one completed capture after one I-changing publication",
+      "initial PublicationUncertain with exact original injected capture-failure issue",
+      "expired old attempt: not Live or Delegated, Continuation and Reservation null (unchanged assertions before failing line)",
+      "exact Published pending/I, no common marker and held42",
+      "all15 mechanical paths unchanged",
+      "actual Stage direct restore blocked with all222 captured paths byte-identical",
+      "real late caller awaited and returned before failing current-proof assertion",
+      "native/fixture cleanup"
+    ],
+    "unreachedOrUnproven": [
+      "non-null currentResumedProof and successful pre-cleanup full DATA checkpoint",
+      "subsequent turn43 and exact resumed-result assertions",
+      "current resumed mechanical outcome energy/health/wound checks",
+      "terminal seven-artifact cleanup assertions",
+      "new after-current full image capture and inert-repeat assertions",
+      "post-resume logger snapshot or direct raw nested-lock exception for this case"
+    ]
+  },
+  "sourceReadback": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "sha256": "5653d51c40ffa2522386b3cb3f8f50cf64044a40e03586a498e4e0fee96dd7b7",
+      "bytes": 7072
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "sha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766",
+      "bytes": 27240
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "sha256": "4d6c1d08949055d66bd4b7091b6daedac6ce7d4776bb18476800521bd3bea94e",
+      "bytes": 9166
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "sha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8",
+      "bytes": 11177
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910",
+      "bytes": 509199
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+      "bytes": 56992
+    }
+  ],
+  "rawImageShaChecks": 943,
+  "embeddedImageShaChecks": 4,
+  "journalImageShaChecks": 0,
+  "jsonDiagnosticParseErrors": 0,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-before-census-20261018.json",
+      "sha256": "38463340af1317e91ee6127eaf3d2efc59d2ee3e57794cdb8c8a692859cbfa6e",
+      "entries": 85,
+      "startedUtc": "2026-10-18T13:25:10.910047+00:00",
+      "finishedUtc": "2026-10-18T13:25:10.930307+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 31438,
+          "expectedStartTick": 1451877,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-after-census-20261018.json",
+      "sha256": "765b0b9f18de68f4e25c2f402734ec37fa5da8060a4e9eee76452e6b35d8e207",
+      "entries": 87,
+      "startedUtc": "2026-10-18T13:26:56.279973+00:00",
+      "finishedUtc": "2026-10-18T13:26:56.294838+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 31778,
+          "expectedStartTick": 1462419,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "beforeGapSeconds": 2.854857,
+  "afterGapSeconds": 0.785627,
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-4dbdb144.json",
+    "receiptSha256": "9b075795138f41e5679a348e39b6108bff637c3d71fc6f71a7ce015632c20642",
+    "changedPaths": 18,
+    "bytesHashesBlobsModesVerified": true,
+    "completeSavedGitTreeMatchesIndependentClone": true
+  },
+  "qualifiedCases": 47,
+  "additionalQualifiedTargets": 0,
+  "causalLimit": "Direct raw evidence proves the positive current-resume proof was not reached. The shared selected-resume source has the independently demonstrated nested canonical-lease blocker from integrity CurrentInterface. The test fails before its final diagnostic emission; no post-current logger or full snapshot is available here, so do not claim this uncertain1 raw directly contains the lock exception or reconstruct its final state.",
+  "findings": [
+    {
+      "id": "L01-CURRENT-RESUME-POSITIVE-001",
+      "severity": "blocking",
+      "fact": "Real same-engine late owner returns without the required new current full proof; unchanged Assert.NotNull fails at line67.",
+      "relation": "Consistent with and source-dependent on the same nested canonical-lease path; independent CurrentInterface raw supplies direct lock-failure evidence."
+    }
+  ],
+  "execution": "Read-only original/source/Git/archive/build-output/saved-census checks. No native/build/discovery/controller/observer execution, current fixture root/process inspection/control, repository edit or retry."
+}

@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "portable-gm-helper-admission-causal-linux",
+    "portable-gm-helper-realm-link-causal-linux",
+    "portable-gm-helper-current-linux",
+    "portable-gm-helper-original-contracts-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "eaa4e5ebf5bd6c51c7278a930e4effb6f5813a8e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0757265,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0345023,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0842051,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 49.6808113,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:50.0001594",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

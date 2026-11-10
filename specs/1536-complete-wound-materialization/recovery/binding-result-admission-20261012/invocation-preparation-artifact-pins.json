@@ -1,0 +1,31 @@
+{
+  "source": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "planRun": "20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories",
+  "artifacts": [
+    {
+      "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories/Build-integration.log",
+      "sha256": "521e40962cc94409955ee59e354814864b5b9818abdda786e170a57ef2759c12",
+      "bytes": 67789
+    },
+    {
+      "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories/Build-unit.log",
+      "sha256": "e89ba4cf7ed90ce3dc452852df0404628e91164c850fe11d9eb0946cd3be13d9",
+      "bytes": 30113
+    },
+    {
+      "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories/dotnet-test.log",
+      "sha256": "1e28414e3fa12d6cbcd0cde47f0cbab497a4a7a6a09017ba7a5982032517cc06",
+      "bytes": 3400965
+    },
+    {
+      "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories/plan.json",
+      "sha256": "6b43bdb837107c200bcde29389ae74e56c6b97027a4775eb1c2f4531bf7fcab6",
+      "bytes": 3619
+    },
+    {
+      "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories/summary.json",
+      "sha256": "8f5de0cad8709b101aad5f6b902236d26b2baa01ab7ccec657a904c63209951f",
+      "bytes": 2912
+    }
+  ]
+}

@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -43,10 +44,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             AtCheckpointAsync = checkpoint =>
             {
                 checkpoints.Enqueue($"{DateTime.UtcNow:O} {checkpoint}");
-                while (checkpoints.Count > 24) checkpoints.TryDequeue(out _);
                 return Task.CompletedTask;
             }
         };
+        GameEngineTestRuntime? runtime = null;
         GameEngine? engine = null;
         var request = new TurnRequest
         {
@@ -60,15 +61,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             var chat = Assert.IsType<JsonObject>(await original.ReadJsonAsync("game_state/history/chat_log.json"));
             chat["sessionId"] = request.SessionId;
             await original.WriteExactJsonAsync("game_state/history/chat_log.json", chat.ToJsonString());
-            engine = CreateGameEngine(input, finalizationHooks: finalization, fileSystem: original.FileSystem, logger: logger);
-            await InvokePrivateTaskAsync(engine, "RefreshRuntimeStateAsync");
-            GetPrivateField<GameLoop>(engine, "_gameLoop").SetSession(request.SessionId, 41);
-            await InvokePrivateTaskAsync(engine, "EnsureClientOwnedSystemFilesHealthyAsync");
+            runtime = CreateGameEngineRuntime(original.FileSystem, input, finalizationHooks: finalization, logger: logger);
+            engine = runtime.Engine;
+            await engine.RefreshRuntimeStateAsync();
+            runtime.GameLoop.SetSession(request.SessionId, 41);
+            await engine.EnsureClientOwnedSystemFilesHealthyAsync();
             request.ProgressionControl = await new ProgressionScheduleService(original.FileSystem,
                 NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync("Chaos Sea");
-            var rollback = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "worsening-spiritual-original");
+            var rollback = await engine.CaptureOriginalRollbackAsync("worsening-spiritual-original");
             await original.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
-            await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "worsening-spiritual-original");
+            await engine.CaptureOriginalValidationSnapshotAsync(request, rollback, "worsening-spiritual-original");
         }, hooks: hooks);
         await AfterlifeResourceCutoverTests.WriteSpiritualWorseningExchangesAsync(context);
         await WriteSpiritualWorseningLifecycleOutputsAsync(context, request);
@@ -94,8 +96,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     string? raw = null;
                     try
                     {
-                        raw = await ReadSequentialSpiritualPhysicalDiagnosticAsync(
-                            context.FileSystem.ResolvePath(repairPath), tail: false, stop.Token);
+                        raw = await File.ReadAllTextAsync(context.FileSystem.ResolvePath(repairPath), stop.Token);
                     }
                     catch (FileNotFoundException) { }
                     if (!string.IsNullOrWhiteSpace(raw))
@@ -119,26 +120,24 @@ public sealed partial class GameEngineTurnLifecycleTests
                             Assert.False(repair.GetProperty("fullTurnResubmissionRequired").GetBoolean());
                             var worsening = offers.Count == 2;
                             if (worsening) Assert.Equal(2, continuation.Offer!.MinimumSeverityRank);
-                            using var leaseDeadline = CancellationTokenSource.CreateLinkedTokenSource(stop.Token);
-                            leaseDeadline.CancelAfter(TimeSpan.FromSeconds(10));
-                            await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync(
-                                             cancellationToken: leaseDeadline.Token))
-                            {
-                                foreach (var pair in originalImages)
-                                    Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
-                                Assert.False(context.FileSystem.FileExists(lease, SpiritualWoundOpportunityReceiptState.StatePath));
-                                var checkpoint = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease,
-                                    SpiritualWoundCaptureCheckpointState.StatePath))!)!["checkpoint"]!;
-                                Assert.Equal(worsening ? 1 : 0, checkpoint["committedAdvance"]!.GetValue<int>());
-                            }
-                            await context.WriteExactJsonAsync("output/narrative_response.json", JsonSerializer.Serialize(new
+                            // This independent file-GM responder observes input without acquiring
+                            // a second client main owner while the engine awaits its Ready.
+                            foreach (var pair in originalImages)
+                                Assert.Equal(pair.Value, await File.ReadAllBytesAsync(
+                                    context.FileSystem.ResolvePath(pair.Key), stop.Token));
+                            Assert.False(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundOpportunityReceiptState.StatePath)));
+                            var checkpoint = JsonNode.Parse(await File.ReadAllTextAsync(
+                                context.FileSystem.ResolvePath(SpiritualWoundCaptureCheckpointState.StatePath),
+                                stop.Token))!["checkpoint"]!;
+                            Assert.Equal(worsening ? 1 : 0, checkpoint["committedAdvance"]!.GetValue<int>());
+                            await WriteSpiritualFileGmJsonAsync(context.FileSystem, "output/narrative_response.json", JsonSerializer.Serialize(new
                             {
                                 response = worsening ? firstNarration + " " + laterNarration : firstNarration,
                                 timestamp = DateTime.UtcNow.ToString("O")
-                            }));
+                            }), stop.Token);
                             var decision = AfterlifeResourceCutoverTests.CreateSpiritualWorseningLifecycleDecision(
                                 continuation.Offer!.OpportunityRef, worsening);
-                            await context.WriteExactJsonAsync(readyPath, JsonSerializer.Serialize(new
+                            await WriteSpiritualFileGmJsonAsync(context.FileSystem, readyPath, JsonSerializer.Serialize(new
                             {
                                 sessionId = request.SessionId, requestId = request.RequestId, turnNumber = 42,
                                 timestamp = DateTime.UtcNow.ToString("O"), status = "success",
@@ -147,7 +146,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                                     schemaVersion = 1, continuationId = continuation.ContinuationId,
                                     woundDecisions = new[] { decision }
                                 }
-                            }));
+                            }), stop.Token);
                         }
                     }
                     await Task.Delay(25, stop.Token);
@@ -160,7 +159,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 input.Enqueue(Key(ConsoleKey.Escape));
             }
         });
-        var operation = InvokePrivateTaskResultAsync(engine!, "WaitForGmResponse");
+        var operation = engine!.WaitForGmResponse();
         object? result = null;
         Exception? failure = null;
         var cleanup = new List<Exception>();
@@ -179,7 +178,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         }
         var diagnostics = failure is not null || callbackFailure is not null || cleanup.Count != 0 || result is not true
-            ? await ReadSequentialSpiritualFailureDiagnosticsAsync(context.FileSystem, checkpoints) : string.Empty;
+            ? await ReadCompleteSpiritualWorseningFailureDiagnosticsAsync(context.FileSystem, checkpoints) : string.Empty;
         Assert.True(failure is null && callbackFailure is null && cleanup.Count == 0 && result is true,
             $"Caller: {failure}; callback: {callbackFailure}; cleanup: {string.Join("\n", cleanup)}; result: {result}; " +
             $"offers: {offers.Count}; last repair: {lastRepair}. {logger.Describe()}\n{diagnostics}");
@@ -187,9 +186,31 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(2, offers.Select(offer => offer.ContinuationId).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(2, offers.Select(offer => offer.Offer!.OpportunityRef).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(1, publicationWrites);
-        Assert.Equal(42, GetPrivateField<GameLoop>(engine!, "_gameLoop").TurnNumber);
+        Assert.Equal(42, runtime!.GameLoop.TurnNumber);
         await AssertSpiritualWorseningLifecyclePublicationAsync(context, engine!, offers.ToArray(),
             originalImages[AfterlifeSpiritualConflictState.StatePath], firstNarration, laterNarration);
+    }
+
+    /// <summary>Retains complete physical failure evidence without diagnostic record or byte quotas.</summary>
+    /// <param name="fs">The independently owned scenario filesystem.</param>
+    /// <param name="checkpoints">Every lifecycle checkpoint observed by this scenario.</param>
+    /// <returns>Untruncated current evidence or an exact per-file read failure.</returns>
+    private static async Task<string> ReadCompleteSpiritualWorseningFailureDiagnosticsAsync(FileSystemManager fs,
+        ConcurrentQueue<string> checkpoints)
+    {
+        var lines = new List<string> { "Lifecycle checkpoints:\n" + string.Join("\n", checkpoints.ToArray()) };
+        foreach (var path in new[] { GmWorkerAuditLog.AuditLogPath,
+                     "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json",
+                     SpiritualWoundCaptureCheckpointState.StatePath, SpiritualWoundDecisionPendingState.StatePath,
+                     GmWorkerValidationRepairDelegator.LatestValidationRepairTaskPath })
+        {
+            try { lines.Add(path + ":\n" + await File.ReadAllTextAsync(fs.ResolvePath(path))); }
+            catch (FileNotFoundException) { lines.Add(path + ": <absent>"); }
+            catch (DirectoryNotFoundException) { lines.Add(path + ": <absent>"); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            { lines.Add(path + ": " + error); }
+        }
+        return string.Join("\n", lines);
     }
 
     /// <summary>
@@ -292,17 +313,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         var conflict = Assert.IsType<JsonObject>(await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath));
         var original = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(originalDraft))!;
         Assert.True(JsonNode.DeepEquals(original["activeConflict"]!["exchangeLog"], conflict["activeConflict"]!["exchangeLog"]));
-        var response = GetPrivateField<GameResponse>(engine, "_lastResponse");
+        var responseSnapshot = Assert.IsType<JsonElement>(engine.CaptureCurrentResponseForTesting());
+        var response = Assert.IsType<GameResponse>(responseSnapshot.Deserialize<GameResponse>(SnapshotHashJsonOpts));
         Assert.Contains(firstNarration, response.Response, StringComparison.Ordinal);
         Assert.Contains(laterNarration, response.Response, StringComparison.Ordinal);
-        var notifications = Assert.IsType<string[]>(response.WoundNotifications);
+        var notifications = Assert.IsType<string[]>(engine.CaptureCurrentWoundNotificationsForTesting());
         Assert.Equal(2, notifications.Length);
         Assert.Contains("Получена духовная рана", notifications[0], StringComparison.Ordinal);
         Assert.Contains("(I)", notifications[0], StringComparison.Ordinal);
         Assert.Contains("Духовная рана ухудшилась", notifications[1], StringComparison.Ordinal);
         Assert.Contains("(II)", notifications[1], StringComparison.Ordinal);
         Assert.All(notifications, notification => Assert.Contains("/раны", notification, StringComparison.Ordinal));
-        var refreshed = Assert.IsType<GameResponse>(await InvokePrivateTaskResultAsync(engine, "BuildGameResponseFromFiles"));
+        var independentNotifications = Assert.IsType<string[]>(engine.CaptureCurrentWoundNotificationsForTesting());
+        Assert.NotSame(notifications, independentNotifications);
+        Assert.Equal(notifications, independentNotifications);
+        notifications[0] = "detached test observation";
+        Assert.Equal(independentNotifications, engine.CaptureCurrentWoundNotificationsForTesting());
+        var refreshed = await engine.BuildGameResponseFromFiles();
         Assert.True(refreshed.WoundNotifications is null or { Length: 0 });
         var stories = new StoryService(context.FileSystem, NullLogger<StoryService>.Instance);
         var story = Assert.Single(await stories.ReadStoryAsync("stories/chaos_sea.jsonl"), entry => entry.Turn == 42);

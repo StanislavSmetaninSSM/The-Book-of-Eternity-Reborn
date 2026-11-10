@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-startup-probe-host-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3b0914788708bfa5449179f1a0754c73e9d6df8e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.5827895,
+  "Descriptors": [
+    {
+      "Name": "gm-main-startup-probe-host-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-startup-probe-host-linux",
+      "Categories": [
+        "gm-main-startup-probe-host-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeStartupObservationTests.OriginalProbeDebtRetainsHostUntilActualProcessAndIoSettle",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeStartupObservationTests.OriginalProbeDebtRetainsHostUntilActualProcessAndIoSettle",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

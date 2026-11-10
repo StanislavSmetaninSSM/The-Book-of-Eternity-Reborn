@@ -1,0 +1,299 @@
+{
+  "kind": "independent corrected SOURCE/FIXTURE/SELECTION",
+  "createdUtc": "2026-10-15T11:01:21.736835+00:00",
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), inherited explicit request",
+  "configurationActual": "Unavailable backend/model/effort telemetry",
+  "reviewerStopped": true,
+  "readOnlyRepository": true,
+  "buildTestsOrProviderExecuted": false,
+  "base": "54790a61f90ef6e2f42f8cac8e3c946b12d9fe5b",
+  "reviewedSource": "a5c36d4b8299394f464ae4343fad945e7d5a8d1a",
+  "observedHead": "a5c36d4b8299394f464ae4343fad945e7d5a8d1a",
+  "localClean": true,
+  "remoteStatus": "ROOT reports verified; not independently repeated in this review",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED staged protocol; retained later obligation remains"
+  },
+  "blockingFindings": [],
+  "exactDiff": [
+    "M\tBookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.md",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md",
+    "M\ttests/selection.json",
+    "M\ttests/selections/1536-fr063-joint-connected-retained-story.json"
+  ],
+  "exactExecutableReplacements": [
+    {
+      "before": "        byte[]? storyBefore = null;",
+      "after": "        byte[]? storyBefore = null, originalStoryPrefix = null;"
+    },
+    {
+      "before": "                var originalStoryPrefix = storyBefore.AsSpan(0, originalStoryLength).ToArray();",
+      "after": "                originalStoryPrefix = storyBefore.AsSpan(0, originalStoryLength).ToArray();"
+    },
+    {
+      "before": "                    storyPrefix = original.ReadRequiredBytes(QteStoryPath);",
+      "after": "                    storyPrefix = Assert.IsType<byte[]>(originalStoryPrefix);"
+    }
+  ],
+  "allOtherFixtureBytesEqual": true,
+  "selectionReasonContractsOnly": true,
+  "catalogAndSelectorMembershipUnchanged": true,
+  "priorEvidenceCopiesExact": {
+    "md": "fa9fd7e28327bf722a8c5714951f8fdad67a71c4d241be584ac919d32275f72c",
+    "json": "e727b3e86c274a9adeabc8782194b84c1f649955bff6f565ed2cba36f4ba28bb"
+  },
+  "sourceFilePins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 79825,
+      "sha256": "588bda424d36d77b207d198b0ed4aaa2a417fd3cd13997cf8572970113c685ee"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 55825,
+      "sha256": "c983d1822ff3161af45c95d8d801bc2e86606062bed2d92c00eccaae396fd65d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+      "bytes": 614,
+      "sha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+      "bytes": 7553,
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs",
+      "bytes": 9705,
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "bytes": 5364,
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "bytes": 3337,
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+      "bytes": 5039,
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "bytes": 10353,
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "bytes": 22597,
+      "sha256": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 43996,
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "bytes": 123449,
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1684076,
+      "sha256": "04615ae6d707ceeb6afb82993981a336b8c66101ff9d29a8c9b9b6563c676a20"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-output-binding-final-design-A-20261015T064200Z.md",
+      "bytes": 11175,
+      "sha256": "68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-null-frame-authority-readonly-disposition-20261014.md",
+      "bytes": 17835,
+      "sha256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-story-lifecycle-readonly-disposition-20261014.md",
+      "bytes": 16440,
+      "sha256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.json",
+      "bytes": 37676,
+      "sha256": "e727b3e86c274a9adeabc8782194b84c1f649955bff6f565ed2cba36f4ba28bb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.md",
+      "bytes": 9201,
+      "sha256": "fa9fd7e28327bf722a8c5714951f8fdad67a71c4d241be584ac919d32275f72c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1184692,
+      "sha256": "3e90695bc928e2a89f6c71baa4f23e53994967ee0566d4cbce29e2b8645d82e9"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 975,
+      "sha256": "b2dae3dedec6f859b1ac050833e62983c1ee7c4808dfc687b3accc34bce12cbb"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "bytes": 1066,
+      "sha256": "4f71b137c996168eacecd68c037e5bdecb5dc059084aca9587a72d37fe296ed8"
+    }
+  ],
+  "sourceDependencyScope": {
+    "basis19": "Unaffected; retain tested65d3/compiled42fa historical PASS only.",
+    "checkpoint5": "Unaffected; retain tested540401/compiledd6 historical PASS only.",
+    "newA17": "Unaffected scenario0/9 and live producer paths; retain four historical metadata revisions/compiled5ad.",
+    "live1": "Unaffected; retain tested1b2df18e7712fc9fea24bb97f6bd567553a8761b/compiledce56 PASS.",
+    "cold3": "Scenarios0/1 unchanged behavior; retain tested1da0469eaf73246f945744f1939dd3875bae20b2/compiledce56 PASS.",
+    "retained1": "Changed scenario8; prior FAIL remains; new runtime required after fresh Late2 EVIDENCE/controller gate."
+  },
+  "knownRed": {
+    "testedSource": "d89e3fe4abee6875aa809100fa18578ebec27b36",
+    "compiledSource": "ce56face7d39650ebc04e5207c1f524e5bf1553b",
+    "manifestSha256": "674939d81a2a4099f5fe2b0620bec4a28fee0c544b044cd9aa468f77a4b8c70a",
+    "nativeExit": 1,
+    "wallSeconds": 111.9392755,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "secondChildExit": 134,
+    "redundantOldRedRerunRequired": false
+  },
+  "correctedRuntime": "UNRUN",
+  "preparationRelease": {
+    "selection": "tests/selections/1536-fr063-joint-connected-preparation.json",
+    "freshBothRequired": true,
+    "zeroExecution": true,
+    "expectedMethods": 40,
+    "expectedCases": 94,
+    "expectedDescriptors": 23,
+    "strictOfficialDiscoveryRequired": true
+  },
+  "zeroExecutionChecks": {
+    "exactLate2Plan": {
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1
+    },
+    "catalogExpected": {
+      "Valid": true,
+      "categories": 751,
+      "methods": 11596
+    },
+    "countsAreNewDiscovery": false
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "actualReleaseConditions": [
+    "Fresh successful BOTH and strict inventory/exact Plan/catalog.",
+    "Reminted exact current tested source pins and fresh11 binary pins.",
+    "Complete native2/2cases/1descriptor, no skips/duplicates/timeout.",
+    "Actual strict per-case cleanup receipts/root absence and immutable full evidence freeze.",
+    "STOP on first failure or missing evidence; new independent Late2 EVIDENCE and controller provenance review before retained or successors."
+  ],
+  "heldSelections": [
+    "tests/selections/1536-fr063-joint-connected-retained-story.json",
+    "all nine successor finite stages, new-root first"
+  ],
+  "oldCe56V4BinaryReuseAllowedForCorrectedActual": false,
+  "retainedFutureRequiredProof": [
+    "Two real fresh child native integer/entry/final3Default+5context bindings.",
+    "Genuine first writer/readback-fault retained row.",
+    "Second full signed history inventory and original prefix proof.",
+    "Exact whole retained row and zero new append, immutable source/mechanics/projection, terminal cleanup, turn43/inGame/lastResponse and inert repeat."
+  ],
+  "metadataCarrierPermission": {
+    "newExactCopies": [
+      "fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.md",
+      "fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.json"
+    ],
+    "accurateIdenticalPlanTasksFrontNotesAllowed": true,
+    "completeCarrierDiffRestricted": true,
+    "reviewedSourceTestConfigBuildInputsMustStayByteIdentical": true,
+    "remintSourceAndGatePins": true,
+    "freshCompiledSourceMayBeMetadataCarrier": true,
+    "runtimePassTransferOrOldBinaryReuse": false
+  },
+  "gmNoUpdateRationale": "Fixture assertion byte lifetime/access only; no gameplay, GM-authored response, schema, validation or lifecycle contract change.",
+  "openScope": [
+    "FR063/T070/#1536",
+    "ACTIVE design direction",
+    "initial9 deferred/UNIMPLEMENTED/UNRUN",
+    "optional reader UNREVIEWED/UNUSED"
+  ],
+  "markdown": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.md",
+    "sha256": "954c7ab566b29c3562ae15e14427b907768612bd486ce9f9f3515369ef613ece"
+  }
+}

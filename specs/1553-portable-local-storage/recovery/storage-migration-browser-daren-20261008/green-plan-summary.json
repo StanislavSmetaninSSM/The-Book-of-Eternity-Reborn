@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-browser-protocol-consumers-linux",
+    "portable-daren-protocol-consumers-linux",
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-direct-gacha-adoption-linux",
+    "portable-browser-protocol-native-windows"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "242d1114847ad147b6b5475429bf67df6b34ba5a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0562588,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0548275,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0935271,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 42.3845772,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0038112,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:46.1329604",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 84,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-browser-direct-gacha-adoption-linux-integration-001",
+      "portable-browser-protocol-admission-linux-integration-002",
+      "portable-browser-protocol-consumers-linux-integration-003",
+      "portable-browser-protocol-native-windows-integration-004",
+      "portable-daren-protocol-consumers-linux-integration-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,393 @@
+{
+  "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "classification": "FRESH_BOTH_PREPARATION_EXACT_PLAN_CATALOG_SUCCESS_ZERO_TEST_EXECUTION_BEFORE_FINITE_ACTUAL",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 35183,
+      "uncompressedSha256": "fc6714c2d2b35089907381e44ccf2c59c90d7cb1397d64c33ddb502b696d7aaa",
+      "compressedBytes": 9890,
+      "compressedSha256": "ba2a70f1e761e7cf6e5d269cbfc4922910705f42ba8f7fff52e3b64eb3bfc54a"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "87f96bff7130966d40833729fd05afb0e5486ef122bf8bc69f8865165e5b3603",
+      "compressedBytes": 410,
+      "compressedSha256": "62f148e9d0e7d38923cbdd1d71561e28077387e7caa623e9e439a49141fb131e"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 432,
+      "uncompressedSha256": "013633d70768adb9a68dcea16110f35caac8d9866065d6fee512f2f9814cc691",
+      "compressedBytes": 282,
+      "compressedSha256": "50e77da0467ba4ff3f4016e2aa9e0b9ff8eeafd6000c07a3eea17bd7d5b6ae3d"
+    },
+    {
+      "name": "catalog-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "2a4f1e6c54a036d861dec508769ba76663e8c673e44db537cef6fa1104ec0f4e",
+      "compressedBytes": 279,
+      "compressedSha256": "3792b0a3cc5484a93fc2e3fc7c02a35f92a69a2fbc7cb5bd900114ac6b7bcdb4"
+    },
+    {
+      "name": "catalog-root-readback.json.gz",
+      "uncompressedBytes": 1324,
+      "uncompressedSha256": "e37f789c8425fb7cb1bfa361c4b214c98ea7c1524b312c90a3afa6d4858e15d5",
+      "compressedBytes": 661,
+      "compressedSha256": "93db5b76c08e5be48a7e59e1c7e0b2b3d81a1431fb2790248e0c50d96401adba"
+    },
+    {
+      "name": "catalog-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "1536e9896015ec46a9777d5e5644673a2a9cc9f863f7a9b7f671324303633d3a",
+      "compressedBytes": 268,
+      "compressedSha256": "87fe1dbfe9c353e1e40de04bb990f9a4695d090c8e4bc467909ae7c0c1e4f9d0"
+    },
+    {
+      "name": "catalog-runner-summary-raw.json.gz",
+      "uncompressedBytes": 1404,
+      "uncompressedSha256": "6ede1b6989ccfdd782119d5c2a8da4f979c8183db12cc5d87d0fcf6854d37179",
+      "compressedBytes": 602,
+      "compressedSha256": "786b85519b904ec16bce1a5826d82c9ca7a429219e52df1b3cd2badebb73b295"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "9b3f52a48cb60397ac455d3a39fa1b397df13ff767ade16234bbea6e5851cdc8",
+      "compressedBytes": 2505,
+      "compressedSha256": "639cce841f76ea25c01672245cf501cf8abe4213ad35041344684783e5617e14"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 539,
+      "uncompressedSha256": "b998a608a560ef5f1988321acbe223472ecafabc64a0cf1421ebf2055ac6c3c3",
+      "compressedBytes": 324,
+      "compressedSha256": "a0bbb9eb73c4ba335ca63cf1c4ede039f3e49fbf2736aa975728ac8be90991de"
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "ffc1616e7778f930b3bd7d6e89a248c9d20f4b4970d364b92f209573ea013caf",
+      "compressedBytes": 280,
+      "compressedSha256": "b6110b9ead2db7f59bcbc3497680f111869c71a445c95d3bfd9cc4922badce5e"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 2215,
+      "uncompressedSha256": "339fe3a48385e585aa506ff7986184540b726780ddef57f82ad3b6df920d26bf",
+      "compressedBytes": 896,
+      "compressedSha256": "e689055f51c975511fa347fd0351e4cad78ae37d5441ec0811acfbd48b7e3088"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "85e5ae90397d9ad27b205c8bd5f196bd702ea2d0055d57c192033d0a70b474b0",
+      "compressedBytes": 269,
+      "compressedSha256": "cfc56640b5391b1db729a281c190fbb868e9182aa2e9dca0831aa2ed0798aa59"
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17370,
+      "uncompressedSha256": "fadbff346a62a65b6b5bac84fd7f3d2a51fd33088635c28dc848c0dd6f942b85",
+      "compressedBytes": 3653,
+      "compressedSha256": "20bc72c54e5f6d81edffa8bd62815369924d210fe15a18f9fe665bb878ae4e89"
+    },
+    {
+      "name": "execution-gate-proof-raw.json.gz",
+      "uncompressedBytes": 38345,
+      "uncompressedSha256": "a1d17c1b0383a4b85c08889a58e4d4ccfa29ca52d34253f9e0027623f6a03710",
+      "compressedBytes": 10916,
+      "compressedSha256": "6a39986e0e4c6882da94930a8e4fb2cba8334b38612bc9ba67c0cd1b44baf9d0"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2719,
+      "uncompressedSha256": "dc03a6ce261179a512f0a0e0c71c1d25fd10cc0ce9749484dcf013110a80982b",
+      "compressedBytes": 722,
+      "compressedSha256": "9e5c1e60f23b9c8513ba7c9d19b25fcc771ee7d51a96e1b69643464a14384f16"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 18074,
+      "uncompressedSha256": "163dcf93b0d9156f3948a6ffefad08a092a58794ccaad1256784157e44f3c98d",
+      "compressedBytes": 2507,
+      "compressedSha256": "4cc0b5b9291b5c9156f442fa55a39edddc938e94e98b86b5f2568617ae8520e7"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 523,
+      "uncompressedSha256": "d2165e62459201d4cb316da424697b239da5ad807ce2a51e6d3373c3c1a1bf99",
+      "compressedBytes": 317,
+      "compressedSha256": "62a92e2fb61c2f4b9b9272ba7aabb6a236df18289c20920a53f9eb8b8f66066f"
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "uncompressedBytes": 400,
+      "uncompressedSha256": "018d34cb388fb897406c000cbadf0d7a3aa167b4ff51c2ec83ab323135f7d5f2",
+      "compressedBytes": 280,
+      "compressedSha256": "dbfca06fd18f2bf6ade3a6db83c5d83bec1d7e097de26497ccbeb0d85748d4c1"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2351,
+      "uncompressedSha256": "043cfe016d58b5202d7a4e390a04492a88a529d0ab2fbc5b12de3b6345c6dd21",
+      "compressedBytes": 935,
+      "compressedSha256": "3c66e34df8d68fd70126e065be9dec823f473cad5b69e492306517767914372f"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "85994a65c83e3ca9704e2a6b68076f890ccaf0013738f84c1e25c270460290e4",
+      "compressedBytes": 268,
+      "compressedSha256": "4ecbed78a4c8158e2e17a512206e14d2e255402da739a0fc2dd0276baec98804"
+    },
+    {
+      "name": "preparation-runner-summary-raw.json.gz",
+      "uncompressedBytes": 17563,
+      "uncompressedSha256": "2138cee8160ec0bb41533b17d121c5f8e4d34cdfa51d18d0557d40b6e7caf8dd",
+      "compressedBytes": 3687,
+      "compressedSha256": "c609ba02443fe7795dda0d44a8e3f89e726d5be4d4281d5372f8343fb85a107c"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "75bfe15ca6feba1ba51dc365cc186fea319a674df545ef49fe7a5a805d439516",
+      "compressedBytes": 103,
+      "compressedSha256": "136016b12f27f723aad8e59eeb0843a1dd583749c75536e6e421e44d6502faca"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3337240,
+      "uncompressedSha256": "fba334ce9913b10e836f10068410d02cb668004ce85d5c8e947789d83292de62",
+      "compressedBytes": 369429,
+      "compressedSha256": "b161b336ae7e683a061d62d1d3d9cc1639874c2eff442440716bb28b6a9c566f"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1404,
+      "uncompressedSha256": "6ede1b6989ccfdd782119d5c2a8da4f979c8183db12cc5d87d0fcf6854d37179",
+      "compressedBytes": 602,
+      "compressedSha256": "786b85519b904ec16bce1a5826d82c9ca7a429219e52df1b3cd2badebb73b295"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 3337765,
+      "uncompressedSha256": "912f10695414c11655d42129da1b0c7ed38fc5bd0f354cfc2acc39574eb997af",
+      "compressedBytes": 369612,
+      "compressedSha256": "2c90eedf86966d254fcd109bf7800acb6ba802a840b3d9aa9054c26f377d0790"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 35688,
+      "uncompressedSha256": "8d036c358fd6882dbef9d703051c2d2f7fab6408cb12e9dad70e31f616f29365",
+      "compressedBytes": 5089,
+      "compressedSha256": "7d63fab6e6f4b29ba1f4b80be51c7a7f7990dbdb566c9e5d82bf789f4cf1d27a"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 17370,
+      "uncompressedSha256": "fadbff346a62a65b6b5bac84fd7f3d2a51fd33088635c28dc848c0dd6f942b85",
+      "compressedBytes": 3653,
+      "compressedSha256": "20bc72c54e5f6d81edffa8bd62815369924d210fe15a18f9fe665bb878ae4e89"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 130910,
+      "uncompressedSha256": "1b557cb0c8846606fea8f94cb03b5b2718d571143a91a6e524f5574a094db6e1",
+      "compressedBytes": 9103,
+      "compressedSha256": "f6de38116ec5b03f6510e97cd88c872283fa13fb954bf6585dd40d77be3a93d3"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "2d714c282ccd58ee4755032383b1bd1b07480c11420eb0a65885ff85da8b6538",
+      "compressedBytes": 1752,
+      "compressedSha256": "724048f86658ee55f68e12a2044a4e91b35764f4d3ad0597c00a034aa66c0b47"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3499346,
+      "uncompressedSha256": "c169ffe8134df8317c2937c65f3da105d0ebdf0e56ca161d936d9f5281dc19e3",
+      "compressedBytes": 380638,
+      "compressedSha256": "96294293426a671e2ecc8b55d0c1a70058ae0925e85b7d450c1a6510a638d3d7"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 35690,
+      "uncompressedSha256": "6772f52a6ea065cfbe1875b0ad426f7cbfc1beb4c524672233aa9149ac3c1ed4",
+      "compressedBytes": 5092,
+      "compressedSha256": "ed3f6e0ce159e2b76c19f5a266f1d7e5b221e5517e8feb7535ced3f2f123209f"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 17563,
+      "uncompressedSha256": "2138cee8160ec0bb41533b17d121c5f8e4d34cdfa51d18d0557d40b6e7caf8dd",
+      "compressedBytes": 3687,
+      "compressedSha256": "c609ba02443fe7795dda0d44a8e3f89e726d5be4d4281d5372f8343fb85a107c"
+    }
+  ],
+  "frozenUtc": "2026-10-14T23:37:46.596494+00:00",
+  "preparation": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233249-830-483847-b86cbcf27cc24051960e2dd266865951-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233249-830-483847-b86cbcf27cc24051960e2dd266865951-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:35:19.216053+00:00",
+    "classification": "FRESH_BOTH_PREPARATION_SUCCESS_ZERO_TEST_EXECUTION_OFFICIAL_SELECTED_INVENTORY",
+    "wallTime": "00:02:29.3365124",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:35:33.005678+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {
+      "Build-integration.log": 130,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233551-984-484171-453f25d388c2408797f3e1970ae49bab-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233551-984-484171-453f25d388c2408797f3e1970ae49bab-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:35:56.683426+00:00",
+    "classification": "EXACT_PLAN_NO_BUILD_MATCHES_FRESH_BOTH_PINS_ZERO_TEST_EXECUTION",
+    "wallTime": "00:00:04.6555862",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 18,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 58,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+        "fr063-joint-active-tail-integration-002",
+        "fr063-joint-c1-common-mixed-guard-unit-003",
+        "fr063-joint-c1-original-rollback-integration-004",
+        "fr063-joint-c1-qte-default-publication-integration-005",
+        "fr063-joint-c1-treatment-defaults-integration-006",
+        "fr063-joint-cold-progression-integration-007",
+        "fr063-joint-generation-refusal-integration-008",
+        "fr063-joint-late-completion-integration-009",
+        "fr063-joint-legacy-exclusion-integration-010",
+        "fr063-joint-live-completion-integration-011",
+        "fr063-joint-new-root-integration-012",
+        "fr063-joint-phase-refusal-integration-013",
+        "fr063-joint-phase-settlement-integration-014",
+        "fr063-joint-retained-story-integration-015",
+        "fr063-joint-story-owner-integration-016",
+        "fr063-joint-worked-example-integration-017",
+        "fr063-joint-worked-example-unit-018"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:36:22.394298+00:00",
+    "methods": 32,
+    "cases": 58,
+    "descriptors": 18,
+    "warnings": {},
+    "errors": {}
+  },
+  "catalog": {
+    "source": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "run": "20261014-233629-007-484379-b02ec753944747ecb75bc97cc52bf9c2-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-233629-007-484379-b02ec753944747ecb75bc97cc52bf9c2-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-14T23:36:34.435378+00:00",
+    "classification": "OFFICIAL_CATALOG_DISCOVERY_ONLY_NO_TEST_EXECUTION_MATCHED_FRESH_PINS",
+    "wallTime": "00:00:05.3699426",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 154,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-14T23:36:53.499068+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11588,
+      "Categories": 746,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {},
+    "errors": {}
+  }
+}

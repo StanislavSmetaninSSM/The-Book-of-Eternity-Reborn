@@ -1,0 +1,87 @@
+{
+  "Categories": [
+    "portable-story-outcome-causal-linux",
+    "portable-story-outcome-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b79f3771096149aa591f8c72651bb1ae301c8956",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.2542291,
+  "Descriptors": [
+    {
+      "Name": "portable-story-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-story-outcome-causal-linux",
+      "Categories": [
+        "portable-story-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendKnownRollback_PreservesBestEffortPolicy|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendUnknown_OriginalApiPreservesDecision|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryMarkerUnknown_OriginalTransitionStopsWithPriorCommits",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendKnownRollback_PreservesBestEffortPolicy",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendUnknown_OriginalApiPreservesDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryMarkerUnknown_OriginalTransitionStopsWithPriorCommits",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-story-outcome-neighbors-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-story-outcome-neighbors",
+      "Categories": [
+        "portable-story-outcome-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckLifeTransitions_LifeEvaluationDispatchFailure_WritesErrorLog",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-story-outcome-neighbors-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-story-outcome-neighbors",
+      "Categories": [
+        "portable-story-outcome-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_EscapedClosedSession_PropagatesSessionReplaced|FullyQualifiedName=BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_WaitsForCanonicalWriteLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_EscapedClosedSession_PropagatesSessionReplaced",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_WaitsForCanonicalWriteLease",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -39,7 +39,8 @@ public partial class ValidationService
         JsonObject Commands,
         WoundAcceptedTurnInput Input,
         WoundPreparedAcceptedTurnPlan PreparedPlan,
-        EffectApplicationDiagnosticLocations? EffectLocations);
+        EffectApplicationDiagnosticLocations? EffectLocations,
+        AcceptedTurnRawWoundDraft OriginalDraft);
 
     /// <summary>
     /// Carries validated pre-allocation data; a copy or matching fingerprint does not grant live selection authority.
@@ -65,7 +66,8 @@ public partial class ValidationService
     private sealed record AcceptedTurnWoundPlanningHandoff(
         JsonObject Commands,
         WoundAcceptedTurnInput Input,
-        AcceptedMechanicsWoundStageBundle StageBundle);
+        AcceptedMechanicsWoundStageBundle StageBundle,
+        MortalWoundOpportunityReceiptConsumePlanResult? MortalQteReceipt);
 
     private sealed class AcceptedTurnWoundHandoffSink
     {
@@ -181,24 +183,45 @@ public partial class ValidationService
             ValidationPendingTurnSnapshotManifest manifest,
             FileSystemManager.CanonicalWriteLease writeLease,
             string commandJson,
-            List<ValidationIssue> issues)
+            List<ValidationIssue> issues,
+            WoundApplicationService.MortalDiagnosisAdmission? diagnosis = null,
+            WoundApplicationService.MortalTreatmentAdmission? guidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(commandJson);
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        var parsedCommands = ParseAcceptedTurnWoundCommands(
-            commandJson,
-            manifest,
-            issues);
+        WoundResponseCommandParsingResult? parsedCommands;
+        if (diagnosis is null && guidedTreatment is null) parsedCommands = ParseAcceptedTurnWoundCommands(commandJson, manifest, issues);
+        else if (guidedTreatment is not null)
+        {
+            if (diagnosis is not null) throw new InvalidDataException("Two wound input owners cannot share one operation.");
+            guidedTreatment.Owner.RequireOriginalGuidedTreatmentRequest(guidedTreatment.Request);
+            var input = StrictJsonAuthority.Deserialize<JsonObject>(commandJson.TrimStart('\uFEFF'),
+                new JsonSerializerOptions(), "current physical guided input") ?? throw new InvalidDataException("Missing physical selection.");
+            MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(input, guidedTreatment.Request);
+            parsedCommands = new(input, Array.Empty<WoundResponseCommandDraft>(), Array.Empty<ValidationIssue>());
+        }
+        else
+        {
+            // Read-only canonical admission only. This primitive never enters
+            // the generic wound reducer; its actual diagnosis callback owns it.
+            ArgumentNullException.ThrowIfNull(diagnosis);
+            diagnosis.Owner.RequireOriginalDiagnosisRequest(diagnosis.Request);
+            var input = StrictJsonAuthority.Deserialize<JsonObject>(commandJson.TrimStart('\uFEFF'),
+                new JsonSerializerOptions(), "current diagnosis input") ?? throw new InvalidDataException("Missing diagnosis input.");
+            MortalWoundDiagnosisInputCodec.RequireRequestMatches(input, diagnosis.Request);
+            parsedCommands = new(input, Array.Empty<WoundResponseCommandDraft>(), Array.Empty<ValidationIssue>());
+        }
         if (parsedCommands is null || parsedCommands.CommandRoot is null)
             return null;
 
         var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
             _fs,
             writeLease,
-            CanonicalWoundSnapshotReadPaths);
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                ["game_state/meta/soul_state.json"], CanonicalWoundSnapshotReadPaths));
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
         {
             issues.AddRange(snapshotRead.Issues);
@@ -227,12 +250,20 @@ public partial class ValidationService
             return null;
         }
 
+        IReadOnlyCollection<string> requiredPaths = WoundAcceptedTurnSnapshotContract.RequiredPaths;
+        if (guidedTreatment is not null && guidedTreatment.Owner.HasCurrentGuidedTreatmentPreparedCommandRole(_fs, writeLease,
+            guidedTreatment.Request, manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
+            manifest.ManifestPayloadHash, computedManifestHash))
+            requiredPaths = requiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
+        if (diagnosis is not null && diagnosis.Owner.HasCurrentDiagnosisPreparedCommandRole(_fs, writeLease, diagnosis.Request,
+                manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash, computedManifestHash))
+            requiredPaths = requiredPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
         if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                 manifest,
                 static value => value.Files,
                 static value => value.SnapshotFileHashes,
                 static value => value.RollbackBaselineFiles,
-                WoundAcceptedTurnSnapshotContract.RequiredPaths,
+                requiredPaths,
                 out var missingSnapshotPath))
         {
             issues.Add(WoundIssue(
@@ -246,7 +277,8 @@ public partial class ValidationService
 
         var preTurnBytes = CanonicalWoundSnapshotReadPaths.ToDictionary(
             static path => path,
-            snapshot.ReadRequiredBytes,
+            path => snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal)
+                ? snapshot.ReadRequiredBytes(path) : null,
             StringComparer.Ordinal);
         foreach (var path in new[]
                  {
@@ -267,19 +299,32 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return null;
 
-        var preTurnJson = new Dictionary<string, string>(StringComparer.Ordinal);
+        var preTurnJson = new Dictionary<string, string?>(StringComparer.Ordinal);
         foreach (var (path, bytes) in preTurnBytes)
         {
+            if (bytes is null)
+            {
+                if (!snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal))
+                {
+                    issues.Add(WoundIssue(path, "wound_materialization_unobserved_absence",
+                        "official signed observed absence", "root is not covered or observed absent"));
+                    return null;
+                }
+                preTurnJson[path] = null;
+                continue;
+            }
             var json = DecodeWoundSnapshotJson(bytes, path, issues);
             if (json is not null)
                 preTurnJson[path] = json;
         }
         if (preTurnJson.Count != preTurnBytes.Count)
             return null;
-        var preTurnIdentityJson = preTurnJson[WoundIdentityState.StatePath];
-        var preTurnHistoryJson = preTurnJson[WoundHistoryState.HistoryPath];
-        var signedOccurrenceJson = preTurnJson[MortalWoundOccurrenceState.StatePath];
-        var signedReceiptJson = preTurnJson[MortalWoundOpportunityReceiptState.StatePath];
+        // Only the official reader's authenticated absence reaches these in-memory
+        // pristine values. Covered null/corruption remains the original non-null JSON.
+        var preTurnIdentityJson = preTurnJson[WoundIdentityState.StatePath] ?? "{\"schemaVersion\":1,\"entries\":[]}";
+        var preTurnHistoryJson = preTurnJson[WoundHistoryState.HistoryPath] ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}";
+        var signedOccurrenceJson = preTurnJson[MortalWoundOccurrenceState.StatePath] ?? "{\"schemaVersion\":1,\"occurrences\":[]}";
+        var signedReceiptJson = preTurnJson[MortalWoundOpportunityReceiptState.StatePath] ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}";
 
         var preTurnCarriers = new WoundCarrierCatalogInput(
             ParseWoundCarrierRoot(
@@ -435,7 +480,7 @@ public partial class ValidationService
         }
         return new AcceptedTurnPreparedWoundHandoff(selection.Commands,
             WoundAcceptedTurnData.CloneInput(selection.Input)!, prepared.Plan,
-            selection.EffectLocations?.BindPreparedSources(prepared.Plan));
+            selection.EffectLocations?.BindPreparedSources(prepared.Plan), draft!);
     }
 
     /// <summary>
@@ -603,8 +648,34 @@ public partial class ValidationService
         if (skillScopeIssues.Count != 0)
             return null;
 
+        var carrierBaseline = draft.PreTurnCarriers;
+        if (carrierBaseline.PlayerWounds is null && draft.ParsedCommands.Commands.Any(command =>
+                draft.SignedOccurrences.Occurrences.Any(row => row.OccurrenceId == command.Opportunity.OpportunityId && row.AdapterKind == "qte") &&
+                command.Opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                command.Opportunity.Owner.CarrierPath == WoundCarrierCatalog.PlayerPath &&
+                command.Decision.GetProperty("decision").GetString() == "materialize"))
+        {
+            // This null came only from the official reader's observed absence. A real
+            // CREATE may plan the first carrier in memory; NONE never creates an empty root.
+            var playerOwner = draft.ParsedCommands.Commands.First(command =>
+                draft.SignedOccurrences.Occurrences.Any(row => row.OccurrenceId == command.Opportunity.OpportunityId && row.AdapterKind == "qte") &&
+                command.Opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                command.Opportunity.Owner.CarrierPath == WoundCarrierCatalog.PlayerPath &&
+                command.Decision.GetProperty("decision").GetString() == "materialize").Opportunity.Owner;
+            carrierBaseline = carrierBaseline with { PlayerWounds = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["owner"] = new JsonObject
+                {
+                    ["realm"] = playerOwner.Realm,
+                    ["ownerKind"] = playerOwner.OwnerKind,
+                    ["ownerId"] = playerOwner.OwnerId
+                },
+                ["activeWounds"] = new JsonArray()
+            } };
+        }
         var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
-            draft.PreTurnCarriers,
+            carrierBaseline,
             effectInput.AcceptedCarrierBaselines ??
             effectInput.PreTurnCarriers ??
             new EffectCarrierCatalogInput(null, null, null, null, null, null));
@@ -871,6 +942,8 @@ public partial class ValidationService
         issues.AddRange(final.Issues);
         if (!final.Success || final.Plan is null)
             return null;
+        var mortalReceipt = PlanAcceptedMortalQteReceipt(prepared, final.Plan, issues);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return null;
         try
         {
             return new AcceptedTurnWoundPlanningHandoff(
@@ -880,7 +953,7 @@ public partial class ValidationService
                     prepared.Input,
                     prepared.PreparedPlan,
                     effectResult.Plan,
-                    final.Plan));
+                    final.Plan), mortalReceipt);
         }
         catch (ArgumentException exception)
         {
@@ -891,6 +964,48 @@ public partial class ValidationService
                 exception.GetType().Name));
             return null;
         }
+    }
+
+    private static MortalWoundOpportunityReceiptConsumePlanResult? PlanAcceptedMortalQteReceipt(
+        AcceptedTurnPreparedWoundHandoff prepared, WoundAcceptedTurnPlan final, List<ValidationIssue> issues)
+    {
+        var commands = prepared.OriginalDraft.ParsedCommands;
+        if (commands.Commands.Count != 1 || commands.TreatmentCommands.Count != 0 ||
+            !prepared.OriginalDraft.SignedOccurrences.Occurrences.Any(row =>
+                row.OccurrenceId == commands.Commands[0].Opportunity.OpportunityId && row.AdapterKind == "qte") ||
+            commands.Commands[0].Opportunity.ProfileKey != "mortal_qte_terminal_health_damage_v1") return null;
+        var command = commands.Commands[0];
+        var fresh = WoundResponseInputComposer.RecomposeCommandRoot(prepared.Input.Binding, commands,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        issues.AddRange(fresh.Issues);
+        var history = WoundHistoryState.Parse(final.HistoryAfterImage.ToJsonString(), WoundHistoryState.HistoryPath);
+        issues.AddRange(history.Issues);
+        if (!fresh.Success || fresh.DecisionReceipts.Count != 1 || history.State is null)
+        {
+            AddMissingWoundStageIssue(issues, "mortal_qte_decision_receipt_partial", "one exact fresh receipt and final typed history");
+            return null;
+        }
+        var decision = command.Decision.GetProperty("decision").GetString()!;
+        var receipt = fresh.DecisionReceipts[0];
+        var transitions = history.State.Transitions.Where(row => row.OperationKey == receipt.OperationKey).ToArray();
+        if ((decision == "none" && transitions.Length != 0) ||
+            (decision == "materialize" && transitions.Length != 1))
+        {
+            issues.Add(WoundIssue(WoundHistoryState.HistoryPath, "mortal_qte_decision_final_history_mismatch",
+                "NONE has no transition; materialize has one exact final typed transition", "final operation history mismatch"));
+            return null;
+        }
+        var binding = prepared.Input.Binding;
+        var plan = MortalWoundOpportunityReceiptState.PlanConsumeAndAppend(
+            prepared.OriginalDraft.SignedOccurrences, prepared.OriginalDraft.SignedReceipts,
+            new MortalWoundOpportunityReceiptDraft(new(binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn),
+                command.Opportunity.OpportunityId, command.Opportunity.AuthorityFingerprint, decision,
+                receipt.DecisionFingerprint, receipt.OperationKey, transitions.SingleOrDefault()?.WoundId,
+                transitions.SingleOrDefault()?.TransitionId), history.State);
+        issues.AddRange(plan.Issues);
+        if (plan.OccurrenceState is null || plan.ReceiptState is null)
+            AddMissingWoundStageIssue(issues, "mortal_qte_decision_receipt_partial", "complete pending and receipt after-images");
+        return plan.Issues.Count == 0 && plan.OccurrenceState is not null && plan.ReceiptState is not null ? plan : null;
     }
 
     private static WoundResponseCommandParsingResult? ParseAcceptedTurnWoundCommands(
@@ -975,15 +1090,14 @@ public partial class ValidationService
 
     private async Task ValidateWoundClientOwnedBaselineAsync(
         string path,
-        byte[] preTurnBytes,
+        byte[]? preTurnBytes,
         FileSystemManager.CanonicalWriteLease writeLease,
         List<ValidationIssue> issues)
     {
-        ArgumentNullException.ThrowIfNull(preTurnBytes);
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var currentBytes = await _fs.ReadFileBytesAsync(writeLease, path);
-        if (currentBytes is not null &&
+        if (preTurnBytes is null ? currentBytes is null : currentBytes is not null &&
             currentBytes.AsSpan().SequenceEqual(preTurnBytes))
         {
             return;

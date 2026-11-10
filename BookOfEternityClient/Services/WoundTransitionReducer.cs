@@ -111,7 +111,8 @@ internal sealed record WoundRecoveryEvidence(
     string TickKey,
     string ClockOrCycleRef,
     WoundDeclaredTransitionOutcome Outcome,
-    [property: System.Text.Json.Serialization.JsonIgnore] object? MortalContinuationAuthority = null)
+    [property: System.Text.Json.Serialization.JsonIgnore] object? MortalContinuationAuthority = null,
+    [property: System.Text.Json.Serialization.JsonIgnore] object? SpiritualContinuationAuthority = null)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
 internal sealed record WoundHealingEvidence(
@@ -1367,9 +1368,13 @@ internal static partial class WoundTransitionReducer
             EvidenceKindMismatch(issues, "WoundDiagnosisEvidence", request.Evidence);
             return;
         }
-        if (!ActivePair(before, after) ||
-            before.Classification.Domain != "physical" || after.Classification.Domain != "physical" ||
-            before.Owner.Realm != "mortal_world" || after.Owner.Realm != "mortal_world")
+        var spiritual = evidence.SpiritualProof is not null;
+        if (!ActivePair(before, after) || (spiritual
+            ? before.Classification.Domain != "spiritual" || after.Classification.Domain != "spiritual" ||
+                before.Owner.Realm is not ("chaos_sea" or "shining_abode") || after.Owner.Realm != before.Owner.Realm ||
+                !evidence.SpiritualProof!.Matches(request, evidence)
+            : before.Classification.Domain != "physical" || after.Classification.Domain != "physical" ||
+                before.Owner.Realm != "mortal_world" || after.Owner.Realm != "mortal_world"))
         {
             ActiveSourceInvalid(issues, before, after);
             return;
@@ -1693,6 +1698,11 @@ internal static partial class WoundTransitionReducer
             EvidenceKindMismatch(issues, "WoundRecoveryEvidence", request.Evidence);
             return;
         }
+        if (evidence.MortalContinuationAuthority is not null && evidence.SpiritualContinuationAuthority is not null)
+        {
+            Add(issues, "wound_transition_evidence_invalid", "one exact domain continuation family", "competing Mortal and spiritual authority");
+            return;
+        }
         if (!ActivePair(before, after))
         {
             ActiveSourceInvalid(issues, before, after);
@@ -1747,8 +1757,10 @@ internal static partial class WoundTransitionReducer
         if (after.Severity.Rank == before.Severity.Rank &&
             after.Recovery.CurrentStepProgress < before.Recovery.CurrentStepProgress &&
             !(evidence.Outcome.Heals && FollowUpHealStageIsLegal(before, after) &&
-              WoundAcceptedTurnPlanner.RecoveryContinuationProvesFullHeal(
-                  evidence.MortalContinuationAuthority, before)))
+              (WoundAcceptedTurnPlanner.RecoveryContinuationProvesFullHeal(
+                  evidence.MortalContinuationAuthority, before) ||
+               AfterlifeWoundHealingPlanner.Continuation.ProvesRecoveryConsumption(
+                   evidence.SpiritualContinuationAuthority, request, before, after))))
         {
             Add(
                 issues,

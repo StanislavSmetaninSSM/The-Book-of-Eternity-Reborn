@@ -34,6 +34,14 @@ if ($PSCmdlet.ParameterSetName -eq 'Retired') {
     throw "Lane '$Lane' is retired. Use -ListCategories, then -Category with explicit domain categories. No tests were started."
 }
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$testDiagnosticRoot = [Environment]::GetEnvironmentVariable('BOE_TEST_DIAGNOSTIC_ROOT')
+if ($null -ne $testDiagnosticRoot) {
+    if ([string]::IsNullOrWhiteSpace($testDiagnosticRoot) -or
+        -not [IO.Path]::IsPathFullyQualified($testDiagnosticRoot)) {
+        throw 'BOE_TEST_DIAGNOSTIC_ROOT must be a nonempty absolute path when provided.'
+    }
+    $testDiagnosticRoot = [IO.Path]::GetFullPath($testDiagnosticRoot)
+}
 $isSelfTest = $PSCmdlet.ParameterSetName -eq 'SelfTest'
 if (-not $isSelfTest -and -not $ListCategories -and -not $ValidateCatalog -and
     [string]::IsNullOrWhiteSpace($SelectionFile) -and ($null -eq $Category -or $Category.Count -eq 0)) {
@@ -98,7 +106,12 @@ function New-UniqueResultDirectory {
         [string]$RunLabel
     )
 
-    $resultRoot = Join-Path $repoRoot "TestResults\test-categories"
+    $resultRoot = if ($null -eq $testDiagnosticRoot) {
+        Join-Path $repoRoot 'TestResults\test-categories'
+    }
+    else {
+        Join-Path $testDiagnosticRoot 'test-categories'
+    }
     [void][System.IO.Directory]::CreateDirectory($resultRoot)
 
     for ($attempt = 1; $attempt -le 5; $attempt++) {

@@ -1,0 +1,57 @@
+{
+  "actualHead": "8562db25b748186354d36a0a6d6dc8efc63de991",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "native": 1,
+  "categorySeconds": 89.6058263,
+  "cases": [
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody(failReadyPublication: True)",
+      "error": "System.TimeoutException : Actual worker repair Wait exceeded the fixture's protective 40s bound.",
+      "guardFired": true,
+      "WaitSettled": true,
+      "GuardSettled": true,
+      "readyCuts": 0,
+      "auditEvents": 0,
+      "taskId": "worker_task_validation_repair_0001_8c3b72066c3046cf89310098c9346c80",
+      "workerId": "validation_repair_codex",
+      "sourceTurn": {
+        "sessionId": "session_hot_actual_worker",
+        "requestId": "9fd755c87ad04ee6822bd4c36f790b6f",
+        "turnNumber": 43
+      },
+      "generation": "b10da613500a444fa8ba64ddc0a9c829",
+      "latestTaskSha256": "a12813d0ffd9bcf6e4a2a06d4455ed0e81f9f4e8f7eaa549c468c95b4761c7d7",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a176756007714ef4a933c3de69e0a8fc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody(failReadyPublication: False)",
+      "error": "System.TimeoutException : Actual worker repair Wait exceeded the fixture's protective 40s bound.",
+      "guardFired": true,
+      "WaitSettled": true,
+      "GuardSettled": true,
+      "readyCuts": 0,
+      "auditEvents": 0,
+      "taskId": "worker_task_validation_repair_0001_938d3cc544df4bdb82c5dc72a7a668dd",
+      "workerId": "validation_repair_codex",
+      "sourceTurn": {
+        "sessionId": "session_hot_actual_worker",
+        "requestId": "12ef7e4c8ed94d5bb7f2db30b4e9b0c6",
+        "turnNumber": 43
+      },
+      "generation": "0377953b608a4f3093494639c41d67c2",
+      "latestTaskSha256": "239c3fdfc2ac6bb1a074bce33e8b3aafae35998dadd0687bf5ef26cdcc274ad8",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-9b167cb1b5304f108f00078e174b3b7c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "artifactChains": 6,
+  "qualification": "FIRST unexpected worker outcome; actual task PRESENT and correlated, audit EMPTY/no Ready cut; real Wait and guard settled and roots removed; no worker apply or HOT qualification; root-cause pending",
+  "readOnlyAuditCorrection": "An initial inline read-only checker wrongly assumed LatestTask absent; it stopped before writing output. Exact raw shows a present correlated task and empty audit; product/artifacts/runtime unchanged."
+}

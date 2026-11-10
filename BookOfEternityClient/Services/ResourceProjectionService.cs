@@ -474,7 +474,8 @@ internal static class ResourceProjectionService
             ownerAuthorityFingerprint);
     }
 
-    private static bool IsVisible(
+    // Shared pure audience rule; callers must supply actual ownership, never a semantic target/provider role.
+    internal static bool IsVisible(
         ResourceVisibility visibility,
         ResourceProjectionAudience audience,
         bool isOwningPlayer) => audience switch

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "chronicles": [
+    {
+      "chronicleId": "chronicle_chaos_black_tide_example",
+      "scopeType": "chaos_sea_region",
+      "scopeId": "chaos_black_tide_region",
+      "displayName": "Черный прилив",
+      "eventDescriptions": [
+        "[Turn 41] Душа впервые увидела черную приливную полосу за пределами Обители Азалии.",
+        "[Turn 42] Слабые духи начали обходить прилив стороной после исчезновения безымянного эха."
+      ],
+      "lastEventsDescription": "[Turn 44] Прилив стал притягивать обрывки клятв и запах свежих Чернильных Перьев.",
+      "persistentConsequences": [
+        "В этом регионе легче заметить следы охотников за душами.",
+        "Хранители памяти считают Черный прилив опасным, но полезным источником улик."
+      ],
+      "openThreads": [
+        "Понять, кто направил голодное эхо к приливу.",
+        "Не раскрывать игроку связь прилива с белыми перьями до отдельного reveal proof."
+      ],
+      "lastUpdatedTurn": 44
+    },
+    {
+      "chronicleId": "chronicle_shining_silver_hall_oath_example",
+      "scopeType": "shining_abode_district",
+      "scopeId": "silver_hall_oath_office",
+      "displayName": "Клятвенная канцелярия Серебряного Зала",
+      "eventDescriptions": [
+        "[Turn 43] Вознесенные резиденты попросили игрока проверить сбой в церемонии присяги."
+      ],
+      "lastEventsDescription": "[Turn 45] В канцелярии нашли чужой оттиск клятвы, но имя заказчика пока не названо.",
+      "persistentConsequences": [
+        "Серебряный Зал стал внимательнее проверять новые клятвы.",
+        "Будущие политические сцены в Сияющей Обители могут ссылаться на этот оттиск."
+      ],
+      "openThreads": [
+        "Сопоставить оттиск с активностью скрытой ячейки.",
+        "Держать имя Сарефа вне player-facing текста до выполнения reveal-stage условий."
+      ],
+      "lastUpdatedTurn": 45
+    }
+  ]
+}

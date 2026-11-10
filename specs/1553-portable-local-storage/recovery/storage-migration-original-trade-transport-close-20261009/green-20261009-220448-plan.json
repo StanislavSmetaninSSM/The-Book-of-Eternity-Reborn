@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-original-npc-trade-owning-close-linux",
+    "portable-original-storage-transport-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0dd57d32ee51fc77cc32622d0707ce1e6be28c64",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.7284266,
+  "Descriptors": [
+    {
+      "Name": "portable-original-npc-trade-owning-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-npc-trade-owning-close-linux",
+      "Categories": [
+        "portable-original-npc-trade-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalNpcTradeOwnersRetainGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalNpcTradeOwnersRetainGenuinePublicationUncertaintyOnClose",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-storage-transport-owning-close-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-storage-transport-owning-close-linux",
+      "Categories": [
+        "portable-original-storage-transport-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalStorageTransportOwnersRetainGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalStorageTransportOwnersRetainGenuinePublicationUncertaintyOnClose",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

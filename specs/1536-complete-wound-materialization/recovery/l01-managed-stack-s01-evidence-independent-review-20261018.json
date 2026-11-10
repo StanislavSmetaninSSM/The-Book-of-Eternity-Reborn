@@ -1,0 +1,185 @@
+{
+  "kind": "INDEPENDENT_L01_S01_EVIDENCE_AND_CONDITIONAL_PROPOSAL_REVIEW",
+  "reviewedAtUtc": "2026-10-18T20:04:49.015991+00:00",
+  "reviewer": "Independent Astra XHigh; not implementation author",
+  "verdict": "ACCEPT_OWNED_SYNTHETIC_MANAGED_STACK_CAPABILITY_ONLY",
+  "proposalVerdict": "ACCEPT_CONDITIONAL_DOCUMENTATION_ONLY_NO_GAMEPLAY_RELEASE",
+  "openFindings": [],
+  "bindings": {
+    "reviewedCarrier": "126f08d44b8360cd7fdc7116120d8ad1aece8f86",
+    "originalEvidenceCarrier": "32cfa9ce156a8e5bc5e41c60ad4b1b0e605bfd94",
+    "firstActualReleaseAndSource": "4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+    "reviewedHelperSource": "d2c716af0946484e1440783d2ad0425b8e469b07",
+    "originalPreparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+    "compiledMvid": "35065df3-7a06-4e1b-8b74-ac77cd578120",
+    "originalRecordSha256": "073b94838e33811cd7205b223abf91de42138d95f88f92f14b33e3f8fa1d2ada",
+    "rawStackSha256": "af0e4a3fe6bb312dd95b1c8b9e535ee58f5df5ccafb62dbac000f4aef2bfb488",
+    "archive": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+      "bytes": 8572,
+      "sha256": "7da93dccdb154f9e4d91aa49c3e8771307b710087f509c04ef426db6cdbcc9f1"
+    },
+    "currentIndex": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+      "bytes": 8614,
+      "sha256": "28b4f4095c42900e4e3081c5b555c08e7b3a5f096e041119fbef296f08e23645"
+    },
+    "currentPlan": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "bytes": 14102,
+      "sha256": "28e40a21aaec88cd733ddf24507adc2a588ed57d560b353c63acf2582c292216"
+    },
+    "control": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+      "bytes": 6809,
+      "sha256": "55dc60a1a3a5b63b12bffbc8904f126f29e8e4b740daaa8bac8c0e3f1e110a1e"
+    },
+    "helperSourcePrepReview": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.json",
+      "bytes": 15446,
+      "sha256": "add755d50da787d97844016be18dfafdf012ef37ece9abe097b1bb10bf246448"
+    },
+    "recoveryReceipts": [
+      {
+        "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-32cfa9ce.json",
+        "bytes": 20343,
+        "sha256": "3c5c6d802e9339680c7effd6f9eb645d98bc9025b59fb1ac0a4020675a8bc7f4"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-126f08d4.json",
+        "bytes": 20343,
+        "sha256": "db1a1ff17b30778ecbd441deefcab10089ef03c27975be080c48c8d1a9ed4e8e"
+      }
+    ]
+  },
+  "verification": {
+    "originalEvidenceChecks": 146,
+    "narrowDocumentaryCorrectionChecks": 18,
+    "totalChecks": 164,
+    "allPassed": true,
+    "scope": "Read-only original ZIP/files/Git plus independent static PE metadata parser; no helper import, .NET process, API/diagnostic attach, test, game, process scan/control, install or repository write.",
+    "artifacts": [
+      {
+        "path": "/tmp/1536-cloud-tools/review/check_l01_managed_stack_s01_evidence.py",
+        "bytes": 14735,
+        "sha256": "a5fc30905e4e0a778f002b48f7aff7ee807260c25854a8f2a590505c0f5cefd1"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/l01-managed-stack-s01-evidence-focused-checks-20261018.json",
+        "bytes": 24611,
+        "sha256": "5cf79ae9e3b1d3ac1a6bdd6406b67d6876d1ba664467c85e2fa2463a550c8484"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/check_l01_managed_stack_s01_doc_correction.py",
+        "bytes": 4418,
+        "sha256": "11d591ca193d4a204737e549fca21adf36332489bbcb727177f1e7d0ab23d7d4"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/l01-managed-stack-s01-documentary-correction-checks-20261018.json",
+        "bytes": 3443,
+        "sha256": "b3a53f884ed4ad958d40793e4af4ccca44158100d983fda2a7dae8fdb378d5d8"
+      }
+    ],
+    "readerFailures": [],
+    "recovery": "Validated saved exact-remote independent-recovery receipts, clean writer/independent GitHub restore SHA, all 61 saved paths for original carrier and exact three corrected documents. No new clone or remote mutation by reviewer."
+  },
+  "evidenceConclusions": [
+    "All eight original archive members match saved lengths/SHA256 and local original bytes/modes; exact record and raw stack JSON preserved across correction. Private core size/hash/mode600 verified without interpreting memory; excluded from Git/ZIP and not recoverable from Git.",
+    "All eleven helper pins are byte-identical to reviewed d2c716af and actual release4d476b38. Original prepared DLL/PDB/runtimeconfig and other output hashes match the original 13-file PREP archive. Exact two reviewed observer-source exceptions remain bound; no preparation or target replay.",
+    "Exactly one admitted public API invocation reached RETURNED/ApiStatus0, collector native0 and target native0. Raw entry/return/exit events are complete and correspond to the same nonce, private socket, PID/starttick and loaded SDK dependencies. This counts public API reach, not independently observed IPC commands or createdump process launches.",
+    "Target87058:3781245 and collector87070:3781266 have recorded UID1000 and supervisor87032; target ready independently reports PID/starttick/native TIDs/runtime/MVID. Source enforces own child command/nonce/socket checks and pidfd identity before intervention. Actual completed cooperatively with valid private STOP token, target drain/join/EOF, collector join/output close, empty child accounting and no observer/forced-cleanup error.",
+    "Raw wait TID87058 contains Console.ReadLine/read followed by KnownWaitLeaf then KnownWaitOuter; raw CPU TID87068 contains Interlocked.Increment followed by KnownCpuLeaf then KnownCpuOuter. Independent static PE reading maps each raw MethodDef token to the actual method name, exact MVID and valid IL body offset, and confirms NoInlining/NoOptimization metadata.",
+    "CPU counter1428891 at readiness and141156830 at cooperative completion confirms actual bounded worker execution. One captured instruction/stack does not establish continuous work, a general performance profile or useful gameplay progress.",
+    "The exact executed source constructs an explicit sanitized environment, private0700 directories, fixed runtime8.0.32 with roll-forward disabled and pinned existing tooling. No game assemblies, fixture/save roots, installs, manual prctl/policy changes, arbitrary-PID API or direct-createdump fallback are part of this S01. Normal runtime internal targeted ptracer authorization is not claimed to be ptrace-free.",
+    "The result establishes transport/normal-runtime authorization/DAC stack naming for this owned synthetic under this cloud context, beyond mere socket/file existence. It does not establish general dump/heap/logical-async decoding, all frames, another target environment or game causality."
+  ],
+  "matchedFrames": [
+    {
+      "nativeTid": 87058,
+      "rawFrameIndex": 12,
+      "method": "L01OwnedSynthetic.KnownWaitLeaf(System.String)",
+      "token": "0x600001e",
+      "ilOffset": "0x7b",
+      "methodBodyBytes": 149
+    },
+    {
+      "nativeTid": 87058,
+      "rawFrameIndex": 13,
+      "method": "L01OwnedSynthetic.KnownWaitOuter(System.String)",
+      "token": "0x600001d",
+      "ilOffset": "0x2",
+      "methodBodyBytes": 21
+    },
+    {
+      "nativeTid": 87068,
+      "rawFrameIndex": 1,
+      "method": "L01OwnedSynthetic.KnownCpuLeaf()",
+      "token": "0x600001c",
+      "ilOffset": "0x18",
+      "methodBodyBytes": 64
+    },
+    {
+      "nativeTid": 87068,
+      "rawFrameIndex": 2,
+      "method": "L01OwnedSynthetic.KnownCpuOuter()",
+      "token": "0x600001b",
+      "ilOffset": "0x6",
+      "methodBodyBytes": 24
+    }
+  ],
+  "timing": {
+    "collectorEnvelopeWallSeconds": 1.7287690419980208,
+    "scope": "smoke.py357-361 encloses all run_owned work: output opening, PowerShell startup, preflight/ownership, API, native wait/join and output/handle closure. Original field requestSeconds remains untouched.",
+    "controllerPhaseWallSeconds": 1.9989599859982263,
+    "phaseScope": "smoke.py294-417, after started.json through target cleanup; not a process-wide or API-only timer.",
+    "createdumpReportedDurationMilliseconds": 136,
+    "reportedDurationScope": "Original target stdout text; not independently measured suspension.",
+    "apiOnlyDurationSeconds": null,
+    "actualThreadSuspensionDurationSeconds": null,
+    "limits": "No exact suspension interval, game pause budget, cost upper bound or completion estimate can be inferred."
+  },
+  "resolvedReviewFindings": [
+    {
+      "id": "S01-E01",
+      "location": "smoke.py357-361; original derived index outcome.requestWallSeconds; plan top",
+      "finding": "Original derived request label could be mistaken for isolated API time, although stopwatch encloses the whole collector process operation.",
+      "resolution": "126f08d4 renames only the derived metric to collectorEnvelopeWallSeconds with precise scope and explicit UNKNOWN API-only/suspension; original record/ZIP/value preserved."
+    },
+    {
+      "id": "S01-E02",
+      "location": "capability-plan originally133-134 and future phase trigger131-132",
+      "finding": "A collector/runtime duration is not a suspension measurement; stale last-seen custody event cannot locate capture before accepted when delivery/target can race.",
+      "resolution": "126f08d4 adds measured-scope limits and mandatory ordered-event race disposition; capturePhase UNKNOWN unless exact capture phase is proved. No source/runtime change."
+    }
+  ],
+  "futureProposal": {
+    "status": "CONDITIONAL_DOCUMENTATION_ONLY; implementation and runtime remain held",
+    "supportedQuestion": "One source-bound physical managed stack snapshot may identify an operation or wait site during a separately established phase, narrowing a causal question.",
+    "missingPrerequisite": "JointInterfaceCrash.cs128 uses ReadToEndAsync;144-150 persists/emits stdout only after join. Safe owned live custody/accepted delivery does not currently exist. Do not steal/read the same pipe or infer a live event file.",
+    "requiredSeparateGate": "Any minimal exact tee/delivery plus one-observer implementation requires its own source/ownership/PREP review and explicit future gameplay decision. This review releases neither that code nor a run.",
+    "oneObservationShape": "Existing diagnostic cut1 Fact only;60s after positively received exact custody-return event; cancel on ordered accepted/late-return/exit; validate current root/nonce/PID kernelbirth/runtime/DAC/socket before at most one public request. NOT_OBSERVED is a terminal observation result, not authorization to retry.",
+    "raceLimit": "Event receipt is not capture time. Retain source-bound event order, monotonic receipts and collector envelope; missing/late/lost ordering, accepted during envelope or unresolved capture position yields capturePhase UNKNOWN or a positively established later phase. Named frames remain interpretable with this phase limitation.",
+    "budgetsAndSemantics": "Original220s child/900s category and all strong assertions unchanged; clocks not paused/reset/extended. Preserve original native outcome separately from observer failures; capture perturbation prevents treating the run as an unperturbed baseline.",
+    "discriminators": "Operation frames identify an operation at that instant, not hotness/useful progress/remainder. Wait-site frames do not prove lock ownership, deadlock or logical async dependencies. Missing/native-only/truncated frames or transport/DAC failure remain precise limitations, not evidence of idle/CPU exhaustion.",
+    "stopRule": "No automatic extra sampling/diagnostic chain, budget increase or original-five retry. If interpretation needs unavailable heap/task evidence, retain that concrete gap."
+  },
+  "retainedBoundaries": {
+    "syntheticPermit": "CONSUMED_NO_RETRY",
+    "nextSyntheticRelease": "NONE",
+    "gameplayRelease": "NONE",
+    "L01": "52/57 at original provenance; original five crash scenarios still unqualified",
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "M01": "Existing narrow historical-audit-state acceptance unchanged; no E01/runtime-effect claim",
+    "cloudLinuxGameplay": "HOLD; synthetic capability does not close the game blocker",
+    "futureWindowsFive": "Separate platform/native identity preparation and qualification, not requested or released",
+    "WindowsArtifact403": "Separate BLOCKED_NO_RETRY; no CI",
+    "broader": "E01/T148/Phase10/fullNI/HOT/F1/M3/T197 remain open/incomplete; A3 NO-PROCEED",
+    "immutability": "Original L01 cloud ledger/source packet/method-row ledger and M01 packet/evidence equal accepted39cafe9e bytes; no production/test/catalog/selection changes."
+  },
+  "acceptanceSaveConditions": [
+    "Copy this report/check artifacts unchanged and bind the corrected126f08d4 documentation plus original32cfa9ce evidence/actual4d476b38/prepared0422f6c7 provenance.",
+    "Mark only owned synthetic stack capability EVIDENCE accepted; retain original ZIP/raw records/private-core scope and all earlier failed/HOLD reports.",
+    "Keep consumed S01 permit, next release NONE and gameplay NONE. Future proposal is documentation with unresolved safe-live-delivery prerequisite, separate SOURCE/PREP/user gameplay decision and mandatory race disposition.",
+    "Do not change budgets, native outcomes, L01 target count52/57, old UNKNOWN, M01 or any platform/broader hold."
+  ]
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "path": "t179pd-hot-custody-red2-owned-source-independent-affected-source-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red2-owned-source-independent-affected-source-20261016.diff",
+    "raw_sha256": "4c0e30ec0503babdb59fa32892f3515cab0bebe1c068b85bc547e148c2aed217",
+    "raw_bytes": 7399,
+    "stored_sha256": "20671d2320e388ddb0630f75ffc7c734d7fe40c794a3ac0fffb2888be64a2078",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red2-owned-source-independent-production-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red2-owned-source-independent-production-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red2-owned-source-independent-carrier-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red2-owned-source-independent-carrier-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red2-owned-source-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red2-owned-source-independent-status-20261016.diff",
+    "raw_sha256": "b891f2c13026f19710ba09fb06aa2e5e06e4ed07872804bfe0dc9d9150366900",
+    "raw_bytes": 17964,
+    "stored_sha256": "f183e2f118b7146a014517002b1513ebb08d54d2179edda48547d61fd17e2be9",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "fbcf407c2755d4ce063a35184e8011adc03b2840",
+      "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red2-owned-source-independent-carrier-all-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red2-owned-source-independent-carrier-all-20261016.diff",
+    "raw_sha256": "b67a9556b115f6a07e81b70e04b98357967baf0d4e20310fd8aa644385c34432",
+    "raw_bytes": 1112522,
+    "stored_sha256": "80b481fea3f168e2375cabf0507cee4ad290ea6cbe40a02b88d753fef2d61eee",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "22e31d09999ff9cd8616116ff0e19f517a192426"
+    ]
+  }
+]

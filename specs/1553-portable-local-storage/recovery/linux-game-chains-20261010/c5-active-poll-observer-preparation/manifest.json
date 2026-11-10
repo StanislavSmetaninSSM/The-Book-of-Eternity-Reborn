@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "944c6b5e788e6b97abf5ba1a659772807b7a946c",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category c5-browser-active-poll-crash -PlanOnly -TimeoutMinutes 8",
+  "Status": "PREPARATION PASS; zero tests executed",
+  "Scope": "Fresh selected integration/support/Bridge for exact outer waiter qualifier correction;102.2641177s; one planned descriptor/case, zero executed, source clean, owned cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "5238fc62ca59c3f15653c0f385eeabae277dde96aec8cf9dc458cf7730d88edc",
+      "RawBytes": 1169
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "19431147676ea55c689ff433b49a52d82788fe6c5e48743b14e749981946a968",
+      "RawBytes": 1479
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "b7ff3818edf42773a6c88d2d5c34abcbd579f8466733a00654968fe345347a02",
+      "RawBytes": 57769
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "68849228111a1ed865ca37ef12fc6304145ee2b6fdbf5833b2bbca8ed0a415ca",
+      "RawBytes": 1677381
+    }
+  ]
+}

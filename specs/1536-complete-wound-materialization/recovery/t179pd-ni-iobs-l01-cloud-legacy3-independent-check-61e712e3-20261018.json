@@ -1,0 +1,161 @@
+{
+  "kind": "INDEPENDENT_NEW_CLOUD_LEGACY3_ORIGINAL_EVIDENCE_CHECK",
+  "checkedUtc": "2026-10-18T10:23:13.413467+00:00",
+  "carrier": "61e712e319e8f480b77755aebae4c2db69e1423c",
+  "actualSource": "9acc5708e6f2e752fd43ae917b8357ed9ce98e1f",
+  "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "recordSha256": "7f4607ca051df9d79c7a7b990bd26f0b323f675013838878943845524a2d9a59",
+  "archive": {
+    "sha256": "9858024f7ba343a82f0667c65bd8d33079e709ec6463b5575e02fbad4fec57c8",
+    "gzipRawChains": 11,
+    "rawBytes": 23948933,
+    "completeOriginalCoverage": true,
+    "restoredAndOriginalBytesMatch": true
+  },
+  "sourcePins": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "nativeExit": 0,
+  "wallSeconds": 869.1273030290001,
+  "categorySeconds": 848.806039,
+  "categoryBudgetSeconds": 900,
+  "noBuild": true,
+  "cases": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+      "testId": "fee8cb67-c918-3200-6f6f-fd34df864c6d",
+      "outcome": "Passed",
+      "durationSeconds": 259.0742765,
+      "diagnosticJsonRows": 43,
+      "semanticChecks": [
+        "Actual live repair owner, complete create+treat union, energy2to0/health5to2, canonical validators, exact one story suffix, progression and inert-repeat assertions passed",
+        "Actual Stage44 signed prior marker coverage and non-null old cache precondition; public generic-slot I normalized from two tags to one with retained inputValue; prior marker unchanged by source assertion"
+      ],
+      "ownedCleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-30bea59f748c46ab91564af8508da8a1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+      "testId": "3d47efd7-188a-2686-c981-041b48c11d86",
+      "outcome": "Passed",
+      "durationSeconds": 257.8435214,
+      "diagnosticJsonRows": 42,
+      "semanticChecks": [
+        "Actual live repair owner, complete create+treat union, energy2to0/health5to2, canonical validators, exact one story suffix, progression and inert-repeat assertions passed",
+        "Genuine existing CaptureAsync schema1 producer, exact installed/readback pending graph and original-backed reconstruction; child1 live/cold consumption without schema upgrade, result publication or I rewrite"
+      ],
+      "ownedCleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-62f39c6ebe0d4713bbeb8d5bf751ab61",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+      "testId": "be3b9376-36df-1908-5376-9504c8b81396",
+      "outcome": "Passed",
+      "durationSeconds": 321.8548116,
+      "diagnosticJsonRows": 42,
+      "semanticChecks": [
+        "Genuine existing CaptureAsync schema1 producer, exact installed/readback pending graph and original-backed reconstruction; child1 live/cold consumption without schema upgrade, result publication or I rewrite",
+        "Separate actual native child with empty common cache and official original reader; exact dependency bytes, exit0/join/bothEOF; old finalized mechanics unchanged, exact story+turn43 and inert-repeat; owned auxiliary removed"
+      ],
+      "ownedCleanup": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-acdd7767c48e46109995b9fe69659edf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "rawImageLengthShaChecks": 74,
+  "cold": {
+    "parentPid": 6175,
+    "childPid": 6366,
+    "nativeExit": 0,
+    "bothEof": true,
+    "freshCommonCacheEmpty": true,
+    "actualOfficialOriginalReader": true,
+    "completedTurn": 43,
+    "afterEqualsRepeatedEntries": 84,
+    "dependencyHashesMatched": true,
+    "auxiliaryCleanupVerified": true,
+    "childExitWaitSeconds": 45,
+    "childWaitLimitEnforcedAt": "GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:596 / BrowserInputRecovery.cs:219"
+  },
+  "binaries": {
+    "nineCopiesAndFull1575PathsBytesHashesUnchangedFromFreshPreparationAndActualBeforeAfter": true
+  },
+  "cleanup": {
+    "originalLegacyBoundariesEmpty": true,
+    "perCaseOwnedRootsRemoved": true,
+    "runnerCleanupSucceeded": true,
+    "noCurrentGlobalCensus": "close2 may be running; no current process/namespace emptiness assertion or intervention"
+  },
+  "restoredCarrier": {
+    "changedPaths": 16,
+    "sha256GitBlobsBytesVerified": true,
+    "independentCloneCarrierObject": "61e712e319e8f480b77755aebae4c2db69e1423c",
+    "observedHeads": {
+      "working": "f647853f41051025969d83a5fa251d3b592a23c0",
+      "restore": "61e712e319e8f480b77755aebae4c2db69e1423c",
+      "remote": "f647853f41051025969d83a5fa251d3b592a23c0"
+    },
+    "remoteDescendsFromCarrier": true
+  },
+  "timingObservations": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+      "durationSeconds": 259.0742765,
+      "reportedEndTime": "2026-10-18T10:10:30.6984931+00:00",
+      "reportedStartTime": "2026-10-18T10:10:30.6984925+00:00",
+      "inferredBeginFromResultEventMinusDuration": "2026-10-18T10:06:11.624217+00:00",
+      "correctedPublicIMtime": "2026-10-18T10:06:54.213477+00:00",
+      "commonProgressionPreparedUtc": "2026-10-18T10:07:10.789338+00:00",
+      "inferredBeginToCorrectionSeconds": 42.58926,
+      "inferredBeginToCommonPreparationSeconds": 59.165121,
+      "commonPreparationToResultEventSeconds": 199.909155
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+      "durationSeconds": 257.8435214,
+      "reportedEndTime": "2026-10-18T10:06:11.5456155+00:00",
+      "reportedStartTime": "2026-10-18T10:06:11.5456150+00:00",
+      "inferredBeginFromResultEventMinusDuration": "2026-10-18T10:01:53.702094+00:00",
+      "correctedPublicIMtime": "2026-10-18T10:02:33.317136+00:00",
+      "commonProgressionPreparedUtc": "2026-10-18T10:02:50.405557+00:00",
+      "inferredBeginToCorrectionSeconds": 39.615042,
+      "inferredBeginToCommonPreparationSeconds": 56.703463,
+      "commonPreparationToResultEventSeconds": 201.140058
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+      "durationSeconds": 321.8548116,
+      "reportedEndTime": "2026-10-18T10:01:53.6826215+00:00",
+      "reportedStartTime": "2026-10-18T10:01:53.6825989+00:00",
+      "inferredBeginFromResultEventMinusDuration": "2026-10-18T09:56:31.827809+00:00",
+      "correctedPublicIMtime": "2026-10-18T09:57:24.502925+00:00",
+      "commonProgressionPreparedUtc": "2026-10-18T09:57:38.469895+00:00",
+      "inferredBeginToCorrectionSeconds": 52.675116,
+      "inferredBeginToCommonPreparationSeconds": 66.642086,
+      "commonPreparationToResultEventSeconds": 255.212726
+    }
+  ],
+  "timingLimitation": "TRX startTime/endTime are result events with nearly zero delta despite nonzero duration; inferred begins subtract duration from end event, consistent with sequential neighboring case completion but not direct stopwatch phase measurements. PreparedAt is actual plan timestamp, not publication completion time. No extrapolated runtime PASS or hard timing bound.",
+  "findings": []
+}

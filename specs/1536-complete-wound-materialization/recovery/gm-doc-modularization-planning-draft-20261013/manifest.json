@@ -1,0 +1,52 @@
+{
+  "status": "NEW_UNAPPROVED_PLANNING_DRAFTS; allprojectchecksUNRUN",
+  "sourceIssue": {
+    "number": 1557,
+    "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557"
+  },
+  "approvedSpecSHA256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+  "userApproval": "2026-10-13 16:17UTC Sentinel_17b7eb9dc8b08191affb9fe4a5c76723",
+  "artifacts": [
+    {
+      "path": "plan.md",
+      "bytes": 15271,
+      "sha256": "7a4a611e3506cf8f4a9dabb14d269da47ac46e99d7df603363b325f303fb3ee2"
+    },
+    {
+      "path": "research.md",
+      "bytes": 13782,
+      "sha256": "fcf798b2f5623188661c2f8126a8d3571b69e32459d07511a5b76f2455194f40"
+    },
+    {
+      "path": "data-model.md",
+      "bytes": 5964,
+      "sha256": "bcc085232dba4e4bad3444f0df965ce9673141a24102bea656d664e25e4b8aa1"
+    },
+    {
+      "path": "contracts/gm-reading-and-preservation.md",
+      "bytes": 8383,
+      "sha256": "6f9b080538213ff161d2f354dfa27909641ab2a3a751ce5591068c09c82b4e27"
+    },
+    {
+      "path": "quickstart.md",
+      "bytes": 4811,
+      "sha256": "bc2fcb8891855f59c2b47de4001e7796211f52a674c134f43e247eb1a989d298"
+    },
+    {
+      "path": "tasks.md",
+      "bytes": 11759,
+      "sha256": "bc8e3ba985b55410dbe2ff2a26ccc0a25628fc204b8f663118d2eea21a1e4dd4"
+    },
+    {
+      "path": "analysis.md",
+      "bytes": 7925,
+      "sha256": "60ae9576674941d15cf5d4ddc9218b4858256b1509d2ebcd84edfd1f04188c13"
+    }
+  ],
+  "author": "retainedactualAstraHigh FINALSTOPPED",
+  "independentReview": "UNRUN",
+  "implementation": "UNRUN",
+  "constraints": "FR063 freeze+evidence/finalbase; D01onlyaffectedT009T010; noGMworktree/sourcecontentchanges",
+  "preservedIntoTaskBranchBase": "ce83cdb6a8b639c053247a87610e276c2371df57",
+  "filesPreservedVerbatim": true
+}

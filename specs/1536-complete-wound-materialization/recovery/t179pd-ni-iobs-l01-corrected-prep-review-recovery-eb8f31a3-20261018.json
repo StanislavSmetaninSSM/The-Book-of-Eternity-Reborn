@@ -1,0 +1,59 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "eb8f31a377d2ee9c23ddb0a4f74e2484ff0ade2b",
+  "base": "36007cc5a65ed0433766b687ac94a7f4fb6c80bf",
+  "checkedUtc": "2026-10-18T10:56:22.062599+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 6,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2379872,
+      "sha256": "b73715345da3f09f37c4964a0b448a89c2c4b4b2afde1d0384a71ae0e547a663",
+      "gitBlob": "4092902c4a60eb2a773dcf68bb45aa992970b071",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-corrected-prep-qualification-813f1057.json",
+      "bytes": 47878,
+      "sha256": "72742121d2dac30a0f010a2bfeadb4ea59b835e9d797d7151c4535bbc1f5495e",
+      "gitBlob": "d531589e658f9f557e23ee53c677c95d7c542eb4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 60182,
+      "sha256": "fc2753c28dfe362a514757df9d7957b44516705b24968a5502e3f3b24e476023",
+      "gitBlob": "6f4547e5fd87bfed6b0e7eff7dccea9d860b8642",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-corrected-prep-candidate-recovery-36007cc5-20261018.json",
+      "bytes": 21888,
+      "sha256": "e091f0cd9f8857e0af31f13fa3e890a3aa60e8f4fea0ee68e8c024f4c48af4c0",
+      "gitBlob": "de4d155111e37ca55040b36cdf550bd96f426649",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.json",
+      "bytes": 4693,
+      "sha256": "3536c3187c2c7feff5c5e67ff371e0db9e3956ad9f1be3282564cd8ad9d41229",
+      "gitBlob": "637f15217c204a5fc3e945696d2f5f74b13fa59d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-independent-review-20261018.md",
+      "bytes": 2045,
+      "sha256": "4ed2228fc0617b27c2cf79ad24ca8fd8f7ba22076f0758a1cf42a6072bdc20c4",
+      "gitBlob": "e10dc83a30b0c0b400255990b846b036a29e6c69",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

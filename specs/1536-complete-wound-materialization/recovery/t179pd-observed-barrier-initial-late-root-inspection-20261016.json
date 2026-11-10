@@ -1,0 +1,537 @@
+{
+  "source": "9aa339141ec8ebec301b18679aa021d018250b0f",
+  "actualHead": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
+  "carrier": "WORKTREE",
+  "index": {
+    "source_sha": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
+    "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories",
+    "native_exit_code": 0,
+    "artifacts": [
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-dotnet-test.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/dotnet-test.log",
+        "raw_bytes": 1682820,
+        "raw_sha256": "840ef87a849849be71335108839fc8bb0cca7bf4dccb780d3709a99fbe2cc772",
+        "stored_sha256": "64bc6d6a86399900d73cb458d00f88b3b36e2d926ad6f8466409b1adec2866f7"
+      },
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/fr063-joint-late-completion-integration-001.trx",
+        "raw_bytes": 13976754,
+        "raw_sha256": "081fb14a5a2025b059258f4378fdef08c256970f836707d567788ad967fa14ab",
+        "stored_sha256": "c7acc7e05ab98b7469c32f4ef282a4815d659998b4bbccbc9578f8ba2c684408"
+      },
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-native-exit.json",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/native-exit.json",
+        "raw_bytes": 322,
+        "raw_sha256": "a8a65d1ba214b35f525d32b08b56ebb100d6dd85412af22643391b7e3dbea5f7",
+        "stored_sha256": "a8a65d1ba214b35f525d32b08b56ebb100d6dd85412af22643391b7e3dbea5f7"
+      },
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-plan.json",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/plan.json",
+        "raw_bytes": 1533,
+        "raw_sha256": "1369ce743ed17224cbcf95fae6db7345c84d63fcc1cd6e12f1bac327ae14c5d3",
+        "stored_sha256": "1369ce743ed17224cbcf95fae6db7345c84d63fcc1cd6e12f1bac327ae14c5d3"
+      },
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-runner-stdout.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/runner-stdout.log",
+        "raw_bytes": 2247,
+        "raw_sha256": "df6bbe2462dbb79571466d94e37629f0b42bfedb43a510cf16c94a42ec0a7951",
+        "stored_sha256": "b1b7fa35aae1a10797852ad613ee664e550c948d29cd1c0dc3113ccf0bdc2c94"
+      },
+      {
+        "path": "t179pd-observed-barrier-initial-late-20261016-summary.json",
+        "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/summary.json",
+        "raw_bytes": 1464,
+        "raw_sha256": "d1f4dc3cf7f742736d88d596ef9c4179d5ef6b886f5654bac4c6d63d06a10513",
+        "stored_sha256": "d1f4dc3cf7f742736d88d596ef9c4179d5ef6b886f5654bac4c6d63d06a10513"
+      }
+    ],
+    "summary": {
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "fr063-joint-late-completion",
+          "Seconds": 210.0387883,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0631465,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0495738,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1387435,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0040142,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:03:34.9312427",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    }
+  },
+  "verifiedChains": [
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/dotnet-test.log",
+      "raw_bytes": 1682820,
+      "raw_sha256": "840ef87a849849be71335108839fc8bb0cca7bf4dccb780d3709a99fbe2cc772",
+      "stored_sha256": "64bc6d6a86399900d73cb458d00f88b3b36e2d926ad6f8466409b1adec2866f7",
+      "matchesRawLocalAndCarrier": true
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976754,
+      "raw_sha256": "081fb14a5a2025b059258f4378fdef08c256970f836707d567788ad967fa14ab",
+      "stored_sha256": "c7acc7e05ab98b7469c32f4ef282a4815d659998b4bbccbc9578f8ba2c684408",
+      "matchesRawLocalAndCarrier": true
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/native-exit.json",
+      "raw_bytes": 322,
+      "raw_sha256": "a8a65d1ba214b35f525d32b08b56ebb100d6dd85412af22643391b7e3dbea5f7",
+      "stored_sha256": "a8a65d1ba214b35f525d32b08b56ebb100d6dd85412af22643391b7e3dbea5f7",
+      "matchesRawLocalAndCarrier": true
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/plan.json",
+      "raw_bytes": 1533,
+      "raw_sha256": "1369ce743ed17224cbcf95fae6db7345c84d63fcc1cd6e12f1bac327ae14c5d3",
+      "stored_sha256": "1369ce743ed17224cbcf95fae6db7345c84d63fcc1cd6e12f1bac327ae14c5d3",
+      "matchesRawLocalAndCarrier": true
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/runner-stdout.log",
+      "raw_bytes": 2247,
+      "raw_sha256": "df6bbe2462dbb79571466d94e37629f0b42bfedb43a510cf16c94a42ec0a7951",
+      "stored_sha256": "b1b7fa35aae1a10797852ad613ee664e550c948d29cd1c0dc3113ccf0bdc2c94",
+      "matchesRawLocalAndCarrier": true
+    },
+    {
+      "path": "t179pd-observed-barrier-initial-late-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-140023-812-108821-3da16ca2cff24377898463c2cde67d3d-categories/summary.json",
+      "raw_bytes": 1464,
+      "raw_sha256": "d1f4dc3cf7f742736d88d596ef9c4179d5ef6b886f5654bac4c6d63d06a10513",
+      "stored_sha256": "d1f4dc3cf7f742736d88d596ef9c4179d5ef6b886f5654bac4c6d63d06a10513",
+      "matchesRawLocalAndCarrier": true
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 210.0387883,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0631465,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0495738,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1387435,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0040142,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:03:34.9312427",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "8464b370b28dd4c8a5bc64e0bb38d38fb7d5f25e",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 4.1859665,
+    "Descriptors": [
+      {
+        "Name": "fr063-joint-late-completion-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-late-completion",
+        "Categories": [
+          "fr063-joint-late-completion"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "trxCounters": {
+    "total": "2",
+    "executed": "2",
+    "passed": "2",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "cases": [
+    {
+      "case": {
+        "executionId": "328beb89-49ae-4e9c-a9cb-1f440d0aa09e",
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "computerName": "9f054acd892b",
+        "duration": "00:01:37.9272617",
+        "startTime": "2026-10-16T14:03:57.8023810+00:00",
+        "endTime": "2026-10-16T14:03:57.8023813+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "328beb89-49ae-4e9c-a9cb-1f440d0aa09e"
+      },
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "7f39cf606cb74c3f8f28d088943f2e55",
+        "SnapshotToken": "FA30AE69AEBDBB434CD6675F4AC83B7D5A4B421798DF515C4122192AEE06966F",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "a0c5d87bcb4849cb940a8311fca0bf14",
+        "SnapshotToken": "E525586279DB534643901D4770DB629F190609A45E681AC80D6EF3B896DA7051",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "a66ed9e6ece44b508306aa74864bb679",
+      "nonzeroProgression": false,
+      "actualTurn": 43,
+      "handled": false,
+      "create": {
+        "ordinal": 2,
+        "transitionId": "wound_transition_ecf8a1cc414c3942d434752cffb9c1642c39df94a00e112883acd6f5ca0f967c",
+        "woundId": "wound_51f1e824cf263b935c582e20b19762956c23b99f12a6be8d0ee7970961726dc5"
+      },
+      "treat": {
+        "ordinal": 3,
+        "transitionId": "wound_transition_91f316d9fda24780e0013c96aa824d534761a85ec1dc9bac1e779e746c15f0f7",
+        "woundId": "wound_test_torn_side"
+      },
+      "charge": {
+        "amount": 2,
+        "before": 2,
+        "after": 0
+      },
+      "damage": {
+        "amount": 3,
+        "before": 5,
+        "after": 2
+      },
+      "publishedFootprintCount": 42,
+      "rawMilestoneImageCounts": [
+        221,
+        221,
+        221
+      ],
+      "manifestSnapshotHashesVerified": 66,
+      "cleanupPathsVerified": 142,
+      "inertRepeatImages": 84,
+      "storyReconstructedBytes": 691,
+      "storySha256": "c184ca121e40db3a3b5059047180805df3f742a25d937d8f00613331a7a673ae",
+      "namedTransactions": [],
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-7428e22dd0f74983aa31628b82878c20",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "0a137ef129d2203732f542353e75596edfc6523c601a76db9dfedddd4d9301fe",
+      "progressionControl": {
+        "currentRealm": "Mortal World",
+        "currentWorldTimeInMinutes": 1260,
+        "lastWorldSimulationTimeInMinutes": 1260,
+        "lastFactionSimulationTimeInMinutes": 1260,
+        "worldCycleMinutes": 240,
+        "factionCycleMinutes": 1440,
+        "worldCyclesAlreadyPendingBeforeTurn": 0,
+        "factionCyclesAlreadyPendingBeforeTurn": 0,
+        "mustEvaluateWorldProgression": false,
+        "mustEvaluateFactionProgression": false,
+        "currentChaosSeaTurnOrdinal": 0,
+        "nextChaosSeaTurnOrdinal": 0,
+        "lastChaosSeaSimulationOrdinal": 0,
+        "lastGuardianProjectCycleOrdinal": 0,
+        "nextGuardianProjectCycleOrdinal": 0,
+        "lastResidentAgencyCycleOrdinal": 0,
+        "lastShiningAbodeCycleOrdinal": 0,
+        "lastShiningFactionCycleOrdinal": 0,
+        "lastShiningTradeCycleOrdinal": 0,
+        "chaosSeaCycleEquivalentHours": 24,
+        "nextResidentAgencyCycleOrdinal": 0,
+        "nextShiningAbodeCycleOrdinal": 0,
+        "nextShiningFactionCycleOrdinal": 0,
+        "nextShiningTradeCycleOrdinal": 0,
+        "chaosSeaCyclesExpectedThisTurn": 0,
+        "guardianProjectCyclesExpectedThisTurn": 0,
+        "residentAgencyCyclesExpectedThisTurn": 0,
+        "shiningAbodeCyclesExpectedThisTurn": 0,
+        "shiningFactionCyclesExpectedThisTurn": 0,
+        "shiningTradeCyclesExpectedThisTurn": 0,
+        "mustEvaluateChaosSeaProgression": false,
+        "mustEvaluateGuardianProjectProgression": false,
+        "mustEvaluateResidentAgencyProgression": false,
+        "mustEvaluateShiningAbodeProgression": false,
+        "mustEvaluateShiningFactionProgression": false,
+        "mustEvaluateShiningTradeProgression": false,
+        "afterlifeCatchupRequired": false,
+        "afterlifeCatchupElapsedCycles": 0,
+        "afterlifeCatchupPressureTier": "none",
+        "afterlifeCatchupSummaryEventsRequired": 0,
+        "afterlifeCatchupContours": []
+      },
+      "phaseFingerprint": "sha256:ca8b5b925bff8cb10a08b9d9d6397a77d9494bbca7344586db1fd2819fb0f9d3"
+    },
+    {
+      "case": {
+        "executionId": "af7f7fe2-e675-45fc-88a5-4606a8c246f8",
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "computerName": "9f054acd892b",
+        "duration": "00:01:48.6477922",
+        "startTime": "2026-10-16T14:02:19.8649320+00:00",
+        "endTime": "2026-10-16T14:02:19.8649504+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "af7f7fe2-e675-45fc-88a5-4606a8c246f8"
+      },
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "6939d74fd76841dc85a7b3c7e92e87c6",
+        "SnapshotToken": "9A9FA081D9EEC19194944973979B0EE59FF301849185E1994F4E310C5C442FBD",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "a389237628004beda6390d1bd5faaaeb",
+        "SnapshotToken": "4F2776FC95020662B3B7DFEBC9BB447A7CA86D77CF6A101255069825272A47B0",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "4d3aca099ce3435facddf531069a5ccc",
+      "nonzeroProgression": true,
+      "actualTurn": 43,
+      "handled": false,
+      "create": {
+        "ordinal": 2,
+        "transitionId": "wound_transition_cd8536945e81c1e795e81500f84aba351d7907a1769da357bde0bf3a8feb3c6d",
+        "woundId": "wound_5366b8a302a7bd6ff6dd143e49af84a6d9d9e2f387739adfc6c061efc1a9f87d"
+      },
+      "treat": {
+        "ordinal": 3,
+        "transitionId": "wound_transition_48ff2e010a0d3a4de811f748afd2c1ee4675299d3a8993139f309a8959031508",
+        "woundId": "wound_test_torn_side"
+      },
+      "charge": {
+        "amount": 2,
+        "before": 2,
+        "after": 0
+      },
+      "damage": {
+        "amount": 3,
+        "before": 5,
+        "after": 2
+      },
+      "publishedFootprintCount": 42,
+      "rawMilestoneImageCounts": [
+        221,
+        221,
+        221
+      ],
+      "manifestSnapshotHashesVerified": 66,
+      "cleanupPathsVerified": 142,
+      "inertRepeatImages": 84,
+      "storyReconstructedBytes": 691,
+      "storySha256": "594a4c4776a97b07c926fedbd988b2d19f223492da5d40d30d59595d5a21d1cd",
+      "namedTransactions": [
+        {
+          "role": "original_baseline_restore",
+          "id": "d726d2fe87664aa3893663e69276f211",
+          "memberCount": 8
+        },
+        {
+          "role": "progression_consumption",
+          "id": "0ad0c9a7c5af42f0b97f55884c9626be",
+          "memberCount": 3
+        }
+      ],
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-aaff8ca89fa94ac085bb2ca15b3d3754",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "fbe7bbd952cbac6b15e84d849cf3e1f14eea836c41a7f594de288d0676cc8bf5",
+      "progressionControl": {
+        "currentRealm": "Mortal World",
+        "currentWorldTimeInMinutes": 1500,
+        "lastWorldSimulationTimeInMinutes": 1260,
+        "lastFactionSimulationTimeInMinutes": 1260,
+        "worldCycleMinutes": 240,
+        "factionCycleMinutes": 1440,
+        "worldCyclesAlreadyPendingBeforeTurn": 1,
+        "factionCyclesAlreadyPendingBeforeTurn": 0,
+        "mustEvaluateWorldProgression": true,
+        "mustEvaluateFactionProgression": false,
+        "currentChaosSeaTurnOrdinal": 0,
+        "nextChaosSeaTurnOrdinal": 0,
+        "lastChaosSeaSimulationOrdinal": 0,
+        "lastGuardianProjectCycleOrdinal": 0,
+        "nextGuardianProjectCycleOrdinal": 0,
+        "lastResidentAgencyCycleOrdinal": 0,
+        "lastShiningAbodeCycleOrdinal": 0,
+        "lastShiningFactionCycleOrdinal": 0,
+        "lastShiningTradeCycleOrdinal": 0,
+        "chaosSeaCycleEquivalentHours": 24,
+        "nextResidentAgencyCycleOrdinal": 0,
+        "nextShiningAbodeCycleOrdinal": 0,
+        "nextShiningFactionCycleOrdinal": 0,
+        "nextShiningTradeCycleOrdinal": 0,
+        "chaosSeaCyclesExpectedThisTurn": 0,
+        "guardianProjectCyclesExpectedThisTurn": 0,
+        "residentAgencyCyclesExpectedThisTurn": 0,
+        "shiningAbodeCyclesExpectedThisTurn": 0,
+        "shiningFactionCyclesExpectedThisTurn": 0,
+        "shiningTradeCyclesExpectedThisTurn": 0,
+        "mustEvaluateChaosSeaProgression": false,
+        "mustEvaluateGuardianProjectProgression": false,
+        "mustEvaluateResidentAgencyProgression": false,
+        "mustEvaluateShiningAbodeProgression": false,
+        "mustEvaluateShiningFactionProgression": false,
+        "mustEvaluateShiningTradeProgression": false,
+        "afterlifeCatchupRequired": false,
+        "afterlifeCatchupElapsedCycles": 0,
+        "afterlifeCatchupPressureTier": "none",
+        "afterlifeCatchupSummaryEventsRequired": 0,
+        "afterlifeCatchupContours": []
+      },
+      "phaseFingerprint": "sha256:3197d251af20a6943b10bf4b20fe2e44f8afe2f32ea0eb836f14642fdd161c8f"
+    }
+  ]
+}

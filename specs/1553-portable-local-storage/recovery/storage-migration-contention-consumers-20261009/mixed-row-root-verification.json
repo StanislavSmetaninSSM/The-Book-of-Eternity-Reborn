@@ -1,0 +1,101 @@
+{
+  "source": "88130d5bd210eb34f28b9f697db541f00d2f5c74",
+  "run": "20261009-114248-252-335026-16a2e055ef7448c18b132100fd468d86-categories",
+  "tests": {
+    "Total": 8,
+    "Executed": 8,
+    "Passed": 7,
+    "Failed": 1
+  },
+  "rows": [
+    {
+      "kind": "f18-admission-contention",
+      "method": "TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+      "root": "/tmp/boe-afterlife-write-d9756fd84cf546fe924f5426d7542f21",
+      "paused": 1,
+      "mainContentions": 4,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Failed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+      "root": "/tmp/boe-gm-worker-gate-de912bfeb63e48db9b0bfe05ad4da06d",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
+      "root": "/tmp/boe-browser-player-action-generation-12cc0d6d15274b57be2302a2ffb15f59",
+      "paused": 1,
+      "mainContentions": 3,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+      "root": "/tmp/boe-browser-qte-fencing-d74768c4d59346438c37d1ec63d45244",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+      "root": "/tmp/boe-filesystem-manager-0759b48eca0c4dc7a66c62282caf03f8",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit",
+      "root": "/tmp/boe-browser-qte-fencing-a1f11f61fb90495195289a95924122e2",
+      "paused": 1,
+      "mainContentions": 3,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+      "root": "/tmp/boe-browser-qte-fencing-22bb0dd8ee5c4b708cbbdaf20b37e738",
+      "paused": 1,
+      "mainContentions": 5,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+      "root": "/tmp/boe-browser-write-7a933995fde84e8094531940480fa039",
+      "paused": 1,
+      "mainContentions": 2,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "outcome": "Passed"
+    }
+  ],
+  "qualification": "7PASS/1FAIL preserved; all8 actual boundary counters/tasksettlement/rootabsence verified. Gacha reaches new-generation admission, then existing unresolved rollback evidence guard throws InvalidData; exact contract classification pending. No timeout/Unknown/runtime-fix claim."
+}

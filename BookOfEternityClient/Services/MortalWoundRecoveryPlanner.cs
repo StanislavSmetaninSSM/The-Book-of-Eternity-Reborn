@@ -130,22 +130,10 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
         if (!IsApplicableStrictWorseningPolicy(wound, policy))
             return NotStrictlyWorsening(path, policy.ResultKind.ToString());
 
-        var authorityFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[]
-            {
-                AuthorityDomain,
-                "1",
-                scope,
-                acceptedState.SessionGeneration,
-                acceptedState.AcceptedStateFingerprint,
-                acceptedState.BindingFingerprint,
-                acceptedState.WoundFingerprint,
-                acceptedState.WoundSourcePath,
-                policy.CanonicalProjection,
-                policy.PolicyRef,
-                policy.Classification.ToString(),
-                coordinates?.CoordinatesFingerprint
-            });
+        var authorityFingerprint = ComputeComparisonFingerprint(scope,
+            acceptedState.SessionGeneration, acceptedState.AcceptedStateFingerprint,
+            acceptedState.BindingFingerprint, acceptedState.WoundFingerprint,
+            acceptedState.WoundSourcePath, policy, coordinates?.CoordinatesFingerprint);
         return new MortalWoundDeteriorationPolicyAuthorityResult(
             true,
             Array.Empty<ValidationIssue>(),
@@ -194,6 +182,20 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
             _ => false
         };
     }
+
+    /// <summary>
+    /// Reuses the policy identity formula for immutable result comparison; it
+    /// creates no deterioration authority and performs no registry admission.
+    /// </summary>
+    internal static string ComputeComparisonFingerprint(string scope, string generation,
+        string acceptedFingerprint, string bindingFingerprint, string woundFingerprint,
+        string sourcePath, MortalWoundDeteriorationPolicyDefinition policy, string? coordinatesFingerprint) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            AuthorityDomain, "1", scope, generation, acceptedFingerprint, bindingFingerprint,
+            woundFingerprint, sourcePath, policy.CanonicalProjection, policy.PolicyRef,
+            policy.Classification.ToString(), coordinatesFingerprint
+        });
 
     private static bool CanAcceptComplication(
         WoundMaterializationEnvelope wound,
@@ -646,11 +648,22 @@ internal static class MortalWoundRecoveryPlanner
         long consumedRecovery,
         long consumedDeterioration)
     {
+        return ReconstructAtMinute(acceptedState, binding, wound, acceptedState.CurrentGameMinute, consumedRecovery, consumedDeterioration);
+    }
+
+    // Pure comparison math only. A diagnosis owner must independently authenticate
+    // its original cohort, knowledge working image and exact future clock before
+    // using this calculation in the existing common publication.
+    internal static MortalWoundRecoveryPlanningResult ReconstructAtMinute(
+        MortalWoundRecoverySourceEvidence acceptedState, WoundAcceptedTurnBinding binding,
+        WoundMaterializationEnvelope wound, long evaluationMinute, long consumedRecovery, long consumedDeterioration)
+    {
+        if (evaluationMinute < acceptedState.CurrentGameMinute) throw new InvalidDataException("Recovery cannot move before its original clock.");
         var sourcePath = acceptedState.WoundSourcePath;
         var recoveryAnchor = wound.Recovery.RecoveryAnchor
             ?? throw new InvalidDataException("Recovery evidence has no canonical epoch.");
         var recovery = wound.Recovery;
-        var currentMinute = acceptedState.CurrentGameMinute;
+        var currentMinute = evaluationMinute;
         var noNaturalRecovery = string.Equals(
             recovery.Mode,
             "no_natural_recovery",

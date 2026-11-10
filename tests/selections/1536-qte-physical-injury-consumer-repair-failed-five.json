@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-physical-injury-consumer-repair-failed-five",
+      "reason": "Exactly one actual MAIN-GM wrapper/five original failed rows/one descriptor,budget5/default10; intentional repair-owner overlap excludes the three accepted construction-drift PASS rows from a9b57bbd. No added case, test-to-test call or oracle change. Current correction SOURCE/build/catalog/runtime UNRUN pending ROOT publication and mandatory independent SOURCE/FIXTURE/SELECTION.",
+      "contracts": [
+        "Client-owned QTE runtime remains rollback/canonical evidence and is never required as GM resubmission. Corrected full public outputs plus preserved actual source/packet/generation and retained proposal/scene proof are still mandatory.",
+        "Only the exact Mortal QTE source-bound actionable projection replaces the known UI narration duplicate. Narration-only uses existing narrate_acquisition/ordinary scene target and keeps the entire draft; unrelated/private and mixed proposal errors retain their existing checks/types.",
+        "All original exact3 successful-publication and narration exact/drift oracles remain in the byte-equivalent private full-engine body, including Format1 declared-delete/present byte/hash checks, one repair only, command capture/revoke, source bytes, receipt/marker/count and strict owned cleanup.",
+        "Fresh BOTH selected preparation31methods70cases12descriptors and catalog715/11551 are zero-execution preparation only. First failed5 actual is frozen/reviewed before unchanged compatibility+worker5methods8cases2descriptors/default8; no prior accepted positives or archive qualification repeated."
+      ]
+    }
+  ]
+}

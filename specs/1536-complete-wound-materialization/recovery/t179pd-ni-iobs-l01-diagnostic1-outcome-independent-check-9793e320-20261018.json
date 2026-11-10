@@ -1,0 +1,3940 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_ORIGINAL_OUTCOME_READER_NOT_CAUSAL_VERDICT",
+  "checkedUtc": "2026-10-18T17:00:03.811118+00:00",
+  "carrier": "9793e320bef881462ef7dbac847f748e645ab324",
+  "actualSource": "801229a1d301cc3526b451c95cc71953f89f1f62",
+  "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+  "reader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+    "bytes": 31428,
+    "sha256": "973d7c89ecd0d31028893a38c529bd15ecba0c2eb81b68f48493598a79cc0024"
+  },
+  "recordSha256": "8ee08e8da2633949252bd609b3057c28056ba9cce6c1cd487295b5e586d5d81e",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-original-b51375ba-files-20261018/archive.json",
+    "sha256": "4f7b0c58394cd180717bc0328f8791601d0238a944476846f4d278a2ed2bf1f9",
+    "chains": 11,
+    "allGzipRawOriginalNonfixtureAndCloneBytesMatch": true,
+    "retainedRootBytesFromArchiveOnly": true
+  },
+  "sourcePins": 101,
+  "productPaths": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "outputInventory": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allCurrentBytesExact": true
+  },
+  "nativeExit": 0,
+  "wallSeconds": 296.52162327399856,
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-crash-diagnostic"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-crash-diagnostic",
+        "reason": "Separate cut1 diagnostic after native124/220s child waits; same original strong fixture with flushed readonly scalar stages/live bounded logs. Excluded from whole57/counts. No runtime from this selection alone.",
+        "contracts": [
+          "Preserve genuine producer73/new resumer PID+kernel starttick/nonce/containment/join/EOF, exact cut bytes/Ready/current DATA/one I/mechanics/story/cleanup/inert repeat, primary exceptions and220s child bound; original900s crash5 budget unchanged."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "801229a1d301cc3526b451c95cc71953f89f1f62",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-crash-diagnostic",
+        "Seconds": 277.5383917,
+        "BudgetMinutes": 15,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1096043,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.1657932,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.4384784,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.3111047,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 20,
+    "WallTime": "00:04:50.5784048",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "descriptor": {
+    "Name": "fr063-joint-interface-crash-diagnostic-integration-001",
+    "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+    "Category": "fr063-joint-interface-crash-diagnostic",
+    "Categories": [
+      "fr063-joint-interface-crash-diagnostic"
+    ],
+    "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "Adapter": "integration",
+    "Exclusive": true,
+    "FrontendBuild": false,
+    "BudgetMinutes": 15,
+    "EstimatedCases": 1,
+    "ExpectedMethodCounts": [
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+        "Cases": 1
+      }
+    ]
+  },
+  "trxResults": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-165315-335-61837-15eefdc0e4b846f3aa3f58326de91a15-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx",
+      "executionId": "4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2",
+      "testId": "369be9a5-029a-6120-c204-4e0b2092a5ad",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "computerName": "735aec146281",
+      "duration": "00:04:28.9711367",
+      "startTime": "2026-10-18T16:58:02.8652661+00:00",
+      "endTime": "2026-10-18T16:58:02.8653547+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2"
+    }
+  ],
+  "directErrors": [],
+  "joinObservations": [
+    {
+      "role": "engine-joint-interface-original-crash",
+      "pid": 61993,
+      "birthTick": 2702213,
+      "birthUtc": "2026-10-18T16:53:34.1113974Z",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37",
+      "ownedContainer": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37",
+      "exit": 73,
+      "eof": true,
+      "joined": true,
+      "primaryFailure": null,
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutSource": "join.RawStdout",
+      "stdoutBytes": 355594,
+      "stdoutSha256": "ac229a80de64c5de0934220532a9b5e76931bff5694c3ab309bd45ec0ff39927",
+      "stderr": "",
+      "sources": [
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-165315-335-61837-15eefdc0e4b846f3aa3f58326de91a15-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "role": "engine-joint-interface-resume",
+      "pid": 62089,
+      "birthTick": 2707440,
+      "birthUtc": "2026-10-18T16:54:26.3813974Z",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+      "ownedContainer": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37",
+      "exit": 0,
+      "eof": true,
+      "joined": true,
+      "primaryFailure": null,
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutSource": "join.RawStdout",
+      "stdoutBytes": 51266,
+      "stdoutSha256": "1cf7e254fe79e1d5964bbd5cf71308b93b707624ba61b58315ec1b72591e216d",
+      "stderr": "",
+      "sources": [
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-165315-335-61837-15eefdc0e4b846f3aa3f58326de91a15-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2",
+          "line": 4
+        }
+      ]
+    }
+  ],
+  "streamedDiagnostics": [
+    {
+      "identity": {
+        "pid": 62089,
+        "birthTick": 2707440
+      },
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+      "nonce": "76c9d879718047dc85b229bba3af89e6",
+      "cutIdentityAvailable": true,
+      "stdoutSource": "join.RawStdout",
+      "otherChildBoundaries": [
+        {
+          "line": 24,
+          "value": {
+            "Boundary": "iobs_actual_current_common_claim_settled",
+            "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+            "ActualState": "BookOfEternityClient.Services.AcceptedTurnAuthorityRegistry+AcceptedTurnAuthorityState",
+            "ReservationAbsent": true,
+            "OpenTakeAbsent": true,
+            "Meaning": "Actual completed physical proof precedes this read of existing owner state, not a fabricated receipt or old-process claim"
+          }
+        },
+        {
+          "line": 25,
+          "value": {
+            "Boundary": "iobs_actual_completed_data_before_terminal_cleanup",
+            "Original": {
+              "SessionId": "session_qte_story_append",
+              "RequestId": "81e414e686d74421a7557fec2b46f9e6",
+              "SnapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+              "TurnNumber": 43
+            },
+            "Record": {
+              "version": 1,
+              "state": "Published",
+              "binding": {
+                "sessionGeneration": "4e472d32c46f4f949e5a1e56d50da9cf",
+                "sessionId": "session_qte_story_append",
+                "requestId": "81e414e686d74421a7557fec2b46f9e6",
+                "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                "turnNumber": 43,
+                "realm": "mortal_world",
+                "stageOrdinal": 1,
+                "readyOrdinal": 1,
+                "iterationOrdinal": 2,
+                "checkpointFingerprint": "sha256:8db8cb704394e47720f96ee94d7281de51d479c99ef8679e098373cea0c73671",
+                "operationKey": "operation_fr063_joint_completion",
+                "attemptId": "wound_treatment_attempt_dc947d3089811294d2ffabc859d8539833f57cbca32d9be35293a62b56a6e534",
+                "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b"
+              },
+              "legacyPendingFingerprint": "sha256:a0c6dab4ad74473fc904a93d8c5c4f1ec8558273179b9746ea471d2fc7a273a1",
+              "sourceAssociationFingerprint": "sha256:82f854df708cd9ce795ce854276121f8e8532e89bbd913814216808a5df21b9f",
+              "beforeImage": {
+                "present": true,
+                "base64": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+                "sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+              },
+              "afterImage": {
+                "present": true,
+                "base64": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE2OjU0OjI0LjM4ODQ0MTIrMDA6MDAiCn0=",
+                "sha256": "574B4A13BA25C11C19B635EB5DDEDE3E9A3B547BD9CF476C17CABB8BB80459BC"
+              },
+              "normalization": "Changed",
+              "fallback": {
+                "required": true,
+                "sampled": true,
+                "value": "2026-10-18T16:54:24.3884412+00:00"
+              },
+              "timestampCheck": {
+                "document": "Object",
+                "timestamp": "ParseAccepted"
+              },
+              "issues": [],
+              "resultFingerprint": "sha256:873c673f7a4013a54966bef1e38fe4fd39f08abe60ac7c11f1748a0fc2c4f53d",
+              "fingerprint": "sha256:b745d0871bb5601ec22450ad35ad5c634e0334c61dab89c0a2443ded36fde35a"
+            },
+            "Interface": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE2OjU0OjI0LjM4ODQ0MTIrMDA6MDAiCn0=",
+            "Meaning": "Full existing current original/history/resource proof while actual original remains present; no post-cleanup authority recreation"
+          }
+        },
+        {
+          "line": 31,
+          "value": {
+            "Boundary": "iobs_actual_resumed_once_mechanics",
+            "spend": {
+              "TransitionId": "resource_transition_4c4baf1bcf9f27af79e667cd30954030",
+              "OperationId": "resource_operation_9503aabe12b74000239f958ebde1f990",
+              "EventRef": "treatment_resource_8856bcd47fee9aee4be0ede1_0000",
+              "OriginKind": "registered_system_outcome",
+              "OriginId": "treatment_resource_8856bcd47fee9aee4be0ede1_0000",
+              "Phase": 2,
+              "Priority": 100,
+              "ExecutionSequence": 1,
+              "Coordinate": {
+                "Realm": "mortal_world",
+                "OwnerKind": 0,
+                "ResourceOwnerId": "player_current",
+                "ResourceKey": "energy"
+              },
+              "Operation": 7,
+              "RequestedAmount": 2,
+              "AppliedAmount": 2,
+              "Outcome": 0,
+              "CapacityDisposition": null,
+              "BeforeState": {
+                "Current": 2,
+                "Maximum": 10,
+                "CapacityBinding": {
+                  "Kind": 2,
+                  "AuthorityKey": "mortal_energy_capacity_v1",
+                  "AuthorityFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "State": 0
+              },
+              "AfterState": {
+                "Current": 0,
+                "Maximum": 10,
+                "CapacityBinding": {
+                  "Kind": 2,
+                  "AuthorityKey": "mortal_energy_capacity_v1",
+                  "AuthorityFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "State": 0
+              },
+              "SourceEvidence": {
+                "SourceKind": "registered_system_outcome",
+                "SourceId": "treatment_resource_8856bcd47fee9aee4be0ede1_0000",
+                "AuthorityFingerprint": "sha256:69df78d1ce7ae799b45d642482b49b5cc656ab3c18822a01d3351186b1a5018c"
+              },
+              "PolicyFingerprint": "sha256:449c8fe4d5422ce9116db2b6e94663b22e6774ac85eda99f3043fb237ad5b42a",
+              "ReceiptId": null,
+              "Turn": 43
+            },
+            "damage": {
+              "TransitionId": "resource_transition_085b0ebadf0b6bf6aacc480439d1ea60",
+              "OperationId": "resource_operation_ab1afe486d56c578d66a7f39a55dbdab",
+              "EventRef": "effect_lifecycle_resource_trigger_c149a0a3c322f595401e3fc23bd63dcb76d60f8015bfdc7b5b93f034ac7ad9a5",
+              "OriginKind": "effect_component",
+              "OriginId": "effect_component_d8d51a84553c3106a531ade232e65dd18a9188f3de7d97c712174636ac6988c8",
+              "Phase": 3,
+              "Priority": 200,
+              "ExecutionSequence": 0,
+              "Coordinate": {
+                "Realm": "mortal_world",
+                "OwnerKind": 0,
+                "ResourceOwnerId": "player_current",
+                "ResourceKey": "health"
+              },
+              "Operation": 5,
+              "RequestedAmount": 3,
+              "AppliedAmount": 3,
+              "Outcome": 0,
+              "CapacityDisposition": null,
+              "BeforeState": {
+                "Current": 5,
+                "Maximum": 10,
+                "CapacityBinding": {
+                  "Kind": 2,
+                  "AuthorityKey": "mortal_health_capacity_v1",
+                  "AuthorityFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                },
+                "State": 0
+              },
+              "AfterState": {
+                "Current": 2,
+                "Maximum": 10,
+                "CapacityBinding": {
+                  "Kind": 2,
+                  "AuthorityKey": "mortal_health_capacity_v1",
+                  "AuthorityFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                },
+                "State": 0
+              },
+              "SourceEvidence": {
+                "SourceKind": "effect_component",
+                "SourceId": "effect_component_d8d51a84553c3106a531ade232e65dd18a9188f3de7d97c712174636ac6988c8",
+                "AuthorityFingerprint": "sha256:fecba8cdd652b727d66239414a41520511b4447de161606f7caa1be500d4282f"
+              },
+              "PolicyFingerprint": "sha256:e2d6b394604ee324ca5a0484a4481e31f3957222277caf06305ba33968366518",
+              "ReceiptId": null,
+              "Turn": 43
+            },
+            "OriginalWoundPrefix": [
+              {
+                "TransitionId": "wound_transition_test_001",
+                "WoundId": "wound_test_torn_side",
+                "Ordinal": 1,
+                "WoundTransitionOrdinal": 1,
+                "Kind": "create",
+                "Turn": 42,
+                "EventRef": "turn_42:wound_opened",
+                "OperationKey": "operation_test_wound_001",
+                "BeforeFingerprint": "sha256:ac7c62f16d70a5a9f2597812df943f9c5f0fc797ff4fa8951220900e3b44f4dc",
+                "AfterFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                "SourceFingerprint": "sha256:7a33a4c5c14c6843da5480a59c2f5ca5ec0b470b82296ccb4f9738cc520fd31b",
+                "AttemptId": null,
+                "CourseId": null,
+                "CourseMilestoneOrdinal": null,
+                "CycleKey": null,
+                "PaymentFingerprint": null,
+                "OutputFingerprint": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                "ReadableSummary": "\u0420\u0430\u043d\u0430 \u0437\u0430\u0444\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u0430 \u043f\u043e\u0441\u043b\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d\u043d\u043e\u0433\u043e \u0441\u043e\u0431\u044b\u0442\u0438\u044f.",
+                "Terminal": false,
+                "TransitionResult": null,
+                "TreatmentResult": null
+              }
+            ],
+            "ExactSuffix": [
+              {
+                "TransitionId": "wound_transition_88e0d7f19a04de870c10829d9f85379a9efb908140a9483c1dee1fb39a6aff04",
+                "WoundId": "wound_46686d350b859d799236d8ff086abf942bfd36e0602ab50cf073d8541dbd39ce",
+                "Ordinal": 2,
+                "WoundTransitionOrdinal": 1,
+                "Kind": "create",
+                "Turn": 43,
+                "EventRef": "turn_42:qte_terminal:1:resource:1",
+                "OperationKey": "wound_operation_d2797ecdcac29f5e3397d5aec9f0e55babbaf469866b3ffb27949f0999e544d2",
+                "BeforeFingerprint": "sha256:46cbb58a275a668464f83a903fb24c0fd1a0a72419fd3374a087dd43187c6ccf",
+                "AfterFingerprint": "sha256:a55d318ba578a2038f415f64fe560a6bf5898093ba727793e0aa9a08d0d5cca8",
+                "SourceFingerprint": "sha256:2025690478f26a90bedf75b639b030dae45cf2ef478324bf63e8019c661b8a07",
+                "AttemptId": null,
+                "CourseId": null,
+                "CourseMilestoneOrdinal": null,
+                "CycleKey": null,
+                "PaymentFingerprint": null,
+                "OutputFingerprint": "sha256:5b79def72491bd3806d72f6e03a43ea9e1ff4590405588e28641aaebf67a99d3",
+                "ReadableSummary": "\u041f\u043e\u043b\u0443\u0447\u0435\u043d\u0430 \u0440\u0430\u043d\u0430 \u00ab\u041f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u043d\u044b\u0439 \u043f\u043e\u0440\u0435\u0437\u00bb (II).",
+                "Terminal": false,
+                "TransitionResult": null,
+                "TreatmentResult": null
+              },
+              {
+                "TransitionId": "wound_transition_68e1a70b52ee5defba522d6ef3b807c6878073cd69071adf54ffe4cfdcad89d3",
+                "WoundId": "wound_test_torn_side",
+                "Ordinal": 3,
+                "WoundTransitionOrdinal": 2,
+                "Kind": "treat",
+                "Turn": 43,
+                "EventRef": "turn_43:accepted_effect",
+                "OperationKey": "operation_fr063_joint_completion",
+                "BeforeFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                "AfterFingerprint": "sha256:84ee86765f5e8c900e8dba64ad3b88cb65aa37efa750c96cd4b9c71c5fc42cce",
+                "SourceFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b",
+                "AttemptId": "wound_treatment_attempt_dc947d3089811294d2ffabc859d8539833f57cbca32d9be35293a62b56a6e534",
+                "CourseId": null,
+                "CourseMilestoneOrdinal": null,
+                "CycleKey": null,
+                "PaymentFingerprint": null,
+                "OutputFingerprint": "sha256:876674edc06fddb0f799698c2c70aaffaf4358671ebafe7d2d45a8eee85d0806",
+                "ReadableSummary": "The accepted treatment result is retained for replay.",
+                "Terminal": false,
+                "TransitionResult": {
+                  "kind": "treat",
+                  "mode": "guaranteed",
+                  "routeId": "guaranteed_t070b3_resource",
+                  "attemptDisposition": "accepted_terminal",
+                  "resultCategory": "success",
+                  "selectedOutcomeIndex": 0,
+                  "interruption": false,
+                  "declaredResult": [
+                    {
+                      "kind": "stabilize"
+                    }
+                  ],
+                  "consumptionTrigger": "success",
+                  "requestAuthority": {
+                    "mode": "guaranteed",
+                    "coordinates": {
+                      "schemaVersion": 1,
+                      "sessionId": "session_qte_story_append",
+                      "sessionGeneration": "4e472d32c46f4f949e5a1e56d50da9cf",
+                      "requestId": "81e414e686d74421a7557fec2b46f9e6",
+                      "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                      "operationKey": "operation_fr063_joint_completion",
+                      "attemptId": "wound_treatment_attempt_dc947d3089811294d2ffabc859d8539833f57cbca32d9be35293a62b56a6e534",
+                      "woundId": "wound_test_torn_side",
+                      "routeId": "guaranteed_t070b3_resource",
+                      "expectedBeforeFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                      "eventRef": "turn_43:accepted_effect",
+                      "eventKind": "accepted_turn",
+                      "eventAuthorityId": "turn_43",
+                      "eventSemanticFingerprint": "sha256:f72971ae50dfb10d690cfa393d2b74e3555cb725f459777522a406436fe60a86",
+                      "turn": 43,
+                      "realm": "mortal_world",
+                      "providerKind": "npc",
+                      "providerId": "field_medic_01",
+                      "targetKind": "player",
+                      "targetId": "player_current",
+                      "locationId": "loc_field_clinic_001",
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b"
+                    },
+                    "milestoneOrdinal": null,
+                    "routeSourceWound": {
+                      "schemaVersion": 1,
+                      "woundId": "wound_test_torn_side",
+                      "lifecycle": "active",
+                      "owner": {
+                        "realm": "mortal_world",
+                        "ownerKind": "player",
+                        "ownerId": "player_current",
+                        "carrierPath": "game_state/player/wounds.json"
+                      },
+                      "origin": {
+                        "eventRef": "turn_42:wound_opened",
+                        "sourceKind": "combat_action",
+                        "sourceId": "combat_action_test_001",
+                        "sourceState": "active",
+                        "createdAtTurn": 42,
+                        "createdAtCycleId": null,
+                        "opportunityId": "opportunity_test_001",
+                        "guaranteedTriggerId": null,
+                        "readableCause": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0430\u043d\u0430 \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0430 \u0432 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d\u043d\u043e\u043c \u0441\u0442\u043e\u043b\u043a\u043d\u043e\u0432\u0435\u043d\u0438\u0438."
+                      },
+                      "classification": {
+                        "domain": "physical",
+                        "woundType": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0435\u0436\u0443\u0449\u0430\u044f \u0442\u0440\u0430\u0432\u043c\u0430",
+                        "locationProfile": {
+                          "kind": "anatomical",
+                          "readableLocus": "\u043b\u0435\u0432\u044b\u0439 \u0431\u043e\u043a",
+                          "authorityKind": "body_part",
+                          "authorityRef": "left_side",
+                          "affectedSide": "left"
+                        }
+                      },
+                      "display": {
+                        "name": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0430\u043d\u0430 \u043b\u0435\u0432\u043e\u0433\u043e \u0431\u043e\u043a\u0430",
+                        "description": "\u041a\u0440\u0430\u044f \u0440\u0430\u043d\u044b \u0440\u0430\u0441\u0445\u043e\u0434\u044f\u0442\u0441\u044f \u043f\u0440\u0438 \u0440\u0435\u0437\u043a\u043e\u043c \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0438.",
+                        "visibleSymptoms": [
+                          "\u043a\u0440\u043e\u0432\u043e\u0442\u0435\u0447\u0435\u043d\u0438\u0435",
+                          "\u0431\u043e\u043b\u044c \u043f\u0440\u0438 \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0438"
+                        ],
+                        "prognosis": "\u041f\u0440\u0438 \u0441\u0432\u043e\u0435\u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e\u0439 \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0435 \u0440\u0430\u043d\u0430 \u0437\u0430\u0436\u0438\u0432\u0451\u0442 \u0431\u0435\u0437 \u043e\u0441\u043b\u043e\u0436\u043d\u0435\u043d\u0438\u0439.",
+                        "visibility": "known_to_player",
+                        "acquisitionNarration": "\u041e\u0441\u0442\u0440\u044b\u0439 \u043a\u0440\u0430\u0439 \u0440\u0430\u0441\u043f\u043e\u0440\u043e\u043b \u0431\u043e\u043a \u0432 \u043a\u043e\u0440\u043e\u0442\u043a\u043e\u0439 \u0441\u0445\u0432\u0430\u0442\u043a\u0435."
+                      },
+                      "severity": {
+                        "value": "II",
+                        "rank": 2,
+                        "maximumAtCreation": "II",
+                        "lastChangeEventRef": "turn_42:wound_opened"
+                      },
+                      "care": {
+                        "state": "untreated",
+                        "stabilizedAtTurn": null,
+                        "activeCourseId": null,
+                        "lastAttemptId": null
+                      },
+                      "complications": [],
+                      "consequences": {
+                        "slotBudget": 2,
+                        "slotsUsed": 0,
+                        "ownedEffectSources": {
+                          "definitions": [],
+                          "rootBindings": []
+                        },
+                        "entries": []
+                      },
+                      "treatment": {
+                        "diagnosisPaths": [],
+                        "routes": [
+                          {
+                            "routeId": "guaranteed_t070b3_resource",
+                            "displayName": "Guaranteed resource stabilization",
+                            "visibility": "known_to_player",
+                            "mode": "guaranteed",
+                            "requirements": [
+                              {
+                                "kind": "source_capability",
+                                "capabilityRef": "exact_materialized_healing_source",
+                                "actorRole": "provider"
+                              },
+                              {
+                                "kind": "resource_quantity",
+                                "resourceRef": "energy",
+                                "quantity": 2,
+                                "ownerRole": "target"
+                              }
+                            ],
+                            "resourcePolicy": {
+                              "reserveBeforeResolution": true,
+                              "consumeOn": [
+                                "success"
+                              ],
+                              "refundOn": [
+                                "cancelled",
+                                "validation_failed",
+                                "rolled_back"
+                              ],
+                              "mutations": [
+                                {
+                                  "kind": "consume_requirement",
+                                  "scope": "common",
+                                  "milestoneOrdinal": null,
+                                  "requirementIndex": 1
+                                }
+                              ]
+                            },
+                            "resolution": {
+                              "capabilityRef": "exact_materialized_healing_source",
+                              "actorRole": "provider"
+                            },
+                            "outcomes": [
+                              {
+                                "category": "success",
+                                "result": [
+                                  {
+                                    "kind": "stabilize"
+                                  }
+                                ]
+                              }
+                            ],
+                            "interruption": null
+                          }
+                        ],
+                        "knownRouteIds": [
+                          "guaranteed_t070b3_resource"
+                        ],
+                        "completedRouteIds": []
+                      },
+                      "recovery": {
+                        "mode": "no_natural_recovery",
+                        "clockKind": "mortal_world_time",
+                        "recoveryAnchor": null,
+                        "deteriorationAnchor": null,
+                        "cadence": 86400,
+                        "currentStepProgress": 0,
+                        "currentStepThreshold": 3,
+                        "lastTickKey": null,
+                        "blockers": [
+                          "not_stabilized"
+                        ],
+                        "carryOverflow": true,
+                        "deteriorationPolicy": null
+                      },
+                      "relations": {
+                        "priorWoundId": null,
+                        "legacyRefs": [],
+                        "independentEffectRefs": []
+                      },
+                      "lastTransition": {
+                        "transitionId": "wound_transition_test_001",
+                        "ordinal": 1,
+                        "turn": 42,
+                        "kind": "create"
+                      }
+                    },
+                    "routeSourceWoundFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                    "modeAuthority": {
+                      "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                      "sourcePath": "game_state/npcs/npc_core.json",
+                      "ownerKind": "npc",
+                      "ownerId": "field_medic_01",
+                      "skillKind": "active",
+                      "skillId": "skill_guaranteed_care_t070b3",
+                      "capabilityRef": "exact_materialized_healing_source",
+                      "woundDomain": "physical",
+                      "minimumSeverityRank": 1,
+                      "maximumSeverityRank": 4,
+                      "operationLimits": {
+                        "mayStabilize": true,
+                        "maximumRecoveryPoints": 2,
+                        "maximumSeverityReductionSteps": 1,
+                        "removableComplicationKinds": [
+                          "infection"
+                        ],
+                        "mayHealAtSeverityI": true,
+                        "maximumCosmeticHealLegacies": 1,
+                        "maximumMechanicalEffectHealLegacies": 4
+                      },
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b",
+                      "sourceSemanticFingerprint": "sha256:81c6b46954be5dd5853105976bfb9d4458caf55359d959b3530c9f996f510fc5",
+                      "proofFingerprint": "sha256:0d29025c71920d871877de43c5e60808ec39265235cac9a7ce34808bf1d94237"
+                    },
+                    "requirementAuthority": {
+                      "mode": "guaranteed",
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                      "courseId": null,
+                      "courseMilestoneOrdinal": null,
+                      "courseCoordinateFingerprint": null,
+                      "courseRequirementStatus": null,
+                      "interruptionReason": null,
+                      "scopes": [
+                        {
+                          "scope": "common",
+                          "courseMilestoneOrdinal": null,
+                          "status": "Satisfied",
+                          "bindings": [
+                            {
+                              "requirementIndex": 0,
+                              "resolvedRequirement": {
+                                "requirementIndex": 0,
+                                "kind": "source_capability",
+                                "authorityRef": "exact_materialized_healing_source",
+                                "skillId": null,
+                                "realm": "mortal_world",
+                                "ownerKind": "npc",
+                                "ownerId": "field_medic_01",
+                                "providerKind": "npc",
+                                "providerId": "field_medic_01",
+                                "targetKind": "player",
+                                "targetId": "player_current",
+                                "locationId": "loc_field_clinic_001",
+                                "requestedQuantity": null,
+                                "minimumTier": null,
+                                "currentTier": null,
+                                "currentState": null,
+                                "authorityFingerprint": "sha256:d159c43a4331200d7996d67abbc7b5a0e9a63ef438b90bdf383ffa0a42da4884"
+                              },
+                              "successWitness": {
+                                "scope": "common",
+                                "requirementIndex": 0,
+                                "kind": "source_capability",
+                                "authorityRef": "exact_materialized_healing_source",
+                                "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                                "realm": "mortal_world",
+                                "ownerKind": "npc",
+                                "ownerId": "field_medic_01",
+                                "providerKind": "npc",
+                                "providerId": "field_medic_01",
+                                "targetKind": "player",
+                                "targetId": "player_current",
+                                "locationId": "loc_field_clinic_001",
+                                "evidence": {
+                                  "actorRole": "provider",
+                                  "actorCurrentLocationId": "loc_field_clinic_001",
+                                  "requiredLocationId": "loc_field_clinic_001",
+                                  "actorLifecycle": "active",
+                                  "actorActive": true,
+                                  "actorReachable": true,
+                                  "actorPresent": true,
+                                  "capabilityLifecycle": "active",
+                                  "capabilityActive": true,
+                                  "kind": "source_capability"
+                                },
+                                "witnessFingerprint": "sha256:dfccc24129f9fb138a857f6b85f95bd91b0d902aa23f5373d5420ec38b5c9095"
+                              },
+                              "bindingFingerprint": "sha256:9fb32b4d49d968da76ffdf5e70b82a053227f2cd19a6b9fdfa6bb7661b0e61f9"
+                            },
+                            {
+                              "requirementIndex": 1,
+                              "resolvedRequirement": {
+                                "requirementIndex": 1,
+                                "kind": "resource_quantity",
+                                "authorityRef": "energy",
+                                "skillId": null,
+                                "realm": "mortal_world",
+                                "ownerKind": "player",
+                                "ownerId": "player_current",
+                                "providerKind": null,
+                                "providerId": null,
+                                "targetKind": null,
+                                "targetId": null,
+                                "locationId": null,
+                                "requestedQuantity": 2,
+                                "minimumTier": null,
+                                "currentTier": null,
+                                "currentState": null,
+                                "authorityFingerprint": "sha256:32a24af663932fd3ce4e40b84987dea0a15c8a61d22b347b3ec3b782c7629293"
+                              },
+                              "successWitness": {
+                                "scope": "common",
+                                "requirementIndex": 1,
+                                "kind": "resource_quantity",
+                                "authorityRef": "energy",
+                                "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                                "realm": "mortal_world",
+                                "ownerKind": "player",
+                                "ownerId": "player_current",
+                                "providerKind": null,
+                                "providerId": null,
+                                "targetKind": null,
+                                "targetId": null,
+                                "locationId": null,
+                                "evidence": {
+                                  "ownerRole": "target",
+                                  "requestedQuantity": 2,
+                                  "currentValue": 2,
+                                  "availableValue": 2,
+                                  "reservationState": "available",
+                                  "lifecycle": "active",
+                                  "active": true,
+                                  "cumulativeRequestedQuantity": 2,
+                                  "kind": "resource_quantity"
+                                },
+                                "witnessFingerprint": "sha256:a09224bd5058a143764601246ac6a8f408bbe3e935e42db80c8477c1ce40278b"
+                              },
+                              "bindingFingerprint": "sha256:c4da3802fcfffb557b0d6b976e5d6429090fe140483f5e7dfe42c895b2dbd86d"
+                            }
+                          ],
+                          "failureWitnesses": [],
+                          "authorityFingerprint": "sha256:baa423483a8196b9cad01da85d3e0372ace4e6aeb36be2a2feb77b3e69bedbef"
+                        }
+                      ],
+                      "authorityFingerprint": "sha256:b9c0d1e1334816f51833d64369b6f1ad5a5983e49799dc16bebb5484ac7f3078"
+                    },
+                    "resourceAuthority": {
+                      "reservationDisposition": "held",
+                      "reservationId": "wound_treatment_resource_reservation_f205453c3bc6d7e60bfafadafcb42028afbaa7bf7f940acf4dd48da6df396252",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                      "courseId": null,
+                      "courseMilestoneOrdinal": null,
+                      "courseCoordinateFingerprint": null,
+                      "requirementAuthorityFingerprint": "sha256:b9c0d1e1334816f51833d64369b6f1ad5a5983e49799dc16bebb5484ac7f3078",
+                      "policy": {
+                        "reserveBeforeResolution": true,
+                        "consumeOn": [
+                          "success"
+                        ],
+                        "refundOn": [
+                          "cancelled",
+                          "validation_failed",
+                          "rolled_back"
+                        ],
+                        "mutations": [
+                          {
+                            "kind": "consume_requirement",
+                            "scope": "common",
+                            "milestoneOrdinal": null,
+                            "requirementIndex": 1
+                          }
+                        ]
+                      },
+                      "claims": [
+                        {
+                          "scope": "common",
+                          "requirementIndex": 1,
+                          "kind": "resource_quantity",
+                          "authorityRef": "energy",
+                          "realm": "mortal_world",
+                          "ownerKind": "player",
+                          "ownerId": "player_current",
+                          "quantity": 2,
+                          "successWitnessFingerprint": "sha256:a09224bd5058a143764601246ac6a8f408bbe3e935e42db80c8477c1ce40278b",
+                          "claimFingerprint": "sha256:a0afb96388bc35d02ac584acbfe9a380ad5d518cbb4ca9e5393b81b56a838e82"
+                        }
+                      ],
+                      "authorityFingerprint": "sha256:a89eb52ccc4c23b5ec7c5295688fdff315f6e04b887eca8a93c83f614ea9c151"
+                    },
+                    "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b"
+                  },
+                  "modeEvidence": {
+                    "capabilityRef": "exact_materialized_healing_source",
+                    "actorRole": "provider",
+                    "skillId": "skill_guaranteed_care_t070b3",
+                    "sourceSemanticFingerprint": "sha256:81c6b46954be5dd5853105976bfb9d4458caf55359d959b3530c9f996f510fc5",
+                    "capabilityProofFingerprint": "sha256:0d29025c71920d871877de43c5e60808ec39265235cac9a7ce34808bf1d94237"
+                  },
+                  "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                  "resolutionAuthorityFingerprint": "sha256:fb982bba32238d9e0cc5bcc35a73e271dfbf23406199becf839fd556798ee9b2",
+                  "resultFingerprint": "sha256:2688d23f15805de26237ee659a41e55bf4ce82373a5e84fbb56471156264f896",
+                  "routeCompletion": "append_once",
+                  "receiptFingerprint": "sha256:2a295056cbc16e7a0c48cde71dde18cb4c1282afdb7ff65690b78ed876871045"
+                },
+                "TreatmentResult": {
+                  "kind": "treat",
+                  "mode": "guaranteed",
+                  "routeId": "guaranteed_t070b3_resource",
+                  "attemptDisposition": "accepted_terminal",
+                  "resultCategory": "success",
+                  "selectedOutcomeIndex": 0,
+                  "interruption": false,
+                  "declaredResult": [
+                    {
+                      "kind": "stabilize"
+                    }
+                  ],
+                  "consumptionTrigger": "success",
+                  "requestAuthority": {
+                    "mode": "guaranteed",
+                    "coordinates": {
+                      "schemaVersion": 1,
+                      "sessionId": "session_qte_story_append",
+                      "sessionGeneration": "4e472d32c46f4f949e5a1e56d50da9cf",
+                      "requestId": "81e414e686d74421a7557fec2b46f9e6",
+                      "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                      "operationKey": "operation_fr063_joint_completion",
+                      "attemptId": "wound_treatment_attempt_dc947d3089811294d2ffabc859d8539833f57cbca32d9be35293a62b56a6e534",
+                      "woundId": "wound_test_torn_side",
+                      "routeId": "guaranteed_t070b3_resource",
+                      "expectedBeforeFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                      "eventRef": "turn_43:accepted_effect",
+                      "eventKind": "accepted_turn",
+                      "eventAuthorityId": "turn_43",
+                      "eventSemanticFingerprint": "sha256:f72971ae50dfb10d690cfa393d2b74e3555cb725f459777522a406436fe60a86",
+                      "turn": 43,
+                      "realm": "mortal_world",
+                      "providerKind": "npc",
+                      "providerId": "field_medic_01",
+                      "targetKind": "player",
+                      "targetId": "player_current",
+                      "locationId": "loc_field_clinic_001",
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b"
+                    },
+                    "milestoneOrdinal": null,
+                    "routeSourceWound": {
+                      "schemaVersion": 1,
+                      "woundId": "wound_test_torn_side",
+                      "lifecycle": "active",
+                      "owner": {
+                        "realm": "mortal_world",
+                        "ownerKind": "player",
+                        "ownerId": "player_current",
+                        "carrierPath": "game_state/player/wounds.json"
+                      },
+                      "origin": {
+                        "eventRef": "turn_42:wound_opened",
+                        "sourceKind": "combat_action",
+                        "sourceId": "combat_action_test_001",
+                        "sourceState": "active",
+                        "createdAtTurn": 42,
+                        "createdAtCycleId": null,
+                        "opportunityId": "opportunity_test_001",
+                        "guaranteedTriggerId": null,
+                        "readableCause": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0430\u043d\u0430 \u043f\u043e\u043b\u0443\u0447\u0435\u043d\u0430 \u0432 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d\u043d\u043e\u043c \u0441\u0442\u043e\u043b\u043a\u043d\u043e\u0432\u0435\u043d\u0438\u0438."
+                      },
+                      "classification": {
+                        "domain": "physical",
+                        "woundType": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0435\u0436\u0443\u0449\u0430\u044f \u0442\u0440\u0430\u0432\u043c\u0430",
+                        "locationProfile": {
+                          "kind": "anatomical",
+                          "readableLocus": "\u043b\u0435\u0432\u044b\u0439 \u0431\u043e\u043a",
+                          "authorityKind": "body_part",
+                          "authorityRef": "left_side",
+                          "affectedSide": "left"
+                        }
+                      },
+                      "display": {
+                        "name": "\u0420\u0432\u0430\u043d\u0430\u044f \u0440\u0430\u043d\u0430 \u043b\u0435\u0432\u043e\u0433\u043e \u0431\u043e\u043a\u0430",
+                        "description": "\u041a\u0440\u0430\u044f \u0440\u0430\u043d\u044b \u0440\u0430\u0441\u0445\u043e\u0434\u044f\u0442\u0441\u044f \u043f\u0440\u0438 \u0440\u0435\u0437\u043a\u043e\u043c \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0438.",
+                        "visibleSymptoms": [
+                          "\u043a\u0440\u043e\u0432\u043e\u0442\u0435\u0447\u0435\u043d\u0438\u0435",
+                          "\u0431\u043e\u043b\u044c \u043f\u0440\u0438 \u0434\u0432\u0438\u0436\u0435\u043d\u0438\u0438"
+                        ],
+                        "prognosis": "\u041f\u0440\u0438 \u0441\u0432\u043e\u0435\u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e\u0439 \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0435 \u0440\u0430\u043d\u0430 \u0437\u0430\u0436\u0438\u0432\u0451\u0442 \u0431\u0435\u0437 \u043e\u0441\u043b\u043e\u0436\u043d\u0435\u043d\u0438\u0439.",
+                        "visibility": "known_to_player",
+                        "acquisitionNarration": "\u041e\u0441\u0442\u0440\u044b\u0439 \u043a\u0440\u0430\u0439 \u0440\u0430\u0441\u043f\u043e\u0440\u043e\u043b \u0431\u043e\u043a \u0432 \u043a\u043e\u0440\u043e\u0442\u043a\u043e\u0439 \u0441\u0445\u0432\u0430\u0442\u043a\u0435."
+                      },
+                      "severity": {
+                        "value": "II",
+                        "rank": 2,
+                        "maximumAtCreation": "II",
+                        "lastChangeEventRef": "turn_42:wound_opened"
+                      },
+                      "care": {
+                        "state": "untreated",
+                        "stabilizedAtTurn": null,
+                        "activeCourseId": null,
+                        "lastAttemptId": null
+                      },
+                      "complications": [],
+                      "consequences": {
+                        "slotBudget": 2,
+                        "slotsUsed": 0,
+                        "ownedEffectSources": {
+                          "definitions": [],
+                          "rootBindings": []
+                        },
+                        "entries": []
+                      },
+                      "treatment": {
+                        "diagnosisPaths": [],
+                        "routes": [
+                          {
+                            "routeId": "guaranteed_t070b3_resource",
+                            "displayName": "Guaranteed resource stabilization",
+                            "visibility": "known_to_player",
+                            "mode": "guaranteed",
+                            "requirements": [
+                              {
+                                "kind": "source_capability",
+                                "capabilityRef": "exact_materialized_healing_source",
+                                "actorRole": "provider"
+                              },
+                              {
+                                "kind": "resource_quantity",
+                                "resourceRef": "energy",
+                                "quantity": 2,
+                                "ownerRole": "target"
+                              }
+                            ],
+                            "resourcePolicy": {
+                              "reserveBeforeResolution": true,
+                              "consumeOn": [
+                                "success"
+                              ],
+                              "refundOn": [
+                                "cancelled",
+                                "validation_failed",
+                                "rolled_back"
+                              ],
+                              "mutations": [
+                                {
+                                  "kind": "consume_requirement",
+                                  "scope": "common",
+                                  "milestoneOrdinal": null,
+                                  "requirementIndex": 1
+                                }
+                              ]
+                            },
+                            "resolution": {
+                              "capabilityRef": "exact_materialized_healing_source",
+                              "actorRole": "provider"
+                            },
+                            "outcomes": [
+                              {
+                                "category": "success",
+                                "result": [
+                                  {
+                                    "kind": "stabilize"
+                                  }
+                                ]
+                              }
+                            ],
+                            "interruption": null
+                          }
+                        ],
+                        "knownRouteIds": [
+                          "guaranteed_t070b3_resource"
+                        ],
+                        "completedRouteIds": []
+                      },
+                      "recovery": {
+                        "mode": "no_natural_recovery",
+                        "clockKind": "mortal_world_time",
+                        "recoveryAnchor": null,
+                        "deteriorationAnchor": null,
+                        "cadence": 86400,
+                        "currentStepProgress": 0,
+                        "currentStepThreshold": 3,
+                        "lastTickKey": null,
+                        "blockers": [
+                          "not_stabilized"
+                        ],
+                        "carryOverflow": true,
+                        "deteriorationPolicy": null
+                      },
+                      "relations": {
+                        "priorWoundId": null,
+                        "legacyRefs": [],
+                        "independentEffectRefs": []
+                      },
+                      "lastTransition": {
+                        "transitionId": "wound_transition_test_001",
+                        "ordinal": 1,
+                        "turn": 42,
+                        "kind": "create"
+                      }
+                    },
+                    "routeSourceWoundFingerprint": "sha256:4fb2b7cc1b2cce02e9c3410216a35f70ea540dfc156ecf51ebe6f57e2185aa43",
+                    "modeAuthority": {
+                      "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                      "sourcePath": "game_state/npcs/npc_core.json",
+                      "ownerKind": "npc",
+                      "ownerId": "field_medic_01",
+                      "skillKind": "active",
+                      "skillId": "skill_guaranteed_care_t070b3",
+                      "capabilityRef": "exact_materialized_healing_source",
+                      "woundDomain": "physical",
+                      "minimumSeverityRank": 1,
+                      "maximumSeverityRank": 4,
+                      "operationLimits": {
+                        "mayStabilize": true,
+                        "maximumRecoveryPoints": 2,
+                        "maximumSeverityReductionSteps": 1,
+                        "removableComplicationKinds": [
+                          "infection"
+                        ],
+                        "mayHealAtSeverityI": true,
+                        "maximumCosmeticHealLegacies": 1,
+                        "maximumMechanicalEffectHealLegacies": 4
+                      },
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b",
+                      "sourceSemanticFingerprint": "sha256:81c6b46954be5dd5853105976bfb9d4458caf55359d959b3530c9f996f510fc5",
+                      "proofFingerprint": "sha256:0d29025c71920d871877de43c5e60808ec39265235cac9a7ce34808bf1d94237"
+                    },
+                    "requirementAuthority": {
+                      "mode": "guaranteed",
+                      "contextFingerprint": "sha256:a01d1f8a9683bb06805aef8cdc57f0060e78db9d0155154afe6338cceaec84d9",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                      "courseId": null,
+                      "courseMilestoneOrdinal": null,
+                      "courseCoordinateFingerprint": null,
+                      "courseRequirementStatus": null,
+                      "interruptionReason": null,
+                      "scopes": [
+                        {
+                          "scope": "common",
+                          "courseMilestoneOrdinal": null,
+                          "status": "Satisfied",
+                          "bindings": [
+                            {
+                              "requirementIndex": 0,
+                              "resolvedRequirement": {
+                                "requirementIndex": 0,
+                                "kind": "source_capability",
+                                "authorityRef": "exact_materialized_healing_source",
+                                "skillId": null,
+                                "realm": "mortal_world",
+                                "ownerKind": "npc",
+                                "ownerId": "field_medic_01",
+                                "providerKind": "npc",
+                                "providerId": "field_medic_01",
+                                "targetKind": "player",
+                                "targetId": "player_current",
+                                "locationId": "loc_field_clinic_001",
+                                "requestedQuantity": null,
+                                "minimumTier": null,
+                                "currentTier": null,
+                                "currentState": null,
+                                "authorityFingerprint": "sha256:d159c43a4331200d7996d67abbc7b5a0e9a63ef438b90bdf383ffa0a42da4884"
+                              },
+                              "successWitness": {
+                                "scope": "common",
+                                "requirementIndex": 0,
+                                "kind": "source_capability",
+                                "authorityRef": "exact_materialized_healing_source",
+                                "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                                "realm": "mortal_world",
+                                "ownerKind": "npc",
+                                "ownerId": "field_medic_01",
+                                "providerKind": "npc",
+                                "providerId": "field_medic_01",
+                                "targetKind": "player",
+                                "targetId": "player_current",
+                                "locationId": "loc_field_clinic_001",
+                                "evidence": {
+                                  "actorRole": "provider",
+                                  "actorCurrentLocationId": "loc_field_clinic_001",
+                                  "requiredLocationId": "loc_field_clinic_001",
+                                  "actorLifecycle": "active",
+                                  "actorActive": true,
+                                  "actorReachable": true,
+                                  "actorPresent": true,
+                                  "capabilityLifecycle": "active",
+                                  "capabilityActive": true,
+                                  "kind": "source_capability"
+                                },
+                                "witnessFingerprint": "sha256:dfccc24129f9fb138a857f6b85f95bd91b0d902aa23f5373d5420ec38b5c9095"
+                              },
+                              "bindingFingerprint": "sha256:9fb32b4d49d968da76ffdf5e70b82a053227f2cd19a6b9fdfa6bb7661b0e61f9"
+                            },
+                            {
+                              "requirementIndex": 1,
+                              "resolvedRequirement": {
+                                "requirementIndex": 1,
+                                "kind": "resource_quantity",
+                                "authorityRef": "energy",
+                                "skillId": null,
+                                "realm": "mortal_world",
+                                "ownerKind": "player",
+                                "ownerId": "player_current",
+                                "providerKind": null,
+                                "providerId": null,
+                                "targetKind": null,
+                                "targetId": null,
+                                "locationId": null,
+                                "requestedQuantity": 2,
+                                "minimumTier": null,
+                                "currentTier": null,
+                                "currentState": null,
+                                "authorityFingerprint": "sha256:32a24af663932fd3ce4e40b84987dea0a15c8a61d22b347b3ec3b782c7629293"
+                              },
+                              "successWitness": {
+                                "scope": "common",
+                                "requirementIndex": 1,
+                                "kind": "resource_quantity",
+                                "authorityRef": "energy",
+                                "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+                                "realm": "mortal_world",
+                                "ownerKind": "player",
+                                "ownerId": "player_current",
+                                "providerKind": null,
+                                "providerId": null,
+                                "targetKind": null,
+                                "targetId": null,
+                                "locationId": null,
+                                "evidence": {
+                                  "ownerRole": "target",
+                                  "requestedQuantity": 2,
+                                  "currentValue": 2,
+                                  "availableValue": 2,
+                                  "reservationState": "available",
+                                  "lifecycle": "active",
+                                  "active": true,
+                                  "cumulativeRequestedQuantity": 2,
+                                  "kind": "resource_quantity"
+                                },
+                                "witnessFingerprint": "sha256:a09224bd5058a143764601246ac6a8f408bbe3e935e42db80c8477c1ce40278b"
+                              },
+                              "bindingFingerprint": "sha256:c4da3802fcfffb557b0d6b976e5d6429090fe140483f5e7dfe42c895b2dbd86d"
+                            }
+                          ],
+                          "failureWitnesses": [],
+                          "authorityFingerprint": "sha256:baa423483a8196b9cad01da85d3e0372ace4e6aeb36be2a2feb77b3e69bedbef"
+                        }
+                      ],
+                      "authorityFingerprint": "sha256:b9c0d1e1334816f51833d64369b6f1ad5a5983e49799dc16bebb5484ac7f3078"
+                    },
+                    "resourceAuthority": {
+                      "reservationDisposition": "held",
+                      "reservationId": "wound_treatment_resource_reservation_f205453c3bc6d7e60bfafadafcb42028afbaa7bf7f940acf4dd48da6df396252",
+                      "coordinatesFingerprint": "sha256:7950bc016c8413ed412d747d546042ee965225cf137a6fc239c767e457ab804b",
+                      "acceptedStateFingerprint": "sha256:8bcf6c3607ffcc7896013f7bb0d3114bde7742dbe9ad328aa27a5dd08a6aba14",
+                      "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                      "courseId": null,
+                      "courseMilestoneOrdinal": null,
+                      "courseCoordinateFingerprint": null,
+                      "requirementAuthorityFingerprint": "sha256:b9c0d1e1334816f51833d64369b6f1ad5a5983e49799dc16bebb5484ac7f3078",
+                      "policy": {
+                        "reserveBeforeResolution": true,
+                        "consumeOn": [
+                          "success"
+                        ],
+                        "refundOn": [
+                          "cancelled",
+                          "validation_failed",
+                          "rolled_back"
+                        ],
+                        "mutations": [
+                          {
+                            "kind": "consume_requirement",
+                            "scope": "common",
+                            "milestoneOrdinal": null,
+                            "requirementIndex": 1
+                          }
+                        ]
+                      },
+                      "claims": [
+                        {
+                          "scope": "common",
+                          "requirementIndex": 1,
+                          "kind": "resource_quantity",
+                          "authorityRef": "energy",
+                          "realm": "mortal_world",
+                          "ownerKind": "player",
+                          "ownerId": "player_current",
+                          "quantity": 2,
+                          "successWitnessFingerprint": "sha256:a09224bd5058a143764601246ac6a8f408bbe3e935e42db80c8477c1ce40278b",
+                          "claimFingerprint": "sha256:a0afb96388bc35d02ac584acbfe9a380ad5d518cbb4ca9e5393b81b56a838e82"
+                        }
+                      ],
+                      "authorityFingerprint": "sha256:a89eb52ccc4c23b5ec7c5295688fdff315f6e04b887eca8a93c83f614ea9c151"
+                    },
+                    "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b"
+                  },
+                  "modeEvidence": {
+                    "capabilityRef": "exact_materialized_healing_source",
+                    "actorRole": "provider",
+                    "skillId": "skill_guaranteed_care_t070b3",
+                    "sourceSemanticFingerprint": "sha256:81c6b46954be5dd5853105976bfb9d4458caf55359d959b3530c9f996f510fc5",
+                    "capabilityProofFingerprint": "sha256:0d29025c71920d871877de43c5e60808ec39265235cac9a7ce34808bf1d94237"
+                  },
+                  "routeFingerprint": "sha256:dfedf5f9b145fae9d9b9b8942769ef7f0f757d192522802e37532de23b3267e1",
+                  "resolutionAuthorityFingerprint": "sha256:fb982bba32238d9e0cc5bcc35a73e271dfbf23406199becf839fd556798ee9b2",
+                  "resultFingerprint": "sha256:2688d23f15805de26237ee659a41e55bf4ce82373a5e84fbb56471156264f896",
+                  "routeCompletion": "append_once",
+                  "receiptFingerprint": "sha256:2a295056cbc16e7a0c48cde71dde18cb4c1282afdb7ff65690b78ed876871045"
+                }
+              }
+            ],
+            "RequestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b",
+            "Meaning": "Independent 2\u21920 charge, 5\u21922 damage, exactly two target-turn resource rows and create/treat suffix; full current proof was frozen before cleanup"
+          }
+        }
+      ],
+      "events": [
+        {
+          "line": 1,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "factory-enter",
+          "Utc": "2026-10-18T16:54:26.5880993+00:00",
+          "ElapsedMilliseconds": 4,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 2,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "factory-return",
+          "Utc": "2026-10-18T16:54:26.9260067+00:00",
+          "ElapsedMilliseconds": 342,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 3,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "file-system-enter",
+          "Utc": "2026-10-18T16:54:26.9264363+00:00",
+          "ElapsedMilliseconds": 342,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 4,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "file-system-return",
+          "Utc": "2026-10-18T16:54:26.9266037+00:00",
+          "ElapsedMilliseconds": 342,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 5,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "engine-enter",
+          "Utc": "2026-10-18T16:54:26.9276567+00:00",
+          "ElapsedMilliseconds": 343,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 6,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "engine-return",
+          "Utc": "2026-10-18T16:54:26.9823269+00:00",
+          "ElapsedMilliseconds": 398,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 7,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-enter",
+          "Utc": "2026-10-18T16:54:26.9841222+00:00",
+          "ElapsedMilliseconds": 400,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 8,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-return",
+          "Utc": "2026-10-18T16:54:27.0277806+00:00",
+          "ElapsedMilliseconds": 443,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 9,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "snapshot-enter",
+          "Utc": "2026-10-18T16:54:27.0278583+00:00",
+          "ElapsedMilliseconds": 444,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 10,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "snapshot-return",
+          "Utc": "2026-10-18T16:54:27.2287822+00:00",
+          "ElapsedMilliseconds": 644,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 11,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "runtime-refresh-enter",
+          "Utc": "2026-10-18T16:54:27.2861977+00:00",
+          "ElapsedMilliseconds": 702,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 12,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "runtime-refresh-return",
+          "Utc": "2026-10-18T16:54:28.2590171+00:00",
+          "ElapsedMilliseconds": 1675,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 13,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "before-images-enter",
+          "Utc": "2026-10-18T16:54:28.2607164+00:00",
+          "ElapsedMilliseconds": 1676,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 14,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "before-images-return",
+          "Utc": "2026-10-18T16:54:28.5900383+00:00",
+          "ElapsedMilliseconds": 2006,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 15,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-release-return",
+          "Utc": "2026-10-18T16:54:28.590244+00:00",
+          "ElapsedMilliseconds": 2006,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 16,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-first-enter",
+          "Utc": "2026-10-18T16:54:28.5907292+00:00",
+          "ElapsedMilliseconds": 2006,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 17,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T16:54:28.6644602+00:00",
+          "ElapsedMilliseconds": 2080,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 18,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T16:54:28.6648439+00:00",
+          "ElapsedMilliseconds": 2081,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 19,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T16:54:36.4408565+00:00",
+          "ElapsedMilliseconds": 9857,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "MortalJointCustodyCaptureCompletedBeforePreparation"
+        },
+        {
+          "line": 20,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T16:54:36.4410092+00:00",
+          "ElapsedMilliseconds": 9857,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "MortalJointCustodyCaptureCompletedBeforePreparation"
+        },
+        {
+          "line": 21,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T16:57:41.326233+00:00",
+          "ElapsedMilliseconds": 194742,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "AcceptedOutcomeValidatedBeforeMaterialization"
+        },
+        {
+          "line": 22,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "completed-proof-lease-enter",
+          "Utc": "2026-10-18T16:57:41.3272576+00:00",
+          "ElapsedMilliseconds": 194743,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 23,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "completed-proof-lease-return",
+          "Utc": "2026-10-18T16:57:41.3413404+00:00",
+          "ElapsedMilliseconds": 194757,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 26,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T16:57:41.6453728+00:00",
+          "ElapsedMilliseconds": 195061,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "AcceptedOutcomeValidatedBeforeMaterialization"
+        },
+        {
+          "line": 27,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "engine-log",
+          "Utc": "2026-10-18T16:58:00.2102332+00:00",
+          "ElapsedMilliseconds": 213626,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "Information: Joint story and runtime turn 43 completed once after newly published late joint completion; owned terminal cleanup verified."
+        },
+        {
+          "line": 28,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-first-return",
+          "Utc": "2026-10-18T16:58:00.2136038+00:00",
+          "ElapsedMilliseconds": 213629,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "False"
+        },
+        {
+          "line": 29,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "after-images-enter",
+          "Utc": "2026-10-18T16:58:00.2212026+00:00",
+          "ElapsedMilliseconds": 213637,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 30,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "after-images-return",
+          "Utc": "2026-10-18T16:58:00.3391061+00:00",
+          "ElapsedMilliseconds": 213755,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 32,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-second-enter",
+          "Utc": "2026-10-18T16:58:00.4965082+00:00",
+          "ElapsedMilliseconds": 213912,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 33,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T16:58:00.5099297+00:00",
+          "ElapsedMilliseconds": 213926,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 34,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T16:58:00.5100257+00:00",
+          "ElapsedMilliseconds": 213926,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 35,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-second-return",
+          "Utc": "2026-10-18T16:58:00.6153439+00:00",
+          "ElapsedMilliseconds": 214031,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": "False"
+        },
+        {
+          "line": 36,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "repeat-images-enter",
+          "Utc": "2026-10-18T16:58:00.6212485+00:00",
+          "ElapsedMilliseconds": 214037,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 37,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "repeat-images-return",
+          "Utc": "2026-10-18T16:58:00.7093835+00:00",
+          "ElapsedMilliseconds": 214125,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        },
+        {
+          "line": 38,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "resume-finally",
+          "Utc": "2026-10-18T16:58:00.8530057+00:00",
+          "ElapsedMilliseconds": 214269,
+          "Pid": 62089,
+          "BirthTick": 2707440,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+          "Nonce": "76c9d879718047dc85b229bba3af89e6",
+          "Detail": null
+        }
+      ],
+      "observedStages": [
+        "factory-enter",
+        "factory-return",
+        "file-system-enter",
+        "file-system-return",
+        "engine-enter",
+        "engine-return",
+        "preflight-lease-enter",
+        "preflight-lease-return",
+        "snapshot-enter",
+        "snapshot-return",
+        "runtime-refresh-enter",
+        "runtime-refresh-return",
+        "before-images-enter",
+        "before-images-return",
+        "preflight-lease-release-return",
+        "late-first-enter",
+        "finalization-enter",
+        "finalization-return",
+        "completed-proof-lease-enter",
+        "completed-proof-lease-return",
+        "engine-log",
+        "late-first-return",
+        "after-images-enter",
+        "after-images-return",
+        "late-second-enter",
+        "late-second-return",
+        "repeat-images-enter",
+        "repeat-images-return",
+        "resume-finally"
+      ],
+      "sourceStagesNotObserved": [],
+      "lastEvent": {
+        "line": 38,
+        "Boundary": "iobs_current_resume_diagnostic",
+        "Stage": "resume-finally",
+        "Utc": "2026-10-18T16:58:00.8530057+00:00",
+        "ElapsedMilliseconds": 214269,
+        "Pid": 62089,
+        "BirthTick": 2707440,
+        "Cut": 1,
+        "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+        "Nonce": "76c9d879718047dc85b229bba3af89e6",
+        "Detail": null
+      },
+      "enteredWithoutObservedReturn": [],
+      "limit": "An unreturned observed enter is a trace boundary, not proof of a unique blocked await, deadlock or product cause. Stages not observed may be conditional or omitted by interruption."
+    }
+  ],
+  "resultObservations": [
+    {
+      "completed": true,
+      "held": false,
+      "actualCallerEntered": true,
+      "failure": null,
+      "diagnosticOutputFailure": null,
+      "changingI": 1,
+      "inertRepeat": true,
+      "freshAuthorityAbsent": true,
+      "handled": false,
+      "second": false,
+      "images": {
+        "Before": {
+          "game_state/afterlife/afterlife_active_threats.json": {
+            "present": true,
+            "bytes": 4057,
+            "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+          },
+          "game_state/afterlife/afterlife_active_threats.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4057,
+            "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+          },
+          "game_state/afterlife/afterlife_chronicles.json": {
+            "present": true,
+            "bytes": 2653,
+            "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+          },
+          "game_state/afterlife/afterlife_chronicles.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 2653,
+            "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+          },
+          "game_state/afterlife/afterlife_global_flags.json": {
+            "present": true,
+            "bytes": 1900,
+            "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+          },
+          "game_state/afterlife/afterlife_global_flags.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1900,
+            "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+          },
+          "game_state/afterlife/afterlife_story_outline.json": {
+            "present": true,
+            "bytes": 3462,
+            "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+          },
+          "game_state/afterlife/afterlife_story_outline.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 3462,
+            "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+          },
+          "game_state/afterlife/entity_profiles/guardian_mirror.json": {
+            "present": true,
+            "bytes": 9864,
+            "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+          },
+          "game_state/afterlife/entity_profiles/guardian_mirror.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 9864,
+            "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+          },
+          "game_state/afterlife/entity_profiles/shining_senator_mirel.json": {
+            "present": true,
+            "bytes": 8851,
+            "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+          },
+          "game_state/afterlife/entity_profiles/shining_senator_mirel.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 8851,
+            "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+          },
+          "game_state/chaos_sea/guardian_politics.json": {
+            "present": true,
+            "bytes": 4822,
+            "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+          },
+          "game_state/chaos_sea/guardian_politics.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4822,
+            "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+          },
+          "game_state/combat/allies.json": {
+            "present": true,
+            "bytes": 25,
+            "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+          },
+          "game_state/combat/allies.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 25,
+            "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+          },
+          "game_state/combat/enemies.json": {
+            "present": true,
+            "bytes": 26,
+            "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+          },
+          "game_state/combat/enemies.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 26,
+            "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+          },
+          "game_state/control/gm_trajectory_ledger.jsonl": {
+            "present": true,
+            "bytes": 1421,
+            "sha256": "4a8f71ad8ec27b2303702d062aeaafb50ebef01c58a336eddc5496d5889fbb74"
+          },
+          "game_state/control/pending_dice_state.json": {
+            "present": true,
+            "bytes": 472,
+            "sha256": "a279f5ec8b92ec8b36c7a99fa28ad6f6b5de71cb0d753443c39f5061b6600292"
+          },
+          "game_state/control/pending_dice_state.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 472,
+            "sha256": "a279f5ec8b92ec8b36c7a99fa28ad6f6b5de71cb0d753443c39f5061b6600292"
+          },
+          "game_state/control/pending_ink_actions.json": {
+            "present": true,
+            "bytes": 27,
+            "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+          },
+          "game_state/control/pending_ink_actions.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 27,
+            "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+          },
+          "game_state/control/pending_mortal_wound_occurrences.json": {
+            "present": true,
+            "bytes": 2127,
+            "sha256": "27a0e9fd52379faacefb1803179f24f32cf421a859cf2fdad1bc69c573ebcaba"
+          },
+          "game_state/control/pending_mortal_wound_occurrences.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 2127,
+            "sha256": "27a0e9fd52379faacefb1803179f24f32cf421a859cf2fdad1bc69c573ebcaba"
+          },
+          "game_state/control/pending_turn_snapshot.authority.json": {
+            "present": true,
+            "bytes": 44331,
+            "sha256": "914a31779946cbc9600bd6be449448d9fa942721867a36bde3918f9f16aae744"
+          },
+          "game_state/control/pending_turn_snapshot.json": {
+            "present": true,
+            "bytes": 31013,
+            "sha256": "be0b1e05e9ab2bc785b23d5a6a4a5c36598c5773204150fb24509c9b212e2fae"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_active_threats.json": {
+            "present": true,
+            "bytes": 4057,
+            "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_chronicles.json": {
+            "present": true,
+            "bytes": 2653,
+            "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_global_flags.json": {
+            "present": true,
+            "bytes": 1900,
+            "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/afterlife_story_outline.json": {
+            "present": true,
+            "bytes": 3462,
+            "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/guardian_mirror.json": {
+            "present": true,
+            "bytes": 9864,
+            "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/afterlife/entity_profiles/shining_senator_mirel.json": {
+            "present": true,
+            "bytes": 8851,
+            "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/chaos_sea/guardian_politics.json": {
+            "present": true,
+            "bytes": 4822,
+            "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/combat/allies.json": {
+            "present": true,
+            "bytes": 25,
+            "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/combat/enemies.json": {
+            "present": true,
+            "bytes": 26,
+            "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json": {
+            "present": true,
+            "bytes": 472,
+            "sha256": "a279f5ec8b92ec8b36c7a99fa28ad6f6b5de71cb0d753443c39f5061b6600292"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/pending_ink_actions.json": {
+            "present": true,
+            "bytes": 27,
+            "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/pending_mortal_wound_occurrences.json": {
+            "present": true,
+            "bytes": 2127,
+            "sha256": "27a0e9fd52379faacefb1803179f24f32cf421a859cf2fdad1bc69c573ebcaba"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json": {
+            "present": true,
+            "bytes": 1036,
+            "sha256": "f6732fc6924958a909b4b8646700273fa7e4c5e2af63ee2db2cfaecce4fa0e42"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/qte_deferred_effect_continuation.json": {
+            "present": true,
+            "bytes": 164857,
+            "sha256": "f244f81766f48e144b93b0f8eac2f4e95f58f32c358534c64328c659071deb3d"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/control/qte_runtime.json": {
+            "present": true,
+            "bytes": 185,
+            "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/core/player_status.json": {
+            "present": true,
+            "bytes": 83,
+            "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/core/system_mods.json": {
+            "present": true,
+            "bytes": 1279,
+            "sha256": "026cb53ccd6bf5c6fd85b0ea6dffb900dcd5c85c97cef3ee6ce9e73571652468"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/effects/effect_identity_index.json": {
+            "present": true,
+            "bytes": 35,
+            "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/history/qte_history.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": {
+            "present": true,
+            "bytes": 1073,
+            "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/inventory/items.json": {
+            "present": true,
+            "bytes": 4603,
+            "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/meta/achievements.json": {
+            "present": true,
+            "bytes": 400,
+            "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json": {
+            "present": true,
+            "bytes": 45,
+            "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json": {
+            "present": true,
+            "bytes": 733,
+            "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json": {
+            "present": true,
+            "bytes": 106,
+            "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json": {
+            "present": true,
+            "bytes": 415,
+            "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/misc/characteristics.json": {
+            "present": true,
+            "bytes": 225,
+            "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/npcs/item_journals.json": {
+            "present": true,
+            "bytes": 987,
+            "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json": {
+            "present": true,
+            "bytes": 3994,
+            "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/npcs/npc_journals.json": {
+            "present": true,
+            "bytes": 21,
+            "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/npcs/npc_wounds.json": {
+            "present": true,
+            "bytes": 44,
+            "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/computed_characteristics.json": {
+            "present": true,
+            "bytes": 1431,
+            "sha256": "3ea6d6c5bb26b6622c0f12e8a0e138b15bcc0c13c5b6a008079309d08f9c1afc"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/effects.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/experience.json": {
+            "present": true,
+            "bytes": 170,
+            "sha256": "8958e2085606749b784ca790bd5087fa9e69750e5af09ec60f2ef94df8d7ce0a"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/player_status.json": {
+            "present": true,
+            "bytes": 1202,
+            "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/skills_active.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/skills_passive.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/stat_points.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/transformation.json": {
+            "present": true,
+            "bytes": 242,
+            "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/player/wounds.json": {
+            "present": true,
+            "bytes": 4872,
+            "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/quests/quest_history.json": {
+            "present": true,
+            "bytes": 2056,
+            "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json": {
+            "present": true,
+            "bytes": 6885,
+            "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json": {
+            "present": true,
+            "bytes": 4914,
+            "sha256": "38e434b841f5aed369fbcf71e7a51e2985b7129167fc99b39822e910cca4e904"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json": {
+            "present": true,
+            "bytes": 689,
+            "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json": {
+            "present": true,
+            "bytes": 1125,
+            "sha256": "de1c2f263c5c3b3efeade818f5c0c8bd3f48575dfeb2fe1e033a854d6eb23899"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/shining_abode/faction_chronicles.json": {
+            "present": true,
+            "bytes": 3669,
+            "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/world/current_location.json": {
+            "present": true,
+            "bytes": 5783,
+            "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/world/location_identity_index.json": {
+            "present": true,
+            "bytes": 481,
+            "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/world/world_map.json": {
+            "present": true,
+            "bytes": 5687,
+            "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/world/world_time.json": {
+            "present": true,
+            "bytes": 112,
+            "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json": {
+            "present": true,
+            "bytes": 1062,
+            "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json": {
+            "present": true,
+            "bytes": 552,
+            "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81"
+          },
+          "game_state/control/pending_turn_snapshot/game_state/wounds/wound_opportunity_receipts.json": {
+            "present": true,
+            "bytes": 65,
+            "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1"
+          },
+          "game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json": {
+            "present": true,
+            "bytes": 2047,
+            "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+          },
+          "game_state/control/pending_turn_snapshot/lore/codex_entries.json": {
+            "present": true,
+            "bytes": 4112,
+            "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/cultures.json": {
+            "present": true,
+            "bytes": 1006,
+            "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/geography.json": {
+            "present": true,
+            "bytes": 995,
+            "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/history.json": {
+            "present": true,
+            "bytes": 950,
+            "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/threats.json": {
+            "present": true,
+            "bytes": 764,
+            "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/world_directives_draft_example.md": {
+            "present": true,
+            "bytes": 1040,
+            "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+          },
+          "game_state/control/pending_turn_snapshot/lore/current_world/world_setting.json": {
+            "present": true,
+            "bytes": 1095,
+            "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+          },
+          "game_state/control/pending_turn_snapshot/output/debug_logs.json": {
+            "present": true,
+            "bytes": 379,
+            "sha256": "cc4eb0c92dddce64482ee702f12a31197eb428883dfa4ae66f1057e30dd874f4"
+          },
+          "game_state/control/pending_turn_snapshot/output/interface_updates.json": {
+            "present": true,
+            "bytes": 77,
+            "sha256": "4f6443382ba938399eed17c51003b61ce13742e5ca3175760147dcd6351b744b"
+          },
+          "game_state/control/pending_turn_snapshot/output/narrative_response.json": {
+            "present": true,
+            "bytes": 111,
+            "sha256": "2408c95003503ed22d09e000323ea64617cc3746ff94ff9913e685e8aa27b78f"
+          },
+          "game_state/control/pending_wound_resolutions.json": {
+            "present": true,
+            "bytes": 29914,
+            "sha256": "d7b04a2a9c378edb60371d72337f09421088814ffb92752bcb63e4cf519d72f9"
+          },
+          "game_state/control/progression_schedule.json": {
+            "present": true,
+            "bytes": 1036,
+            "sha256": "f6732fc6924958a909b4b8646700273fa7e4c5e2af63ee2db2cfaecce4fa0e42"
+          },
+          "game_state/control/progression_schedule.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1036,
+            "sha256": "f6732fc6924958a909b4b8646700273fa7e4c5e2af63ee2db2cfaecce4fa0e42"
+          },
+          "game_state/control/qte_deferred_effect_continuation.json": {
+            "present": true,
+            "bytes": 164857,
+            "sha256": "f244f81766f48e144b93b0f8eac2f4e95f58f32c358534c64328c659071deb3d"
+          },
+          "game_state/control/qte_deferred_effect_continuation.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 164857,
+            "sha256": "f244f81766f48e144b93b0f8eac2f4e95f58f32c358534c64328c659071deb3d"
+          },
+          "game_state/control/qte_runtime.json": {
+            "present": true,
+            "bytes": 185,
+            "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+          },
+          "game_state/control/qte_runtime.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 185,
+            "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+          },
+          "game_state/control/validation_repair_request.json": {
+            "present": true,
+            "bytes": 12546,
+            "sha256": "c8683d0c111ded11108ab1a431a9deea163a5567a75d6c17fe36b595a515b1e8"
+          },
+          "game_state/core/game_settings.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+          },
+          "game_state/core/game_settings.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+          },
+          "game_state/core/player_status.json": {
+            "present": true,
+            "bytes": 83,
+            "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+          },
+          "game_state/core/player_status.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 83,
+            "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+          },
+          "game_state/core/system_mods.json": {
+            "present": true,
+            "bytes": 1279,
+            "sha256": "026cb53ccd6bf5c6fd85b0ea6dffb900dcd5c85c97cef3ee6ce9e73571652468"
+          },
+          "game_state/core/system_mods.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1279,
+            "sha256": "026cb53ccd6bf5c6fd85b0ea6dffb900dcd5c85c97cef3ee6ce9e73571652468"
+          },
+          "game_state/effects/effect_identity_index.json": {
+            "present": true,
+            "bytes": 35,
+            "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+          },
+          "game_state/effects/effect_identity_index.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 35,
+            "sha256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+          },
+          "game_state/history/chat_log.json": {
+            "present": true,
+            "bytes": 56,
+            "sha256": "7007f8ba969aa63363159dd685ba017b2cda36a6eec1428ea522da17132534ea"
+          },
+          "game_state/history/qte_history.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+          },
+          "game_state/history/qte_history.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+          },
+          "game_state/inventory/item_identity_index.json": {
+            "present": true,
+            "bytes": 1073,
+            "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+          },
+          "game_state/inventory/item_identity_index.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1073,
+            "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+          },
+          "game_state/inventory/items.json": {
+            "present": true,
+            "bytes": 4603,
+            "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+          },
+          "game_state/inventory/items.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4603,
+            "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+          },
+          "game_state/meta/achievements.json": {
+            "present": true,
+            "bytes": 400,
+            "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+          },
+          "game_state/meta/achievements.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 400,
+            "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+          },
+          "game_state/meta/afterlife_entity_profiles.json": {
+            "present": true,
+            "bytes": 45,
+            "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+          },
+          "game_state/meta/afterlife_entity_profiles.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 45,
+            "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+          },
+          "game_state/meta/character_chronicle.json": {
+            "present": true,
+            "bytes": 733,
+            "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+          },
+          "game_state/meta/character_chronicle.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 733,
+            "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+          },
+          "game_state/meta/guardians.json": {
+            "present": true,
+            "bytes": 106,
+            "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+          },
+          "game_state/meta/guardians.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 106,
+            "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+          },
+          "game_state/meta/soul_state.json": {
+            "present": true,
+            "bytes": 415,
+            "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+          },
+          "game_state/meta/soul_state.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 415,
+            "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+          },
+          "game_state/misc/characteristics.json": {
+            "present": true,
+            "bytes": 225,
+            "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+          },
+          "game_state/misc/characteristics.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 225,
+            "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+          },
+          "game_state/npcs/item_journals.json": {
+            "present": true,
+            "bytes": 987,
+            "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+          },
+          "game_state/npcs/item_journals.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 987,
+            "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+          },
+          "game_state/npcs/npc_core.json": {
+            "present": true,
+            "bytes": 3994,
+            "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+          },
+          "game_state/npcs/npc_core.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 3994,
+            "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+          },
+          "game_state/npcs/npc_journals.json": {
+            "present": true,
+            "bytes": 21,
+            "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+          },
+          "game_state/npcs/npc_journals.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 21,
+            "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+          },
+          "game_state/npcs/npc_wounds.json": {
+            "present": true,
+            "bytes": 44,
+            "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+          },
+          "game_state/npcs/npc_wounds.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 44,
+            "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+          },
+          "game_state/player/computed_characteristics.json": {
+            "present": true,
+            "bytes": 1431,
+            "sha256": "3ea6d6c5bb26b6622c0f12e8a0e138b15bcc0c13c5b6a008079309d08f9c1afc"
+          },
+          "game_state/player/computed_characteristics.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1431,
+            "sha256": "3ea6d6c5bb26b6622c0f12e8a0e138b15bcc0c13c5b6a008079309d08f9c1afc"
+          },
+          "game_state/player/effects.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b"
+          },
+          "game_state/player/effects.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "57cfa98cff82eb4821e37b1296a354d34213b9136c7c90c7e475103a5ca6cc7b"
+          },
+          "game_state/player/experience.json": {
+            "present": true,
+            "bytes": 170,
+            "sha256": "8958e2085606749b784ca790bd5087fa9e69750e5af09ec60f2ef94df8d7ce0a"
+          },
+          "game_state/player/experience.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 170,
+            "sha256": "8958e2085606749b784ca790bd5087fa9e69750e5af09ec60f2ef94df8d7ce0a"
+          },
+          "game_state/player/player_status.json": {
+            "present": true,
+            "bytes": 1202,
+            "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+          },
+          "game_state/player/player_status.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1202,
+            "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+          },
+          "game_state/player/skill_mastery.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+          },
+          "game_state/player/skill_mastery.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+          },
+          "game_state/player/skills_active.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+          },
+          "game_state/player/skills_active.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+          },
+          "game_state/player/skills_passive.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+          },
+          "game_state/player/skills_passive.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+          },
+          "game_state/player/stat_points.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+          },
+          "game_state/player/stat_points.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+          },
+          "game_state/player/transformation.json": {
+            "present": true,
+            "bytes": 242,
+            "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+          },
+          "game_state/player/transformation.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 242,
+            "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+          },
+          "game_state/player/wounds.json": {
+            "present": true,
+            "bytes": 4872,
+            "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7"
+          },
+          "game_state/player/wounds.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4872,
+            "sha256": "9833d7546ae55e930ca5e7909474bb6878bb6061d3682517d6c233c34b3194a7"
+          },
+          "game_state/quests/quest_history.json": {
+            "present": true,
+            "bytes": 2056,
+            "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+          },
+          "game_state/quests/quest_history.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 2056,
+            "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+          },
+          "game_state/resources/resource_definitions.json": {
+            "present": true,
+            "bytes": 6885,
+            "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+          },
+          "game_state/resources/resource_definitions.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 6885,
+            "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+          },
+          "game_state/resources/resource_history.json": {
+            "present": true,
+            "bytes": 4914,
+            "sha256": "38e434b841f5aed369fbcf71e7a51e2985b7129167fc99b39822e910cca4e904"
+          },
+          "game_state/resources/resource_history.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4914,
+            "sha256": "38e434b841f5aed369fbcf71e7a51e2985b7129167fc99b39822e910cca4e904"
+          },
+          "game_state/resources/resource_owner_authority.json": {
+            "present": true,
+            "bytes": 689,
+            "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777"
+          },
+          "game_state/resources/resource_owner_authority.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 689,
+            "sha256": "a3e542ea0a6202980cde14acb80884909a1cf8f110611386915e2168cc43b777"
+          },
+          "game_state/resources/resource_state.json": {
+            "present": true,
+            "bytes": 1125,
+            "sha256": "de1c2f263c5c3b3efeade818f5c0c8bd3f48575dfeb2fe1e033a854d6eb23899"
+          },
+          "game_state/resources/resource_state.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1125,
+            "sha256": "de1c2f263c5c3b3efeade818f5c0c8bd3f48575dfeb2fe1e033a854d6eb23899"
+          },
+          "game_state/shining_abode/faction_chronicles.json": {
+            "present": true,
+            "bytes": 3669,
+            "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+          },
+          "game_state/shining_abode/faction_chronicles.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 3669,
+            "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+          },
+          "game_state/world/current_location.json": {
+            "present": true,
+            "bytes": 5783,
+            "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+          },
+          "game_state/world/current_location.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 5783,
+            "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+          },
+          "game_state/world/location_identity_index.json": {
+            "present": true,
+            "bytes": 481,
+            "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+          },
+          "game_state/world/location_identity_index.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 481,
+            "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+          },
+          "game_state/world/world_map.json": {
+            "present": true,
+            "bytes": 5687,
+            "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+          },
+          "game_state/world/world_map.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 5687,
+            "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+          },
+          "game_state/world/world_time.json": {
+            "present": true,
+            "bytes": 112,
+            "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+          },
+          "game_state/world/world_time.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 112,
+            "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+          },
+          "game_state/wounds/wound_commands.json": {
+            "present": true,
+            "bytes": 36981,
+            "sha256": "97a25a343f3c7cc8ab4dd580da4901fd2e3e8a824d90c3c846b7a0d015e6de22"
+          },
+          "game_state/wounds/wound_history.json": {
+            "present": true,
+            "bytes": 1062,
+            "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f"
+          },
+          "game_state/wounds/wound_history.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1062,
+            "sha256": "14767592f1d844969bb7ee8c5ba5b6e3c738ffb2e2a7b18be97d997e7ced759f"
+          },
+          "game_state/wounds/wound_identity_index.json": {
+            "present": true,
+            "bytes": 552,
+            "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81"
+          },
+          "game_state/wounds/wound_identity_index.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 552,
+            "sha256": "594fb1982927597100ef470dc47f57470108ee57835fe2909711e71afd80df81"
+          },
+          "game_state/wounds/wound_opportunity_receipts.json": {
+            "present": true,
+            "bytes": 65,
+            "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1"
+          },
+          "game_state/wounds/wound_opportunity_receipts.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 65,
+            "sha256": "562c3ee724700be4d8274a73df6f84d9c6ff32816868a5c2b600d0fdb5920aa1"
+          },
+          "input/turn_request.json": {
+            "present": true,
+            "bytes": 65265,
+            "sha256": "39336698ed5291f16bd4c506301ac006b2b8ba4937dab66cdb732f4370e2c6c2"
+          },
+          "lore/chaos_sea/cosmology.json": {
+            "present": true,
+            "bytes": 2047,
+            "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+          },
+          "lore/chaos_sea/cosmology.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 2047,
+            "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+          },
+          "lore/codex_entries.json": {
+            "present": true,
+            "bytes": 4112,
+            "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+          },
+          "lore/codex_entries.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 4112,
+            "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+          },
+          "lore/current_world/cultures.json": {
+            "present": true,
+            "bytes": 1006,
+            "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+          },
+          "lore/current_world/cultures.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1006,
+            "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+          },
+          "lore/current_world/geography.json": {
+            "present": true,
+            "bytes": 995,
+            "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+          },
+          "lore/current_world/geography.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 995,
+            "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+          },
+          "lore/current_world/history.json": {
+            "present": true,
+            "bytes": 950,
+            "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+          },
+          "lore/current_world/history.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 950,
+            "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+          },
+          "lore/current_world/threats.json": {
+            "present": true,
+            "bytes": 764,
+            "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+          },
+          "lore/current_world/threats.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 764,
+            "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+          },
+          "lore/current_world/world_directives_draft_example.md": {
+            "present": true,
+            "bytes": 1040,
+            "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+          },
+          "lore/current_world/world_directives_draft_example.md.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1040,
+            "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+          },
+          "lore/current_world/world_setting.json": {
+            "present": true,
+            "bytes": 1095,
+            "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+          },
+          "lore/current_world/world_setting.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 1095,
+            "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+          },
+          "mods/example_system_mod.json": {
+            "present": true,
+            "bytes": 503,
+            "sha256": "cb66a9bdc29ea9ea529c1934119e9c03ec9ca1ea08387c50e42005340015c369"
+          },
+          "mods/example_system_mod.md": {
+            "present": true,
+            "bytes": 548,
+            "sha256": "cd7e840fa6775e965a3eab204e40141a740800ed551f72173abe0e17ce885a9e"
+          },
+          "mods/example_system_mod.txt": {
+            "present": true,
+            "bytes": 807,
+            "sha256": "4d73b86eb51eb6ee198383f79fdc2452f5de421403c232e5aeb4954fc2e7e6ca"
+          },
+          "output/debug_logs.json": {
+            "present": true,
+            "bytes": 1064,
+            "sha256": "e965cb41aa431226a5ab7fb09b2bc335868e3f24702f03e63f1a7a9f60e9dd57"
+          },
+          "output/debug_logs.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 379,
+            "sha256": "cc4eb0c92dddce64482ee702f12a31197eb428883dfa4ae66f1057e30dd874f4"
+          },
+          "output/interface_updates.json": {
+            "present": true,
+            "bytes": 142,
+            "sha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674"
+          },
+          "output/interface_updates.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 77,
+            "sha256": "4f6443382ba938399eed17c51003b61ce13742e5ca3175760147dcd6351b744b"
+          },
+          "output/mortal_wound_decisions.json": {
+            "present": true,
+            "bytes": 5716,
+            "sha256": "81892c0e5d241ccca26d08021e4aedca561a33c4631af9ed26cbb5d2230cc317"
+          },
+          "output/narrative_response.json": {
+            "present": true,
+            "bytes": 395,
+            "sha256": "967a2f17621e50262b4f49a647f49132ff222cf87b749c2ef952a68d053fbd1c"
+          },
+          "output/narrative_response.json.rollback.639279392520950477": {
+            "present": true,
+            "bytes": 111,
+            "sha256": "2408c95003503ed22d09e000323ea64617cc3746ff94ff9913e685e8aa27b78f"
+          },
+          "ready/turn_complete.json": {
+            "present": true,
+            "bytes": 313,
+            "sha256": "e1b798c3066d9a28fc0a8e3b6f7bb3d12ac5f5bba7074c8c856034da55723c51"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 81508,
+            "sha256": "d88967a7837eb579ef21a7383f42bb669e79500b8c17568acf15588af3ffd751"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 3700,
+            "sha256": "9b4e138d22d12229b3a756138ae75d34d104031b0ab90145f7b1e7a577cfd415"
+          },
+          "saves/manual_saves/first_character_save_metadata.json": {
+            "present": true,
+            "bytes": 869,
+            "sha256": "6412eedb4029b53fd56122fe393c55d641b4b4267e81fce83d56ebac2575a63a"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 103744,
+            "sha256": "22d7dcab87ee3a2452b801e8f49e4be7ce9187c4b6f2a4c148f360bc3fd2a55d"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1672,
+            "sha256": "5eda2758a5a8e6ed892dbdd91cb5ed605650851adaaf7ea0c81accb20027e45f"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 35684,
+            "sha256": "822fd3e81578f7cfdfeba7d924a3d454bd9687efb90fa866c48dc49173adb735"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1540,
+            "sha256": "78fb89b27751e6f23bd893ab6ed62413da61bd33ddfb001d2bf1eb338cde1ae1"
+          },
+          "stories/mortal_life_2.jsonl": {
+            "present": true,
+            "bytes": 255,
+            "sha256": "15c19be34380f4d28f2eaa3b99a24a099b51a78489a1ef41a982ba06ff8bd75a"
+          },
+          "world_profiles/example_world_profile.json": {
+            "present": true,
+            "bytes": 2603,
+            "sha256": "f62c409d898819de756c2b48a989d5b980511d626f29f2d8fbffae03602547f6"
+          },
+          "world_profiles/example_world_profile.md": {
+            "present": true,
+            "bytes": 674,
+            "sha256": "c54e577a6264219d2713ed964c47eb89d7d3cad1c775a2c20667ab0cbf6353c4"
+          },
+          "world_profiles/example_world_profile.txt": {
+            "present": true,
+            "bytes": 1455,
+            "sha256": "9e0ea1fdaa81c94235e0a6fedaf60f99974ce83ebe3bb26efbbd20a2916a64f7"
+          },
+          "$sessionGeneration": {
+            "present": true,
+            "bytes": 69,
+            "sha256": "b079a3816ebd389487b231724ff12e8e5ee5574e82518479e5ebc6068b7c209d"
+          }
+        },
+        "After": {
+          "game_state/afterlife/afterlife_active_threats.json": {
+            "present": true,
+            "bytes": 4057,
+            "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+          },
+          "game_state/afterlife/afterlife_chronicles.json": {
+            "present": true,
+            "bytes": 2653,
+            "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+          },
+          "game_state/afterlife/afterlife_global_flags.json": {
+            "present": true,
+            "bytes": 1900,
+            "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+          },
+          "game_state/afterlife/afterlife_story_outline.json": {
+            "present": true,
+            "bytes": 3462,
+            "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+          },
+          "game_state/afterlife/entity_profiles/guardian_mirror.json": {
+            "present": true,
+            "bytes": 9864,
+            "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+          },
+          "game_state/afterlife/entity_profiles/shining_senator_mirel.json": {
+            "present": true,
+            "bytes": 8851,
+            "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+          },
+          "game_state/chaos_sea/guardian_politics.json": {
+            "present": true,
+            "bytes": 4822,
+            "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+          },
+          "game_state/combat/allies.json": {
+            "present": true,
+            "bytes": 25,
+            "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+          },
+          "game_state/combat/enemies.json": {
+            "present": true,
+            "bytes": 26,
+            "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+          },
+          "game_state/control/gm_trajectory_ledger.jsonl": {
+            "present": true,
+            "bytes": 1421,
+            "sha256": "4a8f71ad8ec27b2303702d062aeaafb50ebef01c58a336eddc5496d5889fbb74"
+          },
+          "game_state/control/pending_dice_state.json": {
+            "present": true,
+            "bytes": 472,
+            "sha256": "a279f5ec8b92ec8b36c7a99fa28ad6f6b5de71cb0d753443c39f5061b6600292"
+          },
+          "game_state/control/pending_ink_actions.json": {
+            "present": true,
+            "bytes": 27,
+            "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+          },
+          "game_state/control/pending_mortal_wound_occurrences.json": {
+            "present": true,
+            "bytes": 48,
+            "sha256": "d33b0852a32aa18421f697370527a571eab0e4742f323bb782a6f030b8a10fc9"
+          },
+          "game_state/control/progression_schedule.json": {
+            "present": true,
+            "bytes": 1036,
+            "sha256": "d76da30ee72d227321bed3a795f68ba534aee143af749c3fce98d7b8349aaabb"
+          },
+          "game_state/control/qte_deferred_effect_continuation.json": {
+            "present": true,
+            "bytes": 164857,
+            "sha256": "f244f81766f48e144b93b0f8eac2f4e95f58f32c358534c64328c659071deb3d"
+          },
+          "game_state/control/qte_runtime.json": {
+            "present": true,
+            "bytes": 185,
+            "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+          },
+          "game_state/core/game_settings.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+          },
+          "game_state/core/player_status.json": {
+            "present": true,
+            "bytes": 83,
+            "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+          },
+          "game_state/core/system_mods.json": {
+            "present": true,
+            "bytes": 1279,
+            "sha256": "026cb53ccd6bf5c6fd85b0ea6dffb900dcd5c85c97cef3ee6ce9e73571652468"
+          },
+          "game_state/effects/effect_identity_index.json": {
+            "present": true,
+            "bytes": 2426,
+            "sha256": "596aeb653600fbb340d826fa1f15369445cf28af21c82893f5054d6d28350687"
+          },
+          "game_state/history/chat_log.json": {
+            "present": true,
+            "bytes": 56,
+            "sha256": "7007f8ba969aa63363159dd685ba017b2cda36a6eec1428ea522da17132534ea"
+          },
+          "game_state/history/qte_history.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+          },
+          "game_state/inventory/item_identity_index.json": {
+            "present": true,
+            "bytes": 1073,
+            "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+          },
+          "game_state/inventory/items.json": {
+            "present": true,
+            "bytes": 4603,
+            "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+          },
+          "game_state/meta/achievements.json": {
+            "present": true,
+            "bytes": 400,
+            "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+          },
+          "game_state/meta/afterlife_entity_profiles.json": {
+            "present": true,
+            "bytes": 45,
+            "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+          },
+          "game_state/meta/character_chronicle.json": {
+            "present": true,
+            "bytes": 733,
+            "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+          },
+          "game_state/meta/guardians.json": {
+            "present": true,
+            "bytes": 106,
+            "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+          },
+          "game_state/meta/soul_state.json": {
+            "present": true,
+            "bytes": 415,
+            "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+          },
+          "game_state/misc/characteristics.json": {
+            "present": true,
+            "bytes": 225,
+            "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+          },
+          "game_state/npcs/item_journals.json": {
+            "present": true,
+            "bytes": 987,
+            "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+          },
+          "game_state/npcs/npc_core.json": {
+            "present": true,
+            "bytes": 3994,
+            "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+          },
+          "game_state/npcs/npc_journals.json": {
+            "present": true,
+            "bytes": 21,
+            "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+          },
+          "game_state/npcs/npc_wounds.json": {
+            "present": true,
+            "bytes": 44,
+            "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+          },
+          "game_state/player/computed_characteristics.json": {
+            "present": true,
+            "bytes": 1431,
+            "sha256": "576169cf785238a7d91091fa7da537a3b6972b13fd626803950cba3e63bf5f74"
+          },
+          "game_state/player/effects.json": {
+            "present": true,
+            "bytes": 2547,
+            "sha256": "4873967afd1328f7d1a4009c41fdf182b45958c71f0760799c483a24e6ac940e"
+          },
+          "game_state/player/experience.json": {
+            "present": true,
+            "bytes": 170,
+            "sha256": "8958e2085606749b784ca790bd5087fa9e69750e5af09ec60f2ef94df8d7ce0a"
+          },
+          "game_state/player/player_status.json": {
+            "present": true,
+            "bytes": 1202,
+            "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+          },
+          "game_state/player/skill_mastery.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+          },
+          "game_state/player/skills_active.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+          },
+          "game_state/player/skills_passive.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+          },
+          "game_state/player/stat_points.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+          },
+          "game_state/player/transformation.json": {
+            "present": true,
+            "bytes": 242,
+            "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+          },
+          "game_state/player/wounds.json": {
+            "present": true,
+            "bytes": 13724,
+            "sha256": "94160a781ea562ff22cfd676b4b6e6f2fbbe2c0c9d393e29ea7f3e1a7aa37138"
+          },
+          "game_state/quests/quest_history.json": {
+            "present": true,
+            "bytes": 2056,
+            "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+          },
+          "game_state/resources/resource_definitions.json": {
+            "present": true,
+            "bytes": 9231,
+            "sha256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a"
+          },
+          "game_state/resources/resource_history.json": {
+            "present": true,
+            "bytes": 10320,
+            "sha256": "978404dfac1dbf473650ce85c955d9081d7cb4d281efa81cb7fcaf3df356bb09"
+          },
+          "game_state/resources/resource_owner_authority.json": {
+            "present": true,
+            "bytes": 895,
+            "sha256": "4a1e769c9bb0f7b99c6d57f6854ee5f5f86a794fe4c00df79e1085cbcae467d7"
+          },
+          "game_state/resources/resource_state.json": {
+            "present": true,
+            "bytes": 1603,
+            "sha256": "e6a459a93f43151e248cce809dcc7f2a0bea5da6e27e634632eaf78f742a15fb"
+          },
+          "game_state/shining_abode/faction_chronicles.json": {
+            "present": true,
+            "bytes": 3669,
+            "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+          },
+          "game_state/world/current_location.json": {
+            "present": true,
+            "bytes": 5783,
+            "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+          },
+          "game_state/world/location_identity_index.json": {
+            "present": true,
+            "bytes": 481,
+            "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+          },
+          "game_state/world/world_map.json": {
+            "present": true,
+            "bytes": 5687,
+            "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+          },
+          "game_state/world/world_time.json": {
+            "present": true,
+            "bytes": 112,
+            "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+          },
+          "game_state/wounds/mortal_qte_decision_publication.json": {
+            "present": true,
+            "bytes": 227782,
+            "sha256": "20fc2fa15437f743e7650f976a8697f45ea714302cacbe430fe5aeaa4b49e259"
+          },
+          "game_state/wounds/wound_history.json": {
+            "present": true,
+            "bytes": 22117,
+            "sha256": "0308a9aab007b178e2ea30cd3dea619c2be8dadff904f3d2e25123fee9931572"
+          },
+          "game_state/wounds/wound_identity_index.json": {
+            "present": true,
+            "bytes": 1121,
+            "sha256": "9fcaba88da1406bea34c84a2515a71e673105525ddf29bd88ae6ff39da323eb3"
+          },
+          "game_state/wounds/wound_opportunity_receipts.json": {
+            "present": true,
+            "bytes": 2480,
+            "sha256": "f6ed0dbf7a26c2099128a33b0511339c6f307197f3bfbf638cf75941d7825a0f"
+          },
+          "lore/chaos_sea/cosmology.json": {
+            "present": true,
+            "bytes": 2047,
+            "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+          },
+          "lore/codex_entries.json": {
+            "present": true,
+            "bytes": 4112,
+            "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+          },
+          "lore/current_world/cultures.json": {
+            "present": true,
+            "bytes": 1006,
+            "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+          },
+          "lore/current_world/geography.json": {
+            "present": true,
+            "bytes": 995,
+            "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+          },
+          "lore/current_world/history.json": {
+            "present": true,
+            "bytes": 950,
+            "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+          },
+          "lore/current_world/threats.json": {
+            "present": true,
+            "bytes": 764,
+            "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+          },
+          "lore/current_world/world_directives_draft_example.md": {
+            "present": true,
+            "bytes": 1040,
+            "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+          },
+          "lore/current_world/world_setting.json": {
+            "present": true,
+            "bytes": 1095,
+            "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+          },
+          "mods/example_system_mod.json": {
+            "present": true,
+            "bytes": 503,
+            "sha256": "cb66a9bdc29ea9ea529c1934119e9c03ec9ca1ea08387c50e42005340015c369"
+          },
+          "mods/example_system_mod.md": {
+            "present": true,
+            "bytes": 548,
+            "sha256": "cd7e840fa6775e965a3eab204e40141a740800ed551f72173abe0e17ce885a9e"
+          },
+          "mods/example_system_mod.txt": {
+            "present": true,
+            "bytes": 807,
+            "sha256": "4d73b86eb51eb6ee198383f79fdc2452f5de421403c232e5aeb4954fc2e7e6ca"
+          },
+          "output/debug_logs.json": {
+            "present": true,
+            "bytes": 1064,
+            "sha256": "e965cb41aa431226a5ab7fb09b2bc335868e3f24702f03e63f1a7a9f60e9dd57"
+          },
+          "output/interface_updates.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "574b4a13ba25c11c19b635eb5ddede3e9a3b547bd9cf476c17cabb8bb80459bc"
+          },
+          "output/narrative_response.json": {
+            "present": true,
+            "bytes": 395,
+            "sha256": "967a2f17621e50262b4f49a647f49132ff222cf87b749c2ef952a68d053fbd1c"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 81508,
+            "sha256": "d88967a7837eb579ef21a7383f42bb669e79500b8c17568acf15588af3ffd751"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 3700,
+            "sha256": "9b4e138d22d12229b3a756138ae75d34d104031b0ab90145f7b1e7a577cfd415"
+          },
+          "saves/manual_saves/first_character_save_metadata.json": {
+            "present": true,
+            "bytes": 869,
+            "sha256": "6412eedb4029b53fd56122fe393c55d641b4b4267e81fce83d56ebac2575a63a"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 103744,
+            "sha256": "22d7dcab87ee3a2452b801e8f49e4be7ce9187c4b6f2a4c148f360bc3fd2a55d"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1672,
+            "sha256": "5eda2758a5a8e6ed892dbdd91cb5ed605650851adaaf7ea0c81accb20027e45f"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 35684,
+            "sha256": "822fd3e81578f7cfdfeba7d924a3d454bd9687efb90fa866c48dc49173adb735"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1540,
+            "sha256": "78fb89b27751e6f23bd893ab6ed62413da61bd33ddfb001d2bf1eb338cde1ae1"
+          },
+          "stories/mortal_life_2.jsonl": {
+            "present": true,
+            "bytes": 691,
+            "sha256": "88529861e1f6ed6dc3259d1d20e45072e2c6003e47238a8d69279ee456248656"
+          },
+          "world_profiles/example_world_profile.json": {
+            "present": true,
+            "bytes": 2603,
+            "sha256": "f62c409d898819de756c2b48a989d5b980511d626f29f2d8fbffae03602547f6"
+          },
+          "world_profiles/example_world_profile.md": {
+            "present": true,
+            "bytes": 674,
+            "sha256": "c54e577a6264219d2713ed964c47eb89d7d3cad1c775a2c20667ab0cbf6353c4"
+          },
+          "world_profiles/example_world_profile.txt": {
+            "present": true,
+            "bytes": 1455,
+            "sha256": "9e0ea1fdaa81c94235e0a6fedaf60f99974ce83ebe3bb26efbbd20a2916a64f7"
+          },
+          "$sessionGeneration": {
+            "present": true,
+            "bytes": 69,
+            "sha256": "b079a3816ebd389487b231724ff12e8e5ee5574e82518479e5ebc6068b7c209d"
+          }
+        },
+        "Repeated": {
+          "game_state/afterlife/afterlife_active_threats.json": {
+            "present": true,
+            "bytes": 4057,
+            "sha256": "0586d0057dd387f86c0302cdd9b47f2435504f2f6ab8ce3476f8c6f89b81bc0f"
+          },
+          "game_state/afterlife/afterlife_chronicles.json": {
+            "present": true,
+            "bytes": 2653,
+            "sha256": "0e2cb441a5f87166ccc3f49284591e9f17bbc10e299f19edd74c79ebdc0a373f"
+          },
+          "game_state/afterlife/afterlife_global_flags.json": {
+            "present": true,
+            "bytes": 1900,
+            "sha256": "51d177338a159fded29d414cdba07ef95a1f292dbfe2ffa5799952548cac594b"
+          },
+          "game_state/afterlife/afterlife_story_outline.json": {
+            "present": true,
+            "bytes": 3462,
+            "sha256": "b68def0acb1ee92e5bdf67f0fa7271b218e1f8fe6a700ea861acd68cea4594b8"
+          },
+          "game_state/afterlife/entity_profiles/guardian_mirror.json": {
+            "present": true,
+            "bytes": 9864,
+            "sha256": "a295046ef610c13096bdb30d9bcb7a0bc343ab162415f3e6b0d57558316fa4a1"
+          },
+          "game_state/afterlife/entity_profiles/shining_senator_mirel.json": {
+            "present": true,
+            "bytes": 8851,
+            "sha256": "15def35f254d5505186a3b51edb4d75458fb1a6a310cc2f1e61df739e2c7d66f"
+          },
+          "game_state/chaos_sea/guardian_politics.json": {
+            "present": true,
+            "bytes": 4822,
+            "sha256": "31151310b4b08ab7bb046d491f5e6b5cf203ed6de88318600b5e2e901cd5b1a7"
+          },
+          "game_state/combat/allies.json": {
+            "present": true,
+            "bytes": 25,
+            "sha256": "81af7cc4287cdeb3b839e1523db45cf33fceb9dfc3f0776c58406eeaf89a0801"
+          },
+          "game_state/combat/enemies.json": {
+            "present": true,
+            "bytes": 26,
+            "sha256": "49913cd73be6d76b86d424ce984105f6f8e3c1fd3f193ba36fe72e9c9e2ad33f"
+          },
+          "game_state/control/gm_trajectory_ledger.jsonl": {
+            "present": true,
+            "bytes": 1421,
+            "sha256": "4a8f71ad8ec27b2303702d062aeaafb50ebef01c58a336eddc5496d5889fbb74"
+          },
+          "game_state/control/pending_dice_state.json": {
+            "present": true,
+            "bytes": 472,
+            "sha256": "a279f5ec8b92ec8b36c7a99fa28ad6f6b5de71cb0d753443c39f5061b6600292"
+          },
+          "game_state/control/pending_ink_actions.json": {
+            "present": true,
+            "bytes": 27,
+            "sha256": "17c3a0fb8e35969d6287033de69890790db70bcc977ea3c759046528540b21e3"
+          },
+          "game_state/control/pending_mortal_wound_occurrences.json": {
+            "present": true,
+            "bytes": 48,
+            "sha256": "d33b0852a32aa18421f697370527a571eab0e4742f323bb782a6f030b8a10fc9"
+          },
+          "game_state/control/progression_schedule.json": {
+            "present": true,
+            "bytes": 1036,
+            "sha256": "d76da30ee72d227321bed3a795f68ba534aee143af749c3fce98d7b8349aaabb"
+          },
+          "game_state/control/qte_deferred_effect_continuation.json": {
+            "present": true,
+            "bytes": 164857,
+            "sha256": "f244f81766f48e144b93b0f8eac2f4e95f58f32c358534c64328c659071deb3d"
+          },
+          "game_state/control/qte_runtime.json": {
+            "present": true,
+            "bytes": 185,
+            "sha256": "910801c06e73c5a5b6fa164d7e4935b494c418b811d49e542a6bd73a259d0f69"
+          },
+          "game_state/core/game_settings.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "48b1b58d015ea9ac89f445068c8340137c421e2c50c87b8560caf52bbc45f7bd"
+          },
+          "game_state/core/player_status.json": {
+            "present": true,
+            "bytes": 83,
+            "sha256": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3"
+          },
+          "game_state/core/system_mods.json": {
+            "present": true,
+            "bytes": 1279,
+            "sha256": "026cb53ccd6bf5c6fd85b0ea6dffb900dcd5c85c97cef3ee6ce9e73571652468"
+          },
+          "game_state/effects/effect_identity_index.json": {
+            "present": true,
+            "bytes": 2426,
+            "sha256": "596aeb653600fbb340d826fa1f15369445cf28af21c82893f5054d6d28350687"
+          },
+          "game_state/history/chat_log.json": {
+            "present": true,
+            "bytes": 56,
+            "sha256": "7007f8ba969aa63363159dd685ba017b2cda36a6eec1428ea522da17132534ea"
+          },
+          "game_state/history/qte_history.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "2f0c95499caecc52a4d405f1c234defd98f794efe744dd5f912016028d86b829"
+          },
+          "game_state/inventory/item_identity_index.json": {
+            "present": true,
+            "bytes": 1073,
+            "sha256": "7c42f694e39218087d2791f0a6d05add6dfb889927500824c6a0fd65a0e1f5b9"
+          },
+          "game_state/inventory/items.json": {
+            "present": true,
+            "bytes": 4603,
+            "sha256": "8c84347a66ea51133cc204a69c115c83324d8b8be0470c7ae9de872bb959fa61"
+          },
+          "game_state/meta/achievements.json": {
+            "present": true,
+            "bytes": 400,
+            "sha256": "a10e5e2470f988d4511c9f254eb15b1da514646dfe22e398b659919666064818"
+          },
+          "game_state/meta/afterlife_entity_profiles.json": {
+            "present": true,
+            "bytes": 45,
+            "sha256": "478cb55932547c1412679e7f2436caec9b7c1a37cc8bce24ba16e1f1ef45c0fa"
+          },
+          "game_state/meta/character_chronicle.json": {
+            "present": true,
+            "bytes": 733,
+            "sha256": "8057bda6f53f16cd7618648aa6945654163349a88aba67c629981b6518913a49"
+          },
+          "game_state/meta/guardians.json": {
+            "present": true,
+            "bytes": 106,
+            "sha256": "ab1a9be59b0e8657ebac266d47080384eb3fd7e1bdd546037b5317e791dd3d6c"
+          },
+          "game_state/meta/soul_state.json": {
+            "present": true,
+            "bytes": 415,
+            "sha256": "19e66a7a2059c8f569862e55fe728b6a6a3ba62c93fdbe42265e821b7de68430"
+          },
+          "game_state/misc/characteristics.json": {
+            "present": true,
+            "bytes": 225,
+            "sha256": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5"
+          },
+          "game_state/npcs/item_journals.json": {
+            "present": true,
+            "bytes": 987,
+            "sha256": "dcb005342ffb229f59580356a55c755bd8d9937d96cbdf69de77437041af435d"
+          },
+          "game_state/npcs/npc_core.json": {
+            "present": true,
+            "bytes": 3994,
+            "sha256": "a4c67cbfab01e901d126c1f0d1386f07a0369e410c6a951768f9ec491034d8e1"
+          },
+          "game_state/npcs/npc_journals.json": {
+            "present": true,
+            "bytes": 21,
+            "sha256": "96e628a14882456158db02b16a3ab7bf3ebe40c2afa3db8d64cb1c839fd97a53"
+          },
+          "game_state/npcs/npc_wounds.json": {
+            "present": true,
+            "bytes": 44,
+            "sha256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+          },
+          "game_state/player/computed_characteristics.json": {
+            "present": true,
+            "bytes": 1431,
+            "sha256": "576169cf785238a7d91091fa7da537a3b6972b13fd626803950cba3e63bf5f74"
+          },
+          "game_state/player/effects.json": {
+            "present": true,
+            "bytes": 2547,
+            "sha256": "4873967afd1328f7d1a4009c41fdf182b45958c71f0760799c483a24e6ac940e"
+          },
+          "game_state/player/experience.json": {
+            "present": true,
+            "bytes": 170,
+            "sha256": "8958e2085606749b784ca790bd5087fa9e69750e5af09ec60f2ef94df8d7ce0a"
+          },
+          "game_state/player/player_status.json": {
+            "present": true,
+            "bytes": 1202,
+            "sha256": "3cae75f26e400f642bdec76d974d3e56efe7b79b5212e329449ca97241f39b17"
+          },
+          "game_state/player/skill_mastery.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "ab368372158b5afb30e3c1f7e7ddd189b01f0cf985b6b85ba8dea0a4e1a8a049"
+          },
+          "game_state/player/skills_active.json": {
+            "present": true,
+            "bytes": 28,
+            "sha256": "615ea9dae3be242fb738d57742295c5419909709a3984bba13458748028d30db"
+          },
+          "game_state/player/skills_passive.json": {
+            "present": true,
+            "bytes": 29,
+            "sha256": "062046836ab471cc0e7a6c7e3328f974ee4ae89be8839e012d2461cd74a600f0"
+          },
+          "game_state/player/stat_points.json": {
+            "present": true,
+            "bytes": 50,
+            "sha256": "0ad75b0ebb81096d7964434dd8eb4519de2a6e9af833bb820b3cfe070e9891b4"
+          },
+          "game_state/player/transformation.json": {
+            "present": true,
+            "bytes": 242,
+            "sha256": "53bb9c81bda4ab38bcb888639bd639822f77731fcc1fe7b5c3c2f8d5546d08fc"
+          },
+          "game_state/player/wounds.json": {
+            "present": true,
+            "bytes": 13724,
+            "sha256": "94160a781ea562ff22cfd676b4b6e6f2fbbe2c0c9d393e29ea7f3e1a7aa37138"
+          },
+          "game_state/quests/quest_history.json": {
+            "present": true,
+            "bytes": 2056,
+            "sha256": "babcc397ccdc70661f844094dee691c3c2ef08ad2fe408aba614cdaaa1327cae"
+          },
+          "game_state/resources/resource_definitions.json": {
+            "present": true,
+            "bytes": 9231,
+            "sha256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a"
+          },
+          "game_state/resources/resource_history.json": {
+            "present": true,
+            "bytes": 10320,
+            "sha256": "978404dfac1dbf473650ce85c955d9081d7cb4d281efa81cb7fcaf3df356bb09"
+          },
+          "game_state/resources/resource_owner_authority.json": {
+            "present": true,
+            "bytes": 895,
+            "sha256": "4a1e769c9bb0f7b99c6d57f6854ee5f5f86a794fe4c00df79e1085cbcae467d7"
+          },
+          "game_state/resources/resource_state.json": {
+            "present": true,
+            "bytes": 1603,
+            "sha256": "e6a459a93f43151e248cce809dcc7f2a0bea5da6e27e634632eaf78f742a15fb"
+          },
+          "game_state/shining_abode/faction_chronicles.json": {
+            "present": true,
+            "bytes": 3669,
+            "sha256": "c43c647883df9cd5402dd60d8416070bb53cc674eeb8de517faa588977664cff"
+          },
+          "game_state/world/current_location.json": {
+            "present": true,
+            "bytes": 5783,
+            "sha256": "aed6fe35f610feb93ea29db2b46086edc1deec59d96b7e8c8620c851c04c919c"
+          },
+          "game_state/world/location_identity_index.json": {
+            "present": true,
+            "bytes": 481,
+            "sha256": "99f60feba92b2d72943227979bac4d165e265ddd4013fd07e397f35c0feba09c"
+          },
+          "game_state/world/world_map.json": {
+            "present": true,
+            "bytes": 5687,
+            "sha256": "d1d42d1b7eef7679ec6b4a5b8b953c7f3020e5a5aa1c7001694e8878d2d42a31"
+          },
+          "game_state/world/world_time.json": {
+            "present": true,
+            "bytes": 112,
+            "sha256": "4580e41d6ed481e03b444cfd9689c5e830ce67b7388dc04a23a83acbfd753233"
+          },
+          "game_state/wounds/mortal_qte_decision_publication.json": {
+            "present": true,
+            "bytes": 227782,
+            "sha256": "20fc2fa15437f743e7650f976a8697f45ea714302cacbe430fe5aeaa4b49e259"
+          },
+          "game_state/wounds/wound_history.json": {
+            "present": true,
+            "bytes": 22117,
+            "sha256": "0308a9aab007b178e2ea30cd3dea619c2be8dadff904f3d2e25123fee9931572"
+          },
+          "game_state/wounds/wound_identity_index.json": {
+            "present": true,
+            "bytes": 1121,
+            "sha256": "9fcaba88da1406bea34c84a2515a71e673105525ddf29bd88ae6ff39da323eb3"
+          },
+          "game_state/wounds/wound_opportunity_receipts.json": {
+            "present": true,
+            "bytes": 2480,
+            "sha256": "f6ed0dbf7a26c2099128a33b0511339c6f307197f3bfbf638cf75941d7825a0f"
+          },
+          "lore/chaos_sea/cosmology.json": {
+            "present": true,
+            "bytes": 2047,
+            "sha256": "fec13c4f2430d3e7318f3ebb6f186883bfbeede0bb417f2ce5ced13405a104cd"
+          },
+          "lore/codex_entries.json": {
+            "present": true,
+            "bytes": 4112,
+            "sha256": "937670566ef62459066fe5a994fe2c5f23a2a837b508855897e58913ef3f204c"
+          },
+          "lore/current_world/cultures.json": {
+            "present": true,
+            "bytes": 1006,
+            "sha256": "56f3acb7a5909210da08827d10ae089c4cfef5740600d2fa31cb1949fbba0c5d"
+          },
+          "lore/current_world/geography.json": {
+            "present": true,
+            "bytes": 995,
+            "sha256": "4c80352d019abc2153c70c860b8fecd08c13618e7d1c9f2de677b8a2d050285c"
+          },
+          "lore/current_world/history.json": {
+            "present": true,
+            "bytes": 950,
+            "sha256": "901a86d97b1f4a2601dc6c6d6cd7dd2d7f7e0e99dae6483b3b7a633a662c8b21"
+          },
+          "lore/current_world/threats.json": {
+            "present": true,
+            "bytes": 764,
+            "sha256": "a9a941fdc517262b29090b8cd782b2e3e6f779a45ef1db176d328b94b20b70c6"
+          },
+          "lore/current_world/world_directives_draft_example.md": {
+            "present": true,
+            "bytes": 1040,
+            "sha256": "4fa097fa95c8af22eba1901fdbee3d8de544089038de4888a6521add23ff1547"
+          },
+          "lore/current_world/world_setting.json": {
+            "present": true,
+            "bytes": 1095,
+            "sha256": "72792cb8026ef61118b9ebdc294272cf371717680dd7287bb36103c24ca3cefb"
+          },
+          "mods/example_system_mod.json": {
+            "present": true,
+            "bytes": 503,
+            "sha256": "cb66a9bdc29ea9ea529c1934119e9c03ec9ca1ea08387c50e42005340015c369"
+          },
+          "mods/example_system_mod.md": {
+            "present": true,
+            "bytes": 548,
+            "sha256": "cd7e840fa6775e965a3eab204e40141a740800ed551f72173abe0e17ce885a9e"
+          },
+          "mods/example_system_mod.txt": {
+            "present": true,
+            "bytes": 807,
+            "sha256": "4d73b86eb51eb6ee198383f79fdc2452f5de421403c232e5aeb4954fc2e7e6ca"
+          },
+          "output/debug_logs.json": {
+            "present": true,
+            "bytes": 1064,
+            "sha256": "e965cb41aa431226a5ab7fb09b2bc335868e3f24702f03e63f1a7a9f60e9dd57"
+          },
+          "output/interface_updates.json": {
+            "present": true,
+            "bytes": 287,
+            "sha256": "574b4a13ba25c11c19b635eb5ddede3e9a3b547bd9cf476c17cabb8bb80459bc"
+          },
+          "output/narrative_response.json": {
+            "present": true,
+            "bytes": 395,
+            "sha256": "967a2f17621e50262b4f49a647f49132ff222cf87b749c2ef952a68d053fbd1c"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 81508,
+            "sha256": "d88967a7837eb579ef21a7383f42bb669e79500b8c17568acf15588af3ffd751"
+          },
+          "saves/manual_saves/chaos_sea_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 3700,
+            "sha256": "9b4e138d22d12229b3a756138ae75d34d104031b0ab90145f7b1e7a577cfd415"
+          },
+          "saves/manual_saves/first_character_save_metadata.json": {
+            "present": true,
+            "bytes": 869,
+            "sha256": "6412eedb4029b53fd56122fe393c55d641b4b4267e81fce83d56ebac2575a63a"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 103744,
+            "sha256": "22d7dcab87ee3a2452b801e8f49e4be7ce9187c4b6f2a4c148f360bc3fd2a55d"
+          },
+          "saves/manual_saves/mortal_world_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1672,
+            "sha256": "5eda2758a5a8e6ed892dbdd91cb5ed605650851adaaf7ea0c81accb20027e45f"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture.zip": {
+            "present": true,
+            "bytes": 35684,
+            "sha256": "822fd3e81578f7cfdfeba7d924a3d454bd9687efb90fa866c48dc49173adb735"
+          },
+          "saves/manual_saves/shining_abode_command_display_fixture_metadata.json": {
+            "present": true,
+            "bytes": 1540,
+            "sha256": "78fb89b27751e6f23bd893ab6ed62413da61bd33ddfb001d2bf1eb338cde1ae1"
+          },
+          "stories/mortal_life_2.jsonl": {
+            "present": true,
+            "bytes": 691,
+            "sha256": "88529861e1f6ed6dc3259d1d20e45072e2c6003e47238a8d69279ee456248656"
+          },
+          "world_profiles/example_world_profile.json": {
+            "present": true,
+            "bytes": 2603,
+            "sha256": "f62c409d898819de756c2b48a989d5b980511d626f29f2d8fbffae03602547f6"
+          },
+          "world_profiles/example_world_profile.md": {
+            "present": true,
+            "bytes": 674,
+            "sha256": "c54e577a6264219d2713ed964c47eb89d7d3cad1c775a2c20667ab0cbf6353c4"
+          },
+          "world_profiles/example_world_profile.txt": {
+            "present": true,
+            "bytes": 1455,
+            "sha256": "9e0ea1fdaa81c94235e0a6fedaf60f99974ce83ebe3bb26efbbd20a2916a64f7"
+          },
+          "$sessionGeneration": {
+            "present": true,
+            "bytes": 69,
+            "sha256": "b079a3816ebd389487b231724ff12e8e5ee5574e82518479e5ebc6068b7c209d"
+          }
+        }
+      },
+      "logs": "Engine diagnostics:\nJoint story and runtime turn 43 completed once after newly published late joint completion; owned terminal cleanup verified.",
+      "result": {
+        "version": 1,
+        "state": "Published",
+        "binding": {
+          "sessionGeneration": "4e472d32c46f4f949e5a1e56d50da9cf",
+          "sessionId": "session_qte_story_append",
+          "requestId": "81e414e686d74421a7557fec2b46f9e6",
+          "snapshotToken": "76C096DEF2284619F271FFC520421A118BF0D46B89FB812AC60CF11D4E4E2A2C",
+          "turnNumber": 43,
+          "realm": "mortal_world",
+          "stageOrdinal": 1,
+          "readyOrdinal": 1,
+          "iterationOrdinal": 2,
+          "checkpointFingerprint": "sha256:8db8cb704394e47720f96ee94d7281de51d479c99ef8679e098373cea0c73671",
+          "operationKey": "operation_fr063_joint_completion",
+          "attemptId": "wound_treatment_attempt_dc947d3089811294d2ffabc859d8539833f57cbca32d9be35293a62b56a6e534",
+          "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b"
+        },
+        "legacyPendingFingerprint": "sha256:a0c6dab4ad74473fc904a93d8c5c4f1ec8558273179b9746ea471d2fc7a273a1",
+        "sourceAssociationFingerprint": "sha256:82f854df708cd9ce795ce854276121f8e8532e89bbd913814216808a5df21b9f",
+        "beforeImage": {
+          "present": true,
+          "base64": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+          "sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+        },
+        "afterImage": {
+          "present": true,
+          "base64": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE2OjU0OjI0LjM4ODQ0MTIrMDA6MDAiCn0=",
+          "sha256": "574B4A13BA25C11C19B635EB5DDEDE3E9A3B547BD9CF476C17CABB8BB80459BC"
+        },
+        "normalization": "Changed",
+        "fallback": {
+          "required": true,
+          "sampled": true,
+          "value": "2026-10-18T16:54:24.3884412+00:00"
+        },
+        "timestampCheck": {
+          "document": "Object",
+          "timestamp": "ParseAccepted"
+        },
+        "issues": [],
+        "resultFingerprint": "sha256:873c673f7a4013a54966bef1e38fe4fd39f08abe60ac7c11f1748a0fc2c4f53d",
+        "fingerprint": "sha256:b745d0871bb5601ec22450ad35ad5c634e0334c61dab89c0a2443ded36fde35a"
+      }
+    }
+  ],
+  "cleanupRows": [
+    {
+      "observation": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "sources": [
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-165315-335-61837-15eefdc0e4b846f3aa3f58326de91a15-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "observation": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-gameengine-turnlifecycle-0d7753c13f8a47e1a95b74fff1f4025d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "sources": [
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-165315-335-61837-15eefdc0e4b846f3aa3f58326de91a15-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:4c22ad9b-5dcf-41f9-8e5e-0e1f940d9ba2",
+          "line": 7
+        }
+      ]
+    }
+  ],
+  "jsonParseErrors": [],
+  "transportUniqueRows": 7,
+  "cut": {
+    "Pid": 61993,
+    "BirthTick": 2702213,
+    "Nonce": "76c9d879718047dc85b229bba3af89e6",
+    "Root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+    "Cut": 1,
+    "Phase": "MemberPublished",
+    "Index": 1,
+    "CommonCallbacks": 0,
+    "Turn": 42,
+    "FirstMarker": null
+  },
+  "censuses": {
+    "before": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-actual-before-census-b51375ba-20261018.json",
+      "sha256": "cc952e6c5739ca44feeb9fe4db3f526475799c2fdfcfeed86b8874f010993cad",
+      "entries": 159,
+      "startedUtc": "2026-10-18T16:53:10.689428+00:00",
+      "finishedUtc": "2026-10-18T16:53:10.721372+00:00",
+      "cleanBoundary": true,
+      "active": [],
+      "unknown": [],
+      "ownedRoots": [],
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 61810,
+          "expectedStartTick": 2699860,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ],
+      "gapSeconds": 1.812668,
+      "scope": "Dated observation only, no continuous absence or reconstruction."
+    },
+    "after": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-actual-after-census-b51375ba-20261018.json",
+      "sha256": "b5f0e68a10e000324b88e5481b7f84427a232103322ebd1bf3672a4081f47258",
+      "entries": 159,
+      "startedUtc": "2026-10-18T16:58:14.795723+00:00",
+      "finishedUtc": "2026-10-18T16:58:14.832892+00:00",
+      "cleanBoundary": true,
+      "active": [],
+      "unknown": [],
+      "ownedRoots": [],
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 62246,
+          "expectedStartTick": 2730272,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ],
+      "gapSeconds": 5.740139,
+      "scope": "Dated observation only, no continuous absence or reconstruction."
+    }
+  },
+  "frozenSeparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-actual-frozen-separation-b51375ba-20261018.json",
+    "sha256": "731d560755c45e71b05179fb288e6e81e2d20075035b8a213c8b13466c1c4f85",
+    "record": {
+      "kind": "READ_ONLY_FROZEN_CURRENT_CLOUD_ROOTS_SEPARATION",
+      "checkedUtc": "2026-10-18T16:53:10.592378+00:00",
+      "actualSource": "801229a1d301cc3526b451c95cc71953f89f1f62",
+      "mode": "diagnostic1",
+      "newMutableRoot": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "physicalCloudUnchanged": true,
+      "frozenRoots": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "verifiedFiles": 237,
+      "unchanged": true,
+      "limits": "Read-only current-cloud frozen fixtures only; no root/process intervention, no old66529 access, no continuous absence claim."
+    }
+  },
+  "recovery": [
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-9793e320.json",
+        "bytes": 7995,
+        "sha256": "bbb6a52fe51af9a9730ede4d5b57223acd2a3d23f0de68d16530c30d0ba6c369"
+      },
+      "base": "801229a1d301cc3526b451c95cc71953f89f1f62",
+      "sha": "9793e320bef881462ef7dbac847f748e645ab324",
+      "paths": 20
+    }
+  ],
+  "checksPassed": 2870,
+  "findings": [],
+  "qualifiedBeforeAndAfter": 52,
+  "countsToward57": false,
+  "runtimeReleaseOrRemedy": false,
+  "limits": [
+    "No native/test/build/discovery/controller/observer/process action or live fixture-root read; report/check files only.",
+    "Original failure/timeout is preserved independently of reader findings. No TRX or zero summary counts never proves that no case ran.",
+    "Per-child stdout attribution only; identical transport copies deduplicated with locations retained. No pooling across roots/nonces/cases.",
+    "Dated snapshots do not prove continuous absence. No old missing diagnostics reconstructed, and no automatic product-versus-fixture diagnosis or retry.",
+    "This diagnostic Fact is outside57 and cannot qualify any of the five original crash targets."
+  ]
+}

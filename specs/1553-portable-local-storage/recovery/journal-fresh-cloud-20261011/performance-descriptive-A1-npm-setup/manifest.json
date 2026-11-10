@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "a179521aa60201a8bb04b08301e4c39e036fefb9",
+  "Command": "npm ci --prefix BookOfEternityClient.WebFrontend --cache /workspace/boe-cloud-tools-20261011/npm-cache",
+  "ExitCode": 0,
+  "ModelCalls": 0,
+  "OwnedSetupRoot": "/workspace/1553-performance-A-20261011",
+  "Qualification": "Standard prerequisite setup after independently classified0-execution refusal.64packages installed,typescript/bin/tsc now exists, package/lock byte pins unchanged and equal B, A source clean. No tests/chain/acceptance or latency measurement. No measured arm replaced. Existing selected fresh A source/DLL pins remain valid; actual A1 still unrun.",
+  "SourcePins": {
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c"
+  },
+  "Files": [
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "ba594150faa10b8f003189932eb1496ec721279c8215075ab051b93a44f74139",
+      "RawBytes": 25
+    }
+  ]
+}

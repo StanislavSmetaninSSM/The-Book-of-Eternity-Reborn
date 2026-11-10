@@ -1,0 +1,558 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC2_FRESH_ZERO3_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-18T17:35:23.206718+00:00",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+  "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+  "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+  "findings": [],
+  "artifacts": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_prep.py",
+      "bytes": 28964,
+      "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+    },
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+      "bytes": 29373,
+      "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+    },
+    "readerReady": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+      "bytes": 3090,
+      "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+    },
+    "sourceReport": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+      "bytes": 14011,
+      "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+    },
+    "candidateRecovery": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-213c43d0.json",
+      "bytes": 18471,
+      "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+    },
+    "sourceAcceptanceRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-acceptance-recovery-5aa8673e-20261018.json",
+      "sha256": "c2c57670bb80480f342d13046d59e6876555cd7bd94f9c8ce463c7cc1f554614",
+      "bytes": 6467
+    },
+    "sourceAcceptanceParentReadback": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-acceptance-parent-readback-5aa8673e-20261018.json",
+      "sha256": "b2b92656616e3198d46f9512ae0b4506ed16b7d383021894389ed26905ba28c3",
+      "bytes": 429
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-crash-diagnostic2-preparation-de0f3e20-files-20261018/archive.json",
+      "sha256": "2e0f67424b02a243d6da54169ea17faa0eaeec4c5776fce850885941b8d40705",
+      "bytes": 17842,
+      "rawChains": 32
+    }
+  },
+  "verification": {
+    "preparedCheckerUnchanged": true,
+    "readerInvocations": 1,
+    "readerFailures": [],
+    "rawChains": 32,
+    "allOriginalStoredDecompressedRestoredBytesMatched": true,
+    "completeRawCoverage": true,
+    "sourcePins": 101,
+    "productPaths": 23,
+    "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+    "authoredLedgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "externalClosure": {
+      "sampler": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+        "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+        "bytes": 15006
+      },
+      "wrapper": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+        "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+        "bytes": 5867
+      },
+      "environmentShell": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+        "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+        "bytes": 902
+      },
+      "discriminators": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+        "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+        "bytes": 5041
+      },
+      "fakeProcChecker": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+        "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+        "bytes": 11225
+      },
+      "fakeProcProof": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+        "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+        "bytes": 4170
+      },
+      "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+      "status": "INDEPENDENT_SOURCE_ACCEPTED_ZERO3_UNRUN",
+      "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+    },
+    "writerFakeProof": {
+      "checks": 83,
+      "exactSourceAndCheckerBound": true,
+      "nativeExecuted": false,
+      "notIndependentlyRerun": true
+    },
+    "catalog": {
+      "Valid": true,
+      "Methods": 11801,
+      "Categories": 809,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "93ddca6bf57104a15047ca181d08dbff8feba2db9c5fb80be910098f75698fbe",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 412.9717122180009,
+        "nativeWallSeconds": 405.4179788,
+        "timeoutMinutes": 10,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "Build-integration",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "Build-unit",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "5f4778bd1da5dad9040fdd26d002356128f3282841819c6d0597421bf19f1486",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 27.565249888000835,
+        "nativeWallSeconds": 22.2689722,
+        "timeoutMinutes": 30,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "diagnostic-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 15.62660223399871,
+        "nativeWallSeconds": 11.2780811,
+        "timeoutMinutes": 20,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ]
+        ]
+      }
+    ],
+    "builds": {
+      "Build-integration": {
+        "warnings": 148,
+        "errors": 0,
+        "codes": {
+          "CS8604": 9,
+          "xUnit1031": 4,
+          "xUnit2031": 34,
+          "xUnit1013": 18,
+          "xUnit2029": 7,
+          "xUnit2030": 1,
+          "CS8602": 37,
+          "CS1573": 15,
+          "xUnit2013": 2,
+          "CS0219": 1,
+          "xUnit2012": 2,
+          "xUnit2009": 1,
+          "CA1416": 3,
+          "CS9124": 1,
+          "CS1587": 3,
+          "CS8629": 1,
+          "CS8618": 2,
+          "CS8601": 2,
+          "CS1572": 5
+        }
+      },
+      "Build-unit": {
+        "warnings": 37,
+        "errors": 0,
+        "codes": {
+          "xUnit2031": 12,
+          "xUnit1031": 3,
+          "CA1416": 4,
+          "CS4014": 1,
+          "xUnit2009": 2,
+          "CS8600": 1,
+          "CS0649": 12,
+          "CS8602": 2
+        }
+      }
+    },
+    "warningComparison": {
+      "Build-integration": {
+        "added": [],
+        "removed": [],
+        "priorDistinct": 117,
+        "currentDistinct": 117
+      },
+      "Build-unit": {
+        "added": [],
+        "removed": [],
+        "priorDistinct": 27,
+        "currentDistinct": 27
+      }
+    },
+    "binaries": {
+      "copies": 9,
+      "completeFiles": 1575,
+      "allPhysicalPathsSizesHashesMatch": true,
+      "allPlansNoBuildExactContinuity": true,
+      "fourClientCopiesEqual": true,
+      "twoSupportCopiesEqual": true,
+      "clientSha256": "82ebc461a77bd493ecf5a668c2e6af57e1cb86b0fa6ca9e2f23a7e891a29ded7",
+      "selectedCopiesChangedDuringFreshCatalog": [
+        "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+      ]
+    },
+    "processLaunchRecords": [
+      {
+        "mode": "catalog",
+        "pid": 66033,
+        "startTick": 2885042,
+        "cmdlineCaptured": true,
+        "launchAndResultDirectoryBound": true
+      },
+      {
+        "mode": "plan",
+        "pid": 66718,
+        "startTick": 2930366,
+        "cmdlineCaptured": true,
+        "launchAndResultDirectoryBound": true
+      },
+      {
+        "mode": "diagnostic-plan",
+        "pid": 66960,
+        "startTick": 2933830,
+        "cmdlineCaptured": true,
+        "launchAndResultDirectoryBound": true
+      }
+    ],
+    "recovery": [
+      {
+        "carrier": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+        "base": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+        "changedPaths": 48,
+        "receiptSha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830",
+        "bytesHashesBlobsModesVerified": true
+      }
+    ]
+  },
+  "exactSelection": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0,
+      "exactMethodMapRef": {
+        "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+        "bytes": 29373,
+        "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+      }
+    },
+    "diagnostic": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "executed": 0,
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "category": "fr063-joint-interface-crash-diagnostic",
+      "outsideWhole57": true
+    },
+    "retained": {
+      "methods": 32,
+      "cases": 52,
+      "originalActualCompiledProvenancePreserved": true,
+      "notReplayed": true
+    },
+    "remainingOriginalCrashTheory": {
+      "methods": 1,
+      "cases": 5,
+      "status": "FROZEN_NATIVE124_INCOMPLETE_NO_TRX_NOT_RELEASED"
+    },
+    "selectionAssessment": "The unchanged diagnostic Fact calls the original cut1 helper with its strong assertions and scalar instrumentation. External sampler is observational only. Whole57 PlanOnly verifies identities without replay. No additional compatibility/game family is required for unchanged101 pins."
+  },
+  "isolation": {
+    "namespace": {
+      "identity": "ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+      "samePhysicalCloud": true,
+      "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+      "frozenRootsOutsideMutableNamespace": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+      "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic2-de0f3e20.sh",
+      "runtime": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/runtime",
+      "priorDiagnostic1Namespace": {
+        "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+        "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+        "samePhysicalCloud": true,
+        "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+        "frozenRootsOutsideMutableNamespace": [
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+          "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+        ],
+        "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+        "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+        "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
+      },
+      "mutableIsolation": "New disposable game/test/runtime/CLI/XDG roots in SAME physical cloud/boot; no prior mutable game state reused. Shared toolchain/NuGet dependencies only."
+    },
+    "environmentShellSha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+    "homeUnchanged": true,
+    "noSharedMutableGameplayState": true,
+    "samePhysicalCloudBoot": true,
+    "observer": {
+      "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+      "bytes": 7410,
+      "exactReviewedSource": true
+    },
+    "censusRefs": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-catalog-before-de0f3e20.json",
+        "sha256": "39bb3059d940532a4c4ea30dbceb5ed46992d4af6d0417b1f44bf4f819c4a0d8",
+        "bytes": 150597,
+        "phase": "crash-diagnostic2-catalog-before",
+        "cleanBoundary": true,
+        "entries": 169,
+        "datedBoundaryGapSeconds": 4.824392
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-catalog-after-de0f3e20.json",
+        "sha256": "59d761c8acbe934f4e83c0b067352311e18dd198df41dbc2571b54aae11622cd",
+        "bytes": 162102,
+        "phase": "crash-diagnostic2-catalog-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 2.082646
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-plan-before-de0f3e20.json",
+        "sha256": "a6e6029eaf82b3b6d5b8e52174643a22b1c1afc9749298fe7f13c083908fb1a3",
+        "bytes": 160000,
+        "phase": "crash-diagnostic2-plan-before",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 29.10248
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-plan-after-de0f3e20.json",
+        "sha256": "aa14360309dba7b55dffca719ea019a6fbae61a74b5e8baeeb041bcb4d605d23",
+        "bytes": 160011,
+        "phase": "crash-diagnostic2-plan-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 0.575764
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-diagnostic-plan-before-de0f3e20.json",
+        "sha256": "4c05af9def8e538524d47a18c879383b7b266ea591feb45c841aba0169407c27",
+        "bytes": 160009,
+        "phase": "crash-diagnostic2-diagnostic-plan-before",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 2.069502
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-diagnostic-plan-after-de0f3e20.json",
+        "sha256": "3c625aeb0ffc0e5871041d3fd71b360958a4d7418b28380da4c9133065d79321",
+        "bytes": 160022,
+        "phase": "crash-diagnostic2-diagnostic-plan-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 1.5219
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-prep-qualification-de0f3e20.json",
+        "sha256": "06100c422c032787ea8c6c3484111fcba8983014ac10034f761e4a249ffd89bb",
+        "bytes": 160000
+      }
+    ],
+    "censusCounts": [
+      169,
+      173,
+      173,
+      173,
+      173,
+      173,
+      173
+    ],
+    "datedBoundaryGaps": {
+      "catalog": {
+        "beforeFinishToStartSeconds": 4.824392,
+        "finishToAfterStartSeconds": 2.082646
+      },
+      "plan": {
+        "beforeFinishToStartSeconds": 29.10248,
+        "finishToAfterStartSeconds": 0.575764
+      },
+      "diagnostic-plan": {
+        "beforeFinishToStartSeconds": 2.069502,
+        "finishToAfterStartSeconds": 1.5219
+      }
+    },
+    "frozenRootChecks": [
+      {
+        "mode": "catalog",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-catalog-frozen-separation-de0f3e20.json",
+        "sha256": "2cdfc0d184c20d0512e761f7a8cffc07c7a431b79681c29bd98d515cd98ff54c",
+        "verifiedFiles": 237,
+        "checkedUtc": "2026-10-18T17:23:57.225514+00:00"
+      },
+      {
+        "mode": "plan",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-plan-frozen-separation-de0f3e20.json",
+        "sha256": "01930678501969ab12529d157b5f5bb6f13414cadceaaa400d6cc7cbc4dc527c",
+        "verifiedFiles": 237,
+        "checkedUtc": "2026-10-18T17:31:06.435107+00:00"
+      },
+      {
+        "mode": "diagnostic-plan",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-diagnostic-plan-frozen-separation-de0f3e20.json",
+        "sha256": "e24aae071024914a0ca7efab0f767b54ad00f4309bd935986087cd9db421da99",
+        "verifiedFiles": 237,
+        "checkedUtc": "2026-10-18T17:32:08.097452+00:00"
+      }
+    ],
+    "nativeOwnedTreeAndRuntimeCleanupSucceeded": true,
+    "ownedNamespacesEmpty": true,
+    "limits": "Seven dated v2 observations show no active task game/test process, UNKNOWN or owned mutable root at those times. Original exe-link arrays remain incomplete. Whole-plan before-finish to recorded controller start gap29.102480s is explicit; no instantaneous/continuous absence or gap reconstruction is claimed. All three frozen237 receipts are archived observations, not independent live retained-root reads. No elapsed snapshot cutoff was imposed; this ZERO-only dated gap does not authorize a later actual without fresh preflight."
+  },
+  "eligibility": {
+    "prepOnly": true,
+    "futureSingleReleaseProposal": {
+      "status": "SEPARATELY_NAMED_ONE_DIAGNOSTIC2_ACCOUNTING_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_CLEAN_PREFLIGHT",
+      "mode": "diagnostic2",
+      "controllerMode": "diagnostic1",
+      "label": "t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20",
+      "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+      "prepRecordSha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
+      "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+      "category": "fr063-joint-interface-crash-diagnostic",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "expectedDescriptors": 1,
+      "expectedMethods": 1,
+      "expectedCases": 1,
+      "countsToward57": false,
+      "childTimeoutSeconds": 220,
+      "categoryTimeoutSeconds": 900
+    },
+    "acceptanceSaveConditions": [
+      "Preserve previous pending preparation/release fields historically and set current packet/cloud.crashDiagnostic2 freshPreparation/PREP acceptance to this verdict without rewriting original records. Keep101 pins and all six external input bytes unchanged.",
+      "Save/push/exact remote/full independent GitHub recovery/readback of acceptance and explicit one-mode release before invocation. No automatic actual is implied by this report.",
+      "Use versioned wrapper and exact de0f environment. Immediately before the one invocation require authoritative clean global/newnamespace v2 and frozen237 exact file-set/byte gate. Current owned game roots/active/UNKNOWN must stop launch.",
+      "Bind the exact diagnostic-plan original/path/hash, compiled5aa8673e, unique diagnostic2 label and unchanged FIRST diagnostic1 mode. NoBuild, one original invocation, same220s child/900s category and all assertions.",
+      "Preserve controller-native outcome separately from observer errors. Same-invocation after-census precedes profile finalization; any observer gap/error holds further progression without intervening in native.",
+      "Archive every original native record/log/TRX-or-explicit-absence/join/scalar/profile/status/census/frozen-check byte and save/push/recover before independent outcome and causal review. Do not infer PASS from native alone or zero counts from absence of TRX."
+    ],
+    "noReleaseFor": [
+      "original crash5 retry",
+      "any retained52 case replay",
+      "budget increase",
+      "additional profiling iteration",
+      "whole-runtime or57-target PASS"
+    ]
+  },
+  "jointStopRule": {
+    "exactlyOne": "Only the user-authorized one external-accounting cut1 is eligible after the above separate gate. It remains outside57 and qualified52 unchanged regardless of diagnostic nativePASS.",
+    "predeclaredDiscriminators": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+      "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+      "bytes": 5041
+    },
+    "observations": "Use exact PID+kernel-birth/root/cut/nonce membership, stable sampled intervals, process CPU distinct from thread CPU, I/O and dated task waits, overhead/gaps and raw cgroup mapping. LowCPU/futex alone does not prove a managed lock; target pressure needs actual cgroup governance; shared totals/current snapshots never reconstruct old runs.",
+    "requiredOutcome": "After saved original, issue a concrete joint verdict: proven defect plus narrow remedy; or quantified justified environment-test-budget proposal with separate performance hold; or honest bounded blocker. No endless same diagnostic chain, automatic retry, speculative product optimization or coverage advancement from diagnostics/budget."
+  },
+  "preservedHistory": {
+    "qualifiedDistinctTargets": 52,
+    "diagnostic1Original": "native0/1PASS outside57 and old-timeout cause unresolved",
+    "newOriginalCrash5": "native124/noTRX/incomplete plus directly observed cut1/cut2 timeouts,247 archived raw chains and237 retained frozen-root files",
+    "oldCorrectedCrash66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "earlierFailuresAndReaderHistory": "All saved source/PREP/runtime original outcomes and utility histories preserved; no reader failure in this PREP invocation."
+  },
+  "reviewLimits": "Read-only original records, saved source, build inventories, archives and Git recovery only. No build/discovery/test/native/sampler/wrapper/observer/fake-proc execution, live retained-root/process inspection, intervention or repo edit by reviewer. SOURCE/PREP do not establish product runtime PASS or cross-build equivalence for retained52. FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 blocked/no retry, CI/main/merge/force/delete/issues/secrets prohibitions unchanged."
+}

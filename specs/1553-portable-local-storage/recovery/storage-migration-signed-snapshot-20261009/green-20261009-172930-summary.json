@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "portable-signed-preparation-cleanup-alias-linux",
+    "portable-signed-snapshot-authority-neighbors",
+    "portable-signed-snapshot-spelling-linux",
+    "portable-save-archive-exact-listing-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "15555367fed888ec4ac82bfe520188decc2d5547",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0506563,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0423567,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0844329,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 45.8622211,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 13.4086631,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0038471,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 16,
+  "WallTime": "00:01:06.7071354",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 42,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-save-archive-exact-listing-linux-integration-001",
+      "portable-signed-preparation-cleanup-alias-linux-integration-002",
+      "portable-signed-snapshot-authority-neighbors-unit-003",
+      "portable-signed-snapshot-spelling-linux-integration-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

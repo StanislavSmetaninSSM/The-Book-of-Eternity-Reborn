@@ -1,0 +1,65 @@
+{
+  "SourceSHA": "a5bc70b592b90f874955a46b503199ba35c89d49",
+  "Method": "C preprocessor only and PowerShell parser; no linking, terminal/game/native admission/test execution.",
+  "Runs": [
+    {
+      "Command": [
+        "cc",
+        "-E",
+        "-dM",
+        "tests/fixtures/LinuxTerminal/neutral-cli.c"
+      ],
+      "ExitCode": 0,
+      "Macro": "#define BOE_NEUTRAL_FIXTURE_ALARM_SECONDS 8",
+      "Stderr": ""
+    },
+    {
+      "Command": [
+        "cc",
+        "-E",
+        "-dM",
+        "-DBOE_NEUTRAL_FIXTURE_ALARM_SECONDS=180",
+        "tests/fixtures/LinuxTerminal/neutral-cli.c"
+      ],
+      "ExitCode": 0,
+      "Macro": "#define BOE_NEUTRAL_FIXTURE_ALARM_SECONDS 180",
+      "Stderr": ""
+    },
+    {
+      "Command": [
+        "cc",
+        "-E",
+        "-dM",
+        "-DBOE_NEUTRAL_FIXTURE_ALARM_SECONDS=7",
+        "tests/fixtures/LinuxTerminal/neutral-cli.c"
+      ],
+      "ExitCode": 1,
+      "Macro": "#define BOE_NEUTRAL_FIXTURE_ALARM_SECONDS 7",
+      "Stderr": "tests/fixtures/LinuxTerminal/neutral-cli.c:16:2: error: #error \"The inert terminal fixture requires a finite 8..180 second lifetime.\"\n   16 | #error \"The inert terminal fixture requires a finite 8..180 second lifetime.\"\n      |  ^~~~~\n"
+    },
+    {
+      "Command": [
+        "cc",
+        "-E",
+        "-dM",
+        "-DBOE_NEUTRAL_FIXTURE_ALARM_SECONDS=181",
+        "tests/fixtures/LinuxTerminal/neutral-cli.c"
+      ],
+      "ExitCode": 1,
+      "Macro": "#define BOE_NEUTRAL_FIXTURE_ALARM_SECONDS 181",
+      "Stderr": "tests/fixtures/LinuxTerminal/neutral-cli.c:16:2: error: #error \"The inert terminal fixture requires a finite 8..180 second lifetime.\"\n   16 | #error \"The inert terminal fixture requires a finite 8..180 second lifetime.\"\n      |  ^~~~~\n"
+    },
+    {
+      "Command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile((Join-Path (Get-Location) 'scripts/build-linux-supervisor.ps1'), [ref]$tokens, [ref]$errors) | Out-Null; if ($errors.Count) { $errors | Out-String | Write-Output; exit 1 }; 'ParserErrors=0'"
+      ],
+      "ExitCode": 0,
+      "Stdout": "ParserErrors=0\n",
+      "Stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "utc": "2026-10-16T19:37:50.494014+00:00",
+  "candidate": "f186abee075654859d536073d8a582f213af0529",
+  "audit": "Root-cause review after two insufficient selected recovery scopes, before a third attempt",
+  "prior_selected_file_count": 1348,
+  "correctly_verified_five_report_union": 145,
+  "additional_reports": [
+    {
+      "report": "t179pd-hot-custody-finite-causal-fixture-design-20261016.json",
+      "sha256": "9203d9fe4bff8dbb70e0bbe3ff247a7a448564c79de737c0d5515eebacbccf7a",
+      "pins": 24,
+      "missing_in_1348": [
+        "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProjectionControls.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRepair.cs",
+        "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
+        "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+      ]
+    },
+    {
+      "report": "t179pd-hot-custody-red2-source-independent-review-20261016.json",
+      "sha256": "2fbb7d034b9742e6bf98867e57b864da65dfbe88e3fefce7c4d4294986a7867c",
+      "pins": 41,
+      "missing_in_1348": [
+        "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+        "BookOfEternityClient/Services/LiveTurnPreparationService.cs"
+      ]
+    },
+    {
+      "report": "t179pd-hot-custody-red2-owned-source-independent-review-20261016.json",
+      "sha256": "17f28e83864ab8796265942e0a401a1d54965f517391cf7400d745e58cd109ed",
+      "pins": 34,
+      "missing_in_1348": [
+        "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs"
+      ]
+    }
+  ],
+  "complete_eight_report_required_union": 197,
+  "omitted_concrete_paths": [
+    "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserConsumerProfile.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryProjectionControls.cs",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+    "BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRepair.cs",
+    "BookOfEternityClient.IntegrationTests/SessionGenerationCheckpointFixture.cs",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserWaitParticipation.cs",
+    "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+    "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+    "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs"
+  ],
+  "initial_readonly_audit_assertion": {
+    "assumed_union": 162,
+    "measured_union": 197,
+    "reason": "The 17 missing paths are not the whole added union: 35 newly referenced paths already existed in the old selected receipt. The initial audit incorrectly added only the missing count. Corrected before recording a recovery claim; no test/runtime/source artifacts changed."
+  },
+  "confirmed_cause": "A baseline sparse profile plus delta and manually selected earlier design reports omits later unchanged fixture/caller dependencies. Pin lists are finite evidence references, not a stable transitive source-dependency registry.",
+  "correction": "Use a NEW GitHub-only FULL current working-tree checkout under /workspace and verify EVERY tracked path/mode/byte against exact Git blobs and writer. Do not append another guessed selector list.",
+  "capacity": {
+    "current_tracked_files": 54127,
+    "current_tracked_bytes": 3555520347,
+    "workspace_free_approx_gib": 23
+  },
+  "preservation": "Prior selected receipts/root audits and independent blocked/source reports remain immutable accurate history for their selected scope; full-3b recovery wording is superseded by R01.",
+  "runtime_status": "No new actuals. Compiledd474/fourDLLs/preparation/selection unchanged; no repeated build/discovery/tests justified by helper/docs-only correction.",
+  "limits": "Full current source recovery is not a restored build/runtime, external dependency qualification or full Git history claim. R01 remainsOPEN until actual full recovery and affected independent review."
+}

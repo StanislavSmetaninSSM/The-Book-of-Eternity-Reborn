@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-engine-snapshot-exact-names-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1a4dcbc22e21f6eb31f0849ddb2b60d44b7f6012",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 55.4419065,
+  "Descriptors": [
+    {
+      "Name": "portable-engine-snapshot-exact-names-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-snapshot-exact-names-linux",
+      "Categories": [
+        "portable-engine-snapshot-exact-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineBaselineValidatesSuppliedRollbackBeforeChangingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineCleanupValidatesRawPreservedPathsBeforeDeletingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 25,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineBaselineValidatesSuppliedRollbackBeforeChangingEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineCleanupValidatesRawPreservedPathsBeforeDeletingEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence",
+          "Cases": 16
+        }
+      ]
+    }
+  ]
+}

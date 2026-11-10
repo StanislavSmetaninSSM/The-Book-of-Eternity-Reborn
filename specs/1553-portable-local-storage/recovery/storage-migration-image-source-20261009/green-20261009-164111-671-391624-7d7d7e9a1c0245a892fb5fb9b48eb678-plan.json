@@ -1,0 +1,84 @@
+{
+  "Categories": [
+    "portable-image-export-known",
+    "portable-image-source-admission-linux",
+    "portable-image-scene-prompt-spelling"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "570ce89eacf82ff8ca6e5797ba3f83232964f2fc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.9103172,
+  "Descriptors": [
+    {
+      "Name": "portable-image-export-known-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-export-known",
+      "Categories": [
+        "portable-image-export-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_CopiesLatestVersionToTargetDirectory|FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_DoesNotOverwriteExistingFileUnlessAllowed|FullyQualifiedName=BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_MissingSource_ReturnsClearFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_CopiesLatestVersionToTargetDirectory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_DoesNotOverwriteExistingFileUnlessAllowed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_MissingSource_ReturnsClearFailure",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-image-scene-prompt-spelling-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-image-scene-prompt-spelling",
+      "Categories": [
+        "portable-image-scene-prompt-spelling"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageScenePromptPathSpellingTests.ScenePromptClassificationDoesNotValidateUnrelatedText",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageScenePromptPathSpellingTests.ScenePromptClassificationDoesNotValidateUnrelatedText",
+          "Cases": 12
+        }
+      ]
+    },
+    {
+      "Name": "portable-image-source-admission-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-source-admission-linux",
+      "Categories": [
+        "portable-image-source-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageSourceAdmissionTests.OriginalImageSourcesAdmitBeforeLookupExportOrScene",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageSourceAdmissionTests.OriginalImageSourcesAdmitBeforeLookupExportOrScene",
+          "Cases": 13
+        }
+      ]
+    }
+  ]
+}

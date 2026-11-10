@@ -1,0 +1,252 @@
+{
+  "task": "#1536 US5-RO2 final bounded independent evidence acceptance",
+  "utc": "2026-10-15 23:03:06 UTC",
+  "reviewer": {
+    "role": "independent evidence reviewer",
+    "configuration": "Astra XHigh requested/inherited",
+    "actualBackendTelemetry": "unavailable; no backend model/effort claim"
+  },
+  "outcome": "ACCEPT bounded US5-RO2 read-only existing public console/browser status and synchronized guidance",
+  "materialFindings": [],
+  "evidence": {
+    "testedCompiledGit": "737092c39f9d87af1f588c96a22e7111570d36c2",
+    "packets": [
+      {
+        "file": "us5-ro2-history-actual-737092c39-20261015T225639Z-freeze.json",
+        "sha256": "74483c30c26540395092c72da9b84f46c2c8296681f51238c20749f02e069cbe",
+        "chains": 13,
+        "nativeExit": 0,
+        "wallTime": "00:00:24.2184393",
+        "tests": {
+          "Total": 96,
+          "Executed": 96,
+          "Passed": 96,
+          "Failed": 0
+        }
+      },
+      {
+        "file": "us5-ro2-history-catalog-737092c39-20261015T225610Z-freeze.json",
+        "sha256": "2dae41d0990c550ab9e7728484c37b0a3c07f46ad28079dc3df4538e18204734",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.3087546",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      },
+      {
+        "file": "us5-ro2-history-exact-plan-737092c39-20261015T225623Z-freeze.json",
+        "sha256": "679f708d8bc441405c58805f80ab6716d97343bc78c7afaca21ed3c9df58da27",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:04.7248190",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      },
+      {
+        "file": "us5-ro2-history-fresh-both-737092c39-20261015T225310Z-freeze.json",
+        "sha256": "f4c48cff11a13bbe5534d4d3fd3c8c45a2eb57c5bdece5f8a830d867caf9627f",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:02:45.0189103",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      }
+    ],
+    "chainsVerified": 33,
+    "sourcePinsVerifiedAgainstTestedGit": 2644,
+    "currentPinsUnchanged": 2644,
+    "expectedCurrentSourceDeltas": [],
+    "binaryPinsFreshPreAllPacketsCurrentPost": 10,
+    "preBinaryRecordSha256": "d6c4dfa366b7ea1552490235f94c124eab6b1eee9c6fed04f4a0538963492a3c",
+    "rootReportSha256": "3dee72e38c65eb19ee54acff01bf262a5c93ee8bcd62f6c9219820b1d3f6c24c",
+    "plan": {
+      "methods": 53,
+      "cases": 96,
+      "descriptors": 7
+    },
+    "catalog": {
+      "Valid": true,
+      "Methods": 11653,
+      "Categories": 758,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "builds": [
+      {
+        "log": "Build-integration.log",
+        "warnings": "131",
+        "errors": 0
+      },
+      {
+        "log": "Build-unit.log",
+        "warnings": "35",
+        "errors": 0
+      }
+    ],
+    "rawTrxCasesVerified": 96,
+    "rawTrxIdentityRecordSha256": "52024d6b6e310d88254acc99115c7ad5addd37fc816bf8d0673c572684bc7462",
+    "descriptors": [
+      {
+        "descriptor": "documentation-afterlife-entrypoints-coverage-unit-001",
+        "cases": 2,
+        "passed": 2,
+        "strictRoots": 0,
+        "pureIntegrationCases": 0
+      },
+      {
+        "descriptor": "wounds-player-projection-unit-002",
+        "cases": 35,
+        "passed": 35,
+        "strictRoots": 0,
+        "pureIntegrationCases": 0
+      },
+      {
+        "descriptor": "wounds-player-read-integration-003",
+        "cases": 35,
+        "passed": 35,
+        "strictRoots": 35,
+        "pureIntegrationCases": 0
+      },
+      {
+        "descriptor": "wounds-player-status-guidance-integration-006",
+        "cases": 2,
+        "passed": 2,
+        "strictRoots": 0,
+        "pureIntegrationCases": 2
+      },
+      {
+        "descriptor": "wounds-player-status-guidance-unit-007",
+        "cases": 2,
+        "passed": 2,
+        "strictRoots": 0,
+        "pureIntegrationCases": 0
+      },
+      {
+        "descriptor": "wounds-player-status-integration-004",
+        "cases": 15,
+        "passed": 15,
+        "strictRoots": 15,
+        "pureIntegrationCases": 0
+      },
+      {
+        "descriptor": "wounds-player-status-unit-005",
+        "cases": 5,
+        "passed": 5,
+        "strictRoots": 0,
+        "pureIntegrationCases": 0
+      }
+    ],
+    "actualMethodCount": 53,
+    "strictDistinctAbsentRoots": 50,
+    "pureIntegrationCases": [
+      "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily",
+      "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JsonExamples_AreParseableOrExplicitlyExempted"
+    ],
+    "pureUnitCases": 44,
+    "unrunDescriptors": [],
+    "unrunCases": 0,
+    "historyProof": {
+      "consoleUtf8Sha256": "18b4af61a2a3b7cb2f248d97361059ff3f4d508e550cb4cbf50704cf47398d8c",
+      "consoleNameOccurrences": 2,
+      "fullName": "Известная зажившая рана",
+      "exactBrowserCard": {
+        "Title": "Известная зажившая рана",
+        "Subtitle": "Последняя тяжесть: I",
+        "Summary": "Рана зажила",
+        "Icon": "",
+        "Badges": [],
+        "Media": null,
+        "Facts": [
+          {
+            "Label": "Название",
+            "Value": "Известная зажившая рана"
+          }
+        ],
+        "Metrics": [],
+        "Hints": [],
+        "List": [],
+        "Nested": [],
+        "Cards": [],
+        "PrimaryAction": null
+      },
+      "matchesParentRootProof": true,
+      "technicalSummaryAbsent": true,
+      "rawFixtureIdsAndTechnicalFieldsAbsent": true
+    },
+    "reviewedSourceGit": "b0158bf33144408d5858fea4b1566c638bbec5bb",
+    "evidenceCarrierGit": "e9fb77348ac979eb4371527b7b731eac3d66085d",
+    "reviewedTestedCurrentPinnedInputsEqual": true,
+    "codeConfigInputs": 2557,
+    "documentInputs": 87,
+    "externalPreBinaryRecordEqualsTracked": true,
+    "categoryBudgetsSatisfied": true,
+    "collectorV3RawSha256": "408f8d026ee6cf7e869f45136f738a74bc545bb52e114e24c83a2090188bc641",
+    "parentRootReaderRawSha256": "9d2c858d3b6b0b5af159431e6e4c59b2920af6682785a193c510779d8e88be73",
+    "parentRootReaderGzipSha256": "1ef8d28800daab2c9cba345f0a66838f9a4546ac72a34595882ac97c6ac61dac",
+    "original92FailurePacketUnchangedSha256": "68a2760856202317ee8dbcce223c6a8e05ac7857c0f3996f34a0fe5b5019f339"
+  },
+  "acceptedScope": [
+    "Existing /статус and /status current-self read-only status through real console and browser transport entrypoints, coherent captured header/wound read boundary, current-realm projection and established UI blocks.",
+    "Visible known wounds and methods, Mortal typed declared requirements versus availability, spiritual known method names with generic declared conditions only, hidden/private/foreign/unavailable and literal-text boundaries.",
+    "Separate authenticated reconstructed terminal History; complete name visible in recorded console and browser card, with no action or technical source payload.",
+    "Applicable source ownership guards and synchronized GM/player guidance, exact manifest/example and afterlife entrypoint coverage."
+  ],
+  "nativeCoverage": {
+    "preparation": "Fresh BOTH native 0; 165.0189103 seconds; both projects 0 errors (integration 131 warnings, unit 35 warnings).",
+    "discovery": "Standalone catalog valid 758 categories/11653 methods; fresh and exact plans 53 methods/96 cases/7 descriptors; all preparation/catalog/plan stages zero execution.",
+    "actual": "Native 0; 24.2184393 seconds; 96/96 PASS, 7/7 complete descriptors, no skips, duplicates, timeout, or unrun selection.",
+    "receipts": "35 reader + 15 public status cases each have one strict distinct absolute absent owned-root receipt, true removal/inactive and explicit null failure. Exactly two approved pure documentation integration readers and 44 pure unit cases legitimately have no roots.",
+    "assertions": "All 15 public-status tests reached both actual entrypoints and complete owned-tree/no-mutation/no-repair assertions. History final full-name and technical-summary assertions now pass. All 35 reader, five source-guard, four guidance, two existing afterlife-entrypoint and 35 projection cases pass."
+  },
+  "historicalEvidence": {
+    "preserved": true,
+    "previousHealedNameFailure": "Original 60c actual remains 91 PASS/1 FAIL/4 UNRUN with immutable packet and accepted independent failure review.",
+    "oldClippedConsoleBytes": "unavailable; original header clipping mechanism remains a source-backed inference, not retroactively proven by new output",
+    "newHistoryProof": "Current raw TRX independently proves two full-name console occurrences, exact browser fact/title/summary agreement and no action/raw fixture ID/technical retained summary."
+  },
+  "trackingDisposition": {
+    "mayCompleteOnly": [
+      "US5-RO2 (T127 + applicable T128/T129) existing-status parity/privacy/read-only outline item",
+      "US5-RO2 GM/player synchronization outline item",
+      "US5-RO2 verification/reconciliation outline item"
+    ],
+    "ro1HistoricalCheckboxes": "Reconcile only to the already accepted RO1 reports; this report does not enlarge their scope.",
+    "mustRemainOpen": [
+      "Full T113/T119/T127-T129 and guided US5",
+      "Full FR063/T070/#1536",
+      "Lawful ACTIVE stats/level-up/new-QTE architecture"
+    ],
+    "nextAuthorityDecision": "Retain the 094409 accepted assessment: lawful ACTIVE requires a bounded exact authority/schema/member design decision; no new decision or implementation authority is supplied here.",
+    "nativeReruns": "No additional passing native/build repetition is needed or released absent a new material concern or relevant source change."
+  },
+  "limits": [
+    "No frontend DOM or visual runtime claim; existing React text path has static source-guard coverage.",
+    "Spiritual executable application codec, provider/quote workflow, guided actions/staging and full treatment-only History remain outside this slice.",
+    "Terminal fixture uses genuine strict reconstruction evidence, not a grant of live publication/ACTIVE authority.",
+    "No new authority, storage or membership; previous failures and scope limits remain intact.",
+    "Primary reports remote publication and GitHub-only clean recovery; reviewer independently verified local clean carrier HEAD, immutable Git inputs and original evidence bytes, not remote recovery."
+  ],
+  "finalState": {
+    "reviewerNativeExecutions": 0,
+    "reviewerTrackedEdits": 0,
+    "reportFiles": [
+      "/workspace/boe-fr063-tools-20261015/us5-ro2-final-connected-independent-evidence-20261015T230306Z-review.md",
+      "/workspace/boe-fr063-tools-20261015/us5-ro2-final-connected-independent-evidence-20261015T230306Z-review.json"
+    ],
+    "pendingReviewerWrites": 0,
+    "stop": "FINALSTOP"
+  }
+}
+

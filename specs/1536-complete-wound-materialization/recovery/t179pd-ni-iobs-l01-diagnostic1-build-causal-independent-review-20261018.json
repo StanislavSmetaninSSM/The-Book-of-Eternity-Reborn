@@ -1,0 +1,65 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_COMPILER_FAILURE_CAUSAL_REVIEW",
+  "reviewedUtc": "2026-10-18T16:34:17.279810+00:00",
+  "verdict": "CONFIRM_BUILD_FAILURE_AND_ACCEPT_ONE_LINE_IMPORT_FIX_PLAN_ONLY",
+  "carrier": "c66d33592622c59261e08c2cb739a61fbf1955a9",
+  "attemptSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-prep-catalog-frozen-f57baaa8-files-20261018/archive.json",
+    "bytes": 6568,
+    "sha256": "e50b8656e8b82bdf0c7125e63541a803bf6ee8c3d6cf230164dab32a94f7edbf",
+    "rawChains": 8
+  },
+  "recordSha256": "123724fa7b7e934ddb09882a8f511035abfb3216eb0e030117cd14991ca62963",
+  "evidence": {
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-build-causal-independent-check-c66d3359-20261018.json",
+      "bytes": 4748,
+      "sha256": "8d1e733b2aed0421c81e5d4ac6d87a067703ede7315b6711672bc96ee9104ff5"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_build_failure.py",
+      "bytes": 6521,
+      "sha256": "a84edf9a524e862c7997cfbd020209b29303207b77a467d406b48cab8fdd7b55"
+    },
+    "recovery": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-c66d3359.json",
+      "bytes": 7670,
+      "sha256": "7e85a752bf5e49fa2d1db971cb7e41047e33af1ff3c33642260546f05a2cca54"
+    }
+  },
+  "facts": {
+    "nativeExit": 1,
+    "actualTestsExecuted": 0,
+    "seconds": 333.9087935660027,
+    "integrationBuildFailed": true,
+    "compilerErrors": [
+      "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs(240,9): error CS0246: The type or namespace name 'ILogger<>' could not be found (are you missing a using directive or an assembly reference?) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+    ],
+    "catalogDiscoveryReached": false,
+    "unitBuildReached": false,
+    "wholeAndDiagnosticPlans": "UNRUN",
+    "noTRX": true,
+    "noTimeout": true,
+    "nativeOwnTreeAndRuntimeCleanup": true,
+    "newNamespaceBeforeAfterClean": true,
+    "frozenOldRootsBeforePhaseUnchanged": true,
+    "sourcePins": 101,
+    "productDelta": 23,
+    "restoredPathsVerified": 19,
+    "rawChainsVerified": 8
+  },
+  "cause": "Crash.cs240 adds unqualified ILogger<GameEngine> but imports only Microsoft.Extensions.Logging.Abstractions. Microsoft.Extensions.Logging is imported in the new partial source file only; ordinary using directives are scoped to their source/namespace region, not shared across partial declarations. This is a fixture compile defect, not a product runtime outcome.",
+  "reviewAccountability": "Independent SOURCE review missed the required namespace import. The mandatory fresh build exposed it before discovery or any test; earlier SOURCE acceptance does not become PREP acceptance.",
+  "minimalCorrection": "Add exactly using Microsoft.Extensions.Logging; to JointInterfaceCrash.cs (alternatively fully qualify this single ILogger<GameEngine> reference). Proposed import inverse restores the complete original file exactly; no production, assertion, child supervision, logger policy, selection or220/900 budget change is needed.",
+  "gates": [
+    "Preserve native1 catalog, all8 raw chains, original9b SOURCE/checker/readiness and census/frozen-root receipts unchanged. The record compiledSource denotes the attempted source, not a successfully built baseline.",
+    "Save/push/exactremote/recover the one-line source change with regenerated existing101 pins/digest and product23 unchanged; submit affected SOURCE before native work.",
+    "Use newly named fresh BOTH/catalog, whole57 and diagnostic1 ZERO3 after accepted SOURCE save/recovery/readback. Whole/diagnostic PlanOnly remain UNRUN until successful new catalog. No reuse/reclassification of failed catalog or old FIRST/census labels.",
+    "Keep prepared9b PREP checker and its readiness hash historical; adapt a separately preserved current checker only after the corrected accepted compiled SHA/environment/labels are concrete.",
+    "Independent fresh PREP must precede any separately named diagnostic1 actual. Diagnostic1 still never counts toward57 or releases crash5."
+  ],
+  "retention": "Qualified52 stays at original provenance; frozen newcrash5 native124/two observed timeouts/noTRX and both retained roots stay immutable; all older failures and old66529 UNKNOWN/unavailable unchanged. No broad replay or new test family.",
+  "currentStatus": "Fix plan accepted only. Corrected source/build/runtime are not accepted by this report.",
+  "limits": "Read-only frozen Git/archive/source/recovery evidence; no native/build/discovery/observer/process action, live retained-root inspection or repository edit by reviewer."
+}

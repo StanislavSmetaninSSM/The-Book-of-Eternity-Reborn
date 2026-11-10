@@ -1,0 +1,37 @@
+# FR063 Late2 effect-location refusal — read-only source diagnosis
+
+Current/tested source `76b7d5ffd997d018690494faef5740c5dfcc2c84`. Same retained sole Sol/cloud; actual backend/model/effort telemetry UNAVAILABLE. No repository/MD2/Git changes or project/compiler/test/runtime/fault/provider calls. Systematic debugging used existing frozen outcome and source only. No patch released or implemented.
+
+## Exact observed failure
+
+Fresh BOTH/exact plan/catalog are native0 with0 tests, official32methods/58cases/18descriptors and Valid746categories/11588methods. The only actual stage executed2 cases,0PASS/2FAIL, native1,34.0093501s, complete1/1, no timeout; two strict-cleanup receipts/absent roots are ROOT-frozen evidence. All old outcomes and checkpoint5PASS remain separate; later12 stages UNRUN/HELD.
+
+Both new in-memory snapshots are identical: checkpoint present, correctionReady=true, canonical refresh present, disposition PublicationUncertain, exactly2 issues with no row/field truncation. The first is `wound_plan_effect_diagnostic_location_invalid` at `prepared.effectOperationBatches[0].rootApplications[0]`; the second is `wound_plan_effect_stage_failed` at `acceptedTurn.wounds`. The test later fails at fixture676 because no turn43 energy Spend exists. The diagnostic now identifies an effect-planning refusal, not merely generic held42 or an initial severity error.
+
+## Causal source chain
+
+1. `GameEngine.MortalJointRepairCanonicalPublication.cs` builds the authenticated joint prepared stage, composes effect input, then calls `GetOrBuildWoundJointRepairEffectValidatedAsync`. The registry revalidates current private continuation/input agreement before invoking the one wound effect stage.
+2. `WoundAcceptedTurnPlanner.MortalJointRepair.cs:278–289` constructs that joint input using the common `EffectAcceptedTurnInputComposer.Compose`. The composer at274–289 supplies nonnull `SkillScopeAuthority`; it does not set `WoundApplicationLocations`, whose record default is null (`EffectAcceptedTurnPlan.cs:21–22`). The joint wrapper adds no mapping afterward.
+3. The first typed CREATE root has no selected-graph origin and is not the accepted-treatment/recovery continuation exception. `EffectAcceptedTurnPlanner.cs:3610–3627` requires one immutable original-proposal component coordinate whenever skill-scope or location context is present. With the joint input's scope present and map null, this exact guard deterministically emits the observed first issue and returns no application request. Source/target/parameter/carrier/event checks before it have reached this branch; they are not a reason to waive this diagnostic-coordinate gate.
+4. `WoundEffectBatchPlanner.AcceptEffectResult` (`WoundAcceptedTurnPlanner.cs:114–126`) retains that issue and appends the observed ordinary-effect-stage-failed wrapper because no effect plan exists.
+5. The actual joint publisher's effects-failure branch returns `Refused(effects.Issues)` before final/common/preflight/take/transaction publication. Its private Refused helper aborts the owned reservation and retains the two issues with disposition PublicationUncertain. In THIS source branch that enum is a blocked/refused result, not proof that a mechanical publication partially committed or that native storage publication exit was uncertain. Runtime remains42 with no Spend43; the unchanged strict completion oracle correctly fails.
+
+## Underlying omission versus fixture input
+
+The observed guard is supported by a concrete production composition omission: the new joint family never supplies the existing immutable acquisition diagnostic map. This is not evidence that the strict guard or player's corrected severity is wrong. A fixture cannot lawfully fix a private input map by adding public authority fields, injecting a capability or changing a sealed original. Existing ordinary production wiring supplies this client-derived map; the joint composer omits it for a CREATE with effects. The same source predicts refusal regardless of the actual public component index when the map stays null.
+
+That narrow source conclusion does not establish that adding the handoff completes the full scenario. Later component-scope, mechanic, resource, final, progression/story or fixture errors may remain; none is bypassed or qualified. The native observations do not contain every prepared/cached input object, and this diagnosis does not deserialize private authority as evidence. Independent EVIDENCE/source classification must assess this exact causal chain before a correction release.
+
+## Bounded proposed next source step (not implemented)
+
+Follow the existing ordinary producer contract, not a fallback display path. `WoundResponseInputComposer.ValidateSkillScopes` derives exact `woundDecisions[i].proposal.consequenceDefinitions[j].definition.components` coordinates from the freshly real corrected adapter command/transition, validating actual component skill scope. `EffectApplicationDiagnosticLocations.BindPreparedSources` (`EffectAcceptedTurnPlan.cs:69–79`) binds local refs to actual prepared source IDs. Ordinary WoundMaterialization validation performs that binding and EffectMaterialization forwards the result through `with { WoundApplicationLocations = ... }` before effect planning.
+
+The private joint owner should similarly derive/revalidate and bind that map from its actual source-bound corrected acquisition response/current guarded bytes, then include it in the SAME composed input before fingerprint/cache acceptance. Mapping is detached diagnostic provenance, never source/event/treatment authority; existing effect input fingerprints already include its fingerprint (`WoundAcceptedTurnPlan.cs:2440–2441`). Any retained private handoff must preserve freshness/seal recomputation and strict no-duplicate/ambiguous coordinate checks. Do not accept caller mapping/hash, invent accepted IDs, null skill-scope authority, mark CREATE as treatment continuation, relax TryResolve, merge vectors, add a second effect stage or weaken any fixture oracle. Exact minimal authoring surface/affected controls should be fixed from the chosen real producer seam after explicit release; this report does not authorize a patch or runtime.
+
+## Evidence and limits
+
+All155 frozen source pins still match; ten focused dependencies pinned in companion JSON. Manifest SHA256 `5ef3d53518ff80d49b220c219f7c1f11f245e7d31858a3213cec6f6fc9343d41`, frozen ROOT receipt `4b061d2946cc9200595d656ee6a3ade76eca8b281ff0c00296d41d6d1c3b8674`, and bounded snapshot readback `47e1fabb07001e2baab606e54239a0fd3db0553fb6310307938aee780fdac764` match. The49 original chains/raws remain untouched; no claim of independently re-verifying every compressed chain or every loaded dependency. Full files were read without large Before/After/base64 maps.
+
+Pure source locators d99635/e1297d ended exit1; the latter includes exact guessed missing `AcceptedTurnAuthorityRegistry.WoundCache.cs` stderr, retained in readback. Actual declarations/working call sites were located in existing plan/composer/validation sources. These are source-reading diagnostics, not project/security/transport failures. Bounded source displays sometimes truncated; pins and analysis use complete bytes. No production/helper behavior was executed to reconstruct an outcome.
+
+FINAL STOPPED. No pending tools or writes. Independent EVIDENCE and explicit followup precede any source correction or next actual. FullFR063/live/cold/newroot and prior open contours remain OPEN.

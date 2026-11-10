@@ -1,0 +1,44 @@
+{
+  "source_sha": "bda2747cdf341d8d6d462edab01c846838bba399",
+  "run": "TestResults/test-categories/20261016-080913-332-19860-343338b0fd8c405093fd0ea57168c9e0-categories",
+  "tests": {
+    "executed": 39,
+    "passed": 32,
+    "failed": 7
+  },
+  "failures": [
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt(alias: \"playerLevel\")",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt(alias: \"changes\")",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt(alias: \"experience\")",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.ChangedThreeRootPlan_UsesTheExistingOwnersUtf8Preamble",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.LoneNoncanonicalCaseAlias_RefusesInsteadOfConsumingOrIgnoringIt(alias: \"points\")",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 100, strengthBefore: 99, expectedStrength: 100)",
+    "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 2, strengthBefore: 3, expectedStrength: 4)"
+  ],
+  "artifacts": [
+    {
+      "path": "t179pa-review-red-20261016-summary.json",
+      "stored_sha256": "7b5604bfbdbd8a4c71efe8f24956e89de17d1f81ec5baa006cb1e268acc05c5f",
+      "raw_sha256": "7b5604bfbdbd8a4c71efe8f24956e89de17d1f81ec5baa006cb1e268acc05c5f",
+      "raw_bytes": 1464
+    },
+    {
+      "path": "t179pa-review-red-20261016-plan.json",
+      "stored_sha256": "2bcf819b0b0b8eb1698554a85a9430e795b2d2d80ebe487ef3ad6c6d782831f6",
+      "raw_sha256": "2bcf819b0b0b8eb1698554a85a9430e795b2d2d80ebe487ef3ad6c6d782831f6",
+      "raw_bytes": 5216
+    },
+    {
+      "path": "t179pa-review-red-20261016-fr063-automatic-calculation-unit-001.trx",
+      "stored_sha256": "be23a75752dcffa7a650e75bbaaf8191448030f2a73ede8228c5281a74c64b27",
+      "raw_sha256": "be23a75752dcffa7a650e75bbaaf8191448030f2a73ede8228c5281a74c64b27",
+      "raw_bytes": 76824
+    },
+    {
+      "path": "t179pa-review-red-20261016-dotnet-test.log.gz",
+      "stored_sha256": "5782863a48dd15c4ca15980fa802961e0781c543072a721e3917e8435b59b2ba",
+      "raw_sha256": "4a5000cc90d279c4fc3104b296a8856c6784cc1237c5a0c8b85f49966c339ca6",
+      "raw_bytes": 1772500
+    }
+  ]
+}

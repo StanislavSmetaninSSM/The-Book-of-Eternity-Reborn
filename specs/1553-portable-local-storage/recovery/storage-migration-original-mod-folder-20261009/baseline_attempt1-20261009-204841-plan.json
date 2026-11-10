@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "portable-original-mod-manifest-cache-linux",
+    "portable-original-world-profile-folder-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "208d6a2cfde38207c19bb5d174bdede93ccf04c2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 68.6180965,
+  "Descriptors": [
+    {
+      "Name": "portable-original-mod-manifest-cache-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-mod-manifest-cache-linux",
+      "Categories": [
+        "portable-original-mod-manifest-cache-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-mod-manifest-cache-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-original-mod-manifest-cache-linux",
+      "Categories": [
+        "portable-original-mod-manifest-cache-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged|FullyQualifiedName=BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-world-profile-folder-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-original-world-profile-folder-linux",
+      "Categories": [
+        "portable-original-world-profile-folder-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

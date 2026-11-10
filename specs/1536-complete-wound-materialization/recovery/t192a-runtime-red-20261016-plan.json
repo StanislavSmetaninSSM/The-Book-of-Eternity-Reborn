@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "fr063-action-boundary-calculation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a3c96dfb990c28f6cae2e76ae419ce4ca3dd2de0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.427026,
+  "Descriptors": [
+    {
+      "Name": "fr063-action-boundary-calculation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-action-boundary-calculation",
+      "Categories": [
+        "fr063-action-boundary-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_SceneUsesExactSceneAndDeclaredSuspendResumePolicy|FullyQualifiedName=BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_TurnsAdvanceOnceOnlyAtExactPhaseAndExpireAtOne|FullyQualifiedName=BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_UntilTimeExpiresAtEqualityOrLater|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ActionIdentity_BindsFullOriginalCoordinates|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.CalendarOnlyAbsoluteTime_IsAcceptedUnresolvedWithActualNullEffectTime|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_DoesNotTickOldOrNewTargetsButKeepsRealExpiryEvent|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_PreservesRealSceneAndSourceLoss|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_CannotImpersonateParentRequestOrSnapshot|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_NewRequestRetainsOriginalGameActionAndTurn|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.IncrementalTime_WithoutAbsoluteEpochKeepsRealDeltaAndNullableEffectTime|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_DuplicateInputIsNotAlreadyApplied|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_RejectsForeignTurnInsteadOfSuppressingIt|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NoTimeCommand_DoesNotReapplyConsumedIncrementalTime|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NumericAbsoluteTime_IsNotGuessedElapsedDuration|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.PendingClosure_KeepsRealTurnEndAndSchedulerRejectsReplay|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointActionBoundaryTests.TimeProjection_PreservesDifferentActualProgressionAndEffectReaderPriorities|FullyQualifiedName=BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_AfterlifeIgnoresStaleMortalTimeChange",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_SceneUsesExactSceneAndDeclaredSuspendResumePolicy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_TurnsAdvanceOnceOnlyAtExactPhaseAndExpireAtOne",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectLifecycleSchedulerTests.AdvanceLifetime_UntilTimeExpiresAtEqualityOrLater",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ActionIdentity_BindsFullOriginalCoordinates",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.CalendarOnlyAbsoluteTime_IsAcceptedUnresolvedWithActualNullEffectTime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_DoesNotTickOldOrNewTargetsButKeepsRealExpiryEvent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_PreservesRealSceneAndSourceLoss",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_CannotImpersonateParentRequestOrSnapshot",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_NewRequestRetainsOriginalGameActionAndTurn",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.IncrementalTime_WithoutAbsoluteEpochKeepsRealDeltaAndNullableEffectTime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_DuplicateInputIsNotAlreadyApplied",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_RejectsForeignTurnInsteadOfSuppressingIt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NoTimeCommand_DoesNotReapplyConsumedIncrementalTime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NumericAbsoluteTime_IsNotGuessedElapsedDuration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.PendingClosure_KeepsRealTurnEndAndSchedulerRejectsReplay",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.TimeProjection_PreservesDifferentActualProgressionAndEffectReaderPriorities",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.BuildControlForNextTurnAsync_AfterlifeIgnoresStaleMortalTimeChange",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

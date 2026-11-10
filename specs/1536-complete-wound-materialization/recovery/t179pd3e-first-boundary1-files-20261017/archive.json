@@ -1,0 +1,84 @@
+{
+  "kind": "EXACT_FIRST_PD3E_ORDINARY_BOUNDARY_RAW_ARCHIVE_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-17T18:06:45.488078+00:00",
+  "actualSource": "479a23a95436351960916a2dde065c577e962202",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "nativeExit": 1,
+  "rawChainCount": 9,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/479a23a95436351960916a2dde065c577e962202-ordinary-boundary1.FIRST.json",
+      "storedPath": "000-479a23a95436351960916a2dde065c577e962202-ordinary-boundary1.FIRST.json.gz",
+      "bytes": 294,
+      "sha256": "80c365d6dff56298359f4150bfeb04592f9f6baa05107cebc44ea169afe22f86",
+      "storedBytes": 244,
+      "storedSha256": "3ec56564e9c29b1286a12af55d5819fa539e3eb235381b9dd30d538e9256b12e"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-boundary-first-479a23a9-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 742,
+      "sha256": "d71f5cfbc660afba0b0276963d28c459f90e118281f30acda831aace3861a62d",
+      "storedBytes": 387,
+      "storedSha256": "08492fd2d7ca598444a92acffe0de8e5d05e12879c93e2214178e81746c7f4c0"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-boundary-first-479a23a9-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 13022,
+      "sha256": "7ef8894211579e2b08fb1709d5bf176aeb4c4b40d8f06a4b767ec335b448cfa8",
+      "storedBytes": 3814,
+      "storedSha256": "00bb1286366137fcac1c9340faea4c67e80289bcde1705d78c17b12b873b66ff"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-boundary-first-479a23a9-20261017/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 127339,
+      "sha256": "c341501587f1c41bcaff44edd95ade562489e39629d63dc815ac5a4e9864851f",
+      "storedBytes": 33381,
+      "storedSha256": "6844e8ccf0363368816923409b0109e8e83d8f85568540c1f2c24362aaccf8af"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-boundary-first-479a23a9-20261017/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 2809,
+      "sha256": "ac31426937a140e58e1bb2f6e9bfb148f0abe886dc6112d9311a19c82bf9da7f",
+      "storedBytes": 1072,
+      "storedSha256": "4724db4524b35806a978c16a8f51541708d5b2e774ecb4261143f905413be852"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-180634-019-165409-778002ef6fc941e4859d34e937281b6d-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 1731094,
+      "sha256": "01317bbaa482b34f3883e08929cf0e5aad07312c12d421c4a358892cbe09b51b",
+      "storedBytes": 192411,
+      "storedSha256": "d75a95fd4520a482e778ec2aa79ea7d5cc560c0393cafe8e32371752ebadab8c"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-180634-019-165409-778002ef6fc941e4859d34e937281b6d-categories/fr063-reasoning-prefix-boundary-unit-001.trx",
+      "storedPath": "006-fr063-reasoning-prefix-boundary-unit-001.trx.gz",
+      "bytes": 4794,
+      "sha256": "912d13f326e239640185172165e4bdd80ae7fd79026c4b7a2b78554d31157ca3",
+      "storedBytes": 1628,
+      "storedSha256": "a81c0116366deba691e4abad35bed279b6316a8147dd8204a26758f948ff6f3d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-180634-019-165409-778002ef6fc941e4859d34e937281b6d-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1130,
+      "sha256": "738fc8a663fae66e287e75d70e1fd3c50d878d2f53983a6f5f0d31e677a904c6",
+      "storedBytes": 521,
+      "storedSha256": "a72ddc7d0ab2395d10a956692e3c73009055b59b12752f369814ab19a1125194"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-180634-019-165409-778002ef6fc941e4859d34e937281b6d-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1373,
+      "sha256": "0e262c2791ff27aa3ba62f661cbd957b830f1c5c655f6e5faaa9140b89d486da",
+      "storedBytes": 589,
+      "storedSha256": "dd76cfb09c165e7d3bbbda41ba7b6a622e2364e02f7819f3a05f14a228ceec45"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only exact FIRST boundary raw archive; no retry, execution or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_PD3E_ORDINARY_BOUNDARY1_RAW_NOT_CAUSAL_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel']),record_path.parent/'source-binding.json']\nfor d in record['resultDirectories']:paths.extend(p for p in sorted(Path(d).rglob('*')) if p.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_FIRST_PD3E_ORDINARY_BOUNDARY_RAW_ARCHIVE_NOT_CAUSAL_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],nativeExit=record['nativeExit'],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome."
+}

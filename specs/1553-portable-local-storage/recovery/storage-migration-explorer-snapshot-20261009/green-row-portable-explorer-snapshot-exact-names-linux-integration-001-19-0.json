@@ -1,0 +1,29 @@
+{
+  "root": "/tmp/boe-gameengine-turnlifecycle-028c981cb311471a9dcc9d53db282860",
+  "mode": "literal_backslash",
+  "names": [
+    "lore/current_world/odd\\leaf.json"
+  ],
+  "failure": "System.IO.InvalidDataException: Signed snapshot path is not exactly representable: 'lore/current_world/odd\\leaf.json'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 122\n   at BookOfEternityClient.Core.GameEngine.EnumerateIncarnationLocalPrepRollbackFiles() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs:line 1917\n   at InvokeStub_GameEngine.EnumerateIncarnationLocalPrepRollbackFiles(Object, Object, IntPtr*)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)",
+  "before": {
+    "lore/current_world/odd\\leaf.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/lore_current_world_retained.json.rollback.4bbae6c2b9c0427983a6e8c65558c3dc": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNzdkMTA4ZDdmZDViNGQyNTg0OGMyMWU1ZDczMzQwYmQiLCJTbmFwc2hvdElkIjoiY2Y2MTNlMTZhODM5NDE0OGFkOTcwYWQxZTIyZGYzZjgifQ=="
+  },
+  "after": {
+    "lore/current_world/odd\\leaf.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/lore_current_world_retained.json.rollback.4bbae6c2b9c0427983a6e8c65558c3dc": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiNzdkMTA4ZDdmZDViNGQyNTg0OGMyMWU1ZDczMzQwYmQiLCJTbmFwc2hvdElkIjoiY2Y2MTNlMTZhODM5NDE0OGFkOTcwYWQxZTIyZGYzZjgifQ=="
+  },
+  "mutations": [],
+  "ownerBefore": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8\",\"RestoreCompleted\":false,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/lore_current_world_retained.json.rollback.4bbae6c2b9c0427983a6e8c65558c3dc\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "ownerAfter": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8\",\"RestoreCompleted\":false,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/cf613e16a8394148ad970ad1e22df3f8/lore_current_world_retained.json.rollback.4bbae6c2b9c0427983a6e8c65558c3dc\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "sameOwner": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3N2QxMDhkN2ZkNWI0ZDI1ODQ4YzIxZTVkNzMzNDBiZCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3N2QxMDhkN2ZkNWI0ZDI1ODQ4YzIxZTVkNzMzNDBiZCJ9",
+  "result": null
+}

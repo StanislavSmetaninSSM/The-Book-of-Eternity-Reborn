@@ -270,13 +270,19 @@ public sealed partial class EffectMaterializationValidationTests
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(command));
 
+        var carrierBytesBefore = Assert.IsType<byte[]>(await context.FileSystem.ReadFileBytesAsync(
+            EffectMaterializationTestContext.NpcEffectsPath));
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
         Assert.Contains(issues, issue =>
-            issue.Code == "accepted_mechanics_effect_owner_delta_invalid");
+            issue.Code == "effect_materialization_legacy_carrier_unsupported" &&
+            issue.FilePath == EffectMaterializationTestContext.NpcEffectsPath);
         Assert.False(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(
             context.FileSystem));
+        var carrierBytesAfter = Assert.IsType<byte[]>(await context.FileSystem.ReadFileBytesAsync(
+            EffectMaterializationTestContext.NpcEffectsPath));
+        Assert.Equal(carrierBytesBefore, carrierBytesAfter);
         var root = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath))!.AsObject();
         Assert.True(JsonNode.DeepEquals(adjacentWounds, root["NPCWoundChanges"]));

@@ -1,0 +1,118 @@
+{
+  "scope": "Affected-only corrected US5-RO2 intentional RED source/fixture/selection gate",
+  "disposition": "ACCEPT_F1_F2_AND_RELEASE_BOUNDED_FRESH_PREPARATION_THEN_STATUS_ONLY_RED",
+  "reviewerConfiguration": "Requested/configured independent Astra XHigh retained; backend telemetry unavailable.",
+  "reviewed": {
+    "base": "627643abe902c03c0ed9132629e84eb80cce93ae",
+    "head": "4b3dffdc4d0815dcda74769bbe26b7cc558ab849",
+    "localStatus": "clean at final capture",
+    "remote": "Actual remote verified by parent; reviewer did not repeat remote read.",
+    "changedPaths": 7,
+    "productionChanges": 0,
+    "testDeltaPaths": [
+      "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs"
+    ]
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "state": "resolved",
+      "reason": "Public diagnosis path has all eight closed fields, empty prerequisites/requirements and exact empty v1 check, no_reveal, and reveals the actual declared route. It seeds legal Mortal discovery while current knownRouteIds remains empty. Current projection still filters methods by persisted knownRouteIds; future reveals do not grant current knowledge.",
+      "evidence": [
+        "WoundPlayerStatusTests.cs:82",
+        "MortalWoundTreatmentContract.cs:261-308,364-420",
+        "WoundMaterializationContract.cs:2100-2124",
+        "WoundPlayerProjection.Knowledge.cs:10-32,65-75"
+      ]
+    },
+    {
+      "id": "F2",
+      "state": "resolved",
+      "reason": "Both afterlife fixtures now carry a complete closed common treatment route, procedure mode, known_to_player and matching knownRouteIds. Empty requirements/outcomes arrays, opaque objects and null interruption are accepted by the common codec. The physical Mortal application codec is conditionally excluded for spiritual wounds; no spiritual execution authority is fabricated. The actual opaque route ID is forbidden in rendered output.",
+      "evidence": [
+        "WoundPlayerStatusTests.cs:159-179,216",
+        "WoundMaterializationContract.cs:279-282,314-315,2032-2050,2157-2183,2367-2401",
+        "WoundPlayerProjection.Knowledge.cs:10-20"
+      ]
+    }
+  ],
+  "invariants": [
+    "No production, validator, helper, API, selection or category change in the correction delta.",
+    "Existing six methods/fifteen literal cases, real console/browser entrypoints, isolated owned roots, full-tree/mutation/repair assertions and three-minute status descriptor budget retained.",
+    "Fixture edits occur before strict InputInRealm parsing, sealed fingerprint and identity/history construction; no manufactured admission authority.",
+    "Source-only git diff --check passed. All-file diff-check cosmetic EOF warnings belong to exact copied historical MD evidence, not the C# correction."
+  ],
+  "selection": {
+    "status": {
+      "methods": 6,
+      "cases": 15,
+      "descriptors": 1,
+      "theories": 5,
+      "facts": 1,
+      "inlineDataRows": 14
+    },
+    "projectionPreparationOnly": {
+      "methods": 26,
+      "cases": 35,
+      "descriptors": 1
+    },
+    "counts": "Static/provisional; official discovery must confirm. No reviewer build/discovery/runtime executed.",
+    "rationale": "Terminal helper extraction changes unit compilation inputs while catalog audits both assemblies; fresh explicit status+projection PlanOnly compiles both without repeating projection runtime. Tracked selection remains status-only."
+  },
+  "releasedSequence": [
+    {
+      "stage": "fresh both-project preparation only",
+      "command": "./scripts/test-csharp.ps1 -Category wounds-player-status,wounds-player-projection -Parallelism 1 -PlanOnly",
+      "provisionalMethods": 32,
+      "provisionalCases": 50,
+      "provisionalDescriptors": 2,
+      "nativeTestExecutions": 0
+    },
+    {
+      "stage": "standalone complete catalog discovery only",
+      "command": "./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+      "nativeTestExecutions": 0
+    },
+    {
+      "stage": "exact status-only plan",
+      "command": "./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild -PlanOnly",
+      "provisionalMethods": 6,
+      "provisionalCases": 15,
+      "provisionalDescriptors": 1,
+      "nativeTestExecutions": 0
+    },
+    {
+      "stage": "intentional status-only RED",
+      "command": "./scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -NoBuild",
+      "provisionalMethods": 6,
+      "provisionalCases": 15,
+      "provisionalDescriptors": 1,
+      "descriptorBudgetMinutes": 3
+    }
+  ],
+  "conditions": [
+    "Use fresh successful outputs from the same reviewed source for NoBuild stages. Preserve official plans/catalog, full native result identities and real per-case cleanup evidence.",
+    "Unexpected build/setup/selection/runtime failure freezes and is published before correction. Intended RED is also frozen/published before product changes.",
+    "Observed RED must be classified against the missing public status integration; fixture/setup failures are not useful feature RED. No promise that every one of fifteen cases fails."
+  ],
+  "historicalReports": {
+    "ro1Foundation": "Accepted 212523 report copies are exact; three checked outline boxes are bounded RO1 only. RO2, full US5, FR063 and lawful ACTIVE remain open.",
+    "hold213008": {
+      "trackedPreFinalMdSha256": "68929daa2e4906b3533f0a53f9afe88e499a3d8423296e6294f539d69576dffa",
+      "trackedPreFinalJsonSha256": "9518e3487f2a3074e676a73adcd37bb9f12f9c4e6e565d8b0e172efa8d0f7227",
+      "finalExternalMdSha256": "1124adb34b1c7abcf967fe739d777a4634bc69e25c4b6cef4986cce69ae45201",
+      "finalExternalJsonSha256": "c713fe596c67e0312447785f8c868f0cc7cbb4625e104edac6b8ea392381600b",
+      "difference": "Only end-state capture caveat changed; findings/HOLD identical. Parent will retain earlier tracked bytes and add final external bytes under unique review-final filenames, explicitly labelled. This preserves both versions without rewriting evidence."
+    }
+  },
+  "sha256Pins": {
+    "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs": "ed1c0a8e86d2f671d272a25491f75827c8d11e2f2b36a09ea2e7886e4369af06",
+    "BookOfEternityClient.Tests/WoundPlayerHistoryTestData.cs": "757a988e3278ca9716411e633d870a14db109d38ac6ef1f5a2c8a41a9cd79e57",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs": "c0fd5acfe28bcf0c3d01451c82565dbcef7af59b3e0f42b62eaf61a3e9894e79",
+    "tests/categories.json": "76fcc0c18b0db0b43bd0b6bb3ad2338df99ba2b267f7a8bfc1c290c150f81aa0",
+    "tests/selection.json": "4d54ecabc862a2eb700b477ff51c0466e98f86ebb00b766611568879a343d882",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+  },
+  "limits": "Static gate only. GREEN and actual RED remain UNRUN. No prior RO1 runtime requalification, no public product implementation acceptance, no aggregate/A7 grant or authority/storage expansion.",
+  "finalState": "FINALSTOP; no tracked edits, no native work, no pending reviewer writes after this pair."
+}

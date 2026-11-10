@@ -1,0 +1,23 @@
+{
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "startedUtc": "2026-10-12T10:46:20.727141+00:00",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-finalization.json",
+    "-NoBuild"
+  ],
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "expectedDescriptors": 1,
+  "actualInvocations": 1,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "timeoutOverride": false,
+  "sourceGate": "AstraXHigh SOURCE/FIXTURE/SELECTION ACCEPTED53a823e",
+  "causalMilestone": "actual_engine_finalized_health_damage prerequisite before actual_engine_pending_occurrence; any earlier failure is fixture/finalization blocker"
+}

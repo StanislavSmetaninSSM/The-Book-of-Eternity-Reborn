@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "832030d9ffe146d0c389e971b97341139b00c421",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-original-browser-review-refusals",
+  "Status": "6/6 qualified causal FAIL49.6020487s, complete0skip/duplicate/timeout/cleanupcomplete",
+  "Scope": "Original pending journal is replayed after forged completedphase/escaped marker; actual owning cleanup deletes changedbackup/unownedrollback; all3Important remainopen beforefix",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-original-browser-review-refusals-integration-001.trx.gz",
+      "RawSHA256": "1a0796a4aa7259962ab864a7e1fdd1371600cddcc86c556aa3ae5e75e985f885",
+      "RawBytes": 36360
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "a5b240f6df2d37415ca6392be8cd20e4ad0dfcc2db86a73da1d29392a1ea2fae",
+      "RawBytes": 1549
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "72d110b97fce2974a26cd6129e99a6dd1a5bf26be32275d061b20e314a5d3814",
+      "RawBytes": 1481
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "7c9860fc2db9820c4e73fb77f991844ab95452034e4c5f33c81c31c68cc86abe",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "b26404df4c8512eef86cc02efdf7f6097d78ab8693f3183211c1a9d6a10c46e9",
+      "RawBytes": 1676116
+    }
+  ]
+}

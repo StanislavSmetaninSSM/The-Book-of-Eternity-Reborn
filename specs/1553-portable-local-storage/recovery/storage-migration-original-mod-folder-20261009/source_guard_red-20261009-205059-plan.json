@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-world-profile-folder-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "208d6a2cfde38207c19bb5d174bdede93ccf04c2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.5022965,
+  "Descriptors": [
+    {
+      "Name": "portable-original-world-profile-folder-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-original-world-profile-folder-linux",
+      "Categories": [
+        "portable-original-world-profile-folder-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WorldProfileFolderConsumerTests.OriginalWorldSetupFolderRouteUsesManagedAssociation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,10 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private async Task
+    /// <summary>Validates current Shining faction references and materialization within one fresh raw or post-normalization invocation.</summary>
+    /// <param name="rawBeforeNormalization">Whether creation authority and raw evidence are required before normalization.</param>
+    /// <param name="issues">Receives findings without changing authored canonical DATA.</param>
+    internal async Task
         ValidateAcceptedTurnShiningFactionMaterializationCompletenessAsync(
             bool rawBeforeNormalization,
             List<ValidationIssue> issues)
@@ -30,6 +33,50 @@ public partial class ValidationService
         var currentFactions =
             ReadShiningMaterializationTargets(currentRoot);
 
+        // Missing ordinary canonical state has no new-turn creation proposal.
+        // Raw acceptance still needs signed authority; unusable is never missing.
+        if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable ||
+            hasUsablePreTurnAuthority && snapshotLookup.Manifest is null ||
+            rawBeforeNormalization && snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
+        {
+            AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+            return;
+        }
+        var canonicalHistoryWithoutSnapshot = snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Missing;
+        var historicalActorEnvelopes = new List<(string Identity, string? Envelope)>();
+        if (hasUsablePreTurnAuthority && snapshotLookup.Manifest is not null)
+        {
+            // One fresh signed source read and private DATA index per invocation,
+            // never a per-actor read or a retained authority/cache result.
+            var preTurnProfilesJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                snapshotLookup.Manifest, AfterlifeEntityProfileState.StatePath);
+            if (preTurnProfilesJson is null &&
+                snapshotLookup.Manifest.Files?.ContainsKey(AfterlifeEntityProfileState.StatePath) == true)
+            {
+                AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+                return;
+            }
+            if (preTurnProfilesJson is not null)
+            {
+                using var preTurnProfiles = TryParseJsonDocument(preTurnProfilesJson);
+                if (preTurnProfiles is null || preTurnProfiles.RootElement.ValueKind != JsonValueKind.Object ||
+                    TryFindDuplicateJsonProperty(preTurnProfiles.RootElement, out _) ||
+                    !preTurnProfiles.RootElement.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles) ||
+                    profiles.ValueKind != JsonValueKind.Array)
+                {
+                    AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+                    return;
+                }
+                foreach (var profile in profiles.EnumerateArray())
+                {
+                    if (TryReadCanonicalAfterlifePreTurnActorIdentity(profile, out _, out _, out var identity))
+                        historicalActorEnvelopes.Add((identity, ReadHistoricalActorMaterializationEnvelopeJson(profile)));
+                }
+            }
+        }
+        var historicalEnvelopeIndex = historicalActorEnvelopes.ToLookup(
+            entry => entry.Identity, entry => entry.Envelope, StringComparer.Ordinal);
+
         var residentRoot = await ReadJsonObjectAsync(
             GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(
@@ -43,6 +90,19 @@ public partial class ValidationService
         var radianceTier =
             ShiningAbodeState.ResolveRadianceTierFromAuthoredState(
                 currentRoot);
+
+        // Private indexes of this invocation's already-read DATA, not retained
+        // caches or authority. Preserve exact pair/slot and duplicate semantics;
+        // unrelated malformed identities still cannot replace a required pair.
+        var residentIndex = (residentRoot?["entries"] as JsonArray ?? new JsonArray())
+            .OfType<JsonObject>().ToLookup(resident =>
+                ReadShiningMaterializationString(resident, "residentId") ?? string.Empty, StringComparer.Ordinal);
+        var profileIndex = (afterlifeProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray ?? new JsonArray())
+            .Select((node, index) => (Profile: node as JsonObject, Index: index))
+            .Where(candidate => candidate.Profile is not null)
+            .ToLookup(candidate => (
+                ReadShiningMaterializationString(candidate.Profile, "actorType") ?? string.Empty,
+                ReadShiningMaterializationString(candidate.Profile, "actorId") ?? string.Empty));
 
         foreach (var target in currentFactions)
         {
@@ -91,11 +151,14 @@ public partial class ValidationService
                 currentRoot,
                 residentRoot,
                 guardiansRoot,
-                afterlifeProfilesRoot,
+                residentIndex,
+                profileIndex,
                 sarefStoryRoot,
                 isCreation,
                 affiliatedResidentIds,
                 currentTradeAuthorities,
+                canonicalHistoryWithoutSnapshot,
+                historicalEnvelopeIndex,
                 issues);
 
             if (!rawBeforeNormalization || !isCreation)
@@ -860,11 +923,14 @@ public partial class ValidationService
         JsonObject currentRoot,
         JsonObject? residentRoot,
         JsonObject? guardiansRoot,
-        JsonObject? afterlifeProfilesRoot,
+        ILookup<string, JsonObject> residentIndex,
+        ILookup<(string ActorType, string ActorId), (JsonObject? Profile, int Index)> profileIndex,
         JsonObject? sarefStoryRoot,
         bool isCreation,
         IReadOnlySet<string> affiliatedResidentIds,
         IReadOnlySet<string> currentTradeAuthorities,
+        bool canonicalHistoryWithoutSnapshot,
+        ILookup<string, string?> historicalEnvelopeIndex,
         List<ValidationIssue> issues)
     {
         var hallId = ReadShiningMaterializationString(
@@ -945,14 +1011,57 @@ public partial class ValidationService
                 issues);
         }
 
+        var requiresHealer = ShiningFactionHealingSupport.RequiresLivingHealer(target.Faction);
+        var healerResidents = new HashSet<string>(StringComparer.Ordinal);
+        if (requiresHealer)
+        {
+            foreach (var residentId in affiliatedResidentIds)
+            {
+                var matches = residentIndex[residentId].ToArray();
+                if (matches.Length != 1 || !ShiningFactionHealingSupport.IsCurrentHealerResident(matches[0], target.FactionId))
+                    continue;
+                healerResidents.Add(residentId);
+                AddRequiredShiningActor(requiredActors, ShiningAbodeState.HeadActorTypeResident, residentId,
+                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}]");
+            }
+        }
+        var hasLivingHealer = false;
+        var hasVisibleLivingHealer = false;
         foreach (var actor in requiredActors.Values)
         {
-            ValidateRequiredShiningActorMaterializationProfile(
-                afterlifeProfilesRoot,
+            var profile = ValidateRequiredShiningActorMaterializationProfile(
+                profileIndex,
                 actor,
                 target,
                 currentTradeAuthorities,
+                canonicalHistoryWithoutSnapshot,
+                historicalEnvelopeIndex,
                 issues);
+            if (profile is not null && actor.ActorType == ShiningAbodeState.HeadActorTypeResident &&
+                healerResidents.Contains(actor.ActorId) &&
+                ShiningFactionHealingSupport.TryReadCanonicalHealerTierFromValidatedProfile(
+                    residentIndex[actor.ActorId].Single(), profile, out _))
+            {
+                hasLivingHealer = true;
+                hasVisibleLivingHealer |= AfterlifeProfileVisibility.IsVisibleToPlayer(profile);
+            }
+        }
+        if (requiresHealer && !hasLivingHealer)
+        {
+            issues.Add(ShiningFactionMaterializationIssue(target.Context,
+                "faction_materialization_shining_healer_missing", target.FactionId,
+                "Every current Shining faction requires a living primary healer with one exact materialized resident profile and Healing tier I-V.",
+                expected: "one exact ascended healing_support resident with a living Shining profile and integer Healing I-V",
+                actual: "no valid living healer", repairTargetFiles: [GuardianAbodeResidentState.StatePath, AfterlifeEntityProfileState.StatePath]));
+        }
+        else if (requiresHealer && !hasVisibleLivingHealer && string.Equals(
+            ReadShiningMaterializationString(target.Faction, "visibility"), "revealed", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(ShiningFactionMaterializationIssue(target.Context,
+                "faction_materialization_shining_healer_not_visible", target.FactionId,
+                "A revealed current faction must expose a confirmed living healer's role and tier in its roster.",
+                expected: "at least one player-visible living healer profile", actual: "no visible confirmed living healer",
+                repairTargetFiles: [AfterlifeEntityProfileState.StatePath]));
         }
     }
 
@@ -1302,35 +1411,16 @@ public partial class ValidationService
         requiredActors.TryAdd(binding.IdentityKey, binding);
     }
 
-    private static void ValidateRequiredShiningActorMaterializationProfile(
-        JsonObject? profilesRoot,
+    private static JsonObject? ValidateRequiredShiningActorMaterializationProfile(
+        ILookup<(string ActorType, string ActorId), (JsonObject? Profile, int Index)> profileIndex,
         AfterlifeActorBinding actor,
         ShiningFactionMaterializationTarget target,
         IReadOnlySet<string> currentTradeAuthorities,
+        bool canonicalHistoryWithoutSnapshot,
+        ILookup<string, string?> historicalEnvelopeIndex,
         List<ValidationIssue> issues)
     {
-        var profiles =
-            profilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]
-                is JsonArray profileArray
-                ? profileArray
-                    .Select((node, index) =>
-                        (Profile: node as JsonObject, Index: index))
-                    .Where(candidate =>
-                        candidate.Profile != null &&
-                        string.Equals(
-                            ReadShiningMaterializationString(
-                                candidate.Profile,
-                                "actorId"),
-                            actor.ActorId,
-                            StringComparison.Ordinal) &&
-                        string.Equals(
-                            ReadShiningMaterializationString(
-                                candidate.Profile,
-                                "actorType"),
-                            actor.ActorType,
-                            StringComparison.Ordinal))
-                    .ToArray()
-                : Array.Empty<(JsonObject? Profile, int Index)>();
+        var profiles = profileIndex[(actor.ActorType, actor.ActorId)].ToArray();
         if (profiles.Length != 1)
         {
             issues.Add(
@@ -1347,7 +1437,7 @@ public partial class ValidationService
                     [
                         AfterlifeEntityProfileState.StatePath
                     ]));
-            return;
+            return null;
         }
 
         var profile = profiles[0];
@@ -1355,15 +1445,27 @@ public partial class ValidationService
             JsonSerializer.SerializeToElement(profile.Profile);
         var profileContext =
             $"{AfterlifeEntityProfileState.StatePath}.{AfterlifeEntityProfileState.ProfilesProperty}[{profile.Index}]";
-        issues.AddRange(
-            ActorMaterializationContract.ValidateAfterlifeProfile(
-                profileElement,
-                profileContext,
-                requireEnvelope: true,
-                canTradeEvidence:
-                    HasCurrentAfterlifeActorTradeAuthority(
-                        profileElement,
-                        currentTradeAuthorities)));
+        var historical = historicalEnvelopeIndex[actor.IdentityKey].ToArray();
+        if (historical.Length > 1)
+        {
+            AddUnusableAfterlifeActorMaterializationPreTurnAuthorityIssue(AfterlifeEntityProfileState.StatePath, issues);
+            return null;
+        }
+        var issueStart = issues.Count;
+        if (canonicalHistoryWithoutSnapshot || historical is [not null])
+        {
+            issues.AddRange(ActorMaterializationContract.ValidateHistoricalAfterlifeProfile(profileElement, profileContext));
+            if (historical is [string envelope])
+                ValidateHistoricalActorMaterializationEnvelope(profileElement, profileContext, actor.ActorType, actor.ActorId,
+                    envelope, issues);
+        }
+        else
+        {
+            // A new actor or first envelope remains strict, even in an old faction.
+            issues.AddRange(ActorMaterializationContract.ValidateAfterlifeProfile(profileElement, profileContext,
+                requireEnvelope: true, canTradeEvidence: HasCurrentAfterlifeActorTradeAuthority(profileElement, currentTradeAuthorities)));
+        }
+        return issues.Count == issueStart ? profile.Profile : null;
     }
 
     private static void ValidateShiningStoryAuthorityReference(

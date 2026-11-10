@@ -163,12 +163,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// The disposable filesystem context, actual engine and authenticated private snapshot context.
     /// </returns>
     private async Task<(ResourceMaterializationTestContext Context, GameEngine Engine, object Snapshot)>
-        CreateSpiritualEntryGuardOriginalAsync(bool absentConflict)
+        CreateSpiritualEntryGuardOriginalAsync(bool absentConflict, FileSystemManagerHooks? hooks = null)
     {
         GameEngine? engine = null;
         var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
-            engine = CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: original.FileSystem);
+            engine = CreateGameEngine(new QueuedConsoleInputSource([]), hooks is null ? null : settings => { settings.MusicEnabled = false; settings.SoundEnabled = false; settings.GmBridgeAutoStart = false; settings.ImageProvider = "off"; }, fileSystem: original.FileSystem);
             await InvokePrivateTaskAsync(engine, "RefreshRuntimeStateAsync");
             if (absentConflict)
             {
@@ -191,7 +191,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var rollback = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "entry-guard");
             await original.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "entry-guard");
-        });
+        }, hooks: hooks);
         var resolution = await InvokePrivateTaskResultAsync(engine!, "ResolveActivePendingTurnSnapshotContextAsync");
         Assert.Equal("Usable", resolution.GetType().GetProperty("Status")!.GetValue(resolution)!.ToString());
         return (context, engine!, resolution.GetType().GetProperty("Context")!.GetValue(resolution)!);

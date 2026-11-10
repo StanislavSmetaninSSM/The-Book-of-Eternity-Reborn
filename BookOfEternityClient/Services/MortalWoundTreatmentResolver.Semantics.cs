@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Globalization;
 using System.Collections.Immutable;
 
@@ -53,13 +54,13 @@ internal sealed partial class MortalWoundCriticalReactionIntent
         var eventRef = string.Join(
             ':',
             "turn_" + coordinates.Turn.ToString(CultureInfo.InvariantCulture),
-            "wound_treatment",
+            coordinates.Purpose == "diagnosis" ? "wound_diagnosis" : "wound_treatment",
             coordinates.AttemptId,
             "critical_reaction");
         var causalEventRef = string.Join(
             ':',
             "turn_" + coordinates.Turn.ToString(CultureInfo.InvariantCulture),
-            "wound_treatment",
+            coordinates.Purpose == "diagnosis" ? "wound_diagnosis" : "wound_treatment",
             coordinates.AttemptId,
             "procedure_roll");
         var intentFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
@@ -273,13 +274,37 @@ internal sealed partial class MortalWoundTreatmentResolution
                 nameof(evidence))
         };
 
+    /// <summary>
+    /// Recomputes mode evidence through the original request, route and mode-specific graph checks.
+    /// </summary>
+    /// <param name="resolution">
+    /// The detached treatment resolution to inspect; <see langword="null"/> is rejected.
+    /// </param>
+    /// <param name="fingerprint">
+    /// Receives the mode fingerprint produced by the original checks, or <see langword="null"/> when none is produced.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the existing mode-evidence checks succeed; otherwise, <see langword="false"/>.
+    /// </returns>
     internal static bool TryRecomputeModeEvidenceFingerprint(
         MortalWoundTreatmentResolution resolution,
         out string? fingerprint)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("TreatmentResolution.RecomputeModeEvidence");
         ArgumentNullException.ThrowIfNull(resolution);
         fingerprint = null;
         var request = resolution.RequestAuthority;
+        if (request.Mode == "diagnosis")
+        {
+            try
+            {
+                var expectedDiagnosis = MortalWoundDiagnosisOutcome.RecomputeEvidence(resolution);
+                if (!ModeEvidenceEquals(resolution.ModeEvidence, expectedDiagnosis)) return false;
+                fingerprint = ComputeModeEvidenceFingerprint(expectedDiagnosis); return true;
+            }
+            catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or InvalidDataException or OverflowException)
+            { return false; }
+        }
         if (!MortalWoundTreatmentDetachedSealValidator.TryGetRoute(
                 request,
                 out var selectedRoute) ||
@@ -609,10 +634,19 @@ internal sealed partial class MortalWoundProcedureModeEvidence
         MortalWoundProcedureBand selectedBand,
         int selectedOutcomeIndex,
         MortalWoundCriticalReactionIntent? reactionIntent)
+    => CreateSelected(authority, route.Resolution.Difficulty, total, margin, originalOutcome, resolvedOutcome,
+        selectedBand.BandId, selectedOutcomeIndex, reactionIntent);
+
+    internal static MortalWoundProcedureModeEvidence CreateForDiagnosis(MortalWoundProcedureCheckAuthority authority,
+        MortalWoundDiagnosisCheck check, long total, long margin, string originalOutcome, string resolvedOutcome,
+        int selectedOutcomeIndex, MortalWoundCriticalReactionIntent? reactionIntent) =>
+        CreateSelected(authority, check.Resolution.Difficulty, total, margin, originalOutcome, resolvedOutcome,
+            check.Bands[selectedOutcomeIndex].BandId, selectedOutcomeIndex, reactionIntent);
+
+    private static MortalWoundProcedureModeEvidence CreateSelected(MortalWoundProcedureCheckAuthority authority,
+        int baseDifficulty, long total, long margin, string originalOutcome, string resolvedOutcome,
+        string selectedBandId, int selectedOutcomeIndex, MortalWoundCriticalReactionIntent? reactionIntent)
     {
-        ArgumentNullException.ThrowIfNull(authority);
-        ArgumentNullException.ThrowIfNull(route);
-        ArgumentNullException.ThrowIfNull(selectedBand);
         var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
             new string?[]
             {
@@ -620,11 +654,11 @@ internal sealed partial class MortalWoundProcedureModeEvidence
                 "1",
                 authority.AuthorityFingerprint,
                 total.ToString(CultureInfo.InvariantCulture),
-                route.Resolution.Difficulty.ToString(CultureInfo.InvariantCulture),
+                baseDifficulty.ToString(CultureInfo.InvariantCulture),
                 margin.ToString(CultureInfo.InvariantCulture),
                 originalOutcome,
                 resolvedOutcome,
-                selectedBand.BandId,
+                selectedBandId,
                 selectedOutcomeIndex.ToString(CultureInfo.InvariantCulture),
                 reactionIntent?.IntentFingerprint
             });
@@ -638,13 +672,13 @@ internal sealed partial class MortalWoundProcedureModeEvidence
             authority.NaturalRoll,
             authority.Modifier,
             total,
-            route.Resolution.Difficulty,
+            baseDifficulty,
             authority.ComplicationDifficultyModifier,
             authority.EffectiveDifficulty,
             margin,
             originalOutcome,
             resolvedOutcome,
-            selectedBand.BandId,
+            selectedBandId,
             selectedOutcomeIndex,
             reactionIntent?.EffectId,
             reactionIntent?.TriggerId,
@@ -712,6 +746,23 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
         out IReadOnlyList<ValidationIssue> issues)
     {
         ArgumentNullException.ThrowIfNull(acceptedState);
+        return TryComposeCore(request, operations, acceptedState, null, null, out intents, out issues);
+    }
+
+    /// <summary>
+    /// Reuses the complete declared-operation reducer for closed historical DATA,
+    /// without restoring accepted-state or reservation authority.
+    /// </summary>
+    internal static bool TryComposeDetached(MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentOperation> operations, string bindingFingerprint, string sourcePath,
+        out IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents, out IReadOnlyList<ValidationIssue> issues) =>
+        TryComposeCore(request, operations, null, bindingFingerprint, sourcePath, out intents, out issues);
+
+    private static bool TryComposeCore(MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentOperation> operations, MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
+        string? bindingFingerprint, string? sourcePath,
+        out IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents, out IReadOnlyList<ValidationIssue> issues)
+    {
         var composed = new List<MortalWoundTreatmentOutcomeIntent>(operations.Count);
         var failures = new List<ValidationIssue>();
         for (var ordinal = 0; ordinal < operations.Count; ordinal++)
@@ -770,6 +821,14 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             };
             if (operation is MortalWoundApplyDeteriorationOperation deterioration)
             {
+                if (acceptedState is null)
+                {
+                    intent = MortalWoundApplyDeteriorationOutcomeIntent.CreatePrepared(
+                        MortalWoundTreatmentDeteriorationPreparation.RecomposeDetached(
+                            request, ordinal, deterioration, bindingFingerprint!, sourcePath!));
+                    composed.Add(intent);
+                    continue;
+                }
                 if (!MortalWoundTreatmentDeteriorationPreparation.TryCreate(
                         request,
                         ordinal,
@@ -959,7 +1018,25 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             authorityFingerprint
         });
 
-    private static string IntentFingerprint(
+    /// <summary>
+    /// Computes the original ordered treatment intent digest from detached operation DATA.
+    /// </summary>
+    /// <param name="requestFingerprint">
+    /// The original request fingerprint included unchanged.
+    /// </param>
+    /// <param name="ordinal">
+    /// The operation ordinal included using invariant formatting.
+    /// </param>
+    /// <param name="operation">
+    /// The detached operation whose kind and complete declared values are included.
+    /// </param>
+    /// <param name="declaredFingerprint">
+    /// The original declared-operation digest included unchanged.
+    /// </param>
+    /// <returns>
+    /// The deterministic versioned intent digest; it grants no live authority.
+    /// </returns>
+    internal static string IntentFingerprint(
         string requestFingerprint,
         int ordinal,
         MortalWoundTreatmentOperation operation,
@@ -1589,39 +1666,29 @@ internal static partial class MortalWoundTreatmentPlanner
         !before.Treatment.CompletedRouteIds.Contains(route.RouteId, StringComparer.Ordinal)
             ? "AppendOnce" : "None";
 
-    internal static int SelectProcedureBand(
-        MortalWoundProcedureRouteDefinition route,
-        int naturalRoll,
-        long margin,
-        bool reacted)
+    internal static int SelectProcedureBand(MortalWoundProcedureRouteDefinition route, int naturalRoll, long margin, bool reacted) =>
+        SelectProcedureBandCore(route.Bands.Length, naturalRoll, margin, reacted,
+            index => (route.Bands[index].MinimumMargin, route.Bands[index].MaximumMargin, route.Bands[index].Category));
+
+    internal static int SelectDiagnosisBand(MortalWoundDiagnosisCheck check, int naturalRoll, long margin, bool reacted) =>
+        SelectProcedureBandCore(check.Bands.Length, naturalRoll, margin, reacted,
+            index => (check.Bands[index].MinimumMargin, check.Bands[index].MaximumMargin, check.Bands[index].Category));
+
+    private static int SelectProcedureBandCore(int count, int naturalRoll, long margin, bool reacted,
+        Func<int, (long? MinimumMargin, long? MaximumMargin, string Category)> read)
     {
-        if (naturalRoll == 20)
-            return 0;
+        if (naturalRoll == 20) return 0;
         if (naturalRoll == 1)
         {
-            if (!reacted)
-                return route.Bands.Length - 1;
-            for (var index = 0; index < route.Bands.Length; index++)
-            {
-                if (string.Equals(
-                        route.Bands[index].Category,
-                        "failed_attempt",
-                        StringComparison.Ordinal))
-                {
-                    return index;
-                }
-            }
+            if (!reacted) return count - 1;
+            for (var index = 0; index < count; index++) if (read(index).Category == "failed_attempt") return index;
             return -1;
         }
-
-        for (var index = 0; index < route.Bands.Length; index++)
+        for (var index = 0; index < count; index++)
         {
-            var band = route.Bands[index];
+            var band = read(index);
             if ((!band.MinimumMargin.HasValue || margin >= band.MinimumMargin.Value) &&
-                (!band.MaximumMargin.HasValue || margin <= band.MaximumMargin.Value))
-            {
-                return index;
-            }
+                (!band.MaximumMargin.HasValue || margin <= band.MaximumMargin.Value)) return index;
         }
         return -1;
     }

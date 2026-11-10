@@ -1,0 +1,3008 @@
+{
+  "kind": "D01_INDEPENDENT_SOURCE_STATIC_AND_ORIGINAL_ARCHIVE_CHECKS",
+  "originalCandidate": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+  "correctedCandidate": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+  "scope": "Read-only Git/ZIP/hash/AST and installed-file reads. No compiler, .NET, helper, fixture, process-control, diagnostics or game execution. Prior fake emitter proof separate.",
+  "checks": [
+    {
+      "check": "0db1f418 pin count/digest",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.CompositionAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.CurrentHistory.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.ReviewRegressions.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.TestSupport/WoundAcceptedTurnTestFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/FileSystemManager.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/SessionOperationContext.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/EffectIdentityState.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalWoundRecoveryAcceptedPlanComposer.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin BookOfEternityClient/game_master_daemon.ps1",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin CLI_API_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin CLI_Agent_Daemon_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin Examples/E_CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin Examples/E_CLI_Wound_Materialization.txt",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin Examples/example_validation_manifest.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin OtherGuides/Wound_Materialization_Contract.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin Rules/Block_12.txt",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin TaskGuides/CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin scripts/test-csharp.ps1",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin scripts/testing/TestCategoryCatalog.psm1",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-generator-initial-path-error-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Baseline.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Checks.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/baseline.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin tests/selections/1536-joint-interface-crash-diagnostic1.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin tests/selections/1536-joint-interface-lifecycle-order.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 pin tests/selections/1536-joint-interface-lifecycle-stage.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 receipt scope",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/design/l01-live-delivery-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/check_l01_managed_stack_s01_doc_correction.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/check_l01_managed_stack_s01_evidence.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-generator-initial-path-error-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Baseline.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Checks.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/baseline.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-focused-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-corrected-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-focused-checks-d2c716af-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-plan-candidate-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-documentary-correction-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-focused-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-focused-checks-af52fa6f-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-first-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-static-edb63309-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-admission-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-correction-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-static-8b1b80f7-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/spec.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 recovered tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 historical provenance exceptions",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 historical actual deltas specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 historical actual deltas specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "0db1f418 closed admission",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin count/digest",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/CurrentCommittedPublicationWitness.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.CompositionAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.CurrentHistory.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.ReviewRegressions.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.TestSupport/WoundAcceptedTurnTestFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/FileSystemManager.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/SessionOperationContext.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/EffectIdentityState.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalWoundRecoveryAcceptedPlanComposer.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin BookOfEternityClient/game_master_daemon.ps1",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin CLI_API_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin CLI_Agent_Daemon_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin Examples/E_CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin Examples/E_CLI_Wound_Materialization.txt",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin Examples/example_validation_manifest.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin OtherGuides/Wound_Materialization_Contract.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin Rules/Block_12.txt",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin TaskGuides/CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin scripts/test-csharp.ps1",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin scripts/testing/TestCategoryCatalog.psm1",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-generator-initial-path-error-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Baseline.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Checks.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/baseline.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller-fault-checks.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller_fault_checks.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin specs/1536-complete-wound-materialization/recovery/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin tests/selections/1536-joint-interface-crash-diagnostic1.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin tests/selections/1536-joint-interface-lifecycle-order.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad pin tests/selections/1536-joint-interface-lifecycle-stage.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad receipt scope",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/design/l01-live-delivery-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/check_l01_managed_stack_s01_doc_correction.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/check_l01_managed_stack_s01_evidence.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-generator-initial-path-error-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Baseline.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Checks.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/baseline.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller-fault-checks.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller_fault_checks.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/make_packet.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-focused-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-live-delivery-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-corrected-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-focused-checks-d2c716af-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-plan-candidate-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-documentary-correction-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-focused-checks-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-evidence-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-actual-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-focused-checks-af52fa6f-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-first-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-prep-static-edb63309-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-admission-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-correction-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/recovery/t148-m01-source-static-8b1b80f7-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/spec.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad recovered tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad historical provenance exceptions",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad historical actual deltas specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad historical actual deltas specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "4810d2ad closed admission",
+      "passed": true
+    },
+    {
+      "check": "baseline archive hash",
+      "passed": true
+    },
+    {
+      "check": "baseline exact entry set",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/D01Baseline.dll",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/D01Baseline.pdb",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/D01Baseline.runtimeconfig.json",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/compile.rsp",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/host.stderr",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/host.stdout",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/record.json",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-prepare/started.json",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-witness/host.stderr",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-witness/host.stdout",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-witness/record.json",
+      "passed": true
+    },
+    {
+      "check": "baseline raw baseline-witness/started.json",
+      "passed": true
+    },
+    {
+      "check": "baseline immutable index/archive",
+      "passed": true
+    },
+    {
+      "check": "baseline compiler original",
+      "passed": true
+    },
+    {
+      "check": "baseline original host outcome",
+      "passed": true
+    },
+    {
+      "check": "baseline raw payload exact",
+      "passed": true
+    },
+    {
+      "check": "baseline expected bounded gap",
+      "passed": true
+    },
+    {
+      "check": "nonlive archive hash",
+      "passed": true
+    },
+    {
+      "check": "nonlive exact entry set",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/D01Checks.dll",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/D01Checks.pdb",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/D01Checks.runtimeconfig.json",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/compile.rsp",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/host.stderr",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/host.stdout",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/record.json",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-prepare/started.json",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-pure/host.stderr",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-pure/host.stdout",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-pure/record.json",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw checks01-pure/started.json",
+      "passed": true
+    },
+    {
+      "check": "nonlive immutable index/archive",
+      "passed": true
+    },
+    {
+      "check": "nonlive compiler original",
+      "passed": true
+    },
+    {
+      "check": "nonlive original host outcome",
+      "passed": true
+    },
+    {
+      "check": "nonlive raw twenty PASS",
+      "passed": true
+    },
+    {
+      "check": "helper unchanged from original20",
+      "passed": true
+    },
+    {
+      "check": "all original Assert statement lines same order",
+      "passed": true
+    },
+    {
+      "check": "original budget literals retained",
+      "passed": true
+    },
+    {
+      "check": "child diagnostic emitter unchanged",
+      "passed": true
+    },
+    {
+      "check": "no production delta after accepted S01",
+      "passed": true
+    },
+    {
+      "check": "generator initial exact source preserved",
+      "passed": true
+    },
+    {
+      "check": "generator path correction source only",
+      "passed": true
+    },
+    {
+      "check": "original phase snapshot exact",
+      "passed": true
+    },
+    {
+      "check": "corrected candidate exact six-path delta",
+      "passed": true
+    },
+    {
+      "check": "installed-input guard precedes every phase branch",
+      "passed": true
+    },
+    {
+      "check": "main no buffered print",
+      "passed": true
+    },
+    {
+      "check": "nine exact-source fake proofs",
+      "passed": true
+    },
+    {
+      "check": "inventory newly pinned and unchanged original",
+      "passed": true
+    },
+    {
+      "check": "installed input closure9+163",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/dotnet",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/createdump",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/libmscordaccore.so",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/shared/Microsoft.NETCore.App/8.0.32/libcoreclr.so",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/pwsh/pwsh",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/pwsh/Microsoft.Bcl.AsyncInterfaces.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Microsoft.Extensions.Logging.Abstractions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.CSharp.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.VisualBasic.Core.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.VisualBasic.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.Win32.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/Microsoft.Win32.Registry.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.AppContext.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Buffers.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Concurrent.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Immutable.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.NonGeneric.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.Specialized.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Collections.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.Annotations.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.DataAnnotations.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.EventBasedAsync.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.TypeConverter.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ComponentModel.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Configuration.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Console.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Core.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.Common.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.DataSetExtensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Data.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Contracts.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Debug.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.DiagnosticSource.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.FileVersionInfo.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Process.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.StackTrace.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.TextWriterTraceListener.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Tools.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.TraceSource.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Diagnostics.Tracing.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Drawing.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Drawing.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Dynamic.Runtime.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Formats.Asn1.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Formats.Tar.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.Calendars.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.Extensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Globalization.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.Brotli.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.FileSystem.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.ZipFile.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Compression.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.AccessControl.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.DriveInfo.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.Watcher.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.FileSystem.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.IsolatedStorage.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.MemoryMappedFiles.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Pipes.AccessControl.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.Pipes.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.UnmanagedMemoryStream.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.IO.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Expressions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Parallel.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.Queryable.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Linq.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Memory.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Http.Json.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Http.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.HttpListener.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Mail.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.NameResolution.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.NetworkInformation.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Ping.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Quic.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Requests.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Security.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.ServicePoint.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.Sockets.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebClient.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebHeaderCollection.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebProxy.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebSockets.Client.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.WebSockets.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Net.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Numerics.Vectors.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Numerics.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ObjectModel.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.DispatchProxy.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.ILGeneration.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.Lightweight.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Emit.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Extensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Metadata.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.TypeExtensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Reflection.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.Reader.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.ResourceManager.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Resources.Writer.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.CompilerServices.Unsafe.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.CompilerServices.VisualC.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Extensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Handles.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.JavaScript.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.RuntimeInformation.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.InteropServices.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Intrinsics.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Loader.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Numerics.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Formatters.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Json.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.Xml.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.Serialization.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Runtime.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.AccessControl.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Claims.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Algorithms.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Cng.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Csp.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Encoding.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.OpenSsl.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.Primitives.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.X509Certificates.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Cryptography.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Principal.Windows.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.Principal.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.SecureString.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Security.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ServiceModel.Web.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ServiceProcess.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.CodePages.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.Extensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encoding.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Encodings.Web.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.Json.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Text.RegularExpressions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Channels.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Overlapped.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Dataflow.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Extensions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.Parallel.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Tasks.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Thread.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.ThreadPool.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.Timer.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Threading.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Transactions.Local.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Transactions.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.ValueTuple.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Web.HttpUtility.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Web.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Windows.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.Linq.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.ReaderWriter.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.Serialization.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XDocument.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XPath.XDocument.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XPath.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XmlDocument.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.XmlSerializer.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.Xml.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/System.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/WindowsBase.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/mscorlib.dll",
+      "passed": true
+    },
+    {
+      "check": "installed bytes /tmp/1536-cloud-tools/nuget/microsoft.netcore.app.ref/8.0.32/ref/net8.0/netstandard.dll",
+      "passed": true
+    },
+    {
+      "check": "writer and independent restore exact corrected clean",
+      "passed": true
+    }
+  ],
+  "passed": 711,
+  "findings": [],
+  "archives": [
+    {
+      "family": "baseline",
+      "indexPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-evidence-20261018.json",
+      "indexSha256": "51bce2c7a6f1664345e32ff4fdb02cb6f794ab9a8eced326cfa84c78b2900950",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+      "bytes": 20112,
+      "sha256": "5914d1e81ced62c8440af0df4565f3b8b0f2f193a4c5115fdbfadd578b2039e8",
+      "files": [
+        {
+          "entry": "baseline-prepare/D01Baseline.dll",
+          "bytes": 14848,
+          "sha256": "9751713df99ddce6217c060503b7fbf88d45ae3d8e175caccf62698a43e9cb83"
+        },
+        {
+          "entry": "baseline-prepare/D01Baseline.pdb",
+          "bytes": 10884,
+          "sha256": "013653415472f5a6a6d3cda299035c54362016b73d823de977144f7ddfa3abe1"
+        },
+        {
+          "entry": "baseline-prepare/D01Baseline.runtimeconfig.json",
+          "bytes": 171,
+          "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+        },
+        {
+          "entry": "baseline-prepare/compile.rsp",
+          "bytes": 18596,
+          "sha256": "1d9d4a093bb90ec38846f2c34cc6a36d3dec38cefc6d4aa7420935d3ef46e861"
+        },
+        {
+          "entry": "baseline-prepare/host.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "entry": "baseline-prepare/host.stdout",
+          "bytes": 161,
+          "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+        },
+        {
+          "entry": "baseline-prepare/record.json",
+          "bytes": 3204,
+          "sha256": "1efb3b7b2dcf61d217bc1277298cc73f047c88b956f6e0cbd50ecec29070b5e4"
+        },
+        {
+          "entry": "baseline-prepare/started.json",
+          "bytes": 1523,
+          "sha256": "a61f22946dd658af737a05dbc71dd3c48977cb166991dfcbe78647224aabdbcf"
+        },
+        {
+          "entry": "baseline-witness/host.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "entry": "baseline-witness/host.stdout",
+          "bytes": 349,
+          "sha256": "fe8160861e20e71e51ecc2df73955b6293d40d909c6902291faa3217949e9e4a"
+        },
+        {
+          "entry": "baseline-witness/record.json",
+          "bytes": 2283,
+          "sha256": "d266a59462d29dbf3cd24bbd76b7f73b1f48a3a4bd0184875ffc9c612a02636a"
+        },
+        {
+          "entry": "baseline-witness/started.json",
+          "bytes": 1544,
+          "sha256": "d59aa46bd680478860fb4a0f1d92cdb484cc2e9b2e0eb4f7f44250708a09e66f"
+        }
+      ]
+    },
+    {
+      "family": "nonlive",
+      "indexPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-evidence-20261018.json",
+      "indexSha256": "565cb0739ffad2f33b03aac621d6d735e5b27ae560c621b988d90247c2d70c6c",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+      "bytes": 48954,
+      "sha256": "2d8ca18e084c15d00f032b607676fb1ef99bd6b7ddb6a490d53427fda3f15567",
+      "files": [
+        {
+          "entry": "checks01-prepare/D01Checks.dll",
+          "bytes": 72704,
+          "sha256": "4dbbc18638376be586d0eb43bbfc2ef150f40e4377eec4b9bd60b49098a78178"
+        },
+        {
+          "entry": "checks01-prepare/D01Checks.pdb",
+          "bytes": 21932,
+          "sha256": "ff0e01aa43348fce6461685ba957ca336f98dd82fae22d1996ef51ec00641ea1"
+        },
+        {
+          "entry": "checks01-prepare/D01Checks.runtimeconfig.json",
+          "bytes": 171,
+          "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+        },
+        {
+          "entry": "checks01-prepare/compile.rsp",
+          "bytes": 18705,
+          "sha256": "ea605406e0bf0a5699a70ec89bac713d765c63854ef8937ab23541d1f91634e7"
+        },
+        {
+          "entry": "checks01-prepare/host.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "entry": "checks01-prepare/host.stdout",
+          "bytes": 161,
+          "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+        },
+        {
+          "entry": "checks01-prepare/record.json",
+          "bytes": 3158,
+          "sha256": "734272dc98503403ffba0fa81b86058e897075898d417872a9fcc3e4557cf0f0"
+        },
+        {
+          "entry": "checks01-prepare/started.json",
+          "bytes": 1485,
+          "sha256": "f8f4a3a816fb085b6a2379c85522cdb0d6957d174ab5e0d11f6bcfbb2a043f35"
+        },
+        {
+          "entry": "checks01-pure/host.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "entry": "checks01-pure/host.stdout",
+          "bytes": 1730,
+          "sha256": "2a48395f9036ac0ef5ec9e682558216c05639f489568f8d5f3e6ec558349db7e"
+        },
+        {
+          "entry": "checks01-pure/record.json",
+          "bytes": 4054,
+          "sha256": "5e21fb47daa8f44d82eb8f277210507013eca4ccfed3f3897a32ce3b4a2621b2"
+        },
+        {
+          "entry": "checks01-pure/started.json",
+          "bytes": 1511,
+          "sha256": "b05e1eae2f23e14d1ca2752c8904161fc7a0db09990d842b78eacc4f8a4f15fc"
+        }
+      ]
+    }
+  ],
+  "utilityHistory": [
+    {
+      "operation": "initial read of proposed fault_checks.py filename",
+      "result": "FileNotFound; actual file controller_fault_checks.py read afterward",
+      "nativeGameOrSourceEffect": false
+    }
+  ],
+  "originalFindingIds": [
+    "D01-S01",
+    "D01-S02"
+  ],
+  "findingInterpretation": "Both original findings require correction; passing integrity checks are not original candidate admission. Corrected candidate acceptance is in separately written review."
+}

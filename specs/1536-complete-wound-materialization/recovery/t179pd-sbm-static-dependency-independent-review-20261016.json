@@ -1,0 +1,1334 @@
+{
+  "schemaVersion": 1,
+  "task": "T179-Pd-AUDIT-SBM",
+  "reviewKind": "INDEPENDENT_DOCUMENTARY_SOURCE_DEPENDENCY_REVIEW",
+  "decision": "BLOCKED_DOCUMENTARY_CORRECTION_REQUIRED",
+  "reviewedSource": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+  "baseline": "f87aa544bd60897a2a60d5623a751589fc78c896",
+  "reviewer": {
+    "agent": "/root/t179pc_independent_review",
+    "role": "independent non-author; root sole repository writer",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Retained coordinator-confirmed actual spawn/configuration receipt",
+    "backendTelemetry": "UNAVAILABLE"
+  },
+  "currentAuthority": {
+    "scope": "Documentary source/design audit only from f87",
+    "windowsPermission": "UNANSWERED",
+    "failedHoldDeliveryAndTechnicalReviewsAreUserPermission": false,
+    "implementationReleased": false,
+    "schemaAccepted": false,
+    "releasedActuals": [],
+    "networkOrTransferReleased": false
+  },
+  "findings": [
+    {
+      "id": "SBM-D01",
+      "classification": "CONFIRMED_MATERIAL_DOCUMENTARY_DEFECT",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "line": 414,
+      "scenario": "Future implementer follows dependency-table preparation/sealing-before-capture-close ordering",
+      "observed": "Need new genuine prepare/seal boundary before closing capture",
+      "requirement": "Capture/freeze while Capturing; irrevocable CloseCapture before preparation/seals, actual retained S/C/raw B/source guards before future seals",
+      "consequence": "Contradicts SBM02, V05 and actual CloseCapture→CreateJointRepairPreparation→RetainStage owner boundary",
+      "requiredCorrection": "Source-family capture/freeze while Capturing → irrevocable CloseCapture before preparation/seals; future genuine prepare/seal split binds retained S/C/raw B/source guards before seals, without moving current stages or attaching after seals.",
+      "parentAcknowledged": true,
+      "correctedInReviewedCandidate": false
+    }
+  ],
+  "otherMaterialFindings": [],
+  "hypothesesRequiringTaskExpansion": [],
+  "optionalImprovements": [],
+  "substantiveAssessment": {
+    "tenSeams": "Supported within stated static scope, subject to SBM-D01",
+    "custodyVsS": "Structural actual custody is not full semantic S or authenticated absence for uncovered roots",
+    "historyWorker": "Current final files cannot recreate prior original-issued repair/read/metadata history; direct worker completion without Ready is a genuine route requiring an actual adapter",
+    "completedMusings": "Current comparison acquires a lease; provided-lease observed extraction remains required",
+    "CAndLedger": "Real retained prerequisites, not full active/cold/event-time qualification",
+    "MCodec": "Existing v2 seam present; strict existing-M v3/admission codec and cold proof remain proposed/unimplemented",
+    "close": "Exact current unattempted slot only; final expiry includes close failure and grants no source/commit/close-success proof",
+    "ordinaryDecline": "Same unresolved source/request-bound situation, committed-prefix exclusion, same child retry/restart and turn/time, actual consequences/repair, no replay/notification/intent/HOLD completion",
+    "ownershipAndParity": "Target handoff before source cleanup, console/browser actual evidence; component PASS is not DOM/visual/native coverage",
+    "noGMUpdate": "Supported for this documentary-only change; future public/shared/emitted contract changes require synchronization"
+  },
+  "verification": {
+    "reviewedBase": "f87aa544bd60897a2a60d5623a751589fc78c896",
+    "reviewedCandidate": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+    "inspectionUtc": "2026-10-16T23:33:36.645463+00:00",
+    "actualCommands": [
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899\n",
+        "stdoutSha256": "fbc9d757b2e3a8226c08639077073055c75e3ded2b96c96e18baadf807d6b2ce",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests",
+          "scripts",
+          ".github",
+          "AGENTS.md",
+          "docs",
+          ".specify"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests/categories.json",
+          "scripts",
+          ".github"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "grep",
+          "-n",
+          "-F",
+          "-e",
+          "OwnedAdmissionHistory",
+          "-e",
+          "HotSubmittedAdmission",
+          "-e",
+          "SubmittedOutputInputs",
+          "-e",
+          "VerifiedActiveP0",
+          "-e",
+          "admissionEvidence",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 1,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "7acd4a960fa273e0df2dd83e4998baef79ba94d5\n",
+        "stdoutSha256": "ed2d1e5546dc48f9aaac3701e7c215d828d47e275621ba0e008ec000a8726a3b",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1",
+          "--untracked-files=all"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "changedPaths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-f87-baseline-delta-recovery-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-audit-20261016.json",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "currentDocumentPins": [
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "gitBlob": "1e97cee68edfd0eed0dd0960d8edfcd208636bbb",
+        "bytes": 154628,
+        "sha256": "22c7d8840dca512998403e4c73553ee6479870358e4726eb60675bccfe6351fb"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "gitBlob": "0d17781fa0ca2a9d1870548b2cde91b70af2575d",
+        "bytes": 109932,
+        "sha256": "4e172f3b3658ceb9d5ae99d8553850199265f129edb56d7ebb258b289dc34a02"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "gitBlob": "eb4e36754f0e29f6ee91cf308319573d85070411",
+        "bytes": 2227208,
+        "sha256": "a47856fad292b43557bc52f34d1602ae177856415b05c8228194a6c6aa9de541"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-f87-baseline-delta-recovery-20261016.json",
+        "gitBlob": "13cccbcdbced5256c5af1437798dd74f3cf8ef9e",
+        "bytes": 190610,
+        "sha256": "454601a941d39b7b3507fcde5091b8353e25fa977d28b1f33b3711e0b3b8c287"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-audit-20261016.json",
+        "gitBlob": "ff6032741ce00b93fea2ba23996b93455fc9dcd5",
+        "bytes": 190587,
+        "sha256": "3ce3c1ca1e315464196b798e3d1ef852d71f7717ef7e4500e095056446c14de9"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "gitBlob": "bbba4aa2a8390fa3c0af263b706945600f9071c8",
+        "bytes": 231787,
+        "sha256": "bde056ed5081c9e49b49937ba40a860f7c4c533c65452e3f1da7463d0da08dd8"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "gitBlob": "b3c8e1b0bd91cafc49a225d03a665cc95321368c",
+        "bytes": 1542400,
+        "sha256": "fb1749a682321bf0c3f7749cb9018c6666474693b36d3e78ec2b70319a5219be"
+      }
+    ],
+    "verifiedSourcePins": [
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "gitBlob": "d3f2e5463749daaa329bfe66f0c5eae3a705ccf6",
+        "bytes": 19194,
+        "sha256": "29ab610001cba30b13b23f8dae26b70f4c3cc2364f18c100ecf93906674631d1"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "gitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+        "bytes": 10987,
+        "sha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "gitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+        "bytes": 10347,
+        "sha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+        "gitBlob": "7c31d28d6fdd22fa6b1b7aee635d9a8774860311",
+        "bytes": 17581,
+        "sha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "gitBlob": "6900c679f40653c79c859f0620be26d6d215ed19",
+        "bytes": 45219,
+        "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+        "bytes": 505887,
+        "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+        "gitBlob": "619c123044a87dc8ed8bd76c9a5ed307ca44948f",
+        "bytes": 17736,
+        "sha256": "5fefc400888488ae912bee4c0808d888d524eaa81be71fe073e611201dea4855"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+        "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+        "bytes": 5254,
+        "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+        "gitBlob": "646a77f78657c8a115a524d46650b549a497acd9",
+        "bytes": 6256,
+        "sha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+        "gitBlob": "2e76b870fe98cdec28917364a75dd9b9e7660c8c",
+        "bytes": 9143,
+        "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+        "gitBlob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+        "bytes": 33754,
+        "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+        "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+        "bytes": 23806,
+        "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointUnattemptedClose.cs",
+        "gitBlob": "83b22f57e11e351393ffa51b2b3984b43acd2714",
+        "bytes": 4782,
+        "sha256": "f446fe5d2b041acccc5e95f70b56e07ad565ed6635a48077a86b2f5889f030df"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "gitBlob": "cd1f93a124dc1de15ed33cfa0570bf0962dd1522",
+        "bytes": 296784,
+        "sha256": "788c11e250a0f9031c36ae01dd393617ad07a7a4b91608fbdfe93347cc80fbd3"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+        "gitBlob": "96e44d2c4134204b41b815e4051a689a5a720f3a",
+        "bytes": 10421,
+        "sha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350"
+      },
+      {
+        "kind": "production",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "gitBlob": "7b64eb60f2b448d8e41527ab16cc1bbefd5ab422",
+        "bytes": 115087,
+        "sha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "AGENTS.md",
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "bytes": 11662,
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "docs/development-workflow.md",
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "bytes": 66432,
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": ".specify/memory/constitution.md",
+        "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "bytes": 14081,
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "gitBlob": "388f3a05e478c83d945e21034fc6fc2524bf5056",
+        "bytes": 231197,
+        "sha256": "b997007ad9c80f949483aed436a2b85932f0d5deec57e25077514530c2cb6310"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "gitBlob": "ef9d415ace3d8b5104a798150b6b7641a9d1bcc0",
+        "bytes": 2223323,
+        "sha256": "9a51cda7550a23c1785072aabc97e805e659b2fd5ddb10f909581f183230692f"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "gitBlob": "a9cb6b5a46c1a8a64b15c3155421e566477b7bf1",
+        "bytes": 1540417,
+        "sha256": "c247e8da3b0d922337308b5c8833473385ff7bfa646a99de98a5a867fe931786"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "gitBlob": "d828be5ba930384b059b17c192804e221d57842c",
+        "bytes": 109325,
+        "sha256": "bb8393f4f8f89e3282639d9579f3e19d1f9a34a373ff8386103de210766b6ff4"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "gitBlob": "22893a0253adfa684528eb4652142cccb51ae0ea",
+        "bytes": 138243,
+        "sha256": "15886f0d9d4a5460279552d2f0f335127e6fd554c31fc571837e1480185ace75"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-output-read-closure-consult-20261016.md",
+        "gitBlob": "33d3804d39384920797613c04623b6b390926554",
+        "bytes": 56812,
+        "sha256": "8e3b2c088ee84c7aade1be5b9209e2a5656133d67bc1957b9d5401d822bdddd8"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-admission-cold-proof-design-20261016.md",
+        "gitBlob": "d362da3b3b323b867996e4f86776e78565e9e255",
+        "bytes": 51233,
+        "sha256": "38d4d925026748391dc3b7b99aa8bbd5656516b479f0f6781f7ecec2c9316fb7"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-admission-history-location-design-20261016.md",
+        "gitBlob": "c9ee7762473337b99fc011a1d33bca6a27fa76e8",
+        "bytes": 20379,
+        "sha256": "f5c91f653a79b651748d3b53128dd16126c6366efbf0cc94ab7da541d5dc3f60"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+        "gitBlob": "6a3b7263d34279253a0ef67e81b94d5079600240",
+        "bytes": 40384,
+        "sha256": "5971594f73c1389ed21bda0f8b6c838c42e9640af8386aa15610ad0e63e21a94"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md",
+        "gitBlob": "4aaa904245315a079d64b47016b26dc8377acdee",
+        "bytes": 16560,
+        "sha256": "00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-policy-apd01-verification-20261016.md",
+        "gitBlob": "63ccaf474f605f06f07bb6f7ac4baf05846d0a98",
+        "bytes": 4530,
+        "sha256": "52f20c26a4a1745915bb59ff5cdc00f5ae97ca6506f89658927f5341d81222cb"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+        "gitBlob": "30458a6dbcf43026becae6863154e9daf28b9876",
+        "bytes": 25246,
+        "sha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md",
+        "gitBlob": "f774a68226b7581425cd51d0a836be3ee63606f0",
+        "bytes": 17227,
+        "sha256": "91dcc0c0df7fcb314ddb30742ea26bd7ae63653ea1c372662f278aa6c2ace0bc"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-nid01-verification-20261016.md",
+        "gitBlob": "a91da9bd1acc9a185cc26ed8ce865979de97ffae",
+        "bytes": 3805,
+        "sha256": "2c1d195f1276a9417f8a9b626b4bd838e019f47296209f8ad0b1166872967f39"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md",
+        "gitBlob": "50dfd1689eb490054ad7a6fdf89880018a64c730",
+        "bytes": 22367,
+        "sha256": "1b56c590e3393ce07bae8dde06a9ebc6b1c73683b1f3345592289d48a18044d8"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+        "gitBlob": "0fb5be8fc29fadaacc241c7a5c858718df476666",
+        "bytes": 13814,
+        "sha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c"
+      },
+      {
+        "kind": "historical_governance_or_design",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-first-outcome-blocker-review-20261016.md",
+        "gitBlob": "997264b975b7efaf88d389f667020307ae4da19b",
+        "bytes": 8630,
+        "sha256": "1b4d0982c3fbf9a071a1255d25b54678f58e345142310a89e5842a571810f70e"
+      }
+    ],
+    "verifiedSourceProjections": [
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "firstLine": 12,
+        "lastLine": 23,
+        "sha256": "e4ae693aea02a6f7a6177886a0aed42ce1be2acd0e9b7e4a926a2ef70cb27985"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "firstLine": 78,
+        "lastLine": 153,
+        "sha256": "b366e1755db4029a1ee62aef8fd6a75fe24bc30af7bda62252660bb119e57f4d"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "firstLine": 174,
+        "lastLine": 198,
+        "sha256": "4f44e49fca8daa6046a74f5aebef24fa0e02eb55d80600ae40cba28e559a13c7"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "firstLine": 200,
+        "lastLine": 259,
+        "sha256": "baffe4859a2aa5a0668182ee64d6a4d34badf026b29dcf84cfc634c0bffc814f"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+        "firstLine": 300,
+        "lastLine": 318,
+        "sha256": "5bbe5d566c7879a0d78ab7f781bb48cd62fba13df2779e58850d831c373e38b1"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "firstLine": 14,
+        "lastLine": 87,
+        "sha256": "987506b40efb5af68ab7b12a4452e5dc5a9b8030a9e449de11265ff4f915196f"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "firstLine": 89,
+        "lastLine": 177,
+        "sha256": "41a13a68d7603e61e660f198f7ceae679cb365194ab62c9a06dba0f1ccdab0af"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "firstLine": 18,
+        "lastLine": 58,
+        "sha256": "1da32e14538747135fb8624870a18c5669125a0bb0ae85996f9798a5ab7ac27e"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "firstLine": 76,
+        "lastLine": 132,
+        "sha256": "aea51458a35111b68753f3bbcdd7f11a7f6c16a5d6d4368c9cb411064432e84f"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+        "firstLine": 10,
+        "lastLine": 89,
+        "sha256": "bf19e51f13462063e40d662e00902719a743a1ddc81f73d5c6789377ea46c5f6"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "firstLine": 143,
+        "lastLine": 173,
+        "sha256": "9e7bb106785f52a9fbfd82ba9509616e501b262fe5d726d4d74ddda8bae3c79b"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "firstLine": 203,
+        "lastLine": 229,
+        "sha256": "910ceb93179bcd6bf34eee7fd22ae5904bb49ee4d35dce544750b032c4521b4d"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "firstLine": 349,
+        "lastLine": 371,
+        "sha256": "e10e9dbe0e83986d7f26ccc4248cc8b121a2e66b5f6ad24cd8104fb5e38a3fca"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+        "firstLine": 728,
+        "lastLine": 751,
+        "sha256": "a4a5e306bf84ead1a56b18884da1f65b6d2a10ece296dd40d84417ced77004d2"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 199,
+        "lastLine": 280,
+        "sha256": "e820f2f15d2bb31050933bb73f6fe3690a979ec95f4678367e6c25f91d8037f1"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 350,
+        "lastLine": 397,
+        "sha256": "711f66b892f6a133b938e1e5ab7da13fbeb8f5add2c66a270d0fa53059c5caec"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 2731,
+        "lastLine": 2784,
+        "sha256": "e30b02e5962818522ec0a0ac2812dfdb246d285f867c04ddb004c2a04e49feb1"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 3331,
+        "lastLine": 3361,
+        "sha256": "c5e34eaedf914d94482f5ba246c6275d3e2939d6147fed2b03cf03ad103793c4"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 4043,
+        "lastLine": 4069,
+        "sha256": "e7392a3aa7c5d1f60a2bde86133d94196a58488ffb99de43a1e44cf803565f05"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "firstLine": 4156,
+        "lastLine": 4190,
+        "sha256": "d6d00bf05ef8990ff94530a7e6ed3018639a8a8daa7132ad89fb013f04fb64e0"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+        "firstLine": 85,
+        "lastLine": 96,
+        "sha256": "6d74ea4119ea9cd16844922ea1337e0f1796319e4f83a4abfd155ed0560c18d1"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+        "firstLine": 130,
+        "lastLine": 149,
+        "sha256": "d9a684ea980b6e00da80ed9ae989fa97e9783a4981f1d24374cdbcfa952acd41"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+        "firstLine": 213,
+        "lastLine": 250,
+        "sha256": "0459c1f1a181f9c9e38032d3eb2aaa254a86629a1e890e4c887a3082000b87d5"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+        "firstLine": 8,
+        "lastLine": 50,
+        "sha256": "b406c98df30b383a660bf97deadf3b07bee2d766a76d0f51d5f4875493473d03"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+        "firstLine": 10,
+        "lastLine": 78,
+        "sha256": "e8d571cbf4e7375193557771b92eba095e78b4aa5945ee60fa6ae5c1fba2d3cb"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+        "firstLine": 38,
+        "lastLine": 69,
+        "sha256": "745fa186e2a363572c0c7b1d1e636d835f34c8951eab0ecc1c65ef344e71fb88"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+        "firstLine": 154,
+        "lastLine": 200,
+        "sha256": "bee361b1638a9991efc812195b7621e87dfb4d699d265e2071f1dc3dcc41103c"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+        "firstLine": 203,
+        "lastLine": 241,
+        "sha256": "33a00cf68fc0b8649e216c37c83969f857283f9154d6764285abc55c61dd5d48"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+        "firstLine": 275,
+        "lastLine": 303,
+        "sha256": "06134896bbad5fbbb5205e1c2707bfac05e049f26305c840608be26b30546ff0"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+        "firstLine": 14,
+        "lastLine": 17,
+        "sha256": "e9a211f691fcd2d0a9f52d90363dfb010f8d871d593191e4169ffe99bbdd3c01"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+        "firstLine": 211,
+        "lastLine": 216,
+        "sha256": "96455eddd9e3ac577927b59766e484297492666cda207b9473909c0df6e15cbc"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointUnattemptedClose.cs",
+        "firstLine": 28,
+        "lastLine": 78,
+        "sha256": "1de2f95173dc8297cce367a91ba1667634ce623961918978ddd09e3b5add1a25"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "firstLine": 1485,
+        "lastLine": 1545,
+        "sha256": "9ac831be7272fb94f755656f97ecf24411b83cf5c4c4e4f7756ca5098759b9d7"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+        "firstLine": 108,
+        "lastLine": 131,
+        "sha256": "f742bb88465042cd933682e84b575e5ae44b3d94bb2b9520632105204545647c"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "firstLine": 574,
+        "lastLine": 587,
+        "sha256": "2dfbefc8885a2f79e0cf828b7ccb81ec07c804e4bd6c6bd76d51e7d19824478f"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "docs/development-workflow.md",
+        "firstLine": 11,
+        "lastLine": 60,
+        "sha256": "b8b0a54c81c355e676f2f90fd87a59d2154d0404370741d5d8274216e85d411f"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": ".specify/memory/constitution.md",
+        "firstLine": 117,
+        "lastLine": 130,
+        "sha256": "873162bbda5cd8b4cdbd89ec5d9cb32f0c491fd584eb1e4eeb1c8f33ea340d44"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "firstLine": 1,
+        "lastLine": 11,
+        "sha256": "62b3e802ef2cc523d6bc05828ee1a8d052043625d6e255baa4430b1c098c576e"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "firstLine": 1,
+        "lastLine": 39,
+        "sha256": "55dc3ea5d6cf1d7d5cf4c22403a016494508aa3568596f39918147b3333b5309"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "firstLine": 1,
+        "lastLine": 12,
+        "sha256": "bbf4d1f12d9943891be01aef933eb0b33d2de9f4ee2d5069f2672c3ad716876e"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "firstLine": 217,
+        "lastLine": 249,
+        "sha256": "136a4b13e2ba6efb3c4de673f21e87b1c9f60d6630e9bf10416934bd36c719f1"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 80,
+        "lastLine": 100,
+        "sha256": "4de25d7b56553d664175b83b380a4adda53eb7501e14ec54b98e887d094582ac"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 289,
+        "lastLine": 304,
+        "sha256": "c0b23753cea810eff7fe8926440a7bb55ea00b8246f279d65cc9d67d8ccba4f7"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 343,
+        "lastLine": 382,
+        "sha256": "3ea8ebd8deb0911403724cfa404560f63053a1f822f1b8facf6d6bc7618b293a"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 524,
+        "lastLine": 535,
+        "sha256": "1aeddef30516b50b71a39f7de2b2c76b3d47f687c3124e1ec442440a8ab7c4e9"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 600,
+        "lastLine": 613,
+        "sha256": "204b421f0ba1618b821ff1aecf01e1da02089c2048264f755c2d7d62c75ea591"
+      }
+    ],
+    "currentDocumentProjections": [
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 385,
+        "lastLine": 440,
+        "sha256": "631226523c720dd0b8ab7696e8354433f17dfb8452b4d1da5ffa27d546b6c8c0"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "firstLine": 1,
+        "lastLine": 38,
+        "sha256": "38bad6bd5dfa9ce52d3ae45a212d406bd6b47bdad589cdeb0b8b960552ce2b79"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "firstLine": 1,
+        "lastLine": 35,
+        "sha256": "69d4e02c61cb364abe8b3094ecbe7ea12c6cf4a4b8c64f6509169bbca13821d2"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "firstLine": 1,
+        "lastLine": 12,
+        "sha256": "b4c4717459490817db758189c6228315dfda3aa7239ea5554d1dd2aee7e539a1"
+      },
+      {
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "firstLine": 1,
+        "lastLine": 12,
+        "sha256": "c8c8584fb34dc40acd10a7f7e68a3f423961cd5ca674c5bf6fae7b431d545453"
+      }
+    ],
+    "findingProjections": [
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "firstLine": 53,
+        "lastLine": 95,
+        "sha256": "65330fef3570a2a33cfc1444de109310195f4ecb9311dcabca77cba1705c008a",
+        "text": "        internal void RequireActualOwner(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)\n        {\n            if (!IsCurrentOwner(files, lease) || !files.IsCurrentSessionGeneration(lease, _generation))\n                throw new InvalidDataException(\"The current joint attempt owner is unavailable.\");\n            _capture.EnsureCurrent(files, lease);\n            if (_frame is not ValidatedPendingTurnSnapshotContext frame ||\n                !_engine.MatchesMortalJointRepairFrame(frame, frame.TurnNumber))\n                throw new InvalidDataException(\"Joint attempt lost its actual private admitted frame.\");\n        }\n        internal void RetainHotSource(object issuer, PendingTurnSnapshotReadAuthority original,\n            PendingTurnSnapshotReader.OriginalReadEvidence evidence)\n        {\n            RequireIssuer(issuer); RequireActualOwner(_files, _lease);\n            if (!_capturing || _hotOriginal is not null) throw new InvalidOperationException(\"HOT source requires the actual open capture.\");\n            evidence.RequireCurrent(_files, _lease, original);\n            _hotOriginal = original; _hotEvidence = evidence;\n        }\n        internal void RequireMechanicalOriginalAgreement(FileSystemManager files,\n            FileSystemManager.CanonicalWriteLease lease, PendingTurnSnapshotReadAuthority mechanical)\n        {\n            RequireActualOwner(files, lease);\n            if (_hotOriginal is not { } hot || _hotEvidence is null) return;\n            _hotEvidence.RequireCurrent(files, lease, hot);\n            if (hot.SessionId != mechanical.SessionId || hot.RequestId != mechanical.RequestId ||\n                hot.SnapshotToken != mechanical.SnapshotToken || hot.TurnNumber != mechanical.TurnNumber || hot.Realm != mechanical.Realm)\n                throw new InvalidDataException(\"The two genuine original operations belong to different sources.\");\n            foreach (var path in hot.CoveredLogicalPaths.Intersect(mechanical.CoveredLogicalPaths, StringComparer.Ordinal))\n                if (!hot.ReadRequiredBytes(path).AsSpan().SequenceEqual(mechanical.ReadRequiredBytes(path)))\n                    throw new InvalidDataException(\"Overlapping HOT/mechanical original source changed: \" + path);\n        }\n        internal void CloseCapture(object issuer, JsonObject custody)\n        {\n            RequireIssuer(issuer); RequireActualOwner(_files, _lease);\n            if (!_capturing || _phase != \"Capturing\") throw new InvalidOperationException(\"Joint capture cannot reopen.\");\n            _custody = custody.DeepClone().AsObject(); _capturing = false; _phase = \"PreparationStarted\";\n        }\n        internal void RetainStage(object issuer, JointAttemptStage stage, object actualResult)\n        {\n            RequireIssuer(issuer); RequireActualOwner(_files, _lease);\n            if (_capturing || _delegated || _close is not null || (int)stage != _stages.Count || !_stages.TryAdd(stage, actualResult))\n                throw new InvalidOperationException(\"Joint stage must be retained once before delegation.\");\n            _phase = stage is JointAttemptStage.Common or JointAttemptStage.Preflight ? \"V2CommonSealed\" : \"Building\";\n        }\n"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+        "firstLine": 159,
+        "lastLine": 177,
+        "sha256": "187ba026d2228218f9e18879cc4213ff36dcbf7c65f2e07018731499751246a4",
+        "text": "    private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,\n        FileSystemManager.CanonicalWriteLease lease)\n    {\n        var read = _hotRepairReady;\n        if (read is { Faulted: false, Status: \"ConsumedReadyMatched\", ReadyDeleteReturned: true, ReadyReleaseReturned: true })\n        {\n            try\n            {\n                await RecheckHotReadySourceAsync(lease, read, requireReadyAbsent: true);\n                read.CurrentSourceRecheckSucceeded = true;\n                attempt.RetainHotSource(JointAttemptIssuer, read.Source!.Snapshot, read.Source.Evidence);\n            }\n            catch (Exception error)\n            {\n                read.Fail(IsOptionalHotFailure(error) ? \"SourceChanged\" : \"OwnerFailure\");\n                if (!IsOptionalHotFailure(error)) throw;\n            }\n        }\n        attempt.CloseCapture(JointAttemptIssuer, HotCustodyDiagnostic(read));\n"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "firstLine": 43,
+        "lastLine": 58,
+        "sha256": "2b02222ed7462e71368e127e31ab9004570f5441745021d3aac72747c022a7a9",
+        "text": "            var capture = await ReadCurrentJointRejectedCaptureAsync(lease, _mortalJointRepairCheckpoint!.ToJsonObject());\n            attempt = BeginCurrentJointAttempt(lease, frame, capture);\n            try\n            {\n                await CaptureCurrentHotCustodyAsync(attempt, lease);\n                var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);\n                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preparation, preparation);\n                if (!preparation.IsValid) return Refused(preparation.Issues);\n                var continuation = preparation.Authority!;\n                attempt.RetainContinuation(JointAttemptIssuer, continuation);\n                var reservation = await AcceptedTurnAuthorityRegistry.ReserveMortalJointRepairPublicationAsync(_fs, lease, continuation);\n                if (reservation.Authority is null || reservation.Status is not\n                    (MortalWoundTreatmentPublicationReservationStatus.Reserved or MortalWoundTreatmentPublicationReservationStatus.Exact))\n                    throw new InvalidDataException(\"The same joint owner could not reserve its exclusive publication slot.\");\n                var reservationAuthority = reservation.Authority;\n                attempt.RetainReservation(JointAttemptIssuer, reservationAuthority);\n"
+      },
+      {
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+        "firstLine": 123,
+        "lastLine": 132,
+        "sha256": "5007339190bdb4601abf0088a34aa0293ea4d1cd12b459403078dbf99be58af7",
+        "text": "                CloseCurrentJointAttempt(attempt, lease);\n                return Retain(new(MortalJointRepairPublicationDisposition.PublicationUncertain, null, issues));\n            }\n        }\n        }\n        finally\n        {\n            // Expiry follows the real await-using close, including its failure.\n            attempt?.Expire(JointAttemptIssuer);\n        }\n"
+      }
+    ],
+    "verifiedHistoricalCommands": [
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reviewerAction": "Reproduced exact local read-only argv/exit/stdout"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "8e0a5e40d28b103fa509f40dd7f1a5b293f6545c",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests/categories.json",
+          "scripts",
+          ".github"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reviewerAction": "Reproduced exact local read-only argv/exit/stdout"
+      },
+      {
+        "argv": [
+          "git",
+          "grep",
+          "-n",
+          "-F",
+          "-e",
+          "OwnedAdmissionHistory",
+          "-e",
+          "HotSubmittedAdmission",
+          "-e",
+          "SubmittedOutputInputs",
+          "-e",
+          "VerifiedActiveP0",
+          "-e",
+          "admissionEvidence",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 1,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reviewerAction": "Reproduced exact local read-only argv/exit/stdout"
+      },
+      {
+        "argv": [
+          "git",
+          "ls-remote",
+          "origin",
+          "refs/heads/1536-wound-b2-cloud-20261012",
+          "refs/heads/main"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "f87aa544bd60897a2a60d5623a751589fc78c896\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+        "stdoutSha256": "5d1945dd9b2e315e4cb40f6e86abed160c51545d94e26e73e31042cc162669c1",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "reviewerAction": "Stored record and stdout hash inspected only; NO network reexecution"
+      }
+    ],
+    "exactDiffs": [
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 18746,
+        "sha256": "766e0b01e59358a01fcba36e69e19a83a64ed1bb3650b8b194ebcc4d90a23f02",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\nindex 22893a0253adfa684528eb4652142cccb51ae0ea..1e97cee68edfd0eed0dd0960d8edfcd208636bbb 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n@@ -1,5 +1,7 @@\n # Lawful ACTIVE fixed joint-tail B Implementation Plan\n \n+> **Current delegation at f87, 2026-10-16:** document-only T179-Pd-AUDIT-SBM below. Windows permission remains unanswered; failed hold delivery and technical reviews grant no permission. No runtime/CI/transfer/settings/release/catalog changes. Earlier continuation/release entries are checkpoint history, superseded for new actions by the [current plan authority](../plan.md). Prior13PASS+first2LinuxFAIL and separately reported Windows JOBsuccess remain; raw worker2 qualification BLOCKED. No full S/B/M3/F1/T197/new-QTE acceptance.\n+\n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n \n > Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).\n@@ -379,7 +381,63 @@ Full reasoning authority still needs the actual completedGuardianMusings owner/M\n | UAD07 | Pre-P0 hot proof loss HOLD is bounded internal limitation; whole pre-P0 recovery remains activation prerequisite, no lawful-outcome drop or default ordinary replay. |\n | UAD08 | Actual observed comparison sensitivity/equivalent no-emission slices and strict freshness boundary/metadata fallback, including worker-direct proof before enabling that branch. |\n \n-Full T179/T192/F1/T197/D4/guided/visual/Windows/D8 and new joint QTE gates stay open. Continue the coherent stage beyond prerequisite extraction; do not publish M3 before full cold proof.\n+Full T179/T192/F1/T197/D4/guided/visual/Windows/D8 and new joint QTE gates stay open. Any continuation is subject to current delegated authority; do not publish M3 before full cold proof.\n+\n+#### T179-Pd-AUDIT-SBM — static dependency boundary at f87\n+\n+Tracked document-only audit from `f87aa544bd60897a2a60d5623a751589fc78c896`; [machine-readable source/projection/command pins](../recovery/t179pd-sbm-static-dependency-audit-20261016.json). Every source range below is at f87, with prefix `BookOfEternityClient/`; documentary line numbers in this evolving plan are not frozen source coordinates. This is an audit of existing/proposed boundaries, not acceptance of the still-pending admission-evidence design or permission to implement it. No new runtime/build/discovery/test/CI/transfer operation occurred.\n+\n+**Observed source and inference:**\n+\n+| ID | Exact current seam | Consequence for the existing design |\n+|---|---|---|\n+| SBM01 | `Core/GameEngine/GameEngine.MortalJointHotSubmission.cs:12–23,84–153,200–234`: six input, three output and five control custody roles; actual producer/raw G/request/manifest/authority and current origin checks; original status can be `UncoveredInSignedInventory`. | This is structural custody. Its six input paths are not seven semantic policy roots or the complete73-leaf inventory. Uncovered is not authenticated absence or initialized stats/level authority. |\n+| SBM02 | `Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs:53–87,126–177` and `GameEngine.MortalJointRepairCanonicalPublication.cs:43–47`: actual attempt checks private frame/capture/lease; CaptureCurrentHotCustody closes capture before preparation. Export explicitly hasS/hasB/hasM3=false. | Future HOT family adapters and source freeze must complete while this SAME real attempt remains Capturing, before CloseCapture/preparation. Calling an adapter after current CaptureCurrentHotCustody returns would be too late; a new wrapper/ordering must preserve ordinary v2 behavior. No success/null-custody shortcut may issue S. |\n+| SBM03 | `Services/PendingTurnSnapshotReader.Observed.cs:10–44,48–89` plus shared `PendingTurnSnapshotReader.cs:143–173,203–229,349–371,728–751`: actual observed source core/export, current files/lease/snapshot identity and physical recheck; default ReadCurrent remains distinct. | Reuse the implemented original-read closure, including actual rollback callbacks and three contexts. It is not an engine-wide submitted-source session or cold import API. Each new lease needs newly issued evidence; exported operations cannot reconstruct authority. |\n+| SBM04 | `Core/GameEngine/GameEngine.ValidationAndRepair.cs:199–280,350–397,2731–2784`: ordinary checks, route-dependent freshness, distinct actual repair start/fallback samples and target metadata. | Complete original-first/repair-route history is not derivable from final Ready/request/current JSON. Future original-issued history must record actual owners/ordered diagnostics/metadata and freeze before seals; no generic \"no previous repair\" claim or new ordinary rejection. Existing encompassing health/repair/progression loop is not a pure admission helper. |\n+| SBM05 | Same engine file `:3331–3361,4043–4069,4156–4190`; `MortalJointHotSubmission.cs:174–198,300–318`: repair-file replacement, worker before legacy request write, direct Apply-without-Ready success, explicit WorkerDispositionNotIntegrated. | Ordinary worker success is valid without Ready. Its real submission/validation owner needs a separate closed adapter before full S; absent Ready/request is never no-repair evidence. Accepting the missing worker2 raw packet alone will not implement that adapter. |\n+| SBM06 | `Services/Validation/ValidationService.GuardianMusingsPublication.cs:85–96,130–149,213–250`: genuine specific completed-musings proof and synchronous comparison that acquires a lease. Existing 3c/3d/3e designs and AP-D01/NI-D01 corrections remain the contracts. | A provided-lease observed Full adapter and real first-pass projection observations remain required; no nested lease, synthetic empty completion, fixed-point retroproof, replayed UTC/GUID or unused parallel kernel. Seven roots remain narrative/interface/Full reasoning/special-action/combat/pending-memory/no-offer; automatic/player/level/time and raw/domain checks are additional obligations. |\n+| SBM07 | `Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs:8–50` retains one genuine C; `Services/EffectLifecycleExecutionLedger.cs:10–78` retains the actual two passes as evidence. | These implemented prerequisites do not serialize full active C semantics, qualify D9 event/time decomposition or supply a cold verifier. Complete owner/result relations and common source seals remain required; no repeated reducer/scheduler/identity allocation to create proof. |\n+| SBM08 | `Services/MortalJointRepairPublicationPreparation.cs:38–69`; `Services/MortalQteDecisionPublication.MortalJointRepair.cs:154–200,203–241,275–303`; main `MortalQteDecisionPublication.cs:16,211–216`: exact taken-v2 writer/cohort and semantic cold pattern, strict v2 fields, v1/v2 dispatch, existing M path. | There is a concrete existing-M native writer seam, not an implemented v3/admissionEvidence codec. Future strict tagged rows, encoder1, same-candidate source/common/prepared/take linkage and separate v3 cold semantic checker must precede M3 emission. A marker selfhash or schema bump cannot discharge these obligations. |\n+| SBM09 | `Services/AcceptedTurnAuthorityRegistry.MortalJointUnattemptedClose.cs:28–78`; canonical publisher `:98–132`: exact own unattempted slot only, delegation before actual native owner, expiry after physical lease close. | NoNativeAttempted is not source acceptance, proof of no prior committed effect or permission to reopen capture/abort native debt. Pre-P0 hot-history loss remains an unqualified bounded HOLD; full activation still needs a real pre-P0 recovery route. |\n+| SBM10 | `Core/GameEngine/GameEngine.TurnLifecycle.cs:1485–1545`, `GameEngine.MortalJointHotSubmission.cs:111–153`, `GameEngine.MortalJointStoryTurn.cs:108–131`: continuous console owner versus browser acknowledgement after the outer await, terminal cleanup invalidation/held preservation. | Genuine current owner admission is necessary on both routes. Existing browser2 evidence is not remote Complete/Dispose fault coverage or actual DOM/visual parity. Future M3/FD/FT/LifeEvaluation handoffs must prove target ownership before releasing source debt. |\n+\n+**Dependency map — separate data requirements, acceptance holds and current permission:**\n+\n+| Work item / existing owner task | Necessary predecessor or unresolved contract | Can this audit proceed without worker2 ZIP? / next implementation boundary |\n+|---|---|---|\n+| Current T179-Pd-AUDIT-SBM | Read-only f87 source/design and governance | Yes: source pins, map and future matrix only. No build/runtime/behavior change. |\n+| 3c/3d/3e ordinary shared-kernel A | Their already reviewed extraction contracts; exact ordinary consumers/catches/diagnostics, AP-D01/NI-D01 | No data dependence on ZIP. Potential independent implementation slice, but NOT started or released by this audit; select/record a coherent slice first under applicable authority. |\n+| 3c/3d/3e HOT-B adapters | Real 3b original/attempt while Capturing plus actual ordinary-consumed kernels and finite source observations | ZIP is an acceptance dependency of the current 3b sequence, not an argument to a pure kernel. Current HOT integration/qualification held; never substitute mocks/DTOs for real attempt. |\n+| Admission history/finite submitted reader | SBM03–06 genuine original-issued lineage, all conditional callbacks/reads/errors/metadata/comparisons, actual worker-direct route | Static codec/owner-gap analysis is independent and completed here; implementation still unimplemented. Existing reader and custody are only prerequisites; some observations need capture at their original event, not at late P0. |\n+| Full semantic S / T179-Pd.3–4 | All actual raw/domain/automatic/source families, full history/source closure, same-owner rechecks; initialized originals | Not supplied by Windows PASS or empty diagnostics. No active source issue until every applicable source family/history join is real and reviewed. |\n+| S→C→raw B / T179-Pd.5 + T192 | Full S, genuine once-retained C, actual D9/event/time owner, same reservation/candidate/fence and pre-seal source union | No active B/seal/take currently implemented. Need new genuine prepare/seal boundary before closing capture; no after-seal attachment or v2 promotion. |\n+| Nested M3/P0 / T179-Pd.6–7 | Strict evidence/phase codecs + complete pure cold owner semantics + source/history/projection equivalence; existing exact native batch | Store in existing M only. Every native cut/readback/lost reply and genuine fresh-process/distinct-root proof required; hot retention alone cannot release publication. |\n+| Full pre-P0 restart / activation | Qualified recovery for history lost before committed M3, existing owner/version/lifecycle design | Hot-only HOLD is a stated limitation, not final ordinary resolution. Must close before activation, never replay committed action or silently create history. |\n+| T180–T191/T192–T198 | Full B01 and each named ordinary/event/tail/target owner; actual platform/UI evidence | Remain OPEN. WIN-E01 is one qualification blocker, not their only missing implementation or a proved F1 impossibility. |\n+\n+**Future verification refinement — ALL rows FUTURE_UNRUN, no selectors/counts/runtime release created:** use existing UAD01–08/AP01–14/DFR01–07 and the F1 matrix rather than duplicate category owners. Exact categories/counts/budgets and G5/G6 reviews belong to the later concrete changed-consumer diff. These rows identify required causal oracles, not new executed tests.\n+\n+| Audit check / existing task | Future setup and required observable result |\n+|---|---|\n+| SBM-V01 / UAD01–03, T179 | Real ordinary Stage first; then changed corrected submission through actual repair. Genuine original-issued seed/complete ordered history, raw G/session/request/token/turn/realm and original hashes match. Missing/foreign/cloned/truncated/forked history and uncovered initialized roots do not issue S; ordinary route keeps its valid behavior. |\n+| SBM-V02 / UAD02, 3c–3e | All seven policy roots plus automatic/raw/domain/level/time; branch-complete73-leaf inventory, nested rollback/context callbacks, Full audits and real completed-musings owner. Each required read/error and unsupported role latches; exact bytes/absence/BOM/diagnostics/catches preserved. Actual ordinary consumers use shared kernels. |\n+| SBM-V03 / UAD03/08 | Multiple repairs with distinct start/request/fallback UTC; equal output boundary, target before/equal/after start, missing/error mtime, same bytes with changed mtime and later phase replacement. Check exact ordered target/max/fallback/output predicates from actual history, not current timestamps. No historical UTC promoted to action elapsed time. |\n+| SBM-V04 / NI-D01, DFR06–07 | Changed+Returned public write/outer release versus Fault/Uncertain; no-write UTF8/noBOM/UTF16 exact physical bytes; actual volatile projection observations and provided-lease comparison. No scheduler/normalizer/UTC/GUID rerun to make cold equality pass. |\n+| SBM-V05 / UAD04, T179-Pd.5 | Genuine attempt stays Capturing through source freeze; drift after C/before seal, two real owner/reservation pairs, source/B mutation, repeated seal, reentry and after-seal attachment. Same S/C/B→input/prepared/cache→take candidate/fence or refusal with exact own unattempted close; no rearm/native-debt abort. |\n+| SBM-V06 / UAD05–06, T179-Pd.6–7 | Strict v3 tags/fields/policies/ordinals/source roles and encoder; authentic original/G/full phase cohort. Change semantic source/route/event facts and recompute all hashes: cold proof still rejects. Exact existing M/cohort only, no extra filename, self-reference, caller evidence, mutable history or v2 ACTIVE upgrade. |\n+| SBM-V07 / UAD05–07, T189/T191 | Crash before seed/freeze/take, every native member/marker cut, committed lost reply, rollback, unresolved debt; fresh supported process/root and exact repeat. Known committed M3 uses real cold proof; pre-P0 missing history HOLD is bounded only until separately qualified recovery. Preserve committed consequences and evidence. |\n+| SBM-V08 / worker closure, 3b | Real Apply-direct-without-Ready and real worker-generated-Ready branches, genuine request/task/G/source/audit and cleanup. Preserve prior13PASS+first2LinuxFAIL, no positive oracle from a refusal. Missing Windows raw bytes require permission/access decision and packet EVIDENCE; no rerun/download workaround is released here. |\n+| SBM-V09 / T180–T182/T192/T196 | Each automatic/projection/story action+ack proves exact before/after plan and actual commit, same original action boundary/turn n. Validate D9 initial versus final lifecycle events, mixed time policies and frozen elapsed time; repeat/restart produces zero extra delta/tick/IDs/story/turn. |\n+| SBM-V10 / T184–T186/T193–T198 | Real QTE decline resolves the SAME unresolved source situation via ordinary child request owners in existing M, with actual success/failure/consequences/required repair and same-child retry/lost-completion restart. Source/request binding and committed-prefix exclusion forbid replay, notification-only/intent completion, forced accept, reoffer, skipped family or dropped outcome. |\n+| SBM-V11 / T189–T191/T197 | Console/browser actual dispatch/close/cancel/restart and target receipt before source cleanup. Eligible death→LifeEvaluation, lost active pin DEP-C, incarnation target DEP-I and distinct-root load DEP-L stay separate real prerequisites. API/component PASS is not real DOM/visual or native Windows evidence. |\n+| SBM-V12 / T178–T191 release | Independent changed-source/fixture/selection review, causal RED and first-outcome evidence gates; fresh bounded platform checks only after applicable release, strict actual counts/native/source/binary/owned-cleanup proof. Final audit/recovery and GM sync rationale; no aggregate test run or gate closure from this static matrix. |\n+\n+**T178–T191 order clarification:** T178 keeps current permission and exact selection scope; T179 is not closed by reader/custody/C/audit prerequisites. T180 automatic→T181 projection→T182 original story/turn each require their genuine action+ack and T192 time/event ownership before T183 no-offer completion. T184/T185 do not offer QTE until the paired T186 ordinary resolution and T198 complete-universe qualification exist. T186 still consumes complete T192–T197 owner DAG, never notification or replay; T187 preserves D8's exact selected-terminal transaction before T188 post-QTE automatic/projection. T189 cleanup follows both ordinary and terminal target ownership; T190 actual console/browser/GM qualification and T191 separate bounded native Linux/Windows evidence follow all applicable owners. D4 allocator, guided US5 and frontend visual qualification are unchanged. T197 DEP-C/I/L remain DESIGN-only/open. Operational Windows evidence absence proves no mechanical F1 obstruction; F2 is not selected.\n+\n+**GM/source synchronization:** this audit changes no production/schema/request/Ready/original/v2 bytes, public capability or GM-authored behavior, so Mortal/afterlife prompts/examples/manifests/source guards need no update in this document-only block. Future emitted M3/repair/original/shared afterlife contract changes still require same-change synchronization under AGENTS. No live documentation is taught an unimplemented path or field.\n+\n+Audit independent review and final persistence are tracked in the current plan/tasks. Only this bounded documentary item may close after actual review and source/diff/recovery inspection; all gameplay/platform evidence above remains UNRUN or retained with its original provenance.\n \n ### T180 / B02 — atomic automatic action+ack\n \n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 1977,
+        "sha256": "8e9a4f00ef18fa3d8c7f6dab13e6f69f4aa9a4cf1c7511c780008af8c22e354b",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\nindex d828be5ba930384b059b17c192804e221d57842c..0d17781fa0ca2a9d1870548b2cde91b70af2575d 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n@@ -1,5 +1,7 @@\n # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B\n \n+> **Current delegation from f87, 2026-10-16:** document-only source/dependency audit in the [implementation plan](lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87), governed by [current authority](../plan.md). Windows permission is unanswered; failed hold delivery and technical reviews give no user permission. No runtime/CI/settings/transfer/release/catalog change or new QTE. Earlier continuation/release text is checkpoint history. This audit accepts no new evidence codec/issuer or full F1/T197; all D4/guided/DOM+visual/Windows/D8 limits remain.\n+\n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n \n > Ready3 causal RED is independently qualified atcc8 (2legacyPASS+solemissing-export RED228, no material finding); immutable review/root96pins/16projections/threeexactdiffs/6artifactchains/52document recovery are preserved. Continue the already authorized bounded3b engineering after decision persistence; no additional actual or GREEN is released. See current [plan](../plan.md).\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/plan.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 4866,
+        "sha256": "1fa76425b2ff60d51ba05a23346d505d1dd779e0cf35422a37021e0f7b82bb78",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/plan.md b/specs/1536-complete-wound-materialization/plan.md\nindex ef9d415ace3d8b5104a798150b6b7641a9d1bcc0..eb4e36754f0e29f6ee91cf308319573d85070411 100644\n--- a/specs/1536-complete-wound-materialization/plan.md\n+++ b/specs/1536-complete-wound-materialization/plan.md\n@@ -1,4 +1,18 @@\n-## Current execution authority — autonomous bounded 3b continuation (2026-10-16)\n+## Current delegation — independent S→B→M3 static audit; Windows hold (2026-10-16)\n+\n+Coordinator continuation from verified remote `f87aa544bd60897a2a60d5623a751589fc78c896` explicitly allows independent source/design audit or a separately agreed rules-splitting task. Selected tracked item **T179-Pd-AUDIT-SBM** is the static S→B→M3 dependency boundary, because checking existing source, proposed codecs and task dependencies does not require accepting Windows worker2. It introduces no behavior or implementation grant. Source thread: `01a118b2-51cc-732e-9138-6474686600eb`.\n+\n+**Current authority:** the user has NOT answered the coordinator's Windows CI permission request. Earlier technical SOURCE/availability reviews are immutable historical evidence, not user permission. Prior hold-message delivery failed with service errors/unconfirmed delivery; a failed message is not approval. No rerun, download through another tool/route, log fallback, CI/permission/settings change, workflow enablement or release/catalog edit is allowed. Preserve the existing run as history; do not infer retrospective authorization from job success. Commit/push/readback and GitHub source recovery of this documentary block are allowed; main/merge/force-push/branch deletion/secrets/issues remain untouched.\n+\n+**Evidence boundary:** prior13 distinct PASS and first2 Linux FAIL retain their actual f9bc provenance. Run38978917195/attempt1/job117234913253 at53a reports hosted JOBsuccess; raw Windows worker2/case/native/binding/DLL/physical-cleanup evidence remains absent and NOT accepted. WIN-E01 remains: artifact12080975497,811881bytes, SHA256 `fa0992a149fc0cc3dc8af767b9ca54e6e26658ca67813aca81e5c87dac82f292`, expiry2026-11-15T23:08:12Z; first official ZIP accessForbidden. This block attempts no transfer, CI status polling or runtime. Existing terminal blocker review remains immutable.\n+\n+**Deliverable and dependency decision:** use the [canonical implementation-plan audit](design/lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87) and its [exact source packet](recovery/t179pd-sbm-static-dependency-audit-20261016.json). The packet separates observed production seams, proposed contracts and FUTURE_UNRUN checks; it is not S/admission/M3 proof. 3c/3d/3e ordinary shared-kernel A and source/read/history analysis have no data dependency on the Windows ZIP; their HOT-B integration needs the real still-Capturing 3b owner, and its acceptance remains held. Therefore \"all implementation necessarily depends on Windows\" would be too broad. The current choice is documentary audit only, with no unfinished-code mixing, automatic rules split or new implementation started.\n+\n+**Next handoff:** the map names the actual capture-close boundary, ordinary-consumed kernels, complete history/read-source adapters, exact row codecs, cold semantic checkers and pre-P0 recovery obligations. Future implementation, if separately selected within current authority, must first specify one coherent dependency-satisfied slice and its causal checks; no runtime is released by this audit. Windows qualification can resume only after an explicit applicable permission/access decision, authentic existing raw bytes and separate EVIDENCE review. Do not ask a repeated broad permission question or treat an artifact outage as a mechanical F1 obstacle/F2 choice. Full T179/T192/F1/T197, real ordinary decline resolution, new QTE and D4 allocator/guided US5/actual DOM+visual/general Linux+Windows/D8 gates remain OPEN. Audit independent review/persistence pending below; no completed full-stage claim.\n+\n+All following authority/release/STOP entries are chronological history for their pinned checkpoints. Where they call themselves \"current\" or \"permitted\", this delegation controls new actions. Historical reports and runtime outcomes are not rewritten.\n+\n+## Historical execution authority — autonomous bounded 3b continuation (2026-10-16)\n \n The new direct coordinator delegation resumes autonomous implementation from remote `745b8581275bd4b5fe25f01cb1bf6ea899492314`: continue the accepted bounded T179-Pd.3b sequence, obtain engineering reviews, use causal TDD and implement the accepted custody contract without another routine user gate. It explicitly supersedes the discussion STOP of the completed DESIGN-only pass below. Earlier immutable design/review/evidence records remain unchanged.\n \n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-f87-baseline-delta-recovery-20261016.json"
+        ],
+        "nativeExit": 0,
+        "bytes": 192867,
+        "sha256": "35eb73da4570340e14b13627564f0a046e730e30e2d00bcec0d2eba130872939"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-audit-20261016.json"
+        ],
+        "nativeExit": 0,
+        "bytes": 191846,
+        "sha256": "1b7f5ef588d2d537f2ef2acf09bb71294c6d3a1a6efc023e1e22b1f2a8e95d2d"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/spec.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 1660,
+        "sha256": "8ed24a2ed55dfb65ae05d32d8bddb94490b85352b5ef68638dd2617b16f66b01",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/spec.md b/specs/1536-complete-wound-materialization/spec.md\nindex 388f3a05e478c83d945e21034fc6fc2524bf5056..bbba4aa2a8390fa3c0af263b706945600f9071c8 100644\n--- a/specs/1536-complete-wound-materialization/spec.md\n+++ b/specs/1536-complete-wound-materialization/spec.md\n@@ -1,5 +1,7 @@\n # Feature Specification: Complete Wound Materialization and Healing\n \n+> **Current delegation from f87, 2026-10-16:** T179-Pd-AUDIT-SBM documents existing source/dependencies/future checks only; [current plan authority](plan.md) controls. Windows CI permission is unanswered; failed hold delivery and technical SOURCE/availability review are not user permission. No runtime, transfer workaround, CI/settings/release/catalog change or new QTE. Earlier continuation/release banners are historical. Prior13PASS+first2LinuxFAIL retained, Windows JOBsuccess separate; raw worker2 qualification BLOCKED, full S/B/M3/F1/T197 and D4/guided/DOM+visual/Windows/D8 OPEN.\n+\n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n \n > Ready3 causal RED is independently qualified atcc8; accepted bounded3b implementation may continue after decision persistence, with fresh source/evidence gates and no additional actual/GREEN release. See [current plan](plan.md).\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "f87aa544bd60897a2a60d5623a751589fc78c896",
+          "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+          "--",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 2706,
+        "sha256": "9f04af0902c1291000f215cdc7ba02d21a646b0baacca5e0bbb8489bcd111f05",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md\nindex a9cb6b5a46c1a8a64b15c3155421e566477b7bf1..b3c8e1b0bd91cafc49a225d03a665cc95321368c 100644\n--- a/specs/1536-complete-wound-materialization/tasks.md\n+++ b/specs/1536-complete-wound-materialization/tasks.md\n@@ -1,4 +1,15 @@\n-## Current execution — autonomous bounded T179-Pd.3b (2026-10-16)\n+## Current delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)\n+\n+Latest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a751589fc78c896` for independent source/design work. Windows CI permission question is unanswered; unsuccessful delivery of hold messages is not permission. Earlier technical SOURCE/availability decisions are historical evidence, not user authorization. This block edits documents only; no runtime, tests, build/discovery, CI/settings/release/catalog changes, artifact transfer/retry or new QTE. See [current authority and audit](plan.md).\n+\n+- [x] Verify clean f87 task branch and remote SHA; main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4` unchanged. Read governance, current design/plans and actual source owners; select the dependency audit because static source/history/cold-proof analysis does not consume Windows runtime qualification.\n+- [x] T179-Pd-AUDIT-SBM static map/matrix prepared for review: document exact implemented/proposed boundaries, concrete dependency map, future verification matrix and T178–T191/T192–T198 handoff. Distinguish structural data prerequisites from acceptance/scheduling holds; do not assert every pure-kernel implementation needs Windows worker evidence. No code or new design/implementation grant.\n+- [ ] Preserve WIP/push/readback/new exact GitHub recovery before independent Astra/XHigh review; fix confirmed findings and inspect supporting source pins/diff.\n+- [ ] Save final documentary review/result, verify task remote SHA and clean GitHub recovery. Audit completion alone closes no full T179/F1/T197/new-QTE gate. Retain prior13PASS+first2LinuxFAIL, Windows JOBsuccess separately, raw worker2 qualification BLOCKED WIN-E01.\n+\n+The sections below are immutable chronological authority/evidence history. Their earlier \"current\", \"permitted\" or continuation wording is superseded by this section and the current plan for this delegation; it cannot authorize a Windows action.\n+\n+## Historical execution — autonomous bounded T179-Pd.3b (2026-10-16)\n \n New direct delegation resumes implementation from745b and supersedes the completed discussion STOP below. Follow [current execution authority](plan.md); accepted F1 is not redesigned, routine user approval is not a new gate.\n \n"
+      }
+    ],
+    "wholeDiff": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899"
+      ],
+      "nativeExit": 0,
+      "bytes": 414668,
+      "sha256": "5036c47cc7995585d349bae6aa485d3daf12ada6a388c1809dcf5602ae94c661"
+    },
+    "recovery": {
+      "prior": {
+        "receiptPath": "/tmp/t179pd-hot-custody-worker-windows-terminal-reviewed-delta-recovery-20261016.json",
+        "receiptBytes": 190610,
+        "receiptSha256": "454601a941d39b7b3507fcde5091b8353e25fa977d28b1f33b3711e0b3b8c287",
+        "sha": "f87aa544bd60897a2a60d5623a751589fc78c896",
+        "directory": "/workspace/f1-r2-hot-custody-worker-windows-terminal-reviewed-delta-github-20261016",
+        "verifiedFiles": 220,
+        "allChangedPaths": 217,
+        "deletedPaths": [],
+        "modeAndByteVerification": "All receipt rows compared to local delta, exact Git blob, modes and SHA256; current rows also compared to writer",
+        "recordedSource": "NEW GitHub raw exact-commit transport; no local content used as transport",
+        "recordedRemoteReadback": "f87aa544bd60897a2a60d5623a751589fc78c896\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+        "reviewerNetwork": "NONE; historical transport claims retained, local exact bytes independently checked",
+        "rowsSha256": "ceaef301313978aa6abf796a4cc5e1991a0a64e85b56e11273c64d13935065e3",
+        "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification."
+      },
+      "current": {
+        "receiptPath": "/tmp/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json",
+        "receiptBytes": 192176,
+        "receiptSha256": "76912d6a5facd64adcf35013a898ccd63da631975327ca64b8af7b343fe46827",
+        "sha": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+        "directory": "/workspace/f1-r2-sbm-static-audit-wip-delta-github-20261016",
+        "verifiedFiles": 222,
+        "allChangedPaths": 219,
+        "deletedPaths": [],
+        "modeAndByteVerification": "All receipt rows compared to local delta, exact Git blob, modes and SHA256; current rows also compared to writer",
+        "recordedSource": "NEW GitHub raw exact-commit transport; no local content used as transport",
+        "recordedRemoteReadback": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+        "reviewerNetwork": "NONE; historical transport claims retained, local exact bytes independently checked",
+        "rowsSha256": "d018097f493aee1153f933d3f4fd2de3756309baed1f4c5a5409e2a1793cbfb8",
+        "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification."
+      },
+      "retainedFullBase": {
+        "path": "/tmp/t179pd-hot-custody-implementation-final-full-recovery-20261016.json",
+        "sha256": "0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0",
+        "sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+        "directory": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "historicallyVerifiedFiles": 54267,
+        "historicallyVerifiedBytes": 3627920233,
+        "currentClean": true,
+        "noAlternates": true,
+        "noSparse": true,
+        "scope": "Retained previously independently verified full base. Receipt hash/current identity/cleanliness rechecked; no new 3.6GB full byte scan or build/runtime."
+      }
+    },
+    "futureCheckIds": [
+      "SBM-V01",
+      "SBM-V02",
+      "SBM-V03",
+      "SBM-V04",
+      "SBM-V05",
+      "SBM-V06",
+      "SBM-V07",
+      "SBM-V08",
+      "SBM-V09",
+      "SBM-V10",
+      "SBM-V11",
+      "SBM-V12"
+    ],
+    "openMainTasks": [
+      {
+        "line": 622,
+        "text": "- [ ] T178 B00 Written F1 §8.5/grants/turn policy/plan acceptance и отдельный implementation gate в `design/lawful-active-joint-tail-b-implementation-plan.md`."
+      },
+      {
+        "line": 623,
+        "text": "- [ ] T179 [US7] B01 Strict marker3/original/G capture в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointActiveTail.cs` и engine source."
+      },
+      {
+        "line": 624,
+        "text": "- [ ] T180 [US2] B02 Atomic automatic action+ack в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticPublication.cs`."
+      },
+      {
+        "line": 625,
+        "text": "- [ ] T181 [US2] B03 Actual projection+ack в `BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs`."
+      },
+      {
+        "line": 626,
+        "text": "- [ ] T182 [US7] B04 Frozen original story/turn в `BookOfEternityClient/Services/StoryService.MortalJointRepair.cs`."
+      },
+      {
+        "line": 627,
+        "text": "- [ ] T183 [US2] B05 No-offer vertical completion/D4 entry guards в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и exact UI consumers из плана."
+      },
+      {
+        "line": 628,
+        "text": "- [ ] T184 [US7] B06 QTE grammar/capture/retirement в `BookOfEternityClient/Services/QteDeferredEffectContinuation.MortalJoint.cs`; BLOCKED Q-D5."
+      },
+      {
+        "line": 629,
+        "text": "- [ ] T185 [US7] B07 Atomic accept/retention в `BookOfEternityClient/Services/QteSceneService.MortalJointHandoff.cs`; activation paired with mandatory decline."
+      },
+      {
+        "line": 630,
+        "text": "- [ ] T186 [US7] B08a FD/source/dedup → B08b atomic FT/cold original → B08c actual ordinary result/repair/completion в existing M, exact registry/owners в плане. F1 спроектирован, grants/implementation **не приняты/не разрешены**."
+      },
+      {
+        "line": 631,
+        "text": "- [ ] T187 [US2] B09 Atomic selected-terminal D8 в `BookOfEternityClient/Services/QteSceneService.MortalJointTerminal.cs`."
+      },
+      {
+        "line": 632,
+        "text": "- [ ] T188 [US2] B10 Post-QTE auto/projection/two-chain proof в `BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointQteProof.cs`."
+      },
+      {
+        "line": 633,
+        "text": "- [ ] T189 [US7] B11 Exact terminal/F1 KF1 cleanup и relocated-parent cold admission в `BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs` и native fixture."
+      },
+      {
+        "line": 634,
+        "text": "- [ ] T190 [US5] B12 Console/browser/GM qualification в exact UI/docs/test paths из плана; guided US5/allocator/visual dependencies не закрываются автоматически."
+      },
+      {
+        "line": 635,
+        "text": "- [ ] T191 B13 Linux/Windows finite connected acceptance/recovery в `.JointActiveNative.cs`, exact expanded path и 12 cases/OS заданы в плане."
+      }
+    ],
+    "retainedEvidence": {
+      "local": "13 distinct PASS plus first2 Linux FAIL; original f9bc provenance retained, not rerun/requalified",
+      "windows": "JOBsuccess only; raw worker2 NOT_ACCEPTED / WIN-E01",
+      "run": 38978917195,
+      "attempt": 1,
+      "artifact": 12080975497,
+      "bytes": 811881,
+      "artifactSha256": "fa0992a149fc0cc3dc8af767b9ca54e6e26658ca67813aca81e5c87dac82f292"
+    },
+    "productionAndProtectedScopesDiff": "EMPTY",
+    "runtime": "NO reviewer build/discovery/test/application/CI/network/download or repository write; no runtime release"
+  },
+  "checkerText": "import os,subprocess,json,hashlib,pathlib,re,datetime,stat\nR=pathlib.Path('/workspace/The-Book-of-Eternity-Reborn')\nB='f87aa544bd60897a2a60d5623a751589fc78c896'; C='96bd6acbfa0a403c3c6bf53c9cdcadddedc69899'; F='7acd4a960fa273e0df2dd83e4998baef79ba94d5'\nS='specs/1536-complete-wound-materialization/'\nenv=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0')\ndef H(b):return hashlib.sha256(b).hexdigest()\nrecords=[]\ndef cmd(a,cwd=R,expected=0,record=True):\n q=subprocess.run(a,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n assert q.returncode==expected,(a,q.returncode,q.stderr[:200])\n if record:records.append(dict(argv=a,cwd=str(cwd),nativeExit=q.returncode,stdout=q.stdout.decode(),stdoutSha256=H(q.stdout),stderr=q.stderr.decode(),stderrSha256=H(q.stderr)))\n return q.stdout\ndef git(*a,record=False):return cmd(['git',*a],record=record)\ncache={}\ndef blob(sha,path):\n key=(sha,path)\n if key not in cache:cache[key]=git('show',sha+':'+path)\n return cache[key]\ndef pin(sha,path):\n b=blob(sha,path); oid=git('rev-parse',sha+':'+path).decode().strip()\n assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest()==oid\n return dict(sha=sha,path=path,gitBlob=oid,bytes=len(b),sha256=H(b))\ndef proj(sha,path,a,b):\n t=b''.join(blob(sha,path).splitlines(keepends=True)[a-1:b])\n return dict(sha=sha,path=path,firstLine=a,lastLine=b,sha256=H(t),text=t.decode())\nassert cmd(['git','rev-parse','HEAD']).decode().strip()==C\nassert cmd(['git','status','--porcelain=v1'])==b''\ncmd(['git','merge-base','--is-ancestor',B,C])\nnames=git('diff','--name-only',B,C).decode().splitlines()\nassert len(names)==7 and all(p.startswith(S) and p.endswith(('.md','.json')) for p in names)\ncmd(['git','diff','--exit-code',B,C,'--','BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','tests','scripts','.github','AGENTS.md','docs','.specify'])\nauditPath=S+'recovery/t179pd-sbm-static-dependency-audit-20261016.json'\na=json.loads(blob(C,auditPath))\nassert a['baseline']==B and len(a['sourcePins'])==36 and len(a['exactProjections'])==46\nfor p in a['sourcePins']:\n assert all(pin(p['sha'],p['path'])[k]==p[k] for k in ['sha','path','gitBlob','bytes','sha256']),p\nfor p in a['exactProjections']:\n assert proj(p['sha'],p['path'],p['firstLine'],p['lastLine'])==p,p\nhistorical=[]\nfor q in a['readOnlyGitCommands']:\n assert H(q['stdout'].encode())==q['stdoutSha256']\n if q['argv'][1]=='ls-remote':\n  assert q['nativeExit']==0 and q['stdout']==B+'\\trefs/heads/1536-wound-b2-cloud-20261012\\n'+'d0241e71e349fbe2020e4a41b6be7c627c81cbb4\\trefs/heads/main\\n'\n  historical.append(dict(**q,reviewerAction='Stored record and stdout hash inspected only; NO network reexecution'))\n else:\n  out=cmd(q['argv'],expected=q['nativeExit'])\n  assert out.decode()==q['stdout']\n  historical.append(dict(**q,reviewerAction='Reproduced exact local read-only argv/exit/stdout'))\nassert len(historical)==4\ndef verify_delta(rpath,sha,count,changed,committed=None):\n p=pathlib.Path(rpath); raw=p.read_bytes(); d=json.loads(raw)\n assert d['sha']==sha and d['base_full_tree']==F and d['count']==count and d['changed_count']==changed\n assert len(d['files'])==count and not d['deleted_paths'] and d['runtime']=='NOT_RUN'\n status=git('diff','--name-status',F,sha).decode()\n assert status==d['name_status']\n assert git('diff','--summary',F,sha).decode()==d['mode_change_summary']\n changedPaths={line.split('\\t')[-1] for line in status.splitlines()}\n assert len(changedPaths)==changed\n filePaths={v['path'] for v in d['files']}\n assert len(filePaths)==count and changedPaths<=filePaths\n root=pathlib.Path(d['directory']); assert root.is_dir()\n for row in d['files']:\n  p2=row['path']; content=blob(sha,p2); actual=(root/p2).read_bytes()\n  assert actual==content and row['bytes']==len(content) and row['sha256']==H(content)\n  assert row['git_blob']==git('rev-parse',sha+':'+p2).decode().strip()\n  ent=git('ls-tree',sha,'--',p2).decode().split(None,3); assert ent[0]==row['mode']\n  mode='100755' if (root/p2).stat().st_mode & stat.S_IXUSR else '100644'\n  assert mode==row['mode'],(p2,mode,row['mode'])\n  if sha==C:assert (R/p2).read_bytes()==content\n if committed:assert raw==blob(C,committed)\n assert d['remoteReadback']==sha+'\\trefs/heads/1536-wound-b2-cloud-20261012\\n'+'d0241e71e349fbe2020e4a41b6be7c627c81cbb4\\trefs/heads/main\\n'\n return dict(receiptPath=str(p),receiptBytes=len(raw),receiptSha256=H(raw),sha=sha,directory=str(root),verifiedFiles=count,allChangedPaths=changed,deletedPaths=[],modeAndByteVerification='All receipt rows compared to local delta, exact Git blob, modes and SHA256; current rows also compared to writer',recordedSource=d['source'],recordedRemoteReadback=d['remoteReadback'],reviewerNetwork='NONE; historical transport claims retained, local exact bytes independently checked',rowsSha256=H(json.dumps(d['files'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()),scope=d['scope'])\nprev=verify_delta(a['verifiedPriorRecovery']['receiptPath'],B,220,217,a['verifiedPriorRecovery']['durableReceipt'])\nassert prev['receiptSha256']==a['verifiedPriorRecovery']['receiptSha256']\ncurr=verify_delta('/tmp/t179pd-sbm-static-audit-wip-delta-recovery-20261016.json',C,222,219)\nfullp=pathlib.Path('/tmp/t179pd-hot-custody-implementation-final-full-recovery-20261016.json'); fullraw=fullp.read_bytes(); full=json.loads(fullraw)\nassert H(fullraw)=='0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0' and full['sha']==F\nfd=pathlib.Path(full['directory'])\nassert cmd(['git','rev-parse','HEAD'],cwd=fd).decode().strip()==F\nassert cmd(['git','status','--porcelain=v1','--untracked-files=all'],cwd=fd)==b''\nassert not (fd/'.git/objects/info/alternates').exists()\nassert not (fd/'.git/info/sparse-checkout').exists()\nfullcheck=dict(path=str(fullp),sha256=H(fullraw),sha=F,directory=str(fd),historicallyVerifiedFiles=full['count'],historicallyVerifiedBytes=full['tracked_bytes'],currentClean=True,noAlternates=True,noSparse=True,scope='Retained previously independently verified full base. Receipt hash/current identity/cleanliness rechecked; no new 3.6GB full byte scan or build/runtime.')\nip=S+'design/lawful-active-joint-tail-b-implementation-plan.md'; it=blob(C,ip).decode()\nassert 'Need new genuine prepare/seal boundary before closing capture' in it.splitlines()[413]\nids=re.findall(r'^\\| (SBM-V\\d\\d) /',it,re.M)\nassert ids==[f'SBM-V{i:02}' for i in range(1,13)] and a['futureChecks']['ids']==ids and a['futureChecks']['runtimeRelease']==[] and a['futureChecks']['status']=='ALL_FUTURE_UNRUN'\ntasks=blob(C,S+'tasks.md').decode()\ntaskRows=[]\nfor n in range(178,192):\n rows=[dict(line=i,text=t) for i,t in enumerate(tasks.splitlines(),1) if re.search(r'^\\s*-\\s+\\[ \\]\\s+T'+str(n)+r'\\s',t)]\n assert len(rows)==1,(n,rows)\n taskRows+=rows\ndiffs=[]\nfor p in names:\n args=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C,'--',p]\n b=cmd(args,record=False)\n item=dict(argv=args,nativeExit=0,bytes=len(b),sha256=H(b))\n if p.endswith('.md'):item['text']=b.decode()\n diffs.append(item)\nallargv=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C]\nallb=cmd(allargv,record=False)\ncurrentProjections=[proj(C,ip,385,440),proj(C,S+'plan.md',1,38),proj(C,S+'tasks.md',1,35),proj(C,S+'spec.md',1,12),proj(C,S+'design/lawful-active-joint-tail-b.md',1,12)]\nsourceProjections=[proj(B,'BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs',53,95),proj(B,'BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs',159,177),proj(B,'BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs',43,58),proj(B,'BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs',123,132)]\nresult=dict(reviewedBase=B,reviewedCandidate=C,inspectionUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualCommands=records,changedPaths=names,currentDocumentPins=[pin(C,p) for p in names],verifiedSourcePins=a['sourcePins'],verifiedSourceProjections=a['exactProjections'],currentDocumentProjections=currentProjections,findingProjections=sourceProjections,verifiedHistoricalCommands=historical,exactDiffs=diffs,wholeDiff=dict(argv=allargv,nativeExit=0,bytes=len(allb),sha256=H(allb)),recovery=dict(prior=prev,current=curr,retainedFullBase=fullcheck),futureCheckIds=ids,openMainTasks=taskRows,retainedEvidence=a['retainedEvidence'],productionAndProtectedScopesDiff='EMPTY',runtime='NO reviewer build/discovery/test/application/CI/network/download or repository write; no runtime release')\nfor field in ['verifiedSourceProjections','currentDocumentProjections']:\n for entry in result[field]:entry.pop('text',None)\nprint(json.dumps(result,ensure_ascii=False))\n",
+  "checkerExecutionNote": "Read-only data verification only. Initial unbounded report serialization exceeded tool output delivery budget; the same read-only checks were repeated with bounded projection serialization. This was not an application/test/runtime failure.",
+  "qualificationLimits": [
+    "No runtime/build/discovery/test/CI/download/settings/catalog/release action",
+    "No schema/issuer/implementation/full source semantic completeness acceptance",
+    "No Windows raw case PASS inferred from hosted job success; WIN-E01 remains",
+    "Prior 13 PASS and first 2 Linux FAIL retain original f9bc provenance; no rerun/requalification",
+    "All twelve future checks UNRUN and main T178–T191 unchecked",
+    "Full S/B/M3/pre-P0 recovery/F1/T197/new QTE/DOMvisual/Windows/D4/guidedUS5/D8 remain open",
+    "No F2 selected or proved necessary"
+  ],
+  "nextStep": "Correct SBM-D01 and perform affected documentary verification/persistence only",
+  "finalStop": true,
+  "markdownPath": "/tmp/t179pd-sbm-static-dependency-independent-review-20261016.md",
+  "markdownSha256": "42877fcae6a823a2de36971fa271652203d96b05b7befcdd39624c852a4783a6"
+}

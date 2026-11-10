@@ -1,0 +1,7 @@
+4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016.md
+2a7884da14a48889276f444b996d794975243528024649836a1b677045f0bac0  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016.json
+73c0d4aafc90a1f53d41ba5c48804ee92948c5bbb35696b301f5baa4ed092eef  /tmp/t179pd-debug-full-reasoning-independent-inspection-20261016.json
+03f64a4e38a9bf77667d127d1a60bd23b0a3cfa0b7b3b6648489f15009417c89  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff
+c39e0b33722c20c0c10c03c7649043b41a9355efa66beacf2f84679f1de95be1  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /tmp/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff

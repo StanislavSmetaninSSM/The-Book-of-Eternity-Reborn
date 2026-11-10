@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "mortal-joint-common-failure-preservation",
+      "reason": "Causal RED then bounded preservation GREEN for the common-plan catch/abort masking defect with actual source lifetime and no world fixture.",
+      "contracts": [
+        "Only the two AcceptedMechanicsPlanningResult common-plan catch consumers share the handler. Aggregate secondary InvalidOperationException family only, explicitly excluding SessionReplaced; other secondary exceptions preserve their original identity and stack. Primary filters, prefix catch, registry and source fences are unchanged. Full A5 stays HOLD; primary trigger UNKNOWN."
+      ]
+    }
+  ]
+}

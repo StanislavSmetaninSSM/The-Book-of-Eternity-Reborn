@@ -99,6 +99,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="bypassPreparedFixture">
     /// Builds a cacheable signed profile rather than copying it; used only by the fixture cache factories.
     /// </param>
+    /// <param name="spiritFocusTier">Initial player capacity tier; nondefault capacities bypass prepared templates.</param>
+    /// <param name="oppositionMaximum">Initial accepted opposition capacity, fixed before authority and snapshot.</param>
     /// <returns>
     /// Owned filesystem context with one authenticated original pending snapshot.
     /// </returns>
@@ -110,10 +112,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         decimal oppositionCurrent = 6m,
         Func<ResourceMaterializationTestContext, Task>? initializeContext = null,
         Func<ResourceMaterializationTestContext, Task>? captureOriginalSnapshot = null,
-        bool bypassPreparedFixture = false)
+        bool bypassPreparedFixture = false,
+        int spiritFocusTier = 0,
+        decimal oppositionMaximum = 6m)
     {
         var trustedKey = ReadTrustedConflictFrameKey(hooks, seedOriginalInputs, signedDice,
-            playerCurrent, oppositionCurrent, initializeContext, captureOriginalSnapshot);
+            playerCurrent, oppositionCurrent, initializeContext, captureOriginalSnapshot,
+            spiritFocusTier, oppositionMaximum);
         var defaultFrame = trustedKey is { SeedVersion: "default_v1", OrderedDice: "15,5,12,8",
             PlayerCurrent: 6m, OppositionCurrent: 6m };
         var originalIntakeFrame = trustedKey is { SeedVersion: "original_intake_v1", OrderedDice: "15,5,12,8",
@@ -161,7 +166,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         guardian["standardArts"] = arts.DeepClone();
         guardian["specialArts"] = new JsonArray();
         var profiles = Profiles(player, guardian);
-        var soul = SoulState(spiritFocusTier: 0);
+        var soul = SoulState(spiritFocusTier);
         soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!["artTiers"] = arts.DeepClone();
         var conflict = ActiveConflict("conflict_resource_cost");
         conflict["sideModel"] = "direct_duel";
@@ -190,7 +195,8 @@ public sealed partial class AfterlifeResourceCutoverTests
             },
             ["supporters"] = new JsonArray()
         };
-        var (state, history) = BuildActionPointState(definitions, profiles, conflict, soul, playerCurrent, oppositionCurrent);
+        var (state, history) = BuildActionPointState(definitions, profiles, conflict, soul, playerCurrent, oppositionCurrent,
+            spiritFocusTier, oppositionMaximum);
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.DefinitionsPath, definitions.ToCanonicalJson());
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.StatePath, state.ToCanonicalJson());
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.HistoryPath, history.ToCanonicalJson());

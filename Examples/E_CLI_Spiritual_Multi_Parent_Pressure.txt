@@ -1,0 +1,240 @@
+spiritual_existing_pressure_multi_parent_v1 — worked retained complete-group pressure fragment
+
+Read OtherGuides/Wound_Materialization_Contract.md,
+spiritual_existing_pressure_ordinary_v1, before this bounded Chaos Sea player
+standard pressure/setback against standard incoming pressure. This fragment is
+not runtime qualification. It introduces no response field or GM comparison API.
+
+The general rule accepts arbitrary complete N>=3 distinct active applicable
+retained III/IV player-soul wounds, one step per wound: actual=min(4,ordinary+N).
+These two alternatives use three or four complete III parents, not one exchange
+per parent. Each parent has its exact current/signed graph, owned effect roots,
+original source/creation receipt/History joins, and one available pressure strain
+component magnitude1/stack1. Keep every cost/roll/art sibling installed. Exact
+wound-ID order is mandatory; severity, stacks and duplicate components add no
+extra step. Never filter a parent or another applicable pressure wound source
+outside the complete group. Retained synthetic creation DATA is not native-birth
+proof. Substitute genuine current IDs and signed prefix, never illustrative IDs
+as authority.
+
+Positive signed turn46, continuing conflict, last new direct-root ordinal0,
+signed beforeclear and independently increased ordinaryI (strained) are fixed.
+Original dice4/12 give margin-8, standard art0/resilience0, hostile/sourcecapIV.
+The contour is ordinaryI pressure8/maxI -> actualIV pressure23/maxIV for N3. For N4 the scalar is
+the same but all four complete parents remain retained and validated. In contrast,
+the exact-two v4 ordinaryI contour gives actualIII pressure18/maxIII. Costs3/3 pay
+AP3->0 once per side, never per parent. The GM submits only the full ordinary root
+below, with matching ordinary root echo; only actual is admitted/paid/published.
+All wrapper/calculation/client labels, including parentCount and parentWoundIds,
+are explanatory DATA, never exchange/GameResponse fields or a scalar count input.
+
+```json
+{
+  "parentVariants": [
+    {
+      "parentCount": 3,
+      "parentWoundIds": [
+        "wound_retained_pressure_owner_1",
+        "wound_retained_pressure_owner_2",
+        "wound_retained_pressure_owner_3"
+      ]
+    },
+    {
+      "parentCount": 4,
+      "parentWoundIds": [
+        "wound_retained_pressure_owner_1",
+        "wound_retained_pressure_owner_2",
+        "wound_retained_pressure_owner_3",
+        "wound_retained_pressure_owner_4"
+      ]
+    }
+  ],
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "multi_parent_data",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
+      "playerSideStrain": "strained",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null,
+      "exchangeLog": [
+        {
+          "exchangeId": "exchange_pressure_group_46",
+          "turnNumber": 46,
+          "exchangeAtTurn": 46,
+          "operationType": "pressure",
+          "outcome": "setback",
+          "summary": "Душа встречает давление Хранителя.",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_frame",
+            "summary": "Хранитель оказывает давление."
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 4
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 12
+              }
+            ],
+            "playerTotal": 4,
+            "oppositionTotal": 12,
+            "margin": -8,
+            "outcomeBand": "decisive_opposition_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          }
+        }
+      ],
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian_frame"
+        },
+        "supporters": []
+      }
+    },
+    "recentConflicts": []
+  },
+  "ordinaryFinalEcho": {
+    "playerSideStrain": "strained"
+  },
+  "clientActualStrain": "broken",
+  "clientChangedPaths": [
+    "/activeConflict/exchangeLog/0/after/playerSideStrain",
+    "/activeConflict/playerSideStrain"
+  ],
+  "ordinaryCalculation": {
+    "traumaPressure": 8,
+    "maximumSeverityRank": 1
+  },
+  "actualCalculation": {
+    "traumaPressure": 23,
+    "maximumSeverityRank": 4
+  },
+  "appliedArtTier": 0,
+  "targetResilienceTier": 0
+}
+```
+
+N3: min(4,1+3)=4. N4: min(4,1+4)=4; uncapped5 is not a fifth strain rank.
+The independent ordinary calculation is 8 + 2*(1-1) + 3*0 = 8, maximumI.
+The independent actual calculation is 8 + 2*(4-1) + 3*3 = 23, maximumIV.
+Strain rank is not wound maximum. These positive worked calculations stay unchanged;
+ordinary or non-guaranteed actual maximum may be zero on a different lawful contour.
+
+Only the client changes the two clientChangedPaths. Every other exchange/root
+sibling, before-image, actor/incoming action, dice, costs, position/control/tempo,
+opposition strain, summaries and surrounding History stays exact. The original
+raw bytes remain ordinary. Do not reverse-engineer ordinary by removing burden
+from proposed actual, edit signed state, add an A/B correction or second exchange.
+Narrate actual or use neutral prose; client projection does not rewrite summaries.
+
+Private v6 role is existing_pressure_ordinary_group_v1, closed to count>=3.
+Exact-two v4 remains existing_pressure_ordinary_pair_v1, closed to count2.
+All parents remain in provenance after saturation, including the fourth complete
+parent. The private ordinary comparison, original fingerprint/ordinal, full list
+and every source/creation/History join stay required. A matching broken scalar
+cannot substitute for the missing or changed final parent. The GM writes no
+strainPreimage, witness, actual correction, count, receipt or History directly.
+Player v1–v4/v6 forbid spiritualWoundFailedAction; separate guardian v5 is unchanged.
+
+Only a genuinely issued current public opportunityRef permits an optional none
+response. Do not invent a ref, offer, private decision packet or automatic wound.
+An issued offer remains subject to actual source/danger/cap rules. Decline keeps
+actualIV and every existing parent unchanged and still requires the genuine
+authenticated source/C3 pair and common publication receipt join. One actual
+source/offer is shared by the complete group, not one per parent. Broken is not
+terminal defeat and does not force dissipation.
+
+Current source/resource/effect/prefix owners, lease/generation, all parent graphs
+and History remain fresh. Cold reopening reconstructs genuine owners; late common
+C4 rollback restores exact signed state and retires old authority. Fresh same-byte
+retry derives actual once, with the original dice and no extra payment. Retained
+DATA alone grants no source, admission, publication or cleanup authority.
+
+Complete-player actual maximum0 uses spiritual_existing_pressure_group_zero_v1 in
+Examples/E_CLI_Afterlife_Turns.txt, with no offer or none and one comparison-only
+receipt. This positive worked DATA does not qualify that runtime path. Complete ordinaryIV groups may retain
+actualIV under before < ordinary <= broken; see the separate
+spiritual_existing_pressure_capped_group_v1 worked example in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt. This below-cap worked root and
+its literal calculations stay unchanged. Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour.
+Non-increasing/source-free input,
+special/guaranteed/explicit-target arts, terminal/replacement carriers, other
+actors/operations/realms, recovery/start, native births and general combat are
+outside scope. no_effect snapshot invariance remains unchanged. Singleton v3,
+exact-two v4 and guardian v5 retain their separate bounds and dated examples.
+This worked fragment proves no live C1/first C2/cold C3/common C4, signed-next,
+rollback/retry or publication; any bounded runtime evidence belongs separately
+in the current checkpoint, not in this example's DATA.
+end_spiritual_existing_pressure_multi_parent_v1

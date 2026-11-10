@@ -1,0 +1,39 @@
+{
+  "kind": "DIAGNOSTIC1_PREP_CHECKER_PREPARED_NOT_EXECUTED",
+  "createdUtc": "2026-10-18T16:28:05.329688+00:00",
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_prep.py",
+    "bytes": 27011,
+    "sha256": "4b4fa32932212beb20a785298336b5e04b1996728b8718e577c1835cab426b02"
+  },
+  "syntax": "ast.parse + compile in memory only; checker not invoked",
+  "sourceAcceptanceReadback": {
+    "sha": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+    "receipt": "/tmp/1536-cloud-tools/carrier-recovery-9b1124a4.json",
+    "receiptSha256": "7bb1f9d18dedc463034c69dac5317546ba8c36c2152d795e7ae55e8cfc79705d",
+    "restoredPaths": 17,
+    "pins": 101,
+    "pinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+    "exactZeroLabels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-cloud-f57baaa8",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-cloud-f57baaa8"
+    },
+    "actualRelease": null
+  },
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_diagnostic1_prep.py SAVED_PREP_CARRIER 9b1124a4706b47bdb198afb2444408d6cba2f0b0 [CONTINUOUS_RECOVERY_RECEIPTS_FROM_COMPILED_TO_CARRIER...]",
+  "expectedMetadata": "cloud.crashDiagnostic1.freshPreparation with records, archive.rawChains, sourcePinDigest, supplementalBoundaries ordered catalog before/after, plan before/after, diagnostic-plan before/after, prepQualificationBoundary, sourceAcceptanceRecovery and orchestrationEvidence. Include all three frozen-separation JSON receipts, accepted wrapper+env, source acceptance/readback/recovery among nested path/bytes/sha256 artifact references.",
+  "coverage": [
+    "all original raw archive chains and complete archive path-set",
+    "101 pins/product23/source acceptance and exact GitHub restored carrier",
+    "fresh BOTH/catalog809/11801; native0/tests0/errors0/warning comparison",
+    "whole16/33/57 and separate diagnostic1/1/1 exact method identities NoBuild",
+    "nine managed copies/full1575 inventory and untouched52 provenance",
+    "six dated v2 boundaries + qualification; global active/UNKNOWN/new roots fail closed",
+    "three saved frozen-root file-set/byte check receipts; same physical cloud/new private namespace; old roots not inspected live",
+    "all original failure histories/new124/noTRX/old66529UNKNOWN unchanged"
+  ],
+  "verdict": "PREP_PENDING_ORIGINALS_ARCHIVE_SAVED_RECOVERY_AND_INDEPENDENT_REVIEW",
+  "nativeActions": 0,
+  "reviewerRepoEdits": 0
+}

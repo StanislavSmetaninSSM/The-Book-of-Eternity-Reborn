@@ -1,0 +1,15 @@
+{
+  "expectedCheckpoint": "8be39c6fd298248d224fee3414d341575e51653b",
+  "launch": "5294c7",
+  "session": 41508,
+  "completion": "cbb716",
+  "nativeExit": 1,
+  "innerGitExit": 128,
+  "operation": "verify-t070-selected-recovery.py final git ls-remote --heads origin refs/heads/1536-wound-b2-cloud-20261012 without explicit helper",
+  "exactTail": "fatal: could not read Username for 'https://github.com': No such device or address\nTraceback (most recent call last):\n  File \"/workspace/boe-cloud-tools-20261012/verify-t070-selected-recovery.py\", line 15, in <module>\n    remote=git('ls-remote','--heads','origin','refs/heads/1536-wound-b2-cloud-20261012').split()[0];assert remote==sha\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/boe-cloud-tools-20261012/verify-t070-selected-recovery.py\", line 5, in git\n    return subprocess.check_output(['git','-C',str(r),*args],text=not bytes)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py\", line 466, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/workspace/1536-t070-design-recovery-7e6d4fa0', 'ls-remote', '--heads', 'origin', 'refs/heads/1536-wound-b2-cloud-20261012']' returned non-zero exit status 128.\n",
+  "log": "/workspace/boe-cloud-tools-20261014/fr063-diagnostic-p5-outcome-selected-recovery-20261015T045801Z-7909f4b7.log",
+  "logSHA256": "5fac7a39c0f5682deefcd0acd39313e941fd790313486d3589a6a7264dee2b09",
+  "recoveryComplete": false,
+  "classification": "Git credential lookup failure, no security/policy/approval refusal text observed",
+  "next": "read-only actualremote check with previously used explicit gh auth git-credential; no project execution or secret creation"
+}

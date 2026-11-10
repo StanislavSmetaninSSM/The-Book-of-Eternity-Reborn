@@ -1,0 +1,67 @@
+{
+  "Categories": [
+    "portable-inactive-snapshot-evidence",
+    "portable-inactive-snapshot-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "47ce03cf68ce5e92de9f0415ea0fa7be30984c2e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 51.9894602,
+  "Descriptors": [
+    {
+      "Name": "portable-inactive-snapshot-evidence-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-inactive-snapshot-evidence",
+      "Categories": [
+        "portable-inactive-snapshot-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_ArchivesExactCohortWithoutTouchingWorldOrRollbackFiles|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RefusesActiveForeignAndAmbiguousCohorts|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RetainsEvidenceWhenArchivalCannotFinish",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 24,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_ArchivesExactCohortWithoutTouchingWorldOrRollbackFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RefusesActiveForeignAndAmbiguousCohorts",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RetainsEvidenceWhenArchivalCannotFinish",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-inactive-snapshot-publication-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-inactive-snapshot-publication",
+      "Categories": [
+        "portable-inactive-snapshot-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_CurrentPublicationPreservesExactRemainingCohort|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_CurrentPublicationPreservesExactRemainingCohort",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "mode": "companion",
+  "command": "/директива_компаньону",
+  "target": "game_state/npcs/npc_core.json",
+  "result": "",
+  "Failure": null,
+  "Inputs": 1,
+  "LaterInputs": 0,
+  "RequestAttempts": 0,
+  "pendingAtCut": null,
+  "priorAtCut": null,
+  "afterImages": null,
+  "ConsoleSelections": [],
+  "ActualSelections": [],
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

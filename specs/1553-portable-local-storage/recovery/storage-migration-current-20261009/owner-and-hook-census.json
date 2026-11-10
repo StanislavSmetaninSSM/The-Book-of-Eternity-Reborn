@@ -1,0 +1,680 @@
+{
+  "source": "96553e1e32990d1026844baa49eed69c3e60b0a1",
+  "scope": "All tracked current C# literal original hook references and production single-line owning await-using CanonicalWriteLease acquisition. Multiline/dynamic/release wrappers require route census. Not a complete owner proof.",
+  "owners": [
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
+      "line": 40,
+      "text": "await using var lease = await files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
+      "line": 56,
+      "text": "await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
+      "line": 79,
+      "text": "await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/ConsoleSettingsSession.cs",
+      "line": 97,
+      "text": "await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 3816,
+      "text": "await using var writeLease = await AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 3910,
+      "text": "await using var writeLease = await AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+      "line": 22,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 2293,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 215,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 1297,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 1756,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 2003,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 2026,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "line": 2120,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "line": 60,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "line": 457,
+      "text": "await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "line": 610,
+      "text": "await using var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "line": 3852,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 1061,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 2395,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 2924,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 3458,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 7973,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 8026,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 8032,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "line": 8057,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "line": 130,
+      "text": "await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "line": 253,
+      "text": "await using var finalizationLease = await fileSystem.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "line": 54,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "line": 166,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+      "line": 114,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs",
+      "line": 23,
+      "text": "await using var readLease = await _fs.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "line": 264,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "line": 282,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "line": 351,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "line": 51,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "line": 299,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "line": 212,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "line": 221,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "line": 325,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+      "line": 85,
+      "text": "await using var lease=await _files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "line": 84,
+      "text": "await using var lease=await files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+      "line": 125,
+      "text": "await using var lease=await files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "line": 157,
+      "text": "await using var lease = await files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "line": 215,
+      "text": "await using(var lease=await _files.AcquireCanonicalWriteLeaseAsync(cancellationToken:token))",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+      "line": 89,
+      "text": "await using var lease=await files.AcquireCanonicalWriteLeaseAsync(write?CanonicalWritePurpose.SessionMutation:CanonicalWritePurpose.PublicationReadQuiescence,admissionCancellation);",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "line": 414,
+      "text": "await using var coldLease = await _fs.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "line": 808,
+      "text": "await using (var preparedLease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken: lifecycleCancellation.Token))",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "line": 864,
+      "text": "await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync(",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "line": 291,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+      "line": 346,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "line": 118,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "line": 144,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "line": 103,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "line": 125,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "line": 237,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+      "line": 462,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+      "line": 12,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+      "line": 185,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+      "line": 267,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/InventoryManagementService.cs",
+      "line": 354,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+      "line": 295,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeService.cs",
+      "line": 290,
+      "text": "await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeService.cs",
+      "line": 474,
+      "text": "await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/NpcTradeService.cs",
+      "line": 630,
+      "text": "await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "line": 629,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+      "line": 89,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceProjectionService.cs",
+      "line": 178,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceProjectionService.cs",
+      "line": 268,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceProjectionService.cs",
+      "line": 324,
+      "text": "await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "line": 387,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+      "line": 239,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingEffectState.cs",
+      "line": 507,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningBlessingRerollResourceService.cs",
+      "line": 82,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningReturnCycleResourceService.cs",
+      "line": 87,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "line": 164,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "line": 184,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "line": 232,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "line": 252,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+      "line": 531,
+      "text": "await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/SpiritualWoundPublishedOutput.cs",
+      "line": 116,
+      "text": "await using var lease = await fileSystem.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "line": 190,
+      "text": "await using var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/StorageTransportMoveService.cs",
+      "line": 308,
+      "text": "await using var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "line": 130,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync().ConfigureAwait(false);",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "line": 179,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync().ConfigureAwait(false);",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/SystemModService.cs",
+      "line": 64,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/TrainingService.cs",
+      "line": 607,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "line": 40,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs",
+      "line": 21,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "line": 14,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/Services/WorldDirectiveService.cs",
+      "line": 120,
+      "text": "await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SpiritualConflict.cs",
+      "line": 804,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLoadStateService.cs",
+      "line": 24,
+      "text": "await using var lease = await files.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "line": 90,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "line": 133,
+      "text": "await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "line": 245,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+      "line": 70,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+      "line": 135,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserMediaGenerationService.cs",
+      "line": 150,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebCommandService.cs",
+      "line": 66,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+      "line": 69,
+      "text": "await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+      "line": 90,
+      "text": "await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "qualification": "Owning-source candidate; await using alone is not a reproduced masking failure."
+    }
+  ],
+  "physicalHookReferences": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 2761,
+      "text": "\"AfterPhysicalFilePublishedAsync\","
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 2830,
+      "text": "\"AfterPhysicalFilePublishedAsync\","
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 2874,
+      "text": "AfterPhysicalFilePublishedAsync = path =>"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 2959,
+      "text": "FileSystemManagerHookTestHelper.SetPathHook(hooks, \"AfterPhysicalFilePublishedAsync\", path =>"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 3000,
+      "text": "\"AfterPhysicalFilePublishedAsync\","
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+      "line": 3151,
+      "text": "\"AfterPhysicalFilePublishedAsync\","
+    },
+    {
+      "path": "BookOfEternityClient.Tests/OrdinarySaveReadAndRefreshTests.cs",
+      "line": 105,
+      "text": "AfterPhysicalFilePublishedAsync = _ => { physical++; return Task.CompletedTask; },"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/OriginalSaveProfileRefreshTests.cs",
+      "line": 35,
+      "text": "AfterPhysicalFilePublishedAsync = path =>"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Routing.cs",
+      "line": 43,
+      "text": "AfterPhysicalFilePublishedAsync = _ => { physical++; return Task.CompletedTask; }"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 43,
+      "text": "internal Func<string, Task>? AfterPhysicalFilePublishedAsync { get; init; }"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 1199,
+      "text": "_hooks?.AfterPhysicalFilePublishedAsync,"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 5648,
+      "text": "_hooks?.AfterPhysicalFilePublishedAsync,"
+    }
+  ]
+}

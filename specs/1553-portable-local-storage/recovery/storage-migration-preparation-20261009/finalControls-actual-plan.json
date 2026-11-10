@@ -1,0 +1,58 @@
+{
+  "Categories": [
+    "portable-preparation-current-admission-controls"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "41ac9a4582df53cbc19f0c0c27e0a3833f5bde18",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.5361111,
+  "Descriptors": [
+    {
+      "Name": "portable-preparation-current-admission-controls-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-current-admission-controls",
+      "Categories": [
+        "portable-preparation-current-admission-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_ConcurrentWriterCannotMixSnapshotFiles",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-preparation-current-admission-controls-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-preparation-current-admission-controls",
+      "Categories": [
+        "portable-preparation-current-admission-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

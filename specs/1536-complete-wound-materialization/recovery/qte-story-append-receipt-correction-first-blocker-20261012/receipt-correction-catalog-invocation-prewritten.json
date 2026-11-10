@@ -1,0 +1,9 @@
+{
+  "source": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+  "kind": "metadata ownership/discovery only zero executed tests",
+  "freshIntegrationPlan": "20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories",
+  "freshIntegrationBinaryPins": 5,
+  "unitBuild": "prior174aabad unchanged unit/support/production source; no unit tests executed",
+  "timeBefore": "2026-10-12T13:24:45.352641+00:00"
+}

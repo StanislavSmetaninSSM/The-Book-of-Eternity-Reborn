@@ -1,0 +1,116 @@
+{
+  "scope": "#1536 bounded story preservation first7GREEN only; lifecycle/docs UNRUN",
+  "runtimeSource": "09c9e8f4c7f38299978c612a6b8cb8201c10d110",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "acceptedSourceGate": "1969223f594193a48516d70b0819d8a0d866515d",
+  "runs": {
+    "plan": "20261012-124939-071-294912-6f27b5795fe54485a8878f4b473f0f82-categories",
+    "actual": "20261012-125028-894-295017-e8494cdcf3ad470da813c0c2e818a820-categories"
+  },
+  "firstActualInvocations": 1,
+  "counts": {
+    "methods": 2,
+    "plannedCases": 7,
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "descriptors": 1,
+    "complete": true
+  },
+  "timedOut": false,
+  "sourcePins": 35,
+  "binaryPins": 10,
+  "strictDistinctOwnedCleanupRootsAbsent": 7,
+  "artifacts": [
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124939-071-294912-6f27b5795fe54485a8878f4b473f0f82-categories/summary.json",
+      "sha256": "1ed1103aae83126b6253c0d7b9e54404c3f2b66dc29c67432cdc921df41adea1",
+      "originalSha256": "1ed1103aae83126b6253c0d7b9e54404c3f2b66dc29c67432cdc921df41adea1"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124939-071-294912-6f27b5795fe54485a8878f4b473f0f82-categories/plan.json",
+      "sha256": "f743efc0237e121ed6a441eecbd662906be7567cdbd4cf331a3f3f4943e7e52e",
+      "originalSha256": "f743efc0237e121ed6a441eecbd662906be7567cdbd4cf331a3f3f4943e7e52e"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-124939-071-294912-6f27b5795fe54485a8878f4b473f0f82-categories/dotnet-test.log",
+      "sha256": "46f7388d99038976403fd7caa0921303c354ff1eb63df5687d87ef9786fe22f8",
+      "originalSha256": "700926ae919a5ad66342c36bad87e775d41c12ee2d71969826aceb97a2dff034"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125028-894-295017-e8494cdcf3ad470da813c0c2e818a820-categories/summary.json",
+      "sha256": "afd8dfe3aa2a56dcacf6c9280dbdc881bdb9c30a97e69d1796fc628fa734e3f7",
+      "originalSha256": "afd8dfe3aa2a56dcacf6c9280dbdc881bdb9c30a97e69d1796fc628fa734e3f7"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125028-894-295017-e8494cdcf3ad470da813c0c2e818a820-categories/plan.json",
+      "sha256": "ed82a19297716981597667bccde231521567cdccb229690e3d94547fd2d563be",
+      "originalSha256": "ed82a19297716981597667bccde231521567cdccb229690e3d94547fd2d563be"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125028-894-295017-e8494cdcf3ad470da813c0c2e818a820-categories/dotnet-test.log",
+      "sha256": "6d3e98ea172aced9993f2b2047d1e19645f32ad919e2189f45cec1008c6f2045",
+      "originalSha256": "539aa6532f051c3a26798a5654c4ee2a34e5d961a9647a40bb063aefd4dd9626"
+    },
+    {
+      "path": "actual-qte-story-append-guards-integration-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125028-894-295017-e8494cdcf3ad470da813c0c2e818a820-categories/qte-story-append-guards-integration-001.trx",
+      "sha256": "8b8d57c2a4407624b6d27975df761d65c45785b0ef5da117233363b7bcc3d26a",
+      "originalSha256": "01fec4e69e969c3ad7fb95cd3ec37baafee07b1745138204627ecb6df6fe51fd"
+    },
+    {
+      "path": "story-controls-source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/story-controls-source-pins.json",
+      "sha256": "f842cea7c6cb65d5aa9adec8997fe3a32ba51eeb0f21981efe0b8cb0ea0b309e",
+      "originalSha256": "f842cea7c6cb65d5aa9adec8997fe3a32ba51eeb0f21981efe0b8cb0ea0b309e"
+    },
+    {
+      "path": "fresh-build-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/fresh-build-binaries.json",
+      "sha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923",
+      "originalSha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923"
+    },
+    {
+      "path": "guards-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-plan-invocation-prewritten.json",
+      "sha256": "50143a366f6f65ee9d4f898796dbb503046e973882088cb7b566de5edb23b132",
+      "originalSha256": "50143a366f6f65ee9d4f898796dbb503046e973882088cb7b566de5edb23b132"
+    },
+    {
+      "path": "guards-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-actual-invocation-prewritten.json",
+      "sha256": "df178f14014c1690beeb345d2f5cf52ba88b96bcf0c24374b8dcf8b34af2323a",
+      "originalSha256": "df178f14014c1690beeb345d2f5cf52ba88b96bcf0c24374b8dcf8b34af2323a"
+    },
+    {
+      "path": "guards-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-first-actual-readback.json",
+      "sha256": "a4f78317e89bc4b02a9f5a048a026ec255842ae2ea758d29cac73ca2f29037de",
+      "originalSha256": "a4f78317e89bc4b02a9f5a048a026ec255842ae2ea758d29cac73ca2f29037de"
+    },
+    {
+      "path": "guards-full-trx-stdout.txt.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-full-trx-stdout.txt",
+      "sha256": "0cdde0bff31132f77c1348af9dc869a55e93b24b0302fb90f68b710094aac2bc",
+      "originalSha256": "7970cd81be3f9d8e64e022c86ba9378be06ffb00596943bcd06b222ae1ff4be0"
+    },
+    {
+      "path": "guards-plan-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-plan-console.log",
+      "sha256": "71905209571cd5def51d7a2a8af4df1b856d7f7c4237053bb14c830ee66b0189",
+      "originalSha256": "06f2cb15050d67c8ca93757c2250d2f96bdc9b9e21b46441a80e50b11fcbbc6f"
+    },
+    {
+      "path": "guards-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/guards-actual-console.log",
+      "sha256": "25cd158d4d49f989e0413d56c32db5dc1fc3f4a880ded9433dd8df32bf7364f3",
+      "originalSha256": "3f7f2e840fac9e647ff44817f160b6613cf7aa21ec3c6f5c34b58bf99ef5498d"
+    }
+  ]
+}

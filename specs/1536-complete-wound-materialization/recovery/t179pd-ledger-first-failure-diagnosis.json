@@ -1,0 +1,932 @@
+{
+  "review": "T179-Pd first wired ledger failure focused independent static diagnosis",
+  "timestampUtc": "2026-10-16T12:18:21.272098+00:00",
+  "reviewerConfiguration": {
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent supplied actual spawn receipt: task_name=t179pc_independent_review, fork_turns=none, model=gpt-6-astra, reasoning_effort=xhigh; tool returned /root/t179pc_independent_review.",
+    "backendResolutionTelemetry": "unavailable; not inferred"
+  },
+  "source": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+  "actualCleanRuntimeHead": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+  "frozenCarrier": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+  "observedHead": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+  "workingTreeClean": false,
+  "observedWorkingTreeStatus": " M BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs\n M BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs\n",
+  "uncommittedCorrectionsExcluded": [
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+    "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs"
+  ],
+  "verdict": "FIXTURE_AND_ASSERTION_CAUSES_IDENTIFIED_NO_RUNTIME_RELEASE",
+  "sourceReviewMiss": "The prior independent source gate missed the NPC before-image coverage and numeric representation defects and the new advance count mismatch. This report records the unexpected failures without reclassifying them as intended causal RED or modifying prior reports.",
+  "findings": [
+    {
+      "id": "Pd-F1",
+      "classification": "Fixture before-image omission",
+      "severity": "blocking current GREEN",
+      "cases": [
+        "npc_advance",
+        "multi_target"
+      ],
+      "observed": "Both reach completed ordinary reduction; final assembly throws missing exact before-image for game_state/npcs/npc_effects.json.",
+      "cause": "CreateOrdinaryReductionFixture builds a fixed beforeImages dictionary containing PlayerPath but omitting NpcPath (AcceptedMechanicsReduction.cs:284-295). New scenarios add an actual NPC carrier. Its genuine lifecycle mutation becomes a touched carrier. AssembleCalculatedPlan passes input.BeforeImages unchanged (CommonCalculation.cs:493), and AcceptedMechanicsPlan.ValidatePathCoverage correctly refuses any touched path absent from that map (AcceptedMechanicsPlan.cs:1777-1780).",
+      "minimumCorrection": "In the new scenario test fixture, before computing planning fingerprint/reduction, capture exact NPC baseline from the genuine initial EffectPlan.CarrierBeforeImages[NpcPath] (or equivalently the configured PreTurnCarriers.NpcEffects). Encode its ToJsonString as UTF8 and add CanonicalBeforeImage(true, bytes) using Input.WithBeforeImage for the missing NPC path. This can stay local to npc_advance/multi_target and preserves shared helper defaults. Assert baseline present and distinct from completed after-image; never use an invented absent NPC root or completed after-image as baseline. If a fixture-level opt-in is chosen, capture actual configured carriers before initial planning and populate present/absent maps there without broad default changes.",
+      "guardPreserved": "No production before-image/coverage relaxation. WithBeforeImage only adds missing keys; it must not be used to overwrite existing registered PlayerPath."
+    },
+    {
+      "id": "Pd-F2",
+      "classification": "New assertion contradicts existing actual allocation contract",
+      "severity": "blocking current GREEN",
+      "cases": [
+        "advance"
+      ],
+      "observed": "Actual old common completion and all new ledger/ref/copy/idempotence assertions precede line117, which alone expects1 versus actual2 transition factory calls.",
+      "cause": "Original fixture retains a deterministic periodic_damage owner_turn_end trigger with consumeUses=false (TestSupport fixture:764-772). Resource acceptance enters Draft NonConsumingTrigger at709 and ApplyNonConsumingTriggerEvidence allocates trigger_execution and records kind trigger (planner:7473-7497). Final lifetime turns advancement independently allocates lifecycle_advance at7062 and records kind consume at7104-7117. These are two legitimate distinct identities, not a ledger second allocation. Nonconsuming helper and scheduler are unchanged from initialcf95; lifecycle allocation line is unchanged by the ledger diff.",
+      "minimumCorrection": "Expect advance2/no_change0/no_eligible0, keep EffectCalls0 and the existing no-additional-allocation/repeat-completion assertions. Strengthen advance against actual completed identity history: exactly two newly allocated transition IDs, kinds trigger then consume, same actual effect, distinct causal operation refs; final lifecycle ledger transitionRefs contains only the consume ID and excludes the trigger ID. Preserve original periodic damage fixture instead of removing the real trigger."
+    },
+    {
+      "id": "Pd-F3",
+      "classification": "In-memory numeric representation in new fixture",
+      "severity": "blocking current GREEN",
+      "cases": [
+        "until_time_null"
+      ],
+      "observed": "Initial cache succeeds, but common reduction returns Rejected before helper line311. Raw failure does not print reduction.Issues.",
+      "staticCause": "Scenario assigns deadline=50, an Int32-backed JsonValue, at LifecycleExecutionLedger.cs:352. Carrier validation serializes to JsonElement (EffectCarrierCatalog.cs:550) and RequireNonNegativeLong uses TryGetInt64 (EffectMaterializationContract.cs:648-661), so validation accepts numeric50. AddOccurrence takes effect.DeepClone (catalog603), initial plan and ResourceTriggerCarriers clone values (EffectAcceptedTurnPlan.cs:304-314,561-566), Draft workspace clones those carriers (Draft476; planner8784-8791), and scheduler clones again. No serializer reparse replaces the retained node. Final AdvanceUntilTime validates deadline using JsonValue.TryGetValue<long> (scheduler775 and1011-1014) before checking absent CurrentTime at783. The Int32 node fails that check: statically expected effect_lifecycle_state_invalid at effect.lifetime.deadline, Actual50. ApplyLifecycleReduction propagates issues; Draft final-lifetime864-866 fails, CompleteCommonMechanics returns those issues at265, and ReduceAcceptedPlan returns Rejected at4337-4339.",
+      "evidenceLimit": "The rejection and branch are observed/static respectively. Exact issue code is statically determined, not present in frozen failure output, and no runtime probe was run.",
+      "minimumCorrection": "Change only the fixture deadline literal to50L. Keep accepted lifecycle currentTime absent/null and preserve the no_change, currentTime null and empty transitionRefs assertions. Add explicit fixture precondition that deadline.TryGetValue<long> succeeds. This follows existing EffectLifecycleSchedulerTests.Lifetime.cs:144 using100L and real planner long deadline construction. Do not supply a fake current time, change scheduler guard, remove the scenario or treat its rejection as expected."
+    },
+    {
+      "id": "Pd-F4",
+      "classification": "Missing failure diagnostics",
+      "severity": "required diagnostic improvement",
+      "cases": [
+        "all genuine completed-reduction preconditions"
+      ],
+      "cause": "Both new completed-kind assertions emit enum values only; until_time raw packet therefore cannot expose causal ValidationIssue data.",
+      "minimumCorrection": "Retain exact CompletedOrdinaryReduction expectation while adding reduction.Issues code/path/expected/actual to assertion failure text in both the first theory and ReduceLifecycleLedgerFixture. For example Assert.True(reduction.Kind == CompletedOrdinaryReduction, $\"Expected CompletedOrdinaryReduction; actual {reduction.Kind}. {DescribeOrdinaryReductionIssues(reduction.Issues)}\"). Include FilePath in issue formatter or a ledger-local diagnostic formatter. Do not weaken the precondition."
+    }
+  ],
+  "runtimePacket": {
+    "index": {
+      "source_sha": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+      "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories",
+      "native_exit_code": 1,
+      "artifacts": [
+        {
+          "path": "t179pd-ledger-first-wired-failure-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/dotnet-test.log",
+          "raw_bytes": 1708880,
+          "raw_sha256": "28d84591afd908931f1b10fbd53433be9308f6a6781e2c49ab2a5f7fabfd94b6",
+          "stored_sha256": "b8c084ec7e624eed826942104fa406cddae1dcc952492fbb912bb47d16c6bf6a"
+        },
+        {
+          "path": "t179pd-ledger-first-wired-failure-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+          "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/fr063-active-prefix-lifecycle-evidence-unit-001.trx",
+          "raw_bytes": 46899,
+          "raw_sha256": "bc33c80fa3514c1e5687a72dcaa731d976e8ed936f58821f6ea70d19d8f207ad",
+          "stored_sha256": "363e5fb777e5a5fe8ec2fbb32ad2c3d687836296a30a88b9637b27227395033d"
+        },
+        {
+          "path": "t179pd-ledger-first-wired-failure-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/plan.json",
+          "raw_bytes": 2172,
+          "raw_sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608",
+          "stored_sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608"
+        },
+        {
+          "path": "t179pd-ledger-first-wired-failure-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/runner-stdout.log",
+          "raw_bytes": 13820,
+          "raw_sha256": "c2a0689c20b24e95e36caf5a6805c1c0b0722a42a91e150fba1f8bee4745e315",
+          "stored_sha256": "d9bfaef7287e876a8b5ca9a8b96a0e5f17d42580205b7379db0eb6a585678050"
+        },
+        {
+          "path": "t179pd-ledger-first-wired-failure-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/summary.json",
+          "raw_bytes": 1392,
+          "raw_sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed",
+          "stored_sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed"
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-active-prefix-lifecycle-evidence"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-active-prefix-lifecycle-evidence",
+            "Seconds": 3.2645885,
+            "BudgetMinutes": 5,
+            "Completed": false
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0556853,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0506709,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1300912,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:06.8224445",
+        "ExitCode": 1,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 15,
+          "CompletedCases": 15,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 15,
+          "Executed": 15,
+          "Passed": 11,
+          "Failed": 4
+        },
+        "DuplicateTests": []
+      }
+    },
+    "summary": {
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Seconds": 3.2645885,
+          "BudgetMinutes": 5,
+          "Completed": false
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0556853,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0506709,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1300912,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:00:06.8224445",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 15,
+        "CompletedCases": 15,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 15,
+        "Executed": 15,
+        "Passed": 11,
+        "Failed": 4
+      },
+      "DuplicateTests": []
+    },
+    "plan": {
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Reasons": [],
+      "Revision": {
+        "Head": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 3.1764257,
+      "Descriptors": [
+        {
+          "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+              "Cases": 10
+            }
+          ]
+        }
+      ]
+    },
+    "trxCounters": {
+      "total": "15",
+      "executed": "15",
+      "passed": "11",
+      "failed": "4",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "cases": [
+      {
+        "case": {
+          "executionId": "a1e73b54-c552-41d4-8889-b3f87e131847",
+          "testId": "1442721c-cfcd-2297-75a8-9fcd733c4685",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"multi_target\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0191127",
+          "startTime": "2026-10-16T12:11:10.7740032+00:00",
+          "endTime": "2026-10-16T12:11:10.7740034+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "a1e73b54-c552-41d4-8889-b3f87e131847"
+        },
+        "message": "System.ArgumentException : Plan path 'game_state/npcs/npc_effects.json' has no exact before-image. (Parameter 'BeforeImages')",
+        "stack": "   at BookOfEternityClient.Services.AcceptedMechanicsPlan.ValidatePathCoverage() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1780\n   at BookOfEternityClient.Services.AcceptedMechanicsPlan..ctor(String inputFingerprint, JsonObject definitionAfterImage, JsonObject stateAfterImage, JsonObject historyAfterImage, IReadOnlyDictionary`2 effectCarrierAfterImages, JsonObject effectIdentityAfterImage, IReadOnlyDictionary`2 pendingAfterImages, IReadOnlyDictionary`2 ownerCompanionAfterImages, IReadOnlyDictionary`2 beforeImages, IReadOnlyList`1 touchedPaths, IReadOnlyList`1 consumedPaths, AcceptedMechanicsAuthorityFingerprints authorityFingerprints, IReadOnlyList`1 resourceEvents, ResourceProjectionInput projectionInput, ResourceOwnerAuthority ownerAuthority, EffectAcceptedTurnPlan effectPlan, IReadOnlyList`1 ownerTransitions, JsonObject pendingGmPacket, AcceptedMechanicsPendingPublicationAuthority pendingPublicationAuthority, AcceptedMechanicsWoundStageBundle woundStageBundle, AcceptedMechanicsCarrierCompositionResult carrierComposition, SpiritualLiveWoundCompletion liveWoundCompletion, AcceptedMechanicsDirectWoundPublicationAuthority directWoundPublicationAuthority, MortalWoundTreatmentResourcePublicationAuthority treatmentResourcePublicationAuthority, MortalJointRepairCommonAuthority jointRepairCommonAuthority) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1527\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCalculatedPlan(AcceptedMechanicsInput input, String inputFingerprint, CalculatedCommonArtifacts calculated, SpiritualLiveWoundCompletion liveWounds) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs:line 481\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCompletedAcceptedReduction(CompletedOrdinaryMechanicsReduction completed) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4449\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.<>c__DisplayClass20_0.<CompletedOrdinary>b__0() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3802\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\n   at System.Lazy`1.CreateValue()\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.Complete() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3768\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.CompleteAcceptedReduction(AcceptedMechanicsReduction reduction) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4181\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 315\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "70dacc6f-4015-4ed0-a759-c014287f6a55",
+          "testId": "0061137b-a4dd-8a50-7f7b-1af193dacd31",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"ordered_events\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.3769216",
+          "startTime": "2026-10-16T12:11:10.6136127+00:00",
+          "endTime": "2026-10-16T12:11:10.6136364+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "70dacc6f-4015-4ed0-a759-c014287f6a55"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "47915bbe-44f7-49eb-bc60-ba4c60eac586",
+          "testId": "7079cf2a-f70b-81af-bde6-bc6796c66a3d",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0155158",
+          "startTime": "2026-10-16T12:11:10.9536295+00:00",
+          "endTime": "2026-10-16T12:11:10.9536296+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "47915bbe-44f7-49eb-bc60-ba4c60eac586"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "611095b8-3097-4527-b4b2-44717e7b6e9b",
+          "testId": "ff5df7c3-0e1a-59d7-b5e9-5bb16b581e65",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"empty_source\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0097934",
+          "startTime": "2026-10-16T12:11:10.7381727+00:00",
+          "endTime": "2026-10-16T12:11:10.7381728+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "611095b8-3097-4527-b4b2-44717e7b6e9b"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "fb8aac01-4b3c-459f-a406-4f80ec1d6d2d",
+          "testId": "6c1aded2-16c6-4d4f-548a-3d5e43dda66c",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"uses_mode\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0158727",
+          "startTime": "2026-10-16T12:11:10.7541817+00:00",
+          "endTime": "2026-10-16T12:11:10.7541818+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "fb8aac01-4b3c-459f-a406-4f80ec1d6d2d"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "f049934b-c87a-4e87-8378-a8e52159dd55",
+          "testId": "68fc3603-f3b0-4de1-a29a-f614c10a40ab",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"bound_active\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0140590",
+          "startTime": "2026-10-16T12:11:10.7876043+00:00",
+          "endTime": "2026-10-16T12:11:10.7876044+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f049934b-c87a-4e87-8378-a8e52159dd55"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "beb43123-cb19-4469-8e88-3e9218c23197",
+          "testId": "3bff376a-7068-951f-1ee5-4d143775ae06",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"bound_expire\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0607090",
+          "startTime": "2026-10-16T12:11:10.6730580+00:00",
+          "endTime": "2026-10-16T12:11:10.6730580+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "beb43123-cb19-4469-8e88-3e9218c23197"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "8eb53db8-d361-4ff2-b6df-485760d8054a",
+          "testId": "7febbb9f-eb02-d2b7-e33b-2fd2d9f7aaa3",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"npc_advance\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0125244",
+          "startTime": "2026-10-16T12:11:10.7289091+00:00",
+          "endTime": "2026-10-16T12:11:10.7289092+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "8eb53db8-d361-4ff2-b6df-485760d8054a"
+        },
+        "message": "System.ArgumentException : Plan path 'game_state/npcs/npc_effects.json' has no exact before-image. (Parameter 'BeforeImages')",
+        "stack": "   at BookOfEternityClient.Services.AcceptedMechanicsPlan.ValidatePathCoverage() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1780\n   at BookOfEternityClient.Services.AcceptedMechanicsPlan..ctor(String inputFingerprint, JsonObject definitionAfterImage, JsonObject stateAfterImage, JsonObject historyAfterImage, IReadOnlyDictionary`2 effectCarrierAfterImages, JsonObject effectIdentityAfterImage, IReadOnlyDictionary`2 pendingAfterImages, IReadOnlyDictionary`2 ownerCompanionAfterImages, IReadOnlyDictionary`2 beforeImages, IReadOnlyList`1 touchedPaths, IReadOnlyList`1 consumedPaths, AcceptedMechanicsAuthorityFingerprints authorityFingerprints, IReadOnlyList`1 resourceEvents, ResourceProjectionInput projectionInput, ResourceOwnerAuthority ownerAuthority, EffectAcceptedTurnPlan effectPlan, IReadOnlyList`1 ownerTransitions, JsonObject pendingGmPacket, AcceptedMechanicsPendingPublicationAuthority pendingPublicationAuthority, AcceptedMechanicsWoundStageBundle woundStageBundle, AcceptedMechanicsCarrierCompositionResult carrierComposition, SpiritualLiveWoundCompletion liveWoundCompletion, AcceptedMechanicsDirectWoundPublicationAuthority directWoundPublicationAuthority, MortalWoundTreatmentResourcePublicationAuthority treatmentResourcePublicationAuthority, MortalJointRepairCommonAuthority jointRepairCommonAuthority) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1527\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCalculatedPlan(AcceptedMechanicsInput input, String inputFingerprint, CalculatedCommonArtifacts calculated, SpiritualLiveWoundCompletion liveWounds) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs:line 481\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCompletedAcceptedReduction(CompletedOrdinaryMechanicsReduction completed) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4449\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.<>c__DisplayClass20_0.<CompletedOrdinary>b__0() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3802\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\n   at System.Lazy`1.CreateValue()\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.Complete() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3768\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.CompleteAcceptedReduction(AcceptedMechanicsReduction reduction) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4181\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 315\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "6f161099-e789-4aeb-ba54-7b1a72e29baf",
+          "testId": "60eafea4-cdbb-2226-0462-52d792377ab7",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"advance\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0990400",
+          "startTime": "2026-10-16T12:11:10.9154188+00:00",
+          "endTime": "2026-10-16T12:11:10.9154189+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "6f161099-e789-4aeb-ba54-7b1a72e29baf"
+        },
+        "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   2",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 117\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "fa0a098c-4b98-4c7c-94a2-8b9a8b50c5ec",
+          "testId": "da3f6819-4e0a-f7f2-6dca-a6081a27dc2f",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"causal_created\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0125647",
+          "startTime": "2026-10-16T12:11:10.7025221+00:00",
+          "endTime": "2026-10-16T12:11:10.7025222+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "fa0a098c-4b98-4c7c-94a2-8b9a8b50c5ec"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "b30cf5e4-3137-41a7-93f8-ffee64e4844b",
+          "testId": "79b84e13-0423-1400-4adb-170fb8bf512c",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"no_eligible\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0051997",
+          "startTime": "2026-10-16T12:11:10.8157527+00:00",
+          "endTime": "2026-10-16T12:11:10.8157527+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "b30cf5e4-3137-41a7-93f8-ffee64e4844b"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "e3b134eb-7598-4e4c-b9d9-bb3dbda36103",
+          "testId": "44b62e74-6652-43a2-2e22-d687aa5587e0",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"turn_expire\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0125185",
+          "startTime": "2026-10-16T12:11:10.7151561+00:00",
+          "endTime": "2026-10-16T12:11:10.7151562+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "e3b134eb-7598-4e4c-b9d9-bb3dbda36103"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "d7309617-3d63-467a-bbca-e5bfd1acc553",
+          "testId": "f955c7e7-9dac-d490-0abe-d9909c2198d7",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"no_change\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0226293",
+          "startTime": "2026-10-16T12:11:10.8105408+00:00",
+          "endTime": "2026-10-16T12:11:10.8105409+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "d7309617-3d63-467a-bbca-e5bfd1acc553"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "ba1ec21c-2667-41b7-9408-f92b05db6593",
+          "testId": "15568881-5db1-b2d2-e5aa-859bc5ce47d5",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0226584",
+          "startTime": "2026-10-16T12:11:10.9378656+00:00",
+          "endTime": "2026-10-16T12:11:10.9378656+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "ba1ec21c-2667-41b7-9408-f92b05db6593"
+        },
+        "message": null,
+        "stack": null
+      },
+      {
+        "case": {
+          "executionId": "2c6937aa-4a0f-4d04-a5ce-6d54127b06a9",
+          "testId": "e8046a13-0c87-c3f0-7eec-1820c9b53892",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"until_time_null\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0112049",
+          "startTime": "2026-10-16T12:11:10.6956356+00:00",
+          "endTime": "2026-10-16T12:11:10.6956357+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "2c6937aa-4a0f-4d04-a5ce-6d54127b06a9"
+        },
+        "message": "Assert.Equal() Failure: Values differ\nExpected: CompletedOrdinaryReduction\nActual:   Rejected",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 311\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      }
+    ],
+    "verifiedChains": [
+      {
+        "path": "t179pd-ledger-first-wired-failure-20261016-dotnet-test.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/dotnet-test.log",
+        "raw_bytes": 1708880,
+        "raw_sha256": "28d84591afd908931f1b10fbd53433be9308f6a6781e2c49ab2a5f7fabfd94b6",
+        "stored_sha256": "b8c084ec7e624eed826942104fa406cddae1dcc952492fbb912bb47d16c6bf6a",
+        "gitBlob": "39ee4b2df6be4262ccb710b35c603ed757077d5f",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-ledger-first-wired-failure-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+        "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/fr063-active-prefix-lifecycle-evidence-unit-001.trx",
+        "raw_bytes": 46899,
+        "raw_sha256": "bc33c80fa3514c1e5687a72dcaa731d976e8ed936f58821f6ea70d19d8f207ad",
+        "stored_sha256": "363e5fb777e5a5fe8ec2fbb32ad2c3d687836296a30a88b9637b27227395033d",
+        "gitBlob": "efc8f8ab6cb6231d9e071fd5b7a2ce23c227c64f",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-ledger-first-wired-failure-20261016-plan.json",
+        "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/plan.json",
+        "raw_bytes": 2172,
+        "raw_sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608",
+        "stored_sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608",
+        "gitBlob": "e5cb749ac5ddb925c3b07e20ca6550ef4e7cf5c1",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-ledger-first-wired-failure-20261016-runner-stdout.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/runner-stdout.log",
+        "raw_bytes": 13820,
+        "raw_sha256": "c2a0689c20b24e95e36caf5a6805c1c0b0722a42a91e150fba1f8bee4745e315",
+        "stored_sha256": "d9bfaef7287e876a8b5ca9a8b96a0e5f17d42580205b7379db0eb6a585678050",
+        "gitBlob": "834f5b1b25842f1e5b1284c60babd9ee2c6a6b8e",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-ledger-first-wired-failure-20261016-summary.json",
+        "raw_path": "TestResults/test-categories/20261016-121104-378-74484-a9839b0dd09c47efb526e4adb39fea85-categories/summary.json",
+        "raw_bytes": 1392,
+        "raw_sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed",
+        "stored_sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed",
+        "gitBlob": "bf87afacb7875d50877b9b68df98a526604a74f7",
+        "rawStoredLocalCommittedMatch": true
+      }
+    ]
+  },
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "4d2e36a4dfcf4b147052f0a70ad843aaa37cf651",
+      "bytes": 25101,
+      "sha256": "35e3a981ddefe9d023eb92168cfb1ea36114001eda0be6f6d3ab9e1bc0a8d108",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "7dbf061000e15c3d8d304a744bbaf53293351090",
+      "bytes": 21214,
+      "sha256": "050dcf4d58cf5934c182577ebe169be22e1ba963d0ff60b5acf3ace3afc8e6fd",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c66356b746087687f1134b2a56b974fc65ded2fd",
+      "bytes": 127127,
+      "sha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "576157add293ed8a6b25a9fc3617e3554aa0462c",
+      "bytes": 11574,
+      "sha256": "3cf5c7746da111e4822dff89c8490bcf95d33d557f795c1d2294239b62a4a9d4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "fe8ba88bd9b18b858e3ce6bc1fe597f33c0d7a47",
+      "bytes": 34466,
+      "sha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+      "bytes": 30382,
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "a060b8861f06addf61b0c2e8a1658350914af079",
+      "bytes": 398519,
+      "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "b12907952e3059f5c1389cf52a61e67a9dae41e1",
+      "bytes": 45717,
+      "sha256": "c74e646e773df11a9a2c67f9629d1b816197e3ebf2131ab34f9c174323569cc7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "f8fbf37a4617bf0479dc15aeb2e23e62c563c721",
+      "bytes": 26564,
+      "sha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "15ab43b9455efd05f76ffaf564de1aabd55ee0c9",
+      "bytes": 28369,
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "b1896580a7b48d103bb37c11d81dcbd33d069e5d",
+      "bytes": 38257,
+      "sha256": "5b2a9c8d26a6e5372661d622d66d6efb44d8f12d1096e8ed42fc45ef201fd4e3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "6ea55ad597ee138d7ef2999d0cf49acf240c5b4e",
+      "bytes": 1948474,
+      "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "8b0b5c8f2ff8372d5c056140b525ebfa2c91b710",
+      "bytes": 4686,
+      "sha256": "785765632947277a0e4e62188d5bc5b4f84a256216bed77093cd3347a37bc42c",
+      "workingTreeMatches": true
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-artifact-index.json",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "7089bc8074c437ea5ee3ec4a8a3e7e5351439f6d",
+      "bytes": 3995,
+      "sha256": "f7cc765c9a86d517371d3a70f4db29aacbd03408d805703638533da349ef2f0c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-dotnet-test.log.gz",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "39ee4b2df6be4262ccb710b35c603ed757077d5f",
+      "bytes": 190218,
+      "sha256": "b8c084ec7e624eed826942104fa406cddae1dcc952492fbb912bb47d16c6bf6a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "efc8f8ab6cb6231d9e071fd5b7a2ce23c227c64f",
+      "bytes": 4703,
+      "sha256": "363e5fb777e5a5fe8ec2fbb32ad2c3d687836296a30a88b9637b27227395033d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-plan.json",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "e5cb749ac5ddb925c3b07e20ca6550ef4e7cf5c1",
+      "bytes": 2172,
+      "sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-runner-stdout.log.gz",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "834f5b1b25842f1e5b1284c60babd9ee2c6a6b8e",
+      "bytes": 2132,
+      "sha256": "d9bfaef7287e876a8b5ca9a8b96a0e5f17d42580205b7379db0eb6a585678050",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-summary.json",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "bf87afacb7875d50877b9b68df98a526604a74f7",
+      "bytes": 1392,
+      "sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-source-review-20261016.md",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "dc22a0eab76737dfa6609125bbbf9eee76970c66",
+      "bytes": 5095,
+      "sha256": "e5b354dd5faab26d3fc88008103984f184fd0a6e92a2674ce44f0d1cc30919c1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-source-review-20261016.json",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "022fbe00e8878eb9c2dd6ac74c1c6cbe78c9851d",
+      "bytes": 188926,
+      "sha256": "a49eedbdb800e847b84c39d31562d252adb540451cf9d5800711c2d67439effe",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.md",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "3915808427b699063c8b4fa90aab97c9780a15db",
+      "bytes": 4594,
+      "sha256": "9cd8c7ff86cd0bd96773b39d430fec8a14b277b57294ec35e2d681b5c529e505",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.json",
+      "commit": "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+      "gitBlob": "d94ed2d6c848723b0338bcb7588004d8dd144ef2",
+      "bytes": 120649,
+      "sha256": "9649850fa49eb4a0bbfdcedbf8c3ccc1da77f359e107da5638d315d540ee2db8",
+      "workingTreeMatches": true
+    }
+  ],
+  "sourceContinuityDiffs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+        "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "0e860c8e1086cb4ecfacb82d1850c0a4faa2f2c6",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "binaryManifest": {
+    "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "phase": "Pd-R1/R2 corrected ledger wired fresh BOTH; zero actuals",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "b84e69d4015c24828db13b7832a212c9f366d18136f05bd1452ca5ac3b11cf7b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "8780835ffbf1c8f87986373c659280183885209300028c1b01af11d8d1b9fd8b"
+      }
+    ]
+  },
+  "fourDllHashesVerified": true,
+  "releaseStatus": {
+    "priorConditionalRemainingRelease": "STOPPED by first unexpected singleton failure",
+    "actualRunBeyondFirstLedger": "None, per coordinator; no further actuals authorized here",
+    "next": "Root may author the narrow test/fixture/diagnostic corrections under existing authorization. Before actuals: freeze new source, fresh BOTH/catalog/PlanOnly/fourDLL pins and independent affected SOURCE/FIXTURE/SELECTION, then unchanged firstLate2, freeze/push/readback and separate EVIDENCE. Only then may the affected full15-case owner be considered for GREEN execution; no automatic restart of remaining6 categories.",
+    "rerunRationale": "All15 cases belong to the exact changed fixture/assertion owner; prior11PASS preserved but a corrected15 invocation is meaningful after source changes. No unrelated broader category rerun is justified by these fixture fixes."
+  },
+  "qualificationLimits": [
+    "No corrected fixture was executed by reviewer; GREEN remains unproven.",
+    "Time-null exact issue text absent from old output; add diagnostics and preserve any discrepant next packet rather than guessing or weakening guards.",
+    "No full ledger/Pd/T192b/S/C/B/M3/P0/F1/T197 or player/QTE activation acceptance.",
+    "Parallel T197 design review unaffected and excluded."
+  ],
+  "skill": {
+    "name": "superpowers:systematic-debugging",
+    "source": "skill://plugins~Plugin_60aea7460bd4819199fd97a9553a5e12/systematic-debugging/SKILL.md",
+    "application": "Root-cause tracing and comparison to existing source/tests; no additional runtime reproduction authorized at this gate."
+  },
+  "reviewerExecution": "Read-only source/Git/frozen raw gzip/JSON/XML/hash inspection only; /tmp reports/script. No build/discovery/test/application runtime/fetch/push/repo edits/delegation.",
+  "remoteEvidence": "Coordinator reports carrier pushed and remote SHA read back; reviewer verified local committed blobs and clean HEAD only.",
+  "finalStop": true,
+  "markdownSha256": "0004dbf617a4fb917568770d6e5085e72d238decf2a720e8a32f145264a9b5e6",
+  "inspectionScriptSha256": "e18b2c6a177ee524d6a8ce1acbc2e7e6cb6b5a154d30357d3ba14a3428e0d7c0"
+}

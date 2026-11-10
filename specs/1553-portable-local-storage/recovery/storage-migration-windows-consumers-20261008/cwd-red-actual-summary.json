@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "gm-main-windows-cwd-resolution"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "046d5dc9fbb71ac25896a4593557f13d807723c7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-windows-cwd-resolution",
+      "Seconds": 2.8511147,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0559826,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0380459,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0986944,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:07.2128880",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 2,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

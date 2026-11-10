@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-interface-crash-diagnostic",
+      "reason": "Separate cut1 diagnostic after native124/220s child waits; same original strong fixture with flushed readonly scalar stages/live bounded logs. Excluded from whole57/counts. No runtime from this selection alone.",
+      "contracts": [
+        "Preserve genuine producer73/new resumer PID+kernel starttick/nonce/containment/join/EOF, exact cut bytes/Ready/current DATA/one I/mechanics/story/cleanup/inert repeat, primary exceptions and220s child bound; original900s crash5 budget unchanged."
+      ]
+    }
+  ]
+}

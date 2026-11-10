@@ -1,0 +1,1234 @@
+{
+  "report": "T197 pending-fate family reservation producer design",
+  "status": "PROPOSED_PRODUCER_PROTOCOL_WITH_CONFIRMED_MISSING_ISSUER_AND_OPEN_WRITER_COVERAGE",
+  "source_commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "comparison_commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+  "observed_head_metadata_only": "9bbcc7af7a3ed711df1676a1e1340a6bfc13aa62",
+  "author_configuration": {
+    "model": "Astra",
+    "reasoning": "High",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "sections": {
+    "Finding and recommendation": "There is NO presently issuable OriginalPendingFateFamilyReservation with the required exclusion semantics. Current facts prove actual owner/G/main admission and an eventual lease family, but not absence of pending-path writers before RNG. CanonicalRootIdentity is explicitly an in-process interner. A separate participating helper accepts arbitrary game_state/control/* write/append/delete under its own actual lease. Paid fate, incidental GetOrCreate, live preparation deletion, rollback/load/replacement and family transitions add real competing owners. Exact bytes afterward detect some races; they do not undo consumed entropy or prove exclusion.\n\nRecommend a conditional producer in the ORIGINAL main coordinator: a narrowly scoped pending-path reservation with a closed writer-admission protocol. It is a new source-exclusion/custody contract, not an existing method merely awaiting extraction. The required authority is to defer/refuse NEW conflicting operations before their domain effects, drain exact ALREADY-started operation/debt scopes, and bind future leases/family transitions to that same live original owner. It grants no new writes/fee/refund/reward/RNG beyond the admitted source action. Prior autonomous design authorization permits review of it; no repeat permission request is needed. Independent acceptance and qualification remain required before implementation.\n\nThe proposal below supplies concrete issuance and refusal rules, but full writer/native coverage and cross-process admission are missing. Therefore the producer is NOT closed/accepted or usable today. This is not a permanent HOLD outcome: successful future same-situation continuation remains mandatory under PF-P05, which this producer does not fabricate.",
+    "Birth and actual caller integration": "At the shared Stage1596 boundary, before AttachPendingDiceAndGachaAsync invokes its public no-lease service, call the proposed original Stage parent method ReservePendingFateFamilyAsync. It is reached from both ProcessPlayerTurn console1495/1497 and browser1509/1510. The reservation request is constructed inside the retained original Stage task; it receives the actual request reference and live source operation, not a mode flag or imported tuple. Capture/root/G work and earlier Stage preparation stay under their existing owners. This child cannot retroactively take custody of earlier MainMenu/Explorer, fees, callbacks or backup effects.\n\nIssuance requires the REAL coordinator Access/OperationPin and actual outer+inner main admission identities from the born original host, same FileSystemManager/CanonicalRootAuthorityIdentity, same already-bound G and original operation identity. If an ancestor owns or is awaiting canonical/lifecycle storage, this call may not wait for a reservation/drain: that would create a cycle. The parent must provide an earlier registered source cut before such acquisition or an original owner-directed handoff after release. No nested generic lease, borrowed string generation, fresh root operation or old-pin rebind substitutes. This actual entry integration is PB01/PB03, still OPEN.\n\nFor ordinary browser Stage, retain the genuine BrowserOriginalOperationScope created at1565, its Binding, Condition and issuing MainAdmission; ValidateOwner must observe an acquired, nonclosed, nonmetadata real owner sharing actual access, and Condition.RequireCurrent. Issuer retains that real lifetime until handoff/join; simply storing its fields after the using scope disposes does not retain authority. Existing browser staging wrapper closes after Stage and must gain the separately reviewed held route. Ordinary browser is not MutationIntentRecorder; paid browser Reveal/Rewrite/direct-gacha are DIFFERENT source actions despite possibly sharing native storage family. No UI/bare DTO grants or refuses reservation.",
+    "Proposed owner APIs and proof fields": "Proposed files and seams, all UNACCEPTED:\n- Services/GmRuntime/GmSessionRunCoordinator.PendingFateReservation.cs: ReservePendingFateFamilyAsync(OriginalStageCustody stage), TryBeginPendingPathWriter(OriginalWriterCustody writer, ExactMutationFootprint footprint), CapturePendingFateReservationAfterDrain, CompletePendingFateWriter, TransferPendingFateReservation and ReleasePendingFateReservation. Constructors private; no public API takes desired dice/JSON or caller-supplied proof flags. Coordinator owns the registry under its existing source gate, with explicit epoch and operation identity.\n- Core/CanonicalRootIdentity.cs may hold only a local reference to that same coordinator-owned registry. It is not the cross-process authority. Core/FileSystemManager.PendingFateAdmission.cs validates the actual originating operation/lease and mutation footprint against that registry before effects. Every mutating family, recovery and generation replacement must enter through its real owner; no central method name alone proves complete coverage.\n- Services/PendingTurnStateService.OriginalFrame.cs consumes the issued live reservation, retaining same-final-read bytes and original hot frame. Public GetOrCreate/Reveal/Rewrite/Rotate/Clear also need original writer admission at method entry before possible draw, not solely an FS write hook. Their existing caller/action authority remains unchanged.\n- GmMainParticipatingControl.MutateAsync154 needs actual original command admission before157C, backed by the existing retained operation/connection. Cross-process messages can identify a reservation/writer ordinal, but server must bind them to the real current live pin/connection/root/G and original command sequence. A serialized identifier/ACK alone is never a capability. No new endpoint/key/service is selected here; exact existing-transport integration remains PB02 OPEN.\n- FS family setters must become guarded owner transitions: actual MutationIntentRecorder install/remove, RunLegacyStorageRecoveryAsync enter/restore, BrowserLocalAccess create/dispose. Validate prior to installing recorders or publishing their manifests; the current assignments are too late to retroactively certify pre-RNG family.\n\nThe private reservation holds: actual coordinator/Access/pin/root/G/Stage/request references; exact O/I admission references; optional genuine browser original scope/Binding/Condition/issuing owner; exact logical pending path plus validated physical-root/namespace identity; issuer epoch; original acquisition ordinal; intended family descriptor {MutationIntentRecorder:none, Legacy:false, captured optional BrowserLocalAccess identity and its registered callback/debt owner}; outstanding predecessor writer/debt records; source gate phase; only this original fate child and explicitly delegated existing-debt handles; actual pending-acquisition/release tasks; transfer/close state. No copied bytes/hash substitute for any reference. A diagnostic projection can contain IDs/counts/path/phase only and is nonimportable; no new durable metadata schema or write is accepted.",
+    "Finite exclusion predicate": "The protected semantic member is exactly game_state/control/pending_dice_state.json. Conflict includes replace/write/append/delete of that member, type/identity changes of it, ancestor tree deletion/replacement/move (game_state/control, game_state, session root), any load/session-generation replacement, or declared namespace plan containing/intersecting the member. File-to-directory and directory-to-file transitions count. Mere identical after-bytes do not remove conflict. Backup/snapshot copies outside the protected target are not automatically conflicting writes, but their later restore to the target is. Parent-directory validation/read is not by itself mutation permission.\n\nCompare paths through actual existing root/physical scope normalization and validation; Windows case/spelling aliases and Linux exact names follow their real owner. A string prefix test cannot establish physical authority; symlink/wrong-type/alias uncertainty refuses. Unknown/dynamic mutation footprints are conservatively conflicting until that ORIGINAL owner supplies a validated finite member/namespace plan. This is denial/exclusion only, not permission to write a namespace snapshot.\n\nA writer admission lives from BEFORE its first domain/native/callback effect (including potential RNG and fee) through original publication decision, cleanup, namespace debt and actual release. Registration only at file publication would allow competing GetOrCreate/Rewrite to consume entropy before reservation denial. The candidate Stage fate child is excluded from predecessor counts only by its exact original identity and has not drawn yet. Other same-root/same-parent borrowers are not implicitly exempt; only specifically delegated original debt may cross the reservation without new semantic work. O/I owner frames are not counted as unfinished child writers, but their actual child acquisitions/operations are counted.",
+    "Issuance sequence and lock order": "1. Before domain effects, the original Stage child registers a reservation-acquisition task under parent source gate. The coordinator verifies original identity/root/G/access, actual browser scope when present, source Open, and that the applicant has no storage acquisition/lease or dependency on a child that must wait behind its reservation. No RNG is possible in PendingRequest.\n2. Under that same coordinator gate install PendingFence(epoch, pending path, original child). All NEW conflicting writer admissions refuse/defer BEFORE draw/fee/publication. Already-admitted writers are tagged as predecessors, including acquisitions not yet granted, callbacks, native attempts, retries already armed, original restoration and release debt. Unknown writer/native membership prevents progression. Do not set a boolean 'empty' from currently held leases.\n3. Release the gate and await actual predecessor completion/debt/lease joins; the applicant owns no C/lifecycle lock while waiting. Predecessors may finish only already-started work under their original authority. A stopped/failed/uncertain predecessor does not disappear from counts. Prior legacy/native recovery needs its actual existing issuer; PendingFence grants none. If that issuer is lost, issuance blocks and the task is not successfully recovered.\n4. With predecessor set truly drained and source still Open, perform an explicitly registered bounded validation acquisition if necessary to verify current G/root, settle already-owned permitted prior storage evidence, and classify the actual original family's allowed transitions. Release that validation lease before declaring Issued. It is NOT a lease held across RNG and is NOT proof of future family by itself: the still-active reservation fence plus guarded transitions prevents future substitution. Recheck source epoch and predecessor closure after release. Callback/release failure remains real debt; no issue.\n5. Atomically change PendingFence→Issued with the live family record and original browser owner still valid. Only now may the corrected hot-frame factory begin its same-final-read and then its first RNG slot. Preserve existing public read selection/decoding/hook behavior through the proposed observation seam. Every recovery effect under that read needs exact member/debt authorization; unresolved prior or unknown journal blocks the family, not ignored as a read.\n6. For the later write lease, register acquisition BEFORE await; on acquisition verify actual G/root/main, reservation epoch/source child, optional actual browser Condition, recorder==null, !legacy and UsesTrustedLocalWriter for the exact pending path. Check captured BrowserLocalAccess/callback family identity if present. If family changed, retain original values, no native write/redraw. A seal prevents new acquisition/native arm; actual acquired resources still release through original owner.\n\nGate order is original parent source gate → reservation registry/frame state; never await or invoke provider code while holding it. Writer admission precedes C/lifecycle acquisition. A lower mutation hook invoked under existing C only performs a nonwaiting validation of a PREEXISTING writer ticket; if none or conflict, it refuses before side effects. It must not enqueue/wait for reservation under C. All real caller preflights are necessary so paid actions do not discover this after spending. Metadata stop still follows original native/debt/storage quiescence; it does not acquire the pending reservation or wait for semantic continuation while holding C. This protocol removes a proposed cycle only if every entry obeys it; it is not existing qualified behavior.",
+    "Family transitions and browser lifetime": "Future family stability is a prohibition enforced by the issuer, not prophecy. Under Issued reservation, leases for the fate child derive only from its original parent and captured family descriptor. Installing an actual recorder, entering legacy recovery, or changing a local browser storage access/callback scope requires a separately admitted transition owner with its full footprint before mutation. A conflicting transition cannot proceed while reservation is live; a preexisting transition must finish and release before issuance. Plain internal property assignment currently bypasses this rule and is a concrete missing implementation seam.\n\nBrowserOriginalOperationScope and BrowserLocalStorageAccess are distinct actual owners. The first narrows the genuine main admission with action Binding/Condition; it does not make the writer legacy. The second is created under a lease, carries an actual generation and optional RecordIntent callback. Do not ban every browser path or every nonnull BrowserLocalAccess; validate its actual original ownership, allowed pending-member family and all callback debt. An unknown callback/provider/transition is a blocker, not a fabricated no-op. Paid browser transactions retain their transaction, fees, rollback/receipt and native ownership; the producer only schedules conflicting admission before those effects.\n\nOn browser held exit the current using scope atStage1565 would dispose when the method returns. The producer cannot keep a copied scope logically alive. Parent integration must retain the real scope/issuing admissions until exact held/join handoff, then dispose once under original owner. No ValidateOwner after disposed scope, no reconstructing Condition from equivalent JSON. This is PB01/PB07, not a finished browser-host implementation.",
+    "Hot retention, handoff and release": "The corrected consumer's per-slot RNG, clock and same-final-read/native outcome contract remains unchanged. Source seal latches Sealed on reservation and prohibits all unarmed source work. Already-returned values remain in the original frame; an already-armed Fill may return and be retained, but next slot cannot start. Already-armed native publication settles only exact original bytes/attempt/debt with its original owner. Reservation alone authorizes no new durability write after seal. Original publication Committed plus cleanup debt is not ready for storage quiescence.\n\nReservation lifetime cannot end merely at native file write: Stage later captures original/validation snapshot evidence from that pending value. Normal handoff must therefore transfer the SAME live claim, without an admission gap, to an actual OriginalStagePathCustody owner at the Ready/Attach boundary. That owner records the retained exact original fate result and completes the required later snapshot/request handoff before allowing conflicting next action/rotation. This transfer is a new producer/parent interface; its exact later release criterion is PB07 OPEN, not guessed from Attach returning. No second root pin or duplicate claim appears.\n\nOn Held, release storage only after real original debts and acquired/pending tasks join; keep the semantic claim and frame in original custodian ownership until lawful PF-P05 continuation or other accepted same-action disposition. Do not keep a lease/lifecycle lock merely to preserve values; do not block main metadata on continuation. Full main pin release/retirement remains original whole-parent conjunction. A detached reference/retained exclusion entry is not running work, but it is not successful ordinary completion. Keeper death/cold/reboot/migration/distinct-root restore provides no issuer in this design. A permanently stranded claim is a liveness blocker; neither eviction/timeout nor newG can erase it.",
+    "Proof limits and principled dependency": "A local dictionary, a new semaphore, a short preflight C lease, current file hash, or a caller boolean cannot issue this reservation. Proof needs control of every legitimate conflicting writer's entry and lifetime, including the separate helper process and unexposed native/main-agent writers. The source registry below is a finite actual-owner inventory and structural mutation boundary; it is NOT a complete audit of all dynamic/raw/native writer call graphs. W16 and lower-family coverage remain explicitly OPEN. If any supported writer can bypass this admission protocol, no reservation is issued and no first RNG starts under the claimed protected family.\n\nThe genuinely new authority proposed is operation-bound exclusion/transfer over all cooperating pending-path writers and family changes, attached to original coordinator custody. That is a lifecycle admission contract needing explicit independent engineering acceptance; it is not inferred from existing general canonical write permission. No new gameplay permission is necessary to preserve an already-authorized source action, and a missing helper alone would not be a principled grant. Cross-process/native enforcement, complete root membership and actual browser scope retention are the substantive missing owners. No permanent OS service, endpoint/key/credential or security-policy change is installed/proposed as automatically authorized. This report remains DESIGN only, conditional and not an engineering release.",
+    "Preserved scope": "PF-P01/P03/P04 now have a concrete proposed producer and an explicit writer registry; they are not marked closed. PF-P02 same-final-read seam, PF-P05 continuation, PF-P06 cold/keeper loss and PF-P07/full H-B02 still remain open. The earlier23 consumer checks are not rerun or reclassified. New checks below are FUTURE UNRUN. QTE reminder design and reader/F1 qualification are separate. No global host location choice, activation/F2, newQTE, DEP-C/I/L/globalH2/H3 closure, target authority or altered Mortal n/action/evaluation n+1 follows. D4/guided/visual/D8 remain preserved."
+  },
+  "consumer_writer_registry": [
+    {
+      "id": "W01",
+      "owner": "Stage ordinary console AND ordinary browser",
+      "sources": "T1495/1497,1509/1510,1565,1596,4534–4539;D29–49",
+      "trigger": "GetOrCreate reuses valid or generates fresh; same shared call, browser original scope additional",
+      "effect": "Reads exact pending path; fresh24Fill+timestamps+write. Reuse still source read/recovery.",
+      "required_original_admission": "Producer candidate itself; reserve before no-lease read/draw. Preserve real browser scope/Binding/Condition/issuingMainAdmission; neither UI label grants/refuses.",
+      "coverage": "Exact source call + concrete service effect; host issuance OPEN"
+    },
+    {
+      "id": "W02",
+      "owner": "PendingTurnStateService Generate/CreateFresh/GetOrCreate",
+      "sources": "D29–49,124–191;G36–90",
+      "trigger": "Missing/invalid branch of either public or actual lease overload",
+      "effect": "One pending file write,20 visible+4hidden original draws. GameLoop generator alone writes no file; its other calls are not automatically pending writers.",
+      "required_original_admission": "All service entries that may generate must enroll BEFORE first read/draw, not only FS write. Same original read/byte retention and actual native debt.",
+      "coverage": "Application paths known; all caller ownership must be covered"
+    },
+    {
+      "id": "W03",
+      "owner": "Explorer menu and direct gacha plus local command builder",
+      "sources": "EXP613–628,2728–2742;EXPLOCAL3976–3997",
+      "trigger": "Menu GetOrCreate in conditional Mortal branch; direct /gacha access; local builder instantiates its own service",
+      "effect": "Even presentation/data building may generate and persist pool. New service instance does not isolate canonical root.",
+      "required_original_admission": "Register potential fate mutation before GetOrCreate. Distinct original action retains its own result; no replay or semantic conversion to Stage.",
+      "coverage": "Concrete additional callers; outer UI/transitive costs not closed"
+    },
+    {
+      "id": "W04",
+      "owner": "Explorer Reveal Fate",
+      "sources": "EXP1150–1173;D65–91",
+      "trigger": "Confirmed action; GetOrCreate then DeductInkFeathers then Reveal. Reveal locks only when not already locked.",
+      "effect": "Pool may be created; soul fee then fate lock timestamps/write; later display/input.",
+      "required_original_admission": "Composite source admission BEFORE generation/fee. Reservation conflict must be resolved before fee, not by late FS rejection after spend. Existing paid owner owns fee/rollback/receipt.",
+      "coverage": "Exact order shown; fee/native composite adapter OPEN"
+    },
+    {
+      "id": "W05",
+      "owner": "Explorer Rewrite Fate",
+      "sources": "EXP1200–1237;D94–112",
+      "trigger": "GetOrCreate, require IsFateLocked, deduct fee, then Rewrite",
+      "effect": "Always draws fresh locked pool after fee; earlier original pool retained for display.",
+      "required_original_admission": "Enroll whole existing paid action before its first possibly generating GetOrCreate; no producer-issued rewrite/refund/retry.",
+      "coverage": "Exact order shown; composite atomicity not asserted"
+    },
+    {
+      "id": "W06",
+      "owner": "Browser paid Reveal/Rewrite",
+      "sources": "WEB2020–2054,2096–2132",
+      "trigger": "ExecuteAtomic owned soul+pending set; realm/fee checks, real explicit lease; Rewrite requires existing locked pool",
+      "effect": "Soul spend + pending creation/lock/rewrite + runtime refresh and payload.",
+      "required_original_admission": "Before transaction fee/draw: declare exact soul+pending member set and original action authority. Drain already-started original transaction; never split it or label browserOriginal scope a recorder.",
+      "coverage": "Actual owners retained; ExecuteAtomic graph/rollback frontier OPEN"
+    },
+    {
+      "id": "W07",
+      "owner": "Browser direct ChaosSea gacha",
+      "sources": "WEB2175–2258;WEBQ184–203",
+      "trigger": "ExecuteAtomic includes pending; GetOrCreate at2212, spend/refresh, QueueDirectChaosSeaGacha with rollback evidence",
+      "effect": "Potential pool generation, soul spend, queued request/snapshot, browser backup/rollback cleanup may restore pending",
+      "required_original_admission": "Register this real composite before first preparation/effect; exact member plan and descendants belong this action. Stage reservation cannot preempt its paid work.",
+      "coverage": "Concrete additional writer; complete queue/transaction graph OPEN"
+    },
+    {
+      "id": "W08",
+      "owner": "Accepted-turn rotation",
+      "sources": "D115–119;T172,1060,1870",
+      "trigger": "Existing accepted/finalization callsites only",
+      "effect": "Fresh pool and write for NEXT turn",
+      "required_original_admission": "Distinct original accepted owner; acquire writer admission before24Fill, not Stage frame continuation. No rotation as lost recovery.",
+      "coverage": "All three static GameEngine callsites identified; surrounding finalizers OPEN"
+    },
+    {
+      "id": "W09",
+      "owner": "Clear and live prepare-turn deletion",
+      "sources": "D122;LIVE68–102,402–403",
+      "trigger": "Public Clear deletes; production LiveTurnPreparationService PrepareBound acquiresC then ClearStalePendingDiceState",
+      "effect": "Delete pending, including under original prepare-turn composite. No direct production call to PendingTurnStateService.Clear found by this bounded textual lookup; API remains callable.",
+      "required_original_admission": "Live prepare action must declare pending overlap BEFORE C/cleanup. Existing public Clear must use same mutation admission.",
+      "coverage": "Concrete callable/delete owner; no unreachable claim"
+    },
+    {
+      "id": "W10",
+      "owner": "Engine/Explorer rollback and backup restore",
+      "sources": "SS2366–2410;EXREST834–896;BACK75–95",
+      "trigger": "Actual validated backup inventory contains pending, or pending is newly created outside baseline",
+      "effect": "Restore exact pending before-image or delete new pending; generic backup restoration consumes backup and republishes target",
+      "required_original_admission": "Original rollback receipt/member inventory; cannot bypass reservation as cleanup. Existing started debt settles before grant; later rollback needs own original owner, not Stage grant.",
+      "coverage": "Structural membership rule; full restore/refresh callbacks OPEN"
+    },
+    {
+      "id": "W11",
+      "owner": "Generic FileSystemManager mutations and original-tree removal",
+      "sources": "FS840–883,1879–1920,1923+;LOCAL169–251,317–332",
+      "trigger": "Exact pending path, ancestor game_state/control or replacement subtree contains it; dynamic planned writes/images/namespace",
+      "effect": "Write/append/delete/copy/restore/move/import or ancestor tree destruction can affect value/type/name. No literal pending string required.",
+      "required_original_admission": "Guard actual resolved path/member/namespace interval under writer admission BEFORE first directory/namespace/native effect. Unknown dynamic footprint conflicts conservatively until original owner supplies exact plan.",
+      "coverage": "Finite mutation-family boundary; not exhaustive native API proof"
+    },
+    {
+      "id": "W12",
+      "owner": "Separate-process participating control helper",
+      "sources": "CLI26–40,77–124,154–185",
+      "trigger": "--gm-main-operation creates own FS/process; command path can be any game_state/control/*",
+      "effect": "write/append/delete exact pending accepted by NormalizeControlPath; directory operations also use physical authority",
+      "required_original_admission": "Actual original retained connection/pin must acquire reservation-aware command admission BEFORE lease/effect. Local CanonicalRootIdentity table cannot cover this process.",
+      "coverage": "Concrete cross-process counterexample to in-process-only reservation"
+    },
+    {
+      "id": "W13",
+      "owner": "Load and session replacement",
+      "sources": "LOAD195–244,434–456;LOADNS199–258;REPLACE24–90",
+      "trigger": "Archive pending path explicitly canonicalized; actual Loading calls PublishLoadReplacementNamespaceAsync, not older image-only helper",
+      "effect": "Replacement namespace and new G; clearGameState can delete pending; root/generation revision changes.",
+      "required_original_admission": "Whole original replacement admission conflicts regardless whether final bytes equal. Must finish original stop/replacement lifecycle, never bind reservation to new G.",
+      "coverage": "Actual namespace owner identified; full archive/cold lifecycle OPEN"
+    },
+    {
+      "id": "W14",
+      "owner": "Recovery/native journal/namespace debt",
+      "sources": "LOCAL15–22,169–251;PUB245–326;FS1319–1352",
+      "trigger": "Read acquisition or cleanup invokes retained original recovery; previous native publication may still affect pending/ancestor",
+      "effect": "Commit/rollback/restoration/cleanup; not necessarily a new high-level write call",
+      "required_original_admission": "Register exact original debt/member scope before reservation; unresolved/unknown prior journal blocks issuance. Reservation cannot invent legacy or cold recovery authority.",
+      "coverage": "Exact lower owner family; native full debt graph OPEN"
+    },
+    {
+      "id": "W15",
+      "owner": "Family transitions / recorder ownership",
+      "sources": "FS300–335;ROLL507–527,575–590;WEBLOCAL351,363,480;LOCAL15–22;BL103–115",
+      "trigger": "Recorder install/remove; temporary legacy recovery; BrowserLocalAccess creation/disposal",
+      "effect": "Changes future publication semantics and callback namespace even if pending bytes unchanged",
+      "required_original_admission": "Guard actual owner-authorized transition before side effects; no public mutable property can bypass active reservation. BrowserOriginalOperationScope is separate and not a family transition.",
+      "coverage": "Concrete assignment sites enumerated; complete transition enforcement NEW"
+    },
+    {
+      "id": "W16",
+      "owner": "Worker purpose / main agent and raw native boundary",
+      "sources": "WORK11–59;PROFILE156–170;CLI154–185",
+      "trigger": "Worker dispatch/cleanup have purpose guards; pending appears as read input in soul profile; main/native/OS tools may have other dynamic accesses",
+      "effect": "Profile read path is not write permission. Generic worker publishes exact declared task/audit only where enforced. No audit here proves every main/agent/tool syscall cooperates.",
+      "required_original_admission": "Qualify all legitimate native writers under original scope/command gate or prove they cannot touch pending. Unregistered writer possibility blocks issuance; do not add OS/service/security controls here.",
+      "coverage": "Explicit external/whole-writer blocker; not claimed complete from textual search"
+    }
+  ],
+  "protocol_states": [
+    {
+      "state": "PendingRequest",
+      "retained": "Actual Stage acquisition task registered; no effects",
+      "advance": "Verify original identity/browser owner and no storage wait cycle",
+      "limit": "No caller-data issuer"
+    },
+    {
+      "state": "PendingFence",
+      "retained": "New conflicting admissions blocked; exact predecessor set retained",
+      "advance": "Drain real predecessor effects/debts/releases without holding C",
+      "limit": "Unknown writer or lost predecessor blocks"
+    },
+    {
+      "state": "Validating",
+      "retained": "Registered bounded original validation acquisition",
+      "advance": "Validate current G/root/evidence; actual release; recheck gate/epoch",
+      "limit": "No nested generic long lease or future-family inference"
+    },
+    {
+      "state": "Issued",
+      "retained": "Private original reference, actual family transition fence, same owner/root/G",
+      "advance": "Consumer read and first RNG may be armed",
+      "limit": "No authority before this state"
+    },
+    {
+      "state": "Publishing",
+      "retained": "Actual lease and family revalidated; registered exact native attempt",
+      "advance": "Original decision/cleanup/release joins",
+      "limit": "No unarmed postseal write/retry"
+    },
+    {
+      "state": "TransferPending",
+      "retained": "Ready state plus live claim and original StagePathCustody receiver",
+      "advance": "Atomic same-owner handoff with receiver acknowledgement",
+      "limit": "No release/claim gap or DTO capability"
+    },
+    {
+      "state": "Held",
+      "retained": "Progress retained; source sealed; semantic claim survives",
+      "advance": "Only existing joins/settlement until PF-P05 lawful source continuation",
+      "limit": "No permanent HOLD success"
+    },
+    {
+      "state": "Released",
+      "retained": "Actual receiver/completed owner acknowledged lawful release; all native/storage debt joined",
+      "advance": "Close exact registry entry once",
+      "limit": "Timeout/PIDabsence/hash never release"
+    },
+    {
+      "state": "Uncertain",
+      "retained": "Actual authority/debt/transport/lifetime failure",
+      "advance": "Preserve original evidence; no new RNG/issuer",
+      "limit": "Not recovered by new coordinator/G"
+    }
+  ],
+  "producer_prerequisites": [
+    {
+      "id": "PB01",
+      "owner": "Original host/Stage/browser issuer",
+      "required": "Actual retained main O/I/G/root and real browser scope lifetime before1596; no held-scope disposal/reconstruction",
+      "status": "PF-P01/PF-P07 OPEN"
+    },
+    {
+      "id": "PB02",
+      "owner": "Cross-process writer admission",
+      "required": "Existing retained helper connection/pin/sequence must bind new writer tickets; server-owned membership and refusal beforeC",
+      "status": "Actual CLI bypasses local table; transport contract OPEN"
+    },
+    {
+      "id": "PB03",
+      "owner": "Lock/acquisition/debt coverage",
+      "required": "Every source acquisition and transition registered pre-effect; no C→reservation wait; native debt release and stop metadata ordering",
+      "status": "Prior conditional stop-order remains prerequisite, unqualified"
+    },
+    {
+      "id": "PB04",
+      "owner": "Complete pending writer/native coverage",
+      "required": "All W01–W16 entries and dynamic namespace/native paths obey guard; main/agent/raw writers qualified or proved incapable",
+      "status": "Finite registry is not full transitive/native closure"
+    },
+    {
+      "id": "PB05",
+      "owner": "Guarded family-transition issuer",
+      "required": "Remove bypass by direct recorder/legacy/access setter; preserve actual original browser/legacy recovery owners",
+      "status": "New admission enforcement contract, not existing permission"
+    },
+    {
+      "id": "PB06",
+      "owner": "Single original read and finite publication",
+      "required": "Consumer observation keeps exact last-read bytes; same-before publication and original native attempt outcome/cleanup retained",
+      "status": "Existing PF-P02/PF-P03 not implemented"
+    },
+    {
+      "id": "PB07",
+      "owner": "Release/transfer and successful continuation",
+      "required": "Same claim handed to actual later Stage snapshot owner; exact release criterion and PF-P05 source continuation/remaining budget",
+      "status": "No liveness closure; permanent HOLD unacceptable"
+    },
+    {
+      "id": "PB08",
+      "owner": "Keeper/cold boundary",
+      "required": "Original custodian/native owner survival; original-work-stop proof after keeper loss/cold/migration",
+      "status": "Outside hot producer; full G-C/T197 blocked"
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "PR-T01",
+      "check": "Ordinary console and ordinary browser original owner issue identical family semantics only with real references; bare mode/DTO/AsyncLocal cannot issue.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T02",
+      "check": "Browser actual scope disposed, issuingMainAdmission closed/mismatched or Condition stale refuses before RNG; scope lifetime retained through held/join.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T03",
+      "check": "Concurrent GetOrCreate from two service instances: reservation admission before draw, exact predecessor drain, no losing pool consumed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T04",
+      "check": "Explorer/local-command incidental GetOrCreate writers participate even when caller presents UI rather than an action button.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T05",
+      "check": "Reveal/Rewrite paid actions conflict before fee and first generation; already-started fee+fate composite drains its own receipts, no duplicate spend/refund/redraw.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T06",
+      "check": "Browser paid fate and directChaosSeaGacha transaction/queue/rollback retain original native and soul obligations; not admitted as Stage merely by trusted writer.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T07",
+      "check": "Three accepted-turn Rotate callsites are separate original writers, never resumed Stage draw; Clear and live preparation delete conflict.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T08",
+      "check": "Separate participating-control process write/append/delete of pending cannot bypass reservation through own FS/root interner or command sequence; helper EOF retains debt.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T09",
+      "check": "Generic path alias/type/ancestor directory/namespace replacement and dynamic unknown footprint conservatively conflict; exact unrelated snapshot/backup destination not blanket blocked.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T10",
+      "check": "Rollback/Explorer restore/backup restoration to pending drains original before-image receipt, no cleanup exemption; unresolved legacy evidence blocks issue.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T11",
+      "check": "Actual load namespace owner and session replacement conflict before newG/target publication; identical pending bytes do not preserve old reservation authority.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T12",
+      "check": "Recorder install, legacy enter/restore, browser-local access/callback change cannot cross Issued reservation by property setter; ordinary browser original scope remains distinct.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T13",
+      "check": "Pending canonical acquisition counted before await; no caller waits for reservation while holding or waiting C/lifecycle; metadata remains after actualstoragejoin.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T14",
+      "check": "PendingFence/last predecessor completion/validation release/source seal races cannot issue from a stale epoch or empty current-held list.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T15",
+      "check": "Same final public-read snapshot, recovery hooks and optional reread preserved; unknown pending recovery/native callback never fabricated empty.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T16",
+      "check": "Per-slot Fill return versus seal retains only original returned values; no nextunarmedslot or new durability write after seal.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T17",
+      "check": "Actual writelease revalidates family/reservation before native arm; all native disposition/cleanup/release cases remain separately owned.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T18",
+      "check": "Ready→StagePathCustody transfer has no gap/duplicate claim; later snapshot handoff release needs actual receiver, not attach success.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T19",
+      "check": "Held preserves real original claim without retaining C; PF-P05 continuation remains sameaction/remainingbudget and never reopens sealed old admission.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PR-T20",
+      "check": "Unknown main/native/raw writer or lost custodian prevents issuer; no timeout/evict/newhost/newG/copy-root/hash substitute; no false successful ordinary outcome.",
+      "status": "FUTURE_UNRUN"
+    }
+  ],
+  "source_pins": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
+      "bytes": 6769,
+      "lines": 214,
+      "comparison_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "unchanged": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "comparison_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "unchanged": true
+    },
+    {
+      "alias": "G",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "bytes": 2673,
+      "lines": 91,
+      "comparison_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "unchanged": true
+    },
+    {
+      "alias": "ROOT",
+      "path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "7152787bd91c20630deda394d7a32f52f6a82867",
+      "sha256": "d6e1bc480d50227ce43d1703e48fee9cf19bb45d859f5bd937a2a3432751d928",
+      "bytes": 4859,
+      "lines": 150,
+      "comparison_blob": "7152787bd91c20630deda394d7a32f52f6a82867",
+      "unchanged": true
+    },
+    {
+      "alias": "MAIN",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "comparison_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "unchanged": true
+    },
+    {
+      "alias": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "comparison_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "unchanged": true
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "bytes": 29382,
+      "lines": 483,
+      "comparison_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "unchanged": true
+    },
+    {
+      "alias": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "comparison_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "unchanged": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "lines": 6246,
+      "comparison_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "unchanged": true
+    },
+    {
+      "alias": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "bytes": 13822,
+      "lines": 297,
+      "comparison_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "unchanged": true
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "comparison_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "unchanged": true
+    },
+    {
+      "alias": "REL",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "comparison_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "unchanged": true
+    },
+    {
+      "alias": "COORD",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "comparison_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "unchanged": true
+    },
+    {
+      "alias": "PIPE",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "comparison_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "unchanged": true
+    },
+    {
+      "alias": "CLI",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
+      "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202",
+      "bytes": 10981,
+      "lines": 186,
+      "comparison_blob": "527dd1f4f99f16faef164d0e5ee91832636632a1",
+      "unchanged": true
+    },
+    {
+      "alias": "LIVE",
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "bytes": 20289,
+      "lines": 451,
+      "comparison_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "unchanged": true
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "sha256": "dae8ca299532f3b5db0277e7017be2dfc3ab38c4182c8665e4a25a5654648257",
+      "bytes": 155530,
+      "lines": 2837,
+      "comparison_blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "unchanged": true
+    },
+    {
+      "alias": "EXPLOCAL",
+      "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "469a367355b1fb8298e95782e736fd87ffd836a7",
+      "sha256": "3ebbb3944a626ae82388ed608c87041536f1a354ce16a32ce02e8c9aa4848415",
+      "bytes": 283076,
+      "lines": 6018,
+      "comparison_blob": "469a367355b1fb8298e95782e736fd87ffd836a7",
+      "unchanged": true
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "sha256": "f3ed3ac34ec28d201c1da63b1316496734d23e3b6d9befd075b1dbe771d9fb1f",
+      "bytes": 241907,
+      "lines": 4373,
+      "comparison_blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "unchanged": true
+    },
+    {
+      "alias": "WEBQ",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "58f30ca196c88d2b0ef279993de7c058de135e99",
+      "sha256": "8864b4e44b0d4e104585d92f299e72c97f9f685e1279c4458cb6cbbc84758f49",
+      "bytes": 17577,
+      "lines": 337,
+      "comparison_blob": "58f30ca196c88d2b0ef279993de7c058de135e99",
+      "unchanged": true
+    },
+    {
+      "alias": "WEBLOCAL",
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
+      "sha256": "95d98475770283a31e96f7d51aafba3bbfb348d9143f5f61598e1c0327db5450",
+      "bytes": 30336,
+      "lines": 651,
+      "comparison_blob": "91c6e761c290d9feaa97cf1dabcd52eb8785d84c",
+      "unchanged": true
+    },
+    {
+      "alias": "BL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "902a0c93e8ceb503bf5467a4bc1638b6cff20259",
+      "sha256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7",
+      "bytes": 6476,
+      "lines": 116,
+      "comparison_blob": "902a0c93e8ceb503bf5467a4bc1638b6cff20259",
+      "unchanged": true
+    },
+    {
+      "alias": "ROLL",
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "6e22b319d73096dce6cd00a6d28f602164c7796e",
+      "sha256": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556",
+      "bytes": 84903,
+      "lines": 2137,
+      "comparison_blob": "6e22b319d73096dce6cd00a6d28f602164c7796e",
+      "unchanged": true
+    },
+    {
+      "alias": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "lines": 2456,
+      "comparison_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "unchanged": true
+    },
+    {
+      "alias": "EXREST",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "0ed55370267c4b5e82ca59a81067e2d492df7f61",
+      "sha256": "84af40b35a48fc499adf1c2434ce2846befedd3b7ed4370369163df146f7a06d",
+      "bytes": 92399,
+      "lines": 2125,
+      "comparison_blob": "0ed55370267c4b5e82ca59a81067e2d492df7f61",
+      "unchanged": true
+    },
+    {
+      "alias": "BACK",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "sha256": "71954c0c0e0b73c989208d870470ea9ab7906c9e28aea8d42c06923db90a507f",
+      "bytes": 7681,
+      "lines": 148,
+      "comparison_blob": "eaa988979b4e709a2a5b4abdd3e24b65d7aa4f84",
+      "unchanged": true
+    },
+    {
+      "alias": "LOAD",
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+      "sha256": "a88d3deb51e378beb24d2152b3cbff4dd0f885518af50668c3043ff0c8243251",
+      "bytes": 27722,
+      "lines": 497,
+      "comparison_blob": "3e634af234ddfb26b0861fb4dd3e47f3eed63516",
+      "unchanged": true
+    },
+    {
+      "alias": "LOADNS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+      "sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a",
+      "bytes": 15169,
+      "lines": 260,
+      "comparison_blob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2",
+      "unchanged": true
+    },
+    {
+      "alias": "LOADOLD",
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "bytes": 6154,
+      "lines": 101,
+      "comparison_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "unchanged": true
+    },
+    {
+      "alias": "REPLACE",
+      "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "d940d9846796cd05589d1a9142e4bb29f7bc9d9a",
+      "sha256": "beac7a4733bc8de2816c3acedc365b69be19a048efff513cb47ee60c82ef1d21",
+      "bytes": 9987,
+      "lines": 184,
+      "comparison_blob": "d940d9846796cd05589d1a9142e4bb29f7bc9d9a",
+      "unchanged": true
+    },
+    {
+      "alias": "WORK",
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "e934fbca58256b1d0ebb57416450978ff644fe48",
+      "sha256": "7a857ec50550365f6576b8e2ccc056e662c87622e1a32f652952760761d3e753",
+      "bytes": 3674,
+      "lines": 61,
+      "comparison_blob": "e934fbca58256b1d0ebb57416450978ff644fe48",
+      "unchanged": true
+    },
+    {
+      "alias": "PROFILE",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "f35085a49a53eb265b3428abd7a688b61ea5dc01",
+      "sha256": "b67ac3a85819ffabf1df34f4dbf2a9818edd50761721125bbd17f818756c1193",
+      "bytes": 9888,
+      "lines": 235,
+      "comparison_blob": "f35085a49a53eb265b3428abd7a688b61ea5dc01",
+      "unchanged": true
+    }
+  ],
+  "source_projections": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "start": 29,
+      "end": 191,
+      "bytes": 5123,
+      "sha256": "7e5b92f5ba04747ef283c1a39a33544ef37f57c7c2cd5ec73ef41d9b967d0582",
+      "text": "    public async Task<PendingTurnState> GetOrCreateAsync()\n    {\n        var existing = await ReadAsync();\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(created);\n        return created;\n    }\n\n    internal async Task<PendingTurnState> GetOrCreateAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var existing = await ReadAsync(writeLease);\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(writeLease, created);\n        return created;\n    }\n\n    public async Task<PendingTurnState?> TryReadExistingAsync()\n    {\n        var existing = await ReadAsync();\n        return IsValid(existing) ? existing : null;\n    }\n\n    internal async Task<PendingTurnState?> TryReadExistingAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var existing = await ReadAsync(writeLease);\n        return IsValid(existing) ? existing : null;\n    }\n\n    public async Task<PendingTurnState> RevealAsync()\n    {\n        var state = await GetOrCreateAsync();\n        if (!state.IsFateLocked)\n        {\n            state.IsFateLocked = true;\n            state.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n            state.LastUpdatedUtc = state.FateLockedAtUtc;\n            await WriteAsync(state);\n        }\n\n        return state;\n    }\n\n    internal async Task<PendingTurnState> RevealAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var state = await GetOrCreateAsync(writeLease);\n        if (!state.IsFateLocked)\n        {\n            state.IsFateLocked = true;\n            state.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n            state.LastUpdatedUtc = state.FateLockedAtUtc;\n            await WriteAsync(writeLease, state);\n        }\n\n        return state;\n    }\n\n    public async Task<PendingTurnState> RewriteAsync()\n    {\n        var rewritten = CreateFreshState();\n        rewritten.IsFateLocked = true;\n        rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n        rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;\n        await WriteAsync(rewritten);\n        return rewritten;\n    }\n\n    internal async Task<PendingTurnState> RewriteAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var rewritten = CreateFreshState();\n        rewritten.IsFateLocked = true;\n        rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n        rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;\n        await WriteAsync(writeLease, rewritten);\n        return rewritten;\n    }\n\n    public async Task<PendingTurnState> RotateAfterAcceptedTurnAsync()\n    {\n        var next = CreateFreshState();\n        await WriteAsync(next);\n        return next;\n    }\n\n    public void Clear() => _fs.DeleteFile(PendingDiceStatePath);\n\n    private PendingTurnState CreateFreshState()\n    {\n        var now = DateTime.UtcNow.ToString(\"o\");\n        var visibleDice = GameLoop.GenerateSecureRandomDice();\n        var hiddenGachaDice = GameLoop.GenerateSecureRandomDice(4);\n\n        return new PendingTurnState\n        {\n            PreGeneratedDices1d20 = visibleDice,\n            GachaBaseResult = GameLoop.ComputeGachaBase(hiddenGachaDice),\n            IsFateLocked = false,\n            CreatedAtUtc = now,\n            LastUpdatedUtc = now\n        };\n    }\n\n    private async Task<PendingTurnState?> ReadAsync()\n    {\n        var json = await _fs.ReadFileAsync(PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private async Task<PendingTurnState?> ReadAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var json = await _fs.ReadFileAsync(writeLease, PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private PendingTurnState? Deserialize(string? json)\n    {\n        if (string.IsNullOrWhiteSpace(json))\n            return null;\n\n        try\n        {\n            return JsonSerializer.Deserialize<PendingTurnState>(json, JsonOpts);\n        }\n        catch (Exception ex)\n        {\n            _logger.LogDebug(ex, \"Не удалось прочитать pending dice state\");\n            return null;\n        }\n    }\n\n    private async Task WriteAsync(PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(PendingDiceStatePath, JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private async Task WriteAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(\n            writeLease,\n            PendingDiceStatePath,\n            JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private static bool IsValid(PendingTurnState? state)\n    {\n        return state != null &&\n               state.PreGeneratedDices1d20.Length == 20 &&\n               state.GachaBaseResult != null &&\n               !string.IsNullOrWhiteSpace(state.GachaBaseResult.BaseRarity);\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1484,
+      "end": 1518,
+      "bytes": 1729,
+      "sha256": "ac47d2ba8afc9f3aa0e9ca732cfd1e234f964d3ae168b22f22b0b01cee643305",
+      "text": "    private async Task ProcessPlayerTurn(\n        string action,\n        string? extraSystemReminder = null,\n        string? waitingTitle = null,\n        string? waitingText = null,\n        bool playerFacingTurn = true,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        if (browserAction == null)\n        {\n            // Console ordinary turns retain their original continuous owner.\n            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n            {\n                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);\n                if (preparation == null) return;\n                PublishAgentConsoleGmWaitingSnapshot(\n                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n                var outcome = await WaitForTerminalSignalAsync();\n                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);\n            });\n            return;\n        }\n\n        MainOperationClose? stagingClose = null;\n        bool stagingCloseObserved = false, stagingWasRemote = false;\n        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,\n            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),\n            observeOriginalClose: (close, observed, remote) =>\n            {\n                // Copy actual close facts only. Await-using disposal still follows\n                // this callback; the idle boundary starts after the top-level await.\n                stagingClose = close;\n                stagingCloseObserved = observed;\n                stagingWasRemote = remote;\n            });\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1561,
+      "end": 1606,
+      "bytes": 2806,
+      "sha256": "8e3243374e6ec2de0c4c52a6d38b0fab9e5041f5dbd0aa80a539ef064871e4d5",
+      "text": "    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(\n        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)\n    {\n        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();\n        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);\n        // Reserve/refuse before health validation can remove an unrelated request.\n        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);\n        if (!await ValidateCurrentGameStateOrShowErrorsAsync(\"перед отправкой хода\"))\n            return null;\n\n        var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();\n        RollbackSnapshot? backedUpFiles = null;\n        TurnRequest? request = null;\n        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;\n        PendingPlayerActionService.Staged? browserStaged = null;\n\n        try\n        {\n            // Create backup of game state files before sending turn (for escape-rollback)\n            var backupId = DateTime.UtcNow.Ticks.ToString();\n            backedUpFiles = await CreatePreTurnBackup(backupId);\n            OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);\n\n            // Write turn request\n            request = new TurnRequest\n            {\n                SessionId = _gameLoop.SessionId,\n                TurnNumber = _gameLoop.TurnNumber + 1,\n                PlayerAction = action,\n                Timestamp = DateTime.UtcNow.ToString(\"o\"),\n                GameMode = _stateManager.Settings.AllowHistoryManipulation ? \"debug\" : \"normal\",\n                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)\n            };\n            if (browserAction != null) request.RequestId = browserAction.ActionId;\n            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n            await AttachPendingDiceAndGachaAsync(request);\n            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)\n                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);\n            RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);\n            var skillScopeAuthority = await EffectMechanicsSnapshot\n                .LoadCurrentSkillScopeAuthorityAsync(_fs);\n            request.EffectSkillScopeCatalog = skillScopeAuthority\n                .CreateGmCatalog()\n                .DeepClone()\n                .AsObject();\n            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 4534,
+      "end": 4539,
+      "bytes": 283,
+      "sha256": "47f0d6cb6e6d08cbb639cf8d7d657143f515fdc3ef8aa70ab31370102ff7eea4",
+      "text": "    private async Task AttachPendingDiceAndGachaAsync(TurnRequest request)\n    {\n        var pending = await _pendingTurnState.GetOrCreateAsync();\n        request.PreGeneratedDices1d20 = pending.PreGeneratedDices1d20;\n        request.GachaBaseResult = pending.GachaBaseResult;\n    }\n"
+    },
+    {
+      "alias": "ROOT",
+      "path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "start": 6,
+      "end": 35,
+      "bytes": 1167,
+      "sha256": "9c8bb85616593981592ff63598e9fed115f8594acdb25e431509dbd22e8c8120",
+      "text": "internal sealed class CanonicalRootIdentity\n{\n    internal object WorkerContextGate { get; } = new();\n    internal GmWorkerRootContext? WorkerContext { get; set; }\n    internal BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator? MainCoordinator { get; set; }\n\n    private readonly SemaphoreSlim _gmWorkerAuditAppendAdmission = new(1, 1);\n    private WeakReference<CanonicalRootIdentity>? _registration;\n    private long _sessionGenerationRevision;\n\n    internal CanonicalRootIdentity(string rootPath)\n    {\n        RootPath = rootPath;\n    }\n\n    internal string RootPath { get; }\n\n    internal long SessionGenerationRevision =>\n        Volatile.Read(ref _sessionGenerationRevision);\n\n    internal void AdvanceSessionGenerationRevision() =>\n        Interlocked.Increment(ref _sessionGenerationRevision);\n\n    internal async ValueTask<GmWorkerAuditAppendAdmissionLease>\n        EnterGmWorkerAuditAppendAdmissionAsync(\n            CancellationToken cancellationToken = default)\n    {\n        await _gmWorkerAuditAppendAdmission.WaitAsync(cancellationToken);\n        return new GmWorkerAuditAppendAdmissionLease(\n            _gmWorkerAuditAppendAdmission);\n"
+    },
+    {
+      "alias": "ROOT",
+      "path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "start": 80,
+      "end": 135,
+      "bytes": 1986,
+      "sha256": "03331b4a3021a31af9718a003c74e95a192d02279308c22862696f7e8c98e082",
+      "text": "internal static class CanonicalRootIdentityInterner\n{\n    private static readonly StringComparer RootPathComparer =\n        OperatingSystem.IsWindows()\n            ? StringComparer.OrdinalIgnoreCase\n            : StringComparer.Ordinal;\n\n    private static readonly ConcurrentDictionary<\n        string,\n        WeakReference<CanonicalRootIdentity>> Identities =\n        new(RootPathComparer);\n\n    // These are in-process keys only; filesystem and original journal paths keep their spelling.\n    internal static string NormalizeRootKey(string fullPath, bool windows)\n    {\n        if (!windows)\n            return Path.TrimEndingDirectorySeparator(fullPath);\n\n        var normalized = TrustedLocalFileScope.NormalizeWindowsPathSpelling(fullPath).TrimEnd('\\\\');\n        return normalized.Length == 2 && normalized[1] == ':'\n            ? normalized + '\\\\'\n            : normalized;\n    }\n\n    internal static CanonicalRootIdentity Get(string canonicalRoot)\n    {\n        ArgumentException.ThrowIfNullOrWhiteSpace(canonicalRoot);\n        var normalizedRoot = NormalizeRootKey(\n            Path.GetFullPath(canonicalRoot), OperatingSystem.IsWindows());\n\n        while (true)\n        {\n            if (Identities.TryGetValue(normalizedRoot, out var existing) &&\n                existing.TryGetTarget(out var identity))\n            {\n                return identity;\n            }\n\n            var created = new CanonicalRootIdentity(normalizedRoot);\n            var registration = new WeakReference<CanonicalRootIdentity>(created);\n            created.AttachRegistration(registration);\n\n            if (existing == null)\n            {\n                if (Identities.TryAdd(normalizedRoot, registration))\n                    return created;\n            }\n            else if (Identities.TryUpdate(\n                         normalizedRoot,\n                         registration,\n                         existing))\n            {\n                return created;\n            }\n        }\n    }\n"
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 49,
+      "end": 95,
+      "bytes": 2787,
+      "sha256": "3108fa0a5693c8253598cffd956b93ba076d6fe49968ed9cf86cad8282d9a5e6",
+      "text": "    internal sealed class BrowserOriginalOperationScope : IDisposable\n    {\n        internal readonly FileSystemManager _files;\n        private readonly MainAdmission _owner;\n        internal readonly BrowserOriginalOperationScope? _parent;\n        internal readonly PendingPlayerActionService.Binding Binding;\n        internal readonly BrowserOriginalMainCondition Condition;\n        internal PendingPlayerActionService.Staged? Staged { get; private set; }\n        internal bool Processing { get; private set; }\n        internal bool Cleanup { get; private set; }\n        private bool _disposed;\n        internal string? ExpectedPendingJson { get; private set; }\n        internal PendingPlayerActionService.State? ExpectedState { get; private set; }\n        internal PendingPlayerActionService.Staged? ExpectedStaged { get; private set; }\n        private readonly string _submittedAtUtc;\n        private Dictionary<string,string>? _cleanupInventory;\n        internal BrowserOriginalOperationScope(FileSystemManager files, MainAdmission owner,\n            PendingPlayerActionService.Binding binding, PendingPlayerActionService.Staged? staged,\n            BrowserOriginalOperationScope? parent)\n        {\n            _files=files;_owner=owner;Binding=binding;_parent=parent;\n            var expectedJson=staged?.Json??binding.Json;\n            ExpectedPendingJson=expectedJson;\n            _submittedAtUtc=JsonNode.Parse(binding.Json)![\"submittedAtUtc\"]!.GetValue<string>();\n            var expectedState=PendingPlayerActionService.Parse(expectedJson,binding.Generation);\n            RequireInvariantBinding(expectedState);\n            ExpectedState=expectedState;\n            ExpectedStaged=ReadExpectedStaged(expectedState);\n            Condition=owner.CaptureBrowserCondition(binding.Generation);\n            if(staged != null)\n            {\n#if DEBUG\n                using var diagnostic = files.BrowserDiagnosticContext(\"operation-construction\", staged);\n#endif\n                RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);\n                var manifest=files.ValidateOriginalBrowserAdmission(staged, verifyPhysical: true);\n                if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();\n                Staged=staged;\n            }\n        }\n        internal void ValidateOwner(MainAdmission? current)\n        {\n            if(_disposed || _owner.Closed || !_owner.Acquired || _owner.MetadataOnly) throw BrowserOriginalMainCondition.Invalid();\n            for(var p=current;p!=null;p=p.Parent)\n                if(!p.Closed && p.SharesAccess(_owner)) { _owner.Validate(null);Condition.RequireCurrent(_files);return; }\n            throw BrowserOriginalMainCondition.Invalid();\n        }\n"
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 198,
+      "end": 225,
+      "bytes": 1990,
+      "sha256": "6563a1cd228c9b68d1a174d967b54666bf22cd01b2ed5bd40bd1ec5f8e14fbce",
+      "text": "    internal BrowserOriginalOperationScope BeginBrowserOriginalOperation(PendingPlayerActionService.Binding binding,\n        PendingPlayerActionService.Staged? staged=null)\n    {\n        var owner=MainAdmissions.Value;\n        while(owner!=null && (owner.Closed || owner.RootIdentity!=CanonicalRootAuthorityIdentity || !owner.Acquired))owner=owner.Parent;\n        if(owner==null)throw BrowserOriginalMainCondition.Invalid();\n        var scope=new BrowserOriginalOperationScope(this,owner,binding,staged,BrowserOriginalOperations.Value);\n        BrowserOriginalOperations.Value=scope;return scope;\n    }\n    internal BrowserOriginalMainCondition CaptureBrowserOriginalCondition(CanonicalWriteLease lease,string generation)\n    {\n        EnsurePhysicalCanonicalWriteLease(lease);\n        var condition=lease.MainAdmission!.CaptureBrowserCondition(generation);\n        var scope=CurrentBrowserOriginalScope();\n        if(scope==null || scope.Condition!=condition)throw BrowserOriginalMainCondition.Invalid();\n        scope.ValidateOwner(lease.MainAdmission);return condition;\n    }\n    internal void SealBrowserOriginalPreparation(PendingPlayerActionService.Staged staged) =>\n        (CurrentBrowserOriginalScope()??throw BrowserOriginalMainCondition.Invalid()).Seal(staged);\n    internal void BeginBrowserOriginalProcessing(PendingPlayerActionService.Staged staged) =>\n        (CurrentBrowserOriginalScope()??throw BrowserOriginalMainCondition.Invalid()).BeginProcessing(staged);\n    internal void AllowBrowserOriginalCleanup() => CurrentBrowserOriginalScope()?.BeginCleanup();\n    internal void ObserveBrowserOriginalPhasePublication(string previous,string? next) =>\n        CurrentBrowserOriginalScope()?.ObservePublishedPhase(previous,next);\n    private BrowserOriginalOperationScope? CurrentBrowserOriginalScope()\n    {\n        for(var p=BrowserOriginalOperations.Value;p!=null;p=p._parent)\n            if(p._files.CanonicalRootAuthorityIdentity==CanonicalRootAuthorityIdentity)return p;\n"
+    },
+    {
+      "alias": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 15,
+      "end": 22,
+      "bytes": 398,
+      "sha256": "417a8c1f30ba1b7d39df1a8d8d6172c2bd304b908677c9fbe1dd261522e49868",
+      "text": "    internal async Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery)\n    {\n        EnsureCanonicalWriteLeaseActive(lease);\n        lease.EnsureNoPendingLocalDecision();\n        var previous = lease.IsLegacyStorageRecovery;\n        lease.IsLegacyStorageRecovery = true;\n        try { await recovery(); }\n        finally { lease.IsLegacyStorageRecovery = previous; }\n"
+    },
+    {
+      "alias": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 92,
+      "end": 109,
+      "bytes": 1173,
+      "sha256": "20ef6ab54844ecf6644037d732e8c0dd9c74b878f0ce493d89701a7d4805d09f",
+      "text": "    internal bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)\n    {\n        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return false;\n        // The old browser recorder owns its own manifest/before-image namespace,\n        // including recorder-free cleanup. Do not journal those artifacts anew.\n        if (lease.BrowserLocalAccess is { } access)\n        {\n            access.Validate();\n            var relative = GetLocalRelativePath(GameSessionPath, ResolvePath(relativePath), OperatingSystem.IsWindows());\n            if (access.OwnsArtifact(relative)) return true;\n        }\n        var path = ResolvePath(relativePath);\n        if (ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(\n                GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows()))) return true;\n        var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);\n        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;\n        return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);\n    }\n"
+    },
+    {
+      "alias": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 169,
+      "end": 251,
+      "bytes": 4901,
+      "sha256": "bb89d76c6acf19aa4fc771a5dc61615f04b26dc29277ffee8cf759b71da6a540",
+      "text": "        Func<Task>? validatePreparedNamespace = null)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        VerifyCurrentSessionOperation(lease);\n        if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))\n            throw new InvalidOperationException(\"A local publication requires ordinary declared canonical members.\");\n        var generation = GetOrCreateSessionGeneration(lease);\n        return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),\n            changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),\n            cancellationToken, validatePreparedNamespace);\n    }\n\n    private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,\n        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,\n        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        if (standaloneDarenProfile)\n        {\n            RequireStandaloneDarenProfile(lease);\n            if (changes.Count != 1 || changes[0].Path != RegisteredDarenProfilePath)\n                throw new InvalidOperationException(\"Standalone Daren publication requires its exact registered member.\");\n        }\n        EnsureWorkerPurposePublication(lease, generation, changes);\n        if (lease.BrowserLocalAccess is { } browser)\n        {\n            browser.Validate();\n            foreach (var change in changes)\n                if (browser.RecordIntent != null) await browser.RecordIntent(change.Path, change.After);\n        }\n        var scope = new TrustedLocalFileScope([BasePath]);\n        var registrations = new List<InProcessMutationRegistration>();\n        try\n        {\n            foreach (var change in changes)\n            {\n                scope.EnsureDirectory(Path.GetDirectoryName(change.Path)!);\n                scope.ValidateFile(change.Path);\n                registrations.Add(new InProcessMutationRegistration(change.Path));\n            }\n            var windows = OperatingSystem.IsWindows();\n            var generationPath = TrustedLocalFilePublication.NormalizeAuthorityPath(SessionGenerationPath, windows);\n            foreach (var change in changes)\n            {\n                var memberPath = scope.ValidateFile(change.Path);\n                if (string.Equals(memberPath, generationPath,\n                        windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;\n                if (lease.BrowserLocalAccess?.ProfilePath == memberPath || standaloneDarenProfile)\n                {\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    else RequireDeclaredDarenProfile(lease);\n                    await InvokeBeforeCanonicalMutationBoundaryAsync(\"@daren_reward_profile\");\n                    scope.ValidateFile(memberPath);\n                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync(\"@daren_reward_profile\");\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    continue;\n                }\n                var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);\n                var canonicalPath = ResolvePath(relative);\n                await InvokeBeforeCanonicalMutationBoundaryAsync(relative);\n                EnsureCanonicalMutationBoundary(relative, canonicalPath);\n                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);\n            }\n            cancellationToken.ThrowIfCancellationRequested();\n            VerifyCurrentSessionOperation(lease);\n            EnsureWorkerPurposePublication(lease, generation, changes);\n            var publisher = new TrustedLocalFilePublication(this, scope);\n            for (var attempt = 0; ; attempt++)\n            {\n                EnsureWorkerPurposePublication(lease, generation, changes);\n                if (validatePreparedNamespace != null) await validatePreparedNamespace();\n                var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);\n                if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||\n                    outcome.Failure is InvalidDataException || outcome.Failure == null ||\n                    !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)\n                    return outcome;\n                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);\n                VerifyCurrentSessionOperation(lease);\n            }\n        }\n        finally\n        {\n            foreach (var registration in registrations) registration.Dispose();\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 300,
+      "end": 335,
+      "bytes": 1689,
+      "sha256": "d769ded7bea32a90eee287c4e4cd346de81296e34701061cc911c2858186bd4e",
+      "text": "        internal MainAdmission? MainAdmission {get;set;}\n        internal FileSystemManager Owner { get; }\n        internal CanonicalWritePurpose Purpose { get; }\n        internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }\n        internal IDisposable? WorkerRootPin { get; set; }\n        internal object? ExternalPublicationContext { get; set; }\n        internal object? PendingLocalDecision { get; set; }\n        internal void EnsureNoPendingLocalDecision()\n        {\n            if (PendingLocalDecision != null)\n                throw new InvalidOperationException(\"A worker decision is pending on this canonical lease; nested mutation or recovery is not permitted.\");\n        }\n        internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }\n        internal bool IsLegacyStorageRecovery { get; set; }\n        internal BrowserLocalStorageAccess? BrowserLocalAccess { get; set; }\n        internal AmbientCanonicalLeaseRegistration? AmbientRegistration\n        {\n            get => _ambientRegistration;\n            set => _ambientRegistration = value;\n        }\n        internal bool IsActive =>\n            _stream != null &&\n            _parentAuthority != null;\n\n        public async ValueTask DisposeAsync()\n        {\n            var stream = _stream;\n            var parentAuthority = _parentAuthority;\n            var externalPublicationContext =\n                ExternalPublicationContext as IDisposable;\n            _stream = null;\n            _parentAuthority = null;\n            ExternalPublicationContext = null;\n            PendingLocalDecision = null;\n            MutationIntentRecorder = null;\n            BrowserLocalAccess?.Dispose();\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1879,
+      "end": 1920,
+      "bytes": 1784,
+      "sha256": "0071a212cdf226f29d3d4ec250e90c275a8bd6eb9f14c71bc99279b93696dd37",
+      "text": "    internal void DeleteDirectoryTree(\n        CanonicalWriteLease writeLease,\n        string relativePath)\n    {\n        EnsureWorkerGeneralMutationAllowed(writeLease);\n        writeLease.EnsureNoPendingLocalDecision();\n        EnsureSafeCanonicalRelativePath(relativePath);\n        if (UsesTrustedLocalWriter(writeLease, relativePath))\n        {\n            DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();\n            return;\n        }\n        DeleteOriginalDirectoryTree(writeLease, relativePath);\n    }\n\n    // Original browser rollback owns dynamic cleanup even after clearing its\n    // recorder. Such cleanup must never enter a new common publication journal.\n    internal void DeleteOriginalDirectoryTree(\n        CanonicalWriteLease writeLease,\n        string relativePath)\n    {\n        EnsureWorkerGeneralMutationAllowed(writeLease);\n        writeLease.EnsureNoPendingLocalDecision();\n        EnsureSafeCanonicalRelativePath(relativePath);\n        if (writeLease.BrowserLocalAccess != null)\n        {\n            DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();\n            return;\n        }\n        var fullPath = ResolvePath(relativePath);\n        InvokeBeforeCanonicalMutationBoundaryAsync(relativePath).GetAwaiter().GetResult();\n        using var parentAuthority = EnsureStableCanonicalParent(\n            relativePath,\n            fullPath);\n        EnsureCanonicalMutationBoundary(relativePath, fullPath);\n        InvokeAfterCanonicalMutationBoundaryValidatedAsync(relativePath)\n            .GetAwaiter()\n            .GetResult();\n        PhysicalFileAuthority.TryDeleteDirectoryTree(\n            parentAuthority,\n            fullPath,\n            \"Canonical directory-tree deletion\");\n"
+    },
+    {
+      "alias": "CLI",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "start": 77,
+      "end": 124,
+      "bytes": 3445,
+      "sha256": "ca0a73512801af62fe923916e23aec00038773e62f6f53e27776d3a6169869ac",
+      "text": "            await SessionOperationContext.RunParticipatingCurrentSessionAsync(files, async () =>\n            {\n                try\n                {\n                await MainOperationReader.WriteAsync(output, new { ok = true, state = \"active\", sequence, originalClose = files.DescribeMainOperationClose(MainOperationOutcome.Completed,false) }, CancellationToken.None);\n                while (true)\n                {\n                    var command = await reader.ReadAsync<Command>(CancellationToken.None, FrameLimit)\n                        ?? throw new IOException(\"Participating caller lost before terminal close.\");\n                    if (command.Sequence != checked(sequence + 1)) throw new InvalidDataException(\"Unexpected control sequence.\");\n                    sequence = command.Sequence;\n                    if (command.Action == \"close\")\n                    {\n                        if (command.Outcome == null || !Enum.IsDefined(command.Outcome.Value)) throw new InvalidDataException(\"Missing close outcome.\");\n                        outcome = publicationUncertain ? MainOperationOutcome.Uncertain : command.Outcome.Value; explicitClose = true;\n                        return 0;\n                    }\n                    var result = new CommandResult();\n                    var blockedByPriorUncertainty = publicationUncertain;\n                    if (!blockedByPriorUncertainty)\n                    {\n                        try {\n                            if(command.Action?.StartsWith(\"daemon-\",StringComparison.Ordinal)==true)\n                                result.Fields=await daemon.HandleAsync(files,command,result);\n                            else {\n                                if(daemon.HasPending)throw new InvalidDataException(\"A daemon exchange is incomplete.\");\n                                await MutateAsync(files, command, result);\n                            }\n                        }\n                        catch (Exception failure) { result.Failure = failure; }\n                        publicationUncertain = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Uncertain;\n                    }\n                    // Capture belongs to this command, not the whole body. A valid\n                    // uncertain reply retains this connection for its original close.\n                    var committed = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Committed;\n                    var fields=result.Fields??new Dictionary<string,object?>();\n                    fields[\"ok\"]=!blockedByPriorUncertainty&&result.Failure==null;\n                    fields[\"sequence\"]=sequence;\n                    fields[\"publicationDisposition\"]=result.Publication?.Disposition.ToString();\n                    fields[\"cleanupPending\"]=committed&&result.Publication?.Failure!=null;\n                    fields[\"commandFollowUpRequired\"]=committed&&result.Failure!=null;\n                    fields[\"blockedByPriorUncertainty\"]=blockedByPriorUncertainty;\n                    fields[\"daemonReadRefused\"]=result.ReadRefused;\n                    await MainOperationReader.WriteAsync(output,fields,CancellationToken.None);\n                }\n                }\n                finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }\n            }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; });\n"
+    },
+    {
+      "alias": "CLI",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "start": 154,
+      "end": 185,
+      "bytes": 2118,
+      "sha256": "990ea302ed588c2aeb64adecdc4076de564528f46c45f8ad637e96e0c3386def",
+      "text": "    private static async Task MutateAsync(FileSystemManager files, Command command, CommandResult result)\n    {\n        var path = NormalizeControlPath(command.Path);\n        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();\n        files.EnsureWorkerGeneralMutationAllowed(lease);\n        switch (command.Action)\n        {\n            case \"directory\":\n                using (PhysicalFileAuthority.EnsureStableDirectory(files.BasePath, files.ResolvePath(path), \"participating control\")) { }\n                break;\n            case \"write\":\n                result.Publication = await files.PublishOrdinaryFileWithOutcomeAsync(lease, path, Convert.FromBase64String(command.Bytes ?? throw new InvalidDataException()));\n                break;\n            case \"append\":\n                result.Publication = await files.AppendOrdinaryFileWithOutcomeAsync(lease, path, new System.Text.UTF8Encoding(false, true).GetString(\n                    Convert.FromBase64String(command.Bytes ?? throw new InvalidDataException())));\n                break;\n            case \"delete\": result.Publication = await files.PublishOrdinaryFileWithOutcomeAsync(lease, path, null); break;\n            default: throw new InvalidDataException(\"Unknown participating mutation.\");\n        }\n        if (result.Publication != null) files.RequireCommittedLocalPublication(result.Publication);\n    }\n\n    private static string NormalizeControlPath(string? path)\n    {\n        if (string.IsNullOrWhiteSpace(path) || path.Contains('\\\\') || Path.IsPathRooted(path) ||\n            path.Split('/').Any(s => s is \"\" or \".\" or \"..\")) throw new InvalidDataException(\"Invalid participating path.\");\n        if (path is \"input\" or \"ready\" or \"output\" or \"game_state/control\" ||\n            path.StartsWith(\"game_state/control/\", StringComparison.Ordinal) || path.StartsWith(\"input/\", StringComparison.Ordinal) ||\n            path.StartsWith(\"ready/\", StringComparison.Ordinal) || path.StartsWith(\"output/\", StringComparison.Ordinal)) return path;\n        throw new InvalidDataException(\"Path is outside participating control scope.\");\n    }\n"
+    },
+    {
+      "alias": "LIVE",
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "start": 68,
+      "end": 102,
+      "bytes": 1819,
+      "sha256": "eb96ae976c64f7518d40904b30de9980d69b0d6c137eff99ca43b85ed3de18b0",
+      "text": "    public async Task<LiveTurnPreparationResult> PrepareAsync(LiveTurnPreparationOptions options)\n    {\n        if (string.IsNullOrWhiteSpace(options.PlayerAction))\n            throw new ArgumentException(\"Player action is required for prepare-turn.\", nameof(options));\n\n        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(\n            _fs, () => PrepareBoundAsync(options));\n    }\n\n    private async Task<LiveTurnPreparationResult> PrepareBoundAsync(LiveTurnPreparationOptions options)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try { return await PrepareUnderLeaseAsync(writeLease, options); }\n        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }\n    }\n\n    private async Task<LiveTurnPreparationResult> PrepareUnderLeaseAsync(\n        FileSystemManager.CanonicalWriteLease writeLease, LiveTurnPreparationOptions options)\n    {\n        ReadSignedSnapshotInventory(writeLease);\n        CleanupPreparedTurnArtifacts(writeLease);\n        ClearStalePendingDiceState(writeLease);\n\n        var currentRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)\n            ? await ResolveCurrentRealmAsync(writeLease)\n            : options.CurrentRealm!.Trim();\n        var request = new TurnRequest\n        {\n            SessionId = string.IsNullOrWhiteSpace(options.SessionId)\n                ? $\"live:{Environment.MachineName}:{Environment.ProcessId}\"\n                : options.SessionId!.Trim(),\n            RequestId = string.IsNullOrWhiteSpace(options.RequestId)\n                ? Guid.NewGuid().ToString(\"N\")\n"
+    },
+    {
+      "alias": "LIVE",
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "start": 394,
+      "end": 403,
+      "bytes": 565,
+      "sha256": "863d7abf9be288391da8c91d2baf4bd494b30c316afd2549ddb2f3f70f351401",
+      "text": "    private void CleanupPreparedTurnArtifacts(FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        _fs.DeleteFile(writeLease, TurnRequestPath);\n        _fs.DeleteFile(writeLease, PendingTurnSnapshotManifestPath);\n        _fs.DeleteFile(writeLease, PendingTurnSnapshotAuthority.AuthorityPath);\n        _fs.DeleteDirectoryTree(writeLease, PendingTurnSnapshotDirectory);\n    }\n\n    private void ClearStalePendingDiceState(FileSystemManager.CanonicalWriteLease writeLease) =>\n        _fs.DeleteFile(writeLease, PendingTurnStateService.PendingDiceStatePath);\n"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 613,
+      "end": 628,
+      "bytes": 656,
+      "sha256": "144c08dc2a182bf4ffa142f060af43a7a0b8c61f071ed69a8c74f8a29d8ee04b",
+      "text": "    private async Task ShowInkFeathersMenu()\n    {\n        if (!EnsureOrdinaryAfterlifeInteractionAvailable(\"Чернильные Перья\"))\n            return;\n\n        _diceRevealed = false;\n        while (true)\n        {\n            var feathers = await ReadInkFeathersBalance();\n            var isAfterlifeRealm = IsOrdinaryAfterlifeInteractionState;\n            Services.PendingTurnState? pendingTurnState = null;\n            if (!isAfterlifeRealm && _pendingTurnState != null)\n            {\n                pendingTurnState = await _pendingTurnState.GetOrCreateAsync();\n                _diceRevealed = pendingTurnState.IsFateLocked;\n            }\n"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 1150,
+      "end": 1173,
+      "bytes": 967,
+      "sha256": "358eaafd9fb9b4615139c064af7fc6955128d713e3e59d676a4f268223ca091e",
+      "text": "        var confirm = Prompt(new SelectionPrompt<string>()\n            .Title($\"[bold yellow]🔮 Открыть Судьбу — потратить {Markup.Escape(costDisplay)}?[/]\")\n            .AddChoices(\"✅ Да, потратить\", \"❌ Отмена\"));\n        if (confirm.Contains(\"Отмена\")) return;\n\n        if (_pendingTurnState == null)\n        {\n            MarkupLine(\"[red]❌ Сервис судьбы недоступен.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var pendingState = await _pendingTurnState.GetOrCreateAsync();\n        if (!await DeductInkFeathers(cost))\n        {\n            MarkupLine(\"[red]❌ Не удалось списать перья.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        pendingState = await _pendingTurnState.RevealAsync();\n        var dice = pendingState.PreGeneratedDices1d20;\n        var gacha = pendingState.GachaBaseResult ?? new GachaResult();\n\n"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 1200,
+      "end": 1237,
+      "bytes": 1688,
+      "sha256": "bae8d05b191cdc161461951b67047e4cd303341450c300883ec400b7fbef9e1b",
+      "text": "    private async Task HandleRewriteFate(int feathers)\n    {\n        var cost = Math.Max(15, (int)(feathers * 0.25));\n        var costDisplay = $\"{cost} 🪶 (останется {feathers - cost})\";\n\n        var confirm = Prompt(new SelectionPrompt<string>()\n            .Title($\"[bold yellow]✍️ Переписать Судьбу — потратить {Markup.Escape(costDisplay)}?[/]\")\n            .AddChoices(\"✅ Да, потратить\", \"❌ Отмена\"));\n        if (confirm.Contains(\"Отмена\")) return;\n\n        if (_pendingTurnState == null)\n        {\n            MarkupLine(\"[red]❌ Сервис судьбы недоступен.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var currentState = await _pendingTurnState.GetOrCreateAsync();\n        if (!currentState.IsFateLocked)\n        {\n            MarkupLine(\"[yellow]⚠️ Сначала нужно открыть судьбу, чтобы зафиксировать текущие кости.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        // Deduct feathers FIRST (before any dice modification)\n        if (!await DeductInkFeathers(cost))\n        {\n            MarkupLine(\"[red]❌ Не удалось списать перья (недостаточно или ошибка).[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var oldDice = currentState.PreGeneratedDices1d20;\n        var oldGacha = currentState.GachaBaseResult ?? new GachaResult();\n        var newState = await _pendingTurnState.RewriteAsync();\n        var newDice = newState.PreGeneratedDices1d20;\n        var newGacha = newState.GachaBaseResult ?? new GachaResult();\n"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 2728,
+      "end": 2742,
+      "bytes": 823,
+      "sha256": "2c993f7ec15a8f356f1c9fe82cfb6cade1b955cf37257860ef36eb739728b9a3",
+      "text": "\n        var inputCost = Prompt(new TextPrompt<int>(\n            $\"[bold yellow]Сколько Перьев потратить на прямое вытягивание? (у вас {feathers} 🪶):[/]\")\n            .Validate(val =>\n            {\n                if (val <= 0) return ValidationResult.Error(\"[red]Нужно потратить хотя бы 1 перо[/]\");\n                if (val > feathers) return ValidationResult.Error($\"[red]У вас только {feathers} 🪶[/]\");\n                return ValidationResult.Success();\n            }));\n\n        var pendingState = _pendingTurnState != null\n            ? await _pendingTurnState.GetOrCreateAsync()\n            : null;\n        var gacha = pendingState?.GachaBaseResult ?? new GachaResult();\n        var diceUsed = gacha.DiceUsed ?? Array.Empty<int>();\n"
+    },
+    {
+      "alias": "EXPLOCAL",
+      "path": "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
+      "start": 3976,
+      "end": 3997,
+      "bytes": 1299,
+      "sha256": "8185e09fe64f536147b031284dea4d8f39a249483790052a5d70c10cff1b29ac",
+      "text": "        if (!RealmSemantics.IsChaosSea(currentRealm))\n        {\n            return Result(\n                command,\n                CommandExecutionState.Completed,\n                [\n                    localTurn.Panel,\n                    Message(\n                        UiNotificationSeverity.Warning,\n                        \"Призыв недоступен\",\n                        $\"Прямой призыв Моря Хаоса доступен только в обычном Море Хаоса. Сейчас душа находится здесь: {FormatRealmForPlayer(currentRealm)}.\")\n                ]);\n        }\n\n        var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));\n        var pendingTurnState = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);\n        var pendingState = await pendingTurnState.GetOrCreateAsync();\n        var gachaBase = pendingState.GachaBaseResult;\n        var baseRarity = FormatRarityForPlayer(FirstNonEmpty(gachaBase?.BaseRarity, \"Common\"));\n        var baseScore = (gachaBase?.BaseScore ?? 0).ToString();\n        var formula = FirstNonEmpty(gachaBase?.Formula, \"client-computed gacha base (range 4-80)\");\n        var diceUsed = FormatDiceUsed(gachaBase?.DiceUsed);\n"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2020,
+      "end": 2054,
+      "bytes": 2312,
+      "sha256": "222008b6f0265a22ab8e3889e6addf50ce5b0881c1be5dca0f06c4431982b899",
+      "text": "            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n            async writeLease =>\n            {\n                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, \"Состояние души сейчас недоступно.\");\n                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot[\"currentRealm\"]), _stateManager.CurrentState.CurrentRealm);\n                if (!RealmSemantics.IsMortalRealm(currentRealm))\n                    throw new InvalidOperationException(\"Раскрытие судьбы доступно только во время смертной жизни.\");\n\n                var currentFeathers = GetSoulInkFeathers(soulRoot);\n                var cost = ComputeRevealFateCost(currentFeathers);\n                if (currentFeathers < cost)\n                    throw new InvalidOperationException($\"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.\");\n\n                var pendingTurnState = new PendingTurnStateService(\n                    _fs,\n                    NullLogger<PendingTurnStateService>.Instance);\n                await pendingTurnState.GetOrCreateAsync(writeLease);\n\n                var remainingFeathers = currentFeathers - cost;\n                SetSoulInkFeathers(soulRoot, remainingFeathers);\n                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);\n\n                var revealed = await pendingTurnState.RevealAsync(writeLease);\n                await _stateManager.RefreshGameStateAsync(writeLease);\n\n                payload[\"spentInkFeathers\"] = cost;\n                payload[\"remainingInkFeathers\"] = remainingFeathers;\n                payload[\"currentInkFeathersBeforeSpend\"] = currentFeathers;\n                payload[\"revealedFate\"] = BuildFatePayload(revealed);\n                payload[\"summary\"] = BuildFateSummary(revealed);\n                completionMessage = $\"Судьба открыта. Списано: {cost}. Осталось: {remainingFeathers}. Кости судьбы: {FormatDiceUsed(revealed.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(revealed.GachaBaseResult)}.\";\n            },\n            \"Судьба открыта\",\n            () => completionMessage,\n            payload);\n"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2096,
+      "end": 2132,
+      "bytes": 2775,
+      "sha256": "142e07c5ffcdc8858dd12fedaa95c6699127ad415516baecb2301bb5b1fbf4a1",
+      "text": "        return await ExecuteAtomicAsync(\n            boundLease,\n            owner,\n            \"Переписывание судьбы\",\n            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n            async writeLease =>\n            {\n                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, \"Состояние души сейчас недоступно.\");\n                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot[\"currentRealm\"]), _stateManager.CurrentState.CurrentRealm);\n                if (!RealmSemantics.IsMortalRealm(currentRealm))\n                    throw new InvalidOperationException(\"Переписывание судьбы доступно только во время смертной жизни.\");\n\n                var currentPending = await pendingTurnState.TryReadExistingAsync(writeLease);\n                if (currentPending == null || !currentPending.IsFateLocked)\n                    throw new InvalidOperationException(\"Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.\");\n\n                var currentFeathers = GetSoulInkFeathers(soulRoot);\n                var cost = ComputeRewriteFateCost(currentFeathers);\n                if (currentFeathers < cost)\n                    throw new InvalidOperationException($\"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.\");\n\n                var remainingFeathers = currentFeathers - cost;\n                SetSoulInkFeathers(soulRoot, remainingFeathers);\n                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);\n\n                var rewritten = await pendingTurnState.RewriteAsync(writeLease);\n                await _stateManager.RefreshGameStateAsync(writeLease);\n\n                payload[\"spentInkFeathers\"] = cost;\n                payload[\"remainingInkFeathers\"] = remainingFeathers;\n                payload[\"currentInkFeathersBeforeSpend\"] = currentFeathers;\n                payload[\"oldFate\"] = BuildFatePayload(currentPending);\n                payload[\"newFate\"] = BuildFatePayload(rewritten);\n                payload[\"oldSummary\"] = BuildFateSummary(currentPending);\n                payload[\"newSummary\"] = BuildFateSummary(rewritten);\n                completionMessage = $\"Судьба переписана. Списано: {cost}. Осталось: {remainingFeathers}. Старые кости: {FormatDiceUsed(currentPending.PreGeneratedDices1d20)}. Новые кости: {FormatDiceUsed(rewritten.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(rewritten.GachaBaseResult)}.\";\n            },\n"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2175,
+      "end": 2258,
+      "bytes": 4730,
+      "sha256": "a3a9cc326d2833a048d0741b8ed10ad6b351329914bb46cc557ed0b220e02f66",
+      "text": "        return await ExecuteAtomicAsync(\n            boundLease,\n            owner,\n            \"Browser direct Chaos Sea gacha\",\n            [\n                SoulStatePath,\n                PendingTurnStateService.PendingDiceStatePath,\n                BrowserPendingTurnInspector.TurnRequestPath,\n                BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,\n                PendingTurnSnapshotAuthority.AuthorityPath\n            ],\n            async writeLease =>\n            {\n                var soulRoot = await ReadRequiredObjectAsync(\n                    writeLease,\n                    SoulStatePath,\n                    \"soul_state.json недоступен.\");\n                var currentRealm = GetNodeString(soulRoot[\"currentRealm\"]);\n                if (!RealmSemantics.IsChaosSea(currentRealm))\n                    throw new InvalidOperationException(DescribeDirectGachaRealmBlocker(currentRealm));\n\n                var currentFeathers = GetSoulInkFeathers(soulRoot);\n                if (currentFeathers < cost)\n                    throw new InvalidOperationException($\"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.\");\n\n                string? stagedRollbackPath = null;\n                try\n                {\n                    stagedRollbackPath = await ExplorerLocalTurnRollbackArtifacts.StageFileAsync(\n                        _fs,\n                        writeLease,\n                        SoulStatePath,\n                        \"browser_direct_gacha\");\n\n                    var pendingTurnState = new PendingTurnStateService(\n                        _fs,\n                        NullLogger<PendingTurnStateService>.Instance);\n                    var pending = await pendingTurnState.GetOrCreateAsync(writeLease);\n                    var remainingFeathers = currentFeathers - cost;\n                    SetSoulInkFeathers(soulRoot, remainingFeathers);\n                    await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);\n                    await _stateManager.RefreshGameStateAsync(writeLease);\n\n                    var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);\n                    var gmAction = BuildDirectGachaGmAction(cost);\n                    var queuedTurn = await _turnRequestQueue.QueueDirectChaosSeaGachaAsync(\n                        writeLease,\n                        owner,\n                        gmAction,\n                        pending,\n                        stagedRollbackPath ?? throw new InvalidOperationException(\"Не удалось сохранить pre-spend rollback evidence для direct /gacha.\"),\n                        currentRealm ?? \"Chaos Sea\");\n                    payload[\"remainingInkFeathers\"] = remainingFeathers;\n                    payload[\"currentInkFeathersBeforeSpend\"] = currentFeathers;\n                    payload[\"playerActionTag\"] = \"CHAOS_SEA_DIRECT_GACHA\";\n                    payload[\"gachaBaseResult\"] = gachaBase;\n                    payload[\"rarityRule\"] = \"finalRarity exactly equals gachaBaseResult.baseRarity; no guardian modifiers\";\n                    payload[\"expectedRelicMaterialization\"] = \"GM appends exactly one new Soul Relic; the browser does not materialize a concrete relic locally.\";\n                    payload[\"gmAction\"] = gmAction;\n                    payload[\"queuedTurnRequest\"] = new JsonObject\n                    {\n                        [\"sessionId\"] = queuedTurn.SessionId,\n                        [\"requestId\"] = queuedTurn.RequestId,\n                        [\"turnNumber\"] = queuedTurn.TurnNumber,\n                        [\"playerAction\"] = queuedTurn.PlayerAction\n                    };\n                    payload[\"affectedFiles\"] = new JsonArray(\n                        SoulStatePath,\n                        PendingTurnStateService.PendingDiceStatePath,\n                        BrowserPendingTurnInspector.TurnRequestPath,\n                        BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,\n                        PendingTurnSnapshotAuthority.AuthorityPath);\n                }\n                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)\n                {\n                    CoordinatedStatePublicationUncertainException? uncertainty = null;\n                    try\n                    {\n                        CleanupDirectGachaTurnArtifacts(writeLease);\n                    }\n                    catch (CoordinatedStatePublicationUncertainException cleanupFailure)\n                    {\n                        uncertainty = cleanupFailure;\n                        cleanupFailure.Data[\"BrowserDirectGachaFailure\"] = failure;\n"
+    },
+    {
+      "alias": "WEBQ",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "start": 184,
+      "end": 203,
+      "bytes": 1416,
+      "sha256": "1bbb8e462cf132258bc545cb2bc9fad64489d2fc51801452e588182f298ab73f",
+      "text": "    // This browser producer selects JSON game_state plus ordinary lore, not the\n    // engine's broader native-payload cohort. Inspect raw fixed-path aliases before\n    // optional existence checks and keep admission outside compensation catches.\n    internal void RequireExactSnapshotInventory(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        IEnumerable<string>? suppliedRollbackPaths = null)\n    {\n        var fixedPaths = PendingTurnSnapshotPathPresenceV1.LogicalPaths\n            .Concat(SnapshotOutputFiles).Concat(SnapshotExcludedFixedFiles)\n            .Append(BrowserPendingTurnInspector.TurnRequestPath)\n            .Append(\"game_state/meta/soul_state.json\")\n            .Append(PendingTurnStateService.PendingDiceStatePath).ToArray();\n        var rawPaths = _fs.EnumerateFiles(writeLease, \"*\").Where(relative =>\n            (relative.StartsWith(\"game_state/\", StringComparison.OrdinalIgnoreCase) &&\n                string.Equals(Path.GetExtension(relative), \".json\", StringComparison.OrdinalIgnoreCase) &&\n                !ShouldSkipRollbackBaselineFile(relative)) ||\n            (relative.StartsWith(\"lore/\", StringComparison.OrdinalIgnoreCase) &&\n                !relative.Contains(\".rollback.\", StringComparison.OrdinalIgnoreCase)) ||\n            fixedPaths.Contains(relative, StringComparer.OrdinalIgnoreCase));\n        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths\n"
+    },
+    {
+      "alias": "ROLL",
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "start": 507,
+      "end": 527,
+      "bytes": 820,
+      "sha256": "89481735dbb961b30a18e5d0c60c1974bcaa51253af309d2fec31dd58f99ed46",
+      "text": "            await fs.WriteFileAtomicAsync(\n                writeLease,\n                manifestPath,\n                JsonSerializer.Serialize(manifest, ManifestJsonOptions));\n            createdPaths.Add(manifestPath);\n            if (writeLease.MutationIntentRecorder != null)\n            {\n                throw new InvalidOperationException(\n                    \"Canonical write lease already owns a mutation-intent recorder.\");\n            }\n\n            mutationIntentRecorder = new BrowserWriteMutationRecorder(\n                fs,\n                writeLease,\n                manifestPath,\n                safeScope,\n                createdAtUtc,\n                entries,\n                cleanupDirectories,\n                externalEntries);\n            writeLease.MutationIntentRecorder = mutationIntentRecorder;\n"
+    },
+    {
+      "alias": "ROLL",
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "start": 575,
+      "end": 590,
+      "bytes": 548,
+      "sha256": "301eef7e40e2deae0495fc5db5e592dacc4553957a66d70fdb687494722a62e1",
+      "text": "        catch\n        {\n            if (ReferenceEquals(\n                    writeLease.MutationIntentRecorder,\n                    mutationIntentRecorder))\n            {\n                writeLease.MutationIntentRecorder = null;\n            }\n            darenTransaction?.Dispose();\n            foreach (var path in createdPaths.AsEnumerable().Reverse())\n            {\n                try\n                {\n                    if (fs.OriginalFileExists(writeLease, path))\n                        fs.DeleteFile(writeLease, path);\n                }\n"
+    },
+    {
+      "alias": "BL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "start": 103,
+      "end": 115,
+      "bytes": 934,
+      "sha256": "1ea29a2b534997bf19433294390c99e903665265162737561db2ef2f43fdaf16",
+      "text": "    internal BrowserLocalStorageAccess BeginBrowserLocalStorage(CanonicalWriteLease lease, string root, string generation, bool includeDaren = false)\n    {\n        EnsureCanonicalWriteLeaseActive(lease);\n        VerifyCurrentSessionOperation(lease);\n        if (lease.BrowserLocalAccess != null || lease.MutationIntentRecorder != null ||\n            lease.IsLegacyStorageRecovery || !root.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + \"/\", StringComparison.Ordinal) ||\n            !string.Equals(ReadExistingSessionGeneration(lease), generation, StringComparison.Ordinal))\n            throw new InvalidOperationException(\"Browser storage requires its original supported lease and generation.\");\n        var access = new BrowserLocalStorageAccess(this, lease, root, generation, includeDaren ? RegisteredDarenProfilePath : null);\n        lease.BrowserLocalAccess = access;\n        access.Validate();\n        return access;\n    }\n"
+    },
+    {
+      "alias": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "start": 2366,
+      "end": 2410,
+      "bytes": 1685,
+      "sha256": "d46b2d507997e73551486a3fde81097ca61d5258b37d30fd09ba989cbbb43f27",
+      "text": "    private async Task RestorePreTurnBackupAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        RollbackSnapshot snapshot)\n    {\n        var validatedBackups = await ReadValidatedRollbackBeforeImagesAsync(writeLease, snapshot);\n        var failures = new List<Exception>();\n        foreach (var trackedFile in EnumerateRollbackTrackedFiles(writeLease))\n        {\n            if (snapshot.BaselineFiles.Contains(trackedFile))\n                continue;\n\n            try\n            {\n                if (_fs.FileExists(writeLease, trackedFile))\n                    _fs.DeleteFile(writeLease, trackedFile);\n            }\n            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n            {\n                failures.Add(new IOException(\n                    $\"Failed to delete new canonical file '{trackedFile}' during rollback.\",\n                    ex));\n            }\n        }\n\n        foreach (var (original, content) in validatedBackups)\n        {\n            try\n            {\n                await _fs.WriteFileAtomicBytesAsync(writeLease, original, content);\n            }\n            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n            {\n                failures.Add(new IOException(\n                    $\"Failed to restore canonical file '{original}' from rollback evidence.\",\n                    ex));\n            }\n        }\n\n        if (failures.Count > 0)\n        {\n            throw new InvalidDataException(\n                \"Pre-turn rollback could not be completed. Rollback evidence was retained.\",\n                new AggregateException(failures));\n        }\n    }\n"
+    },
+    {
+      "alias": "EXREST",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "start": 834,
+      "end": 896,
+      "bytes": 2604,
+      "sha256": "e440ce9495f220a5a1dbd73dd0d6d7a71e4e0d930dafae92b27d1c144ae7844a",
+      "text": "    private async Task RestorePendingLocalTurnRollbackSnapshotAsync()\n    {\n        var snapshot = _pendingLocalTurnRollbackSnapshot;\n        if (snapshot == null)\n            return;\n\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Exception? publicationUncertainty = null;\n        try\n        {\n            if (!snapshot.RestoreCompleted)\n            {\n                var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);\n                foreach (var (originalPath, backupPath) in snapshot.BackupFiles)\n                {\n                    var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)\n                        ?? throw new FileNotFoundException(\"Explorer rollback evidence is missing.\", backupPath);\n                    if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||\n                        !string.Equals(\n                            ComputeExplorerRollbackHash(backupContent),\n                            expectedHash,\n                            StringComparison.OrdinalIgnoreCase))\n                    {\n                        throw new InvalidDataException(\n                            $\"Explorer rollback evidence hash mismatch for '{originalPath}'.\");\n                    }\n\n                    validatedBackups[originalPath] = backupContent;\n                }\n\n                foreach (var trackedFile in snapshot.TrackedFiles)\n                {\n                    if (snapshot.BaselineFiles.Contains(trackedFile))\n                        continue;\n\n                    if (_fs.FileExists(writeLease, trackedFile))\n                        _fs.DeleteFile(writeLease, trackedFile);\n                }\n\n                foreach (var (originalPath, backupContent) in validatedBackups)\n                {\n                    await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);\n                }\n\n                snapshot.RestoreCompleted = true;\n            }\n\n            DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);\n            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);\n        }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            publicationUncertainty = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);\n        }\n\n        await _stateManager.RefreshGameStateAsync();\n    }\n"
+    },
+    {
+      "alias": "BACK",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "start": 75,
+      "end": 95,
+      "bytes": 1539,
+      "sha256": "680461757f664be25389d68d633963b028281f08c75a57bda30c230f2abcd080",
+      "text": "\n    private async Task RestoreBackupWithLeaseAsync(CanonicalWriteLease lease, string backupFullPath, string originalRelativePath)\n    {\n        EnsureWorkerGeneralMutationAllowed(lease);\n        var backup = GetLocalBackupRelativePath(backupFullPath);\n        var ordinaryBackup = UsesTrustedLocalWriter(lease, backup);\n        var ordinaryTarget = UsesTrustedLocalWriter(lease, originalRelativePath);\n        if (ordinaryBackup != ordinaryTarget)\n            throw new InvalidOperationException(\"Backup restoration cannot mix original evidence and ordinary publication.\");\n        if (!ordinaryBackup) { RestoreBackupCore(backupFullPath, originalRelativePath); return; }\n        var target = GetLocalBackupRelativePath(ResolvePath(originalRelativePath));\n        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;\n        if (string.Equals(backup, target, comparison))\n            throw new InvalidDataException(\"Backup and restoration target must be different names.\");\n        ResolveBackupPublicationRecovery(lease);\n        var generation = ReadLocalGenerationSnapshot(lease);\n        var bytes = await ReadLocalFileBytesAsync(lease, backup)\n            ?? throw new FileNotFoundException(\"Canonical rollback before-image is missing.\", backupFullPath);\n        var before = await ReadLocalFileBytesAsync(lease, target);\n        await PublishBackupMembersAsync(lease, generation,\n            [new(ResolvePath(target), before, bytes), new(ResolvePath(backup), bytes, null)]);\n"
+    },
+    {
+      "alias": "LOAD",
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "start": 195,
+      "end": 244,
+      "bytes": 3212,
+      "sha256": "45291eadcf221620dbd2f073ef5e5fd8b693c7131ea889944d9bb79d32fd3044",
+      "text": "            candidate.Revalidate();\n            _fs.ObserveLoadOperation(\"PreparedRevalidationBeforeLeaseCompleted\");\n            _fs.ObserveLoadOperation(\"LeaseAcquisitionStarted\");\n            lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();\n            writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);\n            _fs.ObserveLoadOperation(\"LeaseAcquisitionCompleted\");\n            _fs.ResolveBackupPublicationRecovery(writeLease);\n            if (ensureAdmissionAsync != null) await ensureAdmissionAsync(writeLease);\n            _fs.ObserveLoadOperation(\"PreparedRevalidationAfterLeaseStarted\");\n            candidate.Revalidate();\n            _fs.ObserveLoadOperation(\"PreparedRevalidationAfterLeaseCompleted\");\n            var generation = _fs.ReadLocalGenerationSnapshot(writeLease);\n            _fs.ObserveLoadOperation(\"LiveCaptureStarted\");\n            var live = _fs.CaptureLoadReplacementNamespace(writeLease, candidate.SourcePath);\n            _fs.ObserveLoadOperation(\"LiveCaptureCompleted\");\n            var settings = candidate.ArchiveSettings ?? StateManager.PrepareLocalLoadSettings(\n                await _fs.ReadLocalFileBytesAsync(writeLease, \"config.json\"));\n            _fs.ObserveLoadOperation(\"PlanCreationStarted\");\n            var namespacePlan = _fs.CreateLoadReplacementNamespacePlan(live, candidate.Images,\n                preserveConfiguration: candidate.ArchiveSettings == null);\n            _fs.ObserveLoadOperation(\"PlanCreationCompleted\");\n\n            var replacement = Guid.NewGuid().ToString(\"N\");\n            var outcome = await _fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,\n                candidate.Revalidate, cancellationToken);\n            result = new(outcome.Disposition switch\n            {\n                TrustedLocalPublicationDisposition.Committed => LoadReplacementDisposition.Committed,\n                TrustedLocalPublicationDisposition.RolledBack => LoadReplacementDisposition.RolledBack,\n                _ => LoadReplacementDisposition.Uncertain\n            }, candidate.SourcePath,\n                outcome.Disposition switch\n                {\n                    TrustedLocalPublicationDisposition.Committed => replacement,\n                    TrustedLocalPublicationDisposition.RolledBack => generation.Binding.Id,\n                    _ => null\n                },\n                outcome.Failure != null || outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain,\n                outcome.Failure,\n                outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain);\n\n            if (result.Disposition == LoadReplacementDisposition.Committed)\n            {\n                // From this point every failure is follow-up to the established replacement.\n                _fs.ResolveBackupPublicationRecovery(writeLease);\n                if (_hooks?.AfterLoadPublicationValidatedAsync != null)\n                    await _hooks.AfterLoadPublicationValidatedAsync();\n                await _stateManager.RefreshGameStateAsync(writeLease);\n                _stateManager.Settings.ApplyLoadedValues(settings);\n            }\n"
+    },
+    {
+      "alias": "LOAD",
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "start": 434,
+      "end": 456,
+      "bytes": 1176,
+      "sha256": "2e133913759b4e5feddffdd219641f5d8762f1eb9b867fb28767e6a1cb80a2f4",
+      "text": "    private static FrozenDictionary<string, string> CreateFixedLoadStatePaths()\n    {\n        string[] supplements =\n        [\n            SoulStateArchivePath,\n            ResourceMaterializationContract.DefinitionsPath,\n            ResourceMaterializationContract.StatePath,\n            ResourceMaterializationContract.HistoryPath,\n            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,\n            \"config.json\",\n            \"game_state/history/chat_log.json\",\n            AfterlifeEntityProfileState.StatePath,\n            ShiningAbodeState.StatePath,\n            WorldDirectiveService.ActiveDirectivesPath,\n            AfterlifeSpiritualConflictState.DifficultySettingsPath,\n            PendingTurnStateService.PendingDiceStatePath,\n            ResourcePendingResolutionState.PendingPath\n        ];\n        var declarations = FileMapping.FieldToFile.Values.Concat(FileMapping.OutputFiles.Values)\n            .Concat(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles)\n            .Concat(AfterlifeContractRegistry.All.Select(surface => surface.Path))\n            .Concat(QteSceneService.BrowserTransactionRollbackPaths)\n            .Concat(supplements);\n"
+    },
+    {
+      "alias": "LOADNS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "start": 199,
+      "end": 258,
+      "bytes": 4380,
+      "sha256": "c6784b18c02c566e40ca433229c317bd48d62fda505daa9207aaffa6be4e2b70",
+      "text": "    internal async Task<TrustedLocalPublicationOutcome> PublishLoadReplacementNamespaceAsync(CanonicalWriteLease lease,\n        LocalSessionGenerationSnapshot expectedGeneration, CanonicalLoadNamespacePlan plan, string replacementGeneration,\n        Action validatePreparedNamespace, CancellationToken cancellationToken = default)\n    {\n        if (SessionOperationContext.TryGetExpectedGeneration(BasePath, out _))\n            throw new InvalidOperationException(\"Load cannot run inside a generation-bound session operation.\");\n        EnsureValidSessionReplacementLease(lease);\n        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)\n            throw new InvalidOperationException(\"Ordinary load cannot use a legacy transaction lease.\");\n        if (!Guid.TryParseExact(replacementGeneration, \"N\", out var parsed) || parsed.ToString(\"N\") != replacementGeneration)\n            throw new InvalidDataException(\"The replacement generation is invalid.\");\n        ObserveLoadOperation(\"MemberMappingStarted\");\n        var members = plan.Changes.Select(change => new TrustedLocalNamespaceChange(ResolveLoadNamespacePath(change.RelativePath),\n            change.Before, change.After)).ToList();\n        ObserveLoadOperation(\"MemberMappingCompleted\");\n        members.Add(new(SessionGenerationPath,\n            expectedGeneration.Bytes == null ? LoadNamespaceMissing : new(TrustedLocalNamespaceKind.File, TrustedLocalFileImage.FromBytes(expectedGeneration.Bytes)),\n            new(TrustedLocalNamespaceKind.File, TrustedLocalFileImage.FromBytes(\n                JsonSerializer.SerializeToUtf8Bytes(new SessionGenerationDocument(1, replacementGeneration))))));\n        var namespacePlan = new TrustedLocalNamespacePlan(GameSessionPath, members, plan.Boundaries);\n        var publisher = new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath]));\n        void Revalidate()\n        {\n            ObserveLoadOperation(\"ManagerRevalidationStarted\");\n            ResolveBackupPublicationRecovery(lease);\n            var generation = ReadLocalGenerationSnapshot(lease);\n            if (generation.Binding != expectedGeneration.Binding || !ExactBytesEqual(generation.Bytes, expectedGeneration.Bytes))\n                throw new InvalidDataException(\"The generation changed during namespace preparation.\");\n            validatePreparedNamespace();\n            ObserveLoadOperation(\"ManagerCandidateRevalidated\");\n            publisher.ValidateNamespaceBeforePublication(lease, expectedGeneration.Binding, namespacePlan);\n            ObserveLoadOperation(\"ManagerAdmissionCompleted\");\n        }\n        var registrations = new List<InProcessMutationRegistration>();\n        try\n        {\n            Revalidate();\n            foreach (var member in members) registrations.Add(new InProcessMutationRegistration(member.Path));\n            for (var index = 0; index < plan.Changes.Count; index++)\n            {\n                var change = plan.Changes[index];\n                await InvokeBeforeCanonicalMutationBoundaryAsync(change.RelativePath);\n                if (ResolveLoadNamespacePath(change.RelativePath) != members[index].Path)\n                    throw new InvalidDataException(\"Canonical namespace identity changed before mutation.\");\n                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(change.RelativePath);\n            }\n            for (var attempt = 0; ; attempt++)\n            {\n                cancellationToken.ThrowIfCancellationRequested();\n                Revalidate();\n                var outcome = publisher.PublishNamespaceWithOutcome(lease, expectedGeneration.Binding, namespacePlan, _hooks?.LocalPublicationObserver);\n                if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)\n                    CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();\n                if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack || outcome.Failure is InvalidDataException ||\n                    outcome.Failure == null || !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)\n                    return outcome;\n                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);\n            }\n        }\n        finally { foreach (var registration in registrations) registration.Dispose(); }\n"
+    },
+    {
+      "alias": "REPLACE",
+      "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "start": 24,
+      "end": 90,
+      "bytes": 3961,
+      "sha256": "2639e73f5368a873d12939e75d5d70d0031aae5fe3f6cc28139314e994679ace",
+      "text": "    private async Task<string> PublishSessionReplacementAsync(CanonicalWriteLease lease, bool clearGameState)\n    {\n        EnsureValidSessionReplacementLease(lease);\n        VerifyCurrentSessionOperation(lease);\n        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)\n            throw new InvalidOperationException(\"Common session replacement cannot run inside a legacy transaction.\");\n        // Clear consumes a current pending turn only after its original signed\n        // authority validates every retained before-image. Rotation alone cannot.\n        EnsureNoLegacyStorageEvidence(currentPendingClear: clearGameState ? lease : null);\n\n        var scope = new TrustedLocalFileScope([BasePath]);\n        var generation = ReadLocalGenerationSnapshot(lease);\n        var selected = new HashSet<string>(StringComparer.Ordinal);\n        void AddTree(string relative, Func<string, bool>? exclude = null, bool jsonOnly = false)\n        {\n            foreach (var file in EnumerateLocalTreeFiles(scope, Path.Combine(GameSessionPath, relative), exclude, jsonOnly))\n                selected.Add(file);\n        }\n        if (clearGameState)\n        {\n            scope.ValidateFile(Path.Combine(GameSessionPath,\n                LocalUiSessionLockService.LockPath.Replace('/', Path.DirectorySeparatorChar)));\n            // Directory creation can leave harmless structure on failure, but a\n            // wrong-type required path must fail before publishing any file.\n            foreach (var directory in RequiredDirectories)\n                scope.ValidateDirectory(Path.Combine(BasePath, directory.Replace('/', Path.DirectorySeparatorChar)));\n            AddTree(\"input\", jsonOnly: true);\n            AddTree(\"output\", jsonOnly: true);\n            AddTree(\"ready\", jsonOnly: true);\n            var gameState = Path.Combine(GameSessionPath, \"game_state\");\n            AddTree(\"game_state\", entry => ShouldPreserveAcrossGameStateClear(gameState, entry));\n            AddTree(\"lore\");\n            AddTree(\"stories\");\n        }\n        AddTree(\"worker_tasks\");\n        AddTree(\"worker_proposals\");\n        if (!clearGameState)\n        {\n            foreach (var relative in new[] { \"game_state/control/gm_worker_latest_validation_repair_task.json\",\n                         \"game_state/control/validation_repair_ready.json\" })\n            {\n                var path = scope.ValidateFile(Path.Combine(GameSessionPath, relative.Replace('/', Path.DirectorySeparatorChar)));\n                if (File.Exists(path)) selected.Add(path);\n            }\n        }\n\n        // Capture every before image before the single generation/member decision.\n        var changes = new List<TrustedLocalFileChange>();\n        foreach (var path in selected.OrderBy(path => path, StringComparer.Ordinal))\n        {\n            var relative = GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows());\n            var bytes = await ReadLocalFileBytesAsync(lease, relative)\n                ?? throw new InvalidDataException(\"A selected session file disappeared during replacement preparation.\");\n            // Keep the manager's root spelling at its existing mutation/lease boundaries.\n            changes.Add(new(ResolvePath(relative), bytes, null));\n        }\n        var replacement = Guid.NewGuid().ToString(\"N\");\n        changes.Add(new(SessionGenerationPath, generation.Bytes,\n            JsonSerializer.SerializeToUtf8Bytes(new SessionGenerationDocument(1, replacement))));\n        if (clearGameState)\n            foreach (var directory in RequiredDirectories)\n                scope.EnsureDirectory(Path.Combine(BasePath, directory.Replace('/', Path.DirectorySeparatorChar)));\n\n        var outcome = await PublishLocalCoreAsync(lease, generation.Binding, changes, CancellationToken.None);\n        RequireCommittedLocalPublication(outcome);\n        CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();\n        return replacement;\n"
+    },
+    {
+      "alias": "WORK",
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "start": 11,
+      "end": 59,
+      "bytes": 3352,
+      "sha256": "4befc78d83288c4dcc8c93c459f5d2a84cace0832b9f6add03cef7b293137abb",
+      "text": "    // A task/cleanup lease is an operation capability, never a general canonical\n    // writer. Check at participating mutation entrypoints before preparation.\n    internal void EnsureWorkerGeneralMutationAllowed(CanonicalWriteLease lease)\n    {\n        EnsureValidCanonicalWriteLease(lease);\n        EnsureMainMutationAllowed(lease);\n        if (IsWorkerCleanupAudit(lease) || lease.WorkerPurpose?.Dispatch != null)\n            throw new InvalidOperationException(\"Original worker purpose cannot perform this canonical mutation.\");\n    }\n\n    private void EnsureWorkerAuditAppend(CanonicalWriteLease lease, string path, ReadOnlySpan<byte> suffix)\n    {\n        if (lease.WorkerPurpose?.Dispatch != null)\n            throw new InvalidOperationException(\"Task admission cannot append canonical bytes.\");\n        if (!IsWorkerCleanupAudit(lease)) return;\n        EnsureWorkerRecoveryAdmission(lease,\"worker-cleanup-audit-append\");\n        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery ||\n            !string.Equals(path, GmWorkerAuditLog.AuditLogPath, StringComparison.Ordinal))\n            throw new InvalidOperationException(\"Cleanup audit requires its exact ordinary audit path.\");\n        lease.WorkerPurpose!.Execution.ValidateCleanupAppend(lease.WorkerPurpose, suffix);\n    }\n\n    internal void EnsureWorkerPurposePublication(CanonicalWriteLease lease, TrustedLocalGeneration generation,\n        IReadOnlyList<TrustedLocalFileChange> changes)\n    {\n        EnsureMainMutationAllowed(lease);\n        if (lease.WorkerPurpose?.Dispatch is { } dispatch)\n        {\n            EnsureWorkerRecoveryAdmission(lease,\"worker-task-reservation\");\n            if (changes.Count != 1 || generation != TrustedLocalGeneration.Existing(dispatch.GenerationId))\n                throw new InvalidOperationException(\"Task reservation cannot publish another member or generation.\");\n            var relative = GetLocalRelativePath(GameSessionPath, changes[0].Path, OperatingSystem.IsWindows());\n            dispatch.ValidateReservation(this, lease, relative, changes[0].Before, changes[0].After);\n            return;\n        }\n        if (!IsWorkerCleanupAudit(lease)) return;\n        EnsureWorkerRecoveryAdmission(lease,\"worker-cleanup-audit-publication\");\n        var purpose = lease.WorkerPurpose!;\n        if (changes.Count != 1 || generation != TrustedLocalGeneration.Existing(purpose.Execution.Identity.GenerationId))\n            throw new InvalidOperationException(\"Cleanup audit cannot publish another member or generation.\");\n        var change = changes[0];\n        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;\n        if (!string.Equals(Path.GetFullPath(change.Path), ResolvePath(GmWorkerAuditLog.AuditLogPath), comparison))\n            throw new InvalidOperationException(\"Cleanup publication is outside the original audit path.\");\n        var prefix = change.Before ?? Encoding.UTF8.GetPreamble();\n        if (change.After == null || change.After.Length < prefix.Length ||\n            !change.After.AsSpan(0, prefix.Length).SequenceEqual(prefix))\n            throw new InvalidOperationException(\"Cleanup audit must preserve every original prefix byte.\");\n        EnsureWorkerAuditAppend(lease, GmWorkerAuditLog.AuditLogPath, change.After.AsSpan(prefix.Length));\n"
+    },
+    {
+      "alias": "PROFILE",
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "start": 156,
+      "end": 170,
+      "bytes": 714,
+      "sha256": "711890300614e3c1e0608680996670120dd9dc6c44cf38ce6dc7c7a986b171be",
+      "text": "    public static WorkerBridgeProfile CreateSoulContentCodexTemplate() =>\n        CreateContentAuthoringCodexTemplate(\n            \"soul_content_codex\",\n            \"Codex soul content author\",\n            WorkerRole.SoulContent,\n            WorkerTaskType.SoulContent,\n            [\n                \"game_state/meta/soul_state.json\",\n                \"game_state/meta/afterlife_chronicles.json\",\n                \"game_state/meta/afterlife_global_flags.json\",\n                \"game_state/control/progression_schedule.json\",\n                \"game_state/control/pending_dice_state.json\",\n                \"OtherGuides/Afterlife_Contract_Matrix.md\",\n                \"Examples/E_CLI_Afterlife_Turns.txt\"\n            ]);\n"
+    }
+  ],
+  "static_search_evidence": [
+    {
+      "name": "literal_pending",
+      "args": [
+        "git",
+        "grep",
+        "-n",
+        "PendingDiceStatePath\\|pending_dice_state.json",
+        "8c098487398830c20bd3705261c2a2c507bce5d8",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityGMBridge"
+      ],
+      "bytes": 3856,
+      "sha256": "8662c61aba0efbfdda5da270a10eda763decdd6ee7244b1147ed1c18bdc64637",
+      "text": "8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:1998:                     PendingTurnStateService.PendingDiceStatePath\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Launcher/bookofeternity.ps1:120:                readPaths = @(\"game_state/meta/soul_state.json\", \"game_state/meta/afterlife_chronicles.json\", \"game_state/meta/afterlife_global_flags.json\", \"game_state/control/progression_schedule.json\", \"game_state/control/pending_dice_state.json\", \"OtherGuides/Afterlife_Contract_Matrix.md\", \"Examples/E_CLI_Afterlife_Turns.txt\")\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs:167:                \"game_state/control/pending_dice_state.json\",\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/LiveTurnPreparationService.cs:40:        PendingTurnStateService.PendingDiceStatePath,\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/LiveTurnPreparationService.cs:403:        _fs.DeleteFile(writeLease, PendingTurnStateService.PendingDiceStatePath);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:16:    public const string PendingDiceStatePath = \"game_state/control/pending_dice_state.json\";\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:122:    public void Clear() => _fs.DeleteFile(PendingDiceStatePath);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:142:        var json = await _fs.ReadFileAsync(PendingDiceStatePath);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:149:        var json = await _fs.ReadFileAsync(writeLease, PendingDiceStatePath);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:172:        await _fs.WriteFileAtomicAsync(PendingDiceStatePath, JsonSerializer.Serialize(state, JsonOpts));\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/PendingTurnStateService.cs:182:            PendingDiceStatePath,\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/SaveLoadService.Loading.cs:449:            PendingTurnStateService.PendingDiceStatePath,\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/SpiritualOriginalDraftInputs.cs:142:               !control.Equals(\"pending_dice_state.json\", StringComparison.OrdinalIgnoreCase) &&\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs:195:            .Append(PendingTurnStateService.PendingDiceStatePath).ToArray();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2020:            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2100:            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2181:                PendingTurnStateService.PendingDiceStatePath,\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2243:                        PendingTurnStateService.PendingDiceStatePath,\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/game_master_daemon.ps1:2771:                readPaths = @(\"game_state/meta/soul_state.json\", \"game_state/meta/afterlife_chronicles.json\", \"game_state/meta/afterlife_global_flags.json\", \"game_state/control/progression_schedule.json\", \"game_state/control/pending_dice_state.json\", \"OtherGuides/Afterlife_Contract_Matrix.md\", \"Examples/E_CLI_Afterlife_Turns.txt\")\n",
+      "limit": "Textual evidence only; dynamic/raw/native coverage remains OPEN"
+    },
+    {
+      "name": "service_consumers",
+      "args": [
+        "git",
+        "grep",
+        "-n",
+        "_pendingTurnState\\|pendingTurnState.GetOrCreate\\|pendingTurnState.Reveal\\|pendingTurnState.Rewrite\\|pendingTurnState.Clear",
+        "8c098487398830c20bd3705261c2a2c507bce5d8",
+        "--",
+        "BookOfEternityClient"
+      ],
+      "bytes": 4171,
+      "sha256": "7490cc522d08840bf03e53e9ef8926af98e1e6b805a3bf253408db5b7c7f0084",
+      "text": "8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine.cs:71:    private readonly PendingTurnStateService _pendingTurnState;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine.cs:156:        _pendingTurnState = pendingTurnState;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:172:            await _pendingTurnState.RotateAfterAcceptedTurnAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:1060:                    await _pendingTurnState.RotateAfterAcceptedTurnAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:1870:        await _pendingTurnState.RotateAfterAcceptedTurnAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:4536:        var pending = await _pendingTurnState.GetOrCreateAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs:3992:        var pendingState = await pendingTurnState.GetOrCreateAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode.cs:56:        _pendingTurnState = pendingTurnState;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:624:            if (!isAfterlifeRealm && _pendingTurnState != null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:626:                pendingTurnState = await _pendingTurnState.GetOrCreateAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1155:        if (_pendingTurnState == null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1162:        var pendingState = await _pendingTurnState.GetOrCreateAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1170:        pendingState = await _pendingTurnState.RevealAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1210:        if (_pendingTurnState == null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1217:        var currentState = await _pendingTurnState.GetOrCreateAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:1235:        var newState = await _pendingTurnState.RewriteAsync();\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:2738:        var pendingState = _pendingTurnState != null\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs:2739:            ? await _pendingTurnState.GetOrCreateAsync()\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:34:    private readonly Services.PendingTurnStateService? _pendingTurnState;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2036:                await pendingTurnState.GetOrCreateAsync(writeLease);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2042:                var revealed = await pendingTurnState.RevealAsync(writeLease);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2121:                var rewritten = await pendingTurnState.RewriteAsync(writeLease);\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:2212:                    var pending = await pendingTurnState.GetOrCreateAsync(writeLease);\n",
+      "limit": "Textual evidence only; dynamic/raw/native coverage remains OPEN"
+    },
+    {
+      "name": "family_assignments",
+      "args": [
+        "git",
+        "grep",
+        "-n",
+        "MutationIntentRecorder =\\|IsLegacyStorageRecovery =\\|BrowserLocalAccess =",
+        "8c098487398830c20bd3705261c2a2c507bce5d8",
+        "--",
+        "BookOfEternityClient"
+      ],
+      "bytes": 2095,
+      "sha256": "6037cb587c4b34dea0fc1053e6481ad107378a4f8d6ae4799652eb7c86bc52b4",
+      "text": "8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs:27:        if (ReferenceEquals(lease.BrowserLocalAccess, this)) lease.BrowserLocalAccess = null;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs:112:        lease.BrowserLocalAccess = access;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:20:        lease.IsLegacyStorageRecovery = true;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:22:        finally { lease.IsLegacyStorageRecovery = previous; }\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.cs:334:            MutationIntentRecorder = null;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.cs:3586:        if (writeLease.MutationIntentRecorder == null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.cs:3598:        if (writeLease.MutationIntentRecorder == null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Core/FileSystemManager.cs:3610:        if (writeLease.MutationIntentRecorder == null)\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs:527:            writeLease.MutationIntentRecorder = mutationIntentRecorder;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs:581:                writeLease.MutationIntentRecorder = null;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:351:            writeLease.MutationIntentRecorder = null;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:363:            writeLease.MutationIntentRecorder = null;\n8c098487398830c20bd3705261c2a2c507bce5d8:BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:480:        writeLease.MutationIntentRecorder = null;\n",
+      "limit": "Textual evidence only; dynamic/raw/native coverage remains OPEN"
+    }
+  ],
+  "selected_source_diff": {
+    "path": "/tmp/t197-pending-fate-family-reservation-producer-design-20261016-source.diff",
+    "args": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "BookOfEternityClient/Core/GameLoop.cs",
+      "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "BookOfEternityClient/Core/FileSystemManager.cs",
+      "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "BookOfEternityClient/UI/ExplorerLifecycleLocalTurnCommandResultBuilder.cs",
+      "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs"
+    ],
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "scope": "Selected32 production files only; metadata and other work excluded"
+  },
+  "immutable_context": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "28f40b5d47c6ab26da1a98b60610acdc795b29bb",
+      "sha256": "0717e9e428b442027505abceec203d76d98bdef79633a22aec43b8a54a0a27f6",
+      "bytes": 52152,
+      "treatment": "IMMUTABLE_CONTEXT_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "f472d7bb0e64396b0c5c653adc74de846db3fd32",
+      "sha256": "5ad003b44148e146c1acc3baa465d8d045e9ad9f2c6514a19ce1d4719db283ab",
+      "bytes": 147940,
+      "treatment": "IMMUTABLE_CONTEXT_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016.md",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "a66ef31ee33592aba2fea355126b54560150665c",
+      "sha256": "37213767ea6c168d64740c84c96f44db301f5ed7606dfcd45d0edcec08047708",
+      "bytes": 14013,
+      "treatment": "IMMUTABLE_CONTEXT_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016.json",
+      "commit": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "blob": "9696d34313f91fb8f78b0e428874eaec57813e50",
+      "sha256": "d0673ff2f34e136c80c6d70df2d2e6dda38c541c899fcdb0523cbeb61aef7e40",
+      "bytes": 65179,
+      "treatment": "IMMUTABLE_CONTEXT_ONLY"
+    }
+  ],
+  "current_issuer_exists": false,
+  "producer_contract_accepted": false,
+  "full_writer_inventory_closed": false,
+  "cross_process_exclusion_qualified": false,
+  "browser_lifetime_qualified": false,
+  "hot_recovery_demonstrated": false,
+  "PF_P05_closed": false,
+  "full_H_B02_closed": false,
+  "engineering_release": false,
+  "activation": false,
+  "F2": false,
+  "all_new_authority": "UNACCEPTED_OPERATION_BOUND_EXCLUSION_AND_TRANSFER_CONTRACT",
+  "tests": "UNRUN",
+  "builds": "UNRUN",
+  "runtime": "NOT_EXECUTED",
+  "discovery": "NOT_EXECUTED",
+  "network": "NOT_USED",
+  "repo_writes": false,
+  "delegation": false,
+  "final_stop": true,
+  "markdown_artifact": {
+    "path": "/tmp/t197-pending-fate-family-reservation-producer-design-20261016.md",
+    "sha256": "0f803eea5f6225676b9f91a0bd6e268d0218c20b95b423ab1ad82dec1a09ae80",
+    "bytes": 45197
+  }
+}

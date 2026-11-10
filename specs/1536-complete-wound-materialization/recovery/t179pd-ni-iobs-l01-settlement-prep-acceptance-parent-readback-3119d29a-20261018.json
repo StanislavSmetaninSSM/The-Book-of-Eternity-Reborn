@@ -1,0 +1,31 @@
+{
+  "kind": "PARENT_PREP_ACCEPTANCE_METADATA_READBACK",
+  "utc": "2026-10-18T13:01:14.741890+00:00",
+  "actualSource": "3119d29ae5a44c6bc5804b91a9f6efe47e4b66d6",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "release": {
+    "status": "SEPARATELY_NAMED_FIRST_CORRECTIVE_SETTLEMENT3_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_NEW_CLEAN_V2_PREFLIGHT",
+    "mode": "settlement3",
+    "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057/record.json",
+    "expectedCases": 3,
+    "category": "fr063-joint-interface-settlement",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "cases": 1
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "cases": 2
+      }
+    ],
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Exactremote/full clean GitHub recovery of this acceptance; current pins and9/full1575 inventories unchanged; new clean v2 before-census; only one serial NoBuild/FIRST actual with new disposable roots. Same-shell after-census on any return, original native/stdout/TRX/cleanup/inventories frozen before qualification. No retained44 replay, source/assertion change, automatic retry/advance or concurrent actual. Any unexpected failure/material finding freezes. Old original settlement1PASS2FAIL and lost old crashUNKNOWN immutable."
+  },
+  "qualifiedCases": 44,
+  "oldCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "recoveryReceiptSha256": "0f1135bf92bd587eabb7f326d3f451bfd69c47ee79703e682054a4a3bd45746c"
+}

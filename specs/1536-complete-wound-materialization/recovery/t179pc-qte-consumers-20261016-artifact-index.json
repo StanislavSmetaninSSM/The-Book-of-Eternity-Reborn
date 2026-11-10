@@ -1,0 +1,103 @@
+{
+  "source_sha": "2622abcf9163153ea4f3a78d3a0e136adc38658f",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-105436-427-53258-1dd8ff67ad1d4bc7b8af3c1ecff2c3ae-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-qte-consumers-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-105436-427-53258-1dd8ff67ad1d4bc7b8af3c1ecff2c3ae-categories/dotnet-test.log",
+      "raw_bytes": 1682807,
+      "raw_sha256": "d934a3998ec152b47f802a9544983030797b1f6dff6dbbeebb747b4aed03ca1e",
+      "stored_sha256": "0f0b5bd5e0c1e26e38b2b68c341a702085d245c70adb9839cf6315b3c7149304"
+    },
+    {
+      "path": "t179pc-qte-consumers-20261016-fr063-common-qte-consumers-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-105436-427-53258-1dd8ff67ad1d4bc7b8af3c1ecff2c3ae-categories/fr063-common-qte-consumers-integration-001.trx",
+      "raw_bytes": 57228,
+      "raw_sha256": "d25a6db751ab897a3c6041b70475b8b7b3f772d47a3fb3ae9c24bb026d8f1fb1",
+      "stored_sha256": "4d16290c5a7b624acfec61c53311d89f6a13f95bbb086fc8dfb23bda0c358ec6"
+    },
+    {
+      "path": "t179pc-qte-consumers-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-105436-427-53258-1dd8ff67ad1d4bc7b8af3c1ecff2c3ae-categories/plan.json",
+      "raw_bytes": 1559,
+      "raw_sha256": "76035b591f727a2d8ca19f9d65395495d417e7a0e52fb888a8977721a72e74f3",
+      "stored_sha256": "76035b591f727a2d8ca19f9d65395495d417e7a0e52fb888a8977721a72e74f3"
+    },
+    {
+      "path": "t179pc-qte-consumers-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-105436-427-53258-1dd8ff67ad1d4bc7b8af3c1ecff2c3ae-categories/summary.json",
+      "raw_bytes": 1458,
+      "raw_sha256": "20342f2af6142cbf8c4fd1cf1184a93478cd9580de75928e6960a3b082af7ba5",
+      "stored_sha256": "20342f2af6142cbf8c4fd1cf1184a93478cd9580de75928e6960a3b082af7ba5"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-common-qte-consumers"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "2622abcf9163153ea4f3a78d3a0e136adc38658f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-common-qte-consumers",
+        "Seconds": 37.7594075,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0652083,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.052254,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.14345,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0035554,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:42.6535907",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

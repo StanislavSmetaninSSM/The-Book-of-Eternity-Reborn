@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-treatment-terminal-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "522293211630f2024ca0e68e44fd7f4f6af0eb03",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.4558095,
+  "Descriptors": [
+    {
+      "Name": "portable-treatment-terminal-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-terminal-causal-linux",
+      "Categories": [
+        "portable-treatment-terminal-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

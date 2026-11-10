@@ -1,0 +1,30 @@
+{
+  "SHA": "748b6da41c6dc69b8b57963d06a4c9e864f98d5e",
+  "Base": "13dea365e1bbc6ce5410894be03d2c8f3e34fb1c",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "Bytes": 43990,
+      "SHA256": "c0b90e06ac5d11dd66197928f6675ffd8d0838700e250ae067c2f8d79cf82a60",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1645679,
+      "SHA256": "24605f6a3fa56f97fb17f62a1ba684456d619f3b1000e1dd5b5910f5472d5326",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-capture-preparation-failure-remote.json",
+      "Bytes": 42408,
+      "SHA256": "9cc45b8676e7d14937eedf2a24866a58890d4d377fd574bb2f4e2ef5bf1b4602",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cut-compiled-fields.txt",
+      "Bytes": 643,
+      "SHA256": "1e38026329be0be51b6e77e8b3367c6f1d7cc63e8afe22b3b3e4a3e86eb61270",
+      "RemoteExact": true
+    }
+  ]
+}

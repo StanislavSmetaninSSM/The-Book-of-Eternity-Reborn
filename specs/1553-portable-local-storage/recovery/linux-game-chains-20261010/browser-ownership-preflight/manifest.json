@@ -1,0 +1,21 @@
+{
+  "Scope": "preparation only, no game process/GM/command",
+  "Source": "uncommitted correction of 60ca2104 browser_chain chromium_pids/exited functions",
+  "Files": [
+    {
+      "Path": "preflight.py",
+      "SHA256": "3d785639d63393cc9e771a0ed227ca7a11f740ea4af3ac2bd359e5bdea4eb347",
+      "Bytes": 1190
+    },
+    {
+      "Path": "result.json",
+      "SHA256": "274e456d2e9cb0f8df93c3383d62519e9aa064183c38899a7a493ef4c5f7bca9",
+      "Bytes": 268
+    },
+    {
+      "Path": "guardian.json",
+      "SHA256": "4ed72442e07800602ecd130041681c6e7ada187a1040b068a4b908f7638731fc",
+      "Bytes": 97
+    }
+  ]
+}

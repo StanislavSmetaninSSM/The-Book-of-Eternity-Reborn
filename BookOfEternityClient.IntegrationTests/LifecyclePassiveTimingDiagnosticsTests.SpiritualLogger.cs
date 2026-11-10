@@ -1,0 +1,107 @@
+using System.Text.Json;
+using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class LifecyclePassiveTimingDiagnosticsTests
+{
+    /// <summary>Proves full existing Engine logging and an original macro begin survive an unreleased body.</summary>
+    [Fact]
+    public async Task SpiritualLoggerAndMacroBeginArePersistentBeforeTheBodyReturns()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-lifecycle-timing-control-" + Guid.NewGuid().ToString("N"));
+        var capture = new LifecyclePassiveTimingDiagnostics(nameof(SpiritualLoggerAndMacroBeginArePersistentBeforeTheBodyReturns),
+            _transportTestOutput, gzipRecords: true);
+        var timings = new OperationTimingAccumulator();
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var failure = new InvalidOperationException("original full phase exception");
+        const string message = "Original Engine phase: целитель; full message\nsecond line";
+        var expected = message + "\n" + failure;
+        Task? body = null;
+        Exception? primary = null;
+        var visible = false;
+        var formatterCalls = 0;
+        try
+        {
+            Directory.CreateDirectory(root);
+            // Match the journey: a window may predate binding, original scopes may not.
+            var window = timings.StartWindow(captureEvents: true);
+            capture.BindFixtureRoot(root);
+            capture.Arm(window);
+            var logger = new GameEngineTurnLifecycleTests.SpiritualLifecycleTestLogger(capture);
+            body = BodyAsync();
+            var first = await Task.WhenAny(entered.Task, body);
+            await first;
+            Assert.True(entered.Task.IsCompletedSuccessfully);
+            await WaitUntilAsync(() =>
+            {
+                var rows = ReadRows(capture.RecordsPath);
+                visible = rows.Any(r => r.TryGetProperty("Operation", out var name) && name.GetString() == "FactionService.WiringBlockedBody" &&
+                    r.GetProperty("State").GetString() == "begin") &&
+                    rows.Any(r => r.TryGetProperty("Message", out var text) && text.GetString() == expected);
+                return visible;
+            });
+            Assert.False(body.IsCompleted); Assert.True(visible);
+            Assert.Equal(1, formatterCalls);
+            Assert.Equal("Engine diagnostics:\n" + expected, logger.Describe());
+            Assert.False(File.Exists(capture.ReportPath));
+
+            async Task BodyAsync()
+            {
+                using var operation = timings.Measure("FactionService.WiringBlockedBody");
+                logger.Log(LogLevel.Information, new EventId(1), message, failure, (state, _) => { formatterCalls++; return state; });
+                logger.Log(LogLevel.Debug, new EventId(2), "disabled", null, (state, _) => { formatterCalls++; return state; });
+                entered.SetResult();
+                await release.Task;
+            }
+        }
+        catch (Exception error) { primary = error; }
+        finally
+        {
+            release.TrySetResult();
+            if (body is not null)
+            {
+                var bodyFailure = await Record.ExceptionAsync(() => body!);
+                primary ??= bodyFailure;
+            }
+            try { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
+            catch (Exception error) { primary ??= error; }
+            await capture.CompleteAsync(primary);
+        }
+        AssertComplete(capture);
+        using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
+        Assert.True(report.RootElement.GetProperty("GzipFooterClosed").GetBoolean());
+        Assert.Equal(2, ReadRows(capture.RecordsPath).Count(r => r.TryGetProperty("Operation", out _)));
+    }
+
+    /// <summary>Original events older than the bound writer's clock must remain an incomplete capture.</summary>
+    [Fact]
+    public async Task EventsBeforeFixtureBindingCannotClaimCompleteCapture()
+    {
+        var root = CreateRoot();
+        var capture = new LifecyclePassiveTimingDiagnostics(nameof(EventsBeforeFixtureBindingCannotClaimCompleteCapture),
+            _transportTestOutput, gzipRecords: true);
+        var timings = new OperationTimingAccumulator();
+        var window = timings.StartWindow(captureEvents: true);
+        using (timings.Measure("FactionService.BeforeBinding")) { }
+        capture.BindFixtureRoot(root);
+        capture.Arm(window);
+        capture.WriteLine("Full original post-binding message ensures a real gzip member.");
+        Directory.Delete(root, recursive: true);
+        var failure = await Record.ExceptionAsync(() => capture.CompleteAsync());
+        var aggregate = Assert.IsType<AggregateException>(failure);
+        Assert.Contains(aggregate.Flatten().InnerExceptions, error => error.Message == "Invalid original passive timing event.");
+        using var report = JsonDocument.Parse(File.ReadAllText(capture.ReportPath));
+        Assert.False(report.RootElement.GetProperty("DiagnosticComplete").GetBoolean());
+        Assert.True(report.RootElement.GetProperty("GzipFooterClosed").GetBoolean());
+        Assert.Equal(2, report.RootElement.GetProperty("TimingAttempted").GetInt64());
+        Assert.Equal(0, report.RootElement.GetProperty("TimingStored").GetInt64());
+        Assert.Equal(1, report.RootElement.GetProperty("OutputStored").GetInt64());
+        Assert.True(window.Capture().Complete);
+        Assert.False(report.RootElement.GetProperty("FixtureClosing").GetProperty("Retained").GetBoolean());
+    }
+
+}

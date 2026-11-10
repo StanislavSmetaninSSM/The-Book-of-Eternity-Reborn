@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-browser-replacement-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f2a1af604b3b473a7323d25f014b26a44c7bac9c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 103.1654836,
+  "Descriptors": [
+    {
+      "Name": "portable-original-browser-replacement-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-browser-replacement-close-linux",
+      "Categories": [
+        "portable-original-browser-replacement-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalBrowserReplacementOwnersRetainGenuineUncertaintyAndRefusal",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalBrowserReplacementOwnersRetainGenuineUncertaintyAndRefusal",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

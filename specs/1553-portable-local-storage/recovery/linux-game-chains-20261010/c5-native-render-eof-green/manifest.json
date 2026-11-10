@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "cb4934790feb9c32f13aed42597ab8d7aa8e0024",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation -NoBuild",
+  "Status": "PASS",
+  "Scope": "14/14; native original owning-thread input components, finite-height scroll regression still absent; code/test source fec27dc4, metadata-only cb493479; no actual C5 assertion included.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "ea42eb736dcd1ebc88232aa8c2a8aa2b25d8031ed485db2944c462a785593c83",
+      "RawBytes": 3509
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-001.trx.gz",
+      "RawSHA256": "a79331ef809cdcc830b241dab101e49b91876b2e7fb015334b686f3d123da145",
+      "RawBytes": 22611
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "c6f40eb9d2542ecef564ae463185f1e4b84663137b1d0585475e2f85d61d569e",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "58350ca5aeb3e673f4a59744fd7bb598808d1da539b3eaf4bc4a5ae5cb3f5a5b",
+      "RawBytes": 1663413
+    }
+  ]
+}

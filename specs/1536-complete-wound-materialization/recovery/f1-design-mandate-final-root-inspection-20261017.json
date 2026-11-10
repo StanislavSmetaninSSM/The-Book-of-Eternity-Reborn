@@ -1,0 +1,65 @@
+{
+  "kind": "root_independent_review_verification_no_runtime",
+  "reviewed_commit": "b8584299ea431cbf8594a66963dc6261fb254c45",
+  "base": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+  "reviewer_launch_config": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "fork_turns": "none",
+    "backend_telemetry": "unknown"
+  },
+  "reports": {
+    "md": [
+      "/tmp/f1-design-mandate-independent-review-20261017.md",
+      "2f24a6d230b50ff7af2e93bad85ddb9d5f5f2eea6b26a293644214ca673dd6a3"
+    ],
+    "json": [
+      "/tmp/f1-design-mandate-independent-review-20261017.json",
+      "f5ee2ef007ed7b2de75bf3b3d14241ae000c1de4ca3cb3a8a8619e1d4bef68e2"
+    ]
+  },
+  "review_pin_entries_checked": 27,
+  "review_exact_projections_checked": 26,
+  "review_exact_diffs_checked": 7,
+  "review_recovery_rows_checked": 76,
+  "review_new_links_and_anchors_checked": 11,
+  "confirmed_findings": 0,
+  "earlier_root_inspection": {
+    "kind": "root_static_inspection_no_runtime",
+    "candidate": "b8584299ea431cbf8594a66963dc6261fb254c45",
+    "base": "0734df4c63d7f6ecd0f9efee73d0314fee822850",
+    "changed_paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/f1-design-mandate-initial-github-recovery-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/f1-design-mandate-static-source-audit-20261017.json",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "source_pins_checked": 12,
+    "projections_checked": 19,
+    "source_test_tool_catalog_workflow_governance_continuity_diff_bytes": 0,
+    "preserved_historical_documents": 5,
+    "unique_unchecked_main_tasks": 14,
+    "recoveries": [
+      {
+        "path": "/tmp/f1-design-mandate-initial-github-recovery-20261017.json",
+        "sha256": "4d4724915d616cc97d59695ae257bfbec15f229a8f74a51ab87d7cfd26956728",
+        "rows_checked": 37,
+        "directory": "/workspace/f1-design-mandate-initial-github-20261017",
+        "all_changed_paths_covered": false
+      },
+      {
+        "path": "/tmp/f1-design-mandate-wip-github-recovery-20261017.json",
+        "sha256": "bde164e5a1da102277003b619bcee6b2dccbbeed84217c90b0187f71129c3627",
+        "rows_checked": 39,
+        "directory": "/workspace/f1-design-mandate-wip-github-20261017",
+        "all_changed_paths_covered": true
+      }
+    ],
+    "runtime_executed": false,
+    "checker_text": "from pathlib import Path\nimport hashlib,json,re,subprocess\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn'); prefix='specs/1536-complete-wound-materialization/';base='0734df4c63d7f6ecd0f9efee73d0314fee822850';candidate='b8584299ea431cbf8594a66963dc6261fb254c45'\ndef git(*argv):return subprocess.check_output(['git','-C',str(repo),*argv])\nassert git('rev-parse','HEAD').decode().strip()==candidate and not git('status','--porcelain')\nchanged=git('diff','--name-only',base,candidate).decode().splitlines();assert len(changed)==7\nassert all(p.startswith(prefix) and p.endswith(('.md','.json')) for p in changed)\nreceipts=[]\nfor f,expected in [('/tmp/f1-design-mandate-initial-github-recovery-20261017.json',37),('/tmp/f1-design-mandate-wip-github-recovery-20261017.json',39)]:\n    receipt=Path(f); packet=json.loads(receipt.read_text());assert packet['file_count']==expected==len(packet['files'])\n    recovered=[]\n    for row in packet['files']:\n        data=(Path(packet['directory'])/row['revision']/row['path']).read_bytes()\n        assert len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256']\n        assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\0'+data).hexdigest()==row['git_blob']\n        assert data==git('show',row['revision']+':'+row['path'])\n        recovered.append((row['revision'],row['path']))\n    if packet['current_branch_sha']==candidate:\n        assert set(changed)<=set(p for rev,p in recovered if rev==candidate)\n    receipts.append({'path':str(receipt),'sha256':hashlib.sha256(receipt.read_bytes()).hexdigest(),'rows_checked':expected,'directory':packet['directory'],'all_changed_paths_covered':packet['current_branch_sha']==candidate})\naudit=json.loads((repo/prefix/'recovery/f1-design-mandate-static-source-audit-20261017.json').read_text()); projections=0\nfor row in audit['source_pins']:\n    raw=git('show',candidate+':'+row['path']); assert raw==(repo/row['path']).read_bytes() and len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256'] and git('rev-parse',candidate+':'+row['path']).decode().strip()==row['git_blob']\n    for q in row['projections']:\n        assert ''.join(raw.decode().splitlines(keepends=True)[q['first_line']-1:q['last_line']])==q['text'];projections+=1\ncontinuity=git('diff','--binary',base,candidate,'--',':(exclude)'+prefix);assert continuity==b''\n# Historical five documents remain exact except explicit new prefix/sections and the reviewed repair-reference typo.\nfor rel in ['plan.md','tasks.md']:\n    old=git('show',base+':'+prefix+rel).decode();new=(repo/prefix/rel).read_text();assert new.endswith(old)\nfor rel in ['spec.md','design/lawful-active-joint-tail-b.md','design/lawful-active-joint-tail-b-implementation-plan.md']:\n    old=git('show',base+':'+prefix+rel).decode(); new=(repo/prefix/rel).read_text()\n    notices=re.findall(r'^> \\*\\*Действующее поручение 2026-10-17.*?\\n\\n',new,re.M);assert len(notices)==1;new=new.replace(notices[0],'',1)\n    if rel.endswith('lawful-active-joint-tail-b.md'):\n        new=new[:new.index('\\n## 16. Восстановленный DESIGN F1:')];new=new.replace('Candidate repair\\nтолько §8.5.3,','Candidate repair\\nтолько §8.5.4,')\n    if rel.endswith('implementation-plan.md'):\n        a=new.index('## Уточнение T178–T191 для восстановленного DESIGN-only поручения\\n');b=new.index('## File ownership и интерфейсы\\n',a);new=new[:a]+new[b:]\n    assert new==old,rel\nmain_tasks=re.findall(r'^- \\[([ x])\\] T(17[89]|18[0-9]|19[01])(?=\\s)',(repo/prefix/'tasks.md').read_text(),re.M);assert len(main_tasks)==14 and all(x==' ' for x,n in main_tasks) and len({n for x,n in main_tasks})==14\ngit('diff','--check',base,candidate)\nresult={'kind':'root_static_inspection_no_runtime','candidate':candidate,'base':base,'changed_paths':changed,'source_pins_checked':len(audit['source_pins']),'projections_checked':projections,'source_test_tool_catalog_workflow_governance_continuity_diff_bytes':len(continuity),'preserved_historical_documents':5,'unique_unchecked_main_tasks':14,'recoveries':receipts,'runtime_executed':False,'checker_text':Path(__file__).read_text()}\nout=Path('/tmp/f1-design-mandate-root-inspection-20261017.json'); assert not out.exists();out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\\n')\nprint(json.dumps({k:v for k,v in result.items() if k not in ['checker_text','changed_paths','recoveries']}))\n"
+  },
+  "checker_text": "from pathlib import Path\nimport hashlib,json,re,subprocess,urllib.parse,unicodedata\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn'); base='0734df4c63d7f6ecd0f9efee73d0314fee822850';candidate='b8584299ea431cbf8594a66963dc6261fb254c45'\ndef h(x):return hashlib.sha256(x).hexdigest()\ndef git(*a):return subprocess.check_output(['git','-C',str(repo),*a])\nfiles={'md':('/tmp/f1-design-mandate-independent-review-20261017.md','2f24a6d230b50ff7af2e93bad85ddb9d5f5f2eea6b26a293644214ca673dd6a3'),'json':('/tmp/f1-design-mandate-independent-review-20261017.json','f5ee2ef007ed7b2de75bf3b3d14241ae000c1de4ca3cb3a8a8619e1d4bef68e2')}\nfor f,expected in files.values():assert h(Path(f).read_bytes())==expected\nx=json.loads(Path(files['json'][0]).read_text());assert x['reviewed_commit']==candidate and x['diff_base']==base and not x['severity_ranked_findings']\nassert git('rev-parse','HEAD').decode().strip()==candidate and not git('status','--porcelain')\npins=x['independent_audit']['document_pins']+x['independent_audit']['source_pins']\nfor row in pins:\n    raw=git('show',row['revision']+':'+row['path']);assert len(raw)==row['bytes'] and h(raw)==row['sha256'] and git('rev-parse',row['revision']+':'+row['path']).decode().strip()==row['git_blob']\nprojections=x['independent_audit']['source_projections']+x['document_checks']['document_projections']\nfor row in projections:\n    raw=git('show',row.get('revision',candidate)+':'+row['path']);text=''.join(raw.decode().splitlines(keepends=True)[row['first_line']-1:row['last_line']]);assert text==row['text']\n    if 'sha256' in row:assert h(text.encode())==row['sha256']\ndiffs=x['independent_audit']['checked_diffs']; raw=git('diff','--binary',base,candidate);assert len(raw)==diffs['full_binary']['bytes'] and h(raw)==diffs['full_binary']['sha256']\nprotected=git('diff','--binary',base,candidate,'--',*diffs['protected_paths']);assert not protected and h(protected)==diffs['protected_diff']['sha256']\nfor row in x['document_checks']['document_diffs']:\n    raw=git('diff','--binary',base,candidate,'--',row['path']);assert raw.decode()==row['text'] and len(raw)==row['bytes'] and h(raw)==row['sha256']\nrecovery_rows=0\nfor packet in x['recovery_membership_checks']:\n    assert h(Path(packet['receipt_path']).read_bytes())==packet['receipt_sha256']\n    for row in packet['files']:\n        raw=(Path(packet['directory'])/row['revision']/row['path']).read_bytes();assert raw==git('show',row['revision']+':'+row['path']) and len(raw)==row['bytes'] and h(raw)==row['sha256'];assert hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\\0'+raw).hexdigest()==row['git_blob'];recovery_rows+=1\nfor row in x['document_checks']['new_local_links']:\n    file,sep,anchor=row['target'].partition('#');dest=(repo/row['source']).parent/file;assert dest.is_file()\n    if sep:\n        def slug(s):return ''.join(c for c in s.lower() if not unicodedata.category(c).startswith('P') or c in '-_').replace(' ','-')\n        assert urllib.parse.unquote(anchor) in {slug(m.group(1)) for m in re.finditer(r'^#{1,6} (.+)$',dest.read_text(),re.M)},row\nprior=json.loads(Path('/tmp/f1-design-mandate-root-inspection-20261017.json').read_text())\nresult={'kind':'root_independent_review_verification_no_runtime','reviewed_commit':candidate,'base':base,'reviewer_launch_config':{'model':'gpt-6-astra','reasoning_effort':'xhigh','fork_turns':'none','backend_telemetry':'unknown'},'reports':files,'review_pin_entries_checked':len(pins),'review_exact_projections_checked':len(projections),'review_exact_diffs_checked':7,'review_recovery_rows_checked':recovery_rows,'review_new_links_and_anchors_checked':11,'confirmed_findings':0,'earlier_root_inspection':prior,'checker_text':Path(__file__).read_text()}\nout=Path('/tmp/f1-design-mandate-final-root-inspection-20261017.json');assert not out.exists();out.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\\n')\nprint(json.dumps({k:v for k,v in result.items() if k not in ['reports','earlier_root_inspection','checker_text']}))\n"
+}

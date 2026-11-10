@@ -18,6 +18,17 @@ public partial class FileSystemManager
     internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshotBelowWorkerFence(CanonicalWriteLease lease)
     {
         EnsurePhysicalCanonicalWriteLease(lease);
+        return ObserveLocalGenerationSnapshot();
+    }
+
+    // Read-only seed for an Init-bound helper. This observation grants no lease
+    // or recovery authority; the caller must bind and revalidate it on admission.
+    internal string ObserveExistingHelperGeneration() =>
+        ObserveLocalGenerationSnapshot().Binding.Id
+        ?? throw new InvalidDataException("An existing initialized session generation is required.");
+
+    private LocalSessionGenerationSnapshot ObserveLocalGenerationSnapshot()
+    {
         var scope = new TrustedLocalFileScope([RuntimeRootPath]);
         var path = scope.ValidateFile(SessionGenerationPath);
         if (!File.Exists(path)) return new(TrustedLocalGeneration.Absent, null);

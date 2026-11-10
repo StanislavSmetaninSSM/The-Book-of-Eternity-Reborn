@@ -1,0 +1,190 @@
+# T280 — final seeded cut0 bounded investigation accepted
+
+T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent gpt-6-astra/high review ACCEPTED atd5c31e71d8d9abf2a930811f66a75f002641af60, no actionable findings; fresh GitHub recoverya9a00ddd9519e2b0bb75fd5b8d5cd289349940b0:435files/allGitblobs/exactHEAD/clean verified independently. T275..280 bounded investigation complete with T279 FAIL; no gameplay/originalfive/Linux qualification.
+
+Separate reviewer independently checked raw1FAIL/0skip/completeselection, unchanged820/600/category15/outer20, Committed+Prepared/turn42/CommonCallbacks0/actualexit73 and distinct resumer timeout/no verdict; ZIP SHA/all14indexedfiles/extracted child streams, both EOF/join/cleanup/two absent roots/T219/3DLL/83artifactfiles; all435 recovered Git blobs/exacta9aHEAD/clean and d5c31remote. No actionable findings. Code remains previously accepted f479; no production/default-path/assertion weakening. Acceptance completes failed-probe preservation only. No causal diagnosis, retry, further cuts, budget increase or production optimization follows from it.
+
+
+---
+
+# T278 — current local seed binding accepted
+
+T278 binding ACCEPTED by separate gpt-6-astra/high at21b88351fcb82bc43fe745f7861b739acd4c3625: exactlyone genuine generatorPASS/0skip,source203.401s;82files513708bytes,all96archivefiles/all83Gitartifactfiles/all38localdirs and1769currentinputfingerprint verified;3DLLunchanged. Newmanifest5439B2F4…,FP07644F81…;current complete local artifact/exact working-source closure only. Git checkout requires explicit empty-directory/input-byte restoration, no fallback. Exactlyone T279 seededcut0 authorized by this gate; UNRUN so far. OriginalWindows0/5/LinuxUNRUN.
+
+Reviewer independently re-enumerated1769working inputs/rawhashes and reproduced the exact generator fingerprint; all payload/manifest/Git bytes, local directory inventory, true source42 tuple, copied-root/source cleanup and3DLLverified. One recovery clarification corrected: seven empty dirs are archived but absent from Git; explicit verified transport restoration documented, without .gitkeep, loader repair or normalizing data. No code change/regeneration needed.
+
+---
+
+# T277 — seeded cut0 SOURCE/PREP accepted
+
+Separate gpt-6-astra/high accepted compiledf479d42a72f7412871e797575a1b1bd2c6dabd07 and metadata8b1ae811cda07039f8a02b5ca5ffa701fab99c84. Verified all47indexedarchivefiles/archiveSHA,115rawPASS/0skip/completecleanup,XML0errors/changedXML0,current3DLLhashes+versions,catalog839/default295/exactgen1/6m+seededcut01/15m/originalbudgets. No source/project/selection/base-input delta; no actionable findings.
+
+One T278 genuine generation allowed; exact new artifact/source/DLL binding requires focused acceptance before T279. Original Windows0/5 and LinuxUNRUN retained.
+
+---
+
+# T274 — final seed prototype accepted
+
+Separate gpt-6-astra/high accepted source ef93fbde7cde3fddd0b0cf20c57102fa785dc330, runtime metadata22acebccb41a986632cf586b8f8d4b184dbe2099, evidence d2ed51d00f2c1667f0cac68ff02e5121cd774c6b and recovery checkpointaea971007e24108a19a6b942f982ececc85fb031, with no actionable findings.
+
+Independently verified one complete PASS/0skip within6min, genuine story/occurrence/inactive-tail markers bound to manifest tuple, archiveSHA/all96indexedfiles/all82payloadhashes+lengths/all38directories, runtimegenerationDATAonly, unchanged3DLL, source/twocopies absent. Independently rehashed all329 restored files with zero mismatches; clean recovery HEADd2ed51d and remoteaea971007 confirmed.
+
+Actual source42 preparation206.249s, payload513708bytes, copy0.105/0.083s, separate read-only production validation0.385/0.299s. Export/open/transport prototype is qualified on Windows. No Stage43/crash/current-owner or resumer-speed claim; originalWindows0/5PASS/LinuxUNRUN. No further runtime or source changes after accepted coherent block.
+
+---
+
+# T272 — seed SOURCE/PREP accepted
+
+Separate gpt-6-astra/high accepted compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330 and metadata860146fda0eb5ee887639f897bcf7e0b031de288. All42 raw TRX PASS/0skip, causal linked-source41PASS1FAIL, retained43+14 affectedPASS, all indexed archive hashes including29final PREP files, three DLLs/versions, XML0errors/changedXML0, catalog837/default279/exactgenerator1case6min verified. Both P2 findings resolved: linked Compile producer-source closure and bounded real limit/link/partial-cleanup negatives. No source/selection/budget delta between compiled and metadata.
+
+Exactly one T273 genuine source42 preparation/import experiment is permitted. Generator UNRUN at acceptance; no Stage43/crash/current-owner qualification, Windows0/5 and LinuxUNRUN retained. Parent owns constructor/fingerprint/generator; bounded Sol6.1/high codec implementation; independent Astra/high review found two concrete gaps corrected before generation. No measured model-cost or runtime-saving claim.
+
+---
+
+# T268 — source-only fixture design accepted
+
+T268: independent gpt-6-astra/high accepted source-only spec10/plan8 at04c6a9bbced0ee2a634c48b1f3557a931c43777b, no actionable findings. Fresh GitHub recovery verified 10 design/governance files, exact clean HEAD and all blobs; T268-design-recovery.json. No code/tests/builds/generator/runtime actions or new performance/portability/PASS claim.
+
+Reviewer checked all five cuts/oracles against actual source, genuine source42→Stage43 boundary, detached data vs current authority, real exit73/new-owner/mechanical/culture/held/error/repeat/native contracts. Residual gates remain: closed inventory, Windows copies, constructor adoption without overwrite, fingerprint closure, isolation and measured benefit. T263 resumer timeout remains unresolved; seed reuse alone does not establish a short passing crash test.
+
+---
+
+# T265 — failure evidence and recovery accepted
+
+T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
+
+Resumer41 stage records/24 activity samples; final Limited at320.591s,23889canonical-initial observations since custody. Silence after quota exhaustion establishes neither a hang nor completion. Conditional static>=64snapshot-read calculation is supported by source structure, not a measured attribution. No remaining actionable findings; no runtime/production changes during review.
+
+---
+
+# T262 — SOURCE/PREP accepted
+
+Separate gpt-6.1-sol/xhigh accepted compiled2c05158f9b7f37de4cb67b529bfd2704d352a386 and bound evidence 9960a73515479cc033fff1d84c00e8b3d5e41824. Two P2 wiring findings corrected: final pre-launch recheck after setup, nullable elapsed/budget evidence on post-launch exhaustion. Causal RED26PASS17FAIL, fresh GREEN43PASS, XML0errors/changedXML0, catalog/default237/explicit69 and source/DLL/raw archive verified. Original assertions/cleanup/production/native and fixed policies retained. T263 is one new bounded cut0 attempt; no five PASS or Linux runtime claim.
+
+---
+
+# T262 — focused SOURCE corrections before runtime
+
+Separate gpt-6.1-sol/xhigh found two P2 wiring gaps at3df56557e after43GREEN: the pre-launch check preceded metadata/start-info setup, and post-launch expiry threw before shared budget metadata existed. Parent confirmed both. Recheck now sits directly before Process.Start after setup. Elapsed/820/600 snapshot is seeded before final selection, with nullable ChildWaitSeconds on expiry; existing finally still owns cleanup. No original assertion/policy/production change. Pure43GREEN and initial XML evidence preserved separately in T262-initial-green.json/zip. Fresh final build/affected controls and focused review remain required. No other SOURCE/XML/catalog/docs finding; independent rawRED43/26PASS17FAIL confirmed.
+
+---
+
+# T260 — failure evidence and recovery accepted
+
+Independent gpt-6.1-sol/xhigh accepted04624368e586f227c663c16140c1d71388a75bd7 plus inspected wording corrections: static analysis did not establish a loop (does not prove absence), and obsolete ready-to-run sentences are explicitly historical. Raw1FAIL/0PASS/0skip; resumer timeout but no category timeout.34stages/17samples,14822canonical-initial observations through214.292s; no exhausted quota. Streams, current3DLL and cleanup match. Fresh GitHub recovery290 files clean/exactHEAD; reviewer sampled blobs and recoveredZIP. T260-clean-recovery.json records full parent verification. Windows0/5, T255/LINUX UNRUN. Shared820 proposal not yet implemented or accepted for runtime.
+
+---
+
+# T258 — SOURCE/PREP accepted
+
+Separate gpt-6.1-sol/xhigh accepted compiled b0560bbd50b95d0ad0ce1c0814748150da369a13 and evidence c1991a3983d97e797e574ab3989643511dcd3732 with no actionable findings. Exact diff from cd965223e: Windows ordinary-resumer-only wiring, enum names, fixed scalar populations, locking,24/64/2048 limits and15s event sampling conform. Existing assertions, cleanup and600/220/15m retained; no production/native/source/Linux/diagnostic delta. Raw RED9PASS5FAIL and GREEN14PASS confirmed. XML0errors/changedXML0, catalog/default219/explicit26 valid. Three current DLLs/versions and42 archive files match. T259 single investigation ready; no deadlock, five PASS or Linux claim.
+
+---
+
+# T256 — accepted failure evidence
+
+Independent gpt-6.1-sol/xhigh accepted T254 at fd5e8158ffc041354290f12a2839ccf0f72babf8: exactly1 completed FAIL/0PASS/0skip, resumer child timeout (category did not time out), producer73, resumer-1, EOF/join/cleanup confirmed. Raw streams/stages and ZIP hash match; three DLLs remain bound to652bdd76a. No reporting finding. Fresh GitHub recovery276 files clean/exact blobs; T256-clean-recovery.json. Historical T219 retained fixture still exists after T254. Windows0/5 qualified, T255 not run, Linux UNRUN. No runtime retry authorized by this evidence review.
+
+---
+
+# CRASH5 — независимый review implementation / PREP
+
+## Текущий review spec5 / plan3
+
+Отдельный контекст `review_spec5_implementation`, явно выбранные gpt-6-astra/high; parent реализовывал изменения. Проверяющий работал read-only с exact diff, source pins, raw TRX и source/DLL provenance.
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 выполнена один раз:FAIL_CHILD_TIMEOUT220,1 completed/1 failed/0skip, полного возврата хода нет; подробности и cleanup в T244-probe-outcome.json. T245 НЕ ЗАПУЩЕНА: gate не выполнен. Повтор T244 или увеличение лимита этим plan3 не разрешены. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+Ниже сохранена история предыдущих review; их разрешения и результаты относятся к указанным версиям.
+
+Reviewer: отдельный agent context `review_crash5_implementation`, явно выбранные **gpt-6-astra / high**. Parent реализовывал изменения; reviewer исходники не редактировал и tests/build/discovery/native не запускал.
+
+## SOURCE
+
+Первичный полный diff: approved plan1 `6f2d4d48615db910168d6c1a32841a1ffb037147` → `51f1225b56645d6be1ae7893857404e9561006d3`. Оригинальные требования spec3 и сохраняемые контракты проверены вместе с code/tests/docs.
+
+Единственное замечание P2: test driver ожидал HostExited перед StopAndObserveAsync в natural-stop-race; production в таком случае пропускал S. Это пробел обязательного L9 coverage, не доказанный production defect. Parent подтвердил путь и исправил только test driver/assertions на `5f0c08ae5b9303bca7c0a44b1509edcf89fa974c`: реальный S ставится в ожидание при живом child, затем child/supervisor естественно завершаются и запись в закрытый pipe faulted. Проверяется positive natural root0/EOF/dispose без uncertainty. Native observations не подменяются.
+
+Focused SOURCE correction accepted на5f; новых замечаний нет. Bootstrap B2/callback/A2, sticky uncertainty, original-owner custody, legacy worker/terminal defaults, неизменный C protocol, полные streams, platform guards, stage bounds и исходные игровые assertions проверены. Linux runtime остаётся UNRUN.
+
+## PREP
+
+Reviewer сверил T217-prep.json с шестью текущими DLL; все hashes совпали. Обе XML-enabled builds exit0, changed-source XML diagnostics0. Catalog813categories/11831methods valid. Ordinary1Theory/1descriptor/5cases/15m, contract4descriptors/37cases. PREP0executed,cleanupcomplete.
+
+Отдельно сверены четыре TRX helper run на51f:9 integration common guards,15 unit finite+source guards,6 stages,7 existing managed cases. Все37 executed=passed,0failed/error/timeout/aborted/notExecuted. Повтор после test-only Linux fixture correction не требуется; provenance51f сохранён.
+
+Handoff commands проверены: отдельная native package preparation, fresh XML builds, Linux PREP review, controls перед ordinaryfive, проверка exit codes. Parent дополнительно синтаксически разобрал оба PowerShell блока без выполнения.
+
+**SOURCE + PREP accepted at5f0c08ae5b9303bca7c0a44b1509edcf89fa974c; open findings0.** Это допускает согласованный локальный Windows5. На этой границе Windows5 и весь Linux runtime — UNRUN. Финальный evidence review выполняется после фактического Windows результата.
+
+## T219 first Windows evidence
+
+The same independent reviewer accepted FAIL_INCOMPLETE with no reporting findings: six DLL hashes still bind to5f, metadata checkpoint9313 has no C# change; console cuts1/4/2/0 timeout at220s, exit-1, EOF/join true, CleanupFailure null. No producer73/resumer observed. No TRX: planned5/completed0, distinct console failures4. Category900.034s, total wall921.433s, runner exit124; generic20-minute outer-lane wording is not category elapsed time. Runner owned-tree cleanup true does not mean fixture deletion: cut3 retained directory remains. Raw log/summary copies match. Last scalar stage does not prove the blocked await. No runtime commands were issued by reviewer.
+
+## T227 SOURCE and preparation
+
+Focused independent SOURCE accepted8326d14b1 with no findings. Exact common source42 fixture arguments, ordinary Windows guards, original custody/deadlines, null default for existing consumers, bounded checkpoint mapping, unchanged production/assertions/qualification selection and multiline XML inspected. RED80b confirms6PASS/1expectedFAIL; no runtime probe executed by reviewer.
+
+Parent PREP8326d14b1: XML builds unit40.14s94warnings0errors, integration23.95s96warnings0errors; changed XML diagnostics0. New xUnit1013 is the intentionally public reflection child entrypoint, consistent with existing dispatch helpers. Stage7GREEN allpassed21.579s with owned cleanup. Catalog814/11833 valid; probe1descriptor/1case/5m, ordinary1descriptor/5cases/15m; PREP0executed. Six DLL hashes still match T227-prep.json. Focused independent PREP accepted before the one probe, no findings; reviewer independently matched all six DLL hashes and TRX/catalog/selection counts.
+
+## T227 final evidence / T228 SOURCE
+
+Independent gpt-6-astra/high accepted T227 FAIL_CHILD_TIMEOUT with no findings:1completed/1failed/0skip, runner1/category timeout false,242.070s, child42552 exit-1/EOF/join true, cleanup null and two fixture-removal records. Raw stdout matches join. capture87.740s → validated161.501s proves progress/interval, not an isolated method duration or cause.
+
+T228 SOURCE25ef748ce accepted with no findings. Only sourceprobe enables existing read/mutation hooks. Fixed phases, bounded1024paths*512characters, eight periodic emissions/phase plus boundary snapshots, shared writer64/2048 limits, no paths/payload/newI/O; lock order verified. RED5f32304ce:9cases7PASS/2expectedFAIL. Fresh integration XML45.33s153warnings0errors, changed XML diagnostics0; stage9GREEN9PASS0skip22.577s/cleanup. Catalog814/11835; one probePlanOnly5m,0executed. T228-prep.json binds the three selected integration DLLs; unit sources unchanged/not rerun. Focused independent PREP accepted before the one causal-count probe, no findings: all three selected DLLs, stage9GREEN, catalog814/11835 and probe1/5m verified.
+
+## Final T228 evidence and draft spec4
+
+Separate gpt-6-astra/high review accepted194b5b665, no blocking findings. TRX1completed/1failed/0skip; child220s/runner1/category timeout false/wall242.654s; raw stdout, counts and two owned-root cleanup records agree. All three selected DLL hashes still match. Last post-validated snapshot:1740 rollback initial callbacks,59distinct paths,1681repeats,no path overflow. These are lower-bound callback observations, not completed I/O or isolated timing.
+
+Draft spec4 accepted for presentation to the owner: preserves dependency-change detection, original assertions/budgets, requires causal RED and negative controls, leaves safe validation lifetime explicitly unresolved for planning. This is NOT design/implementation approval for an optimization. Production requires explicit owner approval and the stated Spec Kit phases. Windows5 remains FAIL_INCOMPLETE; Linux remains UNRUN.
+
+Workflow checkpoint: parent owned implementation; independent Astra/high review found one substantive P2 in native race-control coverage, corrected and accepted. Later test-only probes and evidence reviews had no blocking findings. Ordinary Windows plus two hypothesis-specific probes localized and measured actual work; no fixture shortcut or production cache was introduced. No cost/time savings are claimed. The proposed validation lifetime warrants a complex independent review after planning/implementation; the current parent-owned-block plus separate-review pattern is retained.
+## Spec4 approval and plan2 independent review
+
+Owner approved the actual draft spec4 from da3efec34 with «да одобряю»; requirements retained. Read-only gpt-6-astra/high consultation identified the synchronous ambient issuer, explicit read-only reservation need, exact post-materialization invocation boundary, final original-dependency comparison and hidden warm/cold admission reads. Parent authored the canonical planning documents, no code/runtime changes.
+
+Separate reviewer `review_spec4_plan2`, explicitly gpt-6-astra/high, reviewed da3efec34..1bb888ebd and the small N=1 clarification. One P2: the shared reservation has a second direct MetaControlShape consumer absent from the proposed selection. Parent added six exact existing Meta neighbor selectors in a bounded3m category, synchronized plan/tasks/quickstart. Reviewer inspected the correction and accepted the document block for owner presentation, no remaining findings. This is not implementation or runtime acceptance.
+
+The reviewer confirmed that participating-writer exclusion plus durable-change rejection before returning a result meets spec4/constitution; arbitrary external edit→restore races remain outside the supported contract. No further scope approval is required for that interpretation. Algorithm bounds and acquisition-inclusive counts remain distinct. Plan2 itself requires owner review under writing-plans before execution. Windows5 FAIL_INCOMPLETE and Linux UNRUN unchanged.
+
+Workflow observation: one architectural consultation resolved a concrete lifetime question; independent review found one missing shared-consumer selection and it was corrected before implementation. No savings or runtime improvement claimed. Parent implementation plus separate complex review remains the chosen approach.
+### Spec4/plan2 implementation review, bd9c8dd434..df6636c30
+Separate gpt-6-astra/high reviewed source, tests, docs and selection read-only. SOURCE: changes required (outer admitted owner disposal; actual current-state issue/foreign lease coverage). PREP pending. Parent confirmed outer-owner causal RED at e7b8dc967 and implemented an atomic shared-access close/removal guard; affected re-review remains required. Reviewer accepted nine stale upstream source-pin refreshes after full historical diff review and required the MortalQteDecisionPublication.StatePath declaration pin. No Linux/game runtime acceptance implied. Detailed run evidence: source42-investigation.md.
+
+### T233 final SOURCE / Windows PREP acceptance
+Independent gpt-6-astra/high verified evidence d8791bab6: all eight TRX hashes and90 distinct PASS/0skip; Meta7/7/8 within unchanged3m limits with cleanup; final integration/production DLL hashes; no production changes since9c; accepted fixture2b16; revised8/90 selection preserves original selectors. SOURCE and Windows PREP accepted for exactly one original source42 probe,220/10/10 and category5m. Windows5 remains conditional on actual source42 PASS; LinuxUNRUN. Stale quickstart six-category/retired aggregate references corrected as requested. This verdict is preparation acceptance, not gameplay qualification.
+
+### T234 final evidence and draft spec5 — accepted for owner presentation
+Separate agent review_spec4_implementation, explicitly gpt-6-astra/high, reviewed1084968cd plus the corrected draft budget line read-only. Archived TRX/summary confirm1 completed/1failed/0skipped, child220s, category timeout false. Saved stdout/stderr and stages match the original TRX data; QTE192.405s and actual client history are observed, source42 turn return is absent. PID45820 EOF/join true, no secondary/cleanup failure, both owned roots removed. Current integration/production DLL hashes still match the accepted PREP; production/test source did not change.
+Evidence conclusions accepted:885 rollback callbacks cover the whole post-validated interval and do not establish exclusive QTE terminal-validation cost. Draft spec5 preserves approved spec4, limits proposed scope to one held-lease validation invocation, and requires causal RED, original lease custody, physical current reads, preserved errors and independent SOURCE/PREP. One wording correction was required and verified: child220s/stop-join10s/EOF10s. No remaining findings.
+This accepts evidence closure and presentation of the corrected draft, not implementation or runtime. Owner approval of spec5 and subsequent plan3/tasks/analyze remain pending. Windows5 remains FAIL_INCOMPLETE/not rerun; Linux UNRUN. Parent performs final remote recovery separately.
+Workflow checkpoint: independent review found a substantive outer-owner-close gap and missing affected controls during implementation; causal tests and corrections were verified before PREP. Actual runs also exposed a test-observer race and an overlarge Meta category; their narrow fixes/split preserved contracts and prior outcomes. Retain one developer plus separate complex Astra/high reviewer for the proposed lease extension; no measured cost or speed benefit is claimed.
+
+### T239 plan3 independent review — corrections before owner presentation
+
+Separate agent review_spec5_plan3, explicitly gpt-6-astra/high, reviewed f9658ae0e…5801f2a39 read-only against approved spec5 and actual related sources. Verdict: changes required, two P2 findings. (1) Direct coordinated PublishLocalFilesAsync → PublishLocalCoreAsync and RecoverTrustedLocalStorage in FileSystemManager.TrustedLocalStorage.cs were omitted from the guard-only file map and finite-inventory starting set. (2) Common CanonicalWriteLease.DisposeAsync changes lacked existing ordinary owner-release controls for context failure, real lock reacquisition and primary/completed disposition.
+
+Parent confirmed both against actual source. Plan/tasks now begin audit across the full partial FileSystemManager family, include the named trusted-local routes and preparation in the guard-only scope, and require paused-writer tests in both orders. A separate2m category selects three existing PortableCoordinatedLeaseTests methods/four cases; selection becomes15 descriptors. No storage algorithms, approved requirements, existing test budgets or gameplay oracles changed. Research/quickstart/handoff are synchronized. Focused re-review accepted3d5419f6f3b3ffdcb593da923fd477f3024d5e51 for owner presentation: both P2 resolved, related documents synchronized, no new findings. No implementation, build, discovery or tests were executed. This is plan acceptance only; T240 evidence and future SOURCE/PREP remain open.
+
+### T243 spec5 SOURCE accepted; Windows PREP pending
+
+Separate agent review_spec5_implementation, explicitly gpt-6-astra/high, reviewed f368bd5929e56bcd2ee21df0fcfb96c072789e57…a60cdf7d7a0ee89009505218bd52cdc009d63859 (production/tests a436008305ade9333b43d7d13128bd7012a20b9a) read-only against approved spec5/plan3. No actionable findings. Reviewed common state transitions, 40 writer envelopes and routes, borrowed/owned cleanup, immutable evidence, actual QTE calls, tests, selection and documentation. Causal RED and caller7 GREEN independently confirmed.
+
+Reviewer explicitly approved refresh of the six changed shared pins in World/Meta, addition of eight inventoried filesystem dependencies in World and seven in Meta, and refresh of the already-present Meta TrustedLocalStorage and QteSceneService pins; unchanged pins must remain unchanged and World does not acquire a QTE pin. Parent applies only this finite set. Final pin diff, fresh bound XML builds/audit, catalog/PlanOnly and all15 selected categories still require PREP review. No source42/Windows5/Linux success or whole-game speedup inferred. External edit→restore races and active-context reflection misuse remain outside approved guarantee.
+
+T243 correction: final PREP f821 found lifecycle3=1PASS2FAIL after contracts36PASS. Shared permanent _ownerClosing wrongly outlived a completed nested participating frame. Actual nested-session regression7b239 observed custody18=16PASS2expectedFAIL, complete/no timeout/cleanup. Removed only that permanent field/assignment/disjunct; existing registered Closing/BoundClosing frames remain checked under the same lock. Independent Astra/high confirmed root cause and correction, approved only MainRunFence hash A36B26B7... in both existing lists. Earlier SOURCE acceptance superseded pending fresh GREEN/PREP. Selection remains15 categories, now178 cases. No game run consumed; LinuxUNRUN.
+
+T243 browser qualification85f4:13 categories169PASS before browser5 incomplete at180s. Raw stdout records three assertion failures before timeout (resource history/runtime and late history); no TRX, so none of these five is counted PASS. Runner-owned cleanup succeeded. Under AGENTS category-splitting rule, independent Astra/high accepts exact same three method selectors partitioned2+2+1, each3m, selection17/178; no game bounds or assertions change. Added full existing result.Error output before unchanged assertions to diagnose actual cause. BrowserOriginal scope versus local browser transaction eligibility remains a source hypothesis pending runtime evidence. Source42 unconsumed, LinuxUNRUN.
+
+T243 browser correction: diagnostic4f3c two complete failures confirm original browser transaction entered borrowed console validation before the injected late error; rollback itself restored files. Exact real BrowserLocalAccess unit negativecceef19=18PASS1expectedFAIL. New overload now preserves scalar for that original lease-bound marker; borrowed issuer rejects it. Independent Astra/high reviewed exact two condition additions and approved only ValidationService/PendingSnapshotValidationRead pins. Final SOURCE/PREP pending GREEN. Final qualification17categories179distinct: retained85f4 unaffected8groups89PASS (contracts36,lifecycle3,Meta reservation7/ownership8,World core2,source3,mutation26,QTE neighbors4), fresh9groups90 (custody19,proof24,caller7,World controls24,Meta proof7,browser2+2+1,lease release4). Source/DLL provenance must remain separate. This finite correction does not change spec or game bounds; T244 unconsumed, LinuxUNRUN.
+
+T243 generation fixture correction: fresh8617692 custody19, late-browser2 and resource-browser2 PASS. Generation1 fails before QTE on gm-main-owner.lock; its paused RunBound callback already owns participating main admission, so expecting concurrent ClearGameState to win is invalid. Dispose also failed because the paused task was not joined; raw evidence retained in T243-generation-fixture-red. Independent Astra/high confirmed unchanged baseline admission contract and approved moving pause before RunBound, preserving old generation/token, actual replacement, exact BOM bytes and original SessionReplacedException, with release/join in finally. Existing admitted-transaction contention test added to preserve the opposite ordering. No production locks/pins changed. Final selection17/180 pending discovery; retain prior89 and fresh86123 with separate bindings, run remaining68 after this fixture repair. T244 remains unconsumed; LinuxUNRUN.
+
+Final T246: independent gpt-6-astra/high accepted exact87ca1a289 code/evidence/docs with no findings, including32 stages, original cleanup and unchanged six DLL hashes. Fresh empty GitHub recovery verified250source/evidence files against exact Git blobs at87ca1a289; clean checkout and remote HEAD match. [Recovery record](T246-clean-recovery.json). T244 archive SHA2566D567C3D2D2F608ADA201DF170A5253A1B930605E7A101A47EF5E7126E7CAC33. This closes plan3 reporting, not Windows/Linux game qualification.
+
+T249 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh atcee572dc65e4c5e1ea59fe0c946bb9aa768f8a93; no findings. Policy17PASS, original/default/extended/five discovery verified, current3DLL hashes match. Archive T249-prep.zip SHA2568A5FE194C6481C2E1F73AD171A3935F7D4C1D32ED76B3017962E7E45B468CA12. T250 not started at this checkpoint; exactly one explicit600/10/10/12m run permitted by spec6 and user waiver. Historical T244FAIL and LinuxUNRUN unchanged.
+
+T251 accepted by separate gpt-6.1-sol/xhigh at5149447e0a320292e9c5688f01480cd63b002827, no findings: raw1PASS/35stages, actual258.780s return, child identity/exit0/EOF/join/cleanup,3unchanged DLLs, ZIP/TRX hashes verified. Fresh recovery261uniquefiles/clean/exactHEAD independently checked. Record T251-clean-recovery.json. T244FAIL/five NOTRERUN/Linux UNRUN retained.
+
+T253 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh: compiled652bdd76a45ce2abc8b94eed145bbeea628cff93, final evidence295549bf4bd92b0ca99ad5e73a429f0219313297. No outstanding findings. Corrected producer600/resumer220/category15, five exact wrappers and unchanged common assertions/native/cleanup verified. Initial RED/correction RED/25GREEN,XML/catalog/default205/explicit12case PlanOnly checked; current3DLL/versions and all36manifested files match. ZIP ABD9B40EA18C1B5ECF98EA710FAD74D3299C9C6C4BE401CA68652000ACA60D47. One T254cut0 may run; T255 only after complete PASS; Linux UNRUN.

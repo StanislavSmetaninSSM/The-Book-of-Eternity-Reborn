@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "29.999995718993887s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+    "/tmp/g-a91f6d2c7b30/tools/map-zero-token.input.json",
+    "/tmp/g-a91f6d2c7b30/tools/map-proof-modules.json",
+    "/tmp/g-a91f6d2c7b30/tools/map-zero-token.json"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 127644,
+    "birthTick": 5392276,
+    "parentPid": 127532,
+    "uid": 1000
+  },
+  "durationSeconds": 0.31706540400045924,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

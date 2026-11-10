@@ -1,0 +1,155 @@
+{
+  "kind": "PARENT_READONLY_ORIGINAL_ACTUAL_INSPECTION_NOT_INDEPENDENT_ACCEPTANCE",
+  "mode": "legacy3",
+  "actualSource": "9acc5708e6f2e752fd43ae917b8357ed9ce98e1f",
+  "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "nativeExit": 0,
+  "seconds": 869.1273030290001,
+  "expectedCases": 3,
+  "recordSha256": "7f4607ca051df9d79c7a7b990bd26f0b323f675013838878943845524a2d9a59",
+  "tests": [
+    {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    }
+  ],
+  "selections": [
+    {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+      "testId": "fee8cb67-c918-3200-6f6f-fd34df864c6d",
+      "outcome": "Passed",
+      "duration": "00:04:19.0742765",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_result_commit": 2,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_committed_member": 2,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "fr063_joint_complete_union": 1,
+        "fr063_joint_progression_phase_report_arithmetic": 1,
+        "fr063_joint_completion_inert_repeat": 1,
+        "iobs_actual_new_ordinary_after_joint": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-30bea59f748c46ab91564af8508da8a1",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+      "testId": "3d47efd7-188a-2686-c981-041b48c11d86",
+      "outcome": "Passed",
+      "duration": "00:04:17.8435214",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_legacy_factory_installed_readback": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_committed_member": 2,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "fr063_joint_complete_union": 1,
+        "fr063_joint_progression_phase_report_arithmetic": 1,
+        "fr063_joint_completion_inert_repeat": 1,
+        "iobs_actual_legacy_completion": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-62f39c6ebe0d4713bbeb8d5bf751ab61",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+      "testId": "be3b9376-36df-1908-5376-9504c8b81396",
+      "outcome": "Passed",
+      "duration": "00:05:21.8548116",
+      "boundaries": {
+        "fr063_guaranteed_native_pre_original_npc_shape": 1,
+        "qte_story_actual_client_append": 1,
+        "qte_story_actual_engine_result": 1,
+        "qte_physical_actual_occurrence": 1,
+        "fr063_joint_actual_prior42_inactive_tail": 1,
+        "fr063_joint_original_progression_reader_before_owner": 1,
+        "fr063_joint_signed_original_schedule_before_owner": 1,
+        "fr063_joint_natural_stage43_image_before_assert": 19,
+        "fr063_joint_original_inventory_structural_absence_before_assert": 2,
+        "fr063_confirmed_claim_inspection": 1,
+        "fr063_joint_completion_actual_prerequisites": 1,
+        "iobs_actual_legacy_factory_installed_readback": 1,
+        "iobs_actual_public_correction_before_ready": 1,
+        "iobs_actual_completed_capture": 1,
+        "iobs_actual_committed_member": 2,
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem": 1,
+        "fr063_joint_completion_actual_owner_outcome": 1,
+        "fr063_joint_progression_phase_report_arithmetic": 1,
+        "qte_mortal_child_dependency_launch": 1,
+        "fr063_joint_applied_cold_parent_outcome": 1,
+        "iobs_actual_legacy_completion": 1
+      },
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-acdd7767c48e46109995b9fe69659edf",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "jsonLineParseErrors": 0,
+      "error": null,
+      "stack": null
+    }
+  ],
+  "binariesUnchanged": true,
+  "allOutputsUnchanged": true,
+  "namespaceAfter": {
+    "ownedRoots": []
+  },
+  "processesAfter": [],
+  "headAfter": "9acc5708e6f2e752fd43ae917b8357ed9ce98e1f",
+  "statusAfter": ""
+}

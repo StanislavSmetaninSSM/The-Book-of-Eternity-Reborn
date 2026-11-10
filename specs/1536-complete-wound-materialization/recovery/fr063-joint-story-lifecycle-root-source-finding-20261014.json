@@ -1,0 +1,21 @@
+{
+  "sourceHEAD": "d0e50a3074b95dc00f61d68d5949fd5ad4154609",
+  "writerSTOP": "FINALSTOPPED/no pendingtools/no localdelta; lastread93c943exit0",
+  "rootReadChunks": [
+    "4fbee8",
+    "0a490c"
+  ],
+  "sourceOnlyFinding": "ordinary StoryService.AppendTurnAsync catches ordinary append errors/logs+returns, lacks request/G duplicate guard; nullable no-QTEoffer append cannot attest exact owned story completion",
+  "proposedBoundedSeam": "named joint story variant through existing row RequestId/SessionGeneration, authenticated original prefix and fresh applied capability; old writers unchanged",
+  "architecturalConsult": "same retained /root/wound_b2_design_review; no freshmodeltelemetry/override",
+  "projectChecks": "UNRUN; whole gates first",
+  "sourceSHA256": {
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs": "f7de271ee654d2facfd5e80e7cabc33bba94beb14de2183dc6ac18de3524c7f1",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs": "65b0b06148abc5e94a78cfd7f3ba48480a7449b1cc823a8a4b7eb9b82e18ed11",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09"
+  },
+  "utc": "2026-10-14T11:39:03.503005+00:00"
+}

@@ -1,0 +1,246 @@
+{
+  "kind": "D01_ORIGINAL_NONLIVE_HELPER20",
+  "source": "816195741aaaa44034146bb35399bfe0aa336275",
+  "root": "/tmp/l01d01-76df8b42f6ad4ea2",
+  "status": "PASS_NONLIVE_HELPER20_ONLY",
+  "compiler": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "-noconfig",
+      "@/tmp/l01d01-76df8b42f6ad4ea2/checks01-prepare/compile.rsp"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 92817,
+      "birthTick": 4065559,
+      "parentPid": 92792,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "host": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "--runtimeconfig",
+      "/tmp/l01d01-76df8b42f6ad4ea2/checks01-prepare/D01Checks.runtimeconfig.json",
+      "/tmp/l01d01-76df8b42f6ad4ea2/checks01-prepare/D01Checks.dll",
+      "pure"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 92864,
+      "birthTick": 4066186,
+      "parentPid": 92839,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "originalNativeExit": 0,
+  "checks": [
+    {
+      "Name": "live-in-memory-before-EOF",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "decoded-chunks-Unicode-CRLF-offsets",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "identity-five-fields-rejected",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "ordinary-and-other-Boundary-no-control",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "malformed-candidate-raw-retained",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "oversize-unknown-with-raw-retained",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "incomplete-tail-is-not-event",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "exact-duplicate-is-stale-control",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "elapsed-regression-rejected",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "equal-milliseconds-different-markers-valid",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "overflow-loss-and-cancel-health-outside-channel",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "bounded-fingerprint-tracking-exhaustion-explicit",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "construction-fallback-single-original-reader",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "raw-reader-failure-not-EOF",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "consumer-continuation-not-inline-on-publisher",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "actual-queue-residence-separate-from-source-age",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "duplicate-reader-never-started",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "typed-control-and-duplicate-properties",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "wall-age-does-not-become-monotonic-delay",
+      "Passed": true,
+      "Failure": null
+    },
+    {
+      "Name": "consumer-cancel-does-not-cancel-raw-drain",
+      "Passed": true,
+      "Failure": null
+    }
+  ],
+  "helperSource": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+    "bytes": 11956,
+    "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+  },
+  "sourcePins": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Checks.cs",
+      "bytes": 12702,
+      "sha256": "b6d69315a08ffa1870b001059222c4f68fbefbefb901d3064b0bd5305465ef24"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/checks.py",
+      "bytes": 4491,
+      "sha256": "f6f3c5fde2d50b17236e7f3f4b3badb04d629f9c44ec8149bd1b573d8ae61a7a"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 24445,
+      "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+    }
+  ],
+  "phaseSeconds": 0.31668891799927223,
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-nonlive-originals-20261018.zip",
+    "bytes": 48954,
+    "sha256": "2d8ca18e084c15d00f032b607676fb1ef99bd6b7ddb6a490d53427fda3f15567",
+    "files": [
+      {
+        "entry": "checks01-prepare/D01Checks.dll",
+        "bytes": 72704,
+        "sha256": "4dbbc18638376be586d0eb43bbfc2ef150f40e4377eec4b9bd60b49098a78178"
+      },
+      {
+        "entry": "checks01-prepare/D01Checks.pdb",
+        "bytes": 21932,
+        "sha256": "ff0e01aa43348fce6461685ba957ca336f98dd82fae22d1996ef51ec00641ea1"
+      },
+      {
+        "entry": "checks01-prepare/D01Checks.runtimeconfig.json",
+        "bytes": 171,
+        "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+      },
+      {
+        "entry": "checks01-prepare/compile.rsp",
+        "bytes": 18705,
+        "sha256": "ea605406e0bf0a5699a70ec89bac713d765c63854ef8937ab23541d1f91634e7"
+      },
+      {
+        "entry": "checks01-prepare/host.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "checks01-prepare/host.stdout",
+        "bytes": 161,
+        "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+      },
+      {
+        "entry": "checks01-prepare/record.json",
+        "bytes": 3158,
+        "sha256": "734272dc98503403ffba0fa81b86058e897075898d417872a9fcc3e4557cf0f0"
+      },
+      {
+        "entry": "checks01-prepare/started.json",
+        "bytes": 1485,
+        "sha256": "f8f4a3a816fb085b6a2379c85522cdb0d6957d174ab5e0d11f6bcfbb2a043f35"
+      },
+      {
+        "entry": "checks01-pure/host.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "checks01-pure/host.stdout",
+        "bytes": 1730,
+        "sha256": "2a48395f9036ac0ef5ec9e682558216c05639f489568f8d5f3e6ec558349db7e"
+      },
+      {
+        "entry": "checks01-pure/record.json",
+        "bytes": 4054,
+        "sha256": "5e21fb47daa8f44d82eb8f277210507013eca4ccfed3f3897a32ce3b4a2621b2"
+      },
+      {
+        "entry": "checks01-pure/started.json",
+        "bytes": 1511,
+        "sha256": "b05e1eae2f23e14d1ca2752c8904161fc7a0db09990d842b78eacc4f8a4f15fc"
+      }
+    ]
+  },
+  "review": "Pending whole bounded SOURCE/PREP; helper not wired yet",
+  "scope": "20 source-bound non-live checks in isolated .NET harness; zero fixture/worker targets, no game refs/Process.Start/attach/API. Native0, no observer errors, host joined. Not L01 coverage or real child qualification.",
+  "next": "Minimal diagnostic-only wiring/current source packet/recovery; SOURCE/fresh affected PREP before genuine child0/7 selection",
+  "gameplayRelease": "NONE",
+  "L01": "52/57 unchanged"
+}

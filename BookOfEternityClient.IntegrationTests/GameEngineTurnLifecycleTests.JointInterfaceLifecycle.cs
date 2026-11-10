@@ -1,0 +1,458 @@
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Fact]
+    public async Task GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce()
+    {
+        using var probe = new JointInterfaceLifecycleProbe(this);
+        await RunJointCompletionControlAsync(nonzeroProgression: false, useLiveCaller: true,
+            interfaceLifecycleProbe: probe);
+        // The shared helper has already checked real Stage43/original/TREAT,
+        // actual rejected-wave restore/correction/common completion and inert repeat.
+        // Baseline executes those owners; only this first ordering oracle is RED.
+        probe.AssertEarlyInterfaceAndSingleConsumption();
+    }
+
+    [Theory]
+    [InlineData("Utf8")]
+    [InlineData("Bom")]
+    [InlineData("Utf16")]
+    public async Task GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime(string encoding)
+    {
+        using var probe = new JointInterfaceLifecycleProbe(this, encoding);
+        await RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        probe.AssertNoWriteCompletion();
+    }
+
+    [Fact]
+    public async Task GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes()
+    {
+        using var probe = new JointInterfaceLifecycleProbe(this, "Absent");
+        await RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        probe.AssertNoWriteCompletion();
+    }
+
+    [Fact]
+    public async Task GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon()
+    {
+        using var probe = new JointInterfaceLifecycleProbe(this, "Error");
+        await RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        // The shared fixture first proves real original43/held request/repair
+        // dispatch/correlated correction; its deliberate held branch runs below.
+    }
+
+    [Fact]
+    public async Task GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion()
+    {
+        using var probe = new JointInterfaceLifecycleProbe(this, "Warning");
+        await RunJointCompletionControlAsync(false, useLiveCaller: true, interfaceLifecycleProbe: probe);
+        probe.AssertNoWriteCompletion();
+        probe.AssertFrozenWarning();
+    }
+
+    // Test-only observation and public-response authoring. It never constructs a
+    // result/Ready/capability, changes protocol versions or invokes a publisher.
+    private sealed partial class JointInterfaceLifecycleProbe : IDisposable
+    {
+        private readonly GameEngineTurnLifecycleTests fixture;
+        private readonly string scenario;
+        internal JointInterfaceLifecycleProbe(GameEngineTurnLifecycleTests fixture, string scenario = "Changed")
+        {
+            this.fixture = fixture; this.scenario = scenario;
+            _initialCloseFailure = new IOException(scenario == "InterfaceClose"
+                ? "L01 actual I publication owning release failure."
+                : "L01 actual FIRST2 initial owning release failure.");
+        }
+        private const string InterfacePath = "output/interface_updates.json";
+        private const string TwoTags = "[NI_ACTION:first][NI_CONTROL:second]Продолжить обычный ответ.";
+        private const string OneTag = "[NI_CONTROL:second]Продолжить обычный ответ.";
+        private readonly List<InterfacePublicationObservation> _publications = [];
+        private readonly List<JsonObject> _resultCommits = [];
+        private readonly Dictionary<string, byte[]?> _mechanicalBefore = new(StringComparer.Ordinal);
+        private GameEngine? _engine;
+        private GameEngineTestRuntime? _runtime;
+        private GameEngineSessionFinalizationHooks? _priorHooks;
+        private byte[]? _submitted;
+        private byte[]? _warningPublicSeed;
+        private byte[]? _atCapture;
+        private byte[]? _finalInterface;
+        private bool _completionObserved;
+        private JsonObject? _firstMarker;
+        private int _captureCallbacks, _interfaceAtCapture, _sequence;
+        private bool _configured;
+        private bool _initialIntakeConfigured;
+        private bool _absentBeforeOriginalObserved;
+        private DateTime? _submittedMtime, _finalMtime;
+        internal bool ExpectsAbsentInterface => scenario == "Absent";
+        internal bool ExpectsHeld => scenario is "Error" or "InterfaceClose" or "ReadRace" or "ReadyDrift" or "CommonFault" or "Terminal" or "TerminalFault" or "CutResume";
+
+        /// <summary>
+        /// Composes the actual checkpoint observer before the engine is constructed.
+        /// </summary>
+        /// <param name="priorHooks">
+        /// The caller's actual hooks, or <see langword="null"/> when no prior observer is configured.
+        /// </param>
+        /// <returns>
+        /// Hooks that await the original observer before this probe's existing checkpoint observations.
+        /// </returns>
+        internal GameEngineSessionFinalizationHooks ComposeFinalizationHooks(GameEngineSessionFinalizationHooks? priorHooks)
+        {
+            _priorHooks = priorHooks;
+            return new GameEngineSessionFinalizationHooks
+            {
+                AtCheckpointAsync = async checkpoint =>
+                {
+                    var engine = Assert.IsType<GameEngine>(_engine);
+                    if (_priorHooks?.AtCheckpointAsync is { } prior) await prior(checkpoint);
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization &&
+                        scenario.StartsWith("Selector:", StringComparison.Ordinal))
+                        await ObserveActualGenericSelectorAsync(engine);
+                    if (checkpoint == SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization && scenario == "Warning")
+                        await ObserveFrozenWarningConsumersAsync(engine);
+                    await ObserveUncertainCurrentResumeCheckpointAsync(engine, checkpoint);
+                    if (checkpoint.ToString() != "MortalJointCustodyCaptureCompletedBeforePreparation") return;
+                    _captureCallbacks++;
+                    _interfaceAtCapture = _publications.Count(p => p.InterfaceChanged);
+                    _atCapture = File.Exists(fixture._fs.ResolvePath(InterfacePath))
+                        ? File.ReadAllBytes(fixture._fs.ResolvePath(InterfacePath)) : null;
+                    if (scenario == "LateCurrent") ObserveNewLateReadyOwner(engine);
+                    fixture.WritePhysicalInjuryDiagnostic("iobs_actual_completed_capture", new
+                    {
+                        Callback = _captureCallbacks, InterfaceCommittedCohorts = _interfaceAtCapture,
+                        InterfaceRaw = Raw(_atCapture), Trace = _publications.ToArray(),
+                        Meaning = "Existing actual capture checkpoint, not NI authority or a synthetic preparation hook"
+                    });
+                    if (scenario == "CutResume" && _captureCallbacks == 1)
+                        throw _uncertainCutFailure;
+                }
+            };
+        }
+
+        /// <summary>
+        /// Attaches observations to the actual constructed runtime after its composed hooks are injected.
+        /// </summary>
+        /// <param name="runtime">
+        /// The same engine, loop and services produced by the real lifecycle factory.
+        /// </param>
+        internal void Attach(GameEngineTestRuntime runtime)
+        {
+            Assert.Null(_engine);
+            _runtime = runtime;
+            _engine = runtime.Engine;
+            AttachInitialCloseObservation();
+            AttachOuterCloseObservation();
+            AttachReturnedReadRace();
+        }
+
+        internal void ConfigureCorrectedOutputs(Dictionary<string, byte[]> outputs)
+        {
+            Assert.False(_configured); _configured = true;
+            if (scenario == "Absent") { outputs.Remove(InterfacePath); return; }
+            if (scenario == "Warning")
+            {
+                Assert.True(_initialIntakeConfigured);
+                outputs[InterfacePath] = Assert.IsType<byte[]>(_submitted).ToArray();
+                return;
+            }
+            // Missing useful timestamp forces the real ordinary fallback, and an
+            // object with two tags changes on each projection: late replay is visible.
+            var value = new JsonObject
+            {
+                ["dialogueOptions"] = new JsonArray(new JsonObject
+                { ["text"] = ChangesInterface ? TwoTags : "Продолжить обычный ответ." })
+            };
+            if (!ChangesInterface) value["timestamp"] = "2026-10-18T00:00:00.0000000+00:00";
+            if (scenario is "Error" or "Crash:Error" or "Terminal" or "TerminalFault") value["unsupported_result_field"] = true;
+            if (scenario == "Crash:PublishedCulture") value["timestamp"] = "13/02/2026";
+            var text = value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            _submitted = scenario switch
+            {
+                "Utf16" => Encoding.Unicode.GetPreamble().Concat(Encoding.Unicode.GetBytes(text)).ToArray(),
+                "Bom" => Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(text)).ToArray(),
+                _ => Encoding.UTF8.GetBytes(text)
+            };
+            outputs[InterfacePath] = _submitted.ToArray();
+        }
+
+        internal void ConfigureBeforeOriginal()
+        {
+            if (scenario is "ReadRace" or "Absent")
+            {
+                File.Delete(fixture._fs.ResolvePath(InterfacePath));
+                if (scenario == "Absent")
+                {
+                    Assert.False(File.Exists(fixture._fs.ResolvePath(InterfacePath)));
+                    _absentBeforeOriginalObserved = true;
+                }
+                return; // genuine original records absence, so freshness performs NO public I read
+            }
+            if (scenario != "Warning") return;
+            // A real public previous-turn image BEFORE Stage43 signs its own
+            // original. No original manifest/hash is edited or re-signed here.
+            var value = new JsonObject { ["dialogueOptions"] = new JsonArray(new JsonObject
+                { ["text"] = "Продолжить обычный ответ." }), ["timestamp"] = "2026-10-18T00:00:00.0000000+00:00" };
+            _warningPublicSeed = Encoding.UTF8.GetBytes(value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            File.WriteAllBytes(fixture._fs.ResolvePath(InterfacePath), _warningPublicSeed);
+        }
+
+        internal async Task ConfigureInitialIntakeAsync(FileSystemManager.CanonicalWriteLease lease,
+            PendingTurnSnapshotReadAuthority original)
+        {
+            if (scenario is not ("Warning" or "Absent")) return;
+            Assert.False(_initialIntakeConfigured); _initialIntakeConfigured = true;
+            var read = PendingTurnSnapshotReader.ReadCurrent(fixture._fs, lease,
+                new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json"], [InterfacePath]));
+            Assert.True(read.Success, DescribeValidationIssues(read.Issues));
+            var observed = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+            Assert.Equal(original.Realm, observed.Realm);
+            Assert.Equal(original.SessionId, observed.SessionId); Assert.Equal(original.RequestId, observed.RequestId);
+            Assert.Equal(original.SnapshotToken, observed.SnapshotToken); Assert.Equal(original.TurnNumber, observed.TurnNumber);
+            if (scenario == "Absent")
+            {
+                Assert.True(_absentBeforeOriginalObserved);
+                Assert.DoesNotContain(InterfacePath, observed.DeclaredOriginalLogicalPaths);
+                Assert.DoesNotContain(InterfacePath, observed.CoveredLogicalPaths);
+                File.Delete(fixture._fs.ResolvePath(InterfacePath));
+                Assert.Null(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath));
+            }
+            else
+            {
+                _submitted = Assert.IsType<byte[]>(_warningPublicSeed).ToArray();
+                Assert.Equal(_submitted, observed.ReadRequiredBytes(InterfacePath)); // readonly oracle, never authoring input
+                await fixture._fs.WriteFileAtomicBytesAsync(lease, InterfacePath, _submitted);
+                Assert.Equal(_submitted, await fixture._fs.ReadFileBytesAsync(lease, InterfacePath));
+            }
+            var ready = ParseJsonObjectBytes(Assert.IsType<byte[]>(
+                await fixture._fs.ReadFileBytesAsync(lease, "ready/turn_complete.json")));
+            var modified = Assert.IsType<JsonArray>(ready["filesModified"]);
+            if (scenario == "Absent")
+                modified.Remove(Assert.Single(modified.Where(path => path!.GetValue<string>() == InterfacePath)));
+            foreach (var path in modified)
+                Assert.NotNull(await fixture._fs.ReadFileBytesAsync(lease, path!.GetValue<string>()));
+            // Honest first-GM response, before rejected-wave/rollback capture.
+            // Preserve correlation/timestamp and publish Ready last after readback.
+            await fixture._fs.WriteFileAtomicAsync(lease, "ready/turn_complete.json",
+                ready.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_initial_intake_before_rejected_wave", new
+            { scenario, AbsentBeforeOriginalObserved = _absentBeforeOriginalObserved,
+                OriginalDeclaresInterface = observed.DeclaredOriginalLogicalPaths.Contains(InterfacePath),
+                Interface = Raw(await fixture._fs.ReadFileBytesAsync(lease, InterfacePath)), Ready = ready });
+        }
+
+        internal void ObserveCorrectedSubmissionReadback()
+        {
+            Assert.True(_configured);
+            if (scenario == "Absent") File.Delete(fixture._fs.ResolvePath(InterfacePath)); // actual public GM absence
+            Assert.Equal(_submitted, ReadPhysical(InterfacePath));
+            _submittedMtime = Mtime();
+            foreach (var path in new[] { ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath, WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath,
+                WoundHistoryState.HistoryPath, EffectIdentityState.StatePath, EffectCarrierCatalog.PlayerPath,
+                MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,
+                "game_state/world/world_time.json", "game_state/player/status_changes.json", "game_state/player/experience.json",
+                "game_state/core/player_status.json", "game_state/player/stat_points.json" })
+                _mechanicalBefore.Add(path, ReadPhysical(path));
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_public_correction_before_ready", new
+            { scenario, Interface = Raw(_submitted), Mtime = _submittedMtime,
+                Mechanical = _mechanicalBefore.ToDictionary(row => row.Key, row => Raw(row.Value)) });
+        }
+
+        internal void ObservePublication(TrustedLocalPublicationPhase phase, int index)
+        {
+            ObserveSettlementPublication(phase, index);
+            ObserveActualCrashCut(phase, index);
+            ObserveInitialInstallation(phase);
+            if (!_configured || phase != TrustedLocalPublicationPhase.Committed) return;
+            var journalPath = Path.Combine(fixture._fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            using var journal = CleanupPublicationCut.Metadata(File.ReadAllBytes(journalPath));
+            var root = journal.RootElement;
+            var members = root.GetProperty("Members").EnumerateArray().ToArray();
+            var pendingMember = members.FirstOrDefault(member => member.GetProperty("Path").GetString() ==
+                fixture._fs.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+            if (pendingMember.ValueKind != JsonValueKind.Undefined && Image(pendingMember, "After") is { } pendingBytes)
+            {
+                var pending = ParseJsonObjectBytes(pendingBytes);
+                if (pending[MortalJointInterfacePublication.PendingField] is JsonObject result)
+                {
+                    // Exact actual committed member, not a fixture-created DTO.
+                    _ = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(result));
+                    _resultCommits.Add(result.DeepClone().AsObject());
+                    ObservePublishedReadyDrift(result);
+                    fixture.WritePhysicalInjuryDiagnostic("iobs_actual_result_commit", new
+                    { TransactionId = root.GetProperty("TransactionId").GetString(), Record = result,
+                        Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime() });
+                }
+            }
+            var interfaceMember = members.FirstOrDefault(member =>
+                member.GetProperty("Path").GetString() == fixture._fs.ResolvePath(InterfacePath));
+            var markerMember = members.FirstOrDefault(member =>
+                member.GetProperty("Path").GetString() == fixture._fs.ResolvePath(MortalQteDecisionPublication.StatePath));
+            if (interfaceMember.ValueKind == JsonValueKind.Undefined && markerMember.ValueKind == JsonValueKind.Undefined) return;
+            var interfaceChanged = interfaceMember.ValueKind != JsonValueKind.Undefined &&
+                !ImagesEqual(Image(interfaceMember, "Before"), Image(interfaceMember, "After"));
+            var markerCommitted = markerMember.ValueKind != JsonValueKind.Undefined &&
+                markerMember.GetProperty("After").GetProperty("Exists").GetBoolean();
+            if (!interfaceChanged && !markerCommitted) return;
+            var observation = new InterfacePublicationObservation(++_sequence,
+                root.GetProperty("TransactionId").GetString()!, interfaceChanged, markerCommitted,
+                interfaceMember.ValueKind == JsonValueKind.Undefined ? null : Raw(Image(interfaceMember, "Before")),
+                interfaceMember.ValueKind == JsonValueKind.Undefined ? null : Raw(Image(interfaceMember, "After")));
+            _publications.Add(observation);
+            if (markerCommitted && _firstMarker is null)
+                _firstMarker = ParseJsonObjectBytes(Image(markerMember, "After")!);
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_committed_member", observation);
+        }
+
+        internal void AssertEarlyInterfaceAndSingleConsumption()
+        {
+            // CleanupOwnedFixture has removed the mutable root when the shared
+            // helper returns; use the original bytes captured before that close.
+            var final = _finalInterface;
+            fixture.WritePhysicalInjuryDiagnostic("iobs_ordering_original_outcome", new
+            {
+                Callback = _captureCallbacks, InterfaceAtCapture = _interfaceAtCapture,
+                Submitted = Raw(_submitted), AtCapture = Raw(_atCapture), Final = Raw(final),
+                Publications = _publications.ToArray(), FirstActualMarker = _firstMarker,
+                ActualTurn = _runtime!.GameLoop.TurnNumber,
+                CompletionObservedBeforeOwnedCleanup = _completionObserved,
+                Scope = "Full existing ordinary completion/inert-repeat already returned; actual I members are distinct from marker cohorts"
+            });
+            // FIRST causal assertion: real old late-only I performs genuine work,
+            // but has zero I commits at the actual pre-preparation checkpoint.
+            Assert.Equal(1, _interfaceAtCapture);
+            Assert.True(_completionObserved);
+            Assert.Equal(1, _captureCallbacks);
+            var write = Assert.Single(_publications.Where(p => p.InterfaceChanged));
+            var common = _publications.First(p => p.MarkerCommitted);
+            Assert.True(write.Sequence < common.Sequence, JsonSerializer.Serialize(_publications));
+            Assert.Equal(_atCapture, final);
+            var result = ParseJsonObjectBytes(Assert.IsType<byte[]>(final));
+            var option = Assert.IsType<JsonObject>(Assert.Single(result["dialogueOptions"]!.AsArray()));
+            Assert.Equal(OneTag, option["text"]!.GetValue<string>());
+            Assert.Equal(TwoTags, option["inputValue"]!.GetValue<string>());
+            Assert.False(string.IsNullOrWhiteSpace(result["timestamp"]?.GetValue<string>()));
+            Assert.Equal(3, _firstMarker!["outputBinding"]!["version"]!.GetValue<int>());
+            Assert.Equal("PreparedResultPublicationV1",
+                _firstMarker["outputBinding"]!["publishedInterfaceResult"]!["origin"]!.GetValue<string>());
+        }
+
+        internal void ObserveCompletionBeforeCleanup()
+        {
+            _finalInterface = File.Exists(fixture._fs.ResolvePath(InterfacePath))
+                ? File.ReadAllBytes(fixture._fs.ResolvePath(InterfacePath)) : null;
+            _completionObserved = true;
+            _finalMtime = Mtime();
+        }
+
+        internal void AssertNoWriteCompletion()
+        {
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_no_write_completion", new
+            { scenario, _completionObserved, Submitted = Raw(_submitted), Final = Raw(_finalInterface),
+                SubmittedMtime = _submittedMtime, FinalMtime = _finalMtime, Records = _resultCommits, Trace = _publications });
+            Assert.True(_completionObserved); Assert.Equal(1, _captureCallbacks);
+            Assert.Equal(_submitted, _atCapture); Assert.Equal(_submitted, _finalInterface);
+            Assert.Equal(_submittedMtime, _finalMtime);
+            Assert.Empty(_publications.Where(row => row.InterfaceChanged));
+            Assert.Equal(new[] { "Prepared", "Published" }, _resultCommits.Select(row => row["state"]!.GetValue<string>()));
+            Assert.All(_resultCommits, row => Assert.Equal(scenario == "Absent" ? "Absent" : "NoWrite", row["normalization"]!.GetValue<string>()));
+            Assert.Equal(3, _firstMarker!["outputBinding"]!["version"]!.GetValue<int>());
+            Assert.True(JsonNode.DeepEquals(_resultCommits[1], _firstMarker["outputBinding"]!["publishedInterfaceResult"]!["record"]));
+        }
+
+        internal void AssertFrozenWarning()
+        {
+            var warnings = _resultCommits[1]["issues"]!.AsArray();
+            var warning = Assert.IsType<JsonObject>(Assert.Single(warnings));
+            Assert.Equal("Warning", warning["severity"]!.GetValue<string>());
+            Assert.Equal("accepted_turn_stale_interface_updates", warning["code"]!.GetValue<string>());
+            Assert.True(JsonNode.DeepEquals(_resultCommits[0]["issues"], _resultCommits[1]["issues"]));
+            Assert.Equal(1, _lateWarningCount); Assert.Equal(new[] { 1, 1 }, _genericWarningCounts);
+        }
+
+        internal async Task AssertHeldAsync(GameEngine engine, string owningDiagnostics, Func<string> describeCurrentDiagnostics)
+        {
+            if (scenario == "CutResume")
+            {
+                await AssertUncertainCurrentResumeAsync(engine, owningDiagnostics, describeCurrentDiagnostics);
+                return;
+            }
+            if (scenario == "CommonFault")
+            {
+                await AssertCompensatedCommonAsync(engine);
+                return;
+            }
+            if (scenario is "ReadRace" or "ReadyDrift")
+            {
+                AssertSourceRaceHeld(engine, owningDiagnostics);
+                await AssertActualRetainingOwnersAsync(engine, invokeWrapper: scenario == "ReadRace");
+                return;
+            }
+            if (scenario == "InterfaceClose")
+            {
+                AssertInterfaceCloseHeld(engine, owningDiagnostics);
+                await AssertActualRetainingOwnersAsync(engine, invokeWrapper: false);
+                return;
+            }
+            var pendingBytes = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(pendingBytes));
+            var result = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(pending[MortalJointInterfacePublication.PendingField]));
+            var after = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical, StringComparer.Ordinal);
+            fixture.WritePhysicalInjuryDiagnostic("iobs_actual_error_prepared_held", new
+            { scenario, Result = result.ToJson(), Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime(),
+                MechanicalBefore = _mechanicalBefore.ToDictionary(row => row.Key, row => Raw(row.Value)),
+                MechanicalAfter = after.ToDictionary(row => row.Key, row => Raw(row.Value)), Trace = _publications,
+                ActualTurn = _runtime!.GameLoop.TurnNumber, OwningDiagnostics = owningDiagnostics });
+            Assert.Equal("Prepared", result.State); Assert.True(result.HasErrors);
+            var error = Assert.Single(result.Issues.Where(issue => issue.Severity == IssueSeverity.Error));
+            Assert.Equal("interface_updates_unknown_field", error.Code);
+            foreach (var issue in result.Issues) Assert.Contains(JsonSerializer.Serialize(issue), owningDiagnostics);
+            Assert.Single(_resultCommits); Assert.Empty(_publications);
+            Assert.Equal(_submitted, result.BeforeBytes);
+            Assert.False(Assert.IsType<byte[]>(_submitted).AsSpan().SequenceEqual(Assert.IsType<byte[]>(result.AfterBytes)));
+            Assert.Equal(_submitted, ReadPhysical(InterfacePath)); Assert.Equal(_submittedMtime, Mtime());
+            Assert.Equal(0, _captureCallbacks); // Prepared is positive reach evidence; capture/preparation did not begin
+            Assert.Equal(42, _runtime!.GameLoop.TurnNumber);
+            var observation = engine.CaptureMortalJointRuntimeObservation();
+            Assert.True(observation.FreshConsumed);
+            Assert.True(observation.PreparationHeld);
+            foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);
+            await AssertActualRetainingOwnersAsync(engine);
+            if (scenario is "Terminal" or "TerminalFault") await AssertWholeTerminalAsync(engine);
+        }
+
+        private byte[]? ReadPhysical(string path) => File.Exists(fixture._fs.ResolvePath(path))
+            ? File.ReadAllBytes(fixture._fs.ResolvePath(path)) : null;
+        private DateTime? Mtime() => File.Exists(fixture._fs.ResolvePath(InterfacePath))
+            ? File.GetLastWriteTimeUtc(fixture._fs.ResolvePath(InterfacePath)) : null;
+
+        internal static byte[]? Image(JsonElement member, string side)
+        {
+            var image = member.GetProperty(side);
+            return image.GetProperty("Exists").GetBoolean() ? image.GetProperty("Bytes").GetBytesFromBase64() : null;
+        }
+        internal static bool ImagesEqual(byte[]? left, byte[]? right) =>
+            left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
+        private static object? Raw(byte[]? bytes) => bytes is null ? null : new
+        { Bytes = Convert.ToBase64String(bytes), Length = bytes.LongLength, Sha256 = Convert.ToHexString(SHA256.HashData(bytes)) };
+        private sealed record InterfacePublicationObservation(int Sequence, string TransactionId,
+            bool InterfaceChanged, bool MarkerCommitted, object? Before, object? After);
+
+        public void Dispose()
+        {
+            DisposeInitialCloseObservation();
+            DisposeOuterCloseObservation();
+            DisposeReturnedReadRace();
+            if (_engine is not null) _engine.ConfigureSessionFinalizationHooksForTesting(_priorHooks);
+        }
+    }
+}

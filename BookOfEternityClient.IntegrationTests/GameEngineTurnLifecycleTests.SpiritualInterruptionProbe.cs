@@ -95,7 +95,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 throw new OperationCanceledException("Probe interrupted after common publication before story append.");
             }
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async baseline =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async baseline =>
         {
             var chat = Assert.IsType<JsonObject>(await baseline.ReadJsonAsync("game_state/history/chat_log.json"));
             chat["sessionId"] = request.SessionId;
@@ -114,6 +114,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await baseline.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "interrupted-spiritual-original");
         }, hooks: fileHooks);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
+        var storageWitness = new SpiritualLifecyclePublicationWitness(context.FileSystem,
+            text => _directGachaOutput?.WriteLine(text));
         physical = context;
         var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"));
         var original = new Dictionary<string, byte[]>(StringComparer.Ordinal);
@@ -175,5 +179,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         await AssertSpiritualInterruptionAtomicOutcomeAsync(context, coldEngine, original, originalStory!, cut!, request,
             logger.Describe());
+        storageWitness.AssertSettled("additional-spiritual-original-actors-settled");
     }
 }

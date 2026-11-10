@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -465,7 +466,8 @@ public sealed class GmWorkerBridgePool
             string message,
             bool sessionReplaced = false,
             string? eventType = null,
-            IReadOnlyList<string>? details = null)
+            IReadOnlyList<string>? details = null,
+            Exception? originalFailure = null)
         {
             if (!string.IsNullOrWhiteSpace(eventType))
             {
@@ -475,7 +477,8 @@ public sealed class GmWorkerBridgePool
                     task,
                     message,
                     details ?? [],
-                    lifecycleCancellation.Token);
+                    lifecycleCancellation.Token,
+                    originalFailure);
             }
 
             if (_hooks?.BeforeTerminalFailureDecisionAsync != null)
@@ -497,7 +500,8 @@ public sealed class GmWorkerBridgePool
                     profile,
                     task,
                     timeoutMessage,
-                    []);
+                    [],
+                    originalFailure: originalFailure);
                 var timeoutStatus = Track(
                     WorkerBridgeState.TimedOut,
                     ready: false,
@@ -543,12 +547,13 @@ public sealed class GmWorkerBridgePool
             var result = await CompleteEarlyFailureAsync(ex.Message);
             return result;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return await CompleteEarlyFailureAsync(
                 ex.Message,
                 eventType: "task-failed",
-                details: [ex.GetType().Name]);
+                details: [ex.GetType().Name],
+                originalFailure: ex);
         }
         if (!reservation.Reserved)
         {
@@ -585,12 +590,13 @@ public sealed class GmWorkerBridgePool
         {
             return await CompleteEarlyFailureAsync(ex.Message);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return await CompleteEarlyFailureAsync(
                 ex.Message,
                 eventType: "task-failed",
-                details: [ex.GetType().Name]);
+                details: [ex.GetType().Name],
+                originalFailure: ex);
         }
 
         GmWorkerDurableExecution? durableExecution = null;
@@ -604,90 +610,132 @@ public sealed class GmWorkerBridgePool
         string completedStandardOutput = "";
         string completedStandardError = "";
         var executionCleanupCompleted = false;
-        async Task CleanupExecutionAsync()
+        GmWorkerQuarantinedExecution? retainedCleanup = null;
+        string? retainedWorkspacePath = null;
+        GmWorkerQuarantinedExecution RetainCleanupOwner()
         {
-            if (executionCleanupCompleted) return;
-            executionCleanupCompleted = true;
+            if (retainedCleanup != null) return retainedCleanup;
             completionWaitCancellation.Cancel();
             executionAuthority ??= durableExecution?.Authority ?? (ownedLaunch == null
                 ? GmWorkerExecutionAuthority.NoLaunch(task, taskBytes)
                 : new GmWorkerExecutionAuthority(ownedLaunch.Identity, task, taskBytes));
-            var retainedWorkspacePath = workspace?.GameSessionPath;
+            retainedWorkspacePath = workspace?.GameSessionPath;
             var cleanupConfirmedAuditEvent = CreateTerminalEvent(
                 "process-tree-cleanup-confirmed", profile, task,
                 "A quarantined worker was confirmed stopped within its original scope and its retained workspace was cleaned.",
                 retainedWorkspacePath == null ? [] : [retainedWorkspacePath]);
             durableExecution?.BindCleanupAudit(cleanupConfirmedAuditEvent);
             rootExecutionLease?.RetainForCleanup();
-            var cleanup = new GmWorkerQuarantinedExecution(
+            retainedCleanup = new GmWorkerQuarantinedExecution(
                 $"{profile.WorkerId}/{task.TaskId}/{executionAuthority.Identity?.RunId ?? "no-launch"}",
                 executionAuthority, ownedLaunch, processHostLaunch, workspace, workerSlot.TransferOwnership(),
                 workerCompletionTask, _hooks?.BeforeWorkspaceCleanupAsync, task.SessionGeneration,
                 cleanupConfirmedAuditEvent,
                 () => RecordRequiredTerminalEventOnceAsync(task.SessionGeneration, cleanupConfirmedAuditEvent, durableExecution),
                 failure => RecordTerminalEventAsync("process-tree-cleanup-retry-failed", profile, task,
-                    failure.Message, [failure.GetType().Name]), quarantined: false, durableExecution, rootExecutionLease, _hooks?.AfterRetirementAcknowledged);
+                    failure.Message, [failure.GetType().Name], originalFailure: failure),
+                quarantined: false, durableExecution, rootExecutionLease, _hooks?.AfterRetirementAcknowledged);
+            ownedLaunch = null; processHostLaunch = null; workspace = null; workerCompletionTask = null;
+            return retainedCleanup;
+        }
+
+        async Task CleanupExecutionAsync(bool physicalOnly = false)
+        {
+            if (executionCleanupCompleted) return;
+            var cleanup = RetainCleanupOwner();
             try
             {
                 _ = await cleanup.ConfirmDeathAsync();
-                if (executionAuthority.Outputs is { } outputs)
+                if (executionAuthority!.Outputs is { } outputs)
                 {
                     completedStandardOutput = outputs.StandardOutput;
                     completedStandardError = outputs.StandardError;
                 }
-                await cleanup.CleanupConfirmedAsync();
+                if (physicalOnly) await cleanup.SettlePhysicalAsync();
+                else
+                {
+                    await cleanup.CleanupConfirmedAsync();
+                    executionCleanupCompleted = true;
+                }
             }
             catch (Exception failure)
             {
+                if (failure is CoordinatedStatePublicationUncertainException uncertainty)
+                    executionAuthority!.RetainCanonicalPublicationFailure(uncertainty);
+                executionAuthority!.RetainSecondaryCleanupFailure(failure);
+                // The barrier precedes transfer: its background reaper may start
+                // immediately, including on the original success cleanup path.
+                using var diagnostics = cleanup.HoldTerminalDiagnostics();
                 cleanupDeferred = true;
                 cleanup.RetainForRetry();
-                // Transfer first: diagnostic/audit failure cannot abandon authority.
                 quarantineReservation.Transfer(cleanup);
-                await RecordTerminalEventAsync("process-tree-cleanup-unconfirmed", profile, task,
-                    failure.Message, [failure.GetType().Name]);
-                if (retainedWorkspacePath != null)
-                    await RecordTerminalEventAsync("workspace-cleanup-deferred", profile, task,
-                        "Detached worker workspace and slot remain retained pending original execution authority cleanup.",
-                        [retainedWorkspacePath]);
-            }
-            finally
-            {
-                ownedLaunch = null; processHostLaunch = null; workspace = null; workerCompletionTask = null;
+                executionCleanupCompleted = true;
+                executionAuthority.ThrowIfCanonicalPublicationFailed();
+                try
+                {
+                    await RecordTerminalEventAsync("process-tree-cleanup-unconfirmed", profile, task,
+                        failure.Message, [failure.GetType().Name], originalFailure: failure);
+                    if (retainedWorkspacePath != null)
+                        await RecordTerminalEventAsync("workspace-cleanup-deferred", profile, task,
+                            "Detached worker workspace and slot remain retained pending original execution authority cleanup.",
+                            [retainedWorkspacePath], originalFailure: failure);
+                }
+                catch (CoordinatedStatePublicationUncertainException auditUncertainty)
+                {
+                    executionAuthority.RetainCanonicalPublicationFailure(auditUncertainty);
+                    throw;
+                }
             }
         }
 
         async Task<GmWorkerPrePublicationTerminalOutcome> CompleteFailureAsync(
             string? eventType,
             string message,
-            IReadOnlyList<string> details)
+            IReadOnlyList<string> details,
+            Exception originalFailure)
         {
-            await CleanupExecutionAsync();
-            if (!string.IsNullOrWhiteSpace(eventType))
+            var cleanup = RetainCleanupOwner();
+            var diagnostics = cleanup.HoldTerminalDiagnostics();
+            GmWorkerPrePublicationTerminalOutcome? decidedOutcome = null;
+            try
             {
-                await RecordTerminalEventAsync(
-                    eventType,
-                    profile,
-                    task,
-                    message,
-                    details,
-                    lifecycleCancellation.Token);
-            }
+                await CleanupExecutionAsync(physicalOnly: true);
+                if (!string.IsNullOrWhiteSpace(eventType))
+                {
+                    await RecordTerminalEventAsync(
+                        eventType, profile, task, message, details,
+                        lifecycleCancellation.Token, originalFailure);
+                }
 
-            if (_hooks?.BeforeTerminalFailureDecisionAsync != null)
-                await _hooks.BeforeTerminalFailureDecisionAsync();
-            var outcome = terminalAuthority.CompleteFailure();
-            if (outcome == GmWorkerPrePublicationTerminalOutcome.TimedOut)
+                if (_hooks?.BeforeTerminalFailureDecisionAsync != null)
+                    await _hooks.BeforeTerminalFailureDecisionAsync();
+                var outcome = terminalAuthority.CompleteFailure();
+                decidedOutcome = outcome;
+                if (outcome == GmWorkerPrePublicationTerminalOutcome.TimedOut)
+                {
+                    var timeoutMessage = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
+                    await RecordTerminalEventAsync(
+                        "task-timed-out", profile, task, timeoutMessage,
+                        completedStandardError.Length == 0 ? [] : [completedStandardError],
+                        originalFailure: originalFailure);
+                }
+                return outcome;
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
             {
-                var timeoutMessage = $"Worker task timed out after {profile.TimeoutSeconds} seconds.";
-                await RecordTerminalEventAsync(
-                    "task-timed-out",
-                    profile,
-                    task,
-                    timeoutMessage,
-                    completedStandardError.Length == 0 ? [] : [completedStandardError]);
+                var retained = executionAuthority!.RetainCanonicalPublicationFailure(uncertainty);
+                if (decidedOutcome is { } outcome)
+                    retained.Data["GmWorkerTerminalOutcome"] = outcome;
+                executionAuthority.ThrowIfCanonicalPublicationFailed();
+                throw;
             }
-
-            return outcome;
+            finally
+            {
+                // Any canonical fault is latched before the reaper can observe
+                // the final release of this original terminal decision barrier.
+                diagnostics.Dispose();
+                await CleanupExecutionAsync();
+            }
         }
 
         GmWorkerTaskRunResult BuildTerminalResult(
@@ -905,12 +953,18 @@ public sealed class GmWorkerBridgePool
                 StandardError = completedStandardError
             };
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            _ = RetainCleanupOwner();
+            executionAuthority!.RetainCanonicalPublicationFailure(failure);
+            throw;
+        }
         catch (GmWorkerProposalHandoffException ex)
         {
             var outcome = await CompleteFailureAsync(
                 ex.SessionReplaced ? null : ex.EventType,
                 ex.Message,
-                ex.Details);
+                ex.Details, ex);
             return BuildTerminalResult(outcome, ex.Message, ex.SessionReplaced);
         }
         catch (OperationCanceledException ex)
@@ -918,17 +972,17 @@ public sealed class GmWorkerBridgePool
             var outcome = await CompleteFailureAsync(
                 eventType: null,
                 ex.Message,
-                []);
+                [], ex);
             if (outcome == GmWorkerPrePublicationTerminalOutcome.Failed)
                 throw;
             return BuildTerminalResult(outcome, ex.Message);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is not OperationCanceledException and not CoordinatedStatePublicationUncertainException)
         {
             var outcome = await CompleteFailureAsync(
                 "task-failed",
                 ex.Message,
-                [ex.GetType().Name]);
+                [ex.GetType().Name], ex);
             return BuildTerminalResult(outcome, ex.Message);
         }
         finally
@@ -1220,34 +1274,48 @@ public sealed class GmWorkerBridgePool
         string proposalInboxPath,
         CancellationToken cancellationToken, GmWorkerDispatchAdmission? dispatch)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken, workerPurpose: dispatch?.ReservationPurpose);
-        cancellationToken.ThrowIfCancellationRequested();
-        if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
-            return WorkerTaskReservation.Reject(
-                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
-
-        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+        Exception? publicationUncertainty = null;
+        try
         {
-            return WorkerTaskReservation.SessionWasReplaced(
-                "Worker task context does not belong to the current game session generation.");
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_fs.FileExists(taskPath) || _fs.FileExists(proposalInboxPath))
+                return WorkerTaskReservation.Reject(
+                    $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
+
+            if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+            {
+                return WorkerTaskReservation.SessionWasReplaced(
+                    "Worker task context does not belong to the current game session generation.");
+            }
+
+            var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
+            if (reservedTask == null)
+                throw new InvalidDataException("Serialized worker task reservation could not be read back.");
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var reserved = await _fs.CompareExchangeFileBytesAsync(
+                               writeLease,
+                               taskPath,
+                               expectedContent: null,
+                               desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
+            if (reserved && dispatch != null) await dispatch.CompleteReservationAsync(_fs, writeLease);
+            return reserved
+                ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
+                : WorkerTaskReservation.Reject(
+                    $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
         }
-
-        var reservedTask = GmWorkerJson.Deserialize<WorkerTaskPacket>(DecodeUtf8(taskBytes)!);
-        if (reservedTask == null)
-            throw new InvalidDataException("Serialized worker task reservation could not be read back.");
-
-        cancellationToken.ThrowIfCancellationRequested();
-        var reserved = await _fs.CompareExchangeFileBytesAsync(
-                           writeLease,
-                           taskPath,
-                           expectedContent: null,
-                           desiredContent: taskBytes) == CanonicalFileMutationResult.Applied;
-        if (reserved && dispatch != null) await dispatch.CompleteReservationAsync(_fs, writeLease);
-        return reserved
-            ? new WorkerTaskReservation(true, reservedTask, taskBytes, null, false)
-            : WorkerTaskReservation.Reject(
-                $"Worker task id already exists and cannot overwrite prior dispatch artifacts: {task.TaskId}.");
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private static WorkerTaskSnapshot CaptureTaskSnapshot(WorkerTaskPacket task)
@@ -1476,7 +1544,8 @@ public sealed class GmWorkerBridgePool
         WorkerTaskPacket task,
         string summary,
         IReadOnlyList<string> details,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Exception? originalFailure = null)
     {
         if (_auditLog == null)
             return;
@@ -1493,9 +1562,16 @@ public sealed class GmWorkerBridgePool
                     details),
                 cancellationToken);
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            if (originalFailure != null)
+                failure.Data["GmWorkerOriginalFailure"] = originalFailure;
+            throw;
+        }
         catch (Exception)
         {
-            // Terminal telemetry is subordinate to the already-decided worker outcome.
+            // Known telemetry failures are subordinate to the worker outcome.
+            // Uncertain canonical publication must stop subsequent storage work.
         }
     }
 
@@ -1510,10 +1586,20 @@ public sealed class GmWorkerBridgePool
                 .CanonicalAuditUnavailable;
         }
 
-        return await _auditLog
-            .AppendRequiredEventOnceIfCurrentSessionAsync(
-                sessionGeneration,
-                auditEvent, durableExecution: durableExecution);
+        try
+        {
+            return await _auditLog
+                .AppendRequiredEventOnceIfCurrentSessionAsync(
+                    sessionGeneration,
+                    auditEvent, durableExecution: durableExecution);
+        }
+        catch (Exception failure) when (GmSessionRunCoordinator.IsOriginalOperationPinExpired(failure))
+        {
+            // Original worker cleanup remains independent of its expired main
+            // operation. The retained owner still requires the exact local receipt
+            // and refuses this fallback if a prior canonical audit is uncertain.
+            return GmWorkerAuditAppendDisposition.CanonicalAuditUnavailable;
+        }
     }
 
     private static WorkerAuditEvent CreateTerminalEvent(

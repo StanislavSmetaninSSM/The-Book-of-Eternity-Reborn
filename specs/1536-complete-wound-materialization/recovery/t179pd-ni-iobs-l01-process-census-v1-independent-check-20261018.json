@@ -1,0 +1,51 @@
+{
+  "kind": "INDEPENDENT_SUPPLEMENTAL_CENSUS_V1_SOURCE_AND_FIRST_BOUNDARY_CHECK",
+  "checkedUtc": "2026-10-18T10:53:28.104736+00:00",
+  "observerSourceSha256": "6b83a2ad35fe762164fe50e0f42974442c4fb12f20489b01449c770cb570d13a",
+  "observerBytes": 6785,
+  "snapshot": {
+    "path": "/tmp/1536-cloud-tools/census-after-whole-before-corrective-813f1057.json",
+    "bytes": 39536,
+    "sha256": "de7c55114f89c0f95c472705101b25cf57cacedb0ae861c620c8085cc7a8c31e",
+    "startedUtc": "2026-10-18T10:51:39.407479+00:00",
+    "finishedUtc": "2026-10-18T10:51:39.418288+00:00",
+    "entries": 36,
+    "classes": {
+      "other-readable": 8,
+      "exited-nonexecuting": 23,
+      "build-infrastructure": 4,
+      "observer-self": 1
+    },
+    "knownVisibility": [
+      {
+        "pid": 10433,
+        "expectedStartTick": 477854,
+        "status": "MATCH",
+        "classification": "build-infrastructure"
+      },
+      {
+        "pid": 11534,
+        "expectedStartTick": 530730,
+        "status": "MATCH",
+        "classification": "observer-self"
+      }
+    ],
+    "allEnumeratedPidsAccounted": true,
+    "stableStatBeforeAfter": true,
+    "preservedArgvHashesMatch": true,
+    "optionalExeDenialDoesNotSuppressKnownLiveBuildIdentity": true,
+    "active": 0,
+    "unknown": 0,
+    "gone": 0,
+    "roots": 0
+  },
+  "snapshotVerdict": "ACCEPT_DATED_OBSERVATION_ONLY",
+  "futureObserverVerdict": "HOLD_UNTIL_TWO_NARROW_CORRECTIONS",
+  "requiredCorrections": [
+    "Re-probe stat after collection FileNotFoundError; classify a still-live/reused identity UNKNOWN; distinguish missing known identities caused by read/parse failures from confirmed absence.",
+    "Do not retain full argv for UNKNOWN/unrelated managed runtime; preserve hash/count/argv0/comm and diagnostic reason."
+  ],
+  "noActualRelease": true,
+  "noPrepAcceptance": true,
+  "noBuildOrTestsRun": true
+}

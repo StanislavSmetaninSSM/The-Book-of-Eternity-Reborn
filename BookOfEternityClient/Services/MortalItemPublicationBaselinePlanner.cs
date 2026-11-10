@@ -63,6 +63,18 @@ internal sealed class MortalTreatmentItemCommandEnvelope
         _npcInventoryRemovals,
         _npcEquipmentChanges);
 
+    /// <summary>
+    /// Copies all seven frozen nullable inputs for closed historical comparison.
+    /// No item or publication authority is issued by this DATA export.
+    /// </summary>
+    internal JsonObject ToWitnessRoot() => new()
+    {
+        ["UpdateInventory"] = UpdateInventory, ["moveInventoryItems"] = MoveInventoryItems,
+        ["removeInventoryItems"] = RemoveInventoryItems, ["NPCInventoryAdds"] = NPCInventoryAdds,
+        ["NPCInventoryUpdates"] = NPCInventoryUpdates, ["NPCInventoryRemovals"] = NPCInventoryRemovals,
+        ["NPCEquipmentChanges"] = NPCEquipmentChanges
+    };
+
     private JsonObject ToRoot()
     {
         var root = new JsonObject();

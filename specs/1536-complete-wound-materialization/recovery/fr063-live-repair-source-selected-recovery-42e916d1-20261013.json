@@ -1,0 +1,11 @@
+{
+  "checkpoint": "42e916d13a85510bc63d53c635a961b4d39a75de",
+  "remoteSha": "42e916d13a85510bc63d53c635a961b4d39a75de",
+  "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+  "selectedRecoveryExecution": "UNRUN",
+  "materializedTrackedFiles": 2101,
+  "allMaterializedBytesAndGitBlobsMatch": true,
+  "fullConnectedChangedPathsRecovered": 1563,
+  "consumerProduction": "J0/J1 TEST-only source WIP; SOURCE and project checks UNRUN; productionJ2-J6 unreleased",
+  "verifiedUtc": "2026-10-13T23:20:20.398814+00:00"
+}

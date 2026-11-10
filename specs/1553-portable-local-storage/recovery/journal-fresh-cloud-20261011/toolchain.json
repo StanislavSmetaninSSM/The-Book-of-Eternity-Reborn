@@ -1,0 +1,67 @@
+{
+  "Utc": "2026-10-11T01:05:28.049654+00:00",
+  "RecoverySHA": "61d3a7f861b192f2b7f23bbf169a5275c9512dec",
+  "RepoRoot": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "Platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "OfficialDownloads": [
+    {
+      "kind": "sdk",
+      "version": "10.0.401",
+      "name": "dotnet-sdk-linux-x64.tar.gz",
+      "rid": "linux-x64",
+      "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-x64.tar.gz",
+      "hash": "51c8b999af9e8dd9998c9edc5944e19a90788862068acd38694e098889054ce8c23d4f0c5cccfa16bf187d044562359e5ee69a9f8ad0bbe913ba90311fbce25b",
+      "algorithm": "sha512",
+      "actual": "51c8b999af9e8dd9998c9edc5944e19a90788862068acd38694e098889054ce8c23d4f0c5cccfa16bf187d044562359e5ee69a9f8ad0bbe913ba90311fbce25b",
+      "bytes": 240059572,
+      "destination": "/workspace/boe-cloud-tools-20261011/dotnet"
+    },
+    {
+      "kind": "aspnet",
+      "version": "8.0.31",
+      "name": "aspnetcore-runtime-linux-x64.tar.gz",
+      "rid": "linux-x64",
+      "url": "https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.31/aspnetcore-runtime-8.0.31-linux-x64.tar.gz",
+      "hash": "d870c948d54609939886725e29d8b9c235277e9d63b2d77adefcf38563b66932c480f1b980f1f183e2b2ac1c09fc066730ea080adf1148efdd654b1503e69ec0",
+      "algorithm": "sha512",
+      "actual": "d870c948d54609939886725e29d8b9c235277e9d63b2d77adefcf38563b66932c480f1b980f1f183e2b2ac1c09fc066730ea080adf1148efdd654b1503e69ec0",
+      "bytes": 42028114,
+      "destination": "/workspace/boe-cloud-tools-20261011/dotnet"
+    },
+    {
+      "kind": "powershell",
+      "version": "v7.6.6",
+      "name": "powershell-7.6.6-linux-x64.tar.gz",
+      "url": "https://github.com/PowerShell/PowerShell/releases/download/v7.6.6/powershell-7.6.6-linux-x64.tar.gz",
+      "hash": "sha256:ddbc4a2d113bbd46d283cfedcbcd117a70caefd7673f41f2b4e0000badf103bc",
+      "algorithm": "sha256",
+      "actual": "ddbc4a2d113bbd46d283cfedcbcd117a70caefd7673f41f2b4e0000badf103bc",
+      "bytes": 75876271,
+      "destination": "/workspace/boe-cloud-tools-20261011/powershell"
+    }
+  ],
+  "DotnetInfo": ".NET SDK:\n Version:           10.0.401\n Commit:            e34a38d2ae\n Workload version:  10.0.400-manifests.63b36e85\n MSBuild version:   18.9.11+e34a38d2a\n\nRuntime Environment:\n OS Name:     debian\n OS Version:  13\n OS Platform: Linux\n RID:         linux-x64\n Base Path:   /workspace/boe-cloud-tools-20261011/dotnet/sdk/10.0.401/\n\n.NET workloads installed:\nThere are no installed workloads to display.\nConfigured to use workload sets when installing new manifests.\nNo workload sets are installed. Run \"dotnet workload restore\" to install a workload set.\n\nHost:\n  Version:      10.0.12\n  Architecture: x64\n  Commit:       95017c711e\n\n.NET SDKs installed:\n  10.0.401 [/workspace/boe-cloud-tools-20261011/dotnet/sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 8.0.31 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.AspNetCore.App 10.0.12 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 8.0.31 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.NETCore.App]\n  Microsoft.NETCore.App 10.0.12 [/workspace/boe-cloud-tools-20261011/dotnet/shared/Microsoft.NETCore.App]\n\nOther architectures found:\n  None\n\nEnvironment variables:\n  DOTNET_CLI_HOME                          [/workspace/boe-cloud-tools-20261011/cli]\n  DOTNET_CLI_TELEMETRY_OPTOUT              [1]\n  DOTNET_NOLOGO                            [1]\n  DOTNET_PROCESSOR_COUNT                   [1]\n  DOTNET_ROOT                              [/workspace/boe-cloud-tools-20261011/dotnet]\n  DOTNET_SKIP_FIRST_TIME_EXPERIENCE        [1]\n\nglobal.json file:\n  Not found\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download\n",
+  "PowerShell": {
+    "Version": "7.6.6",
+    "OS": "Debian GNU/Linux 13 (trixie)",
+    "Executable": "/workspace/boe-cloud-tools-20261011/powershell/pwsh"
+  },
+  "Environment": {
+    "DOTNET_ROOT": "/workspace/boe-cloud-tools-20261011/dotnet",
+    "DOTNET_CLI_HOME": "/workspace/boe-cloud-tools-20261011/cli",
+    "NUGET_PACKAGES": "/workspace/boe-cloud-tools-20261011/nuget",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "XDG_CACHE_HOME": "/workspace/boe-cloud-tools-20261011/xdg-cache",
+    "XDG_CONFIG_HOME": "/workspace/boe-cloud-tools-20261011/xdg-config",
+    "XDG_DATA_HOME": "/workspace/boe-cloud-tools-20261011/xdg-data",
+    "BOE_REPO_ROOT": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f"
+  },
+  "Cgroup": {
+    "/sys/fs/cgroup/cpu.max": "400000 100000",
+    "/sys/fs/cgroup/memory.max": "17179869184"
+  },
+  "Preparation": "Official binary archives downloaded, hash-verified and extracted to a task-owned directory. No sudo/package-manager/system security/credential changes. No project build, discovery or tests at this receipt."
+}

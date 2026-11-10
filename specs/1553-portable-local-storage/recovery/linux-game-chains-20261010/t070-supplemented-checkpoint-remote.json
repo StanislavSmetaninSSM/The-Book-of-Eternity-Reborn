@@ -1,0 +1,48 @@
+{
+  "SHA": "fbcc1184923f9d2e400575dbbf2dfeabab9340f2",
+  "Base": "04013af5b3e31f63d40c24666b5055c7d884f254",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1662079,
+      "SHA256": "74796276972c5316e982be6302299a4883ed206391d51e81a1e98d7e82c8055f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-autosave-supplement/accepted-cleanup-green/saves/autosaves/autosave_turn1_20261010_175140.zip.gz",
+      "Bytes": 26979,
+      "SHA256": "5c1d248bb8ae6b984bece091c0811c0e2b6a35e26f5fff67fb39e1e4522a1cda",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-autosave-supplement/first-cleanup-failure/saves/autosaves/autosave_turn1_20261010_174432.zip.gz",
+      "Bytes": 26854,
+      "SHA256": "d3f1731859d547c9847c311094396c420d3f4cb407275cdae8ec1c6a5e6f4aa6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-autosave-supplement/manifest.json",
+      "Bytes": 1147,
+      "SHA256": "73b9856291a00bd8fab41108237d84145e06a340864a51bea2d082c8e3787f3b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-green-remote.json",
+      "Bytes": 49340,
+      "SHA256": "932d14c4e20c843c096b84b01cf52c14d3ed04bd5ff7671932df8dda3298bf00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+      "Bytes": 9489,
+      "SHA256": "488d820a9296b1b7264184229e0aba8c6e0336474a2a1cb30922d4dba4798df9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-three-cuts-before-zip-readonly-restore.json",
+      "Bytes": 295309,
+      "SHA256": "a7aa7282ab9da2412a734c6905150a81e66e6bf333f2d618f9d76dc10b3672be",
+      "RemoteExact": true
+    }
+  ]
+}

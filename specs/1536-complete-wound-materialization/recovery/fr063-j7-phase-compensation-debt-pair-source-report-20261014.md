@@ -1,0 +1,15 @@
+# FR063 J7 connected phase compensation/debt pair — SOURCE WIP
+
+Owning wiring base `6f0905a52db295fe52876f9f2e7402185433af66`; recovery2330/1801 verified before GO. Same retained writer/environment; backend model/effort telemetry unavailable. Three changed paths now: Cold routing and active plan/tasks. Existing PhaseFaults two-Fact/probe partial was preserved INCOMPLETE UNWIRED with transport incident def4e6b6; its exact bytes remain unchanged. This continuation wires it, without rewriting historical qualification fields.
+
+Native scenarios5/6 construct the actual hook-bearing filesystem before engine services. Genuine nonzero/common/unapplied original/control/report/cache/cohort prerequisites run before source lease release, raw baseline and Arm. First owning call is actual late lifecycle. No test calls phase publisher directly or fabricates capability/marker/private source. Existing source original/binding and finalized mechanics remain production-owned.
+
+Known case identifies real exact three-member phase Committed, then one schedule-read InvalidData fault after trusted return/knownCommitted. Production must freshly prove applied/full union before its fixed three-member compensation. Two real committed journals/one compensation plus complete raw baseline restoration/report restoration/debt absence, all original/Ready/output/backups/mechanics/story/turn unchanged are strict. Unknown case uses unchanged CleanupPublicationCut on schedule MemberPublished of exact real phase3 batch: one foreign schedule fault makes normal recovery refuse; exact uncommitted journal, foreign schedule, all other session bytes and existing runtime/G retained. Added runtime debt only in actual trusted-publication namespace. Callback counts support these physical oracles, never stand in for them.
+
+Actual owning exception/handled/hook/probe/full raw before/after are emitted before assertions and in managed result. Child/parent collect raw evidence without a second canonical admission or owning call settling unknown debt. Both predict held/turn42/no story/cleanup. No mechanical rollback/rearm/new hold/reduction. A throw at Committed alone would still return known Committed, so it is not used as uncertainty.
+
+Provisional inventory eleven methods/twenty-two cases (ten Facts plus unchanged twelve-row Theory); catalog/selector/budgets untouched. 29 bounded text/byte/whitespace observations passed: True. Eight protected files including original probe/cut/production/existing controls, strict positive body and prior MD2 tails/checkboxes exact; pins in readback.
+
+Compiler/API/callback reach/actual close and compensation-debt outcome/fixture validity UNCHECKED; ALL project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION UNRUN. Further fault/inactive/story/live/compatibility controls and normative/primary-GM sync remain OPEN. No connected pair runtime acceptance or full FR063 qualification claim.
+
+FINAL STOPPED. No pending tools or writes after handoff.

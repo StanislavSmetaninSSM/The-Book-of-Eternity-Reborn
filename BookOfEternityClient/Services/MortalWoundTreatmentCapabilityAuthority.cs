@@ -670,7 +670,11 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         left.MaximumMechanicalEffectHealLegacies ==
             right.MaximumMechanicalEffectHealLegacies;
 
-    private static bool CoversGuaranteedOutcome(
+    /// <summary>
+    /// Checks detached current capability limits against the complete declared
+    /// outcome. Live preparation still authenticates the exact skill and owner.
+    /// </summary>
+    internal static bool CoversGuaranteedOutcome(
         WoundMaterializationEnvelope wound,
         IReadOnlyList<MortalWoundTreatmentOperation> operations,
         MortalWoundTreatmentCapabilityDefinition capability)
@@ -849,20 +853,20 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     "The candidate plan carries a changed treatment continuation authority.")
                     .Issues;
             }
-            if (route is null ||
-                bundle is null ||
-                !HasCurrentModeAuthority(
+            var purposeAgrees = bundle is not null && (request.Coordinates.Purpose == "diagnosis"
+                ? WoundAcceptedTurnPlanner.MortalDiagnosisPublicationAgrees(continuationAuthority, bundle, acceptedState, request, resolution, semanticFingerprint)
+                : route is not null && HasCurrentModeAuthority(
                     acceptedState,
                     request,
                     route,
-                    bundle) ||
-                !WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+                    bundle) && WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
                     continuationAuthority,
                     bundle,
                     acceptedState,
                     request,
                     resolution,
-                    semanticFingerprint) ||
+                    semanticFingerprint));
+            if (!purposeAgrees || bundle is null ||
                 !string.Equals(
                     bundle.Input.Binding.SessionId,
                     acceptedState.Binding.SessionId,
@@ -911,7 +915,7 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                         .Issues;
                 }
             }
-            if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+            if (!WoundAcceptedTurnPlanner.TryReadMortalProcedurePublication(
                     continuationAuthority,
                     out var continuation))
             {
@@ -970,6 +974,40 @@ internal static class MortalWoundTreatmentCapabilityAuthority
             return resourceAuthority.ValidateCandidate(
                 candidate,
                 recomposedFinalization.Finalization);
+        }
+
+        internal static IReadOnlyList<ValidationIssue> ValidateJoint(
+            WoundAcceptedTurnPlanner.MortalJointRepairCommonAuthority authority, AcceptedMechanicsPlan candidate)
+        {
+            var accepted = authority.Accepted;
+            var request = authority.Request;
+            var resolution = authority.Resolution;
+            var bundle = candidate.WoundStageBundle;
+            var route = accepted.TreatmentDefinition.Routes.SingleOrDefault(value => value.RouteId == request.Coordinates.RouteId);
+            if (!authority.HasValidSeal || !ReferenceEquals(candidate.JointRepairCommonAuthority, authority) ||
+                !ReferenceEquals(resolution.RequestAuthority, request) || request.Mode != "guaranteed" ||
+                route is not MortalWoundGuaranteedRouteDefinition guaranteed ||
+                request.ModeAuthority is not MortalWoundTreatmentCapabilityProof acceptedProof || bundle is null ||
+                !HasCurrentModeAuthority(accepted, request, route, bundle) ||
+                bundle.Input.Binding.SessionId != accepted.Binding.SessionId ||
+                bundle.Input.Binding.RequestId != accepted.Binding.RequestId ||
+                bundle.Input.Binding.SnapshotToken != accepted.Binding.SnapshotToken ||
+                bundle.Input.Binding.Turn != accepted.Binding.Turn || bundle.Input.Binding.Realm != accepted.Binding.Realm)
+                return Invalid("treatmentCapability.jointPublicationPlan", "mortal_wound_joint_candidate_provenance_mismatch",
+                    "The candidate lost its exact private joint request/source/frame.").Issues;
+            // The same existing private reader sees ALL final candidate roots,
+            // including the typed item/effect/wound assembly, before validation.
+            var exported = Export(accepted, request.Coordinates, guaranteed.Resolution.CapabilityRef,
+                guaranteed.Resolution.ActorRole, candidate, forPublication: true, CandidateReadCapability);
+            if (!exported.IsValid || exported.Proof is null) return exported.Issues;
+            if (exported.Proof.ProofFingerprint != acceptedProof.ProofFingerprint ||
+                exported.Proof.SourceSemanticFingerprint != acceptedProof.SourceSemanticFingerprint)
+                return PublicationMismatch("The full joint candidate capability differs from its sealed accepted proof.").Issues;
+            var recomposed = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+            if (!recomposed.IsValid || recomposed.Finalization is null)
+                return Invalid("treatmentCapability.jointPublicationPlan.resources",
+                    "mortal_wound_joint_candidate_finalization_mismatch", "The complete finalization did not independently recompose.").Issues;
+            return authority.ValidateCandidateProjection(candidate, recomposed.Finalization);
         }
 
         private static bool HasCurrentModeAuthority(

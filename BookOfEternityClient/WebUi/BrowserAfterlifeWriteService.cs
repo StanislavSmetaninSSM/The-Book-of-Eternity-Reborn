@@ -323,7 +323,7 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит запрос разговора с Хранителем {guardianName}.",
             payload: null);
 
-        return duplicateDuringWrite
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
             ? BuildDuplicateGuardianSocialResult(guardianName, interactionType)
             : writeResult;
     }
@@ -413,7 +413,8 @@ public sealed class BrowserAfterlifeWriteService
             $"ГМ получит просьбу подготовить состав Обители {abode.AbodeName} Хранителя {abode.GuardianName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateResidentsRequestResult(abode) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateResidentsRequestResult(abode) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentInteractionAsync(
@@ -489,7 +490,8 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит запрос разговора с обитателем {resident.Entry.DisplayName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateInteractionRequestResult(resident, interactionType) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateInteractionRequestResult(resident, interactionType) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyResidentTransferAsync(
@@ -564,7 +566,8 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит просьбу о переходе обитателя {resident.Entry.DisplayName} в Обитель {transferRequest.TargetAbodeName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateTransferRequestResult(resident) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateTransferRequestResult(resident) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult?> TryBuildResidentRealmBlockerAsync(
@@ -1481,7 +1484,7 @@ public sealed class BrowserAfterlifeWriteService
                         Math.Max(1, _stateManager.CurrentState.TurnNumber),
                         relicRerollsToCommit);
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
                 {
                     throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(ex.Message), ex);
                 }
@@ -2160,6 +2163,7 @@ public sealed class BrowserAfterlifeWriteService
         if (validation.InkFeathers < cost)
             return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {cost}.");
 
+        _turnRequestQueue.RequireExactSnapshotInventory(boundLease);
         var payload = new JsonObject
         {
             ["sourceSurface"] = "gacha_browser_write",
@@ -2241,18 +2245,36 @@ public sealed class BrowserAfterlifeWriteService
                         BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
                         PendingTurnSnapshotAuthority.AuthorityPath);
                 }
-                catch
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
                 {
+                    CoordinatedStatePublicationUncertainException? uncertainty = null;
                     try
                     {
                         CleanupDirectGachaTurnArtifacts(writeLease);
                     }
+                    catch (CoordinatedStatePublicationUncertainException cleanupFailure)
+                    {
+                        uncertainty = cleanupFailure;
+                        cleanupFailure.Data["BrowserDirectGachaFailure"] = failure;
+                        throw;
+                    }
                     finally
                     {
-                        ExplorerLocalTurnRollbackArtifacts.DeleteBackup(
-                            _fs,
-                            writeLease,
-                            stagedRollbackPath);
+                        if (uncertainty == null)
+                        {
+                            try
+                            {
+                                ExplorerLocalTurnRollbackArtifacts.DeleteBackup(
+                                    _fs,
+                                    writeLease,
+                                    stagedRollbackPath);
+                            }
+                            catch (CoordinatedStatePublicationUncertainException backupFailure)
+                            {
+                                backupFailure.Data["BrowserDirectGachaFailure"] = failure;
+                                throw;
+                            }
+                        }
                     }
                     throw;
                 }
@@ -2361,7 +2383,8 @@ public sealed class BrowserAfterlifeWriteService
             "Архивная консультация создана",
             completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
+        return result.Success && !result.NeedsFollowUp && !result.ContinuationBlocked
+            ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyArchiveProjectFuelAsync(
@@ -2452,7 +2475,8 @@ public sealed class BrowserAfterlifeWriteService
             "Подпитка проекта создана",
             completionMessage,
             payload);
-        return result.Success ? result with { Message = completionMessage } : result;
+        return result.Success && !result.NeedsFollowUp && !result.ContinuationBlocked
+            ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
@@ -2660,14 +2684,14 @@ public sealed class BrowserAfterlifeWriteService
             });
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, message, payload);
+            return BrowserPromptWriteResult.Completed(title, message, payload).RetainPublication(result);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
@@ -2698,14 +2722,14 @@ public sealed class BrowserAfterlifeWriteService
             rollbackCleanupDirectories: rollbackCleanupDirectories);
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, message, payload);
+            return BrowserPromptWriteResult.Completed(title, message, payload).RetainPublication(result);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private async Task<BrowserPromptWriteResult> ExecuteAtomicAsync(
@@ -2734,14 +2758,14 @@ public sealed class BrowserAfterlifeWriteService
             });
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, messageFactory(), payload);
+            return BrowserPromptWriteResult.Completed(title, messageFactory(), payload).RetainPublication(result);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private static IReadOnlyCollection<string> IncludePlayerSoulProfileRollback(
@@ -2751,8 +2775,14 @@ public sealed class BrowserAfterlifeWriteService
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-    private static string SanitizeLocalWriteMessage(string message)
+    private static string SanitizeLocalWriteMessage(BrowserLocalWriteResult result)
     {
+        if (result.Disposition == BrowserPreparedWriteDisposition.Uncertain)
+            return "Результат локальной записи не подтверждён. Требуется проверка текущего состояния; не повторяйте операцию до завершения восстановления.";
+        if (result.Disposition == BrowserPreparedWriteDisposition.RolledBack && result.NeedsFollowUp)
+            return "Локальная запись отменена, файлы восстановлены. Завершение восстановления требует проверки текущего состояния.";
+
+        var message = result.Message;
         if (string.IsNullOrWhiteSpace(message))
             return "Локальная запись не выполнена.";
 
@@ -2765,9 +2795,11 @@ public sealed class BrowserAfterlifeWriteService
             .Replace("game_session", "текущая игровая сессия", StringComparison.Ordinal)
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
 
-        return ContainsBrowserTradeDiagnosticFragment(sanitized)
+        if (!ContainsBrowserTradeDiagnosticFragment(sanitized))
+            return sanitized;
+        return result.Disposition == BrowserPreparedWriteDisposition.RolledBack
             ? "Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие."
-            : sanitized;
+            : "Локальная запись не выполнена. Требуется проверка текущего запроса.";
     }
 
     private static bool ContainsBrowserTradeDiagnosticFragment(string value) =>

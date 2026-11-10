@@ -36,6 +36,7 @@ public static class BrowserPendingTurnInspector
     {
         var artifacts = new List<BrowserPendingTurnArtifactStatus>
         {
+            FileArtifact(fs, writeLease, BookOfEternityClient.Services.PendingPlayerActionService.PendingPath, "Действие игрока ожидает завершения"),
             FileArtifact(fs, writeLease, TurnRequestPath, "Запрос хода GM"),
             FileArtifact(fs, writeLease, TurnCompletePath, "Готов успешный ответ"),
             FileArtifact(fs, writeLease, TurnErrorPath, "Готов terminal error"),

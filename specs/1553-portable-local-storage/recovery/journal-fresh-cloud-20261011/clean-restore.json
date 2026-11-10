@@ -1,0 +1,14 @@
+{
+  "ExpectedSHA": "f26864ad0323a113213c7a230f3cbc2e737761eb",
+  "RestoredSHA": "f26864ad0323a113213c7a230f3cbc2e737761eb",
+  "Tree": "f2865be47eacc306268e0596f381922c2844e50c",
+  "TrackedFiles": 40756,
+  "Clean": true,
+  "ArchivePayloadsVerified": 344,
+  "ExpandedBytesVerified": 29967104,
+  "RestoredDirectory": "/workspace/1553-cloud-recovery-check-20261011-f26864ad",
+  "RestoreMethod": "Direct official GitHub depth1 single-branch clone in a new empty directory; no old checkout, local Git objects, stash or source cache copied.",
+  "ProjectBuildDiscoveryOrTestsExecuted": 0,
+  "ConnectivityFsckExitCode": 0,
+  "RemoteSHAAfterRestore": "f26864ad0323a113213c7a230f3cbc2e737761eb"
+}

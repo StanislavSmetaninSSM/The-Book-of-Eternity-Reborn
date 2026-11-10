@@ -1,0 +1,143 @@
+{
+  "kind": "read_only_architectural_consultation_source_pins",
+  "inspected_head": "144825517852fa6db623adb108a36bcfd8496ecc",
+  "preservation_head": "68db745c69b7e128c2799f5f3c9cbf1f39165f05",
+  "recorded_at_utc": "2026-10-16T08:54:52.793475+00:00",
+  "repository": "/workspace/The-Book-of-Eternity-Reborn",
+  "report_path": "/tmp/t179-preseal-common-kernel-20261016.md",
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "inspected_commit_blob": "7184adaf5426dbc64bd801248bcbddc7f4bf9b2c",
+      "inspected_commit_sha256": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0",
+      "working_tree_sha256_at_preservation": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "inspected_commit_blob": "5c12e4b8c893a3cbda7495ad4bbdf6a8c2668de7",
+      "inspected_commit_sha256": "226fd4843afec175f4101373b70de20e00524d3d402c92a88018a17010105c50",
+      "working_tree_sha256_at_preservation": "226fd4843afec175f4101373b70de20e00524d3d402c92a88018a17010105c50",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "inspected_commit_blob": "f873de503c20101b1db4db4f758c7dbcfaaea7b0",
+      "inspected_commit_sha256": "df187c38fb0ce70e3d1bb7cb155f5b09573dea08ae94811ca6999255b125aa98",
+      "working_tree_sha256_at_preservation": "df187c38fb0ce70e3d1bb7cb155f5b09573dea08ae94811ca6999255b125aa98",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+      "inspected_commit_blob": "da58443157b618311d89aae0a0205866af909f01",
+      "inspected_commit_sha256": "24a33d0a26aa294e18f4d95cf5941c72bb0731df53b6243857d7fb3b23a2b4f9",
+      "working_tree_sha256_at_preservation": "24a33d0a26aa294e18f4d95cf5941c72bb0731df53b6243857d7fb3b23a2b4f9",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "inspected_commit_blob": "1d691db6ca70100b9309c9c043fe807d5ba8162b",
+      "inspected_commit_sha256": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93",
+      "working_tree_sha256_at_preservation": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "inspected_commit_blob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "inspected_commit_sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "working_tree_sha256_at_preservation": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "inspected_commit_blob": "787dac92babc01754c2f327de8bb184673a736da",
+      "inspected_commit_sha256": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7",
+      "working_tree_sha256_at_preservation": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "inspected_commit_blob": "4ecefd74e99304a178e2c9ab8bb3d14701f83bf0",
+      "inspected_commit_sha256": "686f625feb106b653dc3380be11d8e2fbac9d7c7f601c79a6d07ba76b71d3d37",
+      "working_tree_sha256_at_preservation": "686f625feb106b653dc3380be11d8e2fbac9d7c7f601c79a6d07ba76b71d3d37",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs",
+      "inspected_commit_blob": "bad5b448f72a1b26348558160ca46622fa505857",
+      "inspected_commit_sha256": "a8507e3e6be1c678253fcbe7a7de75859993346d4ebf2aa467151305fcd84d0d",
+      "working_tree_sha256_at_preservation": "a8507e3e6be1c678253fcbe7a7de75859993346d4ebf2aa467151305fcd84d0d",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "inspected_commit_blob": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "inspected_commit_sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "working_tree_sha256_at_preservation": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "inspected_commit_blob": "2e76b870fe98cdec28917364a75dd9b9e7660c8c",
+      "inspected_commit_sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
+      "working_tree_sha256_at_preservation": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "inspected_commit_blob": "0061557eb7096199570d9654fba027fb4a038217",
+      "inspected_commit_sha256": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+      "working_tree_sha256_at_preservation": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "inspected_commit_blob": "2a24975b00c08dde57c7ae98ea02e9d57b8712c8",
+      "inspected_commit_sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+      "working_tree_sha256_at_preservation": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "inspected_commit_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "inspected_commit_sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "working_tree_sha256_at_preservation": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "AGENTS.md",
+      "inspected_commit_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "inspected_commit_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "working_tree_sha256_at_preservation": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "inspected_commit_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "inspected_commit_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "working_tree_sha256_at_preservation": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    },
+    {
+      "path": "tests/categories.json",
+      "inspected_commit_blob": "88505e3fac65a8c049c63bb6445105f05f6098b5",
+      "inspected_commit_sha256": "eec9c883cc8f66e75897f4f0173cce069f70e7f563b3d4ff0e41fa818bb3f915",
+      "working_tree_sha256_at_preservation": "eec9c883cc8f66e75897f4f0173cce069f70e7f563b3d4ff0e41fa818bb3f915",
+      "working_tree_matches_inspected_commit_at_preservation": true
+    }
+  ],
+  "diff": {
+    "scope": "listed source/governance/design/catalog paths only",
+    "inspected_to_preservation_head_name_status": "",
+    "inspected_to_preservation_head_binary_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "inspected_to_working_tree_name_status": "",
+    "inspected_to_working_tree_binary_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "evidence_limits": [
+    "Consultation is source-based; no build, discovery, test, application runtime, commit or push performed.",
+    "Commit hashes identify committed source; any working-tree difference at preservation is separately recorded and is not retroactive validation.",
+    "No repository writes; report/metadata only in /tmp.",
+    "No implementation, full B01 or F1 gameplay acceptance is claimed."
+  ],
+  "report_sha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692"
+}

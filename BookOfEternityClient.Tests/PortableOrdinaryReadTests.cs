@@ -5,6 +5,8 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Tests;
 
@@ -14,8 +16,11 @@ public sealed class PortableOrdinaryReadTests : IDisposable
     private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-ordinary-read-" + Guid.NewGuid().ToString("N"));
     private readonly FileSystemManager _files;
 
-    public PortableOrdinaryReadTests()
+    private readonly ITestOutputHelper _output;
+
+    public PortableOrdinaryReadTests(ITestOutputHelper output)
     {
+        _output = output;
         _files = Create();
         _files.EnsureDirectoryStructure();
     }
@@ -61,6 +66,7 @@ public sealed class PortableOrdinaryReadTests : IDisposable
         Assert.Equal(bytes, await _files.ReadFileBytesAsync(lease, Member));
         Assert.Equal(text, await _files.ReadFileAsync(lease, Member));
         Assert.Equal(text, _files.ReadFileSync(lease, Member));
+        Assert.Equal(bytes, _files.ReadFileBytesSync(lease, Member));
         Assert.Equal(bytes, (await _files.ReadFileSnapshotAsync(lease, Member))?.Content);
     }
 
@@ -124,6 +130,7 @@ public sealed class PortableOrdinaryReadTests : IDisposable
         await Assert.ThrowsAsync<InvalidOperationException>(() => files.ReadFileBytesAsync(lease, Member));
         await Assert.ThrowsAsync<InvalidOperationException>(() => files.ReadFileSnapshotAsync(lease, Member));
         Assert.Throws<InvalidOperationException>(() => files.ReadFileSync(lease, Member));
+        Assert.Throws<InvalidOperationException>(() => files.ReadFileBytesSync(lease, Member));
         Assert.Throws<InvalidOperationException>(() => files.FileExists(lease, Member));
         Assert.Equal(0, opens);
     }
@@ -207,5 +214,14 @@ public sealed class PortableOrdinaryReadTests : IDisposable
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CreateHardLink(string created, string existing, IntPtr security);
 
-    public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, true); }
+    public void Dispose()
+    {
+        Exception? failure = null;
+        try { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }
+        catch (Exception error) { failure = error; }
+        _output.WriteLine(JsonSerializer.Serialize(new { CleanupOwnedRoot = _root,
+            OwnedFixtureRemoved = !Directory.Exists(_root), CleanupFailure = failure?.ToString() }));
+        Assert.Null(failure);
+        Assert.False(Directory.Exists(_root));
+    }
 }

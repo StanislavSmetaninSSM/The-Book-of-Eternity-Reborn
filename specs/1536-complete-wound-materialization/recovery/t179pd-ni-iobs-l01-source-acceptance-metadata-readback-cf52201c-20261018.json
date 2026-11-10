@@ -1,0 +1,18 @@
+{
+  "kind": "INDEPENDENT_SOURCE_ACCEPTANCE_METADATA_READBACK",
+  "checkedUtc": "2026-10-18T10:43:33.870556+00:00",
+  "carrier": "cf52201ca165d24c971018251ef9723a8e493384",
+  "sourceCandidate": "a0da72f2c21fca66193314954cfdf87992752876",
+  "verdict": "ALL_THREE_SOURCE_METADATA_CONDITIONS_SATISFIED",
+  "changedPathsVerified": 9,
+  "sourcePinsVerifiedUnchanged": 98,
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "historicalSourceAndPrepRecordsPreservedExactly": true,
+  "crashZero4GateAndSeparateReleaseCorrect": true,
+  "packetLedgerPointerCorrect": true,
+  "independentReportsSavedExactly": true,
+  "bothCheckoutsClean": true,
+  "independentGitHubReadback": "cf52201ca165d24c971018251ef9723a8e493384\trefs/heads/1536-wound-b2-cloud-20261012",
+  "findings": [],
+  "limits": "Named ZERO4 only; no PREP acceptance or actual release. Read-only review; no build/discovery/tests or process intervention."
+}

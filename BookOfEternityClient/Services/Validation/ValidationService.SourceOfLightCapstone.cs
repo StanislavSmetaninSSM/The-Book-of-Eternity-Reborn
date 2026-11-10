@@ -594,7 +594,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateSourceOfLightForbiddenShiningProgressionDeltas(
+    internal static void ValidateSourceOfLightForbiddenShiningProgressionDeltas(
         JsonObject expectedShiningRoot,
         JsonObject currentShiningRoot,
         List<ValidationIssue> issues)
@@ -621,6 +621,7 @@ public partial class ValidationService
 
     private static readonly string[][] SourceOfLightForbiddenShiningProgressionDeltaPaths =
     {
+        new[] { ShiningCurrentHallContract.Property },
         new[] { "availability" },
         new[] { "coreActionReceipts" },
         new[] { "factionFoundingReceipts" },

@@ -363,9 +363,20 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         IEnumerable<string>? rollbackCleanupDirectories = null,
         IEnumerable<string>? rollbackExternalFileIds = null)
     {
-        if (OperatingSystem.IsLinux())
-            return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
-                rollbackCleanupDirectories, rollbackExternalFileIds);
+        return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
+            rollbackCleanupDirectories, rollbackExternalFileIds);
+    }
+
+    // Exact original schema6 generator retained for native original-evidence fixtures.
+    // Fresh production dispatch always uses the current local protocol.
+    internal static async Task<BrowserWriteRollbackTransaction> StageOriginalBrowserWriteTransactionAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<string> trackedFiles,
+        string scope,
+        IEnumerable<string>? rollbackCleanupDirectories = null,
+        IEnumerable<string>? rollbackExternalFileIds = null)
+    {
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
             .Select(static path => path.Replace('\\', '/').Trim())
@@ -2017,9 +2028,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             var candidates = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
                 .Where(path => path.StartsWith($"{Root}/", StringComparison.OrdinalIgnoreCase))
                 .ToArray();
-            if (OperatingSystem.IsLinux())
-                foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
-                    RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
+            foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
+                RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
             var match = candidates
                 .OrderByDescending(GetTransactionTicks)
                 .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)
@@ -2102,8 +2112,11 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
 
     internal static void DeleteEmptyDirectories(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease) =>
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         fs.DeleteEmptyDirectories(writeLease, Root);
+        fs.DeleteEmptyDirectories(writeLease, ConsoleLocalTurnRollbackArtifacts.Root);
+    }
 
     private static string CreateSafeBackupFileName(string trackedFile)
     {

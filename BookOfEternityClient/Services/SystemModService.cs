@@ -61,44 +61,40 @@ public sealed partial class SystemModService
 
     public async Task<List<SystemModDescriptor>> GetAvailableModsAsync(bool includeContent = false)
     {
-        var modsDir = GetModsDirectoryPath();
-        Directory.CreateDirectory(modsDir);
-
-        var enabled = new HashSet<string>(_settings.EnabledSystemMods, StringComparer.OrdinalIgnoreCase);
-        var files = Directory
-            .EnumerateFiles(modsDir, "*.*", SearchOption.TopDirectoryOnly)
-            .Where(path => SupportedExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))
-            .OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var result = new List<SystemModDescriptor>(files.Count);
-        foreach (var file in files)
-            result.Add(await BuildDescriptorAsync(file, includeContent, enabled.Contains(Path.GetFileName(file))));
-
-        return result;
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var mods = await ReadAvailableModsAsync(lease, _settings.EnabledSystemMods);
+        return mods.Select(mod => includeContent ? mod : mod with { Content = null }).ToList();
     }
 
     public async Task<bool> WriteManifestForGmAsync()
     {
-        var mods = await GetAvailableModsAsync(includeContent: true);
-        var normalizedEnabled = mods
-            .Where(mod => mod.Enabled)
-            .Select(mod => mod.FileName)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);
-        _settings.EnabledSystemMods = normalizedEnabled;
-
-        var manifest = BuildManifestNode(mods, normalizedEnabled);
-        var currentJson = await _fs.ReadFileAsync(ManifestPath);
-        if (!SemanticallyMatchesExistingManifest(currentJson, manifest))
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        var completed = false;
+        try
         {
-            manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
-            await _fs.WriteFileAtomicAsync(ManifestPath, manifest.ToJsonString(JsonOpts));
-        }
+            var mods = await ReadAvailableModsAsync(lease, _settings.EnabledSystemMods);
+            var normalizedEnabled = mods
+                .Where(mod => mod.Enabled)
+                .Select(mod => mod.FileName)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-        return changed;
+            var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);
+            var manifest = BuildManifestNode(mods, normalizedEnabled);
+            var currentJson = await _fs.ReadFileAsync(lease, ManifestPath);
+            if (!SemanticallyMatchesExistingManifest(currentJson, manifest))
+            {
+                manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
+                await _fs.WriteFileAtomicAsync(lease, ManifestPath, manifest.ToJsonString(JsonOpts));
+            }
+
+            _settings.EnabledSystemMods = normalizedEnabled;
+            completed = true;
+            return changed;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, uncertainty); }
     }
 
     private static JsonObject BuildManifestNode(
@@ -209,16 +205,10 @@ public sealed partial class SystemModService
         return $"{active}/{mods.Count}";
     }
 
-    private async Task<SystemModDescriptor> BuildDescriptorAsync(string fullPath, bool includeContent, bool enabled)
-    {
-        var content = await File.ReadAllTextAsync(fullPath);
-        return BuildDescriptor(fullPath, content, includeContent, enabled);
-    }
-
     private SystemModDescriptor BuildDescriptor(string fullPath, string content, bool includeContent, bool enabled)
     {
         var fileName = Path.GetFileName(fullPath);
-        var relativePath = $"{ModsDirectory}/{fileName}".Replace('\\', '/');
+        var relativePath = $"{ModsDirectory}/{fileName}";
         var extension = Path.GetExtension(fullPath);
 
         var descriptor = new SystemModDescriptor

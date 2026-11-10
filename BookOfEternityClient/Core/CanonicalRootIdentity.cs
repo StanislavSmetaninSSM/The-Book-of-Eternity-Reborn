@@ -6,6 +6,10 @@ namespace BookOfEternityClient.Core;
 internal sealed class CanonicalRootIdentity
 {
     internal object WorkerContextGate { get; } = new();
+    /// <summary>
+    /// Shares canonical mutation identities and validation versions across managers for this root.
+    /// </summary>
+    internal CanonicalValidationEpoch ValidationEpoch { get; } = new();
     internal GmWorkerRootContext? WorkerContext { get; set; }
     internal BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator? MainCoordinator { get; set; }
 

@@ -32,7 +32,7 @@ public sealed class GmOwnedTerminalLinuxTests
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
-        var folder = Path.Combine(root, "TestResults/native-terminal", Guid.NewGuid().ToString("N"));
+        var folder = Path.Combine(TestDiagnosticPaths.Root, "native-terminal", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(folder);
         observeOwnFolder?.Invoke(folder);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };

@@ -7,18 +7,21 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
 public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly BrowserAfterlifeWriteService _service;
 
-    public BrowserAfterlifeWriteServiceTests()
+    public BrowserAfterlifeWriteServiceTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-afterlife-write-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
@@ -271,6 +274,9 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
     [Fact]
     public async Task TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var concurrentRoot = Path.Combine(_rootPath, "concurrent-new-game");
         Directory.CreateDirectory(concurrentRoot);
         var profileInputsRead = new TaskCompletionSource(
@@ -285,9 +291,15 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
                 CanonicalWriteLockContendedAsync = () =>
                 {
-                    replacementContended.TrySetResult();
+                    Interlocked.Increment(ref canonicalContentions);
                     return Task.CompletedTask;
                 }
             });
@@ -300,6 +312,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             {
                 AfterPlayerSoulProfileInputsReadAsync = async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     profileInputsRead.TrySetResult();
                     await allowProfileRefresh.Task;
                 }
@@ -370,6 +383,52 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 }
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
+        var preSpendSoul = await fs.ReadFileBytesAsync("game_state/meta/soul_state.json");
+        Dictionary<string, byte[]> Snapshot() => Directory.GetFiles(
+                fs.GameSessionPath, "*", SearchOption.AllDirectories)
+            .ToDictionary(path => "session/" + Path.GetRelativePath(fs.GameSessionPath, path),
+                File.ReadAllBytes, StringComparer.Ordinal)
+            .Append(new KeyValuePair<string, byte[]>("$generation", File.ReadAllBytes(fs.SessionGenerationPath)))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        static void AssertSameSnapshot(Dictionary<string, byte[]> before, Dictionary<string, byte[]> after)
+        {
+            Assert.Equal(before.Keys.OrderBy(key => key, StringComparer.Ordinal),
+                after.Keys.OrderBy(key => key, StringComparer.Ordinal));
+            foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
+        }
+        Dictionary<string, byte[]>? beforeReplacement = null;
+        var replacementLockOpens = 0;
+        var replacementMutations = 0;
+        var replacementPublications = new List<string>();
+        var replacementFs = new FileSystemManager(
+            concurrentRoot, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    replacementContended.TrySetResult();
+                    return Task.CompletedTask;
+                },
+                CanonicalWriteLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref canonicalContentions);
+                    return Task.CompletedTask;
+                },
+                AfterCanonicalWriteLockOpenedAsync = () =>
+                {
+                    Interlocked.Increment(ref replacementLockOpens);
+                    beforeReplacement = Snapshot();
+                    return Task.CompletedTask;
+                },
+                BeforeCanonicalMutationBoundaryAsync = _ =>
+                {
+                    Interlocked.Increment(ref replacementMutations);
+                    return Task.CompletedTask;
+                },
+                LocalPublicationObserver = (phase, _) => replacementPublications.Add(phase.ToString())
+            });
+
         var gacha = service.TryApplyAsync(
             "/gacha",
             Answers(
@@ -378,26 +437,192 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
                 ("confirm_gacha_pull", true)),
             Owner("browser-concurrent-gacha"));
 
-        await profileInputsRead.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+        Task? replacement = null;
+        try
+        {
+            Assert.Same(profileInputsRead.Task, await Task.WhenAny(gacha, profileInputsRead.Task).WaitAsync(TimeSpan.FromSeconds(5)));
+            replacement = replacementFs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(replacement.IsCompleted);
 
-        allowProfileRefresh.TrySetResult();
-        var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(15));
+            allowProfileRefresh.TrySetResult();
+            var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
+            Assert.True(result.Success, result.Message);
+            var replacementObservationFailure = await Record.ExceptionAsync(
+                () => replacement.WaitAsync(TimeSpan.FromSeconds(15)));
+            Assert.True(replacement.IsCompleted,
+                "Replacement observation timed out before the original actor settled; diagnostic admission was not entered.");
+            var replacementFailure = await Record.ExceptionAsync(() => replacement);
+            Assert.Same(replacementFailure, replacementObservationFailure);
+            if (replacementFailure != null)
+            {
+                // Capture refusal state before any diagnostic admission can recover storage.
+                var afterReplacement = Snapshot();
+                Assert.Equal(1, replacementLockOpens);
+                Assert.NotNull(beforeReplacement);
+                AssertSameSnapshot(beforeReplacement!, afterReplacement);
+                Assert.Equal(0, replacementMutations);
+                Assert.Empty(replacementPublications);
+                var diagnosticPublications = 0;
+                var diagnosticRecoveryObservations = 0;
+                var diagnosticFs = new FileSystemManager(
+                    concurrentRoot, NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        LocalPublicationObserver = (_, _) => diagnosticPublications++,
+                        LocalPublicationRecoveryObserver = (_, _) => diagnosticRecoveryObservations++
+                    });
+                string backupPath;
+                byte[]? backupBytes;
+                PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload authority;
+                await using (var diagnosticLease = await diagnosticFs.AcquireCanonicalWriteLeaseAsync())
+                {
+                    authority = ExplorerLocalTurnRollbackArtifacts.RequireCurrentPendingRollbackAuthority(
+                        diagnosticFs, diagnosticLease);
+                    backupPath = authority.RollbackBackups["game_state/meta/soul_state.json"];
+                    Assert.True(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(backupPath));
+                    backupBytes = await diagnosticFs.ReadFileBytesAsync(diagnosticLease, backupPath);
+                    Assert.Equal(preSpendSoul, backupBytes);
+                }
+                var afterDiagnostic = Snapshot();
+                AssertSameSnapshot(afterReplacement, afterDiagnostic);
+                Assert.Equal(0, diagnosticPublications);
+                Assert.Equal(0, diagnosticRecoveryObservations);
+                _output.WriteLine(JsonSerializer.Serialize(new
+                {
+                    kind = "f18-gacha-replacement-diagnostic", root = _rootPath,
+                    success = result.Success, result.Message,
+                    replacementFailure = replacementFailure.GetType().FullName,
+                    replacementMessage = replacementFailure.Message,
+                    replacementLockOpens, replacementMutations, replacementPublications,
+                    beforeReplacement, afterReplacement,
+                    diagnosticAuthority = authority, backupPath, preSpendSoul, backupBytes,
+                    afterDiagnostic, diagnosticPublications, diagnosticRecoveryObservations
+                }));
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(replacementFailure).Throw();
+            }
+            Assert.Equal(1, replacementLockOpens);
+            Assert.NotNull(beforeReplacement);
+            Assert.True(replacementMutations > 0);
+            Assert.Equal(1, replacementPublications.Count(phase => phase == nameof(TrustedLocalPublicationPhase.Committed)));
+            var replacementGeneration = File.ReadAllBytes(fs.SessionGenerationPath);
+            Assert.NotEqual(beforeReplacement!["$generation"], replacementGeneration);
+            var restartedFs = new FileSystemManager(concurrentRoot, NullLogger<FileSystemManager>.Instance);
+            var restartedState = new StateManager(restartedFs, new GameSettings(), NullLogger<StateManager>.Instance);
+            var restartedGeneration = await restartedState.BootstrapLocalStorageAsync();
+            using (var generationDocument = JsonDocument.Parse(replacementGeneration))
+                Assert.Equal(generationDocument.RootElement.GetProperty("GenerationId").GetString(), restartedGeneration);
+            Assert.Equal(replacementGeneration, File.ReadAllBytes(fs.SessionGenerationPath));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-gacha-clear-committed", root = _rootPath,
+                replacementLockOpens, replacementMutations, replacementPublications,
+                previousGeneration = beforeReplacement["$generation"], replacementGeneration, restartedGeneration
+            }));
+            Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
+            Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
+            Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
+            Assert.False(fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+            Assert.False(fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+            var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
+            Assert.Empty(
+                Directory.Exists(rollbackRoot)
+                    ? Directory.GetFiles(rollbackRoot, "*", SearchOption.AllDirectories)
+                    : Array.Empty<string>());
+        }
+        finally
+        {
+            allowProfileRefresh.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)gacha ?? Task.CompletedTask, replacement ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = gacha?.IsCompleted ?? false,
+                secondSettled = replacement?.IsCompleted ?? false
+            }));
+        }
 
+    }
+
+    [Theory]
+    [InlineData("request-mismatch")]
+    [InlineData("backup-drift")]
+    [InlineData("unmapped-backup")]
+    [InlineData("rotation-retains-current")]
+    public async Task TryApplyAsync_GachaDirectPull_ReplacementRequiresExactCurrentAuthority(string scenario)
+    {
+        await SeedSoulStateAsync(stored: [], equipped: [], inkFeathers: 18);
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+        var preSpendSoul = await _fs.ReadFileBytesAsync("game_state/meta/soul_state.json");
+        var result = await _service.TryApplyAsync("/gacha",
+            Answers(("gacha_banner", "direct_chaos_sea"), ("feather_cost", 7), ("confirm_gacha_pull", true)),
+            Owner("browser-clear-authority"));
         Assert.True(result.Success, result.Message);
-        Assert.False(fs.FileExists("game_state/meta/soul_state.json"));
-        Assert.False(fs.FileExists(AfterlifeEntityProfileState.StatePath));
-        Assert.False(fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
-        Assert.False(fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
-        Assert.False(fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
-        var rollbackRoot = fs.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
-        Assert.Empty(
-            Directory.Exists(rollbackRoot)
-                ? Directory.GetFiles(rollbackRoot, "*", SearchOption.AllDirectories)
-                : Array.Empty<string>());
+        string backup;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var authority = ExplorerLocalTurnRollbackArtifacts.RequireCurrentPendingRollbackAuthority(_fs, lease);
+            backup = authority.RollbackBackups["game_state/meta/soul_state.json"];
+            Assert.True(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(backup));
+            Assert.Equal(preSpendSoul, await _fs.ReadFileBytesAsync(lease, backup));
+        }
+        switch (scenario)
+        {
+            case "request-mismatch":
+                var requestPath = _fs.ResolvePath("input/turn_request.json");
+                var request = JsonNode.Parse(File.ReadAllText(requestPath))!.AsObject();
+                request["requestId"] = Guid.NewGuid().ToString("N");
+                File.WriteAllText(requestPath, request.ToJsonString());
+                break;
+            case "backup-drift":
+                File.WriteAllBytes(_fs.ResolvePath(backup), [0xFE, 0x01]);
+                break;
+            case "unmapped-backup":
+                var extra = backup[..(backup.LastIndexOf('.') + 1)] + Guid.NewGuid().ToString("N");
+                Assert.True(ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(extra));
+                File.WriteAllBytes(_fs.ResolvePath(extra), preSpendSoul!);
+                break;
+        }
+        Dictionary<string, byte[]> Snapshot() => Directory.GetFiles(_fs.GameSessionPath, "*", SearchOption.AllDirectories)
+            .ToDictionary(path => "session/" + Path.GetRelativePath(_fs.GameSessionPath, path), File.ReadAllBytes, StringComparer.Ordinal)
+            .Append(new KeyValuePair<string, byte[]>("$generation", File.ReadAllBytes(_fs.SessionGenerationPath)))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+        var before = Snapshot();
+        var lockOpens = 0;
+        var mutations = 0;
+        var publications = 0;
+        var guarded = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterCanonicalWriteLockOpenedAsync = () => { lockOpens++; return Task.CompletedTask; },
+                BeforeCanonicalMutationBoundaryAsync = _ => { mutations++; return Task.CompletedTask; },
+                LocalPublicationObserver = (_, _) => publications++
+            });
+        if (scenario == "rotation-retains-current")
+        {
+            await using var lifecycle = await guarded.AcquireSessionLifecycleLeaseAsync();
+            await using var lease = await guarded.AcquireSessionReplacementWriteLeaseAsync(lifecycle);
+            Assert.Throws<InvalidDataException>(() => guarded.RotateSessionGeneration(lease));
+        }
+        else
+            await Assert.ThrowsAsync<InvalidDataException>(() => guarded.ClearGameStateAsync());
+        var after = Snapshot();
+        Assert.Equal(1, lockOpens);
+        Assert.Equal(0, mutations);
+        Assert.Equal(0, publications);
+        Assert.Equal(before.Keys.OrderBy(key => key, StringComparer.Ordinal), after.Keys.OrderBy(key => key, StringComparer.Ordinal));
+        foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
+        _output.WriteLine(JsonSerializer.Serialize(new
+        {
+            kind = "f18-gacha-clear-refusal", scenario, root = _rootPath, result.Success,
+            backup, preSpendSoul, before, after, lockOpens, mutations, publications
+        }));
     }
 
     [Fact]

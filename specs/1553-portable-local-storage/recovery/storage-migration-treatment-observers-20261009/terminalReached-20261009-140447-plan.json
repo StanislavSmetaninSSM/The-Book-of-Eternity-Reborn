@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-treatment-terminal-committed-observer"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b136a70e3882dc7fcb74e5b20de2ee15ab33ee0a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.3050755,
+  "Descriptors": [
+    {
+      "Name": "portable-treatment-terminal-committed-observer-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-terminal-committed-observer",
+      "Categories": [
+        "portable-treatment-terminal-committed-observer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuaranteedResourceQuantity_TerminalLifecycleReleaseRefusalRestoresDurableRequestRetainsHoldAndRequiresRestart",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuaranteedResourceQuantity_TerminalLifecycleReleaseRefusalRestoresDurableRequestRetainsHoldAndRequiresRestart",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

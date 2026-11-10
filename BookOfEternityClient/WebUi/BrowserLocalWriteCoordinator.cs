@@ -87,20 +87,26 @@ public sealed partial class BrowserLocalWriteCoordinator
         try
         {
             await mainAdmission.AcquireAsync(quiescentOnly: true);
-            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
             {
-                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission refused an active turn."));
-                if (_fs.ReadExistingSessionGeneration(writeLease) == null)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission requires existing browser session authority."));
-                var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
-                    BuildOwner(request), request.OperationLabel);
-                if (!acquisition.Acquired || acquisition.Lease == null)
-                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
-                        new InvalidOperationException("Load admission refused another UI owner."));
-                replacementGuard = acquisition.Lease;
+                var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? admissionFailure = null;
+                try
+                {
+                    if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission refused an active turn."));
+                    if (_fs.ReadExistingSessionGeneration(writeLease) == null)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission requires existing browser session authority."));
+                    var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
+                        BuildOwner(request), request.OperationLabel);
+                    if (!acquisition.Acquired || acquisition.Lease == null)
+                        return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                            new InvalidOperationException("Load admission refused another UI owner."));
+                    replacementGuard = acquisition.Lease;
+                }
+                catch (CoordinatedStatePublicationUncertainException failure) { admissionFailure = failure; throw; }
+                finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, admissionFailure); }
             }
 
             dispatched = true;
@@ -130,9 +136,15 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             try
             {
-                await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
-                    await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+                var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? releaseFailure = null;
+                try
+                {
+                    if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                        await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+                }
+                catch (CoordinatedStatePublicationUncertainException failure) { releaseFailure = failure; throw; }
+                finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, releaseLease, false, releaseFailure); }
             }
             catch (Exception failure) { retained = retained.WithFollowUp(failure, blocksContinuation: true); }
         }
@@ -216,6 +228,8 @@ public sealed partial class BrowserLocalWriteCoordinator
     private readonly AsyncLocal<BrowserDecisionCapture?> _browserDecision = new();
     private BrowserLocalWriteResult CaptureBrowserResult(BrowserLocalWriteResult result)
     {
+        if (result.ContinuationBlocked)
+            SessionOperationContext.BlockPostOperationReadmission(_fs);
         if (_browserDecision.Value is { } captured)
         {
             captured.Result = result;
@@ -240,19 +254,42 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
-                await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
-                return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
-                    () => operation(writeLease), () => captured.Outcome);
+                var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                Exception? operationFailure = null;
+                T? establishedResult = default;
+                var establishedOutcome = MainOperationOutcome.Completed;
+                var established = false;
+                try
+                {
+                    var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
+                    establishedResult = await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
+                        () => operation(writeLease), () => captured.Outcome);
+                    establishedOutcome = captured.Outcome;
+                    established = true;
+                    return establishedResult;
+                }
+                catch (Exception bodyFailure) { operationFailure = bodyFailure; throw; }
+                finally
+                {
+                    try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, operationFailure); }
+                    catch (Exception closeFailure) when (established)
+                    {
+                        SessionOperationContext.BlockPostOperationReadmission(_fs);
+                        var retained = new MainOperationContinuationException<T>(establishedResult!, establishedOutcome,
+                            _fs.DescribeMainOperationClose(establishedOutcome, true), closeFailure);
+                        retained.Data["SessionFinalizationFailure"] = closeFailure;
+                        throw retained;
+                    }
+                }
             }, () => captured.Outcome);
         }
         catch (MainOperationContinuationException<T> failure) when (failure.EstablishedResult is BrowserLocalWriteResult)
         {
-            return (T)(object)((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp();
+            return (T)(object)CaptureBrowserResult(((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp());
         }
         catch (SessionReplacedException) when (captured.Result != null && typeof(T) == typeof(BrowserLocalWriteResult))
         {
-            return (T)(object)captured.Result.WithFollowUp();
+            return (T)(object)CaptureBrowserResult(captured.Result.WithFollowUp());
         }
         finally { _browserDecision.Value = previous; }
     }
@@ -302,13 +339,19 @@ public sealed partial class BrowserLocalWriteCoordinator
                 writeLease,
                 backups);
         }
+        catch (CoordinatedStatePublicationUncertainException uncertainty)
+        {
+            ReleaseBrowserAccess(writeLease, backups, uncertainty);
+            return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                uncertainty.Message, BrowserPreparedWriteDisposition.Uncertain));
+        }
         catch (SessionReplacedException)
         {
             writeLease.ExternalPublicationContext = null;
             writeLease.MutationIntentRecorder = null;
             backups?.DarenTransaction?.Dispose();
             backups?.LocalTransaction?.Access.Dispose();
-            await TryReleaseAsync(writeLease, lockLease);
+            await TryReleasePreservingUncertaintyAsync(writeLease, lockLease);
             if (backups != null)
                 return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
                     "Полномочия исходной транзакции потеряны; результат изменений не подтверждён. Служебные данные сохранены, автоматически повторять операцию нельзя.",
@@ -319,6 +362,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             writeLease.MutationIntentRecorder = null;
             Exception? rollbackFailure = null;
+            CoordinatedStatePublicationUncertainException? rollbackUncertainty = null;
             var rollbackConfirmed = false;
             try
             {
@@ -336,6 +380,8 @@ public sealed partial class BrowserLocalWriteCoordinator
                                     .BrowserWriteCleanupOutcome.Restored,
                                 out var cleanupFailure))
                         {
+                            if (cleanupFailure is CoordinatedStatePublicationUncertainException uncertainty)
+                                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(uncertainty).Throw();
                             throw new IOException(
                                 "Canonical files were restored, but durable browser rollback evidence could not be cleaned.",
                                 cleanupFailure);
@@ -344,11 +390,19 @@ public sealed partial class BrowserLocalWriteCoordinator
                     catch (Exception restoreEx)
                     {
                         rollbackFailure = restoreEx;
+                        if (restoreEx is CoordinatedStatePublicationUncertainException uncertainty)
+                        {
+                            rollbackUncertainty = uncertainty;
+                            uncertainty.Data["BrowserOriginalOperationFailure"] = ex;
+                        }
                     }
 
+                    // Runtime before-images describe restored canonical files only. A failed
+                    // restore must retain the last confirmed runtime observation as well.
                     try
                     {
-                        afterRollback?.Invoke();
+                        if (rollbackConfirmed && rollbackUncertainty == null)
+                            afterRollback?.Invoke();
                     }
                     catch (Exception runtimeRestoreEx)
                     {
@@ -360,12 +414,23 @@ public sealed partial class BrowserLocalWriteCoordinator
             }
             finally
             {
-                writeLease.ExternalPublicationContext = null;
-                writeLease.MutationIntentRecorder = null;
-                backups?.DarenTransaction?.Dispose();
-            backups?.LocalTransaction?.Access.Dispose();
-                await TryReleaseAsync(writeLease, lockLease);
+                ReleaseBrowserAccess(writeLease, backups, rollbackUncertainty);
+                if (rollbackUncertainty == null)
+                {
+                    try { await TryReleasePreservingUncertaintyAsync(writeLease, lockLease); }
+                    catch (CoordinatedStatePublicationUncertainException uncertainty)
+                    {
+                        rollbackUncertainty = uncertainty;
+                        uncertainty.Data["BrowserOriginalOperationFailure"] = ex;
+                    }
+                }
             }
+
+            if (rollbackUncertainty != null)
+                return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                    rollbackUncertainty.Message, rollbackConfirmed
+                        ? BrowserPreparedWriteDisposition.RolledBack
+                        : BrowserPreparedWriteDisposition.Uncertain).WithFollowUp());
 
             return backups == null
                 ? BrowserLocalWriteResult.Failed(
@@ -375,11 +440,12 @@ public sealed partial class BrowserLocalWriteCoordinator
                     $"Browser-write отменён, rollback восстановлен: {ex.Message}", BrowserPreparedWriteDisposition.RolledBack)
                     with { NeedsFollowUp = rollbackFailure != null,
                         Message = rollbackFailure == null ? $"Browser-write отменён, rollback восстановлен: {ex.Message}"
-                            : $"Browser-write отменён, файлы восстановлены; служебная очистка требует проверки: {ex.Message}" }
+                            : $"Browser-write отменён, файлы восстановлены; завершение восстановления требует проверки: {ex.Message}" }
                 : BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }
 
+        Exception? committedCleanupFailure = null;
         var rollbackEvidenceCleaned = backups == null ||
                                       ExplorerLocalTurnRollbackArtifacts.TryDeleteBrowserWriteTransaction(
                                           _fs,
@@ -387,19 +453,43 @@ public sealed partial class BrowserLocalWriteCoordinator
                                           backups,
                                           ExplorerLocalTurnRollbackArtifacts
                                               .BrowserWriteCleanupOutcome.Committed,
-                                          out _);
-        writeLease.ExternalPublicationContext = null;
-        writeLease.MutationIntentRecorder = null;
-        backups?.DarenTransaction?.Dispose();
-        backups?.LocalTransaction?.Access.Dispose();
-        var released = await TryReleaseAsync(writeLease, lockLease);
+                                          out committedCleanupFailure);
+        ReleaseBrowserAccess(writeLease, backups, committedCleanupFailure);
+        if (committedCleanupFailure is CoordinatedStatePublicationUncertainException committedUncertainty)
+            return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
+                "Browser-write завершён. " + committedUncertainty.Message).WithFollowUp());
+        bool released;
+        try { released = await TryReleasePreservingUncertaintyAsync(writeLease, lockLease); }
+        catch (CoordinatedStatePublicationUncertainException uncertainty)
+        {
+            return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
+                "Browser-write завершён. " + uncertainty.Message).WithFollowUp());
+        }
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
                 : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.") with { NeedsFollowUp = !released || !rollbackEvidenceCleaned };
     }
 
-    private async Task<bool> TryReleaseAsync(
+    private static void ReleaseBrowserAccess(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        ExplorerLocalTurnRollbackArtifacts.BrowserWriteRollbackTransaction? backups,
+        Exception? originalFailure)
+    {
+        writeLease.ExternalPublicationContext = null;
+        writeLease.MutationIntentRecorder = null;
+        try
+        {
+            try { backups?.DarenTransaction?.Dispose(); }
+            finally { backups?.LocalTransaction?.Access.Dispose(); }
+        }
+        catch (Exception secondary) when (originalFailure != null)
+        {
+            originalFailure.Data["BrowserInMemoryReleaseFailure"] = secondary;
+        }
+    }
+
+    private async Task<bool> TryReleasePreservingUncertaintyAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         LocalUiSessionLockLease lease)
     {
@@ -407,10 +497,18 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return await _lockService.ReleaseAsync(writeLease, lease);
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }
+    }
+
+    private async Task<bool> TryReleaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockLease lease)
+    {
+        try { return await _lockService.ReleaseAsync(writeLease, lease); }
+        catch { return false; }
     }
 
     private async Task<bool> TryReleaseAsync(LocalUiSessionLockLease lease)

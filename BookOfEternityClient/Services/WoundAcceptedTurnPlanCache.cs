@@ -1,3 +1,5 @@
+using BookOfEternityClient.Core;
+
 namespace BookOfEternityClient.Services;
 
 internal delegate WoundAcceptedTurnPreparationResult WoundAcceptedTurnPreparationFactory(
@@ -20,6 +22,8 @@ internal sealed class WoundAcceptedTurnPlanCache
     private object? _preparedTreatmentContinuationAuthority;
     private string? _preparedRecoveryContinuationFingerprint;
     private object? _preparedRecoveryContinuationAuthority;
+    private string? _preparedJointRepairFingerprint;
+    private object? _preparedJointRepairAuthority;
     private string? _preparedFingerprint;
     private object? _preparedStageToken;
     private WoundAcceptedTurnPreparationResult? _preparedResult;
@@ -99,11 +103,16 @@ internal sealed class WoundAcceptedTurnPlanCache
         out bool reused) => GetOrBuildPrepared(input,
             treatmentContinuationAuthority: null, out reused, recoveryContinuationAuthority);
 
+    internal WoundAcceptedTurnPreparationResult GetOrBuildJointRepairPrepared(
+        WoundAcceptedTurnInput input, object jointRepairContinuationAuthority, out bool reused) =>
+        GetOrBuildPrepared(input, null, out reused, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
+
     private WoundAcceptedTurnPreparationResult GetOrBuildPrepared(
         WoundAcceptedTurnInput input,
         object? treatmentContinuationAuthority,
         out bool reused,
-        object? recoveryContinuationAuthority = null)
+        object? recoveryContinuationAuthority = null,
+        object? jointRepairContinuationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         reused = false;
@@ -113,6 +122,7 @@ internal sealed class WoundAcceptedTurnPlanCache
             string inputFingerprint;
             string? treatmentContinuationFingerprint;
             string? recoveryContinuationFingerprint;
+            string? jointRepairFingerprint;
             try
             {
                 validation = WoundAcceptedTurnPlannerCore.ValidateInput(input);
@@ -126,12 +136,17 @@ internal sealed class WoundAcceptedTurnPlanCache
                 inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
                 if (treatmentContinuationAuthority is not null && recoveryContinuationAuthority is not null)
                     throw new ArgumentException("A prepared stage cannot combine treatment and recovery authority.");
+                if (jointRepairContinuationAuthority is not null &&
+                    (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null))
+                    throw new ArgumentException("Joint repair is an exclusive cache authority family.");
                 treatmentContinuationFingerprint = treatmentContinuationAuthority is null
                     ? null
-                    : WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+                    : WoundAcceptedTurnPlanner.GetMortalProcedureContinuationFingerprint(
                         treatmentContinuationAuthority);
                 recoveryContinuationFingerprint = recoveryContinuationAuthority is null ? null :
                     WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(recoveryContinuationAuthority);
+                jointRepairFingerprint = jointRepairContinuationAuthority is null ? null :
+                    WoundAcceptedTurnPlanner.GetJointRepairContinuationFingerprint(jointRepairContinuationAuthority);
             }
             catch (Exception exception) when (IsMalformedBoundary(exception))
             {
@@ -155,7 +170,9 @@ internal sealed class WoundAcceptedTurnPlanCache
                     _preparedTreatmentContinuationAuthority,
                     treatmentContinuationAuthority) &&
                 string.Equals(_preparedRecoveryContinuationFingerprint, recoveryContinuationFingerprint, StringComparison.Ordinal) &&
-                ReferenceEquals(_preparedRecoveryContinuationAuthority, recoveryContinuationAuthority))
+                ReferenceEquals(_preparedRecoveryContinuationAuthority, recoveryContinuationAuthority) &&
+                _preparedJointRepairFingerprint == jointRepairFingerprint &&
+                ReferenceEquals(_preparedJointRepairAuthority, jointRepairContinuationAuthority))
             {
                 var validatedReplay = ValidatePreparedResult(
                     input,
@@ -175,7 +192,12 @@ internal sealed class WoundAcceptedTurnPlanCache
             WoundAcceptedTurnPreparationResult result;
             try
             {
-                result = (recoveryContinuationAuthority is not null
+                result = (jointRepairContinuationAuthority is not null
+                    ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
+                        WoundAcceptedTurnData.CloneInput(input)!, jointRepairContinuationAuthority)
+                    : treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosis
+                    ? diagnosis.Prepare()
+                    : recoveryContinuationAuthority is not null
                     ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                         WoundAcceptedTurnData.CloneInput(input)!, recoveryContinuationAuthority)
                     : treatmentContinuationAuthority is null
@@ -213,6 +235,8 @@ internal sealed class WoundAcceptedTurnPlanCache
                 treatmentContinuationAuthority;
             _preparedRecoveryContinuationFingerprint = recoveryContinuationFingerprint;
             _preparedRecoveryContinuationAuthority = recoveryContinuationAuthority;
+            _preparedJointRepairFingerprint = jointRepairFingerprint;
+            _preparedJointRepairAuthority = jointRepairContinuationAuthority;
             _preparedFingerprint = plan.WoundPreparationFingerprint;
             _preparedStageToken = stageToken;
             _preparedResult = Detach(validated);
@@ -479,11 +503,27 @@ internal sealed class WoundAcceptedTurnPlanCache
         }
     }
 
+    /// <summary>
+    /// Validates a prepared result against its complete input and sealed wound authority.
+    /// </summary>
+    /// <param name="input">
+    /// The complete wound input for the prepared result.
+    /// </param>
+    /// <param name="inputFingerprint">
+    /// The expected fingerprint of <paramref name="input"/>.
+    /// </param>
+    /// <param name="result">
+    /// The preparation envelope whose plan and issues are checked.
+    /// </param>
+    /// <returns>
+    /// The accepted preparation result, or refusal issues when its envelope or authority does not agree.
+    /// </returns>
     internal static WoundAcceptedTurnPreparationResult ValidatePreparedResult(
         WoundAcceptedTurnInput input,
         string inputFingerprint,
         WoundAcceptedTurnPreparationResult result)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.ValidatePreparedResult");
         try
         {
             var plan = result.Plan;
@@ -613,6 +653,29 @@ internal sealed class WoundAcceptedTurnPlanCache
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
+        if (plan.MortalDiagnosisAuthority is { } diagnosis)
+        {
+            if (transitions.Count != 0 || input.Opportunities.Count != 0 || !diagnosis.PreparedAgrees(plan))
+            { mismatch = "Mortal diagnosis continuation authority"; return false; }
+            return true;
+        }
+        if (plan.JointRepairContinuationAuthority is not null)
+        {
+            if (transitions.Count != 1 || input.Opportunities.Count != 1 ||
+                !WoundAcceptedTurnPlanner.JointRepairPreparedAgrees(plan))
+            {
+                mismatch = "joint repair authority";
+                return false;
+            }
+            return true;
+        }
+        if (plan.SpiritualHealingContinuationAuthority is not null)
+        {
+            if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
+                plan.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation spiritual || !spiritual.PreparedAgrees(plan))
+            { mismatch = "spiritual healing continuation authority"; return false; }
+            return true;
+        }
         if (plan.RecoveryContinuationAuthority is not null)
         {
             if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
@@ -740,7 +803,21 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
-        var replay = plan.RecoveryContinuationAuthority is not null
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundPlanCache.PreparedReplayAgrees");
+        if (plan.JointRepairContinuationAuthority is not null)
+            return WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(input,
+                plan.JointRepairContinuationAuthority)?.AgreesWith(plan) == true;
+        // Measures only the original all-family expected-source dispatch, including its input cloning.
+        // The selected genuine joint control does not change other families or the comparison below.
+        using var expectedSourceTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.PreparedExpectedReplay.Source");
+        var replay = plan.JointRepairContinuationAuthority is not null
+            ? WoundAcceptedTurnPlanner.PrepareJointRepairCandidate(
+                WoundAcceptedTurnData.CloneInput(input)!, plan.JointRepairContinuationAuthority)
+            : plan.MortalDiagnosisAuthority is { } diagnosis
+            ? diagnosis.Prepare()
+            : plan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual
+            ? new WoundAcceptedTurnPreparationResult(spiritual.Prepare(), Array.Empty<ValidationIssue>())
+            : plan.RecoveryContinuationAuthority is not null
             ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!, plan.RecoveryContinuationAuthority)
             : plan.TreatmentContinuationAuthority is null
@@ -749,6 +826,7 @@ internal sealed class WoundAcceptedTurnPlanCache
             : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
                 WoundAcceptedTurnData.CloneInput(input)!,
                 plan.TreatmentContinuationAuthority);
+        expectedSourceTiming?.Dispose();
         if (!replay.Success || replay.Plan is not { } expected)
             return false;
         if (!string.Equals(
@@ -796,11 +874,76 @@ internal sealed class WoundAcceptedTurnPlanCache
         return true;
     }
 
+    /// <summary>
+    /// Validates a final result and replays finalization against the complete prepared and effect stages.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared wound authority for the expected handoff.
+    /// </param>
+    /// <param name="effectPlan">
+    /// The accepted effect stage whose result must agree with the final plan.
+    /// </param>
+    /// <param name="result">
+    /// The final result envelope whose fingerprints and authority are checked.
+    /// </param>
+    /// <returns>
+    /// The accepted final result, or refusal issues for a malformed or inconsistent handoff.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult ValidateFinalResult(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchAcceptedPlan effectPlan,
-        WoundAcceptedTurnPlanningResult result)
+        WoundAcceptedTurnPlanningResult result) =>
+        ValidateFinalResultCore(prepared, effectPlan, result, null);
+
+    /// <summary>
+    /// Validates a genuinely constructed joint bundle's retained final data through the normal final envelope checks.
+    /// Repeats shared live admission while omitting only reconstruction of that source's final graphs.
+    /// </summary>
+    /// <param name="source">
+    /// The existing bundle supplying all detached stages and its original retained final seal.
+    /// Other authority families use the original full finalization path.
+    /// </param>
+    /// <returns>
+    /// The validated retained final result or the same envelope, handoff and fingerprint refusal mapping.
+    /// </returns>
+    internal static WoundAcceptedTurnPlanningResult ValidateRetainedJointFinalResult(
+        AcceptedMechanicsWoundStageBundle source)
     {
+        ArgumentNullException.ThrowIfNull(source);
+        var prepared = source.PreparedPlan;
+        var effectPlan = source.EffectBatchPlan;
+        var result = new WoundAcceptedTurnPlanningResult(source.FinalPlan, Array.Empty<ValidationIssue>());
+        var exclusiveJoint = prepared.JointRepairContinuationAuthority is not null &&
+            prepared.TreatmentContinuationAuthority is null && prepared.RecoveryContinuationAuthority is null;
+        return ValidateFinalResultCore(prepared, effectPlan, result, exclusiveJoint ? source : null);
+    }
+
+    /// <summary>
+    /// Applies the unchanged final result envelope, recomputed seals, ordered allocations and refusal mapping.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared stage supplying binding and allocation expectations.
+    /// </param>
+    /// <param name="effectPlan">
+    /// The accepted effect stage supplying handoff seals.
+    /// </param>
+    /// <param name="result">
+    /// The actual final result envelope, validated before replay admission.
+    /// </param>
+    /// <param name="retainedSource">
+    /// <see langword="null"/> requests normal full replay. A constructed exclusive joint source supplies its retained final seal
+    /// only after the shared finalization and joint admission checks succeed.
+    /// </param>
+    /// <returns>
+    /// The original accepted result or final-result refusal, with unchanged short-circuit order and catch mapping.
+    /// </returns>
+    private static WoundAcceptedTurnPlanningResult ValidateFinalResultCore(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectBatchAcceptedPlan effectPlan,
+        WoundAcceptedTurnPlanningResult result,
+        AcceptedMechanicsWoundStageBundle? retainedSource)
+    {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.ValidateFinalResult");
         try
         {
             var plan = result.Plan;
@@ -838,14 +981,32 @@ internal sealed class WoundAcceptedTurnPlanCache
                 plan.IdentityIndexAfterImage,
                 plan.HistoryAfterImage,
                 plan.TransitionIntents);
-            var replay = WoundAcceptedTurnPlanner.Finalize(
-                WoundAcceptedTurnData.ClonePreparedPlan(prepared)!,
-                new WoundEffectBatchPlanningResult(
-                    effectPlan,
-                    Array.Empty<ValidationIssue>()));
-            var canonicalFinal = replay.Success
-                ? replay.Plan!.WoundFinalPlanFingerprint
-                : null;
+            string? canonicalFinal;
+            if (retainedSource is null)
+            {
+                using var replayTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanCache.FinalizationReplay");
+                var replay = WoundAcceptedTurnPlanner.Finalize(
+                    WoundAcceptedTurnData.ClonePreparedPlan(prepared)!,
+                    new WoundEffectBatchPlanningResult(
+                        effectPlan,
+                        Array.Empty<ValidationIssue>()));
+                replayTiming?.Dispose();
+                canonicalFinal = replay.Success
+                    ? replay.Plan!.WoundFinalPlanFingerprint
+                    : null;
+            }
+            else
+            {
+                // Only the private bundle copy route supplies an already constructed source.
+                // Recheck its live companions and handoff; reuse only its retained reduction result.
+                var replayPrepared = WoundAcceptedTurnData.ClonePreparedPlan(prepared)!;
+                var effectResult = new WoundEffectBatchPlanningResult(effectPlan, Array.Empty<ValidationIssue>());
+                var refused = WoundAcceptedTurnPlannerCore.ValidateFinalizationHandoff(
+                    replayPrepared, effectResult, out var accepted, out _, out _);
+                if (refused is null)
+                    refused = WoundAcceptedTurnPlannerCore.ValidateJointFinalAdmission(replayPrepared, accepted!);
+                canonicalFinal = refused is null ? retainedSource.WoundFinalPlanFingerprint : null;
+            }
             if (!string.Equals(
                     plan.BindingFingerprint,
                     prepared.BindingFingerprint,
@@ -910,6 +1071,8 @@ internal sealed class WoundAcceptedTurnPlanCache
         _preparedTreatmentContinuationAuthority = null;
         _preparedRecoveryContinuationFingerprint = null;
         _preparedRecoveryContinuationAuthority = null;
+        _preparedJointRepairFingerprint = null;
+        _preparedJointRepairAuthority = null;
         _preparedFingerprint = null;
         _preparedStageToken = null;
         _preparedResult = null;

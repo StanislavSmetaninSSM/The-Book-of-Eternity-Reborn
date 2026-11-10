@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "bf3cb8502d854402d9bf812f8c75ead3e0fabb68",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-original-browser-recovery-admission",
+  "Status": "0 tests: Build-integration compile preparation failure, not behavioral RED",
+  "Scope": "New target fixture constructor omitted existing physical load operations argument; production shared recovery unchanged",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "a3fad201b4632d8c44b011a294430d30f117076c2baba6a6e3e5e647e769083f",
+      "RawBytes": 1335
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "af97fe73240a5a32d750bd358407388012554cb4d55de447036944469e0538e7",
+      "RawBytes": 48986
+    }
+  ]
+}

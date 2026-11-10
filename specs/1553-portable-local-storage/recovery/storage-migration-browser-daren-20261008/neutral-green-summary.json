@@ -1,0 +1,89 @@
+{
+  "Categories": [
+    "portable-browser-protocol-consumers-linux",
+    "portable-daren-protocol-consumers-linux",
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-direct-gacha-adoption-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c8d882cd57a9780c66f505b951f70968a660ac98",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-browser-direct-gacha-adoption-linux",
+      "Seconds": 6.8651695,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-protocol-admission-linux",
+      "Seconds": 3.4176636,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-protocol-consumers-linux",
+      "Seconds": 9.6489617,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-daren-protocol-consumers-linux",
+      "Seconds": 3.413806,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0623387,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0336987,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0871669,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0033064,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 17,
+  "WallTime": "00:00:27.9506879",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 57,
+    "CompletedCases": 57,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 57,
+    "Executed": 57,
+    "Passed": 57,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

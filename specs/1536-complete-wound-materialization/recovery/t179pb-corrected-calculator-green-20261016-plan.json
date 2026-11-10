@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "fr063-joint-story-calculation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1996dcf940c2ffeeab38576b09a31e9a764132c3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.2537974,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-story-calculation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-joint-story-calculation",
+      "Categories": [
+        "fr063-joint-story-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.CurrentSoul_DoesNotReplaceOriginalRealmOrIncarnation|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.EntityLabels_UseActualManifestationResidentAndCanonicalNpcPoliciesInOwnerOrder|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExactRow_PreservesUnicodeFrozenUtcAndNormalizationWithoutAppendFraming|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExistingIncarnationAndLocationFallbacks_AreUnchanged|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Inputs_CopyAllNamedRootsAndResultHasNoMutableEntryOrReadList|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Narrative_RequiresNonemptyUniqueActualResponse|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedAbsentRoots_AreReadBindingsAndKeepIdsWithOmittedNullLabels|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedMalformedRoots_RefuseInsteadOfDroppingLabels|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.TagSelection_PreservesExistingFirstSubstringAndDelimiterPolicy|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.UnreferencedOptionalRoots_AreNeitherParsedNorReportedAsReads",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 20,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.CurrentSoul_DoesNotReplaceOriginalRealmOrIncarnation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.EntityLabels_UseActualManifestationResidentAndCanonicalNpcPoliciesInOwnerOrder",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExactRow_PreservesUnicodeFrozenUtcAndNormalizationWithoutAppendFraming",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExistingIncarnationAndLocationFallbacks_AreUnchanged",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Inputs_CopyAllNamedRootsAndResultHasNoMutableEntryOrReadList",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Narrative_RequiresNonemptyUniqueActualResponse",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedAbsentRoots_AreReadBindingsAndKeepIdsWithOmittedNullLabels",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedMalformedRoots_RefuseInsteadOfDroppingLabels",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.TagSelection_PreservesExistingFirstSubstringAndDelimiterPolicy",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.UnreferencedOptionalRoots_AreNeitherParsedNorReportedAsReads",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

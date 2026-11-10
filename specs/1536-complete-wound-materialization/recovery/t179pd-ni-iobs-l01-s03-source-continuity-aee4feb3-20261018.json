@@ -1,0 +1,92 @@
+{
+  "kind": "NI_IOBS_S03_CONNECTED_SOURCE_CONTINUITY_NOT_FINAL_VERDICT",
+  "candidate": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+  "originalFinding": {
+    "path": "/tmp/t179pd-ni-iobs-l01-late-owner-source-finding-aee4feb3-20261018.json",
+    "sha256": "b73f0e7a982acf45621c0b73d0b0b8e6957678cf16a1ce9cec7d03f5f4557d76"
+  },
+  "prior34bbbBindingPreserved": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-review-binding-34bbb958-20261018.json",
+    "sha256": "d0bb0318b99cc14b8d2055e8ffe3264be27866ad47f9f5db5609df2aaa864737"
+  },
+  "findingStatus": "OPEN_SOURCE_DERIVED_NO_RUNTIME_FAILURE",
+  "chain": [
+    "Unchanged protected Late2 calls real StagePlayerTurnAsync within a participating session operation, then closes it before actual late caller entry.",
+    "Actual late caller opens a new participating Main.",
+    "Retained HotOrdinaryOriginal.ConsoleOwner names the earlier staging Main; RequireHotOrigin intentionally rejects Closed or different access.",
+    "Matching HOT Ready source becomes unavailable, while unconditional FIRST2 and mandatory new I preparation demand that same successful HOT observation.",
+    "Supported late completion is therefore predicted to hold before I/common; no native outcome is claimed."
+  ],
+  "acceptedEngineeringBoundary": {
+    "decision": "SEPARATE_SELECTED_I_CURRENT_OWNER_OBSERVATION_WITHIN_ACCEPTED_VERTICAL",
+    "preserve": [
+      "RequireHotOrigin and continuous HOT ownership semantics",
+      "Unchanged protected Late2 source/regression controls",
+      "Existing matching Ready/frame validation and actual delete/owning-release slots",
+      "Immutable original/current before-images and exact selected owned I-before to I-after join",
+      "Checkpoint2 missing result after restart remains Held; no fresh permission from durable bytes"
+    ],
+    "required": [
+      "Private I witness comes from the actual FIRST2/current Main and actual matched Ready observation, not from caller JSON or a revived old Main.",
+      "Bind and recheck current G/frame/original/request/complete pending graph and current source images before Prepared, Published and Capturing consumption.",
+      "Observe actual Ready delete AND owning release before admission.",
+      "Keep optional HOT observations unavailable where their real owner is unavailable; do not set HOT/fullNI flags.",
+      "Stage coordinates may describe only an actual historical Stage. No in-memory Stage object means no fabricated stageOrdinal; any current-FIRST ordinal must be explicitly and honestly named/bound in the concrete source/data contract.",
+      "Do not silently select persisted v1 or upgrade/downgrade a v2 record to hide this regression."
+    ],
+    "existingFactoryConclusion": "The existing HOT factory deliberately rejects the closed owner and is not a factory for a new late I witness. The listed genuine observation slots support bounded new private I wiring; concrete source/fixture closure is still required."
+  },
+  "slotEvidence": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "start": 3478,
+      "end": 3484,
+      "fileSha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "rangeSha256": "7855cc98c800cfa47ae649632baaf26b64a610028fc0c040b775b292ea782e5b",
+      "text": "            var hotReadyRead = await ReadHotRepairReadyForSessionAsync(repairSessionGeneration);\n            var readyJson = hotReadyRead.Text;\n            var ready = ReadValidationRepairReady(readyJson);\n            var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();\n            if (ready == null)\n            {\n                hotReadyRead.Fail(\"MalformedOrMissingReady\");\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "start": 3528,
+      "end": 3531,
+      "fileSha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "rangeSha256": "1fb6e1ade1f194bd8ac73073b35c5f8d83a1bfcc4846fe6b49f86232f296530f",
+      "text": "            if (!IsMatchingRepairReady(ready, pendingSnapshot.Context))\n            {\n                hotReadyRead.Fail(\"MismatchedReady\");\n                _logger.LogWarning(\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "start": 3582,
+      "end": 3591,
+      "fileSha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "rangeSha256": "7eceabd4702d0ce282ab1ba4a296e5b2ceea8fcf27137a802baf56b5902bee1b",
+      "text": "            await CaptureMatchingHotRepairReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);\n            await AppendAcceptedValidationRepairTrajectoryAsync(\n                source,\n                errors,\n                attempt,\n                ready,\n                pendingSnapshot,\n                repairSessionGeneration);\n            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration, hotReadyRead);\n            return true;\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "start": 8360,
+      "end": 8397,
+      "fileSha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "rangeSha256": "54f99f2f12fdf52486db0008438d2c2467c49dfa1e57c86537b3fdf42f1a4794",
+      "text": "    private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration,\n        HotRepairReadyRead? hotRead = null)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try\n        {\n            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);\n            if (hotRead is not null)\n            {\n                hotRead.ReadyObservedBeforeDelete = hotRead.Bytes is not null;\n                if (!hotRead.Faulted)\n                {\n                    try { await RecheckHotReadySourceAsync(writeLease, hotRead, requireReadyAbsent: false); }\n                    catch (Exception error) when (IsOptionalHotFailure(error)) { hotRead.Fail(\"SourceChanged\"); }\n                }\n            }\n            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);\n            if (hotRead is not null) hotRead.ReadyDeleteReturned = true;\n        }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            hotRead?.Fail(\"ReadyDeletionUncertain\");\n            uncertainty = failure;\n            throw;\n        }\n        catch { hotRead?.Fail(\"ReadyDeletionDidNotReturn\"); throw; }\n        finally\n        {\n            try { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }\n            catch { hotRead?.Fail(\"ReadyReleaseDidNotReturn\"); throw; }\n        }\n        if (hotRead is not null)\n        {\n            hotRead.ReadyReleaseReturned = true;\n            if (!hotRead.Faulted && hotRead.Source is not null && hotRead.ReadyDeleteReturned)\n            { hotRead.Status = \"ConsumedReadyMatched\"; hotRead.Reason = \"ActualMatchingDeletionAndReleaseReturned\"; }\n        }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "start": 135,
+      "end": 171,
+      "fileSha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
+      "rangeSha256": "f7783a39d5f5811ae7248877f2b5aefa5fafa4b84c78826f74573dc5c21e6eb1",
+      "text": "    private void RequireHotOrigin(FileSystemManager.CanonicalWriteLease lease, HotOrdinaryOriginal origin)\n    {\n        RequireOrdinaryJointRepairLease(lease);\n        _fs.EnsureCanonicalWriteLeaseActive(lease);\n        var main = lease.MainAdmission ?? throw new InvalidDataException(\"HOT requires actual ordinary Main admission.\");\n        main.Validate(lease);\n        var generation = _fs.ReadLocalGenerationSnapshot(lease);\n        if (generation.Binding.Id != origin.Generation)\n            throw new SessionReplacedException(\"HOT original belongs to a replaced session.\", origin.Generation, generation.Binding.Id);\n        if (!ReferenceEquals(origin, _hotOrdinaryOriginal) || origin.Preparation is null ||\n            origin.State is not (\"Staged\" or \"StagedUnderLiveOwner\") || !HotBytesEqual(generation.Bytes, origin.GenerationBytes))\n            throw new InvalidDataException(\"The actual live ordinary original is unavailable.\");\n        if (origin.BrowserBinding is { } browser)\n        {\n            if (!_fs.HasBrowserOriginalOperation) throw new InvalidDataException(\"Current browser original admission is missing.\");\n            _ = _fs.CaptureBrowserOriginalCondition(lease, browser.Generation);\n        }\n        else if (origin.ConsoleOwner is not { Closed: false } console || !main.SharesAccess(console))\n            throw new InvalidDataException(\"The continuous console staging owner is no longer current.\");\n    }\n\n    private async Task<HotRepairReadyRead> ReadHotRepairReadyForSessionAsync(string expectedGeneration)\n    {\n        if (_hotOrdinaryOriginal is not { Preparation: not null } origin ||\n            origin.State is not (\"Staged\" or \"StagedUnderLiveOwner\"))\n        {\n            var text = await ReadValidationRepairFileForSessionAsync(ValidationRepairReadyPath, expectedGeneration);\n            return new(null, ++_hotReadyOrdinal, null, text, null);\n        }\n        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        ThrowIfRepairSessionReplaced(lease, expectedGeneration);\n        var snapshot = await _fs.ReadFileSnapshotAsync(lease, ValidationRepairReadyPath);\n        var read = new HotRepairReadyRead(origin, ++_hotReadyOrdinal, snapshot?.Content,\n            snapshot is null ? null : FileSystemManager.DecodeFileBytes(snapshot.Content), snapshot?.LastWriteTimeUtc);\n        _hotRepairReady?.Fail(\"SubsequentRepairObservation\");\n        _hotRepairReady = read;\n        return read;\n"
+    }
+  ],
+  "otherSourceDeltaStatus": {
+    "S01": "Source fix reviewed: claimed joint fields under non2 refuse; tuple mismatch requires exact prior marker in genuine current original. Actual negatives pending.",
+    "S02": "Source fix reviewed: selected FIRST2 release failure propagates and sets held before refresh/arming; v1 policy retained. Actual owning-close negative pending.",
+    "pins": "All65 current packet pins matched Git bytes/length/blob/mode.",
+    "liveControls": "New6 live rows authored/unrun. Warning proves stored vector equality+completion, not returned-vector append multiplicity; ErrorPrepared is first-invocation coverage, not yet resume/retention."
+  },
+  "limits": [
+    "No repository edits, build, discovery, test/native execution, old raw replay or runtime authorization.",
+    "This supplement preserves connected review continuity and is not a new architecture gate or final SOURCE acceptance.",
+    "Await immutable S03 fix and remaining finite controls/docs/selection/preparation."
+  ]
+}

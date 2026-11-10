@@ -1,0 +1,7 @@
+{
+  "path": "t179pd-inspect-observed-green-admission-fixture-late-root-bindings.py.txt.gz",
+  "raw_sha256": "04cf6f173050ef95e4597a1f57234602db9eb14b2663d5b5d472f984280adc6c",
+  "stored_sha256": "8ffac850b8c3b55d2dac58053e8d539612444cb75d77f1321b15f3194f74bd3f",
+  "raw_bytes": 5151,
+  "origin": "Root adapted prior raw binding verifier to new frozen packet; source/evidence read only; separate independent review pending"
+}

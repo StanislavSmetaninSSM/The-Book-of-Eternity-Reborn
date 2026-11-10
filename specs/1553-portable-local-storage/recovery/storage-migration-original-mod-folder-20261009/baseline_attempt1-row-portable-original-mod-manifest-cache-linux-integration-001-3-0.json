@@ -1,0 +1,73 @@
+{
+  "mode": "committed_close",
+  "root": "/tmp/boe-original-mod-manifest-7c307de6fa284144ae5c69173c5c7ab2",
+  "result": null,
+  "failure": "System.IO.IOException: Actual original mod manifest owner close failure.\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.ThrowingClose.Dispose() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs:line 137\n   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 329\n   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 355\n   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Boolean completed, Exception operationFailure) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 109\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 837\n   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 751\n   at BookOfEternityClient.Services.SystemModService.WriteManifestForGmAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SystemModService.cs:line 86\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.<>c__DisplayClass8_1.<<OriginalSystemModManifestCommitsCacheOnlyAfterKnownPublication>b__9>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.ModManifest.cs:line 136\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "acquisitions": 2,
+  "reads": [
+    "mods/active.md",
+    "game_state/core/system_mods.json",
+    "game_state/core/system_mods.json"
+  ],
+  "mutations": [
+    "game_state/core/system_mods.json"
+  ],
+  "readCuts": 0,
+  "writeCuts": 0,
+  "pauses": 1,
+  "originalState": "BookOfEternityClient.Core.FileSystemManager+<WriteFileAtomicBytesAsync>d__74/<writeLock>5__1",
+  "attachments": 1,
+  "Calls": 1,
+  "beforeCache": [
+    "active.md",
+    "missing.md",
+    "ACTIVE.MD"
+  ],
+  "afterCache": [
+    "active.md"
+  ],
+  "cacheOwnerSame": false,
+  "beforeManifest": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+  "afterManifest": "77u/ewogICJtb2RzRGlyZWN0b3J5IjogIm1vZHMiLAogICJhY3RpdmVDb3VudCI6IDEsCiAgInRvdGFsQ291bnQiOiAxLAogICJlbmFibGVkU3lzdGVtTW9kcyI6IFsKICAgICJhY3RpdmUubWQiCiAgXSwKICAiYWN0aXZlTW9kcyI6IFsKICAgIHsKICAgICAgImZpbGVOYW1lIjogImFjdGl2ZS5tZCIsCiAgICAgICJyZWxhdGl2ZVBhdGgiOiAibW9kcy9hY3RpdmUubWQiLAogICAgICAibW9kSWQiOiAiYWN0aXZlIiwKICAgICAgIm5hbWUiOiAiRXhhY3QgYWN0aXZlIG1vZCIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcmlnaW5hbCBjb250ZW50LiIsCiAgICAgICJleHRlbnNpb24iOiAiLm1kIiwKICAgICAgImxhc3RNb2RpZmllZFV0YyI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUyNTcwODJaIiwKICAgICAgImNvbnRlbnQiOiAiIyBFeGFjdCBhY3RpdmUgbW9kXG5PcmlnaW5hbCBjb250ZW50LlxuIgogICAgfQogIF0sCiAgImF2YWlsYWJsZU1vZHMiOiBbCiAgICB7CiAgICAgICJmaWxlTmFtZSI6ICJhY3RpdmUubWQiLAogICAgICAicmVsYXRpdmVQYXRoIjogIm1vZHMvYWN0aXZlLm1kIiwKICAgICAgIm1vZElkIjogImFjdGl2ZSIsCiAgICAgICJuYW1lIjogIkV4YWN0IGFjdGl2ZSBtb2QiLAogICAgICAiZGVzY3JpcHRpb24iOiAiT3JpZ2luYWwgY29udGVudC4iLAogICAgICAiZXh0ZW5zaW9uIjogIi5tZCIsCiAgICAgICJsYXN0TW9kaWZpZWRVdGMiOiAiMjAyNi0xMC0wOVQyMDo1MDoxMC41MjU3MDgyWiIsCiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfQogIF0sCiAgIl9sYXN0VXBkYXRlZCI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUzODUzMzFaIgp9",
+  "committedManifest": "77u/ewogICJtb2RzRGlyZWN0b3J5IjogIm1vZHMiLAogICJhY3RpdmVDb3VudCI6IDEsCiAgInRvdGFsQ291bnQiOiAxLAogICJlbmFibGVkU3lzdGVtTW9kcyI6IFsKICAgICJhY3RpdmUubWQiCiAgXSwKICAiYWN0aXZlTW9kcyI6IFsKICAgIHsKICAgICAgImZpbGVOYW1lIjogImFjdGl2ZS5tZCIsCiAgICAgICJyZWxhdGl2ZVBhdGgiOiAibW9kcy9hY3RpdmUubWQiLAogICAgICAibW9kSWQiOiAiYWN0aXZlIiwKICAgICAgIm5hbWUiOiAiRXhhY3QgYWN0aXZlIG1vZCIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcmlnaW5hbCBjb250ZW50LiIsCiAgICAgICJleHRlbnNpb24iOiAiLm1kIiwKICAgICAgImxhc3RNb2RpZmllZFV0YyI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUyNTcwODJaIiwKICAgICAgImNvbnRlbnQiOiAiIyBFeGFjdCBhY3RpdmUgbW9kXG5PcmlnaW5hbCBjb250ZW50LlxuIgogICAgfQogIF0sCiAgImF2YWlsYWJsZU1vZHMiOiBbCiAgICB7CiAgICAgICJmaWxlTmFtZSI6ICJhY3RpdmUubWQiLAogICAgICAicmVsYXRpdmVQYXRoIjogIm1vZHMvYWN0aXZlLm1kIiwKICAgICAgIm1vZElkIjogImFjdGl2ZSIsCiAgICAgICJuYW1lIjogIkV4YWN0IGFjdGl2ZSBtb2QiLAogICAgICAiZGVzY3JpcHRpb24iOiAiT3JpZ2luYWwgY29udGVudC4iLAogICAgICAiZXh0ZW5zaW9uIjogIi5tZCIsCiAgICAgICJsYXN0TW9kaWZpZWRVdGMiOiAiMjAyNi0xMC0wOVQyMDo1MDoxMC41MjU3MDgyWiIsCiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfQogIF0sCiAgIl9sYXN0VXBkYXRlZCI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUzODUzMzFaIgp9",
+  "beforeGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4MDNiYjBkNzM1NGU0OGMxOTlhNGE5YThjYTRmNTFmNCJ9",
+  "afterGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4MDNiYjBkNzM1NGU0OGMxOTlhNGE5YThjYTRmNTFmNCJ9",
+  "beforeFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4MDNiYjBkNzM1NGU0OGMxOTlhNGE5YThjYTRmNTFmNCJ9",
+    "game_session/game_state/core/system_mods.json": "77u/eyJwcmlvciI6Im1hbmlmZXN0In0=",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "afterFiles": {
+    ".boe_runtime/locks/canonical-write.lock": "",
+    ".boe_runtime/locks/gm-main-owner.lock": "",
+    ".boe_runtime/session-generation/current.json": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4MDNiYjBkNzM1NGU0OGMxOTlhNGE5YThjYTRmNTFmNCJ9",
+    "game_session/game_state/core/system_mods.json": "77u/ewogICJtb2RzRGlyZWN0b3J5IjogIm1vZHMiLAogICJhY3RpdmVDb3VudCI6IDEsCiAgInRvdGFsQ291bnQiOiAxLAogICJlbmFibGVkU3lzdGVtTW9kcyI6IFsKICAgICJhY3RpdmUubWQiCiAgXSwKICAiYWN0aXZlTW9kcyI6IFsKICAgIHsKICAgICAgImZpbGVOYW1lIjogImFjdGl2ZS5tZCIsCiAgICAgICJyZWxhdGl2ZVBhdGgiOiAibW9kcy9hY3RpdmUubWQiLAogICAgICAibW9kSWQiOiAiYWN0aXZlIiwKICAgICAgIm5hbWUiOiAiRXhhY3QgYWN0aXZlIG1vZCIsCiAgICAgICJkZXNjcmlwdGlvbiI6ICJPcmlnaW5hbCBjb250ZW50LiIsCiAgICAgICJleHRlbnNpb24iOiAiLm1kIiwKICAgICAgImxhc3RNb2RpZmllZFV0YyI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUyNTcwODJaIiwKICAgICAgImNvbnRlbnQiOiAiIyBFeGFjdCBhY3RpdmUgbW9kXG5PcmlnaW5hbCBjb250ZW50LlxuIgogICAgfQogIF0sCiAgImF2YWlsYWJsZU1vZHMiOiBbCiAgICB7CiAgICAgICJmaWxlTmFtZSI6ICJhY3RpdmUubWQiLAogICAgICAicmVsYXRpdmVQYXRoIjogIm1vZHMvYWN0aXZlLm1kIiwKICAgICAgIm1vZElkIjogImFjdGl2ZSIsCiAgICAgICJuYW1lIjogIkV4YWN0IGFjdGl2ZSBtb2QiLAogICAgICAiZGVzY3JpcHRpb24iOiAiT3JpZ2luYWwgY29udGVudC4iLAogICAgICAiZXh0ZW5zaW9uIjogIi5tZCIsCiAgICAgICJsYXN0TW9kaWZpZWRVdGMiOiAiMjAyNi0xMC0wOVQyMDo1MDoxMC41MjU3MDgyWiIsCiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfQogIF0sCiAgIl9sYXN0VXBkYXRlZCI6ICIyMDI2LTEwLTA5VDIwOjUwOjEwLjUzODUzMzFaIgp9",
+    "game_session/mods/active.md": "77u/IyBFeGFjdCBhY3RpdmUgbW9kCk9yaWdpbmFsIGNvbnRlbnQuCg=="
+  },
+  "lockAvailable": true,
+  "originalActive": false,
+  "originalMainClosed": true,
+  "originalAmbientClosed": true,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "publication": {
+    "base": "de22b394109c8bf9b3cef4e805843784e93bc9ef",
+    "checkpoint": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "actualRemoteSHA": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "primaryClean": true,
+    "publishedPaths": [
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-independent-source-closure-de22b394-20261014T232708Z-a954aee7.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-independent-closure-readback-de22b394-20261014T232708Z-a954aee7.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-focused-source-bundle-de22b394-20261014T232258Z-f31d75f8.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-publication-recovery-verified-20261014T232557Z-ed0b8722.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-corrected-source-accepted-before-fresh-preparation-root-wip-20261014.json"
+    ],
+    "publishedBytesMatch": true,
+    "protectedPathsExact": 564,
+    "source": "CorrectedSOURCE/FIXTURE/SELECTION/externalA1 staticallyaccepted; additiveverdictcheckpoint beforefreshBOTHpreparation retry; no build/testpassclaimed",
+    "allProjectChecks": "Originaleb206948freshpreparationFAILED4compilererrors10warnings/0executed immutable; correctedsourcepreparationUNRUN/compilerUNVERIFIED; ALLactualUNRUN",
+    "utc": "2026-10-14T23:28:55.538627+00:00"
+  },
+  "recovery": {
+    "checkpoint": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "remoteSha": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2463,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1934,
+    "consumerProduction": "CorrectedSOURCEaccepted45d85929/unchangedFIXTURE-SELECTION-A1; evidence-onlycarrier; firstprepfailed4errors0tests retained; nextNEWsourcepins/freshBOTHzero-testprep; correctedcompiler/ALLactualUNRUN",
+    "verifiedUtc": "2026-10-14T23:32:21.191109+00:00"
+  },
+  "publicationTrace": [
+    "f8c422fullclosure/135pins+19support/manifest",
+    "fa1e30launchsession64842",
+    "f69bf0nativeexit0",
+    "566900actualremote/cleanreadback"
+  ],
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-corrected-source-accepted-publication-20261014T232850Z-55825d12.log",
+  "recoveryTrace": [
+    "48957blaunchsession96686",
+    "21ac94nativeexit0"
+  ],
+  "recoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-corrected-source-accepted-selected-recovery-20261014T232916Z-bee25f33.log",
+  "correctedSOURCE": "ACCEPTED static45d85929; FIXTURE/SELECTION/A1carriedunchanged",
+  "gateProof": "/workspace/boe-cloud-tools-20261014/fr063-corrected-source-second-preparation-gate-proof-c4a7bc1a-20261014T232944Z-73fc2fbf.json",
+  "gateProofSHA256": "a1d17c1b0383a4b85c08889a58e4d4ccfa29ca52d34253f9e0027623f6a03710",
+  "scratch": "/workspace/boe-cloud-tools-20261014/fr063-connected-second-fresh-evidence-c4a7bc1a-20261014T233241Z-d3fb8a67",
+  "firstPreparation": "immutableFAILEDsourceeb2069484errors10warnings0executed; EVIDENCEaccepted",
+  "secondPreparation": "notyetstarted; freshBOTHPlanOnly32/58/18; noNoBuild; nooldbinaries",
+  "allActual": "UNRUN",
+  "configurationActual": "backendtelemetryunavailable",
+  "writerAndReviewer": "FINALSTOP/no pendingtools"
+}

@@ -1,0 +1,75 @@
+{
+  "RuntimeSourceSHA": "0419c777b862ce9e03c4a674a3c698a46b81e36a",
+  "ExactlyOneOrdinaryAttempt": true,
+  "Runner": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-124051-627-122896-cff17fc096f14f0b84da76062279ab74-categories",
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "WallTimeIncludingBuild": "00:02:21.7962504",
+  "DriverSeconds": 77.22902937400067,
+  "PrimaryFailure": "Traceback (most recent call last):\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 872, in <module>\n    fresh(client, narrative, offset, 40)\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 270, in fresh\n    wait(observed, peer.name + \": \" + marker, seconds)\n  File \"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/tests/fixtures/LinuxGameChains/console_chain.py\", line 247, in wait\n    assert time.monotonic() < deadline, \"Timeout: \" + label\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Timeout: client-queued-cold: Проверочный след 1: Хранитель наблюдает за душой у берега.\n",
+  "CleanupStartedAtSeconds": 76.0917113329997,
+  "LaterFailureType": "System.IO.InvalidDataException",
+  "LaterFailureStack": "System.IO.InvalidDataException: Original browser action, run or snapshot evidence changed; continuation refused.\n   at BookOfEternityClient.Core.BrowserOriginalMainCondition.RequireCurrent(FileSystemManager files) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/BrowserOriginalMainCondition.cs:line 44\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 64\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 3626\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 1328\n   at BookOfEternityClient.Services.ShiningCoreActionRequestState.ReadRequestsStateAsync(FileSystemManager fs) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/ShiningCoreActionRequestState.cs:line 266\n   at BookOfEternityClient.Services.ValidationService.ValidatePendingShiningCoreActionRequestContextAsync(List`1 issues) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs:line 773\n   at BookOfEternityClient.Services.ValidationService.ValidateLifecycleControlContextAsync(List`1 issues) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs:line 1151\n   at BookOfEternityClient.Services.ValidationService.ValidateMetaMiscStateFiles(List`1 issues) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs:line 890\n   at BookOfEternityClient.Services.ValidationService.RunActorAndStateValidationPhasesAsync(GameStateValidationPhase phases, List`1 issues) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs:line 94\n   at BookOfEternityClient.Services.ValidationService.ValidateGameStateCoreAsync(GameStateValidationSelection selection) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs:line 32\n   at BookOfEternityClient.Services.ValidationService.RunAdmittedGameStateAsync(GameStateValidationSelection selection, WorldValidationInvocation invocation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs:line 52\n   at BookOfEternityClient.Core.GameEngine.ValidateCurrentGameStateOrShowErrorsAsync(String source, RollbackSnapshot rollbackSnapshot, ProgressionControl progressionControl, Boolean allowRepairLoop, Nullable`1 initialCanonicalRepairBoundaryUtc, IReadOnlyCollection`1 initialCanonicalRepairErrors, Nullable`1 initialCanonicalRepairStartedAtUtc, Byte[] pendingResolutionRepairCheckpoint, Func`1 beforeRepairMutation, Func`1 beforeTerminalRepairReturn, Boolean applyProgressionOnSuccess, MortalWoundTreatmentResourcePublicationTransaction treatmentResourcePublicationTransaction, GuardianMusingsCompletedValidation guardianMusingsForRepair) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:line 225\n   at BookOfEternityClient.Core.GameEngine.ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(RollbackSnapshot rollbackSnapshot, ValidatedPendingTurnSnapshotContext originalBrowserSnapshotContext) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:line 2086\n   at BookOfEternityClient.Core.GameEngine.FinalizePlayerTurnAsync(PlayerTurnPreparation preparation, String action, Boolean playerFacingTurn, TerminalSignalWaitOutcome waitOutcome) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 1749\n   at BookOfEternityClient.Core.GameEngine.<>c__DisplayClass442_0.<<ProcessPlayerTurn>b__1>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 1465\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.<>c__DisplayClass7_1`1.<<RunParticipatingSessionAsync>b__0>d.MoveNext() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 137\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 379\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 228\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 305\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 136\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 150\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/SessionOperationContext.cs:line 151\n   at BookOfEternityClient.Core.GameEngine.ProcessPlayerTurn(String action, String extraSystemReminder, String waitingTitle, String waitingText, Boolean playerFacingTurn, Binding browserAction) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 1457\n   at BookOfEternityClient.Core.GameEngine.EnterGameLoop() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 1328",
+  "FailureObservedAtSeconds": 77.03278522999608,
+  "ObservedDuringCleanup": true,
+  "ObservationLimit": "Observed timestamp does not establish exact throw time, primary causality or absence of new functional failure. No repeat authorized. Full C5/performance UNQUALIFIED. Historical helper refusal and active/intent actor UNKNOWN.",
+  "OriginalStopped": true,
+  "IoDrained": true,
+  "StopReplyOK": true,
+  "AllFiveEOF": true,
+  "Peers": {
+    "client-first": {
+      "ExitCode": -9,
+      "EOF": true,
+      "Pid": 123256
+    },
+    "bridge-first": {
+      "ExitCode": 0,
+      "EOF": true,
+      "Pid": 123272
+    },
+    "daemon-first": {
+      "ExitCode": 0,
+      "EOF": true,
+      "Pid": 123316
+    },
+    "web-action-1": {
+      "ExitCode": 0,
+      "EOF": true,
+      "Pid": 123583
+    },
+    "client-queued-cold": {
+      "ExitCode": -2,
+      "EOF": true,
+      "Pid": 123867
+    }
+  },
+  "PromptDelivery": {
+    "operationId": "cfb0e17a1a1f4eccb5b97054352aded0",
+    "operationKind": "turn",
+    "operationRevision": "live",
+    "inputBindingId": "033314415592454ca60ec4a68554d0f7",
+    "contentHash": "C294C68096B8D79BA34D7B8A70CA539E02D2C1C68E7FC5EC9ADEEE388E86EDB5",
+    "disposition": "submission-observed",
+    "phase": "terminal",
+    "reason": "fresh-submission-observed"
+  },
+  "LastPromptDispatchState": "SubmissionObserved",
+  "LastPromptDispatchElapsedMs": 28,
+  "HelperClassification": "SubmissionObserved proves fresh dispatch observation, not hidden first-read predicate bits/independent helper exit qualification. Optional helper/Stop capture OFF; no equivalence to unexplained historical refusal.",
+  "AcceptedTurns": [],
+  "ClientColdRestart": false,
+  "ModelCalls": 0
+}

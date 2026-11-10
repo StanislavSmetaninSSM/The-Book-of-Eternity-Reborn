@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wound-snapshot-required-inventory-current",
+      "reason": "Historical exact receipt covers14 foundational paths; current wound RequiredPaths includes additional journals, quests, inventory/characteristics, checkpoints/receipts and decision output. Current fixed12-surface rollback and focused23-entry receipts do not prove complete signed inventory. Run only the unchanged exact inventory Fact with180-second ceiling; no broad lifecycle or battle cases.",
+      "contracts": [
+        "#1536 T013/T027/T054/T154/T177 wound signed inventory and exact opaque-byte restoration",
+        "Current RequiredPaths snapshot files/hashes/backups/baseline membership, not gameplay publication acceptance"
+      ]
+    }
+  ]
+}

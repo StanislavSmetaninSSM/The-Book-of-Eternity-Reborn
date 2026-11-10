@@ -61,6 +61,7 @@ public partial class ValidationService
             EffectAcceptedTurnPlan.IdentityIndexPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             WoundCarrierCatalog.PlayerPath,
             WoundCarrierCatalog.NpcPath,
             WoundCarrierCatalog.EnemiesPath,
@@ -624,6 +625,22 @@ public partial class ValidationService
                 }
             }
 
+            if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
+            {
+                try
+                {
+                    _ = SpiritualWoundFailedAction.ReadValidated(conflict, exchange, _checkedExchanges.Count);
+                    if (_ordinaryPressureGroup?.IsGuardian != true && _livePressureProjection?.Data.AffectedSide != "opposition")
+                        throw new FormatException("Guardian attribution requires its exact owned ordinary isolation or actual projection.");
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(coordinate + "." + SpiritualWoundFailedAction.Property,
+                        "spiritual_wound_failed_action_invalid", error.Message));
+                    return;
+                }
+            }
+            ValidateCombatHealingDeclaration(conflict, exchange);
             foreach (var side in new[] { "player", "opposition" })
             {
                 var key = side + "SideStrain";
@@ -727,22 +744,30 @@ public partial class ValidationService
                     throw new InvalidOperationException(error);
                 envelope = parsed!;
             }
+            long margin;
             if (exchange["diceAudit"] is not JsonObject dice)
             {
-                // The real checker has already accepted this explicit voluntary non-contest.
-                // Do not manufacture an opposed margin or exclude its lawful incoming harm.
-                if (prepareSource)
-                    _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
-                        coordinate + "." + affectedSide, exchange.ToJsonString()));
-                return;
+                var choice = SpiritualWoundNoRollMargin.Read(exchange, affectedSide);
+                if (!choice.IsVoluntaryNoRoll || !choice.ChosenMargin.HasValue)
+                {
+                    // Missing is unresolved authority; explicit zero is a real GM choice.
+                    if (prepareSource)
+                        _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
+                            coordinate + "." + affectedSide, exchange.ToJsonString()));
+                    return;
+                }
+                margin = choice.ChosenMargin.Value;
             }
-            if (!ExactInt(dice["playerTotal"], out var player) ||
-                !ExactInt(dice["oppositionTotal"], out var opposition))
-                throw new InvalidOperationException("validated opposed audit requires exact side totals");
-            if (!ExactInt(dice["margin"], out var auditedMargin) ||
-                (long)player - opposition != auditedMargin)
-                throw new InvalidOperationException("wide source margin must equal actual side totals");
-            var margin = actingSide == "player" ? (long)player - opposition : (long)opposition - player;
+            else
+            {
+                if (!ExactInt(dice["playerTotal"], out var player) ||
+                    !ExactInt(dice["oppositionTotal"], out var opposition))
+                    throw new InvalidOperationException("validated opposed audit requires exact side totals");
+                if (!ExactInt(dice["margin"], out var auditedMargin) ||
+                    (long)player - opposition != auditedMargin)
+                    throw new InvalidOperationException("wide source margin must equal actual side totals");
+                margin = actingSide == "player" ? (long)player - opposition : (long)opposition - player;
+            }
             var beforeStrain = ExactString(exchange["before"]![affectedSide + "SideStrain"])!;
             var afterStrain = ExactString(exchange["after"]![affectedSide + "SideStrain"])!;
             var mode = SpiritualConflictDangerPolicy.ReadDeclaration(conflict)!;
@@ -752,11 +777,30 @@ public partial class ValidationService
             var retrauma = ResolveRetrauma(explicitTarget, targetKey, out var retraumaWoundJson);
             if (!prepareSource)
                 return;
-            _sources.Add(new PreparedSpiritualSource(
+            var strain = affectedSide == "player" ? _mechanicsContext?.ReadOwnedStrainCorrection(conflict, exchange) : null;
+            var strainPreimage = strain is not null && strain.IsCorrected(exchange) ? strain.RetainedPreimageJson : null;
+            var preparedSource = new PreparedSpiritualSource(
                 coordinate, ExactString(conflict["conflictId"])!, ExactString(exchange["exchangeId"])!,
                 affectedSide, actorKey, targetKey, operation,
                 source?.ToJsonString(), exchange.ToJsonString(), calculation,
-                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson));
+                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson, strainPreimage);
+            if (strain is not null && !strain.PreservesOrdinarySource(preparedSource))
+            {
+                issues.Add(SourceIssue(coordinate, "spiritual_wound_strain_source_mismatch",
+                    "the independently proved ordinary capped source without changed or additional harm"));
+                return;
+            }
+            if (_livePressureProjection is { } pressure && pressure.Data.AffectedSide == affectedSide)
+            {
+                if (!pressure.Data.MatchesActual(exchange) || !pressure.Data.MatchesActualSource(preparedSource))
+                {
+                    issues.Add(SourceIssue(coordinate, "spiritual_pressure_actual_source_mismatch",
+                        "the exact independently validated ordinary inputs and owned projected actual pressure source"));
+                    return;
+                }
+                preparedSource = preparedSource with { StrainPreimageJson = pressure.Data.PreimageJson };
+            }
+            _sources.Add(preparedSource);
         }
 
         private void IndexProfiles(List<ValidationIssue> issues)
@@ -892,45 +936,13 @@ public partial class ValidationService
         {
             if (current != null && (current.WoundCarriers == null || current.WoundIdentity == null || current.WoundHistory == null))
                 throw new InvalidOperationException("complete current wound carrier, identity and history snapshots required");
-            var catalog = WoundCarrierCatalog.Build(current != null ? current.WoundCarriers! : new(
-                OptionalRoot(WoundCarrierCatalog.PlayerPath),
-                OptionalRoot(WoundCarrierCatalog.NpcPath),
-                OptionalRoot(WoundCarrierCatalog.EnemiesPath),
-                OptionalRoot(WoundCarrierCatalog.AlliesPath),
-                OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)));
-            if (catalog.Issues.Count != 0 || !catalog.TryResolveOne(woundId, out var occurrence) ||
-                occurrence.Wound.Lifecycle != "active" ||
-                occurrence.Coordinate.Realm != Realm)
-                throw new InvalidOperationException("exact active re-trauma wound in the authoritative view");
-            var ownerId = actor[(actor.IndexOf(':') + 1)..];
-            var kind = actor[..actor.IndexOf(':')] switch
-            {
-                "player_soul" => "player_soul",
-                "guardian" => "guardian",
-                "resident" or "shining_resident" => "resident",
-                "radiant_actor" => "radiant_actor",
-                "shining_faction_head" or "saref_agent" or "system_actor" or
-                    "custom_afterlife_actor" => "afterlife_actor",
-                _ => null
-            };
-            if (occurrence.Coordinate.OwnerId != ownerId ||
-                occurrence.Coordinate.OwnerKind != kind ||
-                occurrence.Coordinate.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath)
-                throw new InvalidOperationException("re-trauma target owner mismatch");
-            var identity = WoundIdentityState.Parse(current != null ? current.WoundIdentity!.ToJsonString() : _before[WoundIdentityState.StatePath],
-                WoundIdentityState.StatePath);
-            if (!identity.IsValid || !identity.State!.TryGetEntry(woundId, out var entry) ||
-                entry.Status != "active" || entry.OwnerId != occurrence.Coordinate.OwnerId ||
-                entry.OwnerKind != occurrence.Coordinate.OwnerKind ||
-                entry.CarrierPath != occurrence.Coordinate.CarrierPath || entry.Realm != Realm ||
-                entry.SemanticFingerprint != WoundIdentityState.ComputeSemanticFingerprint(occurrence.Wound))
-                throw new InvalidOperationException("original re-trauma identity/carrier agreement");
-            var history = WoundHistoryState.Parse(current != null ? current.WoundHistory!.ToJsonString() : _before[WoundHistoryState.HistoryPath],
-                WoundHistoryState.HistoryPath);
-            if (!history.IsValid ||
-                history.State!.ValidateAgreement(identity.State!, catalog).Count != 0)
-                throw new InvalidOperationException("original re-trauma history/identity/carrier agreement");
-            return occurrence.Wound;
+            return SpiritualWoundCurrentData.ReadActive(current != null ? current.WoundCarriers! : new(
+                    OptionalRoot(WoundCarrierCatalog.PlayerPath), OptionalRoot(WoundCarrierCatalog.NpcPath),
+                    OptionalRoot(WoundCarrierCatalog.EnemiesPath), OptionalRoot(WoundCarrierCatalog.AlliesPath),
+                    OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)),
+                current != null ? current.WoundIdentity!.ToJsonString() : _before[WoundIdentityState.StatePath],
+                current != null ? current.WoundHistory!.ToJsonString() : _before[WoundHistoryState.HistoryPath],
+                Realm, woundId, actor);
         }
 
         /// <summary>
@@ -1061,7 +1073,8 @@ public partial class ValidationService
             return ActorKey(conflict["oppositionSide"]?["leadContestant"] as JsonObject);
         }
 
-        private static string? ActorKey(JsonObject? actor)
+        /// <summary>Normalizes exact source actor aliases for the ordinary validator and owner-bound wound consumers.</summary>
+        internal static string? ActorKey(JsonObject? actor)
         {
             if (actor is null)
                 return null;
@@ -1143,6 +1156,7 @@ public partial class ValidationService
     /// <param name="RetraumaWoundJson">
     /// Canonical historical target facts, or null without re-trauma; these facts require fresh target validation before use.
     /// </param>
+    /// <param name="StrainPreimageJson">Exact comparison produced by the current owned C2 selection, never caller-provided permission.</param>
     internal sealed record PreparedSpiritualSource(
         string Coordinate,
         string ConflictId,
@@ -1156,7 +1170,8 @@ public partial class ValidationService
         SpiritualWoundCalculation Calculation,
         int? GuaranteedSeverityRank,
         string? RetraumaWoundId,
-        string? RetraumaWoundJson = null);
+        string? RetraumaWoundJson = null,
+        string? StrainPreimageJson = null);
 
     internal static void ValidateSpiritualWoundSourceActionShape(
         JsonObject exchange, string context, List<ValidationIssue> issues)
@@ -1174,6 +1189,42 @@ public partial class ValidationService
         {
             if (action is null)
                 continue;
+            var marginKeys = action.Select(pair => pair.Key).Where(key =>
+                MortalLocationIdentityState.BuildConfusableKey(key) ==
+                MortalLocationIdentityState.BuildConfusableKey(SpiritualWoundNoRollMargin.Property)).ToArray();
+            if (marginKeys.Length > 0)
+            {
+                try
+                {
+                    if (!ReferenceEquals(action, exchange) || marginKeys.Length != 1 ||
+                        marginKeys[0] != SpiritualWoundNoRollMargin.Property)
+                        throw new FormatException("One exact exchange-level GM margin map required.");
+                    SpiritualWoundNoRollMargin.Read(exchange, "player");
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(path + "." + SpiritualWoundNoRollMargin.Property,
+                        "spiritual_source_no_roll_margin_invalid", error.Message));
+                }
+            }
+            var failureKeys = action.Select(pair => pair.Key).Where(key =>
+                MortalLocationIdentityState.BuildConfusableKey(key) ==
+                MortalLocationIdentityState.BuildConfusableKey(SpiritualWoundFailedAction.Property)).ToArray();
+            if (failureKeys.Length != 0)
+            {
+                try
+                {
+                    if (!ReferenceEquals(action, exchange) || failureKeys.Length != 1 ||
+                        failureKeys[0] != SpiritualWoundFailedAction.Property)
+                        throw new FormatException("One exact exchange-local guardian failure declaration required.");
+                    _ = SpiritualWoundFailedAction.ReadGuardianDeclaration(exchange);
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(path + "." + SpiritualWoundFailedAction.Property,
+                        "spiritual_wound_failed_action_invalid", error.Message));
+                }
+            }
             foreach (var field in new[]
             {
                 "traumaPressure", "sourceSeverityCap", "maximumSeverityRank",

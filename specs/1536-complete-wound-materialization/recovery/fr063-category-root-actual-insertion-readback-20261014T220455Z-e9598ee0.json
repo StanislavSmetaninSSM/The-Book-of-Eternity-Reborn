@@ -1,0 +1,11 @@
+{
+  "base": "a4c9c851a4f6d35b1a10c5d07dbdc9679a7d4b43",
+  "diagnosis": "singleGitinsertionhunk; no oldcatalogline deletion/reformat",
+  "oldInsertionAfterLine": 3,
+  "newInsertedLines": 506,
+  "allOldCatalogBytesRestoredByExactHunkRemoval": true,
+  "actualDiffEvidence": "64e80c",
+  "rawSecondFailure": "/workspace/boe-cloud-tools-20261014/fr063-category-root-raw-inverse-assumption-failure-20261014T220455Z-a9956827.json",
+  "projectChecks": "UNRUN",
+  "sourceOrGitMutation": false
+}

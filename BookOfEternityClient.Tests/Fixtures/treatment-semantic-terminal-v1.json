@@ -1,0 +1,916 @@
+{
+  "CurrentGameMinute": 1260,
+  "Result": {
+    "kind": "treat",
+    "mode": "guaranteed",
+    "routeId": "guaranteed_t061_guaranteed_current_capability_proof_stabilizes",
+    "attemptDisposition": "accepted_terminal",
+    "resultCategory": "success",
+    "selectedOutcomeIndex": 0,
+    "interruption": false,
+    "declaredResult": [
+      {
+        "steps": 1,
+        "kind": "reduce_severity"
+      },
+      {
+        "steps": 2,
+        "kind": "reduce_severity"
+      },
+      {
+        "legacies": [
+          {
+            "localLegacyRef": "t061_cosmetic",
+            "kind": "cosmetic",
+            "readableSummary": "T061 cosmetic scar."
+          },
+          {
+            "effectDraft": {
+              "schemaVersion": 1,
+              "definitions": [
+                {
+                  "definitionRef": "shared_definition",
+                  "definition": {
+                    "schemaVersion": 1,
+                    "definitionKey": "terminal_parent_reaction",
+                    "display": {
+                      "name": "Кровотечение",
+                      "description": "Рана продолжает отнимать силы.",
+                      "category": "debuff",
+                      "visibility": "visible"
+                    },
+                    "allowedRealms": [
+                      "mortal_world"
+                    ],
+                    "allowedTargetKinds": [
+                      "player",
+                      "npc",
+                      "combatant"
+                    ],
+                    "components": [
+                      {
+                        "componentId": "component_001",
+                        "profile": "event_reaction",
+                        "priority": 100,
+                        "payload": {
+                          "eventType": "owner_turn_end",
+                          "resultKind": "apply_definition",
+                          "dependency": "before_current_event",
+                          "maxExpansion": 2,
+                          "definitionKey": "terminal_child_restore",
+                          "parameters": {
+                            "amount": 7
+                          }
+                        }
+                      }
+                    ],
+                    "parameterBounds": {},
+                    "stacking": {
+                      "stackKey": "terminal_parent_reaction",
+                      "policy": "stack",
+                      "maxStacks": 3,
+                      "atMaximum": "no_change",
+                      "refreshMode": null,
+                      "mergeRule": null
+                    },
+                    "lifetime": {
+                      "mode": "source_bound",
+                      "activePredicate": "active",
+                      "onSourceLoss": "expire"
+                    },
+                    "triggers": [
+                      {
+                        "triggerId": "on_owner_damaged",
+                        "eventType": "owner_turn_end",
+                        "priority": 100,
+                        "componentIds": [
+                          "component_001"
+                        ],
+                        "consumeUses": false,
+                        "resolutionMode": "deterministic"
+                      }
+                    ],
+                    "removal": {
+                      "dispelCategories": [
+                        "physical_treatment"
+                      ],
+                      "cureKinds": [
+                        "stop_bleeding"
+                      ],
+                      "onSourceLoss": "expire",
+                      "onConditionLoss": null,
+                      "manualAuthorities": []
+                    },
+                    "links": []
+                  }
+                },
+                {
+                  "definitionRef": "child_definition",
+                  "definition": {
+                    "schemaVersion": 1,
+                    "definitionKey": "terminal_child_restore",
+                    "display": {
+                      "name": "Кровотечение",
+                      "description": "Рана продолжает отнимать силы.",
+                      "category": "debuff",
+                      "visibility": "visible"
+                    },
+                    "allowedRealms": [
+                      "mortal_world"
+                    ],
+                    "allowedTargetKinds": [
+                      "player",
+                      "npc",
+                      "combatant"
+                    ],
+                    "components": [
+                      {
+                        "componentId": "component_001",
+                        "profile": "periodic_restore",
+                        "priority": 100,
+                        "payload": {
+                          "resource": "health",
+                          "amount": 3,
+                          "capPolicy": "registered_resource_cap"
+                        }
+                      }
+                    ],
+                    "parameterBounds": {
+                      "amount": {
+                        "kind": "number",
+                        "minimum": 1,
+                        "maximum": 10
+                      }
+                    },
+                    "stacking": {
+                      "stackKey": "terminal_child_restore",
+                      "policy": "stack",
+                      "maxStacks": 3,
+                      "atMaximum": "no_change",
+                      "refreshMode": null,
+                      "mergeRule": null
+                    },
+                    "lifetime": {
+                      "mode": "source_bound",
+                      "activePredicate": "active",
+                      "onSourceLoss": "expire"
+                    },
+                    "triggers": [],
+                    "removal": {
+                      "dispelCategories": [
+                        "physical_treatment"
+                      ],
+                      "cureKinds": [
+                        "stop_bleeding"
+                      ],
+                      "onSourceLoss": "expire",
+                      "onConditionLoss": null,
+                      "manualAuthorities": []
+                    },
+                    "links": []
+                  }
+                }
+              ],
+              "applications": [
+                {
+                  "applicationRef": "shared_application",
+                  "definitionRef": "shared_definition",
+                  "parameters": {}
+                }
+              ]
+            },
+            "localLegacyRef": "terminal_left",
+            "kind": "mechanical_effect",
+            "readableSummary": "T061 mechanical legacy."
+          },
+          {
+            "effectDraft": {
+              "schemaVersion": 1,
+              "definitions": [
+                {
+                  "definitionRef": "shared_definition",
+                  "definition": {
+                    "schemaVersion": 1,
+                    "definitionKey": "t061-legacy-terminal_right",
+                    "display": {
+                      "name": "Кровотечение",
+                      "description": "Рана продолжает отнимать силы.",
+                      "category": "debuff",
+                      "visibility": "visible"
+                    },
+                    "allowedRealms": [
+                      "mortal_world"
+                    ],
+                    "allowedTargetKinds": [
+                      "player",
+                      "npc",
+                      "combatant"
+                    ],
+                    "components": [
+                      {
+                        "componentId": "component_001",
+                        "profile": "action_control",
+                        "priority": 100,
+                        "payload": {
+                          "action": "movement",
+                          "operation": "restrict"
+                        }
+                      }
+                    ],
+                    "parameterBounds": {},
+                    "stacking": {
+                      "stackKey": "bleeding",
+                      "policy": "stack",
+                      "maxStacks": 1,
+                      "atMaximum": "no_change",
+                      "refreshMode": null,
+                      "mergeRule": null
+                    },
+                    "lifetime": {
+                      "mode": "source_bound",
+                      "activePredicate": "active",
+                      "onSourceLoss": "expire"
+                    },
+                    "triggers": [],
+                    "removal": {
+                      "dispelCategories": [
+                        "physical_treatment"
+                      ],
+                      "cureKinds": [
+                        "stop_bleeding"
+                      ],
+                      "onSourceLoss": "expire",
+                      "onConditionLoss": null,
+                      "manualAuthorities": []
+                    },
+                    "links": []
+                  }
+                }
+              ],
+              "applications": [
+                {
+                  "applicationRef": "shared_application",
+                  "definitionRef": "shared_definition",
+                  "parameters": {}
+                }
+              ]
+            },
+            "localLegacyRef": "terminal_right",
+            "kind": "mechanical_effect",
+            "readableSummary": "T061 mechanical legacy."
+          }
+        ],
+        "kind": "heal"
+      }
+    ],
+    "consumptionTrigger": "success",
+    "requestAuthority": {
+      "mode": "guaranteed",
+      "coordinates": {
+        "schemaVersion": 1,
+        "sessionId": "session_component_5a9a920769c84e129a11064fe588c757",
+        "sessionGeneration": "3db05a60b19c4e2893b8511536d23276",
+        "requestId": "request_component_44_5a9a920769c84e129a11064fe588c757",
+        "snapshotToken": "8FB48D3B0494597E7D9BE02D5FD105996BB2BAD466C44C3C9B04C97A90C7DF96",
+        "operationKey": "operation_joint_component_5a9a920769c84e129a11064fe588c757",
+        "attemptId": "wound_treatment_attempt_c09ba00b7ef580306055704b8e3c1abe649d5bd47560bf2dae26621baf83c034",
+        "woundId": "wound_test_torn_side",
+        "routeId": "guaranteed_t061_guaranteed_current_capability_proof_stabilizes",
+        "expectedBeforeFingerprint": "sha256:6603ed6da2eefd56d5762a2898f83e775b62255dd0b9520274f646247bd5483e",
+        "eventRef": "turn_44:accepted_effect",
+        "eventKind": "accepted_turn",
+        "eventAuthorityId": "turn_44",
+        "eventSemanticFingerprint": "sha256:f3752bc64f71d39572775d38125c271ca7f6cf555252bb66a3d60af14dadcbf2",
+        "turn": 44,
+        "realm": "mortal_world",
+        "providerKind": "npc",
+        "providerId": "field_medic_01",
+        "targetKind": "player",
+        "targetId": "player_current",
+        "locationId": "loc_field_clinic_001",
+        "contextFingerprint": "sha256:60b2adf8b3fb2d18ed43130505e8cd3e6ac6659fe42933bdc0424e7465ed5e23",
+        "acceptedStateFingerprint": "sha256:079393dfa06c8d979d54afd830f152584dcbbb5eb8233c97e5bea713076aeacf",
+        "coordinatesFingerprint": "sha256:b08413820cf275f7fdefff6a021a932db9ecd7108e1fc87877a0d46d083c518a"
+      },
+      "milestoneOrdinal": null,
+      "routeSourceWound": {
+        "schemaVersion": 1,
+        "woundId": "wound_test_torn_side",
+        "lifecycle": "active",
+        "owner": {
+          "realm": "mortal_world",
+          "ownerKind": "player",
+          "ownerId": "player_current",
+          "carrierPath": "game_state/player/wounds.json"
+        },
+        "origin": {
+          "eventRef": "turn_42:wound_opened",
+          "sourceKind": "combat_action",
+          "sourceId": "combat_action_test_001",
+          "sourceState": "active",
+          "createdAtTurn": 42,
+          "createdAtCycleId": null,
+          "opportunityId": "opportunity_test_001",
+          "guaranteedTriggerId": null,
+          "readableCause": "Рваная рана получена в подтверждённом столкновении."
+        },
+        "classification": {
+          "domain": "physical",
+          "woundType": "Рваная режущая травма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "левый бок",
+            "authorityKind": "body_part",
+            "authorityRef": "left_side",
+            "affectedSide": "left"
+          }
+        },
+        "display": {
+          "name": "Рваная рана левого бока",
+          "description": "Края раны расходятся при резком движении.",
+          "visibleSymptoms": [
+            "кровотечение",
+            "боль при движении"
+          ],
+          "prognosis": "При своевременной обработке рана заживёт без осложнений.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Острый край распорол бок в короткой схватке."
+        },
+        "severity": {
+          "value": "IV",
+          "rank": 4,
+          "maximumAtCreation": "IV",
+          "lastChangeEventRef": "turn_42:wound_opened"
+        },
+        "care": {
+          "state": "untreated",
+          "stabilizedAtTurn": null,
+          "activeCourseId": null,
+          "lastAttemptId": null
+        },
+        "complications": [],
+        "consequences": {
+          "slotBudget": 4,
+          "slotsUsed": 1,
+          "ownedEffectSources": {
+            "definitions": [
+              {
+                "allowedRealms": [
+                  "mortal_world"
+                ],
+                "allowedTargetKinds": [
+                  "player"
+                ],
+                "components": [
+                  {
+                    "componentId": "component_001",
+                    "payload": {
+                      "amount": 3,
+                      "damageType": "bleeding",
+                      "floorPolicy": "registered_resource_floor",
+                      "resource": "health"
+                    },
+                    "priority": 100,
+                    "profile": "periodic_damage"
+                  }
+                ],
+                "definitionKey": "definition_wound_test_bleeding",
+                "display": {
+                  "category": "debuff",
+                  "description": "Рана продолжает отнимать силы.",
+                  "name": "Кровотечение",
+                  "visibility": "visible"
+                },
+                "lifetime": {
+                  "activePredicate": "active",
+                  "mode": "source_bound",
+                  "onSourceLoss": "expire"
+                },
+                "links": [
+                  {
+                    "kind": "wound",
+                    "role": "source",
+                    "targetId": "wound_test_torn_side"
+                  }
+                ],
+                "parameterBounds": {},
+                "removal": {
+                  "cureKinds": [
+                    "stop_bleeding"
+                  ],
+                  "dispelCategories": [
+                    "physical_treatment"
+                  ],
+                  "manualAuthorities": [],
+                  "onConditionLoss": null,
+                  "onSourceLoss": "expire"
+                },
+                "schemaVersion": 1,
+                "stacking": {
+                  "atMaximum": "no_change",
+                  "maxStacks": 1,
+                  "mergeRule": null,
+                  "policy": "independent",
+                  "refreshMode": null,
+                  "stackKey": "stack_definition_wound_test_bleeding"
+                },
+                "triggers": [
+                  {
+                    "componentIds": [
+                      "component_001"
+                    ],
+                    "consumeUses": false,
+                    "eventType": "owner_turn_end",
+                    "priority": 100,
+                    "resolutionMode": "deterministic",
+                    "triggerId": "on_owner_turn_end"
+                  }
+                ]
+              }
+            ],
+            "rootBindings": [
+              {
+                "effectId": "effect_wound_test_bleeding",
+                "definitionKey": "definition_wound_test_bleeding"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "slot": 1,
+              "profileKey": "periodic_damage",
+              "effectId": "effect_wound_test_bleeding",
+              "readableSummary": "Рана продолжает кровоточить."
+            }
+          ]
+        },
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "guaranteed_t061_guaranteed_current_capability_proof_stabilizes",
+              "displayName": "Guaranteed",
+              "visibility": "known_to_player",
+              "mode": "guaranteed",
+              "requirements": [
+                {
+                  "kind": "source_capability",
+                  "capabilityRef": "exact_materialized_healing_source",
+                  "actorRole": "provider"
+                }
+              ],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": [
+                  "success"
+                ],
+                "refundOn": [
+                  "cancelled",
+                  "validation_failed",
+                  "rolled_back"
+                ],
+                "mutations": []
+              },
+              "resolution": {
+                "capabilityRef": "exact_materialized_healing_source",
+                "actorRole": "provider"
+              },
+              "outcomes": [
+                {
+                  "category": "success",
+                  "result": [
+                    {
+                      "kind": "reduce_severity",
+                      "steps": 1
+                    },
+                    {
+                      "kind": "reduce_severity",
+                      "steps": 2
+                    },
+                    {
+                      "kind": "heal",
+                      "legacies": [
+                        {
+                          "localLegacyRef": "t061_cosmetic",
+                          "kind": "cosmetic",
+                          "readableSummary": "T061 cosmetic scar."
+                        },
+                        {
+                          "localLegacyRef": "terminal_left",
+                          "kind": "mechanical_effect",
+                          "readableSummary": "T061 mechanical legacy.",
+                          "effectDraft": {
+                            "schemaVersion": 1,
+                            "definitions": [
+                              {
+                                "definitionRef": "shared_definition",
+                                "definition": {
+                                  "allowedRealms": [
+                                    "mortal_world"
+                                  ],
+                                  "allowedTargetKinds": [
+                                    "player",
+                                    "npc",
+                                    "combatant"
+                                  ],
+                                  "components": [
+                                    {
+                                      "componentId": "component_001",
+                                      "payload": {
+                                        "definitionKey": "terminal_child_restore",
+                                        "dependency": "before_current_event",
+                                        "eventType": "owner_turn_end",
+                                        "maxExpansion": 2,
+                                        "parameters": {
+                                          "amount": 7
+                                        },
+                                        "resultKind": "apply_definition"
+                                      },
+                                      "priority": 100,
+                                      "profile": "event_reaction"
+                                    }
+                                  ],
+                                  "definitionKey": "terminal_parent_reaction",
+                                  "display": {
+                                    "category": "debuff",
+                                    "description": "Рана продолжает отнимать силы.",
+                                    "name": "Кровотечение",
+                                    "visibility": "visible"
+                                  },
+                                  "lifetime": {
+                                    "activePredicate": "active",
+                                    "mode": "source_bound",
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "links": [],
+                                  "parameterBounds": {},
+                                  "removal": {
+                                    "cureKinds": [
+                                      "stop_bleeding"
+                                    ],
+                                    "dispelCategories": [
+                                      "physical_treatment"
+                                    ],
+                                    "manualAuthorities": [],
+                                    "onConditionLoss": null,
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "schemaVersion": 1,
+                                  "stacking": {
+                                    "atMaximum": "no_change",
+                                    "maxStacks": 3,
+                                    "mergeRule": null,
+                                    "policy": "stack",
+                                    "refreshMode": null,
+                                    "stackKey": "terminal_parent_reaction"
+                                  },
+                                  "triggers": [
+                                    {
+                                      "componentIds": [
+                                        "component_001"
+                                      ],
+                                      "consumeUses": false,
+                                      "eventType": "owner_turn_end",
+                                      "priority": 100,
+                                      "resolutionMode": "deterministic",
+                                      "triggerId": "on_owner_damaged"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "definitionRef": "child_definition",
+                                "definition": {
+                                  "allowedRealms": [
+                                    "mortal_world"
+                                  ],
+                                  "allowedTargetKinds": [
+                                    "player",
+                                    "npc",
+                                    "combatant"
+                                  ],
+                                  "components": [
+                                    {
+                                      "componentId": "component_001",
+                                      "payload": {
+                                        "amount": 3,
+                                        "capPolicy": "registered_resource_cap",
+                                        "resource": "health"
+                                      },
+                                      "priority": 100,
+                                      "profile": "periodic_restore"
+                                    }
+                                  ],
+                                  "definitionKey": "terminal_child_restore",
+                                  "display": {
+                                    "category": "debuff",
+                                    "description": "Рана продолжает отнимать силы.",
+                                    "name": "Кровотечение",
+                                    "visibility": "visible"
+                                  },
+                                  "lifetime": {
+                                    "activePredicate": "active",
+                                    "mode": "source_bound",
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "links": [],
+                                  "parameterBounds": {
+                                    "amount": {
+                                      "kind": "number",
+                                      "maximum": 10,
+                                      "minimum": 1
+                                    }
+                                  },
+                                  "removal": {
+                                    "cureKinds": [
+                                      "stop_bleeding"
+                                    ],
+                                    "dispelCategories": [
+                                      "physical_treatment"
+                                    ],
+                                    "manualAuthorities": [],
+                                    "onConditionLoss": null,
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "schemaVersion": 1,
+                                  "stacking": {
+                                    "atMaximum": "no_change",
+                                    "maxStacks": 3,
+                                    "mergeRule": null,
+                                    "policy": "stack",
+                                    "refreshMode": null,
+                                    "stackKey": "terminal_child_restore"
+                                  },
+                                  "triggers": []
+                                }
+                              }
+                            ],
+                            "applications": [
+                              {
+                                "applicationRef": "shared_application",
+                                "definitionRef": "shared_definition",
+                                "parameters": {}
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "localLegacyRef": "terminal_right",
+                          "kind": "mechanical_effect",
+                          "readableSummary": "T061 mechanical legacy.",
+                          "effectDraft": {
+                            "schemaVersion": 1,
+                            "definitions": [
+                              {
+                                "definitionRef": "shared_definition",
+                                "definition": {
+                                  "allowedRealms": [
+                                    "mortal_world"
+                                  ],
+                                  "allowedTargetKinds": [
+                                    "player",
+                                    "npc",
+                                    "combatant"
+                                  ],
+                                  "components": [
+                                    {
+                                      "componentId": "component_001",
+                                      "payload": {
+                                        "action": "movement",
+                                        "operation": "restrict"
+                                      },
+                                      "priority": 100,
+                                      "profile": "action_control"
+                                    }
+                                  ],
+                                  "definitionKey": "t061-legacy-terminal_right",
+                                  "display": {
+                                    "category": "debuff",
+                                    "description": "Рана продолжает отнимать силы.",
+                                    "name": "Кровотечение",
+                                    "visibility": "visible"
+                                  },
+                                  "lifetime": {
+                                    "activePredicate": "active",
+                                    "mode": "source_bound",
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "links": [],
+                                  "parameterBounds": {},
+                                  "removal": {
+                                    "cureKinds": [
+                                      "stop_bleeding"
+                                    ],
+                                    "dispelCategories": [
+                                      "physical_treatment"
+                                    ],
+                                    "manualAuthorities": [],
+                                    "onConditionLoss": null,
+                                    "onSourceLoss": "expire"
+                                  },
+                                  "schemaVersion": 1,
+                                  "stacking": {
+                                    "atMaximum": "no_change",
+                                    "maxStacks": 1,
+                                    "mergeRule": null,
+                                    "policy": "stack",
+                                    "refreshMode": null,
+                                    "stackKey": "bleeding"
+                                  },
+                                  "triggers": []
+                                }
+                              }
+                            ],
+                            "applications": [
+                              {
+                                "applicationRef": "shared_application",
+                                "definitionRef": "shared_definition",
+                                "parameters": {}
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": [
+            "guaranteed_t061_guaranteed_current_capability_proof_stabilizes"
+          ],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "recoveryAnchor": null,
+          "deteriorationAnchor": null,
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": [
+            "not_stabilized"
+          ],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        },
+        "relations": {
+          "priorWoundId": null,
+          "legacyRefs": [],
+          "independentEffectRefs": []
+        },
+        "lastTransition": {
+          "transitionId": "wound_transition_test_001",
+          "ordinal": 1,
+          "turn": 42,
+          "kind": "create"
+        }
+      },
+      "routeSourceWoundFingerprint": "sha256:6603ed6da2eefd56d5762a2898f83e775b62255dd0b9520274f646247bd5483e",
+      "modeAuthority": {
+        "snapshotToken": "8FB48D3B0494597E7D9BE02D5FD105996BB2BAD466C44C3C9B04C97A90C7DF96",
+        "sourcePath": "game_state/npcs/npc_core.json",
+        "ownerKind": "npc",
+        "ownerId": "field_medic_01",
+        "skillKind": "active",
+        "skillId": "skill_guaranteed_care_01",
+        "capabilityRef": "exact_materialized_healing_source",
+        "woundDomain": "physical",
+        "minimumSeverityRank": 1,
+        "maximumSeverityRank": 4,
+        "operationLimits": {
+          "mayStabilize": true,
+          "maximumRecoveryPoints": 2,
+          "maximumSeverityReductionSteps": 3,
+          "removableComplicationKinds": [
+            "infection"
+          ],
+          "mayHealAtSeverityI": true,
+          "maximumCosmeticHealLegacies": 1,
+          "maximumMechanicalEffectHealLegacies": 4
+        },
+        "contextFingerprint": "sha256:60b2adf8b3fb2d18ed43130505e8cd3e6ac6659fe42933bdc0424e7465ed5e23",
+        "acceptedStateFingerprint": "sha256:079393dfa06c8d979d54afd830f152584dcbbb5eb8233c97e5bea713076aeacf",
+        "coordinatesFingerprint": "sha256:b08413820cf275f7fdefff6a021a932db9ecd7108e1fc87877a0d46d083c518a",
+        "sourceSemanticFingerprint": "sha256:5aea1758228e1bfb92aa67057bbe95e194ca3810397bfa91b8f6e4884ea33d84",
+        "proofFingerprint": "sha256:014fc699930d36ea0badc5cb98ac7a31b20175de1c4d66d49d21f70d5eae512a"
+      },
+      "requirementAuthority": {
+        "mode": "guaranteed",
+        "contextFingerprint": "sha256:60b2adf8b3fb2d18ed43130505e8cd3e6ac6659fe42933bdc0424e7465ed5e23",
+        "acceptedStateFingerprint": "sha256:079393dfa06c8d979d54afd830f152584dcbbb5eb8233c97e5bea713076aeacf",
+        "routeFingerprint": "sha256:4da631b335c506549aff490871ee7e27381df10a0cea9dfacdec03634ab3a3b1",
+        "courseId": null,
+        "courseMilestoneOrdinal": null,
+        "courseCoordinateFingerprint": null,
+        "courseRequirementStatus": null,
+        "interruptionReason": null,
+        "scopes": [
+          {
+            "scope": "common",
+            "courseMilestoneOrdinal": null,
+            "status": "Satisfied",
+            "bindings": [
+              {
+                "requirementIndex": 0,
+                "resolvedRequirement": {
+                  "requirementIndex": 0,
+                  "kind": "source_capability",
+                  "authorityRef": "exact_materialized_healing_source",
+                  "skillId": null,
+                  "realm": "mortal_world",
+                  "ownerKind": "npc",
+                  "ownerId": "field_medic_01",
+                  "providerKind": "npc",
+                  "providerId": "field_medic_01",
+                  "targetKind": "player",
+                  "targetId": "player_current",
+                  "locationId": "loc_field_clinic_001",
+                  "requestedQuantity": null,
+                  "minimumTier": null,
+                  "currentTier": null,
+                  "currentState": null,
+                  "authorityFingerprint": "sha256:d159c43a4331200d7996d67abbc7b5a0e9a63ef438b90bdf383ffa0a42da4884"
+                },
+                "successWitness": {
+                  "scope": "common",
+                  "requirementIndex": 0,
+                  "kind": "source_capability",
+                  "authorityRef": "exact_materialized_healing_source",
+                  "snapshotToken": "8FB48D3B0494597E7D9BE02D5FD105996BB2BAD466C44C3C9B04C97A90C7DF96",
+                  "realm": "mortal_world",
+                  "ownerKind": "npc",
+                  "ownerId": "field_medic_01",
+                  "providerKind": "npc",
+                  "providerId": "field_medic_01",
+                  "targetKind": "player",
+                  "targetId": "player_current",
+                  "locationId": "loc_field_clinic_001",
+                  "evidence": {
+                    "actorRole": "provider",
+                    "actorCurrentLocationId": "loc_field_clinic_001",
+                    "requiredLocationId": "loc_field_clinic_001",
+                    "actorLifecycle": "active",
+                    "actorActive": true,
+                    "actorReachable": true,
+                    "actorPresent": true,
+                    "capabilityLifecycle": "active",
+                    "capabilityActive": true,
+                    "kind": "source_capability"
+                  },
+                  "witnessFingerprint": "sha256:f9f769664f638d72e2bea68def26047d18ad35cd733ce18ea2ba494c8821b235"
+                },
+                "bindingFingerprint": "sha256:999e53bd608b50ca9d378a4f01f3086cdb1650838260dbe6ebd3fd93e5b1417b"
+              }
+            ],
+            "failureWitnesses": [],
+            "authorityFingerprint": "sha256:64412827dfc9f2b34baa8fdacbb694d8590a4cb2ec3e1e9328f14242d541f4de"
+          }
+        ],
+        "authorityFingerprint": "sha256:debb15e63e9f9153793902393cc7625d56cd60a78930d696c162c6e1d397ae3f"
+      },
+      "resourceAuthority": {
+        "reservationDisposition": "not_required",
+        "reservationId": null,
+        "coordinatesFingerprint": "sha256:b08413820cf275f7fdefff6a021a932db9ecd7108e1fc87877a0d46d083c518a",
+        "acceptedStateFingerprint": "sha256:079393dfa06c8d979d54afd830f152584dcbbb5eb8233c97e5bea713076aeacf",
+        "routeFingerprint": "sha256:4da631b335c506549aff490871ee7e27381df10a0cea9dfacdec03634ab3a3b1",
+        "courseId": null,
+        "courseMilestoneOrdinal": null,
+        "courseCoordinateFingerprint": null,
+        "requirementAuthorityFingerprint": "sha256:debb15e63e9f9153793902393cc7625d56cd60a78930d696c162c6e1d397ae3f",
+        "policy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": [
+            "success"
+          ],
+          "refundOn": [
+            "cancelled",
+            "validation_failed",
+            "rolled_back"
+          ],
+          "mutations": []
+        },
+        "claims": [],
+        "authorityFingerprint": "sha256:b1c7992ad52939431f8cb93f9c6eaed5b99047563c974ceb43243d9b1b46c4a9"
+      },
+      "requestFingerprint": "sha256:8076a3f6339539928719854198676eb5abcea220a62c864add0f2bd33e5b419a"
+    },
+    "modeEvidence": {
+      "capabilityRef": "exact_materialized_healing_source",
+      "actorRole": "provider",
+      "skillId": "skill_guaranteed_care_01",
+      "sourceSemanticFingerprint": "sha256:5aea1758228e1bfb92aa67057bbe95e194ca3810397bfa91b8f6e4884ea33d84",
+      "capabilityProofFingerprint": "sha256:014fc699930d36ea0badc5cb98ac7a31b20175de1c4d66d49d21f70d5eae512a"
+    },
+    "routeFingerprint": "sha256:4da631b335c506549aff490871ee7e27381df10a0cea9dfacdec03634ab3a3b1",
+    "resolutionAuthorityFingerprint": "sha256:14804ebafb9547a115c27f079aba138447720299111075862bd5fc47238bee9c",
+    "resultFingerprint": "sha256:861434b8f5883ba17f049933236ce91559cf4c2ec2d25b44e3d5d239a7efb6da",
+    "routeCompletion": "append_once",
+    "receiptFingerprint": "sha256:e0409f96e85beb650ba55a120b9028737c9b802ee3719d0e955782e319f96b4a"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "checkpoint": "362d2ae6ffaf74e7211ea846c61339039925e030",
+  "agent": "/root/t070_sol_implementation",
+  "operation": "read-only source inspection via exec_command",
+  "arguments": {
+    "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+    "max_output_tokens": 9500,
+    "cmd": "sed -n '186,265p' BookOfEternityClient/Services/MortalQteDecisionPublication.cs; sed -n '284,310p' BookOfEternityClient/Services/MortalQteDecisionPublication.cs; sed -n '1,85p' BookOfEternityClient/Services/WoundHistoryState.cs; rg -n 'ToJson|Finalize|Rehydrate|ResultFingerprint|Request' BookOfEternityClient/Services/MortalWoundTreatmentPersistedResult.cs BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs | head -65; sed -n '1,140p' BookOfEternityClient/Services/MortalWoundTreatmentPersistedResult.cs; rg -n 'ProjectionRootPaths|Companions|ExactFinalItemRoots|Proves.*Effect' BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs; sed -n '1,80p' BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs"
+  },
+  "error": "Script error:\nexec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected; failed to resume exec-server session: recovery timed out after 25s\\\")\" }",
+  "wrapperStatus": "Script failed",
+  "wrapperWallTimeSeconds": 14.5,
+  "visibleIdentifiers": {
+    "chunkId": null,
+    "processId": null,
+    "sessionId": null,
+    "callId": null
+  },
+  "sourceOutput": "none",
+  "authorNextSourceEdits": "none",
+  "projectChecks": "UNRUN",
+  "securityCause": "UNESTABLISHED; no security reason in returned text",
+  "ROOTSameEnvironmentReadOnlyAvailability": {
+    "pwdChunk": "fdd34f",
+    "pwdExit": 0,
+    "gitReadbackChunk": "ceb14d",
+    "gitReadbackExit": 0,
+    "hostname": "28b8447448e8",
+    "bootId": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+    "HEAD": "362d2ae6ffaf74e7211ea846c61339039925e030",
+    "actualRemoteSHA": "362d2ae6ffaf74e7211ea846c61339039925e030",
+    "primaryClean": true
+  },
+  "authorAvailability": "UNCHECKED; one harmless same-channel pwd probe requested; source STOPPED",
+  "noEnvironmentReplacement": true,
+  "utc": "2026-10-14T05:54:27.648346+00:00"
+}

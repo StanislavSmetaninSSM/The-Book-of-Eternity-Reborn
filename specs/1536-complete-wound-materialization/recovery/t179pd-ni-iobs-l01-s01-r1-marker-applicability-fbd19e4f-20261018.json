@@ -1,0 +1,55 @@
+{
+  "kind": "SOURCE_ONLY_MATERIAL_FINDING_CONTINUATION",
+  "date": "2026-10-18",
+  "id": "NI-IOBS-S01-R1",
+  "source": "fbd19e4f941df079d98ca25fe77ab7603292ef90",
+  "title": "Malformed present current marker with erased joint fields can select ordinary I fallback",
+  "scenario": "A genuine current child3 common publication has consumed pending; actual signed original did not contain its current StatePath. Only current marker is replaced with {} or an unknown-version object without jointClaim fields. Other original/history/physical publication state stays unchanged.",
+  "sourceConsequence": "Non2/noJointClaim returns null without checking current original or strict legacy parent proof; generic owner therefore invokes public I normalizer again. This is partial corruption, not a coherent valid whole-context rewrite.",
+  "requiredBoundary": "Unknown/malformed current evidence refuses. Preserve legitimate unrelated prior publication fallback through exact marker bytes covered by actual signed new original; preserve genuine current parent1 via existing strict parent proof. Do not require reconstructing old consumed plans or introduce an anti-owner trust anchor.",
+  "control": "Reuse genuine positive generic DATA fixture then erase marker fields/unknown version; assert refusal and unchanged I bytes/mtime and other canonical images, preserving damaged marker evidence before fixture settlement. Add honest prior-ordinary/parent1 positive proof in finite suite.",
+  "status": "OPEN_SOURCE_NO_NATIVE_OBSERVATION",
+  "scopeLimits": [
+    "No native/build/repository edits.",
+    "Earlier fbd source dispositions remain historical; this refines residual S01 applicability branch only.",
+    "Final connected SOURCE remains open."
+  ],
+  "evidence": [
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "sha256": "d8450c7f30a940d72be8cd284301bb05c31f23b42f0ba539c932ede69c3c3476",
+      "bytes": 7503,
+      "startLine": 77,
+      "endLine": 109,
+      "excerpt": "    internal static async Task<MortalJointInterfacePublication.Record?> ReadJointInterfaceAtOrdinarySlotAsync(\n        FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)\n    {\n        var bytes = await files.ReadFileBytesAsync(lease, StatePath);\n        if (bytes is null) return null;\n        var marker = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),\n            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"current ordinary-slot joint selector\")\n            ?? throw Invalid(\"joint_interface_ordinary_marker_null\");\n        var jointClaim = marker.ContainsKey(\"outputBinding\") || marker.ContainsKey(\"niPublication\") ||\n            marker.ContainsKey(\"jointTreatment\") || marker.ContainsKey(\"consumedPrivatePaths\") || marker.ContainsKey(\"progression\");\n        if (marker[\"schemaVersion\"]?.GetValue<int>() != 2)\n        {\n            if (jointClaim) throw Invalid(\"joint_interface_selected_parent_version_changed\");\n            return null; // genuine old non-joint publication, not a claimed NI downgrade\n        }\n        var original = ReadInspectionSnapshot(files, lease);\n        if (original.SessionId != Text(marker, \"sessionId\") || original.RequestId != Text(marker, \"requestId\") ||\n            original.SnapshotToken != Text(marker, \"snapshotToken\") || original.TurnNumber != JointInteger(marker, \"turn\"))\n        {\n            // A tuple mismatch by itself is not a new operation: one corrupt\n            // request/turn field must not request another ordinary I projection.\n            // A genuine new original already signed the EXACT prior marker as a\n            // baseline before its new GM outputs; use that actual source witness.\n            if (!original.CoveredLogicalPaths.Contains(StatePath, StringComparer.Ordinal) ||\n                !Same(bytes, original.ReadRequiredBytes(StatePath))) throw Invalid(\"joint_interface_selector_tuple_conflict\");\n            return null;\n        }\n        // Even a claimed legacy child is fully checked before permitting its old\n        // writer. Partial deletion/downgrade cannot exploit a null memory cache.\n        return await ReadCurrentJointInterfaceDataAsync(files, lease, original.SessionId,\n            original.RequestId, original.SnapshotToken, original.TurnNumber);\n    }\n\n",
+      "excerptSha256": "cac026b37ddff6100cebb14390523e74973a3f5372115dda22e7498bf77293e6"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "sha256": "c2aaca74c30c16f577c6a6947e37578992bace327009435c656d0917554c1735",
+      "bytes": 13526,
+      "startLine": 187,
+      "endLine": 196,
+      "excerpt": "    private async Task<IReadOnlyList<ValidationIssue>> ReadMortalJointInterfaceAtGenericSlotAsync()\n    {\n        MortalJointInterfacePublication.Record? current;\n        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())\n        {\n            await RequireNoMortalJointInterfaceRestoreAsync(lease, blockSelectedMissing: true);\n            current = await MortalQteDecisionPublication.ReadJointInterfaceAtOrdinarySlotAsync(_fs, lease);\n        }\n        if (current is not null) return current.Issues;\n        return await _validator.ValidateAcceptedTurnInterfacePayloadAsync(); // original public owning lease after inspection closed\n",
+      "excerptSha256": "7edc80acd9b28446029036dd508d9c906e1f1bc7bd0a09f825539fc44cbc578e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "bytes": 23806,
+      "startLine": 207,
+      "endLine": 227,
+      "excerpt": "    private static async Task<CompletedProof> ReadCompletedProofAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,\n        PendingTurnSnapshotReadAuthority inspection)\n    {\n        var bytes = await fs.ReadFileBytesAsync(lease, StatePath) ?? throw Invalid(\"missing\");\n        var root = StrictJsonAuthority.Deserialize<JsonObject>(new UTF8Encoding(false, true).GetString(bytes).TrimStart('\\uFEFF'),\n            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"T070 common publication evidence\") ?? throw Invalid(\"null\");\n        if (root[\"schemaVersion\"] is JsonValue version && version.TryGetValue<int>(out var schema) && schema == 2)\n            return await ReadJointCompletedProofAsync(fs, lease, inspection, root);\n        if (root.Count != Fields.Length || root.Any(pair => !Fields.Contains(pair.Key, StringComparer.Ordinal)) ||\n            root[\"schemaVersion\"]?.GetValue<int>() != 1) throw Invalid(\"shape\");\n        var payload = root.DeepClone().AsObject(); payload.Remove(\"fingerprint\");\n        if (Text(root, \"fingerprint\") != Fingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, \"generation\")))\n            throw Invalid(\"seal_or_generation\");\n        var snapshot = ReadSnapshot(fs, lease);\n        if (snapshot.Realm != \"mortal_world\" || inspection.SessionId != snapshot.SessionId || inspection.RequestId != snapshot.RequestId ||\n            inspection.SnapshotToken != snapshot.SnapshotToken || inspection.TurnNumber != snapshot.TurnNumber ||\n            Text(root, \"sessionId\") != snapshot.SessionId || Text(root, \"requestId\") != snapshot.RequestId ||\n            Text(root, \"snapshotToken\") != snapshot.SnapshotToken || root[\"turn\"]?.GetValue<int>() != snapshot.TurnNumber ||\n            Text(root, \"manifestHash\") != Digest(await fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ||\n            Text(root, \"authorityHash\") != Digest(await fs.ReadFileBytesAsync(lease, PendingTurnSnapshotAuthority.AuthorityPath)) ||\n            string.IsNullOrWhiteSpace(Text(root, \"inputFingerprint\"))) throw Invalid(\"source_or_receipt\");\n",
+      "excerptSha256": "10a5dd6a30f41bcba2ded3426044d5a857697869e0bcc324960e908281f69d32"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "b23214f1efb4d006e245c9761ef93096813ce50a7acad7e3d12bb694e7eae338",
+      "bytes": 507801,
+      "startLine": 240,
+      "endLine": 251,
+      "excerpt": "                issues = await _validator.ValidateGameStateAsync();\n            }\n            if (RequiresAcceptedTurnPayloadValidation(source))\n            {\n                if (RequiresFreshNarrativePayload(source))\n                    issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());\n                issues.AddRange(await ReadMortalJointInterfaceAtGenericSlotAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());\n",
+      "excerptSha256": "0e8662967e5dac910f56e1e67881d898b0e96c76b14e5e0af0d385f3780ab7cf"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "PREDECLARED_ONE_RUN_DIAGNOSTIC2_OBSERVATION_DISCRIMINATORS_AND_STOP_RULE",
+  "userSteering": "Exactly one external CPU/wait/I/O cut1 after independent SOURCE/PREP; unchanged220/900/assertions. Afterwards joint concrete verdict: proved defect and narrow remedy, or justified environment test budget with separate performance hold, or honest bounded blocker. No automatic chain of same diagnostics; historical timeout/UNKNOWN unchanged; diagnosticPASS or bigger budget never qualifies crash5.",
+  "scope": "Diagnostic2 only, newde0f3e20 root, original Fact outside57, qualified52 unchanged. Relate UTC stage markers to PID+kernel-birth process accounting; process CPU already includes threads.",
+  "samplingPrerequisites": [
+    "Exact role/cut/new canonical container/root/nonce/dependency argv; stable PID/TID+kernel birth around each read. All unknown/reuse/read/truncation/disappearance observations retained.",
+    "Actual monotonic/UTC sample intervals and overhead recorded. Nominal1Hz is not guaranteed coverage. Use only identity-stable intervals with valid endpoint counters; do not interpolate gaps, sum process plus thread CPU, or attribute shared cgroup totals wholly to the child.",
+    "Use original native/join/EOF/stage/error/cleanup evidence for terminal reach; observer data never authorizes gameplay or changes native assertions."
+  ],
+  "comparisonWindows": "Report all valid intervals. Use consecutive>=30s windows with>=10 valid samples as a descriptive summary, not an assertion or a pass threshold; include max gap and valid coverage. Compute CPU seconds from raw tick deltas / capturedSC_CLK_TCK, wall seconds from monotonic endpoints, and process-core fractionCPU/wall. Thread states/wchan are dated instants only.",
+  "observations": {
+    "activeWork": "Sustained positive processCPU, especially>=0.5core average in a valid30s window, with per-thread CPU growth/runnable observations and later native stage/semantic progress supports active computation. Positive I/O counters with corresponding elapsed changes supports observed I/O work. This does not identify a managed hotspot or prove all work is necessary.",
+    "waiting": "A valid>=30s window with<=0.05core average, little I/O progress and repeatedly sleeping tasks/stable wait channels supports observed waiting. futex or leader wchan alone does not prove deadlock, lock ownership or a product defect; an async main thread may sleep while workers compute. Check process aggregate and every observed worker before interpreting.",
+    "environmentCpuConstraint": "Compare dated cpu.max/cpu.stat deltas with target duty/runnable samples. Sustained near-quota cgroup usage, increasingnr_throttled/throttled_usec concurrent with runnable target and low scheduling progress supports resource pressure in that interval. Cgroup counters include other processes and cannot retroactively explain frozen runs; aggregate counters/current snapshots are insufficient.",
+    "environmentMemoryConstraint": "Concurrent memory.current near capturedmemory.max and increases in memory.events high/max/oom/oom_kill, plus targetRSS/fault changes, supports observed memory constraint. An oom_kill delta is strong resource-fault evidence but still requires attribution; highRSS or cumulative pre-run events alone is insufficient.",
+    "ioWait": "TaskD/io-related wait channels together with dated processI/O deltas can support I/O delay. Flat /procIO may mean cache activity; lack of a counter is a gap, not zero. This does not prove a particular managed wait/lock.",
+    "unresolved": "Ambiguous/missing critical-window accounting, insufficient stable identity coverage, contradictory patterns, or a native timeout with no unique source/ownership cause remains a bounded blocker. Do not name an unproved product defect or infer no case ran from noTRX/zero summary counts."
+  },
+  "postRunJointVerdict": [
+    "Proved defect: link actual failure/trace to exact source/ownership violation, propose only a narrow remedy with independent affected SOURCE/PREP; preserve originals. CPU/wchan alone cannot establish it.",
+    "Justified environment budget: quantify actual observed work/CPU/wall/cleanup and sampling uncertainty; distinguish child from category aggregate. Give a finite proposed bound and separate performancehold, preserving original outcomes. Any changed budget requires its own reviewed source/preparation and new qualification; no57/count advancement from diagnostics or budget alone. Do not claim fivecase duration from cut1 alone.",
+    "Bounded blocker: state the exact missing proof or environment limit and the next distinct action/decision needed. End this diagnostic chain; no automatic same-run repeat, new profiler or product instrumentation without a newly discriminating observation/authority."
+  ],
+  "immutableHolds": "Old66529UNKNOWN/bytesunavailable/recoveryClaimfalse/nointervention; all original failures frozen; no real saves/main/merge/force/delete/issues/secrets/CI/Windows403; FullNI/HOT/F1/M3/T197 incomplete; A3NO-PROCEED."
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-c1-common-mixed-guard"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "87afc5d0ada963b1f0a85da8f9a5382f068e8b13",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6262461,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-c1-common-mixed-guard-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-joint-c1-common-mixed-guard",
+      "Categories": [
+        "fr063-joint-c1-common-mixed-guard"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

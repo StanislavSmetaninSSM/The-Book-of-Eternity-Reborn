@@ -1,0 +1,313 @@
+{
+  "kind": "INDEPENDENT_L01_CURRENT_RESUME_JOINT_BLOCKER_CHECKPOINT",
+  "reviewedUtc": "2026-10-18T13:41:34.156155+00:00",
+  "verdict": "HOLD_CONCRETE_PRODUCT_LEASE_COMPOSITION_AND_TARGET_ORACLE_BLOCKER_NO_IMPLEMENTATION_OR_RUNTIME_RELEASE",
+  "checkpoint": {
+    "latestSavedCarrier": "b19a7409c4da6e16b61924f9e74c1cf4cc5e447b",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "qualifiedDistinctTargets": 47,
+    "wholeDistinctTargets": 57,
+    "addedQualifiedTargets": 0,
+    "integrity4": "ORIGINAL_NATIVE_4PASS_UNQUALIFIED",
+    "uncertain1": "ORIGINAL_NATIVE_1FAIL_FROZEN",
+    "newCrash5": "UNRUN_HELD",
+    "oldCorrectedCrash5": "UNKNOWN_UNAVAILABLE",
+    "allFurtherActuals": "FROZEN",
+    "noRunningActual": "Parent confirmed; no reviewer process census performed"
+  },
+  "evidence": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-integrity4-independent-review-20261018.json",
+      "bytes": 24263,
+      "sha256": "de53818c9c07832bf38ebcd5877ef31c6d3aff11eb382cd41e6bf0737fb3a589"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-integrity4-independent-check-90fbb068-20261018.json",
+      "bytes": 23763,
+      "sha256": "05d0efbd495a77d658ba84e4a6fe89c0e8cb6e3e3cfd0fe9cb2c4ec8aaea07fc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_integrity4.py",
+      "bytes": 27732,
+      "sha256": "64811c878086031c32672bb051f3d09a9a5711084f8d33787e0cf7fd1333d780"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
+      "bytes": 10199,
+      "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_uncertain1_failure.py",
+      "bytes": 20521,
+      "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b"
+    }
+  ],
+  "integrity4": {
+    "carrier": "90fbb068817257a670c0ac99f6d1bbfd6cbfc19b",
+    "actualSource": "c82b8a095fb200ae5f02d3f920edb2181a531a19",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "recordSha256": "aba7ad1dc1301329ef926b3616f32e94f88b7af754f03a6dbbb4990f7931fa34",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-integrity4-813f1057-files-20261018/archive.json",
+      "sha256": "48f53f9d0c73ed0459bf8ac5c9ea5c1bc96fa6521ff52e48008b9e4591cb5e43",
+      "rawChains": 11,
+      "rawBytes": 31504295,
+      "completeOriginalCoverage": true,
+      "storedRawRestoredExact": true
+    },
+    "nativeOutcome": "native0;4/4PASS;422.742161s;complete exact selection;no timeout",
+    "decision": "Hold entire four-row category; other three original native passes are retained as unaccepted observations.",
+    "directPhysicalEvidence": "Four disposable roots/nonces and eight distinct genuine producer/resumer PID+kernel-birth identities; producer exit73 at committed Prepared, resumer exit0, join/EOF and cleanup verified. Each before/after/repeat snapshot retains all223 images. CurrentInterface genuinely appends one space to I; zero changing-I/common publication follows.",
+    "targetReachLimit": "Both actual CurrentInterface resume entries log canonical-write.lock IOException. Broad held/no-change assertions pass before intended I preimage refusal. Two logger entries are each capped at2000 characters; absent stack tails are not reconstructed.",
+    "otherRows": "Version: malformed checkpoint refusal; RecordFingerprint: joint_interface_required_fingerprint; OriginalManifest: mortal_joint_checkpoint_provenance_changed. None is separately qualified."
+  },
+  "uncertain1": {
+    "carrier": "4dbdb144c1862941f48df53136ae78cbf4a8f25c",
+    "actualSource": "90fbb068817257a670c0ac99f6d1bbfd6cbfc19b",
+    "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+    "recordSha256": "dd4eed9571317b93eea673c5c36855afb7c00d1084ba608c6ace5a2c7a3598be",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-uncertain1-frozen-813f1057-files-20261018/archive.json",
+      "sha256": "849e8ec81489c66948b6837bad04f92bead79b1decef8b1229315815883acd6e",
+      "rawChains": 11,
+      "rawBytes": 25551669,
+      "completeOriginalCoverage": true,
+      "storedRawRestoredExact": true
+    },
+    "nativeExit": 1,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallSeconds": 101.70918841999992,
+    "categoryResult": {
+      "Category": "fr063-joint-interface-uncertain-current",
+      "Seconds": 74.8504636,
+      "BudgetMinutes": 10,
+      "Completed": false
+    },
+    "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+    "testDuration": "00:00:58.6990585",
+    "error": "Assert.NotNull() Failure: Value is null",
+    "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertUncertainCurrentResumeAsync(GameEngine engine, String firstDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 67\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 364\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 15\n--- End of stack trace from previous location ---",
+    "initialHeldState": {
+      "disposition": "PublicationUncertain",
+      "issueProjectionSha256": "DD6C1C15B4A661B7E3FBBD85CCDEEADB263106D53EE78F9DDC284479AE91838B",
+      "issue": {
+        "Index": 0,
+        "Code": {
+          "Value": "mortal_joint_repair_admission_refused",
+          "OriginalLength": 37,
+          "Truncated": false,
+          "FullUtf8Sha256": "BEB9C2640F8A0A27C1326A7AD6CB224A782654BAADAA4E2E9D72C22F7456FFDA"
+        },
+        "FilePath": {
+          "Value": "acceptedTurn.wounds",
+          "OriginalLength": 19,
+          "Truncated": false,
+          "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+        },
+        "Message": {
+          "Value": "L01 one-shot existing completed capture checkpoint; preparation not entered.",
+          "OriginalLength": 76,
+          "Truncated": false,
+          "FullUtf8Sha256": "DBA6D6D8A0D9BEB4D3C3ABBC948ED8DDE83ADE69A1975BC09096B72A6719397A"
+        }
+      },
+      "interfaceChangingCohorts": 1,
+      "captureCallbacks": 1,
+      "commonMarkerCommits": 0,
+      "mechanicalPathsRetained": 15,
+      "directRestoreImagePathsRetained": 222
+    },
+    "assertionScope": {
+      "reached": [
+        "genuine confirmed held42/natural original43 without precomposed common plan",
+        "one completed capture after one I-changing publication",
+        "initial PublicationUncertain with exact original injected capture-failure issue",
+        "expired old attempt: not Live or Delegated, Continuation and Reservation null (unchanged assertions before failing line)",
+        "exact Published pending/I, no common marker and held42",
+        "all15 mechanical paths unchanged",
+        "actual Stage direct restore blocked with all222 captured paths byte-identical",
+        "real late caller awaited and returned before failing current-proof assertion",
+        "native/fixture cleanup"
+      ],
+      "unreachedOrUnproven": [
+        "non-null currentResumedProof and successful pre-cleanup full DATA checkpoint",
+        "subsequent turn43 and exact resumed-result assertions",
+        "current resumed mechanical outcome energy/health/wound checks",
+        "terminal seven-artifact cleanup assertions",
+        "new after-current full image capture and inert-repeat assertions",
+        "post-resume logger snapshot or direct raw nested-lock exception for this case"
+      ]
+    },
+    "directEvidence": "The real late caller awaited at UncertainResume.cs66 returns; Assert.NotNull(_currentResumedProof) fails at67. The pre-cleanup current-proof boundary and final post-current diagnostic are absent. Existing raw owner-outcome and issue projection precede that call.",
+    "causalLimit": "Direct raw evidence proves the positive current-resume proof was not reached. The shared selected-resume source has the independently demonstrated nested canonical-lease blocker from integrity CurrentInterface. The test fails before its final diagnostic emission; no post-current logger or full snapshot is available here, so do not claim this uncertain1 raw directly contains the lock exception or reconstruct its final state.",
+    "nativeCleanup": "Owned fixture cleanup passed. This cleanup is distinct from the unreached seven-artifact terminal gameplay cleanup assertions."
+  },
+  "causalFinding": {
+    "id": "L01-CURRENT-RESUME-JOINT-001",
+    "classification": "PRODUCT_NESTED_LEASE_COMPOSITION_DEFECT_PLUS_NEGATIVE_TEST_TARGET_REACH_GAP",
+    "directlyProvenBy": "CurrentInterface source and both original raw lock failures; sufficient independently for this blocker checkpoint.",
+    "chain": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "lines": "59,67",
+        "fact": "Selected resume owns the canonical lease, then invokes upstream collection without passing it."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "lines": "1723-1732",
+        "fact": "Collector calls item validation after critical/NPC/faction/location checks."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "lines": "58-60",
+        "fact": "Item helper unconditionally acquires a second canonical lease."
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "lines": "3809-3835",
+        "fact": "Second physical FileShare.None lock cannot succeed while caller retains its lease; bounded contention retries end in IOException."
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "lines": "97,99-100,124-129",
+        "fact": "Owned release/catch retain held state on error before CommitPublishedAsync is reached."
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+        "lines": "215-240",
+        "fact": "Intended exact pending/I image comparison and joint_interface_actual_publication_preimage_or_readback_changed guard are downstream and unproven in CurrentInterface."
+      }
+    ],
+    "uncertainRelation": "Same selected current-resume path is a concrete dependency and a source-supported explanation for failure to obtain a new current proof. This original uncertain1 does not emit the post-call lock exception; no unique unseen throw or final image is claimed.",
+    "notEstablished": "No evidence requires an environment/budget/stale-binary explanation or product compensation/ownership policy redesign. Initial uncertain1 retained physical ownership is proven only through its reached pre-resume checks."
+  },
+  "proposedNextSafePlan": {
+    "status": "REVIEWABLE_RECOMMENDATION_ONLY_NO_IMPLEMENTATION_OR_RETRY_AT_THIS_CHECKPOINT",
+    "production": "Thread the exact already-owned ordinary canonical lease from selected resume through upstream collection into an item-validation core/overload. Borrowed path validates active lease ownership for this FileSystemManager and neither acquires nor disposes it. Existing no-argument path retains its own acquisition/disposal and every retained-spiritual/foreign-claim/vacancy/item-validation/invalidation branch and order.",
+    "oracle": "Strengthen CurrentInterface with positive evidence for the intended exact pending/I preimage/readback refusal on both real entries, attributable to each entry (for example independent diagnostic deltas). Preserve all existing bytes, ownership, fresh-authority-absence, genuine child identity/exit/join/EOF, no changing I/common commit and inert-repeat assertions. Keep the existing uncertain1 positive full-proof/turn43/mechanical/terminal-cleanup/repeat assertions unchanged.",
+    "exclusions": [
+      "No globally reentrant lock or lock retry/budget increase",
+      "No upstream item-admission bypass, normalization fallback, fence release/reacquire or reordered publication",
+      "No seeded Ready/take/current proof or changed physical fault",
+      "No success inferred from broad Held or native counters"
+    ],
+    "sourceBindings": "Three product call-chain files are implicated. SpiritualContinuation.cs is already among98 pins but outside the current product delta: expected productDelta21\u219222, exact sorted packet list and both controller guards must agree. Preserve prior packets; regenerate all changed source/tool/test pins and digest. Verify dependency scope from final diff before acceptance.",
+    "affectedSelection": {
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "corrective": {
+        "descriptors": 2,
+        "methods": 2,
+        "cases": 5,
+        "groups": [
+          "integrity4",
+          "uncertain1"
+        ]
+      },
+      "remaining": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "groups": [
+          "separately named newcrash5"
+        ]
+      },
+      "retention": "Retain47 original qualified targets at original compiled/actual provenance; no cross-build equivalence or blanket replay. Any newly demonstrated dependency must be named and independently assessed."
+    },
+    "gates": [
+      "Save/recover a concrete source candidate only when further implementation is authorized; independent SOURCE review must accept lease ownership, unchanged old callers, strengthened target oracle, exact22-path guards and98 pins.",
+      "Then separately named fresh BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO records, each original native0 and executed0; exact9 DLL/full output inventories and mandatory v2 dated boundaries.",
+      "Save/recover originals and obtain independent PREP acceptance before any actual. Release each finite corrective/remaining mode separately with fresh clean preflight; preserve original native failures and freeze on unexpected results.",
+      "New crash5 retains its previously accepted disposable isolation, genuine new process/identity/exit73/join/EOF and unresolved-child retention requirements; it remains UNRUN now."
+    ]
+  },
+  "verification": {
+    "uncertainOriginalRawChains": 11,
+    "uncertainRawBytes": 25551669,
+    "uncertainFullOriginalCoverage": true,
+    "sourcePins": 98,
+    "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+    "productDeltaPaths": 21,
+    "unchangedNineAnd1575Outputs": true,
+    "uncertainRecoveredPaths": 18,
+    "integrityRecoveredPaths": 24,
+    "latestHoldMetadataRecoveredPaths": 8,
+    "latestMetadataReceipt": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-b19a7409.json",
+      "bytes": 3429,
+      "sha256": "63db2602cbda2632797b713b7ed39fb9a34c180015c296de25bf6bb03d3e9afb"
+    },
+    "latestMetadataBytesGitBlobsModesIndependentlyMatched": true,
+    "sourceReadback": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "sha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8",
+        "bytes": 11177
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910",
+        "bytes": 509199
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+        "bytes": 56992
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+        "bytes": 241886
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+        "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
+        "bytes": 20647
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+        "sha256": "68b4d00bc10d48242a52d2d9f0ef9c8356d2ba1cb45f1c8315164d60016e6f6e",
+        "bytes": 38944
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+        "sha256": "5653d51c40ffa2522386b3cb3f8f50cf64044a40e03586a498e4e0fee96dd7b7",
+        "bytes": 7072
+      }
+    ]
+  },
+  "datedBoundaryLimits": {
+    "integrityBeforeEntries": 83,
+    "integrityAfterEntries": 84,
+    "integrityBeforeGapSeconds": 2.538864,
+    "integrityAfterGapSeconds": 1.077795,
+    "uncertainBeforeEntries": 85,
+    "uncertainAfterEntries": 87,
+    "uncertainBeforeGapSeconds": 2.854857,
+    "uncertainAfterGapSeconds": 0.785627,
+    "meaning": "Saved v2 snapshots are clean dated observations only; no continuous or instantaneous absence claim and no reconstruction of gaps."
+  },
+  "preservation": [
+    "47/57 qualified remains the complete accepted count. No integrity/uncertain target is added.",
+    "Every original native outcome, source/build provenance, old intake/crash/close/races/settlement failures, and lost old corrected crash5 UNKNOWN remain immutable.",
+    "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited.",
+    "This concrete blocker satisfies the requested stop boundary. No implementation, retry, native experiment or new runtime release is authorized by this report."
+  ],
+  "reviewerActions": "Read-only immutable source/Git/raw archives/build outputs/saved censuses and recovery receipts; report/checker writes only under /tmp/1536-cloud-tools/review. No build/test/discovery/observer execution/current fixture-root inspection/process control/repository write."
+}

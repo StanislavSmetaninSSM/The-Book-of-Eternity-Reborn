@@ -1,0 +1,319 @@
+{
+  "task": "#1536 T197 DEP-C narrow lifecycle-owner DESIGN proposal",
+  "date": "2026-10-16",
+  "author_agent": "/root/t197_lost_pin_design",
+  "verdict": "UNACCEPTED_PRINCIPLED_LIFECYCLE_RECOVERY_GRANT_PROPOSED_FOR_DISCUSSION",
+  "source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+  "observed_head_at_end": "0b6e68e99a83ec9e9b0e1b2341901f54b0ef6dbd",
+  "head_movement": "Parent sole writer advanced HEAD during independent read-only inspection; source pins remain the initial exact revision.",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "16413b95c8889f0440d040ed1dd214c81b2e3f8f",
+      "sha256": "865e6e30fc365225a0e26aa42f4bf48d645d7ac216fd8da037af9e6a9b40511c",
+      "bytes": 2252104,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "f48e9324f4cbe2faf5111f07dd2b159991c26c2d",
+      "sha256": "85190f485fa9dc72797bca705a8b62306dcbcc6185a72ecaf548174fe57d9205",
+      "bytes": 1919329,
+      "worktree_equals_pinned_revision": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "741d93af7e7c6b82ca5b9dc1fbf6c9d8d2eee061",
+      "sha256": "dfdb84d14c64d150b0bcace2c03fbcf38def96e7ae7d03d861726a3c2b294ae8",
+      "bytes": 62918,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+      "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "bytes": 15874,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.json",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "97bdd0aeae08a3a12900dd1703698870d0d90f30",
+      "sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "bytes": 40309,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "3f6d32096396ef7841074660f5774cabfb45ad59",
+      "sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
+      "bytes": 6978,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "bytes": 2993,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "4797cd481bffc8b9f46d31af9f30e6b0ffdab017",
+      "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14",
+      "bytes": 8221,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "4e0a4ed2348738b309be07482038fb923bf9ee64",
+      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "bytes": 901,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "6d5dd244d1d480390e4be57c92f2f52d33eef255",
+      "sha256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e",
+      "bytes": 3485,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "a3f8602314cf5fb4ee2f1713dbc98712fcc987bb",
+      "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "bytes": 10516,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "34350bd4e07c6a8f69cddcad1730458964009415",
+      "sha256": "5092cd0dd68436d7f5338ffdd15cf54bba223696aa94625f519e8dc8e033949c",
+      "bytes": 2263,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+      "bytes": 91410,
+      "worktree_equals_pinned_revision": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "git_blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "worktree_equals_pinned_revision": true
+    }
+  ],
+  "authorization": {
+    "parent_reported_user_message": "Sentinel_f3e48da025808191bdb46fab2e0b960f",
+    "time_utc": "07:01:11",
+    "text": "хорошо",
+    "scope": "Independent staged F1-R2/D9–D11 implementation and parallel T197 DESIGN",
+    "author_scope": "Read-only narrow DEP-C DESIGN, /tmp deliverables only",
+    "original_message_independently_verified": false
+  },
+  "existing_success_route": false,
+  "conclusions": [
+    "Lost retains counted original pin and uncertainty; current stop cannot settle it.",
+    "Native terminal scope retirement alone does not prove external participating client work has ended.",
+    "Current bounded volatile close registry and cold non-Stopped refusal do not supply durable Lost retirement authority.",
+    "Complete same-boot coordinator-crash recovery requires a new principled recoverable original-scope issuer/custody contract; none is asserted to exist."
+  ],
+  "proposed_grant": {
+    "id": "G-C",
+    "accepted": false,
+    "summary": "Registered lifecycle recovery owner reconciles and retires original run operations under unchanged physical G, with genuine participant/native/managed/debt proofs and only recorded finite owner recovery authority.",
+    "not_routine_d11": "Adds recoverable lifecycle issuer and durable admission metadata, beyond a missing adapter API.",
+    "metadata_extension_requires_explicit_acceptance": true
+  },
+  "assumptions": [
+    {
+      "id": "A1",
+      "api": "RegisterOriginalOperationLifetime",
+      "accepted": false,
+      "contract": "Durable before-activation exact pin/participant registration; actual lifetime guard covers every local/borrowed/native writer and finalizer."
+    },
+    {
+      "id": "A2",
+      "api": "PublishOriginalOperationDisposition",
+      "accepted": false,
+      "contract": "Bounded durable existing-main metadata extension; exact retained terminal/retirement facts and consumer references; no eviction of active or referenced debt."
+    },
+    {
+      "id": "A3",
+      "api": "ReconcileRevokedOriginalRun",
+      "accepted": false,
+      "contract": "Recovery-only revocation/drain/native/finite-debt lane; operation-specific exhaustion, no forced counters or uncertainty clear."
+    },
+    {
+      "id": "A4",
+      "api": "OriginalNativeScopeRecoveryCustody",
+      "accepted": false,
+      "contract": "Platform-specific original native custody registered before release survives bridge death and issues actual original scope-stop proof; Linux and Windows designs still required.",
+      "fully_specified_backend_implementation": false,
+      "irreducible_principled_grant": true
+    },
+    {
+      "id": "A5",
+      "api": "AdmitHandoffAfterOriginalRetirement",
+      "accepted": false,
+      "contract": "Exact H2/current-G/source-target original readback and genuine owner proof issue only named same-G HC/target-bound continuation."
+    }
+  ],
+  "receipt_components": [
+    "P participant lifetime exhaustion",
+    "N original native and managed work settlement",
+    "D complete original-owner debt reconciliation"
+  ],
+  "proposed_retirement_outcome": "RetiredAfterReconciliation; not synthetic ClosedObserved and not business completion",
+  "global_status": {
+    "dep_c_resolved": false,
+    "t197_design_complete": false,
+    "transition_qualified": false,
+    "h2_remaining_work_qualified": false,
+    "h3_source_release_allowed": false,
+    "new_joint_qte_activation_allowed": false,
+    "dep_i": "OPEN_UNACCEPTED",
+    "dep_l": "OPEN_UNACCEPTED",
+    "full_lawful_target": "OPEN_UNQUALIFIED",
+    "f2_selected": false
+  },
+  "preserved_invariants": [
+    "same physical G",
+    "source turn n and incarnation k",
+    "death marker Turn=-1; H1 preserves k",
+    "genuine automatic LifeEvaluation n+1",
+    "no extra Mortal tick, source reroll or replay",
+    "no new source eligibility or incarnation/load/allocator authority",
+    "D4/guided/visual/platform/D8 limits remain"
+  ],
+  "future_matrix": {
+    "cases": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12"
+    ],
+    "all_status": "UNRUN",
+    "selection_or_runtime_authorized": false
+  },
+  "verification": {
+    "type": "Read-only source inspection and metadata hash comparison only",
+    "build": "UNRUN",
+    "test_discovery": "UNRUN",
+    "tests": "UNRUN",
+    "runtime_or_native_experiments": "UNRUN",
+    "remote_verification": "NOT_PERFORMED",
+    "independent_review_of_this_proposal": "PENDING",
+    "prior_reports": "Read only, unchanged by this author"
+  },
+  "report_markdown_path": "/tmp/t197-depc-lifecycle-proposal-20261016.md",
+  "report_markdown_sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+  "finalstop": {
+    "repository_writes": false,
+    "commits_pushes": false,
+    "subagents": 0,
+    "background_activity": false,
+    "only_written_paths": [
+      "/tmp/t197-depc-lifecycle-proposal-20261016.md",
+      "/tmp/t197-depc-lifecycle-proposal-20261016.json"
+    ]
+  }
+}

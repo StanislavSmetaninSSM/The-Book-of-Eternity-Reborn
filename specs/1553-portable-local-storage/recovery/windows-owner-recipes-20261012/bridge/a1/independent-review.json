@@ -1,0 +1,65 @@
+{
+  "SchemaVersion": 1,
+  "Reviewer": "Actual gpt-6-astra/xhigh",
+  "Verdict": "PASS",
+  "FullVerdict": "PASS_BRIDGE3_EVIDENCE_AND_COHERENCE",
+  "ReviewedHead": "a006185af37c6eb63f833552265b8b7b20b15031",
+  "Category": "gm-main-bridge-native-windows",
+  "Findings": [],
+  "Checks": {
+    "Archives": 3,
+    "Entries": 46,
+    "CRCSizeShaAndOriginalBytes": true,
+    "PlanOnlySeconds": 12.3687033,
+    "PlanOnlyCases": 3,
+    "Methods": 1,
+    "Descriptors": 1,
+    "PlanOnlyExecuted": 0,
+    "ActualAttempts": 1,
+    "Passed": 3,
+    "Failed": 0,
+    "PathVariants": [
+      "ordinary",
+      "extended",
+      "drive-case"
+    ],
+    "RunnerSeconds": 41.005818,
+    "CategorySeconds": 28.8216629,
+    "CategoryBudgetMinutes": 3,
+    "RunnerBudgetMinutes": 8,
+    "SourcePins": 2168,
+    "DllPdbPins": 290,
+    "AllGatesAndLiveBytesEqual": true,
+    "UnitBridgeBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+    "AdditionalPdbSourceDocuments": [
+      "GmBridgeWindowsOriginalHostTests.cs",
+      "GmWindowsShellResolutionTests.cs"
+    ],
+    "PriorConsumerBindingRetained": true,
+    "RealWmiConPtyWindowsJobRunningIdentityStatusAssertions": true,
+    "ParticipatingWriteBytes": [
+      17,
+      42,
+      255
+    ],
+    "ClosesPerCase": 1,
+    "OriginalShutdownStoppedRootExitedAuthorityReleased": true,
+    "OriginalRunJoinedHostDisposedRootsAbsent": true,
+    "PtyPidsInOriginalTrxStdout": [
+      23720,
+      28624,
+      31420
+    ],
+    "SeparatelySerializedWmiRunIdentityStatusImages": false,
+    "ExternalOwnedRootAndProcessReadback": true,
+    "SourceCatalogAndPriorCarriersUnchanged": true,
+    "MetadataCoherent": true
+  },
+  "Qualification": "Bounded native Windows original-host smoke with empty CLI and profiles=[]",
+  "Limits": [
+    "Not providers/CLI readiness/workers/quarantine/fresh-process recovery/wholegame qualification",
+    "Contention3 UNRUN",
+    "Parents OPEN"
+  ],
+  "ReviewerBuildTestProbeOrMutation": false
+}

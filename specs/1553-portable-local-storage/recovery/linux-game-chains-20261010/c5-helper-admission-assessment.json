@@ -1,0 +1,937 @@
+{
+  "Status": "STOP: selected default-read seq0 healthy and complete; later write-scope identity refusal cause UNKNOWN",
+  "BaseSHA": "7144596fca9300e523fa6ee5bc6b93f7f91e0a40",
+  "SourceAssemblySHA": "db4416250273dc49fc4f668bf26a29b9987eb970",
+  "RuntimeCarrierSHA": "64d68805c4483510e5e6efd2c9f1169ec87984a9",
+  "FrozenFirstRawSHA": "d6319b854a4428da4b0db67fe3c2280a38b1d52e",
+  "RawManifest": "c5-helper-admission-first-failure/manifest.json",
+  "Runner": {
+    "Executed": 1,
+    "Completed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "ExitCode": 1,
+    "ElapsedSeconds": 119.9481581,
+    "NoTimeoutUnderfillDuplicate": true,
+    "OwnedAndRuntimeCleanupComplete": true
+  },
+  "Driver": {
+    "ElapsedSeconds": 97.93074892799996,
+    "DiagnosticTotalBudgetExceeded": false,
+    "CleanupStartedAtSeconds": 96.8529831779997,
+    "OriginalStopped": true,
+    "IoDrained": true,
+    "PeerEOFCount": 5
+  },
+  "FirstNavigation": {
+    "Count": 1,
+    "SixGETsFinished200": true,
+    "ReadyStartupSeconds": 12.348745012001018,
+    "NormalClickSeconds": 0.7843706160001602,
+    "NormalAPIReturned": true,
+    "TrustedContinueClicks": 1,
+    "Limit": "One actual navigation and queued SIGKILL/EOF/cold replacement only; no later navigation or accepted/full cold qualification."
+  },
+  "SelectedTarget": {
+    "Method": "first Open-BoeHelperScope default-read seq0 from actual packet consumer Resolve-BoeSessionPath",
+    "ConsumerPid": 32535,
+    "ScopeId": "4887208f8b1744bbacdaf2dd5fc2f947",
+    "DedicatedManagedPid": 32571,
+    "LinuxStarttime": "938861",
+    "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+    "ObservationComplete": true,
+    "Rows": 12,
+    "Errors": 0,
+    "Dropped": 0,
+    "CaptureIncomplete": false,
+    "ReadOutcome": {
+      "Utf8Bytes": 544,
+      "IsNull": false,
+      "FrameOutcome": "within-frame-bound",
+      "WaitCompleted": true
+    },
+    "ReadDurationSeconds": 0.995883145,
+    "OriginalFrame": {
+      "ok": true,
+      "state": "active",
+      "sequence": 0,
+      "generation": "0479a56b31b24e36bb2e87f57ba6e77a",
+      "originalClose": {
+        "pinId": "c97f8109c7454436bfe80c72e9cd714a",
+        "closeId": "42d6b31a7ad440c4a735aa9fd08ed4a8",
+        "operationId": "b9780bc2f6934d23aad3f64e996e409a",
+        "identity": {
+          "rootKey": "/tmp/gc-808dcc989b93/play",
+          "runId": "18f6387159af47a8bccdf829e0c3bf39",
+          "generationId": "0479a56b31b24e36bb2e87f57ba6e77a",
+          "epoch": 1,
+          "backend": 2,
+          "hostInstanceId": "5290fd4b2d594b84a720986931889b82",
+          "bootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        },
+        "outcome": 0,
+        "closingFailed": false
+      }
+    },
+    "RetainedFrameBytes": 544,
+    "RetainedFrameSHA256": "3bdca6940bcf8f7fbbfc92eb5cc962f97ce236da0983e1ebfaa3f9f4d0831a33",
+    "DedicatedManagedExitCode": 0,
+    "JoinedStderrBytes": 0,
+    "DisposalReturned": true,
+    "CleanupKillIntentObserved": false,
+    "MonotonicEvents": [
+      {
+        "Phase": "launch-begin",
+        "StopwatchTicks": 9388601003462,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8189796+00:00"
+      },
+      {
+        "Phase": "launch-return",
+        "StopwatchTicks": 9388656733884,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8746131+00:00"
+      },
+      {
+        "Phase": "write-begin",
+        "StopwatchTicks": 9388657831544,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8757095+00:00"
+      },
+      {
+        "Phase": "write-return",
+        "StopwatchTicks": 9388658601652,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8764796+00:00"
+      },
+      {
+        "Phase": "read-begin",
+        "StopwatchTicks": 9388658937283,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:10.8768145+00:00"
+      },
+      {
+        "Phase": "read-return",
+        "StopwatchTicks": 9389654820428,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8727017+00:00"
+      },
+      {
+        "Phase": "read-frame-retained",
+        "StopwatchTicks": 9389660945230,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8788261+00:00"
+      },
+      {
+        "Phase": "admission-return",
+        "StopwatchTicks": 9389663135626,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:11.8810159+00:00"
+      },
+      {
+        "Phase": "dispose-begin",
+        "StopwatchTicks": 9389849067420,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0669488+00:00"
+      },
+      {
+        "Phase": "dispose-exit-observed",
+        "StopwatchTicks": 9389850981475,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0688614+00:00"
+      },
+      {
+        "Phase": "dispose-joined",
+        "StopwatchTicks": 9389865535359,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0834148+00:00"
+      },
+      {
+        "Phase": "dispose-return",
+        "StopwatchTicks": 9389867971461,
+        "StopwatchFrequency": 1000000000,
+        "Utc": "2026-10-10T21:35:12.0858507+00:00"
+      }
+    ],
+    "Limit": "Observes the first default-read scope only, not every legitimate bootstrap/read/write helper opening. Exit observations bound exit; they are not exact OS exit timestamps."
+  },
+  "LaterConsumerFailure": {
+    "ConsumerPid": 32535,
+    "ConsumerExecution": {
+      "Executed": true,
+      "ExitCode": 1,
+      "ChildExited": true,
+      "IoDrained": true
+    },
+    "ObservedAtSeconds": 96.85019155900045,
+    "OriginalStack": "relay-apply-response.ps1:42 -> Complete-BoeTurn -> Invoke-BoeHelperScope -Mode write -> Open-BoeHelperScope",
+    "OuterException": "Original initialized helper admission refused.",
+    "InnerException": "Helper admission identity is invalid.",
+    "ExactSourcePredicate": "not reply.ok OR reply.state != active OR reply.sequence != 0 OR generation not lowercase32hex OR nonempty ExpectedGeneration differs",
+    "KnownBoundary": "Existing Read-BoeHelperFrame returned parsed reply far enough to reach the admission identity guard in this later scope. Its actual original seq0 fields were not captured.",
+    "MissingObservations": [
+      "later write-scope original seq0 ok/state/sequence/generation and actual ExpectedGeneration",
+      "structured reason/effective outcome/original or terminal close when present",
+      "later dedicated managed child PID/Linux starttime/boot identity",
+      "later child exit/already-joined stderr and original write/read/exit/disposal monotonic bounds"
+    ],
+    "Limit": "Outer PowerShell consumer Exit1 does not establish a managed helper crash. Healthy managed32571 belongs to earlier default-read scope and is not the later write child."
+  },
+  "SeparateGameLoopFailure": {
+    "ObservedAtSeconds": 64.56349738999961,
+    "ObservedDuringCleanup": false,
+    "Pid": 32248,
+    "ExceptionType": "System.IO.FileNotFoundException",
+    "Path": "play/.boe_runtime/trusted-local-publication-v1/intent.tmp",
+    "ActualStack": "TrustedLocalFileScope.ValidateFileLeaf -> HasNamespaceJournalMagic -> RequireBrowserRecoveryPreservesOriginal -> RequireOriginalBrowserRecoverySafe -> PreflightBrowserOriginalAdmission -> MainAdmission.AcquireAsync -> original engine terminal wait",
+    "Limit": "Retained earlier real exception. No demonstrated causal link to later write identity refusal or prior default-read NULL/oversize; no off-target fix selected."
+  },
+  "SequentialStopState": {
+    "BeginMonotonic": 9405.130924165,
+    "Files": [
+      {
+        "Path": "input/turn_request.json",
+        "ObservedMonotonic": 9405.130926676,
+        "Exists": true,
+        "Bytes": 59101,
+        "SHA256": "9ddef556808388005c8ae7430110fec41bcc1af4614fc5b43adccdd7a761dfbb"
+      },
+      {
+        "Path": "input/pending_player_action.json",
+        "ObservedMonotonic": 9405.131352773,
+        "Exists": true,
+        "Bytes": 165099,
+        "SHA256": "9c1bf06c59df74b500e85c830fd86b52ef63c31cb215ffa5f0b7f891e2b9981d"
+      },
+      {
+        "Path": "ready/turn_complete.json",
+        "ObservedMonotonic": 9405.131579949,
+        "Exists": false
+      },
+      {
+        "Path": "ready/turn_error.json",
+        "ObservedMonotonic": 9405.131619401,
+        "Exists": false
+      },
+      {
+        "Path": "stories/chaos_sea.jsonl",
+        "ObservedMonotonic": 9405.131647244,
+        "Exists": false
+      }
+    ],
+    "Limit": "Read-only sequential observations, not an atomic state snapshot or accepted/cold qualification. Empty test AcceptedTurns is not physical absence proof.",
+    "EndMonotonic": 9405.131662405
+  },
+  "CausalConclusion": "The older Resolve-BoeSessionPath default-read NULL-or-oversize branch was not reproduced. The selected actual original default-read discriminator is NONNULL544 bytes, identity accepted, managed exit0. Overall diagnostic FAIL is the distinct later write-scope identity refusal, whose exact predicate/cause remains UNKNOWN. Earlier historical helper and post-performing click causes remain unknown. Instrumentation can perturb timing; this healthy observation does not prove an older cause was fixed.",
+  "Decision": {
+    "AdditionalRuntime": false,
+    "ProductOrOracleRepair": false,
+    "FullC5Rerun": false,
+    "FullC5Qualification": "FAIL/UNQUALIFIED; optimized implementation remains WIP",
+    "TaskCheckboxes": "T069/T070/T071 unchanged and unchecked",
+    "MinimumNextProposal": "One newly scoped original failing Complete-BoeTurn write-scope seq0 capture, retaining its actual returned frame/ok/state/sequence/generation/ExpectedGeneration/structured refusal-close fields, dedicated managed child identity/exit/joined stderr and original monotonic bounds. Passive existing-boundary observations only; unchanged10000ms/65536/4000, authority/owner/uncertain/no replay. No retry, timer, guard or repair is inferred from this result."
+  },
+  "WriteContinuation": {
+    "Status": "STOP: complete healthy write admission; prior refusal not reproduced, original failing cause remains UNKNOWN",
+    "AuthorizedBaseSHA": "4e8fd25a605bbb6cee5fd8959662e276428016f9",
+    "Target": "Actual Complete-BoeTurn write-scope seq0 in original relay packet consumer, excluding earlier read/Write-BoeJson scopes",
+    "PlannedCapture": [
+      "original NULL/UTF8 byte count and full bounded seq0 frame",
+      "actual ExpectedGeneration and original returned identity fields",
+      "all five literal identity predicate copies immediately before unchanged guard",
+      "actual dedicated managed child Linux identity/exit/joined stderr and original monotonic bounds"
+    ],
+    "FixedBudgets": {
+      "Work": 180,
+      "Total": 240,
+      "Cleanup": 60,
+      "Guardian": 240,
+      "External": 250,
+      "CategoryMinutes": 5,
+      "OverallMinutes": 7,
+      "Startup": 60,
+      "ClickMilliseconds": 12000,
+      "ReadMilliseconds": 10000,
+      "FrameUtf8Bytes": 65536,
+      "DisposalMilliseconds": 4000
+    },
+    "Limits": "No product/authority/timer/replay change or attribution from prior healthy read. Preserve prior result; one first settled consumer then stop. Cause/repair decision only after first raw archived and independent evidence review.",
+    "SeparateJournalSourceMap": {
+      "Observer": "root independent read-only existing source/raw map; no writer duplicate runtime",
+      "InterruptedOperation": "WaitForTerminalSignalWithParticipationAsync poll -> SessionOperationContext AcquireAsync before ready callback/FinalizePlayerTurn",
+      "Window": "Preflight selects Active else IntentStage using File.Exists(ValidateFile), then HasNamespaceJournalMagic revalidates allowMissing:false before open, prior to that poll physical canonical lease",
+      "PossibleSourceTransitions": "Existing WriteJournal stage-to-active rename and existing pre-intent recovery/normal/namespace stage cleanup under canonical lease",
+      "ObservedTimesSeconds": {
+        "GameFailure": 64.56349738999961,
+        "AuthoredPacket": 78.399717239,
+        "LaterConsumerFailureObserved": 96.85019155900045
+      },
+      "Limit": "No actual transaction/producer/rename/delete witness identifies transition or links it to later write admission refusal. UNKNOWN; no extra journal instrumentation/fix/run selected."
+    },
+    "SourceAssemblySHA": "2d29d5af8602b92d499fdb8cae09e82f27d8db46",
+    "SourceGate": "same Astra PASS/no blocking findings",
+    "Preparation": {
+      "WallSeconds": 128.5485521,
+      "BuildUnitSeconds": 122.9347856,
+      "PlannedCases": 1,
+      "ExecutedCases": 0,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-write-preparation/manifest.json"
+    },
+    "Catalog": {
+      "Seconds": 12.2758193,
+      "Valid": true,
+      "Categories": 657,
+      "Methods": 11457,
+      "Executed": 0,
+      "Manifest": "c5-helper-write-catalog/manifest.json"
+    },
+    "RuntimeCarrierSHA": "256d2fa048186215ebfed1fbef29c24d9c9ceeb9",
+    "FrozenFirstRawSHA": "fc0eda06ebce59a08a473edca08283a192b1193d",
+    "RawManifest": "c5-helper-write-first-pass/manifest.json",
+    "IndependentRawGate": "same Astra PASS at fc0eda06/no blocking findings;270run+7preparation/catalog payloads and682runtime inventory files verified",
+    "Runner": {
+      "Passed": 1,
+      "Failed": 0,
+      "PlannedExecutedCompletedCases": 1,
+      "ExitCode": 0,
+      "WallSeconds": 128.5030427,
+      "NoTimeoutUnderfillDuplicate": true,
+      "OwnedRuntimeCleanupComplete": true
+    },
+    "Driver": {
+      "ElapsedSeconds": 107.80460047700035,
+      "TotalBudgetExceeded": false,
+      "OriginalStopped": true,
+      "IoDrained": true,
+      "FivePeersEOF": true
+    },
+    "ActualWriteTarget": {
+      "ConsumerPid": 39715,
+      "DedicatedManagedPid": 39930,
+      "LinuxStarttime": "1074006",
+      "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+      "ScopeId": "6598e9e6fb7a4416b091fc56fc41ec41",
+      "Method": "actual Complete-BoeTurn Open-BoeHelperScope write seq0 at original relay consumer line42",
+      "ObservationComplete": true,
+      "Summary": {
+        "BootId": "a447dd74-2561-437d-9196-437acf6efd60",
+        "Rows": 13,
+        "StderrTruncated": false,
+        "ScopeId": "6598e9e6fb7a4416b091fc56fc41ec41",
+        "CaptureIncomplete": false,
+        "Bytes": 7163,
+        "Errors": 0,
+        "LinuxStarttime": "1074006",
+        "DisposeReturned": true,
+        "ConsumerPid": 39715,
+        "HelperPid": 39930,
+        "ExitCode": 0,
+        "Dropped": 0
+      },
+      "ReadOutcome": {
+        "WaitCompleted": true,
+        "FrameOutcome": "within-frame-bound",
+        "Utf8Bytes": 544,
+        "IsNull": false
+      },
+      "ReadDurationSeconds": 0.798265285,
+      "IdentityGuardObservation": {
+        "Predicates": {
+          "ReplyNotOk": false,
+          "StateNotActive": false,
+          "SequenceNotZero": false,
+          "GenerationFormatInvalid": false,
+          "ExpectedGenerationMismatch": false
+        },
+        "Limit": "Immediately before original guard; all predicate copies, not original short-circuit evaluation order.",
+        "Generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "Sequence": 0,
+        "Ok": true,
+        "State": "active",
+        "ExpectedGeneration": "2155aab0ee414cb0ac80941089b0ea25",
+        "FailedPredicates": []
+      },
+      "ActualExpectedGeneration": "2155aab0ee414cb0ac80941089b0ea25",
+      "FullOriginalFrame": {
+        "ok": true,
+        "state": "active",
+        "sequence": 0,
+        "generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "originalClose": {
+          "pinId": "2fa17ff2a5ce42fb950cfac691601c94",
+          "closeId": "5023c4974b6d49b59691ef89b43051cb",
+          "operationId": "b4fb3b93ea94454bbb53cab6b79141a2",
+          "identity": {
+            "rootKey": "/tmp/gc-5372f643e169/play",
+            "runId": "a83385d23caf4d7e8d92720f50688eb6",
+            "generationId": "2155aab0ee414cb0ac80941089b0ea25",
+            "epoch": 1,
+            "backend": 2,
+            "hostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+            "bootId": "a447dd74-2561-437d-9196-437acf6efd60"
+          },
+          "outcome": 0,
+          "closingFailed": false
+        }
+      },
+      "RetainedFrameBytes": 544,
+      "RetainedFrameSHA256": "c194e1cc4b64dea8644f55fae293a3eb5eca4c122db6737190bd3eb88f458696",
+      "JoinedStderrBytes": 0,
+      "CleanupKillIntentObserved": false,
+      "MonotonicBounds": [
+        {
+          "Phase": "launch-begin",
+          "Ticks": 10740056711794,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.2745918+00:00"
+        },
+        {
+          "Phase": "launch-return",
+          "Ticks": 10740102475513,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3203536+00:00"
+        },
+        {
+          "Phase": "write-begin",
+          "Ticks": 10740102875168,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3207526+00:00"
+        },
+        {
+          "Phase": "write-return",
+          "Ticks": 10740103139883,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3210168+00:00"
+        },
+        {
+          "Phase": "read-begin",
+          "Ticks": 10740103325212,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:42.3212021+00:00"
+        },
+        {
+          "Phase": "read-return",
+          "Ticks": 10740901590497,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1194696+00:00"
+        },
+        {
+          "Phase": "read-frame-retained",
+          "Ticks": 10740905425277,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1233029+00:00"
+        },
+        {
+          "Phase": "identity-guard-observed",
+          "Ticks": 10740910000189,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1278775+00:00"
+        },
+        {
+          "Phase": "admission-return",
+          "Ticks": 10740910496372,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.1283733+00:00"
+        },
+        {
+          "Phase": "dispose-begin",
+          "Ticks": 10741772672383,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:43.9905505+00:00"
+        },
+        {
+          "Phase": "dispose-exit-observed",
+          "Ticks": 10741786252314,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0041302+00:00"
+        },
+        {
+          "Phase": "dispose-joined",
+          "Ticks": 10741799172919,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0170811+00:00"
+        },
+        {
+          "Phase": "dispose-return",
+          "Ticks": 10741800572837,
+          "Frequency": 1000000000,
+          "Utc": "2026-10-10T21:57:44.0184503+00:00"
+        }
+      ],
+      "Limit": "Exact actual healthy write scope, not the earlier failing write child. Exit observation bounds are not OS exit timestamps. All predicate copies do not reproduce original short-circuit evaluation order."
+    },
+    "Consumer": {
+      "Started": {
+        "ChildPid": 39715,
+        "ResponseSHA256": "c99b9a636865005694adea76f8f4b910e68e0ec78f022ebf24a389d25afa52a7",
+        "AgentTask": "deterministic-authored-game-chain-v1",
+        "Model": "deterministic-no-provider"
+      },
+      "Execution": {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "ObservedAtSeconds": 106.83686495000075
+    },
+    "FirstNavigation": {
+      "StartupSeconds": 15.289254575000086,
+      "ClickSeconds": 2.809643208000125,
+      "SixRequestsFinished200": true,
+      "TrustedContinueClicks": 1,
+      "ActionPOSTStatus": 200,
+      "QueuedSIGKILLAndEOF": {
+        "Phase": "queued",
+        "OriginalPid": 38584,
+        "ColdPid": 39408,
+        "OriginalExitCode": -9,
+        "OriginalEOF": true,
+        "ActionId": "3c9a9127024c4d0a9f74c966d35032bf",
+        "Generation": "2155aab0ee414cb0ac80941089b0ea25",
+        "OriginalPendingSHA256": "83c5b66ed80eaf778b373ffcc808bcdcb67c27ef8da3eee6005ab207a8340601",
+        "NoRequestBeforeCrash": true
+      },
+      "LaterNavigationCount": 0,
+      "Limit": "First real action and queued replacement only; no accepted/cold/fullC5 qualification."
+    },
+    "SequentialStopState": {
+      "BeginMonotonic": 10741.853894746,
+      "Files": [
+        {
+          "Path": "input/turn_request.json",
+          "ObservedMonotonic": 10741.853910036,
+          "Exists": true,
+          "Bytes": 59098,
+          "SHA256": "9c2082486fe38c994f4f7a7eb8ba2a7031f0bdd823014e8a0fdac7acfba3fc24"
+        },
+        {
+          "Path": "input/pending_player_action.json",
+          "ObservedMonotonic": 10741.854271369,
+          "Exists": true,
+          "Bytes": 165093,
+          "SHA256": "57643d203f377e7837c2ec55ff2b907282e80fdebd97b831c6794f5b70fd8982"
+        },
+        {
+          "Path": "ready/turn_complete.json",
+          "ObservedMonotonic": 10741.854606685,
+          "Exists": true,
+          "Bytes": 436,
+          "SHA256": "907117397b1f381e54fd0f0372070d46e551939fc861b801de90d8a6fbff05d7"
+        },
+        {
+          "Path": "ready/turn_error.json",
+          "ObservedMonotonic": 10741.854660825,
+          "Exists": false
+        },
+        {
+          "Path": "stories/chaos_sea.jsonl",
+          "ObservedMonotonic": 10741.854706428,
+          "Exists": false
+        }
+      ],
+      "Limit": "Read-only sequential observations, not an atomic state snapshot or accepted/cold qualification. Empty test AcceptedTurns is not physical absence proof.",
+      "EndMonotonic": 10741.854723086
+    },
+    "CleanupExceptionObservation": {
+      "ExceptionType": "System.IO.IOException",
+      "Message": "Main run metadata or original owner admission is unavailable.",
+      "Pid": 39408,
+      "ConsumerSettledObservedSeconds": 106.83686495000075,
+      "CleanupStartedSeconds": 106.83817250399989,
+      "OriginalShutdownRequestedSeconds": 106.89935791700009,
+      "GameFailureObservedSeconds": 107.08100983099939,
+      "ObservedDuringCleanup": true,
+      "RecordAfter": {
+        "SchemaVersion": 1,
+        "Identity": {
+          "RootKey": "/tmp/gc-5372f643e169/play",
+          "RunId": "a83385d23caf4d7e8d92720f50688eb6",
+          "GenerationId": "2155aab0ee414cb0ac80941089b0ea25",
+          "Epoch": 1,
+          "Backend": "LinuxSupervisor",
+          "HostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+          "BootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        },
+        "Disposition": "Stopped",
+        "StopEvidence": {
+          "Identity": {
+            "RootKey": "/tmp/gc-5372f643e169/play",
+            "RunId": "a83385d23caf4d7e8d92720f50688eb6",
+            "GenerationId": "2155aab0ee414cb0ac80941089b0ea25",
+            "Epoch": 1,
+            "Backend": "LinuxSupervisor",
+            "HostInstanceId": "1cf8e1c3f9c8470a90250cde01fe12c5",
+            "BootId": "a447dd74-2561-437d-9196-437acf6efd60"
+          },
+          "Kind": "OwnedScopeEmpty",
+          "ObservedBootId": "a447dd74-2561-437d-9196-437acf6efd60"
+        }
+      },
+      "RelayClose": {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 38660
+      },
+      "TerminalStop": {
+        "identity": {
+          "runId": "a83385d23caf4d7e8d92720f50688eb6",
+          "backend": "native-lineage",
+          "guarantee": "ordinary-same-namespace-lineage",
+          "rootPid": 38639
+        },
+        "state": "stopped-within-scope",
+        "reason": "stop-requested",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      },
+      "Guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 5,
+        "failures": 0,
+        "deadline": false
+      },
+      "Limit": "Exception first observed while pump drains original cold-client output after cleanup/shutdown request. Observation time is not exact throw time or cause proof; distinguish from earlier precleanup intent.tmp FileNotFound. No current intent.tmp exception witness retained, not proof the old issue was fixed."
+    },
+    "ComparedPriorFailure": {
+      "PriorFrozenRawSHA": "d6319b854a4428da4b0db67fe3c2280a38b1d52e",
+      "PriorConsumerPid": 32535,
+      "PriorConsumerExitCode": 1,
+      "PriorBoundary": "Complete-BoeTurn write admission identity guard refused",
+      "PriorOriginalWriteFrameAndFailedPredicatesAndDedicatedChild": "UNKNOWN/not retained",
+      "CurrentOutcome": "active544B/gen matches Expected/all5false/dedicated39930Exit0/consumer39715Exit0",
+      "CausalLimit": "Fresh passing frame does not supply the historical failed frame or prove earlier EOF/write refusal/journal transition fixed. Fixture-only observation can perturb timing; no matched performance claim."
+    },
+    "SourceOnlyAlternative": {
+      "ActualSource": "GmTurnHelperControl.RunCore catch can emit CloseReply(true) before active when original terminalClose exists and close reply not attempted; states closed-observed/close-unconfirmed with continuationFailed and seq0 but without generation",
+      "Limit": "Possible source branch, not observed earlier failing write frame. Do not infer generation drift, managed crash or inner caught exception from generic identity guard."
+    },
+    "RemainingExactGap": [
+      "original failing write-scope managed preactivation caught exception and actual returned close/refusal frame",
+      "responsible original journal transaction/producer/rename/delete between selected path existence and fresh validation, if that exception involves intent.tmp",
+      "demonstrated causal link between historical precleanup journal exception and later write admission refusal"
+    ],
+    "Decision": {
+      "ProductOrOracleRepair": false,
+      "AdditionalRuntimeOrIdenticalRetry": false,
+      "FullC5Rerun": false,
+      "Qualification": "Current optimized fullC5 remains FAIL/UNQUALIFIED/WIP; no accepted absence/once-only proof from AcceptedTurns=[]",
+      "MinimumNextProposal": "One narrowly bounded causal capture at the original managed preactivation catch/close-response boundary, retaining the actual caught exception before generic TryRun stderr, correlated with real seq0 frame/ExpectedGeneration/predicates/managed-child identity. If journal disappearance is involved, retain only the selected IntentStage/Active existence-to-fresh-validation transition and responsible owned transaction witness. New causal observation required; no generic identical repeat, timer/guard/replay change, exception swallow or guessed repair."
+    }
+  },
+  "ManagedContinuation": {
+    "Status": "WIP: first queued-cold helper healthy; original precleanup active.json disappearance is separate acceptance blocker; control-only actual NULL observation/oracle correction UNRUN",
+    "BaseSHA": "d80534a18ec6b09ceb94bd3e8c2e1441a99e36b7",
+    "Target": "Original selected Complete-BoeTurn write helper caught exception after participating call unwinds and before THIS catch optional close serialization; admission may fail before binding/finalization",
+    "Boundaries": [
+      "No original exception, guard, owner, uncertain, close, exit or timer decision changed",
+      "Only actual selected child receives valid-N nonce; no global setting",
+      "Message/StackTrace/InnerException and only MainOperationCloseFailure/SessionFinalizationFailure/SessionOperationFailure exception links; no ToString or arbitrary Data/result serialization",
+      "Old healthy read/write and all negative raw/outcomes preserved; no old cause closure, repair or fullC5 qualification"
+    ],
+    "CaptureLimits": {
+      "Nodes": 6,
+      "Depth": 3,
+      "AggregateTextCharacters": 12288,
+      "UTF8BytesPerValidJSONRecordAfterEscaping": 49152,
+      "OriginalCatchRecordsAtMost": 2,
+      "MissingExit2RecordIsIncomplete": true
+    },
+    "Control": "Real initialized current generation, owned canonical config deletion, original direct write scope, non-active actual seq0/original config exception/nonce+PID/exit2/body false/joins/canonical release; not the actual diagnostic action",
+    "Budgets": {
+      "Work": 180,
+      "Total": 240,
+      "Cleanup": 60,
+      "Guardian": 240,
+      "External": 250,
+      "Startup": 60,
+      "Click": 12,
+      "ControlGuardian": 15,
+      "ControlOuter": 20,
+      "CategoryMinutes": 5,
+      "OverallMinutes": 7
+    },
+    "Checks": "UNRUN; source WIP only",
+    "NoGMContractChange": true,
+    "StaticChecks": {
+      "PythonASTJSONExactShipAnchors": "PASS",
+      "ActualSubstitutedPowerShellAndControlParse": "PASS",
+      "ChangedCSharpDebugReleaseSyntaxWithPowerShellBundledRoslyn": "PASS",
+      "Compilation": "UNRUN until published fresh preparation",
+      "SetupFailures": [
+        {
+          "ExitCode": 134,
+          "Observed": "PowerShell configuration failed before parser due read-only /home/agent/.cache/powershell; preserved writable XDG paths omitted",
+          "Resolved": "Same parser run with preserved writable XDG paths; no helper/game/tests"
+        },
+        {
+          "ExitCode": 1,
+          "Observed": "SDK Roslyn Add-Type manifest conflict with PowerShell already loaded Microsoft.CodeAnalysis",
+          "Resolved": "Use installed PowerShell matching bundled Roslyn for syntax only; fresh SDK compilation still required"
+        }
+      ],
+      "NoRuntimeBuildHelperTestsLaunched": true
+    },
+    "PreservedSupersededPreparation": {
+      "SourceSHA": "16a4f191463dd7fa2fc234beb2981abea7415661",
+      "WallSeconds": 129.0604533,
+      "UnitBuildSeconds": 121.3352172,
+      "PlannedCases": 2,
+      "ExecutedCases": 0,
+      "ExitCode": 0,
+      "CleanupComplete": true,
+      "Archive": "c5-helper-managed-preparation-before-boundary-correction/manifest.json",
+      "Limit": "Source diagnostic wording corrected after this completed preparation; not preparation of the next source."
+    },
+    "SourceAssemblySHA": "86c4ea1f13043cc6b4145e77cdf5f55de079a52e",
+    "SourceGate": "Same Astra PASS86c4ea1f; no blocking findings",
+    "MatchingPreparation": {
+      "WallSeconds": 58.7200054,
+      "UnitBuildSeconds": 53.1903857,
+      "PlannedCases": 2,
+      "ExecutedCases": 0,
+      "ExitCode": 0,
+      "CleanSource": true,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-managed-preparation/manifest.json"
+    },
+    "Catalog": {
+      "WallSeconds": 10.9708941,
+      "Valid": true,
+      "Methods": 11458,
+      "Categories": 657,
+      "Unmapped": [],
+      "StaleSelectors": [],
+      "Executed": 0,
+      "CleanSource": true,
+      "CleanupComplete": true,
+      "Manifest": "c5-helper-managed-catalog/manifest.json"
+    },
+    "FirstRawSHA": "6ba77147a90117fb66e94034589003d7bad11f44",
+    "FirstRawManifest": "c5-helper-managed-first-outcome/manifest.json",
+    "FirstCategoryOutcome": {
+      "Executed": 2,
+      "Completed": 2,
+      "Passed": 1,
+      "Failed": 1,
+      "WallSeconds": 126.4016713,
+      "ExitCode": 1,
+      "NoTimeoutUnderfillDuplicate": true,
+      "CleanupComplete": true,
+      "DiagnosticPASS": true,
+      "DiagnosticSeconds": 103.97028456899898,
+      "ControlFAILPreserved": true
+    },
+    "ActualHealthyTarget": {
+      "ConsumerPid": 46779,
+      "DedicatedManagedPid": 46993,
+      "LinuxStarttime": "1267303",
+      "Seq0UTF8Bytes": 544,
+      "State": "active",
+      "Generation": "fb57823f3de249bd8f5e1314e5c06b96",
+      "ExpectedGenerationSame": true,
+      "AllIdentityPredicatesFalse": true,
+      "ManagedExit": 0,
+      "JoinedStderrEmpty": true,
+      "ReadSeconds": 1.433034373,
+      "Rows": 14,
+      "Dropped": 0,
+      "Errors": 0,
+      "CaptureComplete": true,
+      "NonceConfigured": true,
+      "CaughtRecords": 0,
+      "Limit": "Healthy original scope only; no old failure reproduced/fixed or accepted/fullC5 qualification."
+    },
+    "ActualControlFailure": {
+      "ChildPid": 45696,
+      "Nonce": "9400694e5c3f41fbac19fc8f64865cfa",
+      "RunCoreCaughtException": "System.IO.InvalidDataException: Initialized configuration is absent.",
+      "CaptureIncomplete": false,
+      "KnownExceptionLinks": {},
+      "BecameActive": false,
+      "TerminalClose": null,
+      "CloseReplyAttempted": false,
+      "BodyEntered": false,
+      "ChildExit": 2,
+      "OriginalPowerShellExited": true,
+      "CanonicalReacquired": true,
+      "OriginalSeq0ReturnedToWrapper": null,
+      "ExactNULLVsOversize": "MISSING in first control because original NULL/size guard throws before function returns; do not infer from generic wrapper.",
+      "InvalidOracle": "Required returned non-active object even though actual terminalCloseNULL/no close attempted permits no emitted close reply.",
+      "CorrectionWIP": "Control-only passive copy immediately after SAME original completed GetResult, before unchanged original guard; require actual NULL/EOF plus all original exception/child/no-active/body/cleanup assertions. No second read or game diagnostic repeat."
+    },
+    "SeparateAcceptanceBlocker": {
+      "ExceptionType": "System.IO.FileNotFoundException",
+      "Path": "trusted-local-publication-v1/active.json",
+      "ObservedAtSeconds": 68.11086694899859,
+      "ObservedDuringCleanup": false,
+      "CleanupStartedAtSeconds": 102.13864760599972,
+      "ColdPid": 46529,
+      "Stack": "TrustedLocalFileScope.ValidateFileLeaf180\u2192ValidateFile138\u2192HasNamespaceJournalMagic22\u2192RequireBrowserRecoveryPreservesOriginal361\u2192BrowserOriginalAdmission398/382\u2192MainAdmission.AcquireAsync58\u2192RunParticipating124\u2192WaitForTerminalSignal poll470/588/617\u2192ProcessPlayerTurn1456\u2192EnterGameLoop1328",
+      "Raw": "c5-helper-managed-first-outcome/owned0/result.json.gz",
+      "ExactThrowTimestamp": "UNOBSERVED; timestamp is retained output observation",
+      "ResponsibleProducerRenameDeleteTransaction": "UNOBSERVED",
+      "LinkToOldHelperRefusalOrHealthyLaterWrite": "UNESTABLISHED",
+      "NextPriority": "After validated control, independently gate actual owned publication transition/selected-path disappearance causal reproduction and minimum proven fix before current fullC5; no guessed producer, prelock deferral, guard removal or timer change."
+    },
+    "ControlOnlyNextSelection": {
+      "Category": "c5-helper-caught-exception-control",
+      "Facts": 1,
+      "CategoryMinutes": 2,
+      "OverallMinutes": 3,
+      "NativeBuildSeconds": 40,
+      "GuardianSeconds": 15,
+      "OuterSeconds": 20,
+      "PrepCatalogRuntime": "Source gate/prep/catalog PASS; sole control runtime PASS1/1; first raw frozen before assessment",
+      "Methods": 11458,
+      "CategoriesExpected": 658,
+      "SourceAssemblySHA": "4cbb67fc47221f3874ee79417280be3380262e18",
+      "SourceOracleGate": "Same Astra PASS4cbb; no blocking findings",
+      "Preparation": {
+        "WallSeconds": 142.9743802,
+        "UnitBuildSeconds": 133.9000018,
+        "Planned": 1,
+        "Executed": 0,
+        "Exit": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-preparation/manifest.json"
+      },
+      "Catalog": {
+        "WallSeconds": 12.8299878,
+        "Valid": true,
+        "Categories": 658,
+        "Methods": 11458,
+        "Unmapped": [],
+        "Stale": [],
+        "Executed": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-catalog/manifest.json"
+      },
+      "FirstOutcome": {
+        "RuntimeCarrier": "d362e1a62c4c19b59578afbb1f0c5c0e71ae8114",
+        "Runner": "20261010-224449-777-55863-1d8b37bb81fe4b5a97542b8f3d0f0eab-categories",
+        "Owned": "native-terminal/69519b2474ac41c1a1e53ef2d309c161",
+        "WallSeconds": 15.479934,
+        "Passed": 1,
+        "Failed": 0,
+        "Executed": 1,
+        "Exit": 0,
+        "Timeout": false,
+        "CompleteSelection": true,
+        "OwnedRuntimeCleanup": true,
+        "Manifest": "c5-helper-control-first-outcome/manifest.json",
+        "TargetManagedPID": 56127,
+        "ActualCompletedRead": "NULL/EOF, UTF8 count/frame NULL, observer errors0",
+        "ManagedExit": 2,
+        "OriginalConfigurationException": "System.IO.InvalidDataException: Initialized configuration is absent.",
+        "ControlBodyEntered": false,
+        "NoActiveOrClose": true,
+        "Qualification": "Capture control only; no product repair, old cause or fullC5 qualification"
+      },
+      "EvidenceGate": {
+        "SHA": "a4aaacdac543fbf3779c1a976fa25c54d98c2b65",
+        "Verdict": "Same Astra local control evidence/provenance PASS, no blockers",
+        "Publication": "Writer actual remote/ref/fetched exact manifest/tree/hashes PASS; root independently confirmed via authorized GitHub connector after transient shell auth read failure",
+        "Qualification": "Capture control only; old strict-object control FAIL retained; no product repair or fullC5 qualification"
+      }
+    },
+    "JournalCausalProposal": {
+      "Status": "SUSPENDED: source gate/matching preparation/catalog PASS; sole8case causal RED UNRUN; no repair/fullC5 qualification",
+      "Seam": "Optional instance-local selected-path callback after actual Active/IntentStage selection before unchanged HasNamespaceJournalMagic fresh validation",
+      "Cases": [
+        "Actual held publisher IntentStaged to Move/IntentPublished then full commit/lease release",
+        "Actual held publisher Committed to Cleanup/CleanupComplete then lease release"
+      ],
+      "Selection": "2 new regression cases + existing pending-recovery2 + phase/escaped-refusal4 =8",
+      "Bounds": {
+        "CallbackWaitSeconds": 10,
+        "CaseCancellationSeconds": 30,
+        "NewCategoryMinutes": 2,
+        "ExistingCategoryMinutes": 4,
+        "OverallMinutes": 6
+      },
+      "ExpectedRed": "Actual selected intent.tmp or active.json FileNotFound at HasNamespaceJournalMagic; timeout/unreached seam/build failures do not prove hypothesis",
+      "Preserved": "Real canonical lease/current generation/unchanged original request/pending/manifest/authority/snapshots; no hand deletion/synthetic reply/prelock deferral/guard/timer/replay change",
+      "HistoricalActorAttribution": "UNKNOWN; possible owned interleaving reproduction does not attribute historical6ba transaction or old helper relation",
+      "FullC5": "FAIL/UNQUALIFIED/WIP; no new fullC5 before proven minimal repair",
+      "SourceFiles": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs"
+      ],
+      "Category": "c5-original-browser-journal-selection-race",
+      "CatalogExpected": {
+        "Categories": 659,
+        "Methods": 11459
+      },
+      "RawLocation": "Owned TestResults/journal-selection-race/<uniqueid>/observation.json plus exact before/after tree bytes",
+      "DesignGate": "Same Astra design PASS3062; eb0 source held for concrete test-harness/metadata corrections, correctedsource gate pending",
+      "StaticChecks": "PASS four changed C# sources Debug/Release syntax/JSON/diff whitespace; existing catalog objects and all other assessment fields unchanged; no compilation/runtime",
+      "PreservedPreparationFailure": {
+        "SourceSHA": "eb0d807cc7c91046023780097e867b8b3294adad",
+        "CarrierSHA": "a8853454e68c7e6eef9bd34f56ebfda884f3d28f",
+        "Manifest": "c5-journal-selection-preparation-catalog-shape-failure/manifest.json",
+        "Stage": "Catalog related{id,when} schema before runner/build/test",
+        "Exit": 1,
+        "BuildsTests": 0,
+        "Elapsed": "UNRECORDED; no timing claim",
+        "CausalRed": false,
+        "CommandFieldQualification": "Abbreviated summary, not literal invocation; original full three-category PowerShell invocation retained in execution record and matching preparation manifest"
+      },
+      "SourceGateCorrections": [
+        "Shared total10s callback deadline",
+        "Case acquisition cancellation before bounded finally join, original primary preserved",
+        "Exact FileNotFound.FileName in raw",
+        "Related link objects{id,when}"
+      ],
+      "SourceAssemblySHA": "29d03a4a68900b3b43366c2fac7c6ac9efb333a2",
+      "SourceGate": "Same Astra PASS29d; all four harness/catalog findings closed",
+      "MatchingPreparation": {
+        "Manifest": "c5-journal-selection-preparation/manifest.json",
+        "WallSeconds": 162.8483497,
+        "IntegrationBuildSeconds": 154.3681734,
+        "Exit": 0,
+        "PlannedDescriptors": 3,
+        "PlannedCases": 8,
+        "Executed": 0,
+        "CleanSource": true,
+        "OwnedRuntimeCleanup": true
+      },
+      "PlatformInterruption": {
+        "Notice": "Parent-relayed generic possible cybersecurity risk",
+        "NamedBlockedActionOrTool": "NONE IDENTIFIED",
+        "ApprovalReviewRejection": "NONE IDENTIFIED",
+        "ProductFailureOrCausalRed": false,
+        "ReadOnlyRecovery": "Existing session97848 completed exit0, clean29d/matching PlanOnly/cleanup confirmed; no new build/catalog/test/edit/archive during recovery",
+        "BypassOrPermissionCredentialChange": false,
+        "RepeatedNotice": "Parent relayed same generic possible cybersecurity risk; no named prohibited tool/action or approval rejection",
+        "CurrentCoordinatorBoundary": "No new implementation/build/catalog/discovery/runtime tests; only read-only recovery and authorized saving already-completed evidence/checkpoint",
+        "SafeRecovery": "Read-only60385 runner summary confirms completed PASS and3retainedfiles; archive/ledger publication only after recovery"
+      },
+      "Catalog": {
+        "Manifest": "c5-journal-selection-catalog/manifest.json",
+        "RevisionSHA": "7b82966e8f54ad197d9f1e511aed457dfced3ccc",
+        "SourceAssemblySHA": "29d03a4a68900b3b43366c2fac7c6ac9efb333a2",
+        "WallSeconds": 14.2257317,
+        "Valid": true,
+        "Categories": 659,
+        "Methods": 11459,
+        "Unmapped": [],
+        "Stale": [],
+        "Executed": 0,
+        "Exit": 0,
+        "CleanRevision": true,
+        "OwnedRuntimeCleanup": true
+      },
+      "Remaining": "Reviewed8case actual owned-transition causal RED stillUNRUN due execution suspension. After suspension resolution: first causal raw/review, minimum proven independently reviewed repair if warranted, mandatory current optimized fullC5. No resume authorized by this checkpoint.",
+      "NewSelectedGitHubOnlyRecovery": "NOT PERFORMED for journal block; only exact remote/fetched new payload membership/bytes verified at safe checkpoint"
+    }
+  }
+}

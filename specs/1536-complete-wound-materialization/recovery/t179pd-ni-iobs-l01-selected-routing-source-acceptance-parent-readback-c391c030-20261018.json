@@ -1,0 +1,18 @@
+{
+  "kind": "PARENT_SOURCE_ACCEPTANCE_METADATA_READBACK_NO_RUNTIME",
+  "head": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "sourceCandidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "pins": 99,
+  "productDelta": 23,
+  "pinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "threeMetadataConditionsSatisfied": true,
+  "originalStaleReceiptPreserved": true,
+  "correctedRecoveryCount": 99,
+  "qualified": 51,
+  "onlyZeroLabels": {
+    "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057",
+    "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057",
+    "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057",
+    "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057"
+  }
+}

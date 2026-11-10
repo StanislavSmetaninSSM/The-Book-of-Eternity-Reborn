@@ -1,0 +1,57 @@
+{
+  "kind": "ROOT_NAMED_ORIGINAL_ACTUAL_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T08:19:24.266251+00:00",
+  "mode": "repaired2",
+  "actualSource": "6b7d1e8288af73982de85159a343626efda21d57",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "nativeExit": 0,
+  "seconds": 125.15458675498667,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "f72e1aca-4507-bb1d-f81d-8718a9fb8ca9",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
+      "outcome": "Passed",
+      "duration": "00:00:57.4630606"
+    },
+    {
+      "testId": "9d4c12ec-93ca-b96a-73ef-eb09dbe88ba9",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+      "outcome": "Passed",
+      "duration": "00:01:01.5595288"
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-repaired-current/record.json",
+    "sha256": "c66cdaf7e80015b1ae1c8f821c5c4b53613a2b3acb14857d69e2085ee919857d"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-repaired-archive-first-6b7d1e82-20261018/archive.json",
+    "sha256": "27905467fe1f9451ccfd0cb096fa4ad0aa437518ce4e43b78061f2e0b0a871d0",
+    "rawChains": 11
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-19810afc9bbe428ba8cff18382fab389",
+    "/tmp/boe-gameengine-turnlifecycle-eb7afd4275b44fee9eaef24de54bb997"
+  ],
+  "uniqueStdoutPayloads": 3,
+  "sourceHeadClean": true,
+  "limits": "Exact original observed native0/raw cases only. Independent connected EVIDENCE still required; no product/fullNI/HOT qualification or automatic next run."
+}

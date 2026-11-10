@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static ValidationRepairHarnessPacket BuildMortalBootstrapMaterializationRepairPacket(
         IReadOnlyList<ValidationIssue> mortalBootstrapErrors)
     {

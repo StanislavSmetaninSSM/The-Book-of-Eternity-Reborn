@@ -1,0 +1,88 @@
+{
+  "source": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "compileSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "runtimeSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "runtimeSourceStatus": "observed clean source before start",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-result-admission.json",
+    "-NoBuild"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "prewrittenUtc": "2026-10-12T05:46:01.152264+00:00",
+  "matchingFreshPlanRun": "20261012-054322-148-255639-273aeaafc1ef49079c0df6d91d296b6e-categories",
+  "expected": {
+    "methods": 3,
+    "cases": 13,
+    "descriptors": 2
+  },
+  "budgetsMinutes": {
+    "resultDependency": 5,
+    "controlBoundaries": 2,
+    "overallDefault": 12
+  },
+  "freshBinaryPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "4b7a01ce6220a3bbcb022471da2f586fd0d492819af2842a783ee743413422f3",
+      "bytes": 27675136
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "sha256": "85a9e471a501bbb6ef085466d80fa6afd582e41f3fc79f890ee83c34ce858a17",
+      "bytes": 4467380
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "b6cf3c61f5a28f054cac7a0402a8dec5957ec522d5c1e1bb81dc0560d93dde10",
+      "bytes": 25246208
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "sha256": "685100ed3f49a22cc317d90b266853b23922c8fa4f7cb3420854585a4132674c",
+      "bytes": 5688708
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "b6cf3c61f5a28f054cac7a0402a8dec5957ec522d5c1e1bb81dc0560d93dde10",
+      "bytes": 25246208
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "sha256": "685100ed3f49a22cc317d90b266853b23922c8fa4f7cb3420854585a4132674c",
+      "bytes": 5688708
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "b1939ff0d2ab2ca71d3b273518b3ee2307b1fb7962eb8904ec812702ec349c4d",
+      "bytes": 9265664
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+      "sha256": "88eedfd58eb404a7edb97b92408008d8e27951595a605ea7ce7476c0e76b95d3",
+      "bytes": 1830960
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "b6cf3c61f5a28f054cac7a0402a8dec5957ec522d5c1e1bb81dc0560d93dde10",
+      "bytes": 25246208
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "sha256": "685100ed3f49a22cc317d90b266853b23922c8fa4f7cb3420854585a4132674c",
+      "bytes": 5688708
+    }
+  ],
+  "sourcePinsFile": "source-pins.json",
+  "actualInvocations": 1,
+  "release": "coordinator released matching first actual",
+  "priorAcceptedColdCount": 1,
+  "startedUtc": "2026-10-12T05:46:52.653035+00:00",
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T05:47:23.956813+00:00"
+}

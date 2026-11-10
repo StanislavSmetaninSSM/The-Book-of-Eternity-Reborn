@@ -1,0 +1,58 @@
+{
+  "mode": "cleanup_success",
+  "failure": null,
+  "SameOriginalUncertainty": false,
+  "cleanup": {
+    "DeletedSceneImages": 3,
+    "DeletedEntityImages": 1
+  },
+  "export": null,
+  "generated": null,
+  "staged": null,
+  "destination": null,
+  "destinationParent": null,
+  "destinationParentExists": false,
+  "destinationBytes": null,
+  "initial": {
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/scenes/first.png": "AQI=",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/scenes/literal\\second.png": "AwQ=",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/output/third.png": "BQY=",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/npcs/keeper__img_old.png": "Bwg=",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/npcs/keeper__img_latest.png": "CQo=",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/npcs/keep.txt": "Cww="
+  },
+  "images": {
+    "images/npcs/keeper__img_latest.png": "CQo="
+  },
+  "committed": [
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/scenes/literal\\second.png",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/scenes/first.png",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/images/npcs/keeper__img_old.png",
+    "/tmp/boe-image-storage-830f6d9b6cdf4a89b8e80c1e4711955d/game_session/output/third.png"
+  ],
+  "mutationAttempts": 0,
+  "Calls": 0,
+  "SaveLogs": 0,
+  "WarningLogs": 0,
+  "console": "",
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

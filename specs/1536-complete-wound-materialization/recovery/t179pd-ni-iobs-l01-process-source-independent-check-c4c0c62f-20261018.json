@@ -1,0 +1,190 @@
+{
+  "kind": "INDEPENDENT_TARGETED_PROCESS_IDENTITY_SOURCE_CHECK",
+  "checkedUtc": "2026-10-18T08:53:36.463167+00:00",
+  "candidate": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "base": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "productBase": "447bc1210c507742758243e1c254860bea0c4539",
+  "scope": "Static read-only affected source/fixture/selection/controllers and immediate saved-byte binding; no build, discovery, test or runtime",
+  "checks": {
+    "singleChangedCSharpFixture": true,
+    "exactFixtureInverseToParent": true,
+    "productCatalogSelectorsTestSupportUnchanged": true,
+    "testMethodsAndInlineRowsUnchanged": true,
+    "activePinCount": 98,
+    "pinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "unchangedPinBytes": 95,
+    "changedFixturePin": {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 38944,
+      "sha256": "68b4d00bc10d48242a52d2d9f0ef9c8356d2ba1cb45f1c8315164d60016e6f6e",
+      "gitBlob": "a4a0e91e5be5654d8231f2dab6d54870e376a06c",
+      "mode": "100644"
+    },
+    "removedToolPinPaths": [
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-run.py"
+    ],
+    "newToolPinPaths": [
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+    ],
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "authoredWhole": {
+      "owners": 16,
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "pending": {
+      "owners": 7,
+      "descriptors": 7,
+      "methods": 12,
+      "cases": 20
+    },
+    "groups": {
+      "legacy3": [
+        [
+          "fr063-joint-interface-legacy-current"
+        ],
+        3
+      ],
+      "crash5": [
+        [
+          "fr063-joint-interface-crash-current"
+        ],
+        5
+      ],
+      "integrity4": [
+        [
+          "fr063-joint-interface-current-integrity"
+        ],
+        4
+      ],
+      "close2": [
+        [
+          "fr063-joint-interface-close-retention"
+        ],
+        2
+      ],
+      "races2": [
+        [
+          "fr063-joint-interface-source-races"
+        ],
+        2
+      ],
+      "settlement3": [
+        [
+          "fr063-joint-interface-settlement"
+        ],
+        3
+      ],
+      "uncertain1": [
+        [
+          "fr063-joint-interface-uncertain-current"
+        ],
+        1
+      ]
+    },
+    "ledgerMethodCaseIdentityUnchanged": true,
+    "currentDiscovery": "NOT_RUN",
+    "priorFailureArtifactCopiesExact": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-crash-stop-review-b31c0d78-20261018.md",
+        "sha256": "f105f98556e747a51e0e33f8295c28d275cf91be476d9afa5864fec730043734"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-crash-stop-review-b31c0d78-20261018.json",
+        "sha256": "f634b07db491c4cc060c0454f40decbce0c04a546a242009f306a43deef5e792"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-crash-stop-check-fd78a4a9-20261018.json",
+        "sha256": "0c79857b114cdf37889328a04c52d960076b8944162858d965153345409df1dc"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-unexpected-crash-readback-fd78a4a9-20261018.json",
+        "sha256": "fdd42b0cbbc40469e4004936fe651b1da05249a23d118b663e80204c0e07e1c3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-crash-causal-fixture-repair-release-b31c0d78-20261018.json",
+        "sha256": "ac24a319097112b7a0d64b2e001744e2c4058ae9af67e49b84ef3a654efaddd6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash-stop-delta-github-b31c0d78-20261018.json",
+        "sha256": "0ff7836d00be70f18cd8c5114db9f7d8c7a20da61616ab0f19fac9bc9ffdefd4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-b31c0d78-20261017.json",
+        "sha256": "b1f42ff50f2149f77fc0d37827da0ef85347f7b6c29225d6eb59aed4c45b790f"
+      }
+    ],
+    "immediateRecoveryFiles": 20,
+    "immediateChangedPaths": 16,
+    "rootRetainedComposition": {
+      "deltas": 115,
+      "trackedPaths": 55686
+    }
+  },
+  "retention": {
+    "qualifiedCases": 37,
+    "methods": 21,
+    "originalCompiledSources": [
+      "45cc99ab: retained26",
+      "4c6d8334b441193cbda6de539347bcf7998d4db6: repaired2/refusal9"
+    ],
+    "basis": "All production and retained test bodies/default fixture paths unchanged. Shared ObserveActualCrashCut is still called, but its original nullable _actualCrashCut early-return is byte-exact; changed birth/raw-capture branches require actual crash configuration. Native wrapper is used only by crash5/integrity4. No fresh assembly execution or byte equality asserted.",
+    "remaining": "Corrected crash5 plus previously unrun15; shared actual-child helper also affects integrity4; no retained37 replay"
+  },
+  "identity": {
+    "pid": "Exact kernel stat PID and both parent/child-self record PID",
+    "birth": "Exact positive Linux /proc/PID/stat field22 ulong, suffix after final comm parenthesis; independent live-parent observation and child-self records",
+    "utc": "Retained diagnostic only, no tolerance or cross-process UTC equality",
+    "rawCut": "Exact bytes/length/SHA256/base64 logged before parsing and identity assertions",
+    "unchanged": "Nonce, genuine producer, exit/join/EOF, containment, root ownership, semantic assertions, full frozen-result/original proof and cleanup unchanged"
+  },
+  "tools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 10031,
+      "sha256": "0968f998c95983eb46a91ea2f0559374a2019ad0373e953bce525ccfa4b8a70e",
+      "gitBlob": "9c0e0412dfbecca80d7f85e756f21b8ad6c179c6",
+      "mode": "100644",
+      "priorPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-run.py",
+      "priorSha256": "f24fcc1960551abba6ef2489decb38e485d51b42a3b08d8ec39ca69cf74b9cfb",
+      "syntaxOnly": true,
+      "derivativeDiff": "--- \n+++ \n@@ -1,9 +1,9 @@\n-\"\"\"UNRUN fixture-corrected NI-IOBS-L01 fresh BOTH/catalog then whole16/33/57 PlanOnly ZERO. Root named release required.\"\"\"\n+\"\"\"UNRUN process-identity-corrected NI-IOBS-L01 fresh BOTH/catalog then whole16/33/57 PlanOnly ZERO. Root named release required.\"\"\"\n from pathlib import Path\n import sys,subprocess,hashlib,json,datetime,time,tempfile,re,os\n R=Path('/workspace/The-Book-of-Eternity-Reborn')\n mode,label,actual=sys.argv[1:4]\n-assert mode in {'catalog','plan','remaining-plan'} and re.fullmatch(r't179pd-ni-iobs-l01-intake-prep-first-[a-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',actual)\n+assert mode in {'catalog','plan','remaining-plan'} and re.fullmatch(r't179pd-ni-iobs-l01-process-prep-first-[a-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',actual)\n def git(*a):return subprocess.check_output(['git',*a],cwd=R)\n def h(b):return hashlib.sha256(b).hexdigest()\n def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()\n@@ -20,9 +20,9 @@\n assert len(stage['selections'])==16 and (R/'tests/selections/1536-joint-interface-lifecycle-stage.json').read_bytes()==selection_raw\n expected_descriptors,expected_methods,expected_cases=16,33,57\n if mode=='remaining-plan':\n- pending_categories={'fr063-joint-interface-corrected-intake','fr063-joint-interface-current-owner-refusal','fr063-joint-interface-legacy-current','fr063-joint-interface-crash-current','fr063-joint-interface-current-integrity','fr063-joint-interface-close-retention','fr063-joint-interface-source-races','fr063-joint-interface-settlement','fr063-joint-interface-uncertain-current'}\n- stage=dict(schemaVersion=1,selections=[x for x in stage['selections'] if x['category'] in pending_categories]);assert len(stage['selections'])==9\n- selection_raw=(json.dumps(stage,indent=2)+'\\n').encode();expected_descriptors,expected_methods,expected_cases=9,17,31\n+ pending_categories={'fr063-joint-interface-legacy-current','fr063-joint-interface-crash-current','fr063-joint-interface-current-integrity','fr063-joint-interface-close-retention','fr063-joint-interface-source-races','fr063-joint-interface-settlement','fr063-joint-interface-uncertain-current'}\n+ stage=dict(schemaVersion=1,selections=[x for x in stage['selections'] if x['category'] in pending_categories]);assert len(stage['selections'])==7\n+ selection_raw=(json.dumps(stage,indent=2)+'\\n').encode();expected_descriptors,expected_methods,expected_cases=7,12,20\n nine=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll','BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll']\n outputs=[R/x/'bin/Debug/net8.0' for x in ['BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','BookOfEternityGMBridge']]\n def inventory(paths):return [dict(path=str(p.relative_to(R)),bytes=p.stat().st_size,sha256=h(p.read_bytes())) for p in sorted(set(paths)) if p.is_file()]\n@@ -45,12 +45,12 @@\n  assert len(sys.argv)==5;catalog=json.loads(Path(sys.argv[4]).read_bytes());assert catalog['mode']=='catalog' and catalog['nativeExit']==0 and catalog['actualTestsExecuted']==0\n  assert catalog['actualSource']==actual and catalog['sourcePinDigest']==binding['pinDigest'] and catalog['binaryAfter']==before and catalog['allOutputInventory']==all_before\n  argv+=['-SelectionFile',selection,'-PlanOnly','-NoBuild']\n-out=Path('/tmp/t179pd-ni-iobs-l01-intake-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\n+out=Path('/tmp/t179pd-ni-iobs-l01-process-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\n if mode=='remaining-plan':\n  selection=out/'exact-selected-scope.json';selection.write_bytes(selection_raw)\n  argv[argv.index('-SelectionFile')+1]=str(selection)\n results_root=R/'TestResults/test-categories';old=set(results_root.iterdir()) if results_root.exists() else set();started=now();clock=time.monotonic()\n-sentinel=out.parent/(actual+'-ni-iobs-l01-intake-zero-'+mode+'.FIRST.json')\n+sentinel=out.parent/(actual+'-ni-iobs-l01-process-zero-'+mode+'.FIRST.json')\n with sentinel.open('x') as f:json.dump(dict(kind='FIRST_NAMED_WHOLE_NI_IOBS_L01_ZERO',mode=mode,actualSource=actual,label=label,startedUtc=started),f,indent=2)\n (out/'source-binding.json').write_bytes(raw);(out/'ledger-context.json').write_bytes(ledger_path.read_bytes())\n print('FIRST_WHOLE_NI_IOBS_L01_PREP_START',mode,actual,str(out/'stdout.log'),flush=True)\n@@ -62,7 +62,7 @@\n results=sorted(str(p) for p in set(results_root.iterdir())-old) if results_root.exists() else [];after=binaries();all_after=all_outputs();ns_after=namespace();proc_after=processes()\n summaries=[json.loads((Path(d)/'summary.json').read_bytes()) for d in results if (Path(d)/'summary.json').exists()]\n executed=sum(j.get('Tests',{}).get('Executed',0) for j in summaries)\n-record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW',phase='INTAKE_FIXTURE_CORRECTION_FRESH_ZERO',mode=mode,label=label,actualSource=actual,compiledSource=actual,productBase=binding['productBase'],implementedProductCompiledSource=actual,sourcePinCount=len(binding['sourcePins']),sourcePinDigest=binding['pinDigest'],sourceBindingSha256=h(raw),ledgerContextSha256=h(ledger_path.read_bytes()),selectionSha256=h(selection_raw),wholeSelectionSha256=h(whole_selection_raw),expectedDescriptors=expected_descriptors,expectedMethods=expected_methods,expectedCases=expected_cases,argv=argv,cwd=str(R),startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,actualTestsExecuted=executed,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='Fixed current-product fresh BOTH/catalog discovery then dependent whole16/33/57 or separately named remaining9/17/31 PlanOnly-NoBuild (remaining selection archived), ZERO actual tests. No retries, accepted-family replay or automatic actual execution.')\n+record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ZERO_PREPARATION_RAW',phase='PROCESS_BIRTH_FIXTURE_CORRECTION_FRESH_ZERO',mode=mode,label=label,actualSource=actual,compiledSource=actual,productBase=binding['productBase'],implementedProductCompiledSource=actual,sourcePinCount=len(binding['sourcePins']),sourcePinDigest=binding['pinDigest'],sourceBindingSha256=h(raw),ledgerContextSha256=h(ledger_path.read_bytes()),selectionSha256=h(selection_raw),wholeSelectionSha256=h(whole_selection_raw),expectedDescriptors=expected_descriptors,expectedMethods=expected_methods,expectedCases=expected_cases,argv=argv,cwd=str(R),startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,actualTestsExecuted=executed,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='Fixed current-product fresh BOTH/catalog discovery then dependent whole16/33/57 or separately named remaining7/12/20 PlanOnly-NoBuild (remaining selection archived), ZERO actual tests. No retries, accepted-family replay or automatic actual execution.')\n (out/'record.json').write_text(json.dumps(record,indent=2)+'\\n');print('FIRST_WHOLE_NI_IOBS_L01_PREP_NATIVE',native,str(out/'record.json'),flush=True)\n # Original outcome is already frozen before utility qualification.\n if native==0:\n"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 9262,
+      "sha256": "9ecd219574553ef37a08b863cde9aa23e563c3ae82b74c00ab2b5c32445bad89",
+      "gitBlob": "23d79d3dc6d0118efca0f879ae27f5c1cf6e4045",
+      "mode": "100644",
+      "priorPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
+      "priorSha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
+      "syntaxOnly": true,
+      "derivativeDiff": "--- \n+++ \n@@ -1,11 +1,9 @@\n-\"\"\"UNRUN fixed fixture-corrected repaired2 and remaining29 finite scopes; retained26 cannot be selected. Each mode requires its own Root named activation; no auto advance/retry/build.\"\"\"\n+\"\"\"UNRUN fixed process-birth-corrected crash5 and remaining15 finite scopes; qualified37 cannot be selected. Each mode requires its own Root named activation; no auto advance/retry/build.\"\"\"\n from pathlib import Path\n import sys,subprocess,hashlib,json,datetime,time,tempfile,re,os\n R=Path('/workspace/The-Book-of-Eternity-Reborn')\n mode,label,actual,prep_path=sys.argv[1:]\n groups={\n- 'repaired2':(['fr063-joint-interface-corrected-intake'],2),\n- 'refusal9':(['fr063-joint-interface-current-owner-refusal'],9),\n  'legacy3':(['fr063-joint-interface-legacy-current'],3),\n  'crash5':(['fr063-joint-interface-crash-current'],5),\n  'integrity4':(['fr063-joint-interface-current-integrity'],4),\n@@ -13,7 +11,7 @@\n  'races2':(['fr063-joint-interface-source-races'],2),\n  'settlement3':(['fr063-joint-interface-settlement'],3),\n  'uncertain1':(['fr063-joint-interface-uncertain-current'],1)}\n-assert mode in groups and re.fullmatch(r't179pd-ni-iobs-l01-intake-first-[a-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',actual)\n+assert mode in groups and re.fullmatch(r't179pd-ni-iobs-l01-process-first-[a-z0-9-]+',label) and re.fullmatch(r'[0-9a-f]{40}',actual)\n def git(*a):return subprocess.check_output(['git',*a],cwd=R)\n def h(b):return hashlib.sha256(b).hexdigest()\n def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()\n@@ -51,9 +49,9 @@\n before=binaries();all_before=all_outputs();ns_before=namespace();proc_before=processes()\n assert len(before)==9 and before==prep['binaryAfter'] and all_before==prep['allOutputInventory']\n assert ns_before==dict(ownedRoots=[]) and not proc_before\n-out=Path('/tmp/t179pd-ni-iobs-l01-intake-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\n+out=Path('/tmp/t179pd-ni-iobs-l01-process-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\n selection=out/'exact-selected-scope.json';selection.write_text(json.dumps(subset,indent=2)+'\\n')\n-started=now();clock=time.monotonic();sentinel=out.parent/(compiled+'-ni-iobs-l01-intake-'+mode+'.FIRST.json')\n+started=now();clock=time.monotonic();sentinel=out.parent/(compiled+'-ni-iobs-l01-process-'+mode+'.FIRST.json')\n with sentinel.open('x') as f:json.dump(dict(kind='FIRST_NAMED_NI_IOBS_L01_WHOLE_ACTUAL',mode=mode,actualSource=actual,compiledSource=compiled,label=label,startedUtc=started),f,indent=2)\n (out/'source-binding.json').write_bytes(raw);(out/'ledger-context.json').write_bytes(ledger_path.read_bytes())\n results_root=R/'TestResults/test-categories';old=set(results_root.iterdir()) if results_root.exists() else set()\n@@ -65,7 +63,7 @@\n  except FileNotFoundError:identity['exitedBeforeCensus']=True\n  (out/'process.json').write_text(json.dumps(dict(argv=argv,identity=identity,startedUtc=started),indent=2)+'\\n');native=child.wait()\n results=sorted(str(p) for p in set(results_root.iterdir())-old) if results_root.exists() else [];after=binaries();all_after=all_outputs();ns_after=namespace();proc_after=processes()\n-record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE',phase='INTAKE_FIXTURE_CORRECTION_REPAIRED2_AND_REMAINING29',mode=mode,label=label,actualSource=actual,compiledSource=compiled,productBase=binding['productBase'],implementedProductCompiledSource=compiled,categories=categories,expectedCases=expected_cases,expectedDescriptors=selected,argv=argv,cwd=str(R),prepRecord=str(prep_path),prepRecordSha256=h(Path(prep_path).read_bytes()),sourceBindingSha256=h(raw),sourcePinCount=98,sourcePinDigest=binding['pinDigest'],startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='ONE named fixed mode only, NoBuild. Original native/stdout/process/TRX/source/child/cleanup outcome precedes utility qualification. No retry, automatic next scope, old accepted family replay or inferred semantic acceptance.')\n+record=dict(kind='FIRST_NI_IOBS_L01_WHOLE_ACTUAL_RAW_NOT_EVIDENCE',phase='PROCESS_BIRTH_FIXTURE_CORRECTION_CRASH5_AND_REMAINING15',mode=mode,label=label,actualSource=actual,compiledSource=compiled,productBase=binding['productBase'],implementedProductCompiledSource=compiled,categories=categories,expectedCases=expected_cases,expectedDescriptors=selected,argv=argv,cwd=str(R),prepRecord=str(prep_path),prepRecordSha256=h(Path(prep_path).read_bytes()),sourceBindingSha256=h(raw),sourcePinCount=98,sourcePinDigest=binding['pinDigest'],startedUtc=started,finishedUtc=now(),wallSeconds=time.monotonic()-clock,nativeExit=native,stdoutPath=str(out/'stdout.log'),stdoutSha256=h((out/'stdout.log').read_bytes()),processRecord=str(out/'process.json'),firstSentinel=str(sentinel),resultDirectories=results,binaryBefore=before,binaryAfter=after,allOutputInventoryBefore=all_before,allOutputInventory=all_after,namespaceBefore=ns_before,namespaceAfter=ns_after,processesBefore=proc_before,processesAfter=proc_after,headAfter=git('rev-parse','HEAD').decode().strip(),statusAfter=git('status','--porcelain').decode(),helperSource=Path(__file__).read_text(),scope='ONE named fixed mode only, NoBuild. Original native/stdout/process/TRX/source/child/cleanup outcome precedes utility qualification. No retry, automatic next scope, old accepted family replay or inferred semantic acceptance.')\n (out/'record.json').write_text(json.dumps(record,indent=2)+'\\n');print('FIRST_WHOLE_NI_IOBS_L01_ACTUAL_NATIVE',native,str(out/'record.json'),flush=True)\n assert before==after and all_before==all_after and ns_before==ns_after and not proc_after and record['headAfter']==actual and not record['statusAfter']\n # Semantic methods/categories, not plan ordinal suffixes, bind actual subset.\n"
+    }
+  ],
+  "archiver": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+    "bytes": 2342,
+    "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+    "gitBlob": "34acff73fd7845cced12b8bc75295fada4e2a6eb",
+    "mode": "100644"
+  },
+  "receipts": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-fixture-delta-github-c4c0c62f-20261018.json",
+      "bytes": 15798,
+      "sha256": "c30cf0c3667abedeb0e0f0ed3a76fcb1c262e95a98814818606e1b1d9524f635"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-c4c0c62f-20261017.json",
+      "bytes": 40028,
+      "sha256": "e790ea6cdc11ca567fa809c5fcf1e43bc8bec83f28779b21fb31d91b2a170386"
+    }
+  ],
+  "findings": [],
+  "reviewerUtilityCorrection": "Initial read-only checker counted catalog literal selector strings as methods and stopped on the retained eight-method unit wildcard. Corrected to its unchanged ledger expansion; no candidate, build, runtime or raw change.",
+  "disposition": "SOURCE/FIXTURE/SELECTION/TOOLS accepted for separately named ZERO3 only; fresh PREP and all corrected/pending actuals remain held"
+}

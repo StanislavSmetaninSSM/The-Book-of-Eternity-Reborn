@@ -69,7 +69,7 @@ internal sealed class WoundAcceptedTurnOutputBindingResult
     internal bool Success => _issues.Length == 0;
 }
 
-internal sealed record WoundPlayerNotification(
+internal sealed partial record WoundPlayerNotification(
     WoundPlayerTextProjection Text,
     string DetailCommand)
 {
@@ -107,6 +107,9 @@ internal sealed record WoundPlayerNotification(
         string finalSceneText)
     {
         ArgumentNullException.ThrowIfNull(bundle);
+        if (bundle.SpiritualHealingContinuation is not null)
+            return ComposeAcceptedSpiritualHealing(bundle, bundle.FinalMutations);
+
         var input = bundle.Input;
         var prepared = bundle.PreparedPlan;
         var final = bundle.FinalPlan;
@@ -115,6 +118,12 @@ internal sealed record WoundPlayerNotification(
         var mutations = final.CarrierContributions
             .SelectMany(static value => value.Mutations)
             .ToArray();
+
+        if (prepared.MortalDiagnosisAuthority is not null)
+            return ComposeAcceptedMortalDiagnosis(bundle, input, prepared, final, mutations);
+
+        if (prepared.JointRepairContinuationAuthority is not null)
+            return ComposeAcceptedJointRepair(bundle, finalSceneText, mutations);
 
         if (prepared.TreatmentContinuationAuthority is not null)
         {
@@ -237,6 +246,31 @@ internal sealed record WoundPlayerNotification(
             var input = insertion.Input;
             var prepared = insertion.Prepared;
             var wound = insertion.Wound;
+            if (insertion.IsCombatHealing)
+            {
+                var realm = input.Binding.Realm;
+                var stages = insertion.CombatStages;
+                var history = WoundHistoryState.Parse(insertion.ReducedState.History.ToJsonString(), WoundHistoryState.HistoryPath);
+                var result = history.State?.Transitions.Select(row => row.TransitionResult).OfType<SpiritualCombatHealingPersistedResult>()
+                    .SingleOrDefault(value => value.Stages.Count != 0 && value.Stages[0].TransitionId == stages.FirstOrDefault()?.After.LastTransition.TransitionId);
+                if (input.Transitions.Count != 0 || prepared.EffectOperationBatches.Count != 0 || stages.Count == 0 ||
+                    !history.IsValid || result is null || result.Stages.Count != stages.Count ||
+                    realm is not ("chaos_sea" or "shining_abode") ||
+                    wound.Owner != new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+                    WoundMaterializationContract.SerializeCanonical(stages[^1].After) != WoundMaterializationContract.SerializeCanonical(wound) ||
+                    !stages.Select(stage => (stage.OperationKey, stage.EventRef, Before: WoundMaterializationContract.SerializeCanonical(stage.Before), After: WoundMaterializationContract.SerializeCanonical(stage.After)))
+                        .SequenceEqual(result.Stages.Select(stage => (stage.OperationKey, stage.EventRef, Before: WoundMaterializationContract.SerializeCanonical(stage.Before), After: WoundMaterializationContract.SerializeCanonical(stage.After)))))
+                {
+                    AddAcceptedTurnBindingIssue(issues, "complete sealed combat treatment stages", insertion.SourceCoordinate);
+                    continue;
+                }
+                if (!WoundPlayerProjection.Visible(wound.Display.Visibility)) continue;
+                var text = wound.Lifecycle == "healed"
+                    ? $"В бою исцелена духовная рана: {wound.Display.Name}. Подробнее: {Command}"
+                    : $"Исцеление в бою: {wound.Display.Name} ({wound.Severity.Value}); восстановление {wound.Recovery.CurrentStepProgress}/{wound.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+                notifications.Add(new(Project(text), Command));
+                continue;
+            }
             if (input.Transitions.Count != 1 || prepared.EffectOperationBatches.Count != 1)
             {
                 AddAcceptedTurnBindingIssue(issues, "one transition and batch per live insertion", insertion.SourceCoordinate);
@@ -268,6 +302,86 @@ internal sealed record WoundPlayerNotification(
             issues.Count == 0 ? notifications : Array.Empty<WoundPlayerNotification>(), issues);
     }
 
+    private static WoundAcceptedTurnOutputBindingResult ComposeAcceptedJointRepair(
+        AcceptedMechanicsWoundStageBundle bundle, string scene, IReadOnlyList<WoundCarrierMutation> mutations)
+    {
+        // Authenticate the WHOLE joint final contribution before selecting its
+        // one CREATE. A nullable treatment batch is not an acquisition batch.
+        if (!WoundAcceptedTurnPlanner.JointRepairFinalPlanAgrees(bundle) ||
+            !WoundAcceptedTurnPlanner.TryReadJointRepairFinal(bundle.PreparedPlan, out var joint))
+            return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint final owner", "refused")]);
+        var creates = bundle.Input.Transitions.Where(row => row.Kind == "create").ToArray();
+        var batches = bundle.PreparedPlan.EffectOperationBatches.Where(row => row.SourceExport.Kind == "wound" &&
+            row.TransitionAuthority.TransitionKind == "create" && row.PreparedWoundId != joint.Outcome.Before.WoundId).ToArray();
+        var additions = mutations.Where(row => row.Operation == "add" && row.BeforeWound is null).ToArray();
+        if (creates.Length != 1 || batches.Length != 1 || additions.Length != 1 || additions[0].AfterWound is not { } wound ||
+            creates[0].LocalWoundRef != batches[0].LocalWoundRef || batches[0].PreparedWoundId != wound.WoundId ||
+            batches[0].TransitionAuthority.TransitionKind != "create")
+            return new(Array.Empty<WoundPlayerNotification>(), [AcceptedTurnBindingIssue("joint acquisition selection", "refused")]);
+        var claim = new WoundAcquisitionNarrationClaim(creates[0].LocalWoundRef, batches[0].SourceExport.CausalEventRef,
+            wound.Classification.Domain, wound.Display.Name, wound.Severity.Rank, wound.Display.AcquisitionNarration);
+        var output = Compose(new WoundAcquisitionOutputRequest(creates[0].LocalWoundRef, wound, claim, scene));
+        if (!output.Success || output.Notification is not { } notification)
+            return new(Array.Empty<WoundPlayerNotification>(), output.Issues);
+        if (!joint.Outcome.PreparesTerminalHeal) return new([notification], output.Issues);
+        var deletions = mutations.Where(row => row.WoundId == joint.Outcome.Before.WoundId).ToArray();
+        if (mutations.Count != 2 || deletions.Length != 1 ||
+            !WoundAcceptedTurnPlanner.TryReadTerminalTreatment(bundle.PreparedPlan, out var terminal))
+            return TreatmentContinuationBindingFailure("joint terminal mutation inventory differs");
+        var healing = ComposeTerminalTreatmentNotifications(bundle, terminal, deletions[0]);
+        return healing.Success ? new(new[] { notification }.Concat(healing.Notifications).ToArray(), healing.Issues)
+            : healing;
+    }
+
+    internal static WoundAcceptedTurnOutputBindingResult
+        ComposeAcceptedSpiritualHealing(AcceptedMechanicsWoundStageBundle bundle,
+            IReadOnlyList<WoundCarrierMutation> mutations)
+    {
+        // Publication has already closed the owner. Read only its sealed immutable
+        // execution DATA; this output binding grants no new mutation authority.
+        if (bundle.SpiritualHealingContinuation is not { } owner ||
+            !bundle.TryReadSpiritualHealingExecution(out var stages) ||
+            stages.Count != owner.Stages.Count)
+            return SpiritualHealingBindingFailure("missing complete sealed execution");
+
+        var groups = stages.GroupBy(stage => stage.Before.WoundId, StringComparer.Ordinal).ToArray();
+        if (groups.Length != mutations.Count)
+            return SpiritualHealingBindingFailure("execution/mutation cardinality");
+        var notifications = new List<WoundPlayerNotification>(groups.Length);
+        foreach (var group in groups)
+        {
+            var before = group.First().Before;
+            var after = group.Last().After;
+            var matches = mutations.Where(mutation => mutation.WoundId == before.WoundId).ToArray();
+            var terminal = after.Lifecycle == "healed";
+            if (matches.Length != 1 || before.Classification.Domain != "spiritual" ||
+                after.WoundId != before.WoundId || after.Owner != before.Owner ||
+                after.Lifecycle is not ("active" or "healed") ||
+                matches[0].Operation != (terminal ? "delete" : "update") ||
+                matches[0].BeforeWound is not { } actualBefore ||
+                WoundMaterializationContract.SerializeCanonical(actualBefore) != WoundMaterializationContract.SerializeCanonical(before) ||
+                (terminal ? matches[0].AfterWound is not null : matches[0].AfterWound is not { } actualAfter ||
+                    WoundMaterializationContract.SerializeCanonical(actualAfter) != WoundMaterializationContract.SerializeCanonical(after)))
+                return SpiritualHealingBindingFailure("final carrier differs from chronological execution");
+
+            // Only the explicitly selected known aid target gains a notification;
+            // unrelated natural actor recovery remains outside this disclosure.
+            if (after.Owner.OwnerKind != "player_soul" && !owner.IsVisibleAidTarget(after) ||
+                !WoundPlayerProjection.Visible(after.Display.Visibility)) continue;
+            var target = after.Owner.OwnerKind == "player_soul" ? "" : " Хранителя";
+            var text = terminal
+                ? $"Исцелена духовная рана{target}: {after.Display.Name}. Подробнее: {Command}"
+                : $"Духовная рана{target}: {after.Display.Name} ({after.Severity.Value}); восстановление {after.Recovery.CurrentStepProgress}/{after.Recovery.CurrentStepThreshold}. Подробнее: {Command}";
+            if (owner.ServiceWoundId == before.WoundId && owner.ServiceAmount is { } fee)
+                text += $" Оплачена одна попытка лечения: {fee} Чернильных Перьев.";
+            notifications.Add(new(Project(text), Command));
+        }
+        return new(notifications, Array.Empty<ValidationIssue>());
+    }
+
+    private static WoundAcceptedTurnOutputBindingResult SpiritualHealingBindingFailure(string actual) => new(
+        Array.Empty<WoundPlayerNotification>(), new[] { AcceptedTurnBindingIssue("complete finalized spiritual healing DATA", actual) });
+
     private static WoundAcceptedTurnOutputBindingResult
         ComposeAcceptedTreatmentContinuation(
             AcceptedMechanicsWoundStageBundle bundle,
@@ -280,8 +394,6 @@ internal sealed record WoundPlayerNotification(
                 out var continuation) ||
             !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) ||
             input.Transitions.Count != 0 ||
-            prepared.EffectOperationBatches.Count !=
-                (continuation.OutcomePreparation.SeverityReduction is null ? 0 : 1) ||
             mutations.Count != 1)
         {
             return TreatmentContinuationBindingFailure(
@@ -289,6 +401,12 @@ internal sealed record WoundPlayerNotification(
                 $"batches={prepared.EffectOperationBatches.Count}," +
                 $"mutations={mutations.Count}");
         }
+
+        if (continuation.OutcomePreparation.PreparesTerminalHeal)
+            return ComposeAcceptedTerminalTreatment(bundle, mutations[0]);
+        if (prepared.EffectOperationBatches.Count !=
+            (MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation) ? 1 : 0))
+            return TreatmentContinuationBindingFailure("changed treatment batch count");
 
         var applicationByRef = new Dictionary<
             string,
@@ -301,7 +419,7 @@ internal sealed record WoundPlayerNotification(
                     "duplicate accepted applicationRef");
             }
         }
-        var batch = continuation.OutcomePreparation.SeverityReduction is null
+        var batch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(continuation.OutcomePreparation)
             ? null
             : prepared.EffectOperationBatches[0];
         var publication = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
@@ -453,10 +571,11 @@ internal sealed record WoundPlayerNotification(
             Array.Empty<ValidationIssue>());
     }
 
-    private static WoundPlayerTextProjection Project(string value) => new(
-        value,
-        Markup.Escape(value),
-        HtmlEncoder.Default.Encode(value));
+    private static WoundPlayerTextProjection Project(string value)
+    {
+        var text = WoundPlayerProjection.Text(value);
+        return new(text, Markup.Escape(text), HtmlEncoder.Default.Encode(text));
+    }
 
     private static void AddAcceptedTurnBindingIssue(
         ICollection<ValidationIssue> issues,

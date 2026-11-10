@@ -1,0 +1,162 @@
+﻿{
+  "schemaVersion": 1,
+  "owner": {
+    "realm": "mortal_world",
+    "ownerKind": "player",
+    "ownerId": "player_current"
+  },
+  "activeWounds": [
+    {
+      "schemaVersion": 1,
+      "woundId": "wound_test_torn_side",
+      "lifecycle": "active",
+      "owner": {
+        "realm": "mortal_world",
+        "ownerKind": "player",
+        "ownerId": "player_current",
+        "carrierPath": "game_state/player/wounds.json"
+      },
+      "origin": {
+        "eventRef": "turn_42:wound_opened",
+        "sourceKind": "combat_action",
+        "sourceId": "combat_action_test_001",
+        "sourceState": "active",
+        "createdAtTurn": 42,
+        "createdAtCycleId": null,
+        "opportunityId": "opportunity_test_001",
+        "guaranteedTriggerId": null,
+        "readableCause": "Рваная рана получена в подтверждённом столкновении."
+      },
+      "classification": {
+        "domain": "physical",
+        "woundType": "Рваная режущая травма",
+        "locationProfile": {
+          "kind": "anatomical",
+          "readableLocus": "левый бок",
+          "authorityKind": "body_part",
+          "authorityRef": "left_side",
+          "affectedSide": "left"
+        }
+      },
+      "display": {
+        "name": "Рваная рана левого бока",
+        "description": "Края раны расходятся при резком движении.",
+        "visibleSymptoms": [
+          "кровотечение",
+          "боль при движении"
+        ],
+        "prognosis": "При своевременной обработке рана заживёт без осложнений.",
+        "visibility": "known_to_player",
+        "acquisitionNarration": "Острый край распорол бок в короткой схватке."
+      },
+      "severity": {
+        "value": "II",
+        "rank": 2,
+        "maximumAtCreation": "II",
+        "lastChangeEventRef": "turn_42:wound_opened"
+      },
+      "care": {
+        "state": "untreated",
+        "stabilizedAtTurn": null,
+        "activeCourseId": null,
+        "lastAttemptId": null
+      },
+      "complications": [],
+      "consequences": {
+        "slotBudget": 2,
+        "slotsUsed": 0,
+        "ownedEffectSources": {
+          "definitions": [],
+          "rootBindings": []
+        },
+        "entries": []
+      },
+      "treatment": {
+        "diagnosisPaths": [],
+        "routes": [
+          {
+            "routeId": "guaranteed_t070b3_resource",
+            "displayName": "Guaranteed resource stabilization",
+            "visibility": "known_to_player",
+            "mode": "guaranteed",
+            "requirements": [
+              {
+                "kind": "source_capability",
+                "capabilityRef": "exact_materialized_healing_source",
+                "actorRole": "provider"
+              },
+              {
+                "kind": "resource_quantity",
+                "resourceRef": "energy",
+                "quantity": 2,
+                "ownerRole": "target"
+              }
+            ],
+            "resourcePolicy": {
+              "reserveBeforeResolution": true,
+              "consumeOn": [
+                "success"
+              ],
+              "refundOn": [
+                "cancelled",
+                "validation_failed",
+                "rolled_back"
+              ],
+              "mutations": [
+                {
+                  "kind": "consume_requirement",
+                  "scope": "common",
+                  "milestoneOrdinal": null,
+                  "requirementIndex": 1
+                }
+              ]
+            },
+            "resolution": {
+              "capabilityRef": "exact_materialized_healing_source",
+              "actorRole": "provider"
+            },
+            "outcomes": [
+              {
+                "category": "success",
+                "result": [
+                  {
+                    "kind": "stabilize"
+                  }
+                ]
+              }
+            ],
+            "interruption": null
+          }
+        ],
+        "knownRouteIds": [
+          "guaranteed_t070b3_resource"
+        ],
+        "completedRouteIds": []
+      },
+      "recovery": {
+        "mode": "no_natural_recovery",
+        "clockKind": "mortal_world_time",
+        "cadence": 86400,
+        "currentStepProgress": 0,
+        "currentStepThreshold": 3,
+        "lastTickKey": null,
+        "blockers": [
+          "not_stabilized"
+        ],
+        "carryOverflow": true,
+        "deteriorationPolicy": null
+      },
+      "relations": {
+        "priorWoundId": null,
+        "legacyRefs": [],
+        "independentEffectRefs": []
+      },
+      "lastTransition": {
+        "transitionId": "wound_transition_test_001",
+        "ordinal": 1,
+        "turn": 42,
+        "kind": "create"
+      }
+    }
+  ]
+}

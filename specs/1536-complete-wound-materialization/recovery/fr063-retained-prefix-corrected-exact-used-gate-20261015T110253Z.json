@@ -1,0 +1,1907 @@
+{
+  "source": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "reviewerStopped": true,
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), explicitly requested inherited configuration",
+  "configurationActual": "Unavailable backend/effort telemetry",
+  "evidence": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-whole-independent-source-fixture-selection-review-9f4bbff5-20261014T222456Z-a2b9dac3.md",
+      "sha256": "bddc637182356b536ccd9c47d8de2bc7a8c2e46fa09af7d3f724fa4982690057",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-whole-independent-source-fixture-selection-review-9f4bbff5-20261014T222456Z-a2b9dac3.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-whole-independent-source-readback-9f4bbff5-20261014T222456Z-a2b9dac3.json",
+      "sha256": "de206aa3007b29d8ccc011711a0a316314e2f0d267f30789859ce915608497e4",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-whole-independent-source-readback-9f4bbff5-20261014T222456Z-a2b9dac3.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-and-adapter-focused-independent-review-ff749ba1-20261014T224008Z-08883a16.md",
+      "sha256": "5a4d24b269050e0288705c7683b5b7bf9f6ca3113916d9720ea096ae0b14f698",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-fixture-f1-f3-and-adapter-focused-independent-review-ff749ba1-20261014T224008Z-08883a16.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-and-adapter-focused-independent-readback-ff749ba1-20261014T224008Z-08883a16.json",
+      "sha256": "42d5e6e626e63d6ef18cb803a08af761b28f5a0e12b53289de66bed258a5d963",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-fixture-f1-f3-and-adapter-focused-independent-readback-ff749ba1-20261014T224008Z-08883a16.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-adapter-a1-v4-independent-closure-review-aa60511b-20261014T224805Z-f0f1cc4e.md",
+      "sha256": "80f94ddef9a7906171477c47482c0a88a27982b3a8ded8993bee90d75b2c7e2c",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-adapter-a1-v4-independent-closure-review-aa60511b-20261014T224805Z-f0f1cc4e.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-adapter-a1-v4-independent-closure-readback-aa60511b-20261014T224805Z-f0f1cc4e.json",
+      "sha256": "fc2f19ecfb59b3821b7bf5d6d6e0929d53b3bfc19a318515d4d4b264837495f9",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-adapter-a1-v4-independent-closure-readback-aa60511b-20261014T224805Z-f0f1cc4e.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-failure-independent-evidence-review-5f492e5a-20261014T231730Z-d7a5a531.md",
+      "sha256": "6e51c40718646759c06bb72b71a13355eed726f8ac2a6bb088180de0ce4a4561",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-preparation-failure-independent-evidence-review-5f492e5a-20261014T231730Z-d7a5a531.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-failure-independent-readback-5f492e5a-20261014T231730Z-d7a5a531.json",
+      "sha256": "820a819422b7fe8b17fc3f767ef8e42beeb0c125b0e4c58bc84d8f8a23d3f5ed",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-preparation-failure-independent-readback-5f492e5a-20261014T231730Z-d7a5a531.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-independent-source-closure-de22b394-20261014T232708Z-a954aee7.md",
+      "sha256": "45d85929eab5a11f88eb9a55375177cc0c2cc238cb2abf4eea0985153dae4dcd",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-four-compiler-sites-independent-source-closure-de22b394-20261014T232708Z-a954aee7.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-independent-closure-readback-de22b394-20261014T232708Z-a954aee7.json",
+      "sha256": "5fda70c01de6defaf3d2a6e7d139d6283666431feba8cb9d83f9764ba9c9a6a6",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-four-compiler-sites-independent-closure-readback-de22b394-20261014T232708Z-a954aee7.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py.txt",
+      "sha256": "d94fa4c79ecb523b3cca5e52921fd1a0801cacab70825eaeebc7a7191e4888e8",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-bounded-root-runner-v4-20261014T224131Z-d5b9895d.py"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-stage43-n1-independent-source-fixture-selection-closure-dcdb5d33-20261015T003527Z-bd8a29df.md",
+      "sha256": "e46e115ca7d1ecf0bfcf87b4f7bfe4faf2b0abbcd05a901370780b57848f94f5",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-n1-independent-source-fixture-selection-closure-dcdb5d33-20261015T003527Z-bd8a29df.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-stage43-n1-independent-closure-readback-dcdb5d33-20261015T003527Z-bd8a29df.json",
+      "sha256": "d1dd0eb09e5e8e1fc0dbde916276561f541eaa765adfc3b423b142b311cf8fc6",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-n1-independent-closure-readback-dcdb5d33-20261015T003527Z-bd8a29df.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-stage43-independent-source-fixture-selection-review-405e684c-20261015T002652Z-9d3fb5ac.md",
+      "sha256": "cee734a6136db3cc549543e14c14c021cffc8a9786e1a592f525b5703b391666",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-independent-source-fixture-selection-review-405e684c-20261015T002652Z-9d3fb5ac.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-stage43-independent-source-readback-405e684c-20261015T002545Z-17c96b07.json",
+      "sha256": "b3de619020d73ed009cc6ffcb81115aa6c771fb09e6766873d473ca73df4fdfb",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-independent-source-readback-405e684c-20261015T002545Z-17c96b07.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-actual-late-failure-independent-evidence-review-61ead7f8-20261015T000700Z-d7df8106.md",
+      "sha256": "420cb76487cdb0511a94d93405d7490554fde8ab2d67e10fab52bdeb54e1b31d",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-actual-late-failure-independent-evidence-review-61ead7f8-20261015T000700Z-d7df8106.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-actual-late-failure-final-independent-readback-61ead7f8-20261015T000700Z-d7df8106.json",
+      "sha256": "e1e5f81ebf478122cdde454ca085738e5fe750eeb43a94376a5c002362ca9004",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-actual-late-failure-final-independent-readback-61ead7f8-20261015T000700Z-d7df8106.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-late2-inmemory-independent-source-fixture-selection-review-1b505273-20261015T011501Z-7b17a973.md",
+      "sha256": "e59e65ed8dde20f7af2bbdff44ddb210c030063187fd905c69b8416ce8ae9129",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-late2-inmemory-independent-source-fixture-selection-review-1b505273-20261015T011501Z-7b17a973.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-late2-inmemory-independent-source-readback-1b505273-20261015T011501Z-7b17a973.json",
+      "sha256": "b6574f4f0608528c12979ae21cc93c41cd145a41923f42c63b97cfe657821489",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-late2-inmemory-independent-source-readback-1b505273-20261015T011501Z-7b17a973.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-late2-first-outcome-independent-evidence-review-d20ff57c-20261015T010543Z-ec82ac78.md",
+      "sha256": "c0e4e827b00b7ec4eba9e10ee3667751a36a1b94d66a9ec43a2036ca609afc64",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-late2-first-outcome-independent-evidence-review-d20ff57c-20261015T010543Z-ec82ac78.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-natural-late2-independent-evidence-readback-d20ff57c-20261015T010406Z-c4c34bc2.json",
+      "sha256": "4282f1fc50bf3c9bdbd3b90553464b082e0e6a05eb41d5d618e6091217651d3b",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-natural-late2-independent-evidence-readback-d20ff57c-20261015T010406Z-c4c34bc2.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-private-joint-map-independent-source-fixture-selection-review-b8b4b5f5-20261015T015712Z-c2ef6340.md",
+      "sha256": "c1c427e6395a17345190f909489cea0b358bf3e44ec640aef94f26134b4b483f",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-private-joint-map-independent-source-fixture-selection-review-b8b4b5f5-20261015T015712Z-c2ef6340.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-private-joint-map-independent-source-readback-b8b4b5f5-20261015T015712Z-c2ef6340.json",
+      "sha256": "9d170abdb1176afa8347389aa8163bd45b4530c03ff37d932426378b62232b8e",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-private-joint-map-independent-source-readback-b8b4b5f5-20261015T015712Z-c2ef6340.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-inmemory-independent-evidence-and-causal-review-d5ab24c7-20261015T014049Z-02cd6618.md",
+      "sha256": "d298c2acc8d4c10641824ae45f1317fa1a9bd7108b07be3cce4775631ce22dfe",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-inmemory-independent-evidence-and-causal-review-d5ab24c7-20261015T014049Z-02cd6618.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-inmemory-independent-evidence-readback-d5ab24c7-20261015T013729Z-55f43e71.json",
+      "sha256": "f00fd2c71d014a2cf0662705f60cad966de489995087fd0c5ddbf05fb536a958",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-inmemory-independent-evidence-readback-d5ab24c7-20261015T013729Z-55f43e71.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-independent-source-fixture-selection-review-b6cd3569-20261015T024408Z-634b90c7.md",
+      "sha256": "89d393a6465e23aff4eda79a0bd28c6cef63c359ef482a9a33d3b7d5594a77a6",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-independent-source-fixture-selection-review-b6cd3569-20261015T024408Z-634b90c7.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-joint-capture-independent-source-readback-b6cd3569-20261015T024304Z-025af6e0.json",
+      "sha256": "c24e9e229e80bc2664627e17a9b572076c1eb293cafcb57cb8baff2df3e1cb25",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-independent-source-readback-b6cd3569-20261015T024304Z-025af6e0.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-corrected-map-common-independent-evidence-causal-review-456fd0e8-20261015T022931Z-f29e791a.md",
+      "sha256": "e23e69ee5918c71fda82cdbf5b43ab662936ae2e852252dea3b62b376ed8fd99",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-corrected-map-common-independent-evidence-causal-review-456fd0e8-20261015T022931Z-f29e791a.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-corrected-map-common-independent-evidence-readback-456fd0e8-20261015T022750Z-fb8840a0.json",
+      "sha256": "d7010ec4b625386e81e4c32e69d337f64783693bd0703277930ae3a1c671e497",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-corrected-map-common-independent-evidence-readback-456fd0e8-20261015T022750Z-fb8840a0.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-capture-beforeimage-independent-evidence-review-a4c0d1ef-20261015T031847Z-8e8fdbf5.md",
+      "sha256": "8db37f1d4d34912bf657f932568b06d63c971baa2cd3323c1703f399b9f79c26",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-capture-beforeimage-independent-evidence-review-a4c0d1ef-20261015T031847Z-8e8fdbf5.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-capture-beforeimage-independent-evidence-readback-a4c0d1ef-20261015T031847Z-8e8fdbf5.json",
+      "sha256": "d8690fd8024cac159c4e37ebc9e005022a3f6a37667ff3c6c224cff5bf636d77",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-capture-beforeimage-independent-evidence-readback-a4c0d1ef-20261015T031847Z-8e8fdbf5.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-complete-current-guards-independent-source-review-9a57b34c-20261015T033041Z-855e19c7.md",
+      "sha256": "82378f76f81cbb6f67032abf7c5b55dd8d9ac16f7738a428c29687149054ae2c",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-complete-current-guards-independent-source-review-9a57b34c-20261015T033041Z-855e19c7.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-complete-current-guards-independent-source-readback-9a57b34c-20261015T033041Z-855e19c7.json",
+      "sha256": "cb51357bc76e9219e4bbb97def6fcfc910611d204943d431eb748bb955f408be",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-complete-current-guards-independent-source-readback-9a57b34c-20261015T033041Z-855e19c7.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-complete-current-guards-verified-recovery-20261015T032833Z-919aa955.json",
+      "sha256": "ad07181d314cb81e865609e9c733488f60a50c04370cad93883ab3b375065eff",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-complete-current-guards-verified-recovery-20261015T032833Z-919aa955.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-confirmed-complete-beforeimage-source-only-release-20261015T032115Z-0362133d.json",
+      "sha256": "c78f3c0db64c5a713426a28f169ca7af2017c645344a095c43c10e3da9c7aef2",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-confirmed-complete-beforeimage-source-only-release-20261015T032115Z-0362133d.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-qte-contribution-independent-evidence-review-64ebd96d-20261015T035227Z-5606136c.md",
+      "sha256": "ab14afa15a018d17616cdfccd26e50847116f2c8f6f3249b43a9511762330c13",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-qte-contribution-independent-evidence-review-64ebd96d-20261015T035227Z-5606136c.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-qte-contribution-independent-evidence-readback-64ebd96d-20261015T035227Z-5606136c.json",
+      "sha256": "de429e51a36f3d8662944a6ae95e6d46adc7ad097cb6ded188197be0e63a14a0",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-qte-contribution-independent-evidence-readback-64ebd96d-20261015T035227Z-5606136c.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-contribution-independent-source-review-edc0ee62-20261015T041036Z-04b4cad8.md",
+      "sha256": "3273649c5cada1bbd6075d8cc26dc66090569a9e23b9e68291bebb2353236c68",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-contribution-independent-source-review-edc0ee62-20261015T041036Z-04b4cad8.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-contribution-independent-source-readback-edc0ee62-20261015T041036Z-04b4cad8.json",
+      "sha256": "1a3a4bafbae730889ef02652bcee84af1e5c4b4c035176992511d6e216289f79",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-contribution-independent-source-readback-edc0ee62-20261015T041036Z-04b4cad8.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-contribution-verified-recovery-20261015T040640Z-471e85ee.json",
+      "sha256": "9236d213a71cf266eedc9b63bc85567a17f9d0de6d66940a4eb7896c4cb06d4b",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-contribution-verified-recovery-20261015T040640Z-471e85ee.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-confirmed-owned-qte-contribution-source-only-release-20261015T035538Z-3f6adce0.json",
+      "sha256": "543f389807fe59e5586c9b67edb5bb07e3bf397615a33e8b2dac9d663e79c702",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-confirmed-owned-qte-contribution-source-only-release-20261015T035538Z-3f6adce0.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-lineage-independent-evidence-review-20261015T043330Z-44bfa400.md",
+      "sha256": "e08a8625e10c5f5261911e7453fb73cd1a5c717f5716bb1bd4d9eab274c143a9",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-lineage-independent-evidence-review-20261015T043330Z-44bfa400.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-lineage-independent-evidence-readback-20261015T043330Z-44bfa400.json",
+      "sha256": "cba5cb4922374a190c30a85c522ba1cca4f9ee4da954cff575433ee8fca356ac",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-lineage-independent-evidence-readback-20261015T043330Z-44bfa400.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-owned-qte-lineage-review-stack-locator-erratum-20261015T043543Z-fd7cf4d6.md",
+      "sha256": "f5b4ffaca90ad306d8d95aabe5dff84b104442f6e941cca073bd8ebc05ac5366",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-owned-qte-lineage-review-stack-locator-erratum-20261015T043543Z-fd7cf4d6.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-lineage-diagnostic-independent-source-review-20261015T044602Z-2785c84f.md",
+      "sha256": "5618eb2d5dffef57f7fedf0380afe2241b47b9319590d92e5782146810900523",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-lineage-diagnostic-independent-source-review-20261015T044602Z-2785c84f.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-lineage-diagnostic-independent-source-readback-20261015T044602Z-2785c84f.json",
+      "sha256": "222dbaf6047375c36a23e371f03d31d9f8571b553ebfd60b9c21a7e222b58c51",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-lineage-diagnostic-independent-source-readback-20261015T044602Z-2785c84f.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-first-lineage-diagnostic-verified-recovery-20261015T044353Z-23652e9c.json",
+      "sha256": "55ad2f8c129c1873a0f670b471f5d10e59429e1542d0e66edd426e24e6e36f5a",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-first-lineage-diagnostic-verified-recovery-20261015T044353Z-23652e9c.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-lineage-first-predicate-diagnostic-source-only-release-20261015T043556Z-4e637d54.json",
+      "sha256": "a4a75f60804003ef94690af0e75bafc3ff6c02628cfec69ad649aea766a1a906",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-lineage-first-predicate-diagnostic-source-only-release-20261015T043556Z-4e637d54.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-observed-p5-independent-evidence-review-20261015T051002Z-f5c26bba.md",
+      "sha256": "ffe21bfd79078b3b6b2e64520ca468fff52535b4efbff034b177937705856d45",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-observed-p5-independent-evidence-review-20261015T051002Z-f5c26bba.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-observed-p5-independent-evidence-readback-20261015T051002Z-f5c26bba.json",
+      "sha256": "e44c4f06602e68880aceaf1ba350418048fc6b713f1938c8101d5de2084760b2",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-observed-p5-independent-evidence-readback-20261015T051002Z-f5c26bba.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-p5-typed-consumer-independent-source-review-20261015T052200Z-54ab08a3.md",
+      "sha256": "7e51cff7f11afb0540362c8deba7523111c7cfcec34dfeb1fa70fdb6bdd915c6",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-p5-typed-consumer-independent-source-review-20261015T052200Z-54ab08a3.md"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-p5-typed-consumer-independent-source-readback-20261015T052200Z-54ab08a3.json",
+      "sha256": "7fdeb09c719b60c8716623f526b0368131dc577fafb037029cde6ad8903f7a1e",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-p5-typed-consumer-independent-source-readback-20261015T052200Z-54ab08a3.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-p5-typed-consumer-verified-recovery-20261015T052000Z-910fa633.json",
+      "sha256": "c75d8cfee23bac86db18300977e332e5cc5a2459167825773f7a621fd27f2c58",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-p5-typed-consumer-verified-recovery-20261015T052000Z-910fa633.json"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-confirmed-p5-typed-lineage-source-only-release-20261015T051212Z-4c171fb5.json",
+      "sha256": "e19254beac0130c3f4ec55fb53234a19bcbd7fd73c0f3fa8c956a52806f8398e",
+      "historicalPath": "/workspace/boe-cloud-tools-20261014/fr063-confirmed-p5-typed-lineage-source-only-release-20261015T051212Z-4c171fb5.json"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-source-readback-20261015T061515Z-completed-v2-design-review.json",
+      "sha256": "ffb4a3fd7c6fcfe80ac429888efc719ccd6be39e8ede2c11115fa9f34b067f50"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-source-review-20261015T061515Z-completed-v2-design-review.md",
+      "sha256": "84327a416bda0e75546af54f2e87793e5512d73817565f23b9c404cc4c9a30b8"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-evidence-review-33dc6a7bb-20261015T063713Z-completed-v2-design-review.md",
+      "sha256": "aa238a49bb2603fa2622d28281b2f6b666e22ecf6dc5a2124e3f67b9d8a1c4ad"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope1-evidence-review-33dc6a7bb-20261015T063713Z-completed-v2-design-review.json",
+      "sha256": "930cc3084650e2863023d5c1f8d40c29955796c5bec8d06e99f7ee244f4cc609"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope2-source-review-85caae3c-20261015T063713Z-completed-v2-design-review.md",
+      "sha256": "9549f5d874daeeae7f8c450c819e87273787d1663a1453df8fd7ca58d5f504f0"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-scope2-source-review-85caae3c-20261015T063713Z-completed-v2-design-review.json",
+      "sha256": "dda6591c081ed7b5dd3a524e8287db148f511bc9713e5d47a81c931236eaef79"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.md",
+      "sha256": "5ec4f26020aac8ad48afe40ca87849a61626c63055ce0318fa3eeb2eb800821b"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-corrected-static-review-7375c24a4-20261015T071633Z-completed-v2-design-review.json",
+      "sha256": "666268c905a8583511d255a7fec1d92aeb31df4664bd1d899e975af48173aa81"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-review-actualRelease-path-erratum-20261015T071920Z-completed-v2-design-review.md",
+      "sha256": "965a13528e01f548c2cff895717c64d51a12cb36382fadaeda3215cb398bcd1d"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-review-actualRelease-path-erratum-20261015T071920Z-completed-v2-design-review.json",
+      "sha256": "70426d27369832a7a02e348a41caac169b62d0b3eb54f22f1ab8171238f5d720"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.md",
+      "sha256": "7636da4bea5ecfd78cffb2757fceac14267d3627e9a207f8d59880ed78af1081"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.json",
+      "sha256": "15b0a5ad927284833f188998a7c7e0771ede6541eced86d9123cbbc7cc15d5d0"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.md",
+      "sha256": "c6b0615c5c46ae00cdedc70c77b385d63b2d96bcc8d3f7136855171b50562a31"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.json",
+      "sha256": "98d28100f880749e8f4b049179ec5f53d4498aed866fc90f6b2e0de53b523446"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-A-preparation-failure-evidence-and-import-review-693b22ef1-20261015T072551Z-completed-v2-design-review.md",
+      "sha256": "1e3495c168e834391822483e0039273c745d152f78e382cb37f150bb419b80d9"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-A-preparation-failure-evidence-and-import-review-693b22ef1-20261015T072551Z-completed-v2-design-review.json",
+      "sha256": "438a244ec4a320e6a3c3dc12468b09feedc6d53915e3122d5b0ef729a1e04b92"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-preparation-failure-895de4e4-20261015T072155Z/manifest.json",
+      "sha256": "930404024e39d16e1b994a3ca45595d22ce8dd640a938641c33a322e635734e4"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.md",
+      "sha256": "50b33c45b1931cd6af84c4f0b885fc1073e7612c2b8ca3f6dbd3dc3ace84303c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.json",
+      "sha256": "400bd92ed8aa4f41b8fdcb4455f8999e5824e294eb2c0a1df4e8cfc6ced2306c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-corrected-static-ae785dbe0-20261015T074430Z-completed-v2-design-review.md",
+      "sha256": "f1309c54af7c7d2083b038c6273117f364c0bc7409b7c08499e7b7cbd68977fe"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-signed-schedule-corrected-static-ae785dbe0-20261015T074430Z-completed-v2-design-review.json",
+      "sha256": "875da7a8870889aceff0ba26b88938cd03e78fb4a915e65f4f2f462c1afd020b"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-approved-A-first-Late2-frozen-98112610-20261015T073153Z/manifest.json",
+      "sha256": "8fbd40b2e84c28cb7a51e7c4ddceb4700c3e95b96028be0c59331ad0f3364dbe"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.md",
+      "sha256": "2f11eac3a1fb54751ad66fc7d555b73d91bbceb576aff24a8d36f8fb519aee3d"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.json",
+      "sha256": "76049c2bd86da2c61a77ea80f1b86bfd87ab8ac0c06a2ac4335e034fb9fb7a6c"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.md",
+      "sha256": "35ed49762a5982c1a357fcbbd867b4582fa7086ccb51d59f229f07dfcc665523"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.json",
+      "sha256": "cac45cdbee78d7ae2bf27a46efc8c0a77a90eac59cca9c338e4d731c9c6b9457"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.md",
+      "sha256": "c24f0659c4db7a0516fc1cebf63f0cc230aa9a7c0f54db28b126a0083026cd32"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.json",
+      "sha256": "8699a14c216c6228c5d53820a23dc76e3b3c8d124ced92b74b5dd517676c71ea"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/fr063-finite-basis-corrected-frozen-65d3aebec-20261015T083812Z/manifest.json",
+      "sha256": "437d6687b961f3875510f0d78a751799191bec3b6e283e971f36029794c3e96d"
+    },
+    {
+      "path": "/workspace/boe-fr063-tools-20261015/finite-basis-corrected-20261015T083812Z/custom-owned-root-cleanup-readback.json",
+      "sha256": "52267e4768ed885e0ff3ceb7e71304c9ad95ffedcdd2fdf7d81f9e4c5f7a89e0"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-source-review-4e2f028bf-20261015T091732Z-completed-v2-design-review.md",
+      "sha256": "5a55ca6883813d5cec4191c4d4df7a4856434fe752d072053cfbbf0691e87c7f"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-source-review-4e2f028bf-20261015T091732Z-completed-v2-design-review.json",
+      "sha256": "4c44b27117df8f9cd38bd92d246f2491e9c111d060ad984cd72a938ef9af2233"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.md",
+      "sha256": "5f39498dc1769353b80b1edff9d85823e9b515e6f98f81a9ec09c1ba72a72828"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.json",
+      "sha256": "f5258634e32edaf4380dfae4dcb798dab0034f3d68a733be5a029207296493eb"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-positive-v3-cold-binding-native-root-readback-20261015T093623Z.json",
+      "sha256": "ad6ac09fa9292abe252b638744c5687b357c47a002c871678fa6114c5fc62797"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-scene-v3-cold-binding-native-root-readback-20261015T094532Z.json",
+      "sha256": "2cf51710131f2f1ee2b5035dab9d8b50df51a5d04f4a12521ab5643cc763f9df"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-binding-v3-cold-binding-native-root-readback-20261015T095356Z.json",
+      "sha256": "158f20a70490ab2a14da02fa2fca7be3f0190abf0b91b218696de88f6727dc97"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-new-root-casing-source-review-d130fdaff-20261015T100826Z-completed-v2-design-review.md",
+      "sha256": "ab463767f20847b64adc9d4056151774ecb2414337a5c56f74ae771afa5ea678"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-new-root-casing-source-review-d130fdaff-20261015T100826Z-completed-v2-design-review.json",
+      "sha256": "0e3f8c2a5df3005bb6015cb4826410f56fe280cbef7f2fb025a502298bb95f3f"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-ce56-Late2-evidence-v4-release-20261015T103320Z-completed-v2-design-review.md",
+      "sha256": "440e26e8131f2d499c90f4b57f8b8c510818cce5203ef1458e47feeefdb286ee"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-ce56-Late2-evidence-v4-release-20261015T103320Z-completed-v2-design-review.json",
+      "sha256": "8e6209bd924ce920e83da126387268c562980cc96d9675cc6e3dee9f7cf49027"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.md",
+      "sha256": "f65312aec24ef28d3c08bbfbfe58f07ddd1b3874916d524fdc2dc829070de6d6"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.json",
+      "sha256": "8abf257333bc9562fd7fba294df7d4d5cf46ff61ddae44c2c79b6c4dccf70996"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.md",
+      "sha256": "fa9fd7e28327bf722a8c5714951f8fdad67a71c4d241be584ac919d32275f72c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.json",
+      "sha256": "e727b3e86c274a9adeabc8782194b84c1f649955bff6f565ed2cba36f4ba28bb"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.md",
+      "sha256": "954c7ab566b29c3562ae15e14427b907768612bd486ce9f9f3515369ef613ece"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.json",
+      "sha256": "846a39b229303e4cb12609bac7674a4a2927dafdbecdccf364cca1934b9faf6c"
+    }
+  ],
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1712,
+      "sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+      "bytes": 30297,
+      "sha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "bytes": 31771,
+      "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "bytes": 11712,
+      "sha256": "6f75f8a014c4092653e1928d56830fcd1eda676f6cddc76c00c260bf6dafec9a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "bytes": 61445,
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+      "bytes": 29706,
+      "sha256": "2fa12b0b7b2103ba149b8c081cd656770dd55b2fa4daf1a3986d602fcee7cb6e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+      "bytes": 16911,
+      "sha256": "12b075112e69dea09d9dc34b1744a282983e672238149241588034f538a56b41"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "bytes": 35308,
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584397,
+      "sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCheckpoint.cs",
+      "bytes": 14368,
+      "sha256": "1e6e2dca9442a45ae2e1c8449c85c8c64b9839a94f4d59542e6cb5be9803946d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompatibility.cs",
+      "bytes": 4381,
+      "sha256": "d20fc75de3bc5659a41e3cb64fdb5a9af862eca69b65db14df32d06217fc1768"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 79825,
+      "sha256": "588bda424d36d77b207d198b0ed4aaa2a417fd3cd13997cf8572970113c685ee"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "bytes": 10571,
+      "sha256": "7858daa6dd304a756eefe0736c085b010b347644e811440f7d5934eeca943bf1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 55825,
+      "sha256": "c983d1822ff3161af45c95d8d801bc2e86606062bed2d92c00eccaae396fd65d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+      "bytes": 614,
+      "sha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs",
+      "bytes": 8639,
+      "sha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs",
+      "bytes": 6872,
+      "sha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+      "bytes": 7553,
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs",
+      "bytes": 9705,
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.NativeCold.cs",
+      "bytes": 33108,
+      "sha256": "8e98458265939f41e0d46317859bfc3729835263bcbc54d45a9b28fb5868e716"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+      "bytes": 311741,
+      "sha256": "06a3377ad0f0574e6d6bb501c446719b03998fda628082a54a90526534f6cee7"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "bytes": 15753,
+      "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/CheckedRollbackHashFilterTests.cs",
+      "bytes": 17245,
+      "sha256": "8f15ca0affcd2b25f1ad6d2ce4cbd7aa8efcca7edf21d186fdba23fd35c03514"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAcceptedOutputBasisTests.cs",
+      "bytes": 6048,
+      "sha256": "e14b8da01113f98fd86137554c3d15a61e4309420aeeb5c5969a8fd09af54d15"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47350,
+      "sha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "bytes": 607,
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "bytes": 10951,
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs",
+      "bytes": 5039,
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs",
+      "bytes": 8747,
+      "sha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 9437,
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "bytes": 11002,
+      "sha256": "b23174fcf51ad22d6d5a20be8df7b22591880774be5752f4b94ac363407ba7e8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "bytes": 7710,
+      "sha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "bytes": 10353,
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "bytes": 17372,
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "bytes": 11986,
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "bytes": 112701,
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "bytes": 294837,
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "bytes": 28110,
+      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+      "bytes": 6659,
+      "sha256": "24a33d0a26aa294e18f4d95cf5941c72bb0731df53b6243857d7fb3b23a2b4f9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+      "bytes": 58332,
+      "sha256": "0bdb41b1f59e8ef6f2058e52941a800490280ef1e6f1a020939f549ae5ab426b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "bytes": 417718,
+      "sha256": "b168b2e6a5afa582ad9eb0c0a74ce48e92ddeec80402926408aa82d90ecbadd0"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "bytes": 8291,
+      "sha256": "a239d38f87b345929e95b52b4c3df4cb5363d01e3b4231e32cd49592dd773a93"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "bytes": 53265,
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepair.cs",
+      "bytes": 20258,
+      "sha256": "725b30189a9b2d886c05bcc8b790c18ee189d279c22ddca31c3727e025c94489"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "bytes": 12842,
+      "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "bytes": 21798,
+      "sha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 262583,
+      "sha256": "20a17442b9a027f8f57c1ce1ca8bc15f6fcd6598a0b97a85022be622aae97f2f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "bytes": 9590,
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "bytes": 1025,
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "bytes": 60209,
+      "sha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "bytes": 10937,
+      "sha256": "a121aebacc17b814f17ada92d528c04c09492be0383e680b2b7f4b36cdfc8762"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "bytes": 11487,
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "bytes": 38914,
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "bytes": 25860,
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "bytes": 393326,
+      "sha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "bytes": 20289,
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 27942,
+      "sha256": "cf6a351f61729898e03481bd2dd25252bfcc634ea9c5444382728b0037730d96"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "bytes": 9143,
+      "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "bytes": 3958,
+      "sha256": "0e83dd847802e66d07fa7ed7fac195638acf24ae82a14f0c98bd6c5d25452cde"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "bytes": 9959,
+      "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "bytes": 19147,
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgressionPublication.cs",
+      "bytes": 10789,
+      "sha256": "35e12b34e07f6486083b9d642e8c05b2f2f61c7fda3c4f8bf6101631bfff1c09"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "bytes": 23806,
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "bytes": 9693,
+      "sha256": "33f859765ca5623afe999f646218f4999c9d080bbfec27c4a37cf11e96296174"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundCanonicalAnchorPlan.cs",
+      "bytes": 26213,
+      "sha256": "dedb2fa4477b1f74d2caff305e65192f0bfe7b09aa6bd8740a66c1e3441c41d6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.MortalJointRepair.cs",
+      "bytes": 1713,
+      "sha256": "47af54b8bfa1e744518050fcab0b5d730ff3495cc28e5b08d70ea60ebfadb19a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "bytes": 61576,
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs",
+      "bytes": 46656,
+      "sha256": "a8507e3e6be1c678253fcbe7a7de75859993346d4ebf2aa467151305fcd84d0d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentItemPublication.ResourceProof.cs",
+      "bytes": 6886,
+      "sha256": "f077dfbc1cff6b21f7ae81ac27a79f72459bb1abe119f09fa17a5bb964a3554c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "bytes": 116877,
+      "sha256": "10845ce0b0f87af45d0e9597bd4c92500718b245168c10d8ed23a9201afd3e69"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.PersistedJointProof.cs",
+      "bytes": 3584,
+      "sha256": "ba039355af8ea2e89bb9b61d2d4bbb589db12997c6d5b16e4b371b2097e4aee2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs",
+      "bytes": 81817,
+      "sha256": "1699e9c784b2ae9e119563de4d818369b03216a5cac0d2f192fdcf377456e016"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublication.cs",
+      "bytes": 69508,
+      "sha256": "9c40d7c875bf42ef67660d3486a12b2ca86edb4ec0555306ee96726324ffbf11"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "bytes": 41585,
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 43996,
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "bytes": 15931,
+      "sha256": "7ae0231ad50a41a70ed9f8a6b592601d004b936b3210001f9c1aa50de6dbb43c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "bytes": 93122,
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceMaterializationContract.cs",
+      "bytes": 21516,
+      "sha256": "53b3bd3a975636808d0c1a7c099c784e2d155cf6d501a9db24cf1f8d73ad9c7a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 454547,
+      "sha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "bytes": 90294,
+      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "bytes": 83387,
+      "sha256": "ac3b8d4d77674067557518c6fcfdab6d42ca33139bbc375e562d80cc08a75f15"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "bytes": 34289,
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "bytes": 98744,
+      "sha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "bytes": 13558,
+      "sha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "bytes": 15071,
+      "sha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs",
+      "bytes": 54927,
+      "sha256": "a74da3d38aff0d267eeac1b6306e7ae5e91959cfbf35250e0da93321e541335d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+      "bytes": 48695,
+      "sha256": "164dd4015e1749e5686d1b4d5147ac9b845e8474e07fd845c91bceb3b0acc631"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.Contributions.cs",
+      "bytes": 17119,
+      "sha256": "161a82e5221aa578aafd859828e150397db092884dedb4fad7df131f1adf136c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 30865,
+      "sha256": "36cf6b2817774250daba5d79ea73e769de929b33ba30bf1bfc9eb0f6d93c35c4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommon.cs",
+      "bytes": 8196,
+      "sha256": "a6597f0e32d5204cb32ec540e8e0bd0998d3d0311e5453fd7a2950bee7ef546b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 20941,
+      "sha256": "226fd4843afec175f4101373b70de20e00524d3d402c92a88018a17010105c50"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairFinal.cs",
+      "bytes": 5117,
+      "sha256": "5d78c45022d1e02bd54f2dfd2eff8147fa1c0609217b75b1837bdea8a7da31d2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs",
+      "bytes": 8115,
+      "sha256": "8b1e4b489edf91347622411d2076813996bb0e245129e54a588730d5f6331088"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "bytes": 20792,
+      "sha256": "df187c38fb0ce70e3d1bb7cb155f5b09573dea08ae94811ca6999255b125aa98"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.TreatmentPublicationContributions.cs",
+      "bytes": 16421,
+      "sha256": "07764d451dca5027f6b87ed83ad64a2cfd93122d26414d436feb7fcd11422573"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs",
+      "bytes": 196569,
+      "sha256": "ec080b51a939c57de541ed3e61992c6c70d94db04209b028a98a107a54fb91bd"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "bytes": 9227,
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "bytes": 44369,
+      "sha256": "af9fd37ffd70d54178ca0b3452ce13b47213f2658ac4501d3844172dfe48f50d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "bytes": 47040,
+      "sha256": "c32116bfe7912234187c07a9af483d51834b350735a54fe016d1ed683a7d6bf1"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs",
+      "bytes": 38961,
+      "sha256": "e63bc86dddb3f83481e703fa58d27bee89f54c88a1d03460c60adcf3dd129ac4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundResponseInputComposer.cs",
+      "bytes": 44863,
+      "sha256": "f86ee1add354c00e16ab4a41f3a68b3ae843afa3dce6c27755b952cae56b6aaf"
+    },
+    {
+      "path": "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "bytes": 21571,
+      "sha256": "70d39bc5b67af261123659b44a077148607f3c363d9862a1f2fcced92f5d4f68"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 401224,
+      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 248948,
+      "sha256": "9d1619b22d1eb99fefc24c61e05d4579c64457556e0f3670bbdb650138952ce9"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 161568,
+      "sha256": "50bc7e73ae74801398a20d32b1effd2503dd773efad871ada7192764182ade89"
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "bytes": 108929,
+      "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "bytes": 98738,
+      "sha256": "f8136d26a73d676d7167e603fb2624dd5d69dd7fa5453f87170de6febc6c5bbc"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 184578,
+      "sha256": "130baf7c1ec16124b0282d64d7876f4ff488ad9ad2764aa5cd8b1cf428212073"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "bytes": 87800,
+      "sha256": "e3a064d47a73f381c6c315302697f4ea60c0c6dec8ec6bdf51f7ba6d740403a5"
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "bytes": 108566,
+      "sha256": "0f13b58a03edad9607e68677a4d8ef8dd8b28c855a862d883c4ece32e155abd1"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 189671,
+      "sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryAdapters.ps1",
+      "bytes": 7006,
+      "sha256": "18520f6270236360a7f9088347ed6f611ae7c763ee0ad711c3857760ba466fe1"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    {
+      "path": "scripts/testing/TestCategoryExecution.ps1",
+      "bytes": 11710,
+      "sha256": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "bytes": 123449,
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1685216,
+      "sha256": "8cf7c6d989d65d036e2a33d58532e25fc01d5d3c0f359284bbaf465fc58e33fd"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-all-gates-current-native-recovery-and-preparation-input-20261014T230309Z-45ecfd5c.json",
+      "bytes": 1689,
+      "sha256": "cacadebc42667a734aa0f09d7c271e3647c1cb6677d064e171a9c892f7c86114"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v5-20261015.py.txt",
+      "bytes": 17017,
+      "sha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-basis-positive-evidence-causal-65d3aebec-20261015T090500Z-completed-v2-design-review.json",
+      "bytes": 34451,
+      "sha256": "16ea0178788bb01b72979f7ddcd700c6209e277583fe133e5ea852562cab8668"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-basis-positive-evidence-causal-65d3aebec-20261015T090500Z-completed-v2-design-review.md",
+      "bytes": 7906,
+      "sha256": "635ea70b2deb2a6413aed4f06a471194dd3fb84fb1371feae41c72676b73b26b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-binding-v3-cold-binding-native-root-readback-20261015T095356Z.json",
+      "bytes": 40969,
+      "sha256": "158f20a70490ab2a14da02fa2fca7be3f0190abf0b91b218696de88f6727dc97"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.json",
+      "bytes": 11701,
+      "sha256": "76049c2bd86da2c61a77ea80f1b86bfd87ab8ac0c06a2ac4335e034fb9fb7a6c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-bounded-fixture-corrected-static-b856844de-20261015T082200Z-completed-v2-design-review.md",
+      "bytes": 5404,
+      "sha256": "2f11eac3a1fb54751ad66fc7d555b73d91bbceb576aff24a8d36f8fb519aee3d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-ce56-Late2-evidence-v4-release-20261015T103320Z-completed-v2-design-review.json",
+      "bytes": 30714,
+      "sha256": "8e6209bd924ce920e83da126387268c562980cc96d9675cc6e3dee9f7cf49027"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-ce56-Late2-evidence-v4-release-20261015T103320Z-completed-v2-design-review.md",
+      "bytes": 4638,
+      "sha256": "440e26e8131f2d499c90f4b57f8b8c510818cce5203ef1458e47feeefdb286ee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.json",
+      "bytes": 4637,
+      "sha256": "15b0a5ad927284833f188998a7c7e0771ede6541eced86d9123cbbc7cc15d5d0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.md",
+      "bytes": 5673,
+      "sha256": "7636da4bea5ecfd78cffb2757fceac14267d3627e9a207f8d59880ed78af1081"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-output-binding-final-design-A-20261015T064200Z.md",
+      "bytes": 11175,
+      "sha256": "68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-corrected-source-execution-gate-proof-eb206948-20261014T230143Z-aee3f391.json",
+      "bytes": 32232,
+      "sha256": "f784253d043803f1c809cf27510376d5d71f0ae0b0aa69b3fc7c13e368b80196"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-draft-v3-cold-binding-native-root-readback-20261015T100107Z.json",
+      "bytes": 32945,
+      "sha256": "b4c79b901ef13c43564b94a8d6a6ce3a1fcadbe25c303da90475bd41c265ec12"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.json",
+      "bytes": 60250,
+      "sha256": "cac45cdbee78d7ae2bf27a46efc8c0a77a90eac59cca9c338e4d731c9c6b9457"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-checkpoint-basis-evidence-causal-540401302-20261015T081600Z-completed-v2-design-review.md",
+      "bytes": 6770,
+      "sha256": "35ed49762a5982c1a357fcbbd867b4582fa7086ccb51d59f229f07dfcc665523"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-cold-v4-frozen-1da0469ea-20261015T103658Z/manifest.json",
+      "bytes": 20650,
+      "sha256": "24db268411f5f9a066560bc623fdaff553d2f8578b1706b2536e88fe0ea9e6db"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-draft-v3-frozen-f532e22fb-20261015T095440Z/manifest.json",
+      "bytes": 22409,
+      "sha256": "5c46a7475f24a2d7b854887176d133fada135ee6fe8718cebf93844bc7159684"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-live-v4-frozen-1b2df18e7-20261015T103419Z/manifest.json",
+      "bytes": 17094,
+      "sha256": "4d53aad1980312103d76e010b5ebf00e7c27cb949d437f4d76e87a110b6fae9f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-retained-v4-frozen-d89e3fe4a-20261015T104208Z/manifest.json",
+      "bytes": 3107118,
+      "sha256": "674939d81a2a4099f5fe2b0620bec4a28fee0c544b044cd9aa468f77a4b8c70a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v2-20261015.py.txt",
+      "bytes": 8772,
+      "sha256": "279af9d6a07ea4d1f445c8efccc90cae35f426c5810dd68e790a955d92972549"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v3-20261015.py.txt",
+      "bytes": 8772,
+      "sha256": "f1fec37769e8a6c2245b87e6811a1becca0c95026f3eba87449eb768d05cf23a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v4-20261015.py.txt",
+      "bytes": 8774,
+      "sha256": "a281a0803024882461da1ba2fe55c57d61736504c4b0e88b8639144d9e92564f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-42fa6949e-20261015.json",
+      "bytes": 4735,
+      "sha256": "f70ec6a0ed96fdb95d5e39fab0b2fb583f97f6ac3f4faa0a6bc5a5db0f6752fc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-5adbd55ad-20261015.json",
+      "bytes": 4735,
+      "sha256": "77b7f2f9dd96c9547cb4fc57f512762a8c043ec41b32e46d5f7dbc4546316db1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-ce56face7-20261015.json",
+      "bytes": 4735,
+      "sha256": "10b12cf51e3014accb8b1c1d150e58d18acd08be83be934dcc91b5929ee41305"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z-readback.json",
+      "bytes": 8905,
+      "sha256": "70697e84b01a872441dfa8ef724b901cc28ac11e19c015fcca3ebbcc4ee3927f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-build-four-errors-readonly-diagnosis-eb206948-20261014T231500Z.md",
+      "bytes": 6651,
+      "sha256": "0f2abe0eb879a85ac5ce4a75de1616fa35929f049a7a2a56a6a9fef9fc1b4799"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-build-failure-evidence-with-diagnosis-root-wip-20261014.json",
+      "bytes": 93483,
+      "sha256": "3e4542eff4eaafa2cd0c101eef66342f4707642169a6e40bd8ed4a4e89842ca8"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-timing-precision-20261014T231019Z-ebb00b53.json",
+      "bytes": 810,
+      "sha256": "d90b078056f9d3c69f6cacc0917df5eab9d07bef9af41950f2848fb42ea25393"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.json",
+      "bytes": 35506,
+      "sha256": "8699a14c216c6228c5d53820a23dc76e3b3c8d124ced92b74b5dd517676c71ea"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.md",
+      "bytes": 9407,
+      "sha256": "c24f0659c4db7a0516fc1cebf63f0cc230aa9a7c0f54db28b126a0083026cd32"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-gates-observed-completed-publication-audit-20261014T230106Z-b63bbe09.json",
+      "bytes": 3033,
+      "sha256": "714e19b39068d834f77d04ef48af931d5c7e4feb9b88688b7d642ebea9272571"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-j2-j8-connected-category-selection-source-report-20261014.md",
+      "bytes": 10489,
+      "sha256": "f820080b642351d6a20f8fa5fee72dc0f82862a18071ec205ab56c76612e757d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-j8-cleanup-evidence-source-finding-20261014T214935Z-19a030a0.json",
+      "bytes": 871,
+      "sha256": "b8dbc84574bfa4bbdae52771fe896da960a19d81acb467d2009f5f9d099071a3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-null-frame-authority-readonly-disposition-20261014.md",
+      "bytes": 17835,
+      "sha256": "b748fa6a867f29653139d4854bf07502070dd5cda5c1b7f2064650036818e4e3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-implementation-release-20261014.json",
+      "bytes": 2665,
+      "sha256": "71436d812eded1a1ea60b011fbd2a68a1452db0aa3b389ff6d0673fa7f9d8f51"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-amendment-20261014.md",
+      "bytes": 8903,
+      "sha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-progression-owner-design-independent-review-20261014.md",
+      "bytes": 9900,
+      "sha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-implementation-design-v2-20261013.md",
+      "bytes": 52388,
+      "sha256": "9c1a7226f0207d097b0328732d2146166363d18eb9d25dfab818fd897433dce3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-repair-owner-v2-independent-design-review-20261013.md",
+      "bytes": 2455,
+      "sha256": "a1ef7443214b6dea263b67422fd72792ccdf0969f1e3429f7252fac78d7b4e45"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-joint-story-lifecycle-readonly-disposition-20261014.md",
+      "bytes": 16440,
+      "sha256": "a226b2c2848c93e4cc16d5f8a92e6bd33728b4362e819cb6e095a3b0461f7a38"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-lawful-active-tail-architecture-assessment-72be660ca-20261015T094409Z-completed-v2-design-review.json",
+      "bytes": 16880,
+      "sha256": "b8ad007150550c21a8fd4379b4325c95d63953c04835df20a7ec6ceae4d3e75c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-lawful-active-tail-architecture-assessment-72be660ca-20261015T094409Z-completed-v2-design-review.md",
+      "bytes": 7689,
+      "sha256": "fac7250293b5208a7d8f547b8c8412fb1d76d36fc5f97eea73c50cf6c8b48a61"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.json",
+      "bytes": 37676,
+      "sha256": "e727b3e86c274a9adeabc8782194b84c1f649955bff6f565ed2cba36f4ba28bb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-live-cold-retained-evidence-causal-ce56face7-20261015T105640Z-completed-v2-design-review.md",
+      "bytes": 9201,
+      "sha256": "fa9fd7e28327bf722a8c5714951f8fdad67a71c4d241be584ac919d32275f72c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-casing-source-review-d130fdaff-20261015T100826Z-completed-v2-design-review.json",
+      "bytes": 21755,
+      "sha256": "0e3f8c2a5df3005bb6015cb4826410f56fe280cbef7f2fb025a502298bb95f3f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-casing-source-review-d130fdaff-20261015T100826Z-completed-v2-design-review.md",
+      "bytes": 4583,
+      "sha256": "ab463767f20847b64adc9d4056151774ecb2414337a5c56f74ae771afa5ea678"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-field-casing-causal-review-e8675add3-20261015T095611Z-completed-v2-design-review.json",
+      "bytes": 5807,
+      "sha256": "8b0fe47b51d5f145b618a42340cf1be653310a9575eb0199348f96f6b070d3a5"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-field-casing-causal-review-e8675add3-20261015T095611Z-completed-v2-design-review.md",
+      "bytes": 3666,
+      "sha256": "3630d2642298dcf6ee5e479ea6981db008fb3a1ef4caf3a80dc92ce81f197cd9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.json",
+      "bytes": 45574,
+      "sha256": "8abf257333bc9562fd7fba294df7d4d5cf46ff61ddae44c2c79b6c4dccf70996"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.md",
+      "bytes": 5135,
+      "sha256": "f65312aec24ef28d3c08bbfbfe58f07ddd1b3874916d524fdc2dc829070de6d6"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.json",
+      "bytes": 17911,
+      "sha256": "f5258634e32edaf4380dfae4dcb798dab0034f3d68a733be5a029207296493eb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.md",
+      "bytes": 6054,
+      "sha256": "5f39498dc1769353b80b1edff9d85823e9b515e6f98f81a9ec09c1ba72a72828"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-source-review-4e2f028bf-20261015T091732Z-completed-v2-design-review.json",
+      "bytes": 21681,
+      "sha256": "4c44b27117df8f9cd38bd92d246f2491e9c111d060ad984cd72a938ef9af2233"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-source-review-4e2f028bf-20261015T091732Z-completed-v2-design-review.md",
+      "bytes": 5899,
+      "sha256": "5a55ca6883813d5cec4191c4d4df7a4856434fe752d072053cfbbf0691e87c7f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-v3-cold-binding-native-root-readback-20261015T093623Z.json",
+      "bytes": 8507,
+      "sha256": "ad6ac09fa9292abe252b638744c5687b357c47a002c871678fa6114c5fc62797"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/candidate-source-pins.json.gz",
+      "bytes": 8578,
+      "sha256": "bda1ae84639ca06e41c8c74aff7495e9f070ba9835ec661c1e618fb8dd42c070"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/execution-gate-proof-raw.json.gz",
+      "bytes": 9350,
+      "sha256": "94dcf71b08bcbf4a58ed5e09ad75abde79813aff3eeff85531800636472ffd72"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/manifest.json",
+      "bytes": 7427,
+      "sha256": "99fc7529644b33547c486c094aaf3b47fabfd5818e14e76382ff9058b7b40987"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-console.log.gz",
+      "bytes": 583,
+      "sha256": "640ba24cd5282110026d9992b2dc7db08946d7624c1c85d8974d3646d524e355"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-dotnet-test.log.gz",
+      "bytes": 2373,
+      "sha256": "d8466491c36cec42f896b3da1cea8e569a8190f129581e3986ddde543774bb3b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-invocation-prewritten.json.gz",
+      "bytes": 318,
+      "sha256": "723e99189d8dba90402064caa4a0aeba7f003fb14cf1e577d16ab24609bdbc4e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-native-process-result.json.gz",
+      "bytes": 281,
+      "sha256": "6b354f2b5f0961dffdc598207c8bfc0a8a4e1e2fa8228fcdece70e9147d96ed2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-root-readback.json.gz",
+      "bytes": 1563,
+      "sha256": "290bdb0e127054f36e6b1a8fa852583930ee705a975e227c65037b23418c69dc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-run-location.json.gz",
+      "bytes": 270,
+      "sha256": "5949cb381d6442618bd750309ff8ec0f8b59ff3e698e94130876f566f276a253"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc/preparation-summary.json.gz",
+      "bytes": 3493,
+      "sha256": "5a84a3a7df46335fef64a0806e0aacb395d9b2495d88fba7494c23bcc8678f5c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.json",
+      "bytes": 13354,
+      "sha256": "846a39b229303e4cb12609bac7674a4a2927dafdbecdccf364cca1934b9faf6c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-retained-prefix-corrected-source-a5c36d4b8-20261015T110121Z-completed-v2-design-review.md",
+      "bytes": 5387,
+      "sha256": "954c7ab566b29c3562ae15e14427b907768612bd486ce9f9f3515369ef613ece"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-root-old-wrapper-readonly-findings-20261014T205036Z-75c087a5.json",
+      "bytes": 796,
+      "sha256": "54181c0ff1a773474fc4e0902798aa8d237f384301bfc73f677e98e3d87960d2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-scene-v3-cold-binding-native-root-readback-20261015T094532Z.json",
+      "bytes": 48968,
+      "sha256": "2cf51710131f2f1ee2b5035dab9d8b50df51a5d04f4a12521ab5643cc763f9df"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.json",
+      "bytes": 4159,
+      "sha256": "98d28100f880749e8f4b049179ec5f53d4498aed866fc90f6b2e0de53b523446"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.md",
+      "bytes": 3420,
+      "sha256": "c6b0615c5c46ae00cdedc70c77b385d63b2d96bcc8d3f7136855171b50562a31"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/publish-fr063-stopped-wip-explicit-project-status-20261014.py.txt",
+      "bytes": 4168,
+      "sha256": "5f0eeb5ed7016ed0b25a0550c9d1a104f4e5a32434ebf5c3a833d6b677a79d13"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 224714,
+      "sha256": "1a7431a19eac3577f4814e1eb7bfc1a56b2b65e14dffb97cc2b5cc2b6b6d18f9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1185832,
+      "sha256": "7b72c32639045ef1f99afdb45270be27b6699344e632fca5bcd0b917d682c426"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 975,
+      "sha256": "b2dae3dedec6f859b1ac050833e62983c1ee7c4808dfc687b3accc34bce12cbb"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-checkpoint-provenance.json",
+      "bytes": 1175,
+      "sha256": "80c361b8878e6c94740535e28111fade4ea04524d463899b98706e5bf4e4cbec"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "bytes": 1106,
+      "sha256": "d701c35a91cf314ab952ced7c2bf427de443ddd89f800ea1e803c361829d9963"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "bytes": 3370,
+      "sha256": "d1f01993f6b36012043cd4c29aadb926405d3a4fc5067fa2fa6c5833b83d64ff"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "bytes": 1401,
+      "sha256": "0e4931efd84018b4052236d0e0b092f843db5c9bb84a7192d131931ba7911004"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "bytes": 1063,
+      "sha256": "9e1f41adb13eefd0367889ed556cb85e5c1ae48b671b09650f3bc755fa10234a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "bytes": 1103,
+      "sha256": "3932189d94f5f645b6d20f0a647747c30b78a624b8387f8f909688431ac9cf2e"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "bytes": 893,
+      "sha256": "2e61513fc29c2aa742e122482dc2fc20f8f61e7e7c2ee1e82e98700e3cc28ae0"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "bytes": 800,
+      "sha256": "e55fd0a685ef2103f31ee62b78a498ab5007dfec00c9eb3c369b77522743dd90"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "bytes": 872,
+      "sha256": "9966bbb55dff0c2f1e52bf0e2a3513ebe9e57c997fe03001e3fc87ebcc350ec7"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "bytes": 1226,
+      "sha256": "bae269bb018e8ce830b092740c1fa3a426f2ad6529dc4dc036b95fd742e8c30b"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "bytes": 1073,
+      "sha256": "022209a77079def972d800eaa6a944f35ac0af58fd6b1e9ae8d899c4a458e0b5"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "bytes": 1066,
+      "sha256": "4f71b137c996168eacecd68c037e5bdecb5dc059084aca9587a72d37fe296ed8"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "bytes": 1062,
+      "sha256": "ff0cd26f3f92bc3d5d2a8bf13ce1c2dfb1a3e65b46d489cc333bb527419c5fde"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "bytes": 1141,
+      "sha256": "97e66d2e73325b9545ebde73f2184ddc8eed2cd1fde0fccc2d0159c62683bf31"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-basis.json",
+      "bytes": 335,
+      "sha256": "a6b1e4b516fe095cd3ec1c52afe32de2d25f047cbd5e379b4f8144eb72a48312"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "bytes": 409,
+      "sha256": "4dd4298fd1c3290e152ab77474bfc007b1f2ebc089ad8374084827488b459c69"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "bytes": 429,
+      "sha256": "a7ad4ab73e30504d6d5bc9d62ed2ee126800e86ca464c8a1e7638eac32c54371"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-positive.json",
+      "bytes": 538,
+      "sha256": "4d97317f3cf8248a68bec8f7329c58d2297d3fb6de3d1cfc084b427baca6c3fe"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "bytes": 465,
+      "sha256": "a1f064ceb8b1bfc2ba5e045d8493151c968193ed7ec6fc434e641294a84ed96b"
+    }
+  ],
+  "permittedActualSelections": [
+    "tests/selections/1536-fr063-joint-connected-active-tail.json",
+    "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+    "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+    "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+    "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+    "tests/selections/1536-fr063-joint-connected-late-completion.json",
+    "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+    "tests/selections/1536-fr063-joint-connected-live-completion.json",
+    "tests/selections/1536-fr063-joint-connected-new-root.json",
+    "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+    "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+    "tests/selections/1536-fr063-joint-connected-retained-story.json",
+    "tests/selections/1536-fr063-joint-connected-story-owner.json",
+    "tests/selections/1536-fr063-joint-connected-worked-example.json",
+    "tests/selections/1536-fr063-joint-output-basis.json",
+    "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+    "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+    "tests/selections/1536-fr063-joint-output-positive.json",
+    "tests/selections/1536-fr063-joint-output-scene-refusal.json"
+  ],
+  "preparationSelection": "tests/selections/1536-fr063-joint-connected-preparation.json",
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "later12": "SUPERSEDED: remaining10 HELD pending newLate2EVIDENCE/controller provenance",
+  "checkpoint5": {
+    "verdict": "PRESERVE_SCOPED_HISTORICAL_5_OF_5_PASS_NO_RERUN_CLAIM",
+    "testedMetadata": "540401302838de60e0db6feef9db09b267afe78f",
+    "compileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+    "sourceAndUsedDependenciesUnaffected": true,
+    "proof": "JointCheckpoint and production unchanged; integration main entire prior bytes recovered after removing exactly two unrelated method-local using declarations; shared constructor/helpers/Dispose/CleanupOwnedFixture unchanged; separate unit class."
+  },
+  "createdUtc": "2026-10-15T11:02:53.628754+00:00",
+  "scope": "accepted retained-prefix fixture repair; fresh BOTH/discovery/catalog then first Late2 ONLY",
+  "reviewedSource": "a5c36d4b8299394f464ae4343fad945e7d5a8d1a",
+  "codeSource": "693b22ef19b35644ec56f184fa88af4ce93089ff",
+  "metadataCarrierOnly": true,
+  "intendedFreshInventory": [
+    40,
+    94,
+    23
+  ],
+  "laterStages": "retained retry and nine successors HELD pending newLate2EVIDENCE/controller review",
+  "fixtureSource": "a5c36d4b8299394f464ae4343fad945e7d5a8d1a",
+  "compileSource": "5c66b1a39a840a47bf30e2beb3311733e68224f7",
+  "oldBinaryReuse": "INVALID oldce56/v4 binaries for changed fixture",
+  "binaryReuseReview": null,
+  "conditionalSequentialOrder": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "categories": [
+        "fr063-joint-retained-story"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "order": 0,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-retained-story-integration-020": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "categories": [
+        "fr063-joint-new-root"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "order": 1,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-new-root-integration-012": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "categories": [
+        "fr063-joint-generation-refusal"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 2,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-generation-refusal-integration-008": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1,
+      "order": 3,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-refusal-integration-018": 15
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 4,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-settlement-integration-019": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1,
+      "order": 5,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-active-tail-integration-002": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "order": 6,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-story-owner-integration-021": 10
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 7,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-legacy-exclusion-integration-010": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2,
+      "order": 8,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-worked-example-integration-022": 3,
+        "fr063-joint-worked-example-unit-023": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4,
+      "order": 9,
+      "status": "HELD_PENDING_NEW_LATE2_EVIDENCE_CONTROLLER_REVIEW",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+        "fr063-joint-c1-original-rollback-integration-004": 3,
+        "fr063-joint-c1-qte-default-publication-integration-005": 8,
+        "fr063-joint-c1-treatment-defaults-integration-006": 4
+      }
+    }
+  ],
+  "releaseIndex": null,
+  "retainedCheckpointQualification": {
+    "retainedTestedMetadata": "540401302838de60e0db6feef9db09b267afe78f",
+    "retainedCompileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+    "scope": "5/5 actual PASS under earlier exact unaffected-dependency review; no new rerun claim"
+  },
+  "predecessorQualifiedEvidence": [
+    {
+      "source": "1b2df18e7712fc9fea24bb97f6bd567553a8761b",
+      "compileSource": "ce56face7d39650ebc04e5207c1f524e5bf1553b",
+      "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "expected": {
+        "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+        "categories": [
+          "fr063-joint-live-completion"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1
+      },
+      "actualNative": 0,
+      "readbackNative": 0,
+      "scratch": "/workspace/boe-fr063-tools-20261015/finite-live-v4-20261015T103419Z",
+      "packet": "/workspace/boe-fr063-tools-20261015/fr063-finite-live-v4-frozen-1b2df18e7-20261015T103419Z",
+      "manifestSha256": "4d53aad1980312103d76e010b5ebf00e7c27cb949d437f4d76e87a110b6fae9f"
+    },
+    {
+      "source": "1da0469eaf73246f945744f1939dd3875bae20b2",
+      "compileSource": "ce56face7d39650ebc04e5207c1f524e5bf1553b",
+      "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "expected": {
+        "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+        "categories": [
+          "fr063-joint-cold-progression"
+        ],
+        "methods": 3,
+        "cases": 3,
+        "descriptors": 1
+      },
+      "actualNative": 0,
+      "readbackNative": 0,
+      "scratch": "/workspace/boe-fr063-tools-20261015/finite-cold-v4-20261015T103658Z",
+      "packet": "/workspace/boe-fr063-tools-20261015/fr063-finite-cold-v4-frozen-1da0469ea-20261015T103658Z",
+      "manifestSha256": "24db268411f5f9a066560bc623fdaff553d2f8578b1706b2536e88fe0ea9e6db"
+    }
+  ],
+  "predecessorEvidence": "24db268411f5f9a066560bc623fdaff553d2f8578b1706b2536e88fe0ea9e6db"
+}

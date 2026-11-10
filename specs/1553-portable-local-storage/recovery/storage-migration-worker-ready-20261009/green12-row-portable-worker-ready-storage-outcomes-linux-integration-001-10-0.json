@@ -1,0 +1,66 @@
+{
+  "mode": "ready_known",
+  "uncertain": false,
+  "Failure": null,
+  "knownHits": 1,
+  "poolAttempts": [],
+  "validationCalls": 1,
+  "acceptedBefore": {
+    "SchemaVersion": 1,
+    "DecisionId": "apply_decision_20261009063045896",
+    "ProposalId": "worker_proposal_20260620_0001",
+    "Result": 0,
+    "ScopeCheck": {
+      "Passed": true,
+      "CheckedPaths": [
+        "game_state/world/weather.json"
+      ],
+      "Violations": []
+    },
+    "ValidationCheck": {
+      "Required": true,
+      "Passed": true,
+      "Command": "ValidateGameStateAsync",
+      "IssueCount": 0
+    },
+    "AppliedFiles": [
+      "game_state/world/weather.json"
+    ],
+    "RejectionReasons": [],
+    "DecidedAtUtc": "2026-10-09T06:30:45.8960617+00:00"
+  },
+  "returnedDecision": null,
+  "retainedDecision": null,
+  "dispatchResult": null,
+  "ReadyResult": {
+    "Created": false,
+    "Diagnostic": "Worker repair was applied, but ready signal publication failed: known worker storage preparation refusal",
+    "SessionReplaced": false
+  },
+  "weatherBefore": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "weatherAfter": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "readyCommitted": null,
+  "readyAfter": null,
+  "ReadyFactRetained": false,
+  "KnownCauseRetained": false,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

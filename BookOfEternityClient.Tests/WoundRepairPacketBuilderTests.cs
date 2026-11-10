@@ -230,6 +230,38 @@ public sealed class WoundRepairPacketBuilderTests
         Assert.DoesNotContain("game_state/", issue.Path, StringComparison.Ordinal);
     }
 
+    // Detached repair-projection DATA. The native C2 test proves actual spiritual opportunity binding.
+    [Theory]
+    [InlineData("recovery.currentStepThreshold", true)]
+    [InlineData("recovery.cadence", false)]
+    [InlineData("recovery.currentStepProgress", false)]
+    [InlineData("severity", false)]
+    public void Build_SpiritualThresholdRepairAdmitsOnlyItsExactLeaf(string path, bool accepted)
+    {
+        var request = CreateRequest(CreateCandidate("candidate_threshold", "woundDecisions[0].proposal." + path,
+            "wound_spiritual_recovery_threshold_mismatch", "3"));
+        var packets = WoundRepairPacketBuilder.Build(request);
+        Assert.Equal(!accepted, WoundRepairPacketBuilder.RequiresFailClosedRollback(request));
+        if (!accepted) { Assert.Empty(packets); return; }
+        var packet = Assert.Single(packets);
+        var issue = Assert.Single(packet.Issues);
+        Assert.Equal("proposal.recovery.currentStepThreshold", issue.Path);
+        Assert.Equal("current spiritual severity threshold: I=2, II=4, III=6, IV=8", issue.Expected);
+        Assert.False(packet.PreservedProposal["recovery"]!.AsObject().ContainsKey("currentStepThreshold"));
+        Assert.Equal(86400, packet.PreservedProposal["recovery"]!["cadence"]!.GetValue<int>());
+        var persisted = new JsonArray(packet.ToJsonObject());
+        var receipts = JsonSerializer.SerializeToElement(new[] { packet.CreateReceipt() },
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        bool ValidWave() => WoundRepairPacketBuilder.IsValidPersistedRepairWave(
+            JsonSerializer.SerializeToElement(persisted), receipts, packet.SessionId, packet.RequestId, packet.SnapshotToken);
+        Assert.True(ValidWave());
+        persisted[0]!["issues"]![0]!["expected"] = "arbitrary positive threshold";
+        Assert.False(ValidWave());
+        persisted[0]!["issues"]![0]!["expected"] = issue.Expected;
+        persisted[0]!["issues"]![0]!["path"] = "proposal.recovery.cadence";
+        Assert.False(ValidWave());
+    }
+
     [Fact]
     public void Build_RemovesOnlyTheOffendingLeafAndPreservesEveryValidProposalSibling()
     {

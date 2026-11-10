@@ -1,0 +1,24 @@
+{
+  "SourceSHA": "04013af5b3e31f63d40c24666b5055c7d884f254",
+  "Status": "Exact supplemental physical evidence; no runtime rerun",
+  "Scope": "Autosave ZIP payloads omitted by the previous suffix-filter archive, checked against actual cut inventory. Includes prior failure and accepted third-cut GREEN; no new game/bridge/model execution.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "first-cleanup-failure/saves/autosaves/autosave_turn1_20261010_174432.zip.gz",
+      "RawBytes": 39458,
+      "RawSHA256": "4375e5290a39a687050dcd120df77d109ef342484711e1cb7c4306b6ef61b465",
+      "OriginalInventoryPath": "saves/autosaves/autosave_turn1_20261010_174432.zip",
+      "OriginalOwnedRoot": "/tmp/gc-c9320ed26ecb",
+      "OriginalCutPID": 74398
+    },
+    {
+      "Path": "accepted-cleanup-green/saves/autosaves/autosave_turn1_20261010_175140.zip.gz",
+      "RawBytes": 39458,
+      "RawSHA256": "975e1df751d3bb19b47f54cecaafd81f5405bfccfc8e2fe5548d11db1c53c806",
+      "OriginalInventoryPath": "saves/autosaves/autosave_turn1_20261010_175140.zip",
+      "OriginalOwnedRoot": "/tmp/gc-4ef923b7bad8",
+      "OriginalCutPID": 76102
+    }
+  ]
+}

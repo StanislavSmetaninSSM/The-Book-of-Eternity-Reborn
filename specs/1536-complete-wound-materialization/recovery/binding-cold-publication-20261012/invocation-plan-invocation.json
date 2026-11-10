@@ -1,0 +1,35 @@
+{
+  "source": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "compileSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "runtimeSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "spiritual-binding-cold-publication",
+    "-PlanOnly"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T04:54:42.792099+00:00",
+  "scope": "fresh selected integration build and exact existing cold case plan; zero actual tests",
+  "expected": {
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+    "methods": 1,
+    "cases": 1,
+    "descriptors": 1,
+    "actualTests": 0
+  },
+  "budgetsMinutes": {
+    "category": 15,
+    "warmPhase": 8,
+    "coldPhase": 8,
+    "overallDefault": 20,
+    "runnerDefaultFormula": "5 + sum(category budgets) = 5 + 15 = 20"
+  },
+  "coldInvocationCount": 0,
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T04:55:49.133341+00:00"
+}

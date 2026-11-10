@@ -1,0 +1,319 @@
+{
+  "platform": "Linux",
+  "sourcePins": [
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "sha256": "031e90c217daf0e3ab72317f0c67371714c2528d1441e6ebcedb0333787932b5"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.cs",
+      "sha256": "783065297f5153fcae22ee1789c799777f78d94f3cce9f24203314407922bb68"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.Closing.cs",
+      "sha256": "34b933ca73c8edb1370fd75c61c9df1dc22ff2968b51214543f4b9dd78b96856"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.Boundaries.cs",
+      "sha256": "8576e141827894127f834eeaa7e7da59e9fca1dffe76b4c6ffa42e89ae99ec8b"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DirectoryOutcome.cs",
+      "sha256": "073f251b06df7b3d1af89f3b5adc81d50ede8142d9a04769f0b5651a3800c306"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "tests/categories.json",
+      "sha256": "edfa78fc456f3bc1cf4b153b66304b28c105f5cb3b4b000cde68ebca21b1f82a"
+    },
+    {
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "path": "tests/selection.json",
+      "sha256": "938c69ca573ee4c83440c95a42817a9ec0382d3f9ec0631562363066d15ccf11"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "sha256": "031e90c217daf0e3ab72317f0c67371714c2528d1441e6ebcedb0333787932b5"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.cs",
+      "sha256": "783065297f5153fcae22ee1789c799777f78d94f3cce9f24203314407922bb68"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.Closing.cs",
+      "sha256": "34b933ca73c8edb1370fd75c61c9df1dc22ff2968b51214543f4b9dd78b96856"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.Boundaries.cs",
+      "sha256": "8576e141827894127f834eeaa7e7da59e9fca1dffe76b4c6ffa42e89ae99ec8b"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DirectoryOutcome.cs",
+      "sha256": "073f251b06df7b3d1af89f3b5adc81d50ede8142d9a04769f0b5651a3800c306"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "sha256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "tests/categories.json",
+      "sha256": "afb4ab333e23b76d85b20313898097d43dd55162857f91a70ee94d995f09dcff"
+    },
+    {
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "path": "tests/selection.json",
+      "sha256": "c1ff3dab3e6e975617111939409d6029ba623f0561084af7add2fd67a1aaebce"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "initial-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-112837-559-33727-9803859929444e6b80e6b23c7c7f4d16-categories/plan.json",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "4830ccd1e6439438841fc6e09087e3a53aa0be5c7a09edbb0bab056152603cd2",
+      "originalSha256": "4830ccd1e6439438841fc6e09087e3a53aa0be5c7a09edbb0bab056152603cd2"
+    },
+    {
+      "path": "initial-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-112837-559-33727-9803859929444e6b80e6b23c7c7f4d16-categories/summary.json",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "591336661692b1d0352eb6508175d92c690c36f783d161ebb3727088fc95854d",
+      "originalSha256": "591336661692b1d0352eb6508175d92c690c36f783d161ebb3727088fc95854d"
+    },
+    {
+      "path": "initial-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-112837-559-33727-9803859929444e6b80e6b23c7c7f4d16-categories/Build-integration.log",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "b93782211efaf048e31494125fddc86e7b8a2a23267ed3842ecfc2b1ea98bdc5",
+      "originalSha256": "e9543d55594003b3359b277dbc912d2ba11d80b2aa2a6eb3d982a6ee6b20344c"
+    },
+    {
+      "path": "initial-plan-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-112837-559-33727-9803859929444e6b80e6b23c7c7f4d16-categories/Build-unit.log",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "14d9149d1a2820d86caaae04ac7a0ddacd9e1f3530b2a4d65410afbcc2573d63",
+      "originalSha256": "f4dea2ff066ee2b789b40dd12e96799e7814fad9d586fe6ae8e61f5c5b2ac95a"
+    },
+    {
+      "path": "initial-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-112837-559-33727-9803859929444e6b80e6b23c7c7f4d16-categories/dotnet-test.log",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "51ac1e5d0e6b74c1d9905a22b1fac99f2c82f1621f979bd1051253c1ac0af738",
+      "originalSha256": "6e79cd0a335c839925789514d27e6ef1546145d61ff479eea8dcfb8993b19352"
+    },
+    {
+      "path": "neighbors-red-plan.json",
+      "source": "TestResults/test-categories/20261008-112945-488-34248-7a6eb88d4fe44d6f974cf33c717957b0-categories/plan.json",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "21b41547543fe72c6dad84178d1c6604f94a8526db5ae68625704b0a5cb31b23",
+      "originalSha256": "21b41547543fe72c6dad84178d1c6604f94a8526db5ae68625704b0a5cb31b23"
+    },
+    {
+      "path": "neighbors-red-portable-directory-outcome-neighbors-unit-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-112945-488-34248-7a6eb88d4fe44d6f974cf33c717957b0-categories/portable-directory-outcome-neighbors-unit-001.trx",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "ef202d556d1fb053aea72f150a30af4e7926b796316881b41ddf8748796d49e0",
+      "originalSha256": "d6d0909cbd09ffc512bf27ab9acf64d6919a699a1f5061980423fae35e93291c"
+    },
+    {
+      "path": "neighbors-red-summary.json",
+      "source": "TestResults/test-categories/20261008-112945-488-34248-7a6eb88d4fe44d6f974cf33c717957b0-categories/summary.json",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "651ad86a3c856f93b7d0da73ea835777d22ef2c57a8a361afd9ace865cb81821",
+      "originalSha256": "651ad86a3c856f93b7d0da73ea835777d22ef2c57a8a361afd9ace865cb81821"
+    },
+    {
+      "path": "neighbors-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-112945-488-34248-7a6eb88d4fe44d6f974cf33c717957b0-categories/dotnet-test.log",
+      "revision": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "sha256": "4034aa6de31582f4dad8a0b4e1ecbf9d003e1cb29f26d6bdf1082d330e41605c",
+      "originalSha256": "2b8418154203cb68df8b87ef23ec53b2fd3b3f2045d20629d905769287226ab2"
+    },
+    {
+      "path": "split-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-113116-932-34945-9a89fc2c3bbe42fe9a46f8ae8735ed5e-categories/plan.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "3a3281ffef7f90428b44b79551c18eeaba7e2e1d141c1e49472a9bee38b6d3a3",
+      "originalSha256": "3a3281ffef7f90428b44b79551c18eeaba7e2e1d141c1e49472a9bee38b6d3a3"
+    },
+    {
+      "path": "split-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-113116-932-34945-9a89fc2c3bbe42fe9a46f8ae8735ed5e-categories/summary.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "6aa2bbaa1e6a2469e7aa27cb557e183c0b6e0bdf6b95345b546edf2d39a15984",
+      "originalSha256": "6aa2bbaa1e6a2469e7aa27cb557e183c0b6e0bdf6b95345b546edf2d39a15984"
+    },
+    {
+      "path": "split-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-113116-932-34945-9a89fc2c3bbe42fe9a46f8ae8735ed5e-categories/Build-integration.log",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "7ce1c772fecb11744ca7cd63d0dabf8e7772e499ffd5fe2cf00c1971b886350a",
+      "originalSha256": "d533085da0d1a7aad4a23c430d0c47780a1fd8de10d4ef08585d5530fb38f3b8"
+    },
+    {
+      "path": "split-plan-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-113116-932-34945-9a89fc2c3bbe42fe9a46f8ae8735ed5e-categories/Build-unit.log",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "01270fb5590f99b999eacb31f2fcddb3fb897ff6d8a304e1840ccdbf8b84c285",
+      "originalSha256": "fa3f7da298b3fa71478d51747af13e64d8d3e6c858fdfc4acfd0378cc5b5c89c"
+    },
+    {
+      "path": "split-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-113116-932-34945-9a89fc2c3bbe42fe9a46f8ae8735ed5e-categories/dotnet-test.log",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "8a60064fce5f3e837fe0d9f4a0510253d04360df16689097f6e2746cd920af2a",
+      "originalSha256": "9de8eaeeabe28931dcd6679d3adf724770895e2f5152be3d9219ed8fbd7f6e45"
+    },
+    {
+      "path": "consumer-red-plan.json",
+      "source": "TestResults/test-categories/20261008-113226-896-35334-828da6cba2a94099a826eccf8372f0a8-categories/plan.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "d9cfaadcda44c5a29ebd6d05da441d4cd212a22856436d9b03a66bffa388686b",
+      "originalSha256": "d9cfaadcda44c5a29ebd6d05da441d4cd212a22856436d9b03a66bffa388686b"
+    },
+    {
+      "path": "consumer-red-summary.json",
+      "source": "TestResults/test-categories/20261008-113226-896-35334-828da6cba2a94099a826eccf8372f0a8-categories/summary.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "ddd80dd209f1edf605878233400d19fad0826899ac85f9ae28400ff3d244361c",
+      "originalSha256": "ddd80dd209f1edf605878233400d19fad0826899ac85f9ae28400ff3d244361c"
+    },
+    {
+      "path": "consumer-red-portable-directory-uncertain-consumer-unit-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-113226-896-35334-828da6cba2a94099a826eccf8372f0a8-categories/portable-directory-uncertain-consumer-unit-001.trx",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "c0048f1f361ca865aa871935aeb988c5de604006a5e9bd1d66a27a151de2f190",
+      "originalSha256": "26718f374ab7fe4bf1c92a22c7794ceb4c1a3d110641765f79f1fac81ce7779c"
+    },
+    {
+      "path": "consumer-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-113226-896-35334-828da6cba2a94099a826eccf8372f0a8-categories/dotnet-test.log",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "d747bb8ee2ca83c9f464650774aaf433d73a134c0a1d88e74b22e3c435743ccc",
+      "originalSha256": "9f51511d8448f6e2c958b5b884bb77da5ee2ebee02bb87e7e783960affd933e5"
+    },
+    {
+      "path": "notice-red-plan.json",
+      "source": "TestResults/test-categories/20261008-113259-577-35527-aa0c80943c504c9683a3b97dde614f23-categories/plan.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "68a04c076c9418234f083effae7a37a6de5be7601f494d860e05f5b96cfe03ed",
+      "originalSha256": "68a04c076c9418234f083effae7a37a6de5be7601f494d860e05f5b96cfe03ed"
+    },
+    {
+      "path": "notice-red-portable-directory-outcome-notice-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-113259-577-35527-aa0c80943c504c9683a3b97dde614f23-categories/portable-directory-outcome-notice-integration-001.trx",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "da90f15ed0afa1181ec975952e7231fd2542602559e152cb9bf6786c92e57180",
+      "originalSha256": "3908793ae5b8f859e1d341e396be10905e9f9025e23ff4c11e788ccc8a6aa646"
+    },
+    {
+      "path": "notice-red-summary.json",
+      "source": "TestResults/test-categories/20261008-113259-577-35527-aa0c80943c504c9683a3b97dde614f23-categories/summary.json",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "04c9d850e638437845a3355892c67723c210f2702dac84a39ad5446488d44141",
+      "originalSha256": "04c9d850e638437845a3355892c67723c210f2702dac84a39ad5446488d44141"
+    },
+    {
+      "path": "notice-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-113259-577-35527-aa0c80943c504c9683a3b97dde614f23-categories/dotnet-test.log",
+      "revision": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "sha256": "a0fb187c4d021206cebdd63341926b0fb1393cd2cfb23aa329afd97cd4ea8f50",
+      "originalSha256": "4dafd23450564c4050fd029ca6ce11be10e4d0d11c196565450ff6f17f77c004"
+    },
+    {
+      "path": "initial-plan-runner.log.gz",
+      "source": "/tmp/boe-1553-tree-red-plan.log",
+      "revision": "bfd64967",
+      "sha256": "61b1c9c76e94c24e4516c584efb2772b94619af6f358883e70ab1e6b0f74c817",
+      "originalSha256": "a5cedd3ce2828e40a1b040822fe8f8b0e63640e7610e91d96140569644ca224d"
+    },
+    {
+      "path": "neighbors-red-runner.log.gz",
+      "source": "/tmp/boe-1553-tree-red.log",
+      "revision": "bfd64967",
+      "sha256": "145649caaac0fa227c820856202e7d6479f7bcd05928d41b2b2dd7b38afb6bb7",
+      "originalSha256": "12fce33a98a84f6047461a7c436ad26b7896990bf4f29e50d2332f62ca1f17fc"
+    },
+    {
+      "path": "split-plan-runner.log.gz",
+      "source": "/tmp/boe-1553-tree-split-plan.log",
+      "revision": "97ace223",
+      "sha256": "f150b105d8ac126da4798cc84084ef5990c188ded4c444e30a7467bfff8dfeca",
+      "originalSha256": "0000f7d7d69324a5f6b06b87294457a651ab066c492ad6bbb737c6d54f4183d7"
+    },
+    {
+      "path": "consumer-red-runner.log.gz",
+      "source": "/tmp/boe-1553-tree-consumer-red.log",
+      "revision": "97ace223",
+      "sha256": "b5c64b5815b57a333aca9122a4c5f002ee84caa81e26b92ec443e0bac7b34b3e",
+      "originalSha256": "bfe5dc97c5274b77ea07c4bed710bedd8e9e4397ab853d2737206f80557575aa"
+    },
+    {
+      "path": "notice-red-runner.log.gz",
+      "source": "/tmp/boe-1553-tree-notice-red.log",
+      "revision": "97ace223",
+      "sha256": "44adec2c45ddbf5bd9e8c5bf374b698566e94e50f7a6315a2a0734d29533b6d1",
+      "originalSha256": "75cdd7fb219ef9d68c95556bab05eb57e3aa167716f39f2ce0d9be25ab2c471b"
+    }
+  ],
+  "runs": [
+    {
+      "source": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+      "executed": 12,
+      "passed": 11,
+      "failed": 1,
+      "selectionComplete": false,
+      "wallSeconds": 10.1777763,
+      "reason": "Fail-fast after neighbors; original consumer3 not executed here."
+    },
+    {
+      "source": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "executed": 2,
+      "passed": 0,
+      "failed": 2,
+      "selectionComplete": true,
+      "wallSeconds": 7.1666468,
+      "reason": "Actual original Prepare returns unrecognized directory carrier; actual tree decision missing from generation-replacement close diagnostics after reached partial bytes/evidence."
+    },
+    {
+      "source": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "selectionComplete": true,
+      "wallSeconds": 7.2566531,
+      "reason": "Original snapshot cleanup helper actual tree uncertainty feeds original AgentConsole projection which falsely says action not applied. Not a full console command/game-loop run."
+    }
+  ],
+  "cleanupComplete": true,
+  "uniqueCases": 15,
+  "passed": 11,
+  "failed": 4
+}

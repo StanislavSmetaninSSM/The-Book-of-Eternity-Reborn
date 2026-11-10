@@ -1,3 +1,355 @@
+# Точка входа r73 — Linux-передача и обязательная оптимизация
+
+Актуальное состояние накопленного кода, точные source/qualification границы,
+результаты r72 и следующий Linux PREP:
+[linux-handoff.md](recovery/crash5/linux-handoff.md). До любых изменений прочитайте
+[AGENTS.md](../../AGENTS.md) и [правила оптимизации](../../docs/performance.md).
+Исходники брать из `1536-crash5-linux-windows-spec-20261019` с проверкой полного
+удалённого SHA. Linux runtime текущего кода UNRUN; Windows source42/five-v2
+не является Linux carrier. Рецепт Linux package/build/controls внизу остаётся
+техническим ориентиром, но selection/counts/PREP устанавливаются заново по
+актуальному каталогу и handoff. Старые статусы и бюджеты ниже — история,
+не текущий результат и не разрешение повторять старый expensive probe.
+
+# История revision57 — verify repeated QTE DATA
+
+Issue1536/T466..470. Read current spec/plan/tasks. First compile and run causal
+RED/cheap GREEN for QTE DATA/observation/structural/registry controls using selected
+categories only. Build both selected projects with XML, qualify current8DLL/native
+pins/catalog and exact test counts; inspect genuine issuer integration where needed.
+Independent source gate precedes genuine current-source generator/new source42
+INPUT/twoimports and source-only push/clean remote recovery. Then run the SAME
+fr063-joint-fixture-windows-cut0,600child/820shared/15min. Compare to r56 original
+399.9290962s and actual QTE Prepare14/Reconstruct14/Correction14 source counts.
+Uncapped diagnostics goD:/BoeDiagnostics/qte-cache-r57-20261023; never stage them.
+Current-source helper copies live outsideGit inD:/BoeDiagnostics/tools/*r57*.
+No old raw retirement until complete new capture/cleanup/hash verification.
+
+# Revision50 — qualify real recovery integration
+
+Issue1536. Read r50 spec/plan/tasks and contracts/recovery-validation.md. Execute T435,T427,T428,T429 in order; user waived approval waits. Cheap source-bound causal RED/GREEN first, complete full raw/binaries before builds. Preserve32 original reserved-read controls and existing generic architecture acceptance; no unrelated suite. Real Cut0 C:/Temp600/820/15 only after current build/input/review/saved recovery gates. Keep diagnostic self-cost accounting and all events; an executed timeout is reported as such, not success.
+
+# Revision49 — qualify the DW10 architecture migration
+
+Issue1536 / CACHEPORT-1..7 / T431–434. Read spec.md/plan.md and contracts/service-cache.md. User explicitly waived review waits. Reuse existing isolated branch; preserve T426 GREEN archive/outputs before build. Run actual pinned Spec Kit phases and bridge-equivalent consistency; publish WIP first.
+
+Use XML-enabled full-reference `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true`, then runner `-Category core-service-cache,core-repository-cache,core-operation-validation-cache -NoBuild -Parallelism 1` from PowerShell7 (array syntax as required). Run discovery-only catalog/PlanOnly; no aggregate suite. Preserve complete raw, attempt/counts/cleanup, source and exact binaries after RED and GREEN. Test TTL with controlled clock and concurrency with barriers, no Sleep or real game.
+
+Review completed code/tests/docs independently, address findings and run affected checks; save/push and exact clean recovery. This qualifies cache architecture only. Existing T427–429 remain for game-specific DATA integration and genuine original600/820/15 measurement; no diagnostic caps or performance claim here.
+
+# T430 — DW10 architecture analysis
+
+Issue1536 / active canonical revision48. Read the new research.md top section for actual local source evidence and the proposed DW10-based migration. This block is source analysis only; no DW10 edits/build/tests/external actions or new game execution.
+
+Current generic component is f6dedbd1f:26PASS, source/outputs unchanged, full T426-green.zip and qualification retained,75XML blocks checked with no new-file warnings. No unchanged rerun is needed for this documentation-only investigation. The complete game timeout remains open.
+
+T430 records Service/Repository/CacheStorage/ServiceCache roles, inheritance, DI lifetimes, Dictionary/Memory/NoCache backends and operation/session/TTL policies. Check adaptation of null/default presence, comparer, async IO outside locks, clones, version/fresh authority and scoped clear. T427 domain-coverage consultation remains a future pre-enable gate; adapter and original execution are deferred by the user-directed analysis.
+
+Run the actual pinned Spec Kit plan/tasks/prerequisites and equivalent read-only consistency; independently review the complete source-based findings; save/push/recover exact artifacts. A subsequent implementation amendment must define exact interfaces/tasks before production refactoring. Keep diagnostics uncapped and do not copy DW10 source into the game repository.
+
+Current evidence: initial architecture59/59PASS on b278; independent review regression36case RED33/3 then focused36/36PASS on a784. XML259blocks/15files,0changed-file warnings; unchanged26 original assertions. Catalog on416 validates12174methods/902categories, selected plan62cases,0test bodies (fresh integration build for inventory only). Do not rerun unchanged selections solely for status updates. Targeted gpt-6-astra/high review accepted the F1 correction with no open finding; T433-final-review.json binds the exact source and evidence. Fresh remote-only recovery5cfb8dae verified50exact files and clean HEAD. T434 accepted metadata33003dc41 is published and recovered as52exact selected blobs in the clean fresh-origin clone (T434-accepted-recovery.json). Final bookkeeping receives the same remote-only tip check after push. All T431–434 are complete for infrastructure; no unchanged test rerun is needed.
+
+# T425–429 — general temporary cache qualification
+
+Issue1536 / active spec and plan revision47 OPCACHE-1..10. No generic cache implementation or new original run has been qualified yet. User clarifications require a production reusable service, value/fact distinction and per-operation cleanup; standing approval-wait waiver applies. Read canonical spec.md/plan.md/tasks.md top revision47 before acting; r46 below is superseded history.
+
+1. T425: preserve exact current c2 source, complete finished T422 run/build/tools/current binaries and every raw payload before new build. T422-causal-red-qualification.json confirms32PASS/2expectedFAIL, selection complete, no timeout and owned/runtime closing true. Full49-payload archive SHA4AC5AC7DF252D793FAA9F6060159717FED9EDA26B42E3D47204D0403CE4E55FE; no unchanged retry or optimized r46 implementation. Run actual pinned Spec Kit plan/tasks/prerequisites and read-only consistency, present links, save/recover canonical design.
+2. T426: new isolated explicit category for cheap general service fixtures. Capture meaningful execute-every-time RED, then verify values false/0/null, success markers, versions, nested dependencies/hits, copy ownership, ForceFresh, errors/cancel/close/stale descendants/recursion/overlap. No undefined API as causal evidence and no broad test suite.
+3. T427: audit root writer and callback coverage; create minimal real production DATA fixture using genuine lease/generation/signed snapshot and typed seams. Capture DATA-body/real attribute RED; integrate only mechanical/continuation source bodies with live guards and fresh take fences. Verify same operation repeat/new operation/mutation/lease/absence/namespace/claim/item/seal controls and actual counter GREEN. Do not skip QTE bind/restore effects.
+4. T428: impacted catalog categories and full-reference XML-enabled unit/integration builds, introduced XML audit, honest warning classification, source/output/input pins, complete owned cleanup and separate coherent complex review. Preserve historic/current outputs before build. Original is gated until actual current source and input are saved and independently recovered.
+5. T429: one genuine current-source input when required, then one actual original C:/Temp600/820/15 with full uncapped diagnostics/native process lifecycle. Archive complete raw before all-row/path/open-tail analysis. Compare equal completed milestones with T416/T420 and report actual full outcome without promised gain or relaxed timeout/assertions. Independent result review and exact saved recovery close this block only with evidence.
+
+Do not walk/mutate protected unknown roots or rerun unchanged original failures. Keep diagnostics until acceptable results; this block never adds a count/size/retention cap. A correct generic service or reduced small-fixture count alone does not close the original timeout.
+
+# T421–424 — guarded request-admission validation
+
+Read current r46 spec/plan/tasks and T420-findings.md. Preserve outputs, then run only the catalogued reserved-validation-read-set causal category: lease-free repeated present/absent sync/async reads must first fail on added full request admissions, then pass with zero such checks in guarded mode and positive unchanged conservative control. Verify original first/exit counts and all tiny closing receipts. Run selected pending-validation/main-fence/timing/reader categories and XML builds; independent source review gates any original run. For changed source, use a fresh genuine immutable fixture slot and existing input qualifier, then one C:/Temp600/820/15 original Cut0 with full diagnostics and process settlement. Archive all raw before interpreting actual outcome; compare same closed publication against T416 and T420. No diagnostic quota, runtime-limit change, automatic retry or PASS inference from a closed timer. Details and exact execution ledger are in plan/tasks, not duplicated here.
+
+# T335–336 accepted SOURCE/PREP — uncapped output artifacts
+
+Active [spec15r14a](spec.md), [plan13r14a](plan.md), [tasks](tasks.md). The actual T333 attempt failed while serializing a child-output JSON scalar of reported length169321202. Full resumer text and its independent native outcome were lost; do not relabel this attempt as a proven timeout or successful recovery. [Inspection](recovery/crash5/T334-inspection.json), [independent evidence review](recovery/crash5/T334-evidence-review.json), [API consultation](recovery/crash5/T334-api-consultation.json).
+
+The current source prepares complete decoded stdout/stderr artifacts under `TestResults/joint-child-output/<capture-guid>/` before child launch, outside fixture roots. `initial.json` retains the first references; `capture.json` records identity, actual EOF, byte lengths, SHA256, persistence failures and original process outcome. Representation is decoded text re-encoded continuously as UTF8/noBOM, not original pipe-byte identity. Fixed buffers do not impose a total output, record or lifetime quota. Parent reports carry references instead of full raw strings. Persistence/manifest/report failure retains evidence and remains secondary to the original process error. No power-loss durability or zero disk-backpressure claim is made.
+
+Linux ordinary CRASH5 now supplies finite-only NativeLineage destinations before its exclusive drains begin and uses typed streamed settlement. Default worker, terminal and finite string APIs retain existing behavior; legacy string access rejects streaming instances. Native C, ownership/retirement gates and all existing wait budgets are unchanged. Native retirement, actual pipe EOF and artifact persistence are separate observations. Linux runtime is NOT RUN locally; this SOURCE/PREP is not Linux qualification.
+
+For copied immutable artifact DATA, use `python recovery/crash5/validate_child_output.py <capture.json> --directory <copied-capture-directory>` from this feature directory. Add `--allow-incomplete` only to inspect an explicitly failed/partial capture; its result remains incomplete. The adapter hashes every file byte with fixed memory, checks framing, and grants no native authority or process identity verification. Historical inline-output parsers and raw archives are unchanged. Preserve complete capture directories with every run archive; a compact TRX report alone is insufficient.
+
+Verification for this source is limited to the selected transport/managed adapter/default-policy categories. Corrected source b80b9226213e6e438538041864164b4e922f5b5d has fresh integration/unit XML builds with0errors, catalog/PlanOnly5descriptors90cases, and actual90/90PASS. All141raw members/23captures/19ownedroot absences and4DLL/dependency bindings are saved in [T336 PREP](recovery/crash5/T336-final-prep.json). The long169321203character line completes in1.9367131s with complete bytes/hash/pattern; this is a correctness control, not recovery speed evidence. Two independent P2 findings (exit versus join and no-child finalization) are causally reproduced and corrected. [Independent final SOURCE/PREP acceptance](recovery/crash5/T336-final-review.json) confirmed a6fef0f1/compiledb80 with no remaining findings. No GameEngine/source42 generator/original recovery or Linux native execution is authorized by this block. The source778 seed remains immutable historical DATA for its producing closure; do not rebind it to the changed build. Original recovery acceptance remains open.
+
+---
+
+# T309 executing — genuine resource validation controls
+
+T309 test SOURCE/PREP at710ea5d1054941acbbb513e4ccef7c4f676f92cc: integrationXML49.231284s/unitXML11.8584231s, both0errors; changed/new XML has no new warning, baseline10901/5757 warnings retained. Catalog843/11940methods valid; selected5descriptors/41cases and explicitgenerator+cut0 2cases planned,0tests executed. Three DLL/source versions and every37indexed PREP member/CRC/SHA verified; T309-tests-prep.json/zip. Product source unchanged; causal RED and both refusal controls are NOT RUN. Current849seed is historical for this integration closure. Independent test SOURCE/PREP review pending before one genuine RED-source generator; no component or profile execution yet.
+
+[Spec15](spec.md), [plan13](plan.md), [tasks](tasks.md), [PREP](recovery/crash5/T309-tests-prep.json). User approved c1fa2bbc with «давай». DEDUP-2 remains deferred, diagnostics unlimited.
+
+---
+
+# Current proposal — spec15 / plan13
+
+The user asks what to change after measured T306. [Spec15](spec.md), [plan13](plan.md), [tasks T307–311](tasks.md) propose only adjacent duplicate wrapper removal: preserve both QTE baseline boundaries; conditionally reuse the immediately preceding final candidate-bounds validation. No validation cache/new authority/per-read bypass. Expected common baseline24→16→14 is a source prediction, not measured performance. DEDUP-2 and the genuine focused test fixture remain engineering gates. Independent gpt-6-astra/high [design review](recovery/crash5/T308-proposal-review.json) ACCEPTED the bounded recommendation and22-file clean recovery, with no findings. DEDUP-1 is the first recommendation; DEDUP-2 deletion is explicitly not yet proven/accepted. No code/build/test/generator run in this step; unlimited diagnostics and all actual outcomes below remain.
+
+---
+
+# Current findings — measured Windows timeout cause at application level
+
+Compiled8499922ae9f8a231545b3299137470e4d495ed27 adds105passive sites (200total) to partition the three measured unknown sections. [T303-prep](recovery/crash5/T303-prep.json) / [scope map](recovery/crash5/T303-source-scope-map.json): freshXML82.904s/0errors/changedXML0;15unchanged output controls reused from073; metadata0executed. [Independent Sol6.1/xhigh SOURCE/PREP ACCEPTED](recovery/crash5/T303-source-review.json) atdb419b680. T304 genuine generation PASS: source42=183.5349909s/total186.0353385s;two independent imports verified/cleaned. Current fixed path contains the entire new849artifact82files/513709bytes. Historical983wholeartifact preserved/hash-verified in .superpowers/sdd/plan/T304-original-seed-983 and its T301 archive; no rebinding. [Generator](recovery/crash5/T304-generator.json), [independent validation](recovery/crash5/T304-generator-validation.json), [producing inputs](recovery/crash5/T304-source-inputs.json). [Binding](recovery/crash5/T304-seed-binding.json) and [independent acceptance](recovery/crash5/T304-binding-review.json) saved; T305 executed once:1FAIL/0skip at original600s wait; no retry. [Complete timings](recovery/crash5/T306-timings.md), [causal analysis](recovery/crash5/T306-findings.md), [actual outcome](recovery/crash5/T305-profile-cut0-outcome.json). 2846records/1419completedintervals;33CPU samples bound to actual child. Independent gpt-6-astra/high [final review](recovery/crash5/T306-final-review.json) ACCEPTED the application-level cause: repeated current-original/authority validation and guarded reads consume the budget. T302/T306 complete within that scope; [clean remote recovery](recovery/crash5/T306-clean-recovery.json)3946ef1b/533exactfiles verified. OS primitive/driver/scanner, unfinished tail, safe removability, uninstrumented performance and Linux remain unknown. No optimization or gameplay PASS.
+
+Current artifact recovery: verify T304-generator.zip SHA2561698AFDF46DA55EE811003911B732176AE8B5D50DBF796C207D74FECCCF33D15 and extract generated/artifact into a separate new destination to preserve38directories including7empty. Manifest24A2109EC3FEE2484598EA24475207E501C22C2421A3ECE703CED4402ABA698C; producing fingerprint05C9E18AD9E4C0A823FC11AB810A66E477BF1FC22EAE6716C9D828ED3D4DCAD8,1772inputs/34exact+1738LF-to-CRLF. Plain Git checkout omits empty directories; never rebind or automatically regenerate.
+
+---
+
+# Historical measured flow T301/T302 — full timings and observed timeout mechanism
+
+Current compiled source `98376e40dbaa0435654380815d2bffb602f068f4`,95 literal timers. Named boundaries/stages/activity have no record-count or byte truncation; cumulative activity continues throughout execution. [SOURCE/PREP acceptance](recovery/crash5/T300-source-review.json), [evidence](recovery/crash5/T300-prep.json), [source path map](recovery/crash5/T300-validation-path-map.md). Fifteen output controls passed at073; their unchanged helper/test sources are reused after the timer-only983 supplement and fresh XML build.
+
+T301 genuine source42 preparation PASS192.6064983s; total195.6712125s, both independent imports verified/cleaned. T301 used the entire983DATA (82files/513707bytes); it is now historical alongside D1/f479. [Generator](recovery/crash5/T301-generator.json), [source-input recipes](recovery/crash5/T301-source-inputs.json), [source record](fixtures/joint-interface-source42/source-record.json). Corrected cut0 executed once: FAIL at original600s resumer wait,1532records without diagnostic quotas. Publication390.368s plus two source-explained postpublication passes153.962s account for544.330s disjoint; final phase begins597.544s. [Actual outcome](recovery/crash5/T301-profile-cut0-outcome.json), [full timings](recovery/crash5/T302-timings.md), [causal findings and remaining questions](recovery/crash5/T302-findings.md). The observed timeout mechanism is established; underlying operation latency/final tail/Linux causes remain OPEN. At that historical checkpoint, separate Astra/high accepted partial evidence and500-file clean remote recovery (T302-final-review.json); root-cause/T302 remainedOPEN. Current T306 above supersedes only that open application-level diagnosis, preserving the historical evidence. Original Windowsfive0/5 and Linux locallyUNRUN are separate.
+
+Recovery: Git preserves83 artifact files but not7empty directories. Verify T301-generator.zip SHA256 `1D4CEEEDE3FDF1765FB3786DAA7DB90FC37C1CA4C3B39B2E3606FDF012EF795C`, extract `generated/artifact/` into a separate new destination and verify its exact manifest/directory/file hashes. Current manifest SHA256 `43BFC32121602E28AA46C18185EACF8CC83D1B8A2EF06518D012C32951CEE1BD`; fingerprint `AF7825FAF0992CB2302E7AF5A8D3A824BE7A343EDAA83AA8DEE403C2A0D0E439`. Producing1772input recipes:34exact Git blobs/1738LF→CRLF. Formatting mismatch must fail closed; never rebind a historical manifest or regenerate automatically. Historical archives/attempts below remain consumed evidence. Saved Windows DLL proof is not Linux execution evidence.
+
+---
+
+# Historical T296 — partial named operation timings
+
+User instruction: measure actual code sections; no optimization. Active [spec](spec.md), [plan](plan.md), [tasks T293–297](tasks.md). Optional literal begin/end timers are enabled only in the diagnostic Windows resumer; nested times are inclusive. Four timer controls PASS, fresh XML builds have zero errors/changed-XML diagnostics, independent SOURCE/PREP accepted: [T295-source-review.json](recovery/crash5/T295-source-review.json).
+
+T296 generated one new genuine source42 artifact for compiled source `d1c59346d644016c765b9078ecf2fbb9605b8532`: preparation208.1023224s, total210.6351042s, two independent imports verified/cleaned. The fixed fixture path now contains this entire new artifact, not the historical f479 artifact. Current [source record](fixtures/joint-interface-source42/source-record.json), [generator](recovery/crash5/T296-generator.json), [binding](recovery/crash5/T296-seed-binding.json) and [producing input recipes](recovery/crash5/T296-source-inputs.json) apply together. T278/T279 below describe their historical source only.
+
+The T296 profiled cut0 failed at the600s resumer wait; test12:37.827/runner12:58.787, both children EOF/join and both owned roots absent. [Actual outcome](recovery/crash5/T296-profile-cut0-outcome.json) and [partial timings](recovery/crash5/T297-timings.md) preserve its raw evidence. The1024-record diagnostic quota cut named output at250.782s; a separate stage reached593.199s. This does NOT establish the cause. User explicitly rejected all diagnostic quotas; spec14 revision3/T298–302 removes them and continues diagnosis with changed instrumentation. Original Windowsfive0/5 and Linux locallyUNRUN remain separate.
+
+Current artifact recovery:
+
+1. Git preserves83 artifact files but not all declared directories (7 empty directories). A plain checkout is not a complete seed artifact. Verify `T296-generator.zip` SHA-256 `7C5DB5D1E91DEB8E41B07A28147F1CE099E2A28E2102F2FD857400ACC00FCF73`; its `generated/artifact/` preserves the directory tree. Extract DATA into a separate new destination; do not import historical T278 DATA into the current path.
+2. Verify manifest SHA-256 `67484461874F2E9A2336568F9D25E00A855363EAFBE7827AF4BBEA79744D3E44`, exact82 payload files/513713bytes, all file hashes/lengths and declared directories against that manifest. Keep `.gitattributes` text conversion disabled for artifact DATA.
+3. Current producing fingerprint `6B92A5C8B487209525082E1F3F8A47B75CAB7DAE522416F95EFC6DA5D8776331` covers1771 inputs:33 exact Git blobs and1738 LF→CRLF recipes. A different working checkout must fail closed; matching Git SHA alone does not prove producing-byte equivalence. Do not rebind a manifest or regenerate automatically.
+4. Saved DLL proof is Windows/sourceD1 only. Linux requires its own build and authorized checks; no Linux execution or OS-policy/diagnostic bypass occurs in this block.
+
+---
+
+# Spec12 / plan10 — current seeded cut0 preparation
+
+T279 completed exactly one seeded Windows cut0: 1 executed FAIL/0skip, selection complete; test12:37.809, runner12:58.319. Import0.9744731s, actual producer exit73 at155.266s; distinct resumer exhausted unchanged600s (shared820/max600/category15m), no gameplay verdict. Both EOF/join, two owned roots removed/absent,3DLL and83artifactfiles unchanged; T219 retained. Compiledf479d42a72f7412871e797575a1b1bd2c6dabd07/runtime metadata68cd09b70d85d5added82ff1a99ab11ab9005204. T279-seeded-cut0-outcome.json/assessment.json/raw.zip retain evidence. No retry/cuts1-4/production change; Windows original0/5, LinuxUNRUN. T280 final independent gpt-6-astra/high review ACCEPTED atd5c31e71d8d9abf2a930811f66a75f002641af60, no actionable findings; fresh GitHub recoverya9a00ddd9519e2b0bb75fd5b8d5cd289349940b0:435files/allGitblobs/exactHEAD/clean verified independently. T275..280 bounded investigation complete with T279 FAIL; no gameplay/originalfive/Linux qualification. See [readable result](recovery/crash5/T279-result.md). The permitted T279 attempt is consumed; commands below are historical setup/restoration reference and do not authorize another run.
+
+## Explicit artifact restoration
+
+Git stores the83 artifact files, but not seven empty directories. **A plain Git checkout is not a complete seed artifact**, even if source formatting matches. The verified T278-generator.zip preserves every declared directory, including empty directories; expected archive SHA256 is A40C75EDF43C5FCF51185FB901F3242CD0EAAB621A9D900E27D6660B8425D369. The artifact inside it is `generated/artifact/`.
+
+1. Verify the archive digest, then extract it into a fresh explicitly owned staging directory. Do not overwrite an existing directory. Check the staged manifest digest against5439B2F49BCAB971F5B97EFFA238842E6D0A4B4ADD8B5F8FF27093BF9063BFCC and its complete file/hash/directory inventory.
+2. To assemble the fixed repository fixture after a fresh checkout, first verify all83 existing Git artifact files against the staged manifest/payload; missing/changed/extra files refuse. Check ordinary paths and ancestors. Explicitly recreate only the missing declared empty directories from that verified inventory. Do not overwrite or normalize files, add .gitkeep, delete unknown entries, recover game state, or change the manifest. This separate transport preparation is not a loader repair or fallback. Recheck the exact artifact inventory before requesting a test.
+3. Match the producing working-input closure, not just the Git SHA. T278-source-inputs.json records all1769 source/asset hashes and Git-blob reconstruction recipes: core.autocrlf=true,32 exact Git blobs and1737 LF→CRLF inputs. Different checkout formatting correctly invalidates the fingerprint. A mismatch stops; any new genuine generation requires separately authorized bounded work, never an automatic fallback or an extra run in this slice.
+
+Missing empty directories after Git checkout:
+
+- `game_session/game_state/factions`
+- `game_session/images`
+- `game_session/input`
+- `game_session/lore/shining_abode`
+- `game_session/ready`
+- `game_session/saves/autosaves`
+- `game_session/saves/checkpoint_saves`
+
+The current local artifact already satisfies this inventory. Independent copies contain fresh local owners and only game_session+generation DATA. Original cold five/Linux paths remain separate; no universal fresh-clone or cross-platform consumer-readiness claim is made.
+
+---
+
+# Текущее состояние: spec11 / plan9 seed prototype
+
+T273 prototype PASS: one complete actual generator case/0skip; source42=206.249s, capture/export/open=1.121s, imports=0.105s/0.083s, read-only validation=0.385s/0.299s. 82 payload files/513708bytes; two own copies and source removed/absence confirmed. Immutable artifact retained and independently rehashed; no Stage43/crash/current-owner qualification or resume speedup claim. Compiled ef93fbde7cde3fddd0b0cf20c57102fa785dc330; runtime metadata 22acebccb41a986632cf586b8f8d4b184dbe2099; run 20261020-123808-320-56712-7cb9a4cc15534c0f8827ef726eb139ca-categories. Exact source/DLL/raw/artifact evidence T273-generator.json/zip. Windows0/5, original220 five NOT_RERUN, LinuxUNRUN; T219 historical fixture retained. Final independent gpt-6-astra/high evidence/recovery review ACCEPTED at aea971007e24108a19a6b942f982ececc85fb031. Fresh GitHub recovery d2ed51d00f2c1667f0cac68ff02e5121cd774c6b:329 files/allGitblobs/clean verified independently, zero mismatches; T274-clean-recovery.json.
+
+Artifact in T273-generator.zip under generated/artifact. Extract immutable DATA separately; Open requires current contract fingerprint. The generator is explicit category fr063-joint-interface-seed-generation,1case/6min; it is not the default test path. No unchanged regeneration or crash runtime is part of this slice.
+
+---
+
+# Текущий этап: spec10 / plan8 — проект коротких проверок
+
+Пользователь одобрил карту пяти crash cases и проект минимальной fixture cut0. [Spec10](spec.md), [plan8](plan.md), [tasks T266…T268](tasks.md). Предлагается immutable source42 seed из genuine gameplay, отдельная физическая копия на case, прежние Stage43/crash/current-owner oracles. Это проект, не реализованная fixture: portability/quiescence/contract fingerprint/измеренная польза — gates следующего slice. Новых tests/build/generator/runtime нет. Independent gpt-6-astra/high accepted04c6a9bbc; 10 design/governance files recovered clean from GitHub (T268-design-recovery.json). Windows0/5PASS, T263FAIL, LinuxUNRUN.
+
+---
+
+# Текущий результат: spec9 / plan7
+
+**Spec9 runtime:** Windows0/5PASS, 1/5 attempted at shared820/max600/category15m. T263-cut0 FAILED; completed=True, category timeout=False, duration 00:13:40.8952276; owned fixture cleanup=True, child EOF/join=True, unchanged3DLL=True. Dependent cuts stopped; no unchanged retry or automatic further limit increase. Diagnose actual evidence before a new plan. Original220 five NOT_RERUN; T219/T254/T259 failures retained; LinuxUNRUN.
+
+Compiled2c05158f9; T26243PASS and SOURCE/PREP accepted. Original assertions, identity, cleanup and Linux NativeLineage unchanged. T265 accepted by separate gpt-6.1-sol/xhigh at af7047267e1d4507900c6d72480fac25833eea81, including inspected historical-status correction. Raw failure, calculated405.8908437s remaining wait,3DLL,EOF/join,cleanup and306-file clean GitHub recovery verified. Windows0/5PASS; T264 stopped, original220 five NOT_RERUN, LinuxUNRUN.
+
+---
+
+# Текущий результат spec8 / plan6
+
+**T259 actual:** one completed FAIL/0PASS/0skip, resumer220s timeout; category15m did not time out. Producer exit73 at414.722s; resumer observations continued to214.292s. Named custody checkpoint32.829s; since then14822 canonical-initial hook observations,0observed canonical/main contention,0publication callbacks. This is ongoing observed read activity, not proof of finite completion or successful I/O. Both children EOF/join, two owned roots removed/absence confirmed; historical T219 fixture retained. Windows0/5PASS, cut0 attempted twice (T254 andT259); cut1…4 not run; LinuxUNRUN. No unchanged retry is authorized.
+
+T260 evidence review/recovery pending. Next bounded candidate: share the existing820s producer+resumer observation window, cap each child600s and retain category15m. No implementation or new runtime by this record; requires next canonical plan/controls/review.
+
+---
+
+# Текущий этап: spec8 / plan6
+
+T254 cut0FAIL: producer395.163s/exit73, resumer220s timeout;0/5Windows PASS. T256 accepted evidence and fresh276-file recovery. T257…T260 add bounded ordinary Windows resumer observations, then one cut0 investigation at unchanged600/220/15m. No Linux execution or production change. T255 remains stopped; historical results below retain their original scope.
+
+---
+
+# Текущая работа: spec7 / plan5
+
+**Windows qualification spec7:** 0/5 cases PASS; 1/5 attempted. Producer600s/resumer220s/category15m. Остальные случаи ещё не квалифицированы; продолжать только по gate T254/T255. Original220 five не повторены, T219/T244 history сохранена; Linux UNRUN.
+
+[Spec7](spec.md), [plan5](plan.md), [tasks](tasks.md), T252…T256. T250 source42 PASS258.780s; independent review/recovery T251 приняты. Следующий шаг — пять отдельно выбранных Windows cut0…4, producer600s/resumer220s и15m/category; код и SOURCE/PREP приняты (compiled652bdd76a,25PASS, reviewer gpt-6.1-sol/xhigh); gameplay qualification отражена выше. Original Theory220/Linux NativeLineage остаются прежними. Ниже сохранена история; новые результаты будут записаны отдельно.
+
+---
+
+# Текущая работа: spec6 / plan4
+
+User waiver2026-10-20 разрешает продолжать без промежуточных согласований. [Spec6](spec.md), [plan4](plan.md), tasks T248…T251: отдельная Windows source42-проба600s/category12m после policy GREEN и independent PREP. T250 завершена:1 planned/completed/PASS,0failed/skip; source-turn return258.778s, engine return258.780s. Child76132 exit0, EOF/join true, оба owned root удалены и отсутствие подтверждено. Наблюдённое выполнение превышает220s; зависания в этой попытке нет. Это не гарантия времени всех сценариев и не SC-WIN five PASS. T244220FAIL сохраняется; original five не повторены, Linux UNRUN. T251 принята независимым gpt-6.1-sol/xhigh на5149447e0 без замечаний; fresh GitHub recovery261files подтверждена, запись T251-clean-recovery.json. Исходные220s probe/five budgets и Linux NativeLineage остаются прежними; T244FAIL сохранён. Ниже — законченный plan3 checkpoint.
+---
+
+# CRASH5 spec5 / plan3 — адресная проверка
+
+[Spec5](spec.md) согласована из f9658ae0e; [plan3](plan.md) из f368bd592 одобрен владельцем ответом «Ладно». Канонический ход работ — [T240…T247](tasks.md).
+
+T240…T243 завершены. Исходники 1e0a5fcd7 и подготовка SOURCE/PREP приняты отдельным gpt-6-astra/high. Адресная квалификация:17 категорий,180 distinct PASS,0skip; это union89 на85f4 +23 на8617692 +68 на1e0a5fcd7 с отдельными source/DLL bindings, а не один общий прогон. Обе XML builds exit0, changed XML diagnostics0; catalog и PlanOnly подтверждены. T244 выполнена один раз:FAIL_CHILD_TIMEOUT220,1 completed/1 failed/0skip, полного возврата хода нет; подробности и cleanup в T244-probe-outcome.json. T245 НЕ ЗАПУЩЕНА: gate не выполнен. Повтор T244 или увеличение лимита этим plan3 не разрешены. Windows5 сохраняет исторический T219 FAIL_INCOMPLETE; Linux UNRUN.
+
+Проверенные изменения: borrowed validation использует исходный console QTE lease;40 mutation envelopes согласуют чтение, запись и закрытие. BrowserLocalAccess, browser original, same-turn и override сохраняют scalar validation. Исправлены lifetime retired nested frame и тест, ошибочно ожидавший замену сессии после main admission. Полные причины RED и последующие GREEN сохранены в [investigation](recovery/crash5/source42-investigation.md); [180-case provenance](recovery/crash5/T243-final-prep.json).
+
+Для fresh Linux checkout сначала подготовить native package по [handoff](recovery/crash5/linux-handoff.md), затем последовательно выполнить XML builds и discovery. Windows binaries и union PASS не заменяют Linux qualification.
+
+    dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true
+    dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -p:GenerateDocumentationFile=true
+    ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+    ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -PlanOnly -NoBuild -Parallelism 1
+
+Snapshot selection содержит17 категорий/180 cases на проверенном Windows source. На Linux подтвердить фактический discovery и выполнять адресные категории последовательно, сохраняя каждый summary/TRX/source/DLL binding. Каждая категория имеет собственный бюджет; не объединять их в старый browser aggregate. После snapshot и NativeLineage controls нужен независимый Linux PREP перед ordinary5. Windows-only source42 на Linux не запускать.
+
+Согласованные Windows gates (это описание последовательности, не разрешение повторить уже выполненный T244):
+
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-source42-windows-probe -PlanOnly -NoBuild -Parallelism 1
+    ./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild -Parallelism 1
+
+PlanOnly подтверждает1/5 cases,5m/15m. После принятой SOURCE/PREP разрешён ровно один T244 source42; только его реальный full-return PASS допускает T245 ordinary5. Child220s/stop-join10s/EOF10s и original assertions не менялись. FAIL/partial сохраняются без автоматического retry. Counts initial/returned callbacks не являются полным physical I/O или временем отдельного метода. Сохранять owned cleanup отдельно от runner cleanup; retained T219 fixture не удалять.
+
+Ниже — исторические spec4/ранние инструкции и результаты. Их старые selectors/counts/status не задают текущий отбор или разрешение runtime.
+
+---
+
+# CRASH5 spec4 / plan2 — проверка реализации
+
+[Spec4](spec.md) одобрена из da3efec34; [plan2](plan.md) из bd9c8dd434 одобрен владельцем. Выполняются [T230…T237](tasks.md). Source9c30fc6b8 принят независимым gpt-6-astra/high после причинного RED и исправления outer-owner close. Обе свежие XML builds прошли; 90 distinct cases PASS в документированном union; Windows SOURCE/PREP принят gpt-6-astra/high на evidence d8791bab6. После Meta aggregate timeout прежние шесть Meta selectors разделены на proof7/reservation7/ownership8, каждая категория3m; итоговая selection8descriptors/90cases. Команды ниже задавали исторический отбор spec4. Windows5 пока FAIL_INCOMPLETE, Linux UNRUN; подробные доказательства в [investigation](recovery/crash5/source42-investigation.md).
+
+## Фактический результат и граница следующего шага
+
+Единственная T234 source42 проба завершилась FAIL_CHILD_TIMEOUT220:1 completed/1 failed/0 skipped, QTE достигнут на192.405s, возврат всего хода не наблюдался. Original child EOF/join и удаление обоих owned roots подтверждены. Повтор source42 и Windows5 сейчас не разрешены этим plan2; T235 требует PASS. Команды ниже остаются рецептом отбора и не являются поручением повторить уже выполненные проверки. Этот статус spec5 исторический; актуальная согласованная реализация и её результат указаны в начале файла. Linux UNRUN.
+
+Из корня отдельной копии, PowerShell7, .NET SDK10 + runtime8. DOTNET_ROOT при необходимости задаётся только на время команды и восстанавливается в finally, как в предыдущем CRASH5 guide. Для XML diagnostics не подавлять reference/parameter warnings:
+
+```powershell
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:GenerateDocumentationFile=true
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -p:GenerateDocumentationFile=true
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-snapshot-validation.json -NoBuild
+```
+
+Сначала exact T230 RED category, затем после кода GREEN и affected controls: new contracts2m, lifecycle5m, existing c5-original-post-validation-source и два c5-world-state-read-phase owners плюс три pending-snapshot-validation-meta категории proof/reservation/ownership по3m, вместе сохраняющие шесть exact selectors из plan2. Сохранять отдельно наблюдённый RED reason, source/DLL/planned/completed/skips, границы component/whole-operation counts. Catalog/PlanOnly не являются runtime tests. Не запускать один и тот же passing owner без изменившегося кода/риска. Точный состав утверждает SOURCE/PREP по реальному diff; Linux-only cases здесь UNRUN.
+
+После принятого T233 один original `fr063-joint-interface-source42-windows-probe` (исходные selector/220s неизменны), после его PASS original `fr063-joint-interface-crash-current`. Все новые runtime provenance записываются в существующий `recovery/crash5/source42-investigation.md` и `linux-handoff.md`. Ни fast controls, ни read-count снижение не закрывают SC-WIN. Для облака — fresh Linux build/package/controls/five, Windows DLL не передавать как compiled proof.
+
+---
+
+# CRASH5 — validation guide для NativeLineage Linux / локального Windows
+
+[Spec редакции3](spec.md), [plan](plan.md), [tasks](tasks.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Ни одна команда из этого руководства не выполнялась на этапе планирования. Implementation plan1 approved6f2d4d486; actual helper checkpoints записаны в plan; Linux блок запускает облачный исполнитель. Исторические инструкции ниже не являются текущим отбором.
+
+## Preconditions и provenance
+
+Текущий результат: NativeLineage/Windows source принят, helpers37PASS на51f; после T228 обновлённые stages9PASS на25ef748ce отдельно. Windows ordinary5 FAIL_INCOMPLETE; два отдельных source42 investigations T227/T228 по completed1/failed1 с child220s. Это предыдущий NativeLineage checkpoint; актуальная реализация spec4/plan2 и её evidence приведены в начале документа. Linux UNRUN. Точные артефакты и команды передачи — [linux-handoff.md](recovery/crash5/linux-handoff.md). Не повторять unchanged five/probe: сначала причинный анализ и, если нужен выход за текущий production scope, согласование дополнения спецификации.
+
+PowerShell7, SDK10, .NET8 runtime; отдельный чистый checkout выбранного source SHA. Зафиксировать `git rev-parse HEAD`, `git status --porcelain`, dotnet `--info`, hashes build outputs и source/diff. На Linux дополнительно x64/glibc, `cc`, `readelf`, доступные штатные NativeLineage prerequisites. Никаких изменений политик/прав среды. Новые категории должны уже существовать после реализации; неизвестный selector — ошибка подготовки.
+
+Для текущего изменения `tests/selection.json` содержит ordinary5 и восемь адресных snapshot категорий. Snapshot controls запускаются отдельно через `tests/selections/1536-snapshot-validation.json`; ordinary5 — только после accepted SOURCE/PREP и source42 PASS. G01 не входит в отбор. `PlanOnly` и `ValidateCatalog` делают discovery; без NoBuild также build. Они не являются metadata-only чтением.
+
+`DOTNET_ROOT` должен указывать фактический корень выбранного runtime. Следующий код меняет только environment текущего PowerShell-процесса и его будущих children, не пользовательские/машинные настройки; сохранить прежние значения и восстановить в `finally` после выбранной фазы:
+
+```powershell
+$previousDotnetRoot = $env:DOTNET_ROOT
+$previousNativePackage = $env:BOE_CRASH5_NATIVE_PACKAGE
+$dotnetCommand = (Get-Command dotnet -CommandType Application -ErrorAction Stop).Source
+$dotnetTarget = [IO.File]::ResolveLinkTarget($dotnetCommand, $true)
+$dotnetExecutable = if ($null -eq $dotnetTarget) { $dotnetCommand } else { $dotnetTarget.FullName }
+$env:DOTNET_ROOT = Split-Path -Parent $dotnetExecutable
+```
+
+Каждая команда должна завершиться exit0; при nonzero прекратить эту фазу, сохранить logs/owned roots и установить причину. Не выполнять следующий блок через незамеченный fail. Результаты runner находятся в новом каталоге `TestResults/test-categories/`; сохранить точный каталог каждого вызова, stdout/stderr, build/discovery/plan/summary/TRX, actual counts и cleanup.
+
+## Windows: fresh build и PREP
+
+Из корня checkout; native package Windows не нужен:
+
+```powershell
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-contracts.json -PlanOnly -NoBuild
+```
+
+Проверить новые/изменённые XML blocks и compiler XML diagnostics; unrelated CS1591 не расширяет текущий scope. Ordinary PlanOnly обязан содержать одну integration Theory и пять cases, no skip; helper/native guard counts отдельные. SOURCE/PREP review проверяет final diff, полноту selection и hashes конкретных DLL. `-NoBuild` разрешён только для этих свежих outputs, изменение source/dependencies требует новой соответствующей подготовки.
+
+Локальный RED→GREEN при разработке — `-Category fr063-joint-interface-crash-adapter-contracts` либо отдельно `-Category fr063-joint-interface-crash-stage-contracts` с точной записью ожидаемых failing cases, далее соответствующий GREEN. Проверяются настоящие production decision/await/env/output helpers. Compile/preparation failure не RED. T204 перед native wiring проверяет RED coverage; для непокрытого поведения требуется tests-only cloud checkpoint и фактический RED **до** соответствующей production-правки, а не после T221. В таком checkpoint cloud PREP подготавливает только соответствующие selected tests/бинарники и не даёт права на ordinaryfive. Если категория содержит несколько разрабатываемых методов, фиксировать точный planned/completed список, не запускать другой broad category.
+
+## Windows: фактическая проверка после SOURCE/PREP
+
+```powershell
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-contracts.json -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild
+```
+
+Первый вызов — helper/managed consumer contracts, второй — **ровно пять** игровых cases с прежними assertions. Ожидается planned=completed=passed=5, skipped=0, original73/resumer0, independent identity/nonce, EOF/join/cleanup. Не запускать native Linux controls здесь. Не повторять passing выборку без нового изменения/непроверенного affected consumer; после исправления запускать нужные категории.
+
+## Linux: подготовка package и собственных свежих DLL (Астра)
+
+Из корня выбранного cloud checkout, после сохранения command-scope environment выше:
+
+```powershell
+$nativePackage = Join-Path (Get-Location) ('TestResults/crash5-native-' + [Guid]::NewGuid().ToString('N'))
+./scripts/build-linux-supervisor.ps1 -OutputDirectory $nativePackage -IncludeHostGuardian -IncludeTerminalFixture
+$env:BOE_CRASH5_NATIVE_PACKAGE = $nativePackage
+dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591 "-p:BoeNativePackageDirectory=$nativePackage" -p:BoeRequireNativePackage=true
+dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591 "-p:BoeNativePackageDirectory=$nativePackage" -p:BoeRequireNativePackage=true
+./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-linux-controls.json -PlanOnly -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -PlanOnly -NoBuild
+```
+
+Сохранить `package-manifest.json`, native binary/source SHA256, build logs, source commit и selected managed DLL hashes. Package validator дополнительно выполняется новым finite entrypoint; package отсутствие/несовместимость не включает fallback. Runner не принимает native MSBuild flags, поэтому после explicit build использовать NoBuild. Existing host/terminal controls могут компилировать собственные изолированные test fixtures; ordinary5 использует один заранее подготовленный immutable package.
+
+## Linux: отдельные controls, затем ordinary5 (Астра)
+
+После принятого cloud PREP:
+
+```powershell
+./scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-crash5-linux-controls.json -NoBuild
+./scripts/test-csharp.ps1 -Category fr063-joint-interface-crash-current -NoBuild
+```
+
+Controls selection включает `worker-native-finite-pipe-linux`, `worker-pool-regression-host`, `worker-native-bootstrap-output`, `worker-native-owner-retention`, `gm-owned-terminal-native-linux`, `gm-main-systemd-affected`. Старые budgets/metadata не меняются. Runner deduplicates overlaps; считать actual discovery/summary, не сумму literal InlineData из research. При fail controls сначала расследовать причину; не объявлять ordinaryfive допущенными.
+
+Собственные finite controls: guardian20s, внешний await25s, category3m. Output test пишет ровно131072 ASCII chars в каждый отдельный stream, превышая прежний bridge cap. Negative controls могут намеренно получить Uncertain; это успех только **негативного control assertion**, не cleanup/game PASS. Существующий guardian отдельно подтверждает containment изолированного control-driver; не добавляется к игровым пяти и не подменяет NativeLineage evidence.
+
+Завершив chosen phase, восстановить только ранее сохранённые environment значения:
+
+```powershell
+$env:DOTNET_ROOT = $previousDotnetRoot
+$env:BOE_CRASH5_NATIVE_PACKAGE = $previousNativePackage
+```
+
+## Evidence и остановка
+
+Ordinary original root73 и resumer root0 различаются от supervisor0. Требуются полные исходные игровые oracles, root identity, natural/scoped stop, output EOF, Dispose/owned directory evidence. На Uncertain original owner удерживается, известные каталоги и handles не объявляются очищенными; сохранить run/nonce/root/supervisor и failure chain. Не повторять запуск при неизвестном исходе/обрыве связи, пока прежний outcome/ownership не установлен.
+
+Handoff в `recovery/crash5/linux-handoff.md` создаётся после реализации: reviewed source SHA, Windows outcomes отдельно, cloud prerequisites/команды, все UNRUN, причина каждого patch либо открытый вопрос. Linux52/57 относится к историческому source; новые5 считаются только по новому run. Никакого автоматического сообщения Астре, запуска G01/G02, CI/full suite или живого мостика этим руководством не назначено.
+
+## Исторический quickstart feature1536 (без изменения)
+
 # Quickstart: Implementing and Verifying Complete Wound Materialization
 
 **Feature**: `1536-complete-wound-materialization`  
@@ -606,3 +958,9 @@ writes. XML build and mandatory independent Astra XHigh review cover the whole
 bounded runtime/tests/docs block. One complete successful PreMerge≤30minutes
 (including Fast and cleanup) establishes performance acceptance; stop afterward
 for owner inspection. Full death lifecycle and unrelated feature work remain open.
+
+T243 browser qualification85f4:13 categories169PASS before browser5 incomplete at180s. Raw stdout records three assertion failures before timeout (resource history/runtime and late history); no TRX, so none of these five is counted PASS. Runner-owned cleanup succeeded. Under AGENTS category-splitting rule, independent Astra/high accepts exact same three method selectors partitioned2+2+1, each3m, selection17/178; no game bounds or assertions change. Added full existing result.Error output before unchanged assertions to diagnose actual cause. BrowserOriginal scope versus local browser transaction eligibility remains a source hypothesis pending runtime evidence. Source42 unconsumed, LinuxUNRUN.
+
+T243 browser correction: diagnostic4f3c two complete failures confirm original browser transaction entered borrowed console validation before the injected late error; rollback itself restored files. Exact real BrowserLocalAccess unit negativecceef19=18PASS1expectedFAIL. New overload now preserves scalar for that original lease-bound marker; borrowed issuer rejects it. Independent Astra/high reviewed exact two condition additions and approved only ValidationService/PendingSnapshotValidationRead pins. Final SOURCE/PREP pending GREEN. Final qualification17categories179distinct: retained85f4 unaffected8groups89PASS (contracts36,lifecycle3,Meta reservation7/ownership8,World core2,source3,mutation26,QTE neighbors4), fresh9groups90 (custody19,proof24,caller7,World controls24,Meta proof7,browser2+2+1,lease release4). Source/DLL provenance must remain separate. This finite correction does not change spec or game bounds; T244 unconsumed, LinuxUNRUN.
+
+T249 SOURCE/PREP accepted by separate gpt-6.1-sol/xhigh atcee572dc65e4c5e1ea59fe0c946bb9aa768f8a93; no findings. Policy17PASS, original/default/extended/five discovery verified, current3DLL hashes match. Archive T249-prep.zip SHA2568A5FE194C6481C2E1F73AD171A3935F7D4C1D32ED76B3017962E7E45B468CA12. T250 not started at this checkpoint; exactly one explicit600/10/10/12m run permitted by spec6 and user waiver. Historical T244FAIL and LinuxUNRUN unchanged.

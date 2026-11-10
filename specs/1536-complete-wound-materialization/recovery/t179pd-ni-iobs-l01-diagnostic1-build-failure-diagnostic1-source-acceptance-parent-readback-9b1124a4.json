@@ -1,0 +1,38 @@
+{
+  "kind": "PARENT_DIAGNOSTIC_SOURCE_ACCEPTANCE_READBACK_ZERO3_ONLY",
+  "checkedUtc": "2026-10-18T16:24:25.050267+00:00",
+  "sha": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+  "compiledSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+  "sourceCandidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+  "qualified": 52,
+  "pins": 101,
+  "product": 23,
+  "pinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+  "sourceAcceptance": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
+  "namedZeroRelease": {
+    "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_DIAGNOSTIC_ZERO3_ONLY",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-cloud-f57baaa8",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-cloud-f57baaa8"
+    },
+    "scope": "Each mode separately invoked; fresh build/catalog then unchanged whole57 and diagnostic1 PlanOnly-NoBuild, ZERO actual; no actual release. After exact saved acceptance/recovery/metadata readback and clean v2 boundary."
+  },
+  "noActualRelease": true,
+  "old66529": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "newCrash5": "FROZEN_NATIVE124_NO_TRX_NO_ADDED_TARGETS",
+  "namespace": {
+    "identity": "ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+    "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-f57baaa823e7465cb91cd7fcd9613dea",
+    "samePhysicalCloud": true,
+    "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+    "frozenRootsOutsideMutableNamespace": [
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+    ],
+    "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+    "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1.sh"
+  },
+  "limits": "Readback only; wrapper must verify frozen-root bytes and clean dated global/new mutable namespace census before each separately invoked ZERO phase."
+}

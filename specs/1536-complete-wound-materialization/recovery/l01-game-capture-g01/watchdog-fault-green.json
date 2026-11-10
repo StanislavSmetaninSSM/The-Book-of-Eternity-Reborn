@@ -1,0 +1,142 @@
+{
+  "kind": "G01_EXACT_SOURCE_FAKE_LIFECYCLE",
+  "sourceSha256": "c1a484e04a38971ff7961afbd45a492e6b18d1e20c65c6eec855dd85fef3a706",
+  "cases": [
+    {
+      "case": "pidfd-setup-failure",
+      "passed": true,
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "OSError('injected pidfd setup failure')"
+        ],
+        "collector": {
+          "command": [
+            "inert"
+          ],
+          "pid": 4242,
+          "identity": {
+            "pid": 4242,
+            "parentPid": 100
+          },
+          "nativeExit": null,
+          "joined": true,
+          "cleanupExit": -9
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "ownedCleanupSignals": [
+          "direct-collector"
+        ],
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 1,
+      "simulatedSignals": [
+        "direct-child"
+      ],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 2
+    },
+    {
+      "case": "natural7-before-finally",
+      "passed": true,
+      "record": {
+        "nativeExit": 7,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": 7,
+          "joined": true
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 7
+    },
+    {
+      "case": "forced-cleanup",
+      "passed": true,
+      "record": {
+        "nativeExit": null,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": null,
+          "joined": true,
+          "cleanupExit": -9
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "ownedCleanupSignals": [
+          "collector"
+        ],
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [
+        "pidfd"
+      ],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 2
+    },
+    {
+      "case": "known7-observer-error",
+      "passed": true,
+      "record": {
+        "nativeExit": 7,
+        "observerErrors": [
+          "injected observer error before next poll"
+        ],
+        "collector": {
+          "nativeExit": 7,
+          "joined": true
+        },
+        "collectorLaunches": 1,
+        "diagnosticRequests": null,
+        "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+        "apiNativeStatus": null,
+        "collectorEvents": [],
+        "admittedRequestStages": 0,
+        "createdumpIdentities": [],
+        "durationSeconds": 100.0
+      },
+      "simulatedLaunches": 0,
+      "simulatedSignals": [],
+      "waits": [
+        5.0
+      ],
+      "finalizerExit": 7
+    }
+  ],
+  "passed": 4,
+  "nativeProcesses": 0,
+  "gameCases": 0,
+  "apiRequests": 0
+}

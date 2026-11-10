@@ -15,9 +15,18 @@ public partial class ValidationService
 
     internal IDisposable UsePrevalidatedPendingTurnSnapshotScope(object? manifest)
     {
-        var previous = _prevalidatedPendingTurnSnapshotOverride;
-        _prevalidatedPendingTurnSnapshotOverride = ConvertToValidationPendingTurnSnapshotManifest(manifest);
-        return new PrevalidatedPendingTurnSnapshotScope(this, previous);
+        BeginWorldOverrideMutation(withdrawal: false);
+        try
+        {
+            var converted = ConvertToValidationPendingTurnSnapshotManifest(manifest);
+            lock (_worldReadGate)
+            {
+                var previous = _prevalidatedPendingTurnSnapshotOverride;
+                _prevalidatedPendingTurnSnapshotOverride = converted;
+                return new PrevalidatedPendingTurnSnapshotScope(this, previous);
+            }
+        }
+        finally { EndWorldOverrideMutation(); }
     }
 
     private static ValidationPendingTurnSnapshotManifest? ConvertToValidationPendingTurnSnapshotManifest(object? manifest)
@@ -48,16 +57,27 @@ public partial class ValidationService
 
         public void Dispose()
         {
-            if (_disposed)
-                return;
-
-            _service._prevalidatedPendingTurnSnapshotOverride = _previous;
-            _disposed = true;
+            lock (_service._worldReadGate)
+            {
+                if (_disposed) return;
+                _service.BeginWorldOverrideMutation(withdrawal: true);
+            }
+            try
+            {
+                lock (_service._worldReadGate)
+                {
+                    if (_disposed) return;
+                    _service._prevalidatedPendingTurnSnapshotOverride = _previous;
+                    _disposed = true;
+                }
+            }
+            finally { _service.EndWorldOverrideMutation(); }
         }
     }
 
-    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync()
+    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false, NarrativeInterfaceSourceSession? source = null)
     {
+        using var evaluationTiming = _fs.MeasureOperation("NarrativePolicy.Evaluate");
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
             "output/narrative_response.json",
@@ -65,10 +85,11 @@ public partial class ValidationService
             "accepted_turn_stale_narrative_response",
             "output/narrative_response.json must be freshly rewritten for the current accepted turn",
             "Не переиспользуй старый output/narrative_response.json. Перезапиши narrative_response.json свежим ответом именно для текущего accepted turn.",
-            issues);
-        var json = await _fs.ReadFileAsync("output/narrative_response.json");
+            issues, source);
+        var json = await ReadNarrativeSourceTextAsync("output/narrative_response.json", source);
         if (string.IsNullOrWhiteSpace(json))
         {
+            source?.Policy("output/narrative_response.json", "document-kind", "NotReachedMissingOrBlank");
             issues.Add(new ValidationIssue(
                 "output/narrative_response.json",
                 IssueSeverity.Error,
@@ -81,47 +102,27 @@ public partial class ValidationService
             return issues;
         }
 
-        json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
-            "output/narrative_response.json",
-            json);
+        if (readOnly)
+        {
+            if (AcceptedTurnOutputProjector.ProjectNarrative(json).Changed)
+                issues.Add(new ValidationIssue("output/narrative_response.json", IssueSeverity.Error,
+                    "The sealed joint narrative requires normalization; exact accepted bytes must be retained.",
+                    code: "mortal_joint_sealed_narrative_requires_normalization"));
+        }
+        else
+            json = await NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync("output/narrative_response.json", json, source);
 
+        var documentParsed = false;
         try
         {
             using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-            {
-                issues.Add(new ValidationIssue(
-                    "output/narrative_response.json",
-                    IssueSeverity.Error,
-                    "output/narrative_response.json должен быть JSON object",
-                    code: "accepted_turn_invalid_narrative_json_root",
-                    section: "Narrative",
-                    expected: "JSON object with response and timestamp",
-                    actual: doc.RootElement.ValueKind.ToString(),
-                    repairHint: "Оставь output/narrative_response.json валидным JSON-объектом с полями response и timestamp."));
+            documentParsed = true;
+            source?.Policy("output/narrative_response.json", "document-kind", doc.RootElement.ValueKind.ToString());
+            if (!EvaluateAcceptedNarrativePrefix(doc.RootElement, issues, out var responseText))
                 return issues;
-            }
 
-            string responseText = string.Empty;
-            if (!doc.RootElement.TryGetProperty("response", out var responseProp) ||
-                responseProp.ValueKind != JsonValueKind.String ||
-                string.IsNullOrWhiteSpace(responseProp.GetString()))
-            {
-                issues.Add(new ValidationIssue(
-                    "output/narrative_response.json.response",
-                    IssueSeverity.Error,
-                    "Accepted GM turn должен содержать непустой narrative response",
-                    code: "accepted_turn_empty_narrative_response",
-                    section: "Narrative",
-                    expected: "non-empty response string",
-                    actual: "missing or empty",
-                    repairHint: "Поле response в output/narrative_response.json должно содержать свежий текст нарратива для текущего хода."));
-            }
-            else
-            {
-                responseText = responseProp.GetString() ?? string.Empty;
-            }
-
+            var timestampIssueStart = issues.Count;
+            source?.BeginTimestampPolicy();
             ValidateRequiredIsoTimestampField(
                 doc.RootElement,
                 "output/narrative_response.json",
@@ -132,47 +133,19 @@ public partial class ValidationService
                 "narrative_response_invalid_timestamp",
                 "Добавь в output/narrative_response.json поле timestamp в ISO 8601 формате вместе со свежим response для текущего accepted turn.");
 
-            foreach (var prop in doc.RootElement.EnumerateObject())
-            {
-                if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                if (string.Equals(prop.Name, "response", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                issues.Add(new ValidationIssue(
-                    $"output/narrative_response.json.{prop.Name}",
-                    IssueSeverity.Error,
-                    "output/narrative_response.json содержит неподдерживаемое top-level поле",
-                    code: "narrative_response_unknown_field",
-                    section: "Narrative",
-                    expected: "response | timestamp",
-                    actual: prop.Name,
-                    repairHint: "Пиши в output/narrative_response.json только response и timestamp для текущего хода."));
-            }
+            source?.ReturnedTimestampPolicy(issues, timestampIssueStart);
+            EvaluateAcceptedNarrativeTail(doc.RootElement, responseText, issues);
 
             if (!string.IsNullOrWhiteSpace(responseText))
             {
-                if (TryFindTechnicalRepairLeakInNarrative(responseText, out var matchedTechnicalText))
-                {
-                    issues.Add(new ValidationIssue(
-                        "output/narrative_response.json.response",
-                        IssueSeverity.Error,
-                        "Player-facing narrative response содержит технический repair/validation/storage текст.",
-                        code: "narrative_response_technical_repair_leak",
-                        section: "Narrative",
-                        expected: "diegetic player-facing scene text without JSON, validation, repair, canonical-state, or storage-shape wording",
-                        actual: matchedTechnicalText,
-                        repairHint: "Перепиши response как внутриигровую сцену. Не упоминай JSON, validation/repair, canonical state, массивы, поля, файлы или факт технической записи состояния; технические детали должны оставаться только в debug_logs/repair evidence."));
-                }
-
-                await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues);
-                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues);
+                await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues, source);
+                await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues, source);
             }
         }
         catch (JsonException)
         {
+            source?.Policy("output/narrative_response.json", "narrative-domain-catch",
+                documentParsed ? "DownstreamJsonException" : "InvalidJson");
             issues.Add(new ValidationIssue(
                 "output/narrative_response.json",
                 IssueSeverity.Error,
@@ -199,13 +172,25 @@ public partial class ValidationService
     /// <returns>
     /// The normalized JSON when changed; otherwise the exact original text.
     /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     private async Task<string> NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
         string narrativePath,
-        string json)
+        string json, NarrativeInterfaceSourceSession? source = null)
     {
+        using var projectionTiming = _fs.MeasureOperation("NarrativePolicy.ProjectNarrative");
         var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);
+        projectionTiming?.Dispose();
+        source?.Projection(projected.Json, projected.Changed);
         if (projected.Changed)
-            await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);
+        {
+            var writer = source?.BeginWrite(narrativePath);
+            try
+            {
+                if (writer is null) await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);
+                else await _fs.WriteFileAtomicAsync(narrativePath, projected.Json, writer);
+            }
+            catch (Exception error) { writer?.Fault(error); throw; }
+        }
         return projected.Json;
     }
 
@@ -235,48 +220,46 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task ValidateAcceptedTurnProseStateDeltasAsync(string narrativeText, List<ValidationIssue> issues)
+    private async Task ValidateAcceptedTurnProseStateDeltasAsync(string narrativeText, List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
     {
-        var playerFacingText = await BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(narrativeText);
+        var playerFacingText = await BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(narrativeText, source);
         if (string.IsNullOrWhiteSpace(playerFacingText))
             return;
 
-        var filesModified = await ReadAcceptedTurnFilesModifiedAsync();
-        var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync();
+        var filesModified = await ReadAcceptedTurnFilesModifiedAsync(source);
+        var noProgressRationaleText = await ReadAcceptedTurnNoProgressRationaleTextAsync(source);
 
-        var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync();
-        foreach (var skillName in knownSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+        var knownSkillNames = await ReadCurrentKnownPlayerSkillNamesAsync(source);
+        var claimedSkillNames = CollectClaimedSkillNames(playerFacingText, knownSkillNames);
+        if (claimedSkillNames.Count > 0)
         {
-            if (!ContainsSkillUseClaim(playerFacingText, skillName))
-                continue;
+            var skillDeltaContext = await ReadAcceptedTurnSkillDeltaContextAsync(filesModified, knownSkillNames, source);
+            foreach (var skillName in claimedSkillNames)
+            {
+                if (skillDeltaContext.SatisfiesSkillClaim(skillName) ||
+                    HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
+                    continue;
 
-            var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
-                "game_state/player/skill_mastery.json",
-                "game_state/player/skills_active.json",
-                "game_state/player/skills_passive.json");
-            if (hasDelta || HasNoProgressRationale(noProgressRationaleText, "skill", skillName))
-                continue;
-
-            issues.Add(new ValidationIssue(
-                "game_state/player/skill_mastery.json",
-                IssueSeverity.Error,
-                $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
-                code: "accepted_turn_skill_claim_missing_state_delta",
-                section: "ProseStateDelta",
-                expected: "skill mastery/progression delta, skill state delta, or explicit no-progress rationale in gm_thoughts_markdown",
-                actual: "skill claim found in narrative/interface text; skill state unchanged",
-                repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression в game_state/player/skill_mastery.json или соответствующий skill state delta. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+                issues.Add(new ValidationIssue(
+                    "game_state/player/skill_mastery.json",
+                    IssueSeverity.Error,
+                    $"Player-facing prose says known skill '{skillName}' affected the scene, but accepted state has no matching skill delta or no-progress rationale.",
+                    code: "accepted_turn_skill_claim_missing_state_delta",
+                    section: "ProseStateDelta",
+                    expected: "skill mastery/progression delta targeting the claimed skill by its exact canonical name (a skillMasteryChanges entry for an active skill, or masteryLevel/currentMasteryProgress progression inside its passiveSkillChanges entry for a passive skill), a new-skill delta for the claimed skill, or explicit no-progress rationale in gm_thoughts_markdown",
+                    actual: skillDeltaContext.DescribeActualForMissingClaim(skillName),
+                    repairHint: $"Если '{skillName}' реально помог, добавь узкое изменение mastery/progression именно для '{skillName}': для активного навыка — запись в game_state/player/skill_mastery.json, для пассивного — обнови masteryLevel/currentMasteryProgress в его записи passiveSkillChanges в game_state/player/skills_passive.json (не пиши пассивный навык в skillMasteryChanges). Поле skillName должно точно совпадать с каноническим именем навыка. Если прогресса быть не должно, добавь в output/debug_logs.json.gm_thoughts_markdown секцию 'Prose State Delta Rationale' с именем навыка и причиной отсутствия прогресса."));
+            }
         }
 
-        var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync();
+        var activeQuests = await ReadCurrentActiveRegularQuestIdentitiesAsync(source);
         foreach (var quest in activeQuests.OrderBy(q => q.Title, StringComparer.OrdinalIgnoreCase))
         {
             if (!ContainsQuestClueClaim(playerFacingText, quest.Title))
                 continue;
 
             var hasDelta = await HasAcceptedTurnStateDeltaAsync(
-                filesModified,
+                filesModified, source,
                 "game_state/quests/regular_quests.json",
                 "game_state/quests/quest_history.json",
                 "game_state/quests/plot_outline.json");
@@ -295,16 +278,473 @@ public partial class ValidationService
         }
     }
 
-    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText)
+    /// <summary>
+    /// Reads the accepted turn's player skill deltas once so every prose skill claim
+    /// is coupled to a delta targeting that exact canonical skill.
+    /// </summary>
+    /// <param name="filesModified">
+    /// The accepted turn's reported file modifications used as fallback change evidence.
+    /// </param>
+    /// <param name="knownSkillNames">
+    /// The player's current canonical skill names preserving exact spelling.
+    /// </param>
+    /// <param name="source">
+    /// The current narrative source observation session, including original snapshot reads.
+    /// </param>
+    /// <returns>
+    /// The immutable per-turn skill delta context for claim coupling.
+    /// </returns>
+    private async Task<AcceptedTurnSkillDeltaContext> ReadAcceptedTurnSkillDeltaContextAsync(
+        IReadOnlyCollection<string> filesModified,
+        IReadOnlyCollection<string> knownSkillNames,
+        NarrativeInterfaceSourceSession? source = null)
+    {
+        const string masteryPath = "game_state/player/skill_mastery.json";
+        const string passivePath = "game_state/player/skills_passive.json";
+        var masteryJson = await ReadNarrativeSourceTextAsync(masteryPath, source);
+        var masteryReferences = ReadMasteryIdentityReferences(masteryJson, "skillMasteryChanges");
+        var masteryFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, source, masteryPath);
+        var currentMastery = ReadSkillEntriesByExactName(masteryJson, "skillMasteryChanges");
+        var preTurnMastery = ReadSkillEntriesByExactName(
+            await ReadCouplingPreTurnSnapshotAsync(masteryPath, source),
+            "skillMasteryChanges");
+
+        var passiveFileChanged = await HasAcceptedTurnStateDeltaAsync(filesModified, source, passivePath);
+        var currentPassive = ReadSkillEntriesByExactName(
+            await ReadNarrativeSourceTextAsync(passivePath, source),
+            "passiveSkillChanges");
+        var preTurnPassive = ReadSkillEntriesByExactName(
+            await ReadCouplingPreTurnSnapshotAsync(passivePath, source),
+            "passiveSkillChanges");
+
+        var newSkillNames = new HashSet<string>(StringComparer.Ordinal);
+        await CollectNewSkillNamesThisTurnAsync(
+            "game_state/player/skills_active.json", "activeSkillChanges", newSkillNames, source);
+        await CollectNewSkillNamesThisTurnAsync(
+            passivePath, "passiveSkillChanges", newSkillNames, source);
+
+        return new AcceptedTurnSkillDeltaContext(
+            masteryFileChanged,
+            masteryReferences,
+            currentMastery,
+            preTurnMastery,
+            passiveFileChanged,
+            currentPassive,
+            preTurnPassive,
+            newSkillNames,
+            MortalSkillReferenceAuthority.Build(knownSkillNames));
+    }
+
+    /// <summary>
+    /// How a skill entry payload read ended.
+    /// </summary>
+    private enum SkillEntriesReadState
+    {
+        /// <summary>No payload existed (no snapshot / file absent) — the documented weaker fallback may apply.</summary>
+        Missing,
+
+        /// <summary>
+        /// A payload existed but could not be read structurally (malformed JSON, duplicate keys,
+        /// missing array). Fail-closed: never evidence for a claim, and never the weaker fallback.
+        /// </summary>
+        Unreadable,
+
+        /// <summary>Entries were read successfully.</summary>
+        Ok
+    }
+
+    /// <summary>
+    /// The outcome of reading per-name skill entries from one payload.
+    /// </summary>
+    private sealed record SkillEntriesRead(SkillEntriesReadState State, IReadOnlyDictionary<string, JsonNode>? Entries)
+    {
+        public static readonly SkillEntriesRead MissingPayload = new(SkillEntriesReadState.Missing, null);
+        public static readonly SkillEntriesRead UnreadablePayload = new(SkillEntriesReadState.Unreadable, null);
+    }
+
+    /// <summary>
+    /// Maps exact entry names to their parsed entry payloads so later comparisons ignore
+    /// purely lexical serialization drift. A present-but-unreadable payload is reported
+    /// separately from a missing one: only the latter may fall back to weaker evidence.
+    /// </summary>
+    /// <param name="json">
+    /// The payload; <see langword="null"/> input yields <see cref="SkillEntriesReadState.Missing"/>,
+    /// while present-but-empty or whitespace-only payloads yield <see cref="SkillEntriesReadState.Unreadable"/>.
+    /// </param>
+    /// <param name="section">
+    /// The entry array to inspect.
+    /// </param>
+    /// <returns>
+    /// The first parsed entry per exact trimmed name, or a non-Ok state describing why
+    /// no entries could be read.
+    /// </returns>
+    private static SkillEntriesRead ReadSkillEntriesByExactName(string? json, string section)
+    {
+        if (json is null)
+            return SkillEntriesRead.MissingPayload;
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            // A present-but-empty payload is corrupted evidence, not an absent one:
+            // it must not unlock the weaker fallback.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                root[section] is not JsonArray entries)
+            {
+                return SkillEntriesRead.UnreadablePayload;
+            }
+
+            var result = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+            foreach (var entry in entries)
+            {
+                if (entry is not JsonObject entryObject ||
+                    entryObject["skillName"] is not JsonValue nameValue ||
+                    nameValue.GetValueKind() != JsonValueKind.String)
+                {
+                    continue;
+                }
+
+                var name = nameValue.GetValue<string>();
+                if (string.IsNullOrWhiteSpace(name))
+                    continue;
+
+                result.TryAdd(name.Trim(), entryObject);
+            }
+
+            return new SkillEntriesRead(SkillEntriesReadState.Ok, result);
+        }
+        catch (JsonException)
+        {
+            // Structural diagnostics are owned by the existing contract validators.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+        catch (ArgumentException)
+        {
+            // Duplicate keys surface lazily as ArgumentException from JsonObject
+            // dictionary initialization; degrade to fail-closed unreadable instead of crashing.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+        catch (InvalidOperationException)
+        {
+            // Other node-tree violations degrade the same way.
+            return SkillEntriesRead.UnreadablePayload;
+        }
+    }
+
+    /// <summary>
+    /// Adds skills first appearing in the accepted turn's post-turn file compared with
+    /// its validated pre-turn snapshot.
+    /// </summary>
+    /// <param name="path">
+    /// The player skill file to compare.
+    /// </param>
+    /// <param name="arrayName">
+    /// The skill changes array inside the file.
+    /// </param>
+    /// <param name="newSkillNames">
+    /// The accumulating set of exact new-skill names; unchanged without pre-turn evidence.
+    /// </param>
+    /// <param name="source">
+    /// The current narrative source observation session for both comparison inputs.
+    /// </param>
+    private async Task CollectNewSkillNamesThisTurnAsync(
+        string path,
+        string arrayName,
+        HashSet<string> newSkillNames,
+        NarrativeInterfaceSourceSession? source = null)
+    {
+        var preTurnJson = await ReadCouplingPreTurnSnapshotAsync(path, source);
+        if (preTurnJson == null)
+            return;
+
+        var currentJson = await ReadNarrativeSourceTextAsync(path, source) ?? string.Empty;
+        if (string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
+            return;
+
+        // Fail closed on unreadable payloads: a corrupted snapshot or current file
+        // never fabricates "new this turn" skills from an empty parsed name set.
+        var preTurnEntries = ReadSkillEntriesByExactName(preTurnJson, arrayName);
+        var currentEntries = ReadSkillEntriesByExactName(currentJson, arrayName);
+        if (preTurnEntries.State != SkillEntriesReadState.Ok ||
+            currentEntries.State != SkillEntriesReadState.Ok)
+        {
+            return;
+        }
+
+        foreach (var name in currentEntries.Entries!.Keys)
+        {
+            if (!preTurnEntries.Entries!.ContainsKey(name))
+                newSkillNames.Add(name);
+        }
+    }
+
+    /// <summary>
+    /// Couples prose skill claims to the accepted turn's actual per-skill deltas
+    /// through the exact-name skill reference authority.
+    /// </summary>
+    /// <param name="MasteryFileChanged">
+    /// Whether the mastery file carries this turn's change evidence.
+    /// </param>
+    /// <param name="MasteryReferences">
+    /// Exact-spelling mastery entry names with their array coordinates.
+    /// </param>
+    /// <param name="CurrentMastery">
+    /// The current mastery entries read, distinguishing missing payloads from unreadable ones.
+    /// </param>
+    /// <param name="PreTurnMastery">
+    /// The validated pre-turn mastery entries read; only <see cref="SkillEntriesReadState.Missing"/>
+    /// allows the documented weaker filesModified evidence.
+    /// </param>
+    /// <param name="PassiveFileChanged">
+    /// Whether the passive skill file carries this turn's change evidence.
+    /// </param>
+    /// <param name="CurrentPassive">
+    /// The current passive skill entries read; passive progression lives inside these entries.
+    /// </param>
+    /// <param name="PreTurnPassive">
+    /// The validated pre-turn passive skill entries read.
+    /// </param>
+    /// <param name="NewSkillNames">
+    /// Skills first materialized this turn.
+    /// </param>
+    /// <param name="CanonicalSkills">
+    /// The fail-closed authority over the player's canonical skill names.
+    /// </param>
+    private sealed record AcceptedTurnSkillDeltaContext(
+        bool MasteryFileChanged,
+        IReadOnlyList<(string SkillName, string? Actor, int Index)> MasteryReferences,
+        SkillEntriesRead CurrentMastery,
+        SkillEntriesRead PreTurnMastery,
+        bool PassiveFileChanged,
+        SkillEntriesRead CurrentPassive,
+        SkillEntriesRead PreTurnPassive,
+        HashSet<string> NewSkillNames,
+        MortalSkillReferenceAuthority CanonicalSkills)
+    {
+        /// <summary>
+        /// Passive entry fields whose change counts as skill progression.
+        /// </summary>
+        private static readonly string[] PassiveProgressionFields =
+        {
+            "masteryLevel",
+            "currentMasteryLevel",
+            "currentMasteryProgress",
+            "masteryProgressNeeded"
+        };
+
+        /// <summary>
+        /// Returns true only when the turn contains a delta bound to the claimed skill itself.
+        /// A carried-over entry that is structurally identical to its validated pre-turn
+        /// snapshot never satisfies the claim, while purely lexical serialization drift
+        /// (reordered keys, whitespace) does not count as a change. An unreadable payload
+        /// (duplicate keys, malformed JSON) is fail-closed and never downgrades to the
+        /// weaker filesModified fallback; that fallback is reserved for genuinely missing
+        /// snapshots.
+        /// </summary>
+        public bool SatisfiesSkillClaim(string claimedSkillName)
+        {
+            if (NewSkillNames.Contains(claimedSkillName))
+                return true;
+
+            if (SatisfiesViaMasteryDelta(claimedSkillName))
+                return true;
+
+            return SatisfiesViaPassiveProgression(claimedSkillName);
+        }
+
+        private bool SatisfiesViaMasteryDelta(string claimedSkillName)
+        {
+            if (!MasteryFileChanged)
+                return false;
+
+            foreach (var reference in MasteryReferences)
+            {
+                if (CanonicalSkills.Classify(reference.SkillName).Kind != MortalSkillReferenceMatchKind.Exact ||
+                    !string.Equals(reference.SkillName.Trim(), claimedSkillName, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (PreTurnMastery.State == SkillEntriesReadState.Missing)
+                {
+                    // Weaker fallback without snapshot evidence: the current file must
+                    // still be readable and contain the claimed skill's entry.
+                    return CurrentMastery.State == SkillEntriesReadState.Ok &&
+                           CurrentMastery.Entries!.ContainsKey(claimedSkillName);
+                }
+
+                if (PreTurnMastery.State != SkillEntriesReadState.Ok)
+                    continue; // unreadable snapshot: fail closed, no weaker fallback
+
+                if (!PreTurnMastery.Entries!.TryGetValue(claimedSkillName, out var preTurnEntry))
+                {
+                    // Entry first appeared this turn; the current file must still be readable.
+                    if (CurrentMastery.State == SkillEntriesReadState.Ok &&
+                        CurrentMastery.Entries!.ContainsKey(claimedSkillName))
+                    {
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                if (CurrentMastery.State == SkillEntriesReadState.Ok &&
+                    CurrentMastery.Entries!.TryGetValue(claimedSkillName, out var currentEntry) &&
+                    !JsonNode.DeepEquals(currentEntry, preTurnEntry))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool SatisfiesViaPassiveProgression(string claimedSkillName)
+        {
+            if (!PassiveFileChanged)
+                return false;
+
+            if (PreTurnPassive.State == SkillEntriesReadState.Missing)
+            {
+                // Weaker fallback without snapshot evidence: the claimed skill must exist
+                // in the current readable passive entries.
+                return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                       CurrentPassive.Entries!.ContainsKey(claimedSkillName);
+            }
+
+            if (PreTurnPassive.State != SkillEntriesReadState.Ok)
+                return false; // unreadable snapshot: fail closed
+
+            if (!PreTurnPassive.Entries!.TryGetValue(claimedSkillName, out var preTurnEntry))
+            {
+                // Passive entry first appeared this turn.
+                return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                       CurrentPassive.Entries!.ContainsKey(claimedSkillName);
+            }
+
+            return CurrentPassive.State == SkillEntriesReadState.Ok &&
+                   CurrentPassive.Entries!.TryGetValue(claimedSkillName, out var currentEntry) &&
+                   HasPassiveProgressionDelta(currentEntry, preTurnEntry);
+        }
+
+        /// <summary>
+        /// True when progression fields of a passive entry changed; cosmetic edits
+        /// (description, bonuses wording) do not count as progression, and neither does a
+        /// field absent from the current entry (dropped or mis-cased during the GM's rewrite).
+        /// </summary>
+        private static bool HasPassiveProgressionDelta(JsonNode currentEntry, JsonNode preTurnEntry)
+        {
+            foreach (var field in PassiveProgressionFields)
+            {
+                if (currentEntry[field] is JsonNode currentValue &&
+                    !JsonNode.DeepEquals(currentValue, preTurnEntry[field]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Describes the delta's real targets so the repair stays narrow.
+        /// </summary>
+        public string DescribeActualForMissingClaim(string claimedSkillName)
+        {
+            if (PreTurnMastery.State == SkillEntriesReadState.Unreadable)
+            {
+                return "skill claim found in narrative/interface text; the validated pre-turn mastery snapshot is unreadable (structural violation), so change evidence cannot be established";
+            }
+
+            if (PreTurnPassive.State == SkillEntriesReadState.Unreadable)
+            {
+                return "skill claim found in narrative/interface text; the validated pre-turn passive skill snapshot is unreadable (structural violation), so change evidence cannot be established";
+            }
+
+            if (MasteryFileChanged && CurrentMastery.State == SkillEntriesReadState.Missing)
+            {
+                return "skill claim found in narrative/interface text; the current mastery file is missing after the turn, so no mastery delta can be verified";
+            }
+
+            if (MasteryFileChanged &&
+                PreTurnMastery.State == SkillEntriesReadState.Ok &&
+                CurrentMastery.State == SkillEntriesReadState.Ok)
+            {
+                var changedTargets = CurrentMastery.Entries!
+                    .Where(pair =>
+                        !PreTurnMastery.Entries!.TryGetValue(pair.Key, out var preTurnEntry) ||
+                        !JsonNode.DeepEquals(preTurnEntry, pair.Value))
+                    .Select(pair => pair.Key)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (PreTurnMastery.Entries!.ContainsKey(claimedSkillName) &&
+                    !changedTargets.Contains(claimedSkillName, StringComparer.Ordinal))
+                {
+                    if (!CurrentMastery.Entries!.ContainsKey(claimedSkillName))
+                    {
+                        return "skill claim found in narrative/interface text; the mastery entry for the claimed skill was removed this turn; this turn's mastery changes target only: " +
+                               (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                    }
+
+                    return "skill claim found in narrative/interface text; the mastery entry for the claimed skill is carried over unchanged; this turn's mastery changes target only: " +
+                           (changedTargets.Count > 0 ? string.Join(", ", changedTargets) : "none");
+                }
+            }
+
+            var targets = MasteryReferences
+                .Select(reference => reference.SkillName)
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (MasteryFileChanged && targets.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn's mastery delta targets only: " +
+                       string.Join(", ", targets);
+            }
+
+            if (PassiveFileChanged &&
+                PreTurnPassive.State == SkillEntriesReadState.Ok &&
+                CurrentPassive.State == SkillEntriesReadState.Ok)
+            {
+                var passiveProgressionTargets = CurrentPassive.Entries!
+                    .Where(pair =>
+                        !PreTurnPassive.Entries!.TryGetValue(pair.Key, out var preTurnEntry) ||
+                        HasPassiveProgressionDelta(pair.Value, preTurnEntry))
+                    .Select(pair => pair.Key)
+                    .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                if (passiveProgressionTargets.Count > 0)
+                {
+                    return "skill claim found in narrative/interface text; this turn's passive progression targets only: " +
+                           string.Join(", ", passiveProgressionTargets);
+                }
+            }
+
+            if (NewSkillNames.Count > 0)
+            {
+                return "skill claim found in narrative/interface text; this turn adds only new skills: " +
+                       string.Join(", ", NewSkillNames.OrderBy(name => name, StringComparer.OrdinalIgnoreCase));
+            }
+
+            return "skill claim found in narrative/interface text; skill state unchanged";
+        }
+    }
+
+    private async Task<string> BuildAcceptedTurnPlayerFacingTextForDeltaAuditAsync(string narrativeText, NarrativeInterfaceSourceSession? source = null)
     {
         var builder = new StringBuilder(narrativeText ?? string.Empty);
-        var interfaceJson = await _fs.ReadFileAsync("output/interface_updates.json");
+        var interfaceJson = await ReadNarrativeSourceTextAsync("output/interface_updates.json", source);
         if (string.IsNullOrWhiteSpace(interfaceJson))
             return builder.ToString();
 
         try
         {
             using var doc = JsonDocument.Parse(interfaceJson);
+            source?.Policy("output/interface_updates.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return builder.ToString();
 
@@ -326,32 +766,36 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("output/interface_updates.json", "domain-catch", error.GetType().Name);
             // Interface validation reports malformed JSON separately.
         }
 
         return builder.ToString();
     }
 
-    private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync()
+    private async Task<HashSet<string>> ReadCurrentKnownPlayerSkillNamesAsync(NarrativeInterfaceSourceSession? source = null)
     {
-        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_active.json"), "activeSkillChanges"));
-        names.UnionWith(ParsePlayerSkillNames(await _fs.ReadFileAsync("game_state/player/skills_passive.json"), "passiveSkillChanges"));
-        return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Ordinal on purpose: canonical names that differ only by case (Fireball vs
+        // FIREBALL) are distinct skills and must both reach the reference authority.
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        names.UnionWith(ParsePlayerSkillNames(await ReadNarrativeSourceTextAsync("game_state/player/skills_active.json", source), "activeSkillChanges", StringComparer.Ordinal));
+        names.UnionWith(ParsePlayerSkillNames(await ReadNarrativeSourceTextAsync("game_state/player/skills_passive.json", source), "passiveSkillChanges", StringComparer.Ordinal));
+        return names.Where(name => !string.IsNullOrWhiteSpace(name)).ToHashSet(StringComparer.Ordinal);
     }
 
-    private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync()
+    private async Task<List<ProseQuestIdentity>> ReadCurrentActiveRegularQuestIdentitiesAsync(NarrativeInterfaceSourceSession? source = null)
     {
         var result = new List<ProseQuestIdentity>();
-        var json = await _fs.ReadFileAsync("game_state/quests/regular_quests.json");
+        var json = await ReadNarrativeSourceTextAsync("game_state/quests/regular_quests.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
         try
         {
             using var doc = JsonDocument.Parse(json);
+            source?.Policy("game_state/quests/regular_quests.json", "document-kind", doc.RootElement.ValueKind.ToString());
             foreach (var propName in new[] { "quests", "UpdateQuests" })
             {
                 if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
@@ -382,26 +826,30 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("game_state/quests/regular_quests.json", "domain-catch", error.GetType().Name);
             // Generic quest state validation reports malformed JSON separately.
         }
 
         return result;
     }
 
-    private async Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, params string[] paths)
+    private Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, params string[] paths) =>
+        HasAcceptedTurnStateDeltaAsync(filesModified, null, paths);
+
+    private async Task<bool> HasAcceptedTurnStateDeltaAsync(IReadOnlyCollection<string> filesModified, NarrativeInterfaceSourceSession? source, params string[] paths)
     {
         var hasPreTurnSnapshotEvidence = false;
 
         foreach (var path in paths)
         {
-            var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+            var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(path, source);
             if (preTurnJson == null)
                 continue;
 
             hasPreTurnSnapshotEvidence = true;
-            var currentJson = await _fs.ReadFileAsync(path) ?? string.Empty;
+            var currentJson = await ReadNarrativeSourceTextAsync(path, source) ?? string.Empty;
             if (!string.Equals(currentJson, preTurnJson, StringComparison.Ordinal))
                 return true;
         }
@@ -418,15 +866,16 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task<string> ReadAcceptedTurnNoProgressRationaleTextAsync()
+    private async Task<string> ReadAcceptedTurnNoProgressRationaleTextAsync(NarrativeInterfaceSourceSession? source = null)
     {
-        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
+        var debugJson = await ReadNarrativeSourceTextAsync("output/debug_logs.json", source);
         if (string.IsNullOrWhiteSpace(debugJson))
             return string.Empty;
 
         try
         {
             using var doc = JsonDocument.Parse(debugJson);
+            source?.Policy("output/debug_logs.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (doc.RootElement.ValueKind == JsonValueKind.Object &&
                 doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gmThoughts) &&
                 gmThoughts.ValueKind == JsonValueKind.String)
@@ -434,23 +883,70 @@ public partial class ValidationService
                 return gmThoughts.GetString() ?? string.Empty;
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("output/debug_logs.json", "domain-catch", error.GetType().Name);
             // Debug logs validation reports malformed JSON separately.
         }
 
         return string.Empty;
     }
 
-    private static bool ContainsSkillUseClaim(string text, string skillName)
+    /// <summary>
+    /// Collects the canonical skill names the player-facing text claims were used.
+    /// Canonical names differing only by case are a collision group, and ambiguity is
+    /// resolved per mention: a sentence spelling members in their exact canonical casing
+    /// claims only those members, while a sentence matching the group only
+    /// case-insensitively claims the whole group (fail-closed on ambiguity).
+    /// </summary>
+    private static List<string> CollectClaimedSkillNames(string text, IReadOnlyCollection<string> knownSkillNames)
     {
-        if (string.IsNullOrWhiteSpace(skillName))
-            return false;
+        var sentencePairs = EnumerateProseSentencePairs(text).ToList();
+        var claimed = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var group in knownSkillNames
+                     .Where(name => !string.IsNullOrWhiteSpace(name))
+                     .GroupBy(name => name, StringComparer.OrdinalIgnoreCase))
+        {
+            foreach (var pair in sentencePairs)
+            {
+                if (!LooksLikeSkillUseClaimSentence(pair.Normalized))
+                    continue;
 
-        return EnumerateNormalizedProseSentences(text)
-            .Any(sentence =>
-                ContainsEntityNameLoose(sentence, skillName) &&
-                LooksLikeSkillUseClaimSentence(sentence));
+                var exactMentions = group
+                    .Where(name => pair.Raw.Contains(name, StringComparison.Ordinal))
+                    .ToList();
+                if (exactMentions.Count > 0)
+                {
+                    claimed.UnionWith(exactMentions);
+                    continue;
+                }
+
+                if (group.Any(name => ContainsEntityNameLoose(pair.Normalized, name)))
+                    claimed.UnionWith(group);
+            }
+        }
+
+        return claimed
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Splits prose into sentences twice: case-preserved (whitespace-normalized) for
+    /// ordinal name matching and fully normalized for marker and loose-name matching.
+    /// </summary>
+    private static IEnumerable<(string Raw, string Normalized)> EnumerateProseSentencePairs(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            yield break;
+
+        foreach (var sentence in Regex.Split(text, @"(?<=[.!?。！？])\s+|[\r\n]+"))
+        {
+            var raw = Regex.Replace(sentence, @"\s+", " ").Trim();
+            var normalized = NormalizeProseDeltaText(sentence);
+            if (!string.IsNullOrWhiteSpace(normalized))
+                yield return (raw, normalized);
+        }
     }
 
     private static bool LooksLikeSkillUseClaimSentence(string sentence)
@@ -555,6 +1051,7 @@ public partial class ValidationService
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()
     {
+        using var evaluationTiming = _fs.MeasureOperation("NarrativePolicy.EvaluateInterface");
         var issues = new List<ValidationIssue>();
         var interfacePath = "output/interface_updates.json";
         await ValidateAcceptedTurnTransientOutputFreshnessAsync(
@@ -588,40 +1085,13 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-            {
-                issues.Add(new ValidationIssue(
-                    "output/interface_updates.json",
-                    IssueSeverity.Error,
-                    "output/interface_updates.json должен быть JSON object",
-                    code: "accepted_turn_invalid_interface_updates_root",
-                    section: "InterfaceUpdates",
-                    expected: "JSON object with dialogueOptions/image_prompt and timestamp",
-                    actual: doc.RootElement.ValueKind.ToString(),
-                    repairHint: "Оставь output/interface_updates.json валидным JSON-объектом. Используй только поля dialogueOptions, image_prompt и timestamp."));
+            await using var boundSpiritualInterface = await BindSpiritualHealingInterfaceAsync(doc.RootElement, json, issues);
+            var policyRoot = boundSpiritualInterface?.Root ?? doc.RootElement;
+            if (!EvaluateAcceptedInterfacePrefix(policyRoot, interfacePath, issues))
                 return issues;
-            }
-
-            ValidateDialogueOptionsData(doc.RootElement, interfacePath, issues);
-            ValidateOptionalNullableStringField(doc.RootElement, interfacePath, issues, "image_prompt");
-
-            var hasDialogueOptions = doc.RootElement.TryGetProperty("dialogueOptions", out _);
-            var hasImagePrompt = doc.RootElement.TryGetProperty("image_prompt", out _);
-            if (!hasDialogueOptions && !hasImagePrompt)
-            {
-                issues.Add(new ValidationIssue(
-                    interfacePath,
-                    IssueSeverity.Error,
-                    "output/interface_updates.json не должен быть timestamp-only stub без интерфейсного payload",
-                    code: "interface_updates_missing_payload",
-                    section: "InterfaceUpdates",
-                    expected: "dialogueOptions and/or image_prompt, or the file should be absent when unused",
-                    actual: "timestamp-only or unrelated object",
-                    repairHint: "Если интерфейсных обновлений нет, не записывай output/interface_updates.json. Если файл нужен, добавь dialogueOptions и/или image_prompt для текущего хода."));
-            }
 
             ValidateRequiredIsoTimestampField(
-                doc.RootElement,
+                policyRoot,
                 interfacePath,
                 issues,
                 "timestamp",
@@ -630,28 +1100,7 @@ public partial class ValidationService
                 "interface_updates_invalid_timestamp",
                 "Добавь в output/interface_updates.json поле timestamp в ISO 8601 формате вместе с dialogueOptions и/или image_prompt текущего accepted turn.");
 
-            foreach (var prop in doc.RootElement.EnumerateObject())
-            {
-                if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                if (string.Equals(prop.Name, "dialogueOptions", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(prop.Name, "image_prompt", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                issues.Add(new ValidationIssue(
-                    $"{interfacePath}.{prop.Name}",
-                    IssueSeverity.Error,
-                    "output/interface_updates.json содержит неподдерживаемое top-level поле",
-                    code: "interface_updates_unknown_field",
-                    section: "InterfaceUpdates",
-                    expected: "dialogueOptions | image_prompt | timestamp",
-                    actual: prop.Name,
-                    repairHint: "Пиши в output/interface_updates.json только dialogueOptions, image_prompt и timestamp для текущего хода."));
-            }
+            EvaluateAcceptedInterfaceTail(policyRoot, interfacePath, issues);
         }
         catch (JsonException ex)
         {
@@ -821,16 +1270,17 @@ public partial class ValidationService
                text.Contains("combat", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task<List<string>> ReadAcceptedTurnFilesModifiedAsync()
+    private async Task<List<string>> ReadAcceptedTurnFilesModifiedAsync(NarrativeInterfaceSourceSession? source = null)
     {
         var result = new List<string>();
-        var json = await _fs.ReadFileAsync("ready/turn_complete.json");
+        var json = await ReadNarrativeSourceTextAsync("ready/turn_complete.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
         try
         {
             using var doc = JsonDocument.Parse(json);
+            source?.Policy("ready/turn_complete.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (!doc.RootElement.TryGetProperty("filesModified", out var files) ||
                 files.ValueKind != JsonValueKind.Array)
             {
@@ -846,8 +1296,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch (JsonException)
+        catch (JsonException error)
         {
+            source?.Policy("ready/turn_complete.json", "domain-catch", error.GetType().Name);
             return result;
         }
 
@@ -3014,11 +3465,12 @@ public partial class ValidationService
     }
 
     private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidationPendingTurnSnapshotManifestAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         var json = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotManifestPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -3026,8 +3478,9 @@ public partial class ValidationService
         {
             return JsonSerializer.Deserialize<ValidationPendingTurnSnapshotManifest>(json, ManifestJsonOpts);
         }
-        catch
+        catch (Exception error)
         {
+            source?.Policy(narrativeRolePath, "original-manifest-parse", error.GetType().Name);
             return null;
         }
     }
@@ -3046,9 +3499,9 @@ public partial class ValidationService
         return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
-    private async Task<string?> ReadPreTurnTrackedFileAsync(string relativePath)
+    private async Task<string?> ReadPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null)
     {
-        return await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
+        return await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath, source);
     }
 
     private static bool HasValidatedTrackedSnapshotRegistration(
@@ -3096,13 +3549,15 @@ public partial class ValidationService
         string code,
         string expected,
         string repairHint,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues, OriginalLookupObservation? source = null)
     {
-        var preTurnContent = await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
+        var preTurnContent = source is null && relativePath == "output/debug_logs.json"
+            ? await ReadAcceptedTurnReasoningOriginalDebugAsync()
+            : source is null ? await ReadValidatedCurrentPreTurnTrackedFileCoreAsync(relativePath, null, null) : await source.ReadOriginalTextAsync(this, relativePath);
         if (preTurnContent == null)
             return;
 
-        var currentContent = await _fs.ReadFileAsync(relativePath) ?? string.Empty;
+        var currentContent = (source is null ? await _fs.ReadFileAsync(relativePath) : await source.ReadCurrentTextAsync(relativePath)) ?? string.Empty;
         if (!string.Equals(currentContent, preTurnContent, StringComparison.Ordinal))
             return;
 
@@ -3236,7 +3691,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
@@ -3263,7 +3718,7 @@ public partial class ValidationService
             {
                 var skillName = GetFirstNonEmptyString(item, "skillName");
                 if (!string.IsNullOrWhiteSpace(skillName))
-                    result.Add(skillName);
+                    result.Add(skillName.Trim());
             }
         }
         catch
@@ -3442,8 +3897,15 @@ public partial class ValidationService
             : null;
     }
 
+    /// <summary>
+    /// Resolves the pending source through an active proof or the existing physical reader.
+    /// </summary>
+    /// <returns>
+    /// Actual source status and manifest; active invocation manifests are independent copies.
+    /// </returns>
     private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
     {
+        if (CurrentPendingSnapshotLookup() is { } scoped) return scoped;
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
@@ -3469,8 +3931,9 @@ public partial class ValidationService
 
     private string? ReadPendingTurnSnapshotAuthoritySync()
     {
-        return _fs.ReadFileSync(
-            PendingTurnSnapshotAuthority.AuthorityPath);
+        return CurrentWorldReadPhase() is { } phase
+            ? phase.ReadTextSync(PendingTurnSnapshotAuthority.AuthorityPath)
+            : _fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
     private byte[]? ReadRelativeFileBytesFromWorkspace(string relativePath)
@@ -3478,7 +3941,7 @@ public partial class ValidationService
         if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
             return null;
 
-        return _fs.ReadFileBytesSync(relativePath);
+        return CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath);
     }
 
     private string? ReadPreTurnTrackedFileSync(string relativePath)
@@ -3486,12 +3949,53 @@ public partial class ValidationService
         return ReadValidatedCurrentPreTurnTrackedFileSync(relativePath);
     }
 
-    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath)
+    private Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath, NarrativeInterfaceSourceSession? source = null) =>
+        ReadValidatedCurrentPreTurnTrackedFileCoreAsync(relativePath, null, source);
+
+    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileCoreAsync(string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease, OriginalLookupObservation? source)
     {
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
-            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath)
-            : null;
+        try
+        {
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, source, narrativeRolePath: relativePath);
+            source?.Policy(relativePath, "original-lookup", lookup.Status.ToString());
+            if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable) source?.Unavailable("narrative_policy_original_lookup_unusable");
+            return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+                ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, writeLease, source)
+                : null;
+        }
+        catch (Exception error) { source?.Fault(error); throw; }
+    }
+
+    /// <summary>
+    /// Reads the validated pre-turn snapshot payload for the prose-delta coupling audit
+    /// without collapsing blank content to <see langword="null"/>: an absent snapshot may
+    /// unlock the documented weaker fallback, while a present-but-blank one is corrupted
+    /// evidence and must fail closed.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The tracked file whose pre-turn snapshot payload to read.
+    /// </param>
+    /// <param name="source">
+    /// The narrative session receiving original lookup, payload and failure observations.
+    /// </param>
+    /// <returns>
+    /// The validated snapshot payload verbatim (including blank content), or
+    /// <see langword="null"/> when no usable validated snapshot exists for the path.
+    /// </returns>
+    private async Task<string?> ReadCouplingPreTurnSnapshotAsync(string relativePath, NarrativeInterfaceSourceSession? source = null)
+    {
+        try
+        {
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(source: source, narrativeRolePath: relativePath);
+            source?.Policy(relativePath, "original-lookup", lookup.Status.ToString());
+            if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable)
+                source?.Unavailable("narrative_policy_original_lookup_unusable");
+            return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+                ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath, source: source, treatBlankAsMissing: false)
+                : null;
+        }
+        catch (Exception error) { source?.Fault(error); throw; }
     }
 
     private string? ReadValidatedCurrentPreTurnTrackedFileSync(string relativePath)
@@ -3512,16 +4016,50 @@ public partial class ValidationService
                 ReadCurrentTrackedFileSync("game_state/meta/soul_state.json")));
     }
 
+    /// <summary>
+    /// Reads one file's payload from the validated pending-turn snapshot, verifying the
+    /// snapshot hash against the manifest before returning any content.
+    /// </summary>
+    /// <param name="manifest">
+    /// The validated pending-turn snapshot manifest.
+    /// </param>
+    /// <param name="relativePath">
+    /// The tracked file whose snapshot payload to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// An optional canonical write lease for the read.
+    /// </param>
+    /// <param name="source">
+    /// The original lookup observer retaining source reads and policy outcomes.
+    /// </param>
+    /// <param name="treatBlankAsMissing">
+    /// When <see langword="true"/> (default), blank/whitespace payloads collapse to
+    /// <see langword="null"/> (absent evidence); pass <see langword="false"/> where the
+    /// caller must distinguish corrupted-but-present evidence from absent evidence.
+    /// </param>
+    /// <returns>
+    /// The snapshot payload when it exists and passes hash verification; otherwise
+    /// <see langword="null"/>.
+    /// </returns>
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        OriginalLookupObservation? source = null,
+        bool treatBlankAsMissing = true)
     {
         if (manifest.Files == null ||
-            !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
-            string.IsNullOrWhiteSpace(snapshotPath) ||
-            !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
+            !manifest.Files.TryGetValue(relativePath, out var snapshotPath))
         {
+            source?.Policy(relativePath, "original", manifest.OriginalPathPresenceV1?.TryGetValue(relativePath, out var existed) == true && !existed
+                ? "ProvedAbsent" : "Uncovered");
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(snapshotPath) || !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
+        {
+            source?.Policy(relativePath, "original", "InvalidDeclaredArtifact");
+            source?.Unavailable("narrative_policy_original_artifact_invalid");
             return null;
         }
 
@@ -3529,20 +4067,30 @@ public partial class ValidationService
             !manifest.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
             string.IsNullOrWhiteSpace(expectedSnapshotHash))
         {
+            source?.Policy(relativePath, "original", "MissingDeclaredHash");
+            source?.Unavailable("narrative_policy_original_hash_missing");
             return null;
         }
 
-        var snapshotBytes = writeLease == null
-            ? await _fs.ReadFileBytesAsync(snapshotPath)
-            : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
+        var snapshotBytes = source is null
+            ? writeLease == null
+                ? CurrentWorldReadPhase() is { } phase ? await phase.ReadBytesAsync(snapshotPath) : await _fs.ReadFileBytesAsync(snapshotPath)
+                : await _fs.ReadFileBytesAsync(writeLease, snapshotPath)
+            : await ReadNarrativeOriginalBytesAsync(relativePath, snapshotPath, writeLease, source);
         if (snapshotBytes == null)
+        {
+            source?.Policy(relativePath, "original", "MissingDeclaredArtifact");
+            source?.Unavailable("narrative_policy_original_artifact_missing");
             return null;
+        }
 
         var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
-            writeLease);
+            writeLease, source, relativePath);
         if (authorityPayload == null &&
             !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
         {
+            source?.Policy(relativePath, "original", "Unauthenticated");
+            source?.Unavailable("narrative_policy_original_unauthenticated");
             return null;
         }
 
@@ -3550,10 +4098,15 @@ public partial class ValidationService
             ? ComputeSha256(DecodePendingSnapshotText(snapshotBytes))
             : PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(authorityPayload, snapshotBytes);
         if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+        {
+            source?.Policy(relativePath, "original", "HashInvalid");
+            source?.Unavailable("narrative_policy_original_hash_invalid");
             return null;
+        }
 
         var snapshotJson = DecodePendingSnapshotText(snapshotBytes);
-        return string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
+        source?.Policy(relativePath, "original", string.IsNullOrWhiteSpace(snapshotJson) ? "EmptyOrWhitespace" : "PresentText");
+        return treatBlankAsMissing && string.IsNullOrWhiteSpace(snapshotJson) ? null : snapshotJson;
     }
 
     private string? ReadValidatedPendingTurnSnapshotFileSync(
@@ -3575,7 +4128,7 @@ public partial class ValidationService
             return null;
         }
 
-        var snapshotBytes = _fs.ReadFileBytesSync(snapshotPath);
+        var snapshotBytes = CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(snapshotPath) : _fs.ReadFileBytesSync(snapshotPath);
 
         if (snapshotBytes == null)
             return null;
@@ -4017,15 +4570,46 @@ public partial class ValidationService
         GuardianPowerJournalIdentityState? IdentityState,
         string FailureDescription);
 
+    /// <summary>
+    /// Reads and parses a persisted request using the existing physical or browser read phase.
+    /// </summary>
+    /// <param name="requestPath">
+    /// Root-relative request path to read.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing explicit lease, or null to use the current ordinary read route.
+    /// </param>
+    /// <returns>
+    /// Request identity, or null when missing or malformed.
+    /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
+    /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
         string requestPath,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
-        var json = writeLease == null
-            ? _fs.ReadFileSync(requestPath)
+        var json = source is not null
+            ? ReadNarrativeAuxiliaryTextSync(narrativeRolePath, requestPath, writeLease, source)
+            : writeLease == null
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextSync(requestPath) : _fs.ReadFileSync(requestPath)
             : _fs.ReadFileAsync(writeLease, requestPath)
                 .GetAwaiter()
                 .GetResult();
+        return ParsePendingTurnRequestValidationContext(json);
+    }
+
+    /// <summary>
+    /// Parses the existing request identity contract without manufacturing missing fields.
+    /// </summary>
+    /// <param name="json">
+    /// Physical request text; null, empty or malformed text yields no context.
+    /// </param>
+    /// <returns>
+    /// Parsed turn identity, or null when the existing shape rules are not satisfied.
+    /// </returns>
+    private static PendingTurnRequestValidationContext? ParsePendingTurnRequestValidationContext(string? json)
+    {
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -5085,19 +5669,47 @@ public partial class ValidationService
         return $"{firstIssue.FilePath}: {firstIssue.Message}";
     }
 
+    /// <summary>
+    /// Resolves the pending source asynchronously, refusing foreign leases inside a reserved invocation.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Optional original explicit lease; null uses current invocation authority or ordinary reads.
+    /// </param>
+    /// <returns>
+    /// Actual source status and an independent manifest copy when invocation evidence is active.
+    /// </returns>
+    /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
+    /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
+        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped)
+        {
+            source?.ScopedLookup();
+            if (scoped.Manifest is { } supplied) RecordNarrativeOriginalContext(source, supplied, "ScopedData");
+            return scoped;
+        }
         if (_prevalidatedPendingTurnSnapshotOverride != null)
+        {
+            RecordNarrativeOriginalContext(source, _prevalidatedPendingTurnSnapshotOverride, "SuppliedPrevalidatedData");
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
+        }
 
-        var manifestExists = writeLease == null
-            ? _fs.FileExists(PendingTurnSnapshotManifestPath)
-            : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease);
+        var presence = source?.BeginRead(narrativeRolePath, PendingTurnSnapshotManifestPath, "lookup-presence");
+        bool manifestExists;
+        try
+        {
+            manifestExists = writeLease == null
+                ? _fs.FileExists(PendingTurnSnapshotManifestPath)
+                : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
+            presence?.Presence(manifestExists);
+        }
+        catch (Exception error) { presence?.Fault(error); throw; }
+        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease, source, narrativeRolePath);
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotAuthority.AuthorityPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (manifest == null)
         {
             return new ValidatedPendingTurnSnapshotLookup(
@@ -5105,36 +5717,71 @@ public partial class ValidationService
                 null);
         }
 
+        RecordNarrativeOriginalContext(source, manifest, "PhysicalLookupData");
         return new ValidatedPendingTurnSnapshotLookup(
             IsValidatedPendingTurnSnapshotManifestUsable(
                 manifest,
                 authorityJson,
-                writeLease)
+                writeLease,
+                source is null ? null : path => ReadNarrativeAuxiliaryBytesSync(narrativeRolePath, path, writeLease, source),
+                source is null ? null : path => ReadNarrativeAuxiliaryTextSync(narrativeRolePath, path, writeLease, source))
                 ? ValidatedPendingTurnSnapshotStatus.Usable
                 : ValidatedPendingTurnSnapshotStatus.Unusable,
             manifest);
     }
 
     private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         var authorityJson = await ReadAcceptedTurnValidationFileAsync(
             PendingTurnSnapshotAuthority.AuthorityPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload) || payload == null)
+        {
+            source?.Policy(narrativeRolePath, "original-authority", "MissingOrInvalid");
+            source?.Unavailable("narrative_policy_original_authority_unavailable");
             return null;
+        }
 
-        return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
+        var current = IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
                 payload,
-                writeLease)
-            ? payload
-            : null;
+                writeLease, source, narrativeRolePath);
+        if (!current)
+        {
+            source?.Policy(narrativeRolePath, "original-authority", "WrongContext");
+            source?.Unavailable("narrative_policy_original_authority_context_changed");
+        }
+        return current ? payload : null;
     }
 
+    /// <summary>
+    /// Applies the existing manifest authority and current-request matching contracts.
+    /// </summary>
+    /// <param name="manifest">
+    /// Parsed source manifest; null is unusable.
+    /// </param>
+    /// <param name="authorityJson">
+    /// Detached authority text, which may be missing or malformed.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing physical lease, or null for ordinary reader behavior.
+    /// </param>
+    /// <param name="readBytes">
+    /// Optional per-authentication physical byte capture; null preserves the ordinary reader.
+    /// </param>
+    /// <param name="readText">
+    /// Optional request text from the same authentication pass; null reads requests normally.
+    /// </param>
+    /// <returns>
+    /// True only when both reader authority and an existing request context match; otherwise false.
+    /// </returns>
     private bool IsValidatedPendingTurnSnapshotManifestUsable(
         ValidationPendingTurnSnapshotManifest? manifest,
         string? authorityJson,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, byte[]?>? readBytes = null,
+        Func<string, string?>? readText = null)
     {
         if (manifest == null)
             return false;
@@ -5154,7 +5801,7 @@ public partial class ValidationService
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                relativePath => ReadRelativeFileBytesFromWorkspace(
+                relativePath => readBytes != null ? readBytes(relativePath) : ReadRelativeFileBytesFromWorkspace(
                     relativePath,
                     writeLease),
                 out _,
@@ -5165,52 +5812,66 @@ public partial class ValidationService
 
         return IsValidatedPendingTurnSnapshotManifestCurrent(
             manifest,
-            writeLease);
+            writeLease, readText);
     }
 
+    /// <summary>
+    /// Matches the manifest to the existing repair, input or completion request alternatives.
+    /// </summary>
+    /// <param name="manifest">
+    /// Source identity to match.
+    /// </param>
+    /// <param name="writeLease">
+    /// Optional original lease used by ordinary physical request reads.
+    /// </param>
+    /// <param name="readText">
+    /// Optional text provider for one physical authentication pass; null keeps existing reads.
+    /// </param>
+    /// <returns>
+    /// True when at least one existing request alternative matches; otherwise false.
+    /// </returns>
     private bool IsValidatedPendingTurnSnapshotManifestCurrent(
         ValidationPendingTurnSnapshotManifest manifest,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        Func<string, string?>? readText = null)
     {
+        PendingTurnRequestValidationContext? ReadContext(string path) => readText == null
+            ? LoadPendingTurnRequestValidationContextSync(path, writeLease)
+            : ParsePendingTurnRequestValidationContext(readText(path));
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
-        var repairContext = LoadPendingTurnRequestValidationContextSync(
-            repairRequestPath,
-            writeLease);
+        var repairContext = ReadContext(repairRequestPath);
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
             return true;
 
-        var turnContext = LoadPendingTurnRequestValidationContextSync(
-            "input/turn_request.json",
-            writeLease);
+        var turnContext = ReadContext("input/turn_request.json");
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
             return true;
 
-        var completionContext = LoadPendingTurnRequestValidationContextSync(
-            "ready/turn_complete.json",
-            writeLease);
+        var completionContext = ReadContext("ready/turn_complete.json");
         return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
     }
 
     private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json")
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
         var repairContext = LoadPendingTurnRequestValidationContextSync(
             repairRequestPath,
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, repairContext))
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(
             "input/turn_request.json",
-            writeLease);
+            writeLease, source, narrativeRolePath);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext))
             return true;
 
         var completionContext = LoadPendingTurnRequestValidationContextSync(
             "ready/turn_complete.json",
-            writeLease);
+            writeLease, source, narrativeRolePath);
         return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, completionContext);
     }
 
@@ -5235,9 +5896,11 @@ public partial class ValidationService
 
     private Task<string?> ReadAcceptedTurnValidationFileAsync(
         string path,
-        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        FileSystemManager.CanonicalWriteLease? writeLease, OriginalLookupObservation? source = null,
+        string narrativeRolePath = "output/narrative_response.json") =>
+        source is not null ? ReadNarrativeAuxiliaryTextAsync(narrativeRolePath, path, writeLease, source) :
         writeLease == null
-            ? _fs.ReadFileAsync(path)
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadTextAsync(path) : _fs.ReadFileAsync(path)
             : _fs.ReadFileAsync(writeLease, path);
 
     private byte[]? ReadRelativeFileBytesFromWorkspace(
@@ -5248,7 +5911,7 @@ public partial class ValidationService
             return null;
 
         return writeLease == null
-            ? _fs.ReadFileBytesSync(relativePath)
+            ? CurrentWorldReadPhase() is { } phase ? phase.ReadBytesSync(relativePath) : _fs.ReadFileBytesSync(relativePath)
             : _fs.ReadFileBytesAsync(writeLease, relativePath)
                 .GetAwaiter()
                 .GetResult();
@@ -5277,6 +5940,7 @@ public partial class ValidationService
 
     private string? ReadCanonicalFileSync(string relativePath)
     {
+        if (CurrentWorldReadPhase() is { } phase) return phase.ReadNullableTextSync(relativePath);
         try
         {
             return _fs.ReadFileSync(relativePath);
@@ -7536,215 +8200,13 @@ public partial class ValidationService
         AcceptedTurnReasoningValidationSelection selection)
     {
         ArgumentNullException.ThrowIfNull(selection);
-        var issues = new List<ValidationIssue>();
-        await ValidateAcceptedTurnTransientOutputFreshnessAsync(
-            "output/debug_logs.json",
-            "gm_thoughts_markdown",
-            "accepted_turn_stale_debug_logs",
-            "output/debug_logs.json must be freshly rewritten for the current accepted turn",
-            "Не переиспользуй старый output/debug_logs.json. Перезапиши debug_logs.json заново для текущего accepted turn вместе с актуальным gm_thoughts_markdown.",
-            issues);
-        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
-        if (string.IsNullOrWhiteSpace(debugJson))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "Отсутствует gm_thoughts_markdown при обязательной проверке actor reasoning scope",
-                code: "missing_gm_thoughts",
-                section: "gm_thoughts_markdown",
-                expected: "gm_thoughts_markdown with NPC scope declaration",
-                actual: "missing or empty",
-                repairHint: "Добавь debug_logs.json.gm_thoughts_markdown с секцией 'Охват NPC-анализа' и reasoning blocks."));
-            return issues;
-        }
-
-        string gmThoughts;
-        try
-        {
-            using var doc = JsonDocument.Parse(debugJson);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-            {
-                issues.Add(new ValidationIssue(
-                    "output/debug_logs.json", IssueSeverity.Error,
-                    "output/debug_logs.json должен быть JSON object",
-                    code: "invalid_debug_logs_json_root",
-                    section: "gm_thoughts_markdown",
-                    expected: "JSON object with gm_thoughts_markdown and timestamp",
-                    actual: doc.RootElement.ValueKind.ToString(),
-                    repairHint: "Оставь output/debug_logs.json валидным JSON-объектом с полями gm_thoughts_markdown и timestamp."));
-                return issues;
-            }
-
-            gmThoughts = doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gm) &&
-                         gm.ValueKind == JsonValueKind.String
-                ? gm.GetString() ?? string.Empty
-                : string.Empty;
-
-            ValidateRequiredIsoTimestampField(
-                doc.RootElement,
-                "output/debug_logs.json",
-                issues,
-                "timestamp",
-                "gm_thoughts_markdown",
-                "debug_logs_missing_timestamp",
-                "debug_logs_invalid_timestamp",
-                "Добавь в output/debug_logs.json поле timestamp в ISO 8601 формате вместе с актуальным gm_thoughts_markdown.");
-
-            foreach (var prop in doc.RootElement.EnumerateObject())
-            {
-                if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                if (string.Equals(prop.Name, "gm_thoughts_markdown", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                issues.Add(new ValidationIssue(
-                    $"output/debug_logs.json.{prop.Name}",
-                    IssueSeverity.Error,
-                    "output/debug_logs.json содержит неподдерживаемое top-level поле",
-                    code: "debug_logs_unknown_field",
-                    section: "gm_thoughts_markdown",
-                    expected: "gm_thoughts_markdown | timestamp",
-                    actual: prop.Name,
-                    repairHint: "Пиши в output/debug_logs.json только gm_thoughts_markdown и timestamp для текущего хода."));
-            }
-        }
-        catch (JsonException ex)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                $"output/debug_logs.json должен быть валидным JSON: {ex.Message}",
-                code: "invalid_debug_logs_json",
-                section: "gm_thoughts_markdown",
-                expected: "valid JSON object with gm_thoughts_markdown and timestamp",
-                actual: "invalid JSON",
-                repairHint: "Исправь output/debug_logs.json и оставь в нём валидный JSON-объект с полями gm_thoughts_markdown и timestamp."));
-            return issues;
-        }
-
-        if (string.IsNullOrWhiteSpace(gmThoughts))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "Отсутствует gm_thoughts_markdown при обязательной проверке actor reasoning scope",
-                code: "missing_gm_thoughts",
-                section: "gm_thoughts_markdown",
-                expected: "gm_thoughts_markdown with NPC scope declaration",
-                actual: "missing or empty",
-                repairHint: "Добавь debug_logs.json.gm_thoughts_markdown с секцией 'Охват NPC-анализа' и reasoning blocks."));
-            return issues;
-        }
-
-        var normalizedThoughts = gmThoughts.Replace("\r\n", "\n");
-        if (!TryParseReasoningScope(normalizedThoughts, out var scope))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "Отсутствует обязательная секция 'Охват NPC-анализа' / 'NPC Scope' в gm_thoughts_markdown",
-                code: "missing_npc_scope",
-                section: "npc_scope",
-                expected: "NPC scope declaration section",
-                actual: "missing",
-                repairHint: "Добавь секцию '## Охват NPC-анализа' с режимом, релевантными акторами и обоснованием."));
-            return issues;
-        }
-
-        var scopeMode = ParseReasoningScopeMode(scope.Mode);
-        if (!scope.HasModeField || scopeMode == ReasoningScopeMode.Unknown)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                !scope.HasModeField || string.IsNullOrWhiteSpace(scope.Mode)
-                    ? "В секции охвата NPC-анализа отсутствует поле 'Режим' / 'Mode'"
-                    : $"Неизвестный режим NPC scope: '{scope.Mode}'",
-                code: !scope.HasModeField || string.IsNullOrWhiteSpace(scope.Mode) ? "missing_scope_mode" : "invalid_scope_mode",
-                section: "npc_scope",
-                expected: "Mode = Scene-local, World-progression, Guardian-centric or Mixed",
-                actual: !scope.HasModeField || string.IsNullOrWhiteSpace(scope.Mode) ? "missing" : scope.Mode,
-                repairHint: "Укажи режим: Scene-local, World-progression, Guardian-centric или Mixed."));
-        }
-
-        if (!scope.HasRelevantActorsField)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "В секции охвата NPC-анализа отсутствует поле 'Релевантные акторы' / 'Relevant actors'",
-                code: "missing_relevant_actors_field",
-                section: "npc_scope",
-                expected: "Relevant actors field",
-                actual: "missing",
-                repairHint: "Явно укажи 'Релевантные акторы: ...' или 'Релевантные акторы: нет' для Scene-local хода."));
-        }
-
-        if (!scope.HasWhyRelevantField || string.IsNullOrWhiteSpace(scope.WhyRelevant))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "В секции охвата NPC-анализа отсутствует обоснование релевантных акторов",
-                code: "missing_scope_relevance_reason",
-                section: "npc_scope",
-                expected: "Why relevant field",
-                actual: "missing",
-                repairHint: "Добавь строку 'Почему они релевантны' с объяснением выбора акторов."));
-        }
-
-        if (!scope.HasOutOfScopeActorsField)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "В секции охвата NPC-анализа отсутствует поле 'Акторы вне охвата' / 'Actors outside scope'",
-                code: "missing_out_of_scope_actors_field",
-                section: "npc_scope",
-                expected: "Actors outside scope field",
-                actual: "missing",
-                repairHint: "Явно укажи 'Акторы вне охвата: ...' или 'Акторы вне охвата: нет'."));
-        }
-
-        if (!scope.HasOutOfScopeReasonField || string.IsNullOrWhiteSpace(scope.OutOfScopeReason))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "В секции охвата NPC-анализа отсутствует обоснование акторов вне охвата",
-                code: "missing_scope_out_of_scope_reason",
-                section: "npc_scope",
-                expected: "Why outside scope field",
-                actual: "missing",
-                repairHint: "Добавь строку 'Почему они вне охвата' с объяснением, почему остальные акторы не обрабатываются."));
-        }
-
-        var actorType = scopeMode == ReasoningScopeMode.GuardianCentric ? "Guardian" : "Actor";
-
-        if ((scopeMode == ReasoningScopeMode.WorldProgression ||
-             scopeMode == ReasoningScopeMode.GuardianCentric ||
-             scopeMode == ReasoningScopeMode.Mixed) &&
-            scope.RelevantActors.Count == 0)
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                $"Режим '{scope.Mode}' требует непустой список релевантных акторов",
-                code: "empty_relevant_actors_for_mode",
-                section: "npc_scope",
-                expected: "At least one relevant actor",
-                actual: "empty relevant actor list",
-                repairHint: "Либо добавь релевантных акторов, либо используй режим Scene-local с явным обоснованием пустого scope."));
-        }
-
-        if (scope.RelevantActors.Count > 0 &&
-            !ContainsAny(normalizedThoughts.ToLowerInvariant(),
-                "## размышления npc", "## 🎭 обязательно: размышления npc", "## npc thoughts",
-                "## npc brain", "## actor brain", "## actor brain 2.0", "## reasoning",
-                "## размышления акторов", "## мозг акторов", "## guardian thoughts"))
-        {
-            issues.Add(new ValidationIssue(
-                "output/debug_logs.json", IssueSeverity.Error,
-                "Для задекларированных акторов отсутствует допустимая reasoning section",
-                code: "missing_actor_reasoning_section",
-                section: "npc_reasoning",
-                expected: "Reasoning section with actor blocks",
-                actual: "missing",
-                repairHint: "Добавь отдельную reasoning section ('Размышления NPC', 'Размышления акторов', 'Guardian Thoughts' или эквивалентный heading) и подпункты ### [Actor Name] для всех релевантных акторов."));
-        }
+        var prefix = await EvaluateAcceptedReasoningPrefixAsync(null);
+        var issues = prefix.Issues;
+        if (prefix.Terminal) return issues;
+        var normalizedThoughts = prefix.NormalizedThoughts!;
+        var scope = prefix.Scope!;
+        var scopeMode = prefix.ScopeMode;
+        var actorType = prefix.ActorType;
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
         var guardianIdentityContext = BuildGuardianReasoningIdentityContext(guardianPolicyContext);
@@ -8066,6 +8528,7 @@ public partial class ValidationService
             var playerAction = actionEl.GetString() ?? string.Empty;
             await ValidateDirectChaosSeaGachaOutcomeAsync(playerAction, issues);
             await ValidateChaosSeaTravelOutcomeAsync(playerAction, issues);
+            await ValidateElyaraVisitOutcomeAsync(playerAction, issues);
             await ValidateAbodeResidentRelicGrantOutcomeAsync(playerAction, issues);
             await ValidateAbodeResidentQuestRequestOutcomeAsync(playerAction, issues);
 

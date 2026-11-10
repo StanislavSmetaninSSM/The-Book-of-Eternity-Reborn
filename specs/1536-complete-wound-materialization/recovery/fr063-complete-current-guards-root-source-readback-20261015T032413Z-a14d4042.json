@@ -1,0 +1,34 @@
+{
+  "base": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "baseBytes": 10095,
+      "baseSha256": "2e9ca8cc49644cf7fd49710cd8586f5a342d226819bebd927032271c76c80e57",
+      "currentBytes": 10799,
+      "currentSha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "baseBytes": 1604530,
+      "baseSha256": "e70a236df557fa514527120a61ef3e7b69a0c0b5dbed63272597b4717f34f4ab",
+      "currentBytes": 1607554,
+      "currentSha256": "8c3826c0f4cbf4e4ef5b5e61573c571bea2350533d470827bb63b6df5ef9754f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "baseBytes": 1105146,
+      "baseSha256": "a27508413afdf2d34dd46fcf4279acd944d63a7ca4a91e1336851dc87d5028c1",
+      "currentBytes": 1108170,
+      "currentSha256": "44e4ae9db3e18db38fe9562bbafbb239cd096424cf072bc504cd7d835b1e69dc"
+    }
+  ],
+  "protectedPinsExact": 161,
+  "wholeProductionInverse": "one12lineblock removed restores complete base exact",
+  "metadata": "additive fronts/old tails/checkmarks exact",
+  "diffCheckExit": 0,
+  "projectExecution": "UNRUN by ROOT in source block",
+  "review": "corrected SOURCE/FIXTURE/SELECTION REQUIRED",
+  "runtime": "HELD"
+}

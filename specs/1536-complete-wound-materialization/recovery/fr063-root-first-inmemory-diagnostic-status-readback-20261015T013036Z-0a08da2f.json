@@ -1,0 +1,24 @@
+{
+  "base": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "paths": {
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "oldSha256": "40530ebb51a3025ecad4c73cacd1124ab10ac7dbf7b0f410872f8be1f690f80c",
+      "newSha256": "5ef14ed4b6e41279e773fa7d9a5ae5ff15b4f55d708229e9f8e040a52341f194",
+      "oldTailCheckboxesExact": true
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "oldSha256": "90b1ef67e180f29bb686efb948c5612eca75cb0a147731a6d9329e99c0bdde00",
+      "newSha256": "772e0091bf1f42b41a29d7f2245cf581a15c65af7c2d20309919dffc7a8322c4",
+      "oldTailCheckboxesExact": true
+    }
+  },
+  "author": "ROOT factualmetadataonly",
+  "projectSourceEdits": false,
+  "independentReview": "intermediate pending connectedEVIDENCE",
+  "sourcePinsBeforeMetadataExact": 155,
+  "rootSourceConfirmation": [
+    "a86719/2c8a4a strictdiagnosticmapguard",
+    "43ffb4 jointcomposer/mapdefault/bindcontract"
+  ],
+  "runtime": "HELD furtherfixesruns"
+}

@@ -409,6 +409,16 @@ internal sealed class MortalWoundTreatmentAuthority
         Snapshot currentSnapshot)
     {
         ArgumentNullException.ThrowIfNull(route);
+        return ResolveRequirementMembers(route.Requirements, route.SourcePath, context, currentSnapshot);
+    }
+
+    internal static MortalWoundRequirementAuthorityResult ResolveRequirementMembers(
+        IReadOnlyList<JsonElement> requirements,
+        string sourcePath,
+        Context context,
+        Snapshot currentSnapshot)
+    {
+        ArgumentNullException.ThrowIfNull(requirements);
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(currentSnapshot);
 
@@ -417,13 +427,13 @@ internal sealed class MortalWoundTreatmentAuthority
         ValidateContextCoordinates(context, currentSnapshot, issues);
         var itemLedger = new Dictionary<LedgerKey, long>();
         var resourceLedger = new Dictionary<LedgerKey, long>();
-        var requirementsPath = string.IsNullOrEmpty(route.SourcePath)
+        var requirementsPath = string.IsNullOrEmpty(sourcePath)
             ? "wound.treatment.routes[0].requirements"
-            : route.SourcePath + ".requirements";
+            : sourcePath + ".requirements";
 
-        for (var index = 0; index < route.Requirements.Count; index++)
+        for (var index = 0; index < requirements.Count; index++)
         {
-            var requirement = route.Requirements[index];
+            var requirement = requirements[index];
             var requirementPath = $"{requirementsPath}[{index}]";
             var kind = ReadRequirementString(requirement, "kind");
             MortalWoundResolvedRequirement? row = kind switch
@@ -513,7 +523,7 @@ internal sealed class MortalWoundTreatmentAuthority
                 resolved.Add(row);
         }
 
-        var success = issues.Count == 0 && resolved.Count == route.Requirements.Count;
+        var success = issues.Count == 0 && resolved.Count == requirements.Count;
         var frozenIssues = Freeze(issues);
         var frozenResolved = Freeze(resolved);
         return new MortalWoundRequirementAuthorityResult(
@@ -521,7 +531,7 @@ internal sealed class MortalWoundTreatmentAuthority
             frozenIssues,
             frozenResolved,
             ComputeResultFingerprint(
-                route,
+                requirements,
                 context,
                 currentSnapshot,
                 frozenResolved,
@@ -1650,7 +1660,7 @@ internal sealed class MortalWoundTreatmentAuthority
     }
 
     private static string ComputeResultFingerprint(
-        WoundTreatmentRoute route,
+        IReadOnlyList<JsonElement> requirements,
         Context context,
         Snapshot snapshot,
         IReadOnlyList<MortalWoundResolvedRequirement> resolved,
@@ -1663,9 +1673,9 @@ internal sealed class MortalWoundTreatmentAuthority
         };
         AppendContextFields(fields, context);
         fields.Add(snapshot.SnapshotToken);
-        fields.Add(Number(route.Requirements.Count));
-        for (var index = 0; index < route.Requirements.Count; index++)
-            AppendRequirementFields(fields, index, route.Requirements[index]);
+        fields.Add(Number(requirements.Count));
+        for (var index = 0; index < requirements.Count; index++)
+            AppendRequirementFields(fields, index, requirements[index]);
         AppendSnapshotMechanicalFields(fields, snapshot);
         fields.Add(Number(resolved.Count));
         foreach (var row in resolved)

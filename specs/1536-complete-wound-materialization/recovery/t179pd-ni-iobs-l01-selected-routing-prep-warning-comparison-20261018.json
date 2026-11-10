@@ -1,0 +1,22 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_PREP_WARNING_COMPARISON",
+  "checkedUtc": "2026-10-18T15:22:52.224589+00:00",
+  "comparison": {
+    "Build-integration": {
+      "oldUniqueWarnings": 148,
+      "currentUniqueWarnings": 148,
+      "added": [],
+      "removed": []
+    },
+    "Build-unit": {
+      "oldUniqueWarnings": 37,
+      "currentUniqueWarnings": 37,
+      "added": [],
+      "removed": []
+    }
+  },
+  "rawChainCount": 43,
+  "rawBytes": 14074754,
+  "sourcePacketFreshPreparationEqualsCloud": true,
+  "limits": "Original build logs only; no compiler or tests invoked."
+}

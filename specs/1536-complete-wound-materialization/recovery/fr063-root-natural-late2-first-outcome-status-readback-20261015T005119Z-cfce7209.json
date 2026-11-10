@@ -1,0 +1,35 @@
+{
+  "base": "7c87c130e9e24fd7aad36d4809b5e800b652722b",
+  "paths": {
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "oldSha256": "471d7b5cd61ce126af3876f5188bc1f2149fd6c74c14a7adb01e1d3d3393c732",
+      "newSha256": "f27d5867320617eb1392b896767c23c17d46b56144992e77b91982df40875b41",
+      "oldTailCheckboxesExact": true
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "oldSha256": "9226e74bd7f88d04a9f95cd2b8a0e2f7ecf881dbd1b50847acf0b7c48e63af6f",
+      "newSha256": "92d403d019520a5fa4e558c59bdb6463cf248a1b98524226b9b9c14cb082f764",
+      "oldTailCheckboxesExact": true
+    }
+  },
+  "author": "ROOT factual metadata only",
+  "projectSourceEdits": false,
+  "independentReview": "intermediate pending connectedEVIDENCE",
+  "sourcePinsBeforeMetadataExact": 154,
+  "rootDisplayDiagnostics": [
+    {
+      "chunk": "dc5fb7",
+      "exitCode": 0,
+      "issue": "generic nested bounded printer omitted a cap on large dictionary keys; oversized display truncated",
+      "rawArtifactLoss": false,
+      "correction": "49c7cf only explicit keys/scalars/containerlengths; no further large maps"
+    },
+    {
+      "chunk": "3060d9",
+      "exitCode": 0,
+      "issue": "TRX error render display bounded and truncated; complete native files retained",
+      "rawArtifactLoss": false
+    }
+  ],
+  "catalogReadbackDiagnostic": "f11f7b omitted--catalog; preserved;2fb891 unique rawsummary audit5b3907e5 verifies catalogValid746/11588/noProjectRerun"
+}

@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-hot-joint-owner-refusals",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "b5d2a8d466a047cb7ecc2110a31d5d72a1235b77",
+  "compiled_source": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-hot-joint-owner-refusals",
+  "released_order": 5,
+  "expected_cases": 1,
+  "started_utc": "2026-10-16T22:19:47.294945+00:00",
+  "ended_utc": "2026-10-16T22:21:38.427462+00:00",
+  "binaries_unchanged": true,
+  "evidence_acceptance": {
+    "stem": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016",
+    "json_sha256": "82895e224b3cf8527ba3259681f64088f96f51bc0451a52ea8984241d4d69e52",
+    "complete_delta_receipt": "/tmp/t179pd-hot-custody-implementation-green-active-tail3-delta-recovery-20261016.json",
+    "complete_delta_sha256": "3e6011c7f8bc721b501ff4e82a2f8613887b0eb77048ce299613e7cf321d387e"
+  },
+  "scoped_temp_prefixes_before": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}

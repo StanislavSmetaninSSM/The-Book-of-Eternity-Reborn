@@ -1,0 +1,79 @@
+{
+  "status": "coordinator released exactly ONE cold actual; launched",
+  "source": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "compileSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "runtimeSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "spiritual-binding-cold-publication",
+    "-NoBuild"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "writtenUtc": "2026-10-12T04:56:11.634689+00:00",
+  "expected": {
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+    "methods": 1,
+    "cases": 1,
+    "descriptors": 1
+  },
+  "budgetsMinutes": {
+    "category": 15,
+    "warmPhase": 8,
+    "coldPhase": 8,
+    "observedOverallDefault": 20,
+    "runnerDefaultFormula": "5 + sum(category budgets) = 5 + 15 = 20",
+    "timeoutOverride": false
+  },
+  "binaryPins": {
+    "source": "1445dc28d33ebead5b51e9867bdf40373f000877",
+    "compileSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+    "planRun": "20261012-045443-327-249352-4b403b1aaa364a78b2a32706d7f2c8f1-categories",
+    "pinnedUtc": "2026-10-12T04:56:11.536421+00:00",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "b09ef881f4384875b9d2509f71eb864bdb99d0f1fc8cb1ad4370b360e33227f0",
+        "bytes": 27660288
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+        "sha256": "7cd79ac90f7d117f130f2d5cb3b2b46fdbbe02f44076b30d87efe84bb840b3ae",
+        "bytes": 4465688
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "43a731c05aa59449863487ad42b6cde80bc83a1d615087f352f6683052a51993",
+        "bytes": 25246208
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+        "sha256": "16e6bf939c3fc66707c8e4a038d23f951ac265c859bc581d00afeda305fba870",
+        "bytes": 5688708
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "43a731c05aa59449863487ad42b6cde80bc83a1d615087f352f6683052a51993",
+        "bytes": 25246208
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+        "sha256": "16e6bf939c3fc66707c8e4a038d23f951ac265c859bc581d00afeda305fba870",
+        "bytes": 5688708
+      }
+    ]
+  },
+  "coldInvocationCount": 1,
+  "attemptPolicy": "exactly ONE after explicit coordinator release; freeze first full outcome permanently; no automatic long repeat after incompleteness or new product defect",
+  "scope": "same-process new FileSystemManager/GameEngine at actual committed-B cut; NOT fresh OS/native worker",
+  "repairPolicy": "preserve ordinary refusal and any secondary responder error separately; no coercion/suppression",
+  "cleanupRequirement": "runner owned-tree/runtime cleanup; actual owner root cleanup and retained immutable raw outcome",
+  "startedUtc": "2026-10-12T04:57:10.095906+00:00",
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T04:57:58.963414+00:00",
+  "binaryPinsMatchAfter": true
+}

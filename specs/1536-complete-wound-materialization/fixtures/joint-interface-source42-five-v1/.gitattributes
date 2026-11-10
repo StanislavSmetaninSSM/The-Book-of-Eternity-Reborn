@@ -1,0 +1,3 @@
+# Immutable fixture DATA and explicit ZIP directory entries must survive checkout exactly.
+package/** -text
+source-record.json -text

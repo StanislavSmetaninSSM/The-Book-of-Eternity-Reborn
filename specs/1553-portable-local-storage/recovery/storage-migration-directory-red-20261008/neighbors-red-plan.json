@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-directory-uncertain-consumer",
+    "portable-directory-outcome-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bfd64967b7366f263785a32d18e03ab040ce0b0b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.0463782,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-outcome-neighbors-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-outcome-neighbors",
+      "Categories": [
+        "portable-directory-outcome-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-uncertain-consumer-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-uncertain-consumer",
+      "Categories": [
+        "portable-directory-uncertain-consumer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualSnapshotTreeUncertaintyStopsCleanupAndProjectsRecoveryNotice",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualSnapshotTreeUncertaintyStopsCleanupAndProjectsRecoveryNotice",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-uncertain-consumer-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-uncertain-consumer",
+      "Categories": [
+        "portable-directory-uncertain-consumer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

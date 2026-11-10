@@ -1,0 +1,78 @@
+{
+  "kind": "ROOT_CUT01_FIRST_STOP1_CAUSAL_RED_ACCEPTANCE_MINIMAL_PRODUCT_RELEASE",
+  "createdUtc": "2026-10-18T03:42:01.544540+00:00",
+  "rawCarrier": "7f0b11c6819b90473a272e793a5551e377b4371f",
+  "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "unchangedProductSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-first-stop-evidence-independent-review-20261018.md",
+      "bytes": 2204,
+      "sha256": "c43ad4b753dcd7167fda4f6d9fa21e4fb76963ad891ce9e7f3fd77027436f816"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-first-stop-evidence-independent-review-20261018.json",
+      "bytes": 2931,
+      "sha256": "2fe9398f0040af6aae7a3cc78dcab31b43452438680fe0c8b875973003890387"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-first-stop-evidence-independent-check-20261018.json",
+      "bytes": 32238,
+      "sha256": "d10fcd30573d3758d5272902e12366401c53a1e188efcc2b3a7444d46b323bcc"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-first-stop-delta-github-7f0b11c6-20261018.json",
+      "bytes": 16808,
+      "sha256": "8e4e2413c0af7ccc90a30d1ad48f234d0ddb77356a260cce3f6c0d9aa8b6608f"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-7f0b11c6-20261017.json",
+      "bytes": 25379,
+      "sha256": "b7445ded2ab9a1fcc3ce8ac80608fbb907c241fb9861bad0747375a68020213a"
+    }
+  ],
+  "verdict": "ACCEPT_CAUSAL_RED_CURRENT_CAPTURE_STOP_MISSING",
+  "originalOutcome": {
+    "nativeExit": 1,
+    "wallSeconds": 65.74984875301016,
+    "completedCases": 1,
+    "passed": 0,
+    "failed": 1,
+    "target": "GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+    "failure": "Assert.Equal expected1 actual0 at JointCaptureCut.cs175",
+    "actualPreparationPresentPendingReads": 4,
+    "retainedStages": "All six retained stages observed once; not fabricated method invocation counts.",
+    "reservationObjectsObserved": 1,
+    "openTakeObjectsObserved": 1,
+    "committedMarkerCohortsObserved": 2,
+    "actualTurn": 43,
+    "finalActualDisposition": null,
+    "finalIssues": null,
+    "rootCleanup": "One strict unique-root receipt, removed=true/no failure; physically absent; empty namespace; runner cleanup complete.",
+    "rawArchive": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb",
+    "rawChains": 9
+  },
+  "causalReason": "Genuine source42/original43 and actual repair/correctedReady prerequisites completed before intended missing callback assertion. Actual preparation/stages/reservation/take/applied progression marker, actual completion log and turn43 establish old route work; terminal cleanup source clears final refresh. Failure is observation-cut absence, not an enum/NotNull/setup failure.",
+  "limits": [
+    "Final disposition/issues stay NULL; no fabricated Committed field.",
+    "No callback means absent cut snapshot; all later held/noeffects assertions unreached. Postcut0 counters are unarmed and not no-work evidence.",
+    "Marker count includes committed marker-containing cohorts, not exact common method calls.",
+    "This RED proves current custody cut absent, never complete NI. Original native1/FAIL remains immutable."
+  ],
+  "rootVerification": "Read original record/runner summary/TRX error+stack and actual trace, verified all9 new original/stored chains and strict cleanup context; independently verified savedGitHub21files/all17paths and full7a+73deltas/55,216paths; read/hashverified separate independent EVIDENCE3.",
+  "productRelease": {
+    "scope": [
+      "BookOfEternityClient/Core/GameEngine.cs: append enum value MortalJointCustodyCaptureCompletedBeforePreparation preserving old ordinal meanings.",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs: one await existing dispatcher immediately after completed Capture and before preparation, inside unchanged innertry/catch/lease/finally."
+    ],
+    "notAllowed": "No new helper/consumer/NI/authority, no catch/filter/phase/owner/registry/writer/validator/projector changes; no fixture/test/catalog/selector edits.",
+    "parity": "Mechanical inverse must restore both exact base08119 source files; shared fixture and current31 test/category/selector bindings remain exact except the two product pins.",
+    "persistence": "Save exact EVIDENCE3/this Root disposition/prior raw recovery+composition together with minimal product WIP and derived currentpacket/ledger/headers; nonforcepush/exactremote/new changed-path GitHub recovery before fresh preparation.",
+    "preparation": "ONE fresh canonical postproduct BOTH build/discovery plus exact stage PlanOnly ZERO using existing validated runner/controller pattern, ninefreshcopies/current335managed/ownednamespace. A genuine changed-product build is required; no extra unchanged preproduct preparation or actual old families.",
+    "sourceGate": "Independent affected product SOURCE/FIXTURE/SELECTION/PREP and Root named release precede any product actual.",
+    "actualsStillHeld": "All product native runs. Later separately named affected protectedLate2/EVIDENCE first, then newstop1+transparency2; no automatic invocation."
+  },
+  "precommon": "v2 two-publication lifecycle design accepted separately. NI-IOBS-L01 implementation/actualissuer/result-origin bridge remains OPEN; child2 DESIGN only; oldchild1/v2 unchanged.",
+  "constraints": "No fullNI/HOT/newQTE/Windows/CI/ZIP/A3/main/merge/forcepush/branch deletion/credentials/security changes."
+}

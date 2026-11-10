@@ -1,0 +1,71 @@
+{
+  "testedSource": "e60d04832530393bd5a6a7fb5d21ba45a45cc246",
+  "compiledSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "packet": "fr063-worked-manual-A6-first-failure-frozen-e60d04832-20261015T160548Z",
+  "manifestSha256": "2237d86e6e45c14047bbaa1a9c23b3a5d747d7a81df4d9f59cbb6b3e1273e71b",
+  "chainsVerified": 38,
+  "exactGitCurrentSourcePins": 835,
+  "freshCurrentBinaryPins": 11,
+  "native": {
+    "exitCode": 1,
+    "wallTime": "00:00:21.5950826",
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [
+        "fr063-joint-worked-example-unit-002"
+      ],
+      "Complete": false
+    },
+    "timedOut": false,
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 2
+  },
+  "actualResults": [
+    {
+      "executionId": "c1add161-d9e8-4f00-8aaa-d277d6d945d4",
+      "testId": "af650096-633a-880d-85f1-c74c12088035",
+      "testName": "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket",
+      "computerName": "9bd05b0fec52",
+      "duration": "00:00:14.4094627",
+      "startTime": "2026-10-15T16:07:00.0080291+00:00",
+      "endTime": "2026-10-15T16:07:00.0080389+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Failed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "c1add161-d9e8-4f00-8aaa-d277d6d945d4"
+    }
+  ],
+  "remainingDescriptor": "UNRUN after first actual integration failure; no skipped/passing result inferred",
+  "standardA6Cleanup": "0/UNOBSERVED, not PASS",
+  "separatelyQualifiedActualSummaryCleanup": [
+    {
+      "receipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c32cfeeb009942c6b7771dc04a1e5678",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "trx": "actual-fr063-joint-worked-example-integration-001.trx",
+      "trxSha256": "2e989eacc3a71dce042efdbf4202736a7d7a891072324c9f8e59b68858666c07",
+      "xpath": "/t:TestRun/t:ResultSummary/t:Output/t:StdOut",
+      "line": 32,
+      "exactLineSha256": "8bfab70be7a5867789f1ff5b00197d58aa17ef4f50a62fc91d766265c31e98bb",
+      "actualTestId": "af650096-633a-880d-85f1-c74c12088035",
+      "actualMethod": "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket",
+      "attribution": "one actual result in the integration TRX; Summary adaptation; no standard collector claim"
+    }
+  ],
+  "causalDiagnosis": "NOT PERFORMED before this preservation; inspect only after failure checkpoint remote verification/independent EVIDENCE",
+  "sameRunFullPacketWitness": "NOT QUALIFIED; native test failed",
+  "actualRelease": "NONE; all successors/C1 held",
+  "utc": "2026-10-15T16:08:47.811261+00:00"
+}

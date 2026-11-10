@@ -635,9 +635,8 @@ public partial class ExplorerMode
             var safeName = string.Join("_", chapterName.Split(Path.GetInvalidFileNameChars()));
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = $"{safeName}_{timestamp}.txt";
-            var exportDir = _fs.ResolvePath("stories/export");
-            if (!Directory.Exists(exportDir)) Directory.CreateDirectory(exportDir);
-            var fullPath = Path.Combine(exportDir, fileName);
+            var relativePath = $"stories/export/{fileName}";
+            var fullPath = _fs.ResolvePath(relativePath);
 
             var sb = new System.Text.StringBuilder();
             sb.AppendLine($"╔══════════════════════════════════════════╗");
@@ -650,13 +649,29 @@ public partial class ExplorerMode
             foreach (var e in entries)
                 sb.Append(FormatStoryEntryAsText(e));
 
-            await File.WriteAllTextAsync(fullPath, sb.ToString(), System.Text.Encoding.UTF8);
+            var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? operationFailure = null;
+            var completed = false;
+            try
+            {
+                await _fs.WriteFileAtomicAsync(lease, relativePath, sb.ToString());
+                completed = true;
+            }
+            catch (Exception failure)
+            {
+                operationFailure = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, operationFailure);
+            }
 
             MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
             MarkupLine($"[dim]{entries.Count} записей сохранено.[/]");
             WaitForKey();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not (CoordinatedStatePublicationUncertainException or SessionReplacedException))
         {
             MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
@@ -671,9 +686,8 @@ public partial class ExplorerMode
         {
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var fileName = $"Полная_История_{timestamp}.txt";
-            var exportDir = _fs.ResolvePath("stories/export");
-            if (!Directory.Exists(exportDir)) Directory.CreateDirectory(exportDir);
-            var fullPath = Path.Combine(exportDir, fileName);
+            var relativePath = $"stories/export/{fileName}";
+            var fullPath = _fs.ResolvePath(relativePath);
 
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("╔══════════════════════════════════════════╗");
@@ -683,31 +697,47 @@ public partial class ExplorerMode
             sb.AppendLine();
 
             var totalEntries = 0;
-            foreach (var story in stories)
+            var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? operationFailure = null;
+            var completed = false;
+            try
             {
-                var entries = await _storyService.ReadStoryAsync(story.RelativePath);
-                if (entries.Count == 0) continue;
+                foreach (var story in stories)
+                {
+                    var entries = await _storyService.ReadStoryAsync(lease, story.RelativePath);
+                    if (entries.Count == 0) continue;
 
-                sb.AppendLine();
-                sb.AppendLine($"████████████████████████████████████████████");
-                sb.AppendLine($"  {story.DisplayName}");
-                sb.AppendLine($"  ({entries.Count} записей)");
-                sb.AppendLine($"████████████████████████████████████████████");
-                sb.AppendLine();
+                    sb.AppendLine();
+                    sb.AppendLine($"████████████████████████████████████████████");
+                    sb.AppendLine($"  {story.DisplayName}");
+                    sb.AppendLine($"  ({entries.Count} записей)");
+                    sb.AppendLine($"████████████████████████████████████████████");
+                    sb.AppendLine();
 
-                foreach (var e in entries)
-                    sb.Append(FormatStoryEntryAsText(e));
+                    foreach (var e in entries)
+                        sb.Append(FormatStoryEntryAsText(e));
 
-                totalEntries += entries.Count;
+                    totalEntries += entries.Count;
+                }
+
+                await _fs.WriteFileAtomicAsync(lease, relativePath, sb.ToString());
+                completed = true;
             }
-
-            await File.WriteAllTextAsync(fullPath, sb.ToString(), System.Text.Encoding.UTF8);
+            catch (Exception failure)
+            {
+                operationFailure = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, operationFailure);
+            }
 
             MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
             MarkupLine($"[dim]{stories.Count} глав, {totalEntries} записей сохранено.[/]");
             WaitForKey();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not (CoordinatedStatePublicationUncertainException or SessionReplacedException))
         {
             MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();

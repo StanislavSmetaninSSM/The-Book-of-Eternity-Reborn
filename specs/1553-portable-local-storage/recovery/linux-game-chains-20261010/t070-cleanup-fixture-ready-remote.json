@@ -1,0 +1,54 @@
+{
+  "SHA": "e332d9b0bef6c89fb779dd831b594e2fa8ed691a",
+  "Base": "a5bc70b592b90f874955a46b503199ba35c89d49",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1656981,
+      "SHA256": "f2a72c26766f368aed740fa9ea22e4af1587247c34654eba69b12c77cb84f204",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-preparation/manifest.json",
+      "Bytes": 1120,
+      "SHA256": "4eb7f811106ec80d16e1e0ebeaafaf09b005e80e053ca93299566307e92cf641",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-preparation/runner/Build-integration.log.gz",
+      "Bytes": 3039,
+      "SHA256": "fb35c006c44a60b5e5f87221f8cf752e3e91504070569b51bf758c0e9b237439",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-preparation/runner/dotnet-test.log.gz",
+      "Bytes": 183914,
+      "SHA256": "a4a863226188065f85b3ccb50fdc55aab14f41223de6207029e8d7a8be05e6fa",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-preparation/runner/plan.json.gz",
+      "Bytes": 548,
+      "SHA256": "5b7e1f481bf6ca43a06d021283363b15c3881736a7147033da13cecad4d68b4d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-preparation/runner/summary.json.gz",
+      "Bytes": 622,
+      "SHA256": "f8ca799b1af30d7b84be3990b22442422f165f0b40559f865291a6257c90971d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-fixture-source-remote.json",
+      "Bytes": 1258,
+      "SHA256": "ceb8c4aa2fa444886a32e8c97a2b4f873fb5ebe5c28871a95b04becf2adbaee3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-fixture-static-validation.json",
+      "Bytes": 2272,
+      "SHA256": "dd2fd4feaaa36c18fa0fc63554019364b986a71bcd3d2434221e96be26843bdb",
+      "RemoteExact": true
+    }
+  ]
+}

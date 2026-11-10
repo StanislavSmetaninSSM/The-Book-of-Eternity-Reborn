@@ -1,0 +1,289 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_SETTLEMENT3_EVIDENCE_REVIEW",
+  "reviewedUtc": "2026-10-18T13:21:11.868800+00:00",
+  "verdict": "ACCEPT_CORRECTED_SETTLEMENT3_EVIDENCE_THREE_DISTINCT_TARGETS_ONLY",
+  "findings": [],
+  "carrier": "c82b8a095fb200ae5f02d3f920edb2181a531a19",
+  "actualSource": "3119d29ae5a44c6bc5804b91a9f6efe47e4b66d6",
+  "compiledSource": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "label": "t179pd-ni-iobs-l01-process-first-settlement3-fixture-corrected-cloud-813f1057",
+  "recordSha256": "2c81238282ff0d54df65f437102f4d2f639dc3ba5049a9eec1e02ea4a36eb0a9",
+  "independentCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-settlement3-corrected-independent-check-c82b8a09-20261018.json",
+    "bytes": 15319,
+    "sha256": "67f063bb29c5a44bc33cdbf11e48440dc390b3c765a86c0ee4ed357b13ee10a0"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_settlement3_corrected.py",
+    "bytes": 33225,
+    "sha256": "befb4df60a4450c2517429f4c5443cbdbc949ffecefb342b690d55471d75537d"
+  },
+  "native": {
+    "exit": 0,
+    "tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "category": {
+      "Category": "fr063-joint-interface-settlement",
+      "Seconds": 461.8768272,
+      "BudgetMinutes": 15,
+      "Completed": true
+    },
+    "wallSeconds": 495.08881092000047,
+    "noTimeout": true,
+    "NoBuild": true,
+    "prepMode": "corrective-plan",
+    "prepRecordSha256": "7ed48419621c0f0d778c6aed35ba7611444de1a3f753d475ef07df372dadbab1"
+  },
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-settlement3-corrected-813f1057-files-20261018/archive.json",
+    "sha256": "0432802cfe44191048be33912c0ef3fbf28402cdaa231b46a14adca48c5a7329",
+    "rawChains": 11,
+    "rawBytes": 29251871,
+    "completeOriginalCoverage": true,
+    "originalStoredRestoredExact": true
+  },
+  "independentVerification": {
+    "rawImageLengthAndShaChecks": 4249,
+    "embeddedImageShaChecks": 16,
+    "journalImageShaChecks": 173,
+    "jsonDiagnosticParseErrors": 0,
+    "completeOriginalCoverage": true,
+    "sourcePins": 98,
+    "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+    "productDeltaPaths": 21,
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "allBeforeAfterPrepAndCurrentOutputHashesEqual": true,
+    "currentClientSha256": "2da34865a700f8a2b1ec240a9038490e7f76583a65df18aa8cd0305d80c96478",
+    "sourceFixtureAssertionCatalogSelectorContinuity": "Exact accepted 7dbfbddc source bindings. The one InvalidDataException field declaration inverse restores the original 67e143b2 fixture byte-for-byte. All assertion bodies, physical cut/counters/journal/callbacks/roots, product code, linked fixtures, catalog and selectors remain unchanged. No source change after accepted PREP."
+  },
+  "semanticEvidence": [
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "duration": "00:05:29.0374476",
+      "result": "ACCEPT",
+      "reached": "The actual live ProcessPlayerTurn route starts with confirmed held turn42 and a natural original43, without a precomposed common plan. One genuine completed capture follows one I-changing publication. A one-shot nonretryable fault fires after member0 of the actual 16-member common cohort has physically been applied. The existing owner catches the propagated failure and returns RetryableHeld. Newly reached assertions verify the exact Published result/pending/I, one I-changing cohort, no committed common marker, held turn42, all15 mechanical paths unchanged and the actual Stage direct restore guard with all222 files unchanged. The original fault is retained in the in-memory issue projection.",
+      "rawDetails": {
+        "disposition": "RetryableHeld",
+        "actualTurn": 42,
+        "oneRealMemberFault": true,
+        "faultTransaction": "fccef1f0afbb464e80a3a863d5164ed0",
+        "faultCohortMembers": 16,
+        "appliedMemberIndex": 0,
+        "memberBeforeImagesExactlyRetained": 16,
+        "captureCallbacks": 1,
+        "interfaceChangingCohorts": 1,
+        "commonMarkerCommits": 0,
+        "resultObservations": [
+          "Prepared",
+          "Published",
+          "Published"
+        ],
+        "compensationRecordSameAsPublished": true,
+        "interfaceBytesAndTimestampRetained": true,
+        "originalFaultIssueRetained": true,
+        "mechanicalPathsUnchanged": 15,
+        "actualStageDirectRestorePathsUnchanged": 222,
+        "outerWrapperInvoked": false,
+        "sourceOwnership": "Actual taken receipt/private common publisher; known storage rollback, original InvalidDataException propagated once without transient retry, owner whole-union compensation/current receipt and confirmed agreement/inventory checks, RetryableHeld rearm.",
+        "scopeLimit": "No later retry, replay, common completion, cold restart or successful consumption is executed by this case; RetryableHeld does not prohibit a future lawful owning retry."
+      },
+      "ownershipReasoning": "TrustedLocalFilePublication returns RolledBack only after exact before-images/G are re-established. FileSystemManager explicitly excludes InvalidDataException from transient retry. The common normalizer then invokes its taken transaction CompensateAndRearmAsync; that path re-proves current receipt/lease/G/confirmed agreement, whole inventory and guards before returning RetryableHeld. The raw evidence includes the initial cut, retained final images and disposition; it does not invent a separate rollback callback.",
+      "onceOnlyBoundary": "Prepared→Published→identical Published are three pending-record observations. The third is the owning compensation record write, with identical I bytes and unchanged I timestamp, not a second I projection. Only one capture and one I-changing cohort occurred. The optional outer wrapper is intentionally not invoked here; future lawful owning retry and later consumption are outside this case."
+    },
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: False)",
+      "duration": "00:00:43.7731538",
+      "result": "ACCEPT",
+      "reached": "ErrorPrepared retains the exact original I/mtime and issue, has no common/capture, keeps turn42 and all15 mechanical paths, and blocks direct plus outer generic restore using the actual Stage with222 unchanged files. The real whole-terminal owner then uses the actual Stage backup/checkpoint and current participating lease. Its trace applies indices0..5 and reaches one Committed event; TerminalReleased follows exact cohort/original/readback checks and exact prepared agreement release. All six intended changed members match, the three graph members are absent, and all216 unowned paths remain byte-identical (222 files before,219 after).",
+      "rawDetails": {
+        "disposition": "TerminalReleased",
+        "faults": 0,
+        "terminalTransaction": "071ae71e30154b73815fcfe7068d9d3a",
+        "appliedMemberIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "committedTraceCount": 1,
+        "actualStageDirectAndOuterRestorePathsUnchanged": 222,
+        "preTerminalErrorPreparedAndMechanicalPathsUnchanged": 15,
+        "fullBeforeFiles": 222,
+        "fullAfterFiles": 219,
+        "changedMembersExact": 6,
+        "unownedPathsByteEqual": 216,
+        "removedExactGraphMembers": 3,
+        "sourceOwnership": "Real current confirmed agreement/private terminal token and complete validated Stage baseline; complete cohort/original/readback checks then exact prepared agreement release and one token consumption. Generic record-only deletion cannot return TerminalReleased.",
+        "scopeLimit": "One successful terminal invocation; no separate duplicate-release attempt, later game progression, cold restart or mechanical settlement is claimed."
+      },
+      "ownershipReasoning": "The private release token validates the complete original baseline/current owned wave, whole member set, retained guards and physical readback. Registry completion checks the exact token/proof/current confirmed agreement, ReleasePreparedUnchecked and one token Consume before TerminalReleased. This is a whole owning release; no independent record-only deletion or manufactured token is involved.",
+      "onceOnlyBoundary": "One real terminal invocation and one committed terminal cohort were observed. No separate duplicate-release attempt or later runtime progression is claimed."
+    },
+    {
+      "case": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: True)",
+      "duration": "00:01:16.3650016",
+      "result": "ACCEPT",
+      "reached": "The same strong ErrorPrepared/direct/outer-retention assertions precede terminal entry. A one-shot original nonretryable fault fires after actual member0 deletion in the real six-member terminal cohort. Newly reached post-terminal assertions require PublicationUncertain, exactly one injected fault, identical complete222-file before/after key sets and bytes, and retained pending with the exact Prepared result. The post-terminal diagnostic now emits both full snapshots; no snapshot gap is reconstructed.",
+      "rawDetails": {
+        "disposition": "PublicationUncertain",
+        "faults": 1,
+        "faultTransaction": "40b41358336045d798700daf8a4a61af",
+        "faultCohortMembers": 6,
+        "appliedMemberIndex": 0,
+        "traceKnownCommitted": false,
+        "errorPreparedBeforeTerminal": true,
+        "preTerminalMechanicalPathsUnchanged": 15,
+        "actualStageDirectAndOuterRestorePathsUnchanged": 222,
+        "postTerminalFullBeforeAfterPathsEqual": 222,
+        "pendingAndExactPreparedResultRetained": true,
+        "sourceOwnership": "Actual Stage backup/checkpoint and current participating canonical lease; real whole-terminal token/cohort; nonretryable fault after actual first removal reaches existing owner catch/compensation, with current-claim/retained-guard/inventory checks.",
+        "scopeLimit": "Storage already restores known before-images. The owner compensation path may validate without another physical write; no second physical compensation batch, successful claim release, later retry or cold restart is claimed. Returned uncertainty and full before/after retention are the runtime oracle; the test does not emit the terminal returned issue list."
+      },
+      "ownershipReasoning": "The nonretryable failure reaches the existing terminal-owner catch after known storage rollback. Its compensation path retains the current token/claim and validates member ownership, guards and full inventory rather than authorizing release. Exact full final byte retention and PublicationUncertain are directly observed.",
+      "limits": "Storage already restores known before-images, so owning compensation can validate without a second physical write. The test does not emit its returned terminal issue list; no separate successful compensation batch, successful claim release, subsequent retry or cold restart is inferred."
+    }
+  ],
+  "cleanupAndCensuses": {
+    "nativeOwnedTreeAndRuntimeCleanupSucceeded": true,
+    "threeDistinctGuidFixtureCleanups": [
+      {
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "scenario": "CommonFault",
+        "outcome": "Passed",
+        "duration": "00:05:29.0374476",
+        "diagnosticRows": 42,
+        "ownedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-9e9f5e2803254838b517078c2f4ba5e5",
+        "ownedFixtureRemoved": true,
+        "cleanupFailure": null
+      },
+      {
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: False)",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "scenario": "Terminal",
+        "outcome": "Passed",
+        "duration": "00:00:43.7731538",
+        "diagnosticRows": 38,
+        "ownedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-8d117c2dab354143a86798a963edb5ba",
+        "ownedFixtureRemoved": true,
+        "cleanupFailure": null
+      },
+      {
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: True)",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "scenario": "TerminalFault",
+        "outcome": "Passed",
+        "duration": "00:01:16.3650016",
+        "diagnosticRows": 39,
+        "ownedRoot": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-bfd764202dbd46b1a74df9e4aafd56a9",
+        "ownedFixtureRemoved": true,
+        "cleanupFailure": null
+      }
+    ],
+    "savedCensuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3corrected-before-census-20261018.json",
+        "sha256": "29ac1301ccf9375ad1e6f17937a0380c28880ef307be44b97d67ffca0521a15e",
+        "startedUtc": "2026-10-18T13:01:15.028081+00:00",
+        "finishedUtc": "2026-10-18T13:01:15.046267+00:00",
+        "entries": 81,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 27957,
+            "expectedStartTick": 1308292,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ],
+        "classes": {
+          "other-readable": 8,
+          "exited-nonexecuting": 69,
+          "build-infrastructure": 3,
+          "observer-self": 1
+        },
+        "clean": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3corrected-after-census-20261018.json",
+        "sha256": "5805bfd76b12baa3aa476df1661602645a3a9930ca1ad5606a6f564752359558",
+        "startedUtc": "2026-10-18T13:09:35.218914+00:00",
+        "finishedUtc": "2026-10-18T13:09:35.248627+00:00",
+        "entries": 82,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 28477,
+            "expectedStartTick": 1358311,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ],
+        "classes": {
+          "other-readable": 9,
+          "exited-nonexecuting": 72,
+          "observer-self": 1
+        },
+        "clean": true
+      }
+    ],
+    "beforeGapSeconds": 2.708841,
+    "afterGapSeconds": 2.375432,
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "limits": "81-entry before and82-entry after snapshots are clean dated v2 argv/stat observations only. Stable PID/birth identities and known visibility MATCH were checked from original saved bytes. Original exe-link arrays remain incomplete. No instantaneous/continuous absence, present process/root absence or reconstructed interval is claimed."
+  },
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-c82b8a09.json",
+    "receiptSha256": "e3850b9656b88ec00d799a4330d6768a5d5c70c9250ce47ce9c407d065fa59cd",
+    "changedPaths": 22,
+    "allBytesHashesBlobsModesVerified": true,
+    "completeSavedGitTreeMatchesIndependentClone": true,
+    "remoteProvenance": "Exact remote/full independent clone confirmed by parent recovery receipt; no new remote fetch by reviewer."
+  },
+  "qualification": {
+    "newDistinctTargets": 3,
+    "retainedQualifiedBefore": 44,
+    "qualifiedAfterAcceptance": 47,
+    "wholeTargets": 57,
+    "exactMethodsAndRows": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+        "cases": 1
+      },
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+        "cases": 2
+      }
+    ],
+    "retention": "Retained44 keep original actual/compiled evidence and are not replayed or declared equivalent to this build. Original settlement native1/1PASS2FAIL, original close/races failures, original intake2FAIL+crash5FAIL and lost old corrected crash5 UNKNOWN/unavailable remain immutable.",
+    "remainingAtReviewedCarrier": "10 distinct targets: integrity4, uncertain1 and separately named newcrash5. No result for an ongoing or later group is inferred from this review."
+  },
+  "laterModeDecision": "No material finding changes the previously accepted conditional allowance for a separately released serial FIRST integrity4 using accepted remaining-plan/NoBuild and its own clean preflight after this positive original was saved/recovered. Parent reports that separate mode is running. This review makes no integrity4 outcome claim and grants no automatic release of uncertain1 or newcrash5.",
+  "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited; no main/merge/force/delete/issues/secrets change.",
+  "executionLimits": "Only read-only source/Git/original archive/TRX/build-output/saved-census checks and report/checker writes under /tmp/1536-cloud-tools/review. No tests/build/discovery/controllers/observer execution, current fixture-root or process inspection/intervention, repository writes or native retry. No whole-runtime PASS or old UNKNOWN restoration claim."
+}

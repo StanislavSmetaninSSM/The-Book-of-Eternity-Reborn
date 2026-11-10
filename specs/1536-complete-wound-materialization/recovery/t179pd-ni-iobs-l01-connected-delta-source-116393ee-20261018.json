@@ -1,0 +1,214 @@
+{
+  "kind": "INDEPENDENT_CONNECTED_DELTA_SOURCE_CONTINUITY",
+  "createdUtc": "2026-10-18T06:49:21.209956+00:00",
+  "reviewedCommit": "116393ee1793846489a480a075210c06e9c7a23b",
+  "deltaBase": "e8fd65a4425d0028f9a38383145da2bcf95c8af8",
+  "overall": "CONNECTED_REVIEW_REMAINS_OPEN_CHANGES_REQUIRED_NO_PREP_OR_RUNTIME_ACCEPTANCE",
+  "scope": "Only immutable e8fd→116393 product/fixture/selector delta and Root-requested actual selected-cache precedence. Reuses prior accepted source review; no old native/raw/package replay.",
+  "checks": {
+    "sourcePacket": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 55688,
+      "sha256": "57f6f69d9e3d76f6094839e7cca6e4d1fca9c5caf3b9e60c1122960226b82b37",
+      "gitBlob": "25a79830ab9a8739e39ae38af4b455f4a11bca4c",
+      "mode": "100644"
+    },
+    "sourcePinsVerified": 82,
+    "pinDigest": "f1cbd4cbff8a4bd0cd717591ecff69a86e26be3e891e7e27d171e975e9f94fc4",
+    "canonicalPinDigestVerified": true,
+    "allPinBytesShaBlobModeMatch": true,
+    "ledgerHashMatches": true,
+    "staticMethods": 24,
+    "staticDeclaredRows": 43,
+    "staticOwners": 8,
+    "catalogAndLedgerMethodsAgree": true,
+    "selectionMirrorByteEqual": true,
+    "existingUnitWildcardExpandsTo8AuthoredMethods": true,
+    "nativeDiscoveryOrExecutionClaim": false,
+    "actualProductDeltaPaths": [
+      "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs"
+    ]
+  },
+  "findings": [
+    {
+      "id": "NI-IOBS-S06-FIXTURE-MTIME",
+      "severity": "blocking_before_compilation",
+      "class": "test_source_compile_defect",
+      "status": "OPEN_AT_116393",
+      "locations": [
+        "GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs:84",
+        "GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs:159",
+        "GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs:164"
+      ],
+      "fact": "interfaceMtime is declared only in ObserveFrozenWarningConsumersAsync, but referenced in separate ObserveActualGenericSelectorAsync. No enclosing field exists.",
+      "consequence": "The candidate cannot compile; this is static source evidence, not a native build failure.",
+      "required": "Capture the mtime in the actual selector method before positive/damaged calls; retain the exact no-write assertion. Do not weaken the assertion."
+    },
+    {
+      "id": "NI-IOBS-S07-SELECTED-RECOVERY-PRECEDENCE",
+      "severity": "material_source",
+      "class": "selected_recovery_hidden_by_legacy_diagnostic_cache",
+      "status": "OPEN_AT_116393",
+      "locations": [
+        "GameEngine.ValidationAndRepair.cs:476",
+        "GameEngine.MortalJointRepairCanonicalPublication.cs:26",
+        "GameEngine.MortalJointRepairCanonicalPublication.cs:100",
+        "GameEngine.MortalJointRepairCanonicalPublication.cs:117",
+        "CanonicalStateNormalizer.MortalJointRepair.cs:140"
+      ],
+      "fact": "A same-frame PublicationUncertain cache is consulted before current verified-completed continuation and selected pending resume. Actual delegated common publication and its uncertain outcome can populate this cache. The common publisher independently rejects that same stale cache.",
+      "consequence": "Strict current selected recovery can remain hidden even when its physical proof is now valid; reordering only entry dispatch does not repair the second publisher guard.",
+      "required": "Make current selected completed/pending classification and recovery authoritative in the existing dedicated route; retire only obsolete diagnostic state after actual same-operation proof. Preserve genuine legacy1 uncertain policy, unresolved journal/graph refusal and no generic re-publication from a cached boolean. Add an actual owning uncertainty/re-entry control; no private cache seeding."
+    },
+    {
+      "id": "NI-IOBS-S08-OUTER-RETENTION-ORACLE",
+      "severity": "material_fixture_contract_mismatch",
+      "class": "permanent_hold_expected_for_legitimate_new_current_resume",
+      "status": "OPEN_AT_116393",
+      "locations": [
+        "GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs:108",
+        "GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs:123",
+        "GameEngine.MortalJointInterfaceResume.cs:47",
+        "GameEngine.MortalJointInterfaceResume.cs:97"
+      ],
+      "fact": "After proving immediate I-owning release failure and retained Published bytes, the fixture opens a NEW participating Main and invokes the complete entry wrapper, yet unconditionally expects Held and an unchanged graph. Accepted supplement36 explicitly allows a future independently-current owner to validate/release and consume Published DATA. Fresh I-close failure occurs before common publication and need not create the legacy uncertain cache.",
+      "required": "Keep direct destructive Restore refusal and immediate no-delivery/no-common assertions. Separate them from a genuine new-current resume, which must satisfy actual admission and may finish without re-projecting. ErrorPrepared and missing-result remain Held. For ReadyDrift require an actual current-source refusal, not a remembered uncertainty flag.",
+      "sourceContract": {
+        "path": "/tmp/t179pd-ni-iobs-l01-legacy-release-supplement-82e1552e-20261018.md",
+        "bytes": 9014,
+        "sha256": "0367cfee6901ade3300ff4fe8ff8405214749971f6ee8b69e15320293cf43692"
+      }
+    }
+  ],
+  "sourceDispositions": [
+    {
+      "id": "NI-IOBS-S01-R1",
+      "status": "ADDRESSED_IN_PRODUCT_SOURCE_NOT_RUNTIME",
+      "basis": "Unknown/absent parent version and parent1 with joint claims now refuse. Matching parent1 is routed through the full existing reader; a different original still needs exact signed prior marker bytes. New empty/unknown-empty negative rows are authored but blocked by S06."
+    },
+    {
+      "id": "NI-IOBS-S05",
+      "status": "ADDRESSED_IN_FIXTURE_SOURCE_NOT_RUNTIME",
+      "basis": "Current full proof is frozen at actual AcceptedOutcomeValidatedBeforeMaterialization. No post-cleanup original reconstruction remains. Original cut resultFingerprint and full payload are compared with recovered/completed records modulo only allowed Prepared/Published state/seal; ErrorPrepared is exact. Held keysets and values are compared. Owned child container is deleted only after positive exit/join/EOF. Independent expected energy2→0, health5→2, two target-turn resource rows and create/treat suffix/actual registry-settlement observation supplement full proof."
+    }
+  ],
+  "newControlsSourceAssessment": {
+    "owningClose": "Pauses actual Published readback, inspects original hoisted owning lease and injects its real close failure; immediate DATA-null/consumed/Held/no-common proof is meaningful. Later new-Main oracle needs S08 correction.",
+    "outerFinalization": "Actual session-closing hook after committed common/turn43; exact MainOperationContinuationException<object?>, established Completed/null and original close exception are source-consistent; shared full-union and inert-repeat remain.",
+    "returnedReadRace": "Genuine original I absence avoids freshness public-read ambiguity; hook runs after actual public read but before adapter preimage recheck. Mutation is legal JSON whitespace and cannot be hidden by projected bytes.",
+    "readyDrift": "Positive actual Published result precedes mutation of a distinct immutable Ready input; immediate capture expiry/no stages/no common and preserved original Ready bytes are checked. Future new-current resume disposition must be source-derived."
+  },
+  "supplementalAndFindingPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "bytes": 9056,
+      "sha256": "17d10d77f7d66c1d978dfeab0169e0876af2349b6e2ceb119569f618530e0d94",
+      "gitBlob": "d654503d7ee89d7106c94a472ca97b5af3243d06",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "bytes": 18087,
+      "sha256": "4bb6b20b19e5a85dfacaecc521acee1abc65a8a527c20bd1ef97064c7b4be859",
+      "gitBlob": "fe3faa88620af7a2bedc150b693fc9e9d7b2a03e",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 34599,
+      "sha256": "d849c133fb6cd396014d3dc24ce4228c535a6014fd11eb8dabc5dba732d4d888",
+      "gitBlob": "5140aaa585682833a853595192f1a9807fe92bfe",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+      "bytes": 8560,
+      "sha256": "c128d9ee8f78b0674a67f78a2baa15de3bd6b5cb3bd212d6091b23036427e350",
+      "gitBlob": "cb15dabe7067454cde6e9d3ea2485640cb972553",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "bytes": 11986,
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "gitBlob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 263167,
+      "sha256": "5b0326ca86c9dcff1152d28c6b1abe250d8df0104d8299d8ff51095afd63d099",
+      "gitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 507801,
+      "sha256": "b23214f1efb4d006e245c9761ef93096813ce50a7acad7e3d12bb694e7eae338",
+      "gitBlob": "659ae16872c12f41840d0c2c5daf91d6c96b1abd",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 10494,
+      "sha256": "1732b324c1990265858eaf7a09bd093c05b3f861af6d87f11ba95f03d334dbda",
+      "gitBlob": "3dd6a69d473ed3b8eb969b9c5bee5fa0aaef7af0",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "bytes": 10563,
+      "sha256": "bc702accfacdf175fec7e81ae4ecb5813051a4bd5cb66ee850a884874581db58",
+      "gitBlob": "f64c23f4c0aed33569d5b7d6ec708d4dba457564",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "bytes": 10937,
+      "sha256": "a121aebacc17b814f17ada92d528c04c09492be0383e680b2b7f4b36cdfc8762",
+      "gitBlob": "ec1a6f4bd7511b41dbfa98dd77d380f98ddf90ed",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "bytes": 7489,
+      "sha256": "ac39ed2a12f51d4396d0085c9829eb6e09a179a772ce3693ecd6a39a5edd46f4",
+      "gitBlob": "975d886a0200bffd5adcf63c2f9eb1ebbc846d97",
+      "mode": "100644"
+    }
+  ],
+  "explicitNewReflectionDependenciesOutside82": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "bytes": 11986,
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "gitBlob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 263167,
+      "sha256": "5b0326ca86c9dcff1152d28c6b1abe250d8df0104d8299d8ff51095afd63d099",
+      "gitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
+      "mode": "100644"
+    }
+  ],
+  "recoveryReferences": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-close-race-delta-github-116393ee-20261018.json",
+      "bytes": 18967,
+      "sha256": "da924fb93decd149ef6558356ebd85ec34bfe51f605a02d414e3fad2a381cd14"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-116393ee-20261017.json",
+      "bytes": 33339,
+      "sha256": "d2d961d665fdf920ad1bcf95302627d410e1379b92f42fc2baadbf27601b6971"
+    }
+  ],
+  "limits": [
+    "All current implementation/finite rows remain uncompiled and unrun. No production, native, PREP, or full NI/HOT acceptance.",
+    "Remaining common/terminal/strict restart graph/GM/final tools and full affected selection are still being authored by sole writer.",
+    "S01–S05 historical reports remain immutable; source corrections are not runtime passes.",
+    "Static read utilities initially guessed two file paths and selection schema/exact-only selector handling; corrected via actual paths, selections key and existing unit wildcard. Those read-only tool assumptions caused no repository/native change."
+  ]
+}

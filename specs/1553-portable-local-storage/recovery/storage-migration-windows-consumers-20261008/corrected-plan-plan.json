@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "gm-main-windows-shell-resolution",
+    "gm-main-windows-cwd-resolution",
+    "gm-main-bridge-native-windows"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c45d2d7e3c49ecc8851f7334490ca9f2a1d256bd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 36.2945284,
+  "Descriptors": [
+    {
+      "Name": "gm-main-bridge-native-windows-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-bridge-native-windows",
+      "Categories": [
+        "gm-main-bridge-native-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeWindowsOriginalHostTests.NativeOriginalHostPublishesStatusAndRetiresItsExactRun",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeWindowsOriginalHostTests.NativeOriginalHostPublishesStatusAndRetiresItsExactRun",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-windows-cwd-resolution-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-windows-cwd-resolution",
+      "Categories": [
+        "gm-main-windows-cwd-resolution"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DefaultShellWorkingDirectoryUsesGameSessionIsolation|FullyQualifiedName=BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DefaultShellWorkingDirectoryUsesGameSessionIsolation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-windows-shell-resolution-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-windows-shell-resolution",
+      "Categories": [
+        "gm-main-windows-shell-resolution"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWindowsShellResolutionTests.ResolvesExactConfigurationWithoutLaunchingAProbe",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.ResolvesExactConfigurationWithoutLaunchingAProbe",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

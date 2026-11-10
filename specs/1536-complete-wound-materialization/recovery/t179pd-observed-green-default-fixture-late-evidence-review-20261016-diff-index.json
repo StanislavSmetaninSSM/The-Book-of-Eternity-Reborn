@@ -1,0 +1,98 @@
+[
+  {
+    "path": "t179pd-observed-green-default-fixture-late-compiled-to-actual.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-late-compiled-to-actual.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "9bbcc7af7a3ed711df1676a1e1340a6bfc13aa62",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-late-prep-to-actual.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-late-prep-to-actual.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "e79e6c239f3461f6c7542986279ff6dd99796062",
+      "9bbcc7af7a3ed711df1676a1e1340a6bfc13aa62",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-late-actual-to-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-late-actual-to-carrier.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "9bbcc7af7a3ed711df1676a1e1340a6bfc13aa62",
+      "eac4e7e0dd695770d86f776d89f90ae9a2d7f822",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-late-compiled-to-carrier.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-default-fixture-late-compiled-to-carrier.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "eac4e7e0dd695770d86f776d89f90ae9a2d7f822",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  }
+]

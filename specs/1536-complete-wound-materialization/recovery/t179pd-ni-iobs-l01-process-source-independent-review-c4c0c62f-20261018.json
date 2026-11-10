@@ -1,0 +1,116 @@
+{
+  "kind": "INDEPENDENT_AFFECTED_SOURCE_FIXTURE_SELECTION_TOOLS_REVIEW",
+  "reviewedUtc": "2026-10-18T08:54:33.957723+00:00",
+  "candidate": "c4c0c62fbf37d2b0699b72e95794e4e3cef50535",
+  "base": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "verdict": "ACCEPT_SOURCE_FIXTURE_SELECTION_TOOLS_FOR_ZERO3_ONLY",
+  "findings": [],
+  "source": "ACCEPT: exact one-fixture inverse reconstructs parent bytes; production, catalog, selectors, TestSupport and retained test bodies unchanged.",
+  "fixture": "ACCEPT: independent parent/child-self exact PID + positive Linux kernel start tick replace only unsupported UTC equality; UTC/nonce/exit/EOF/join retained. Original cut bytes/length/SHA256/base64 are emitted before parsing/identity assertions; resume gains the same exact tick check. No tolerance or semantic assertion weakening.",
+  "selection": {
+    "whole": {
+      "owners": 16,
+      "descriptors": 16,
+      "methods": 33,
+      "finiteCases": 57
+    },
+    "pending": {
+      "owners": 7,
+      "descriptors": 7,
+      "methods": 12,
+      "finiteCases": 20
+    },
+    "modes": {
+      "legacy3": 3,
+      "crash5": 5,
+      "integrity4": 4,
+      "close2": 2,
+      "races2": 2,
+      "settlement3": 3,
+      "uncertain1": 1
+    },
+    "meaning": "Authored unchanged identities; current fresh discovery not yet performed."
+  },
+  "sourceBinding": {
+    "pins": 98,
+    "digest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "samePinBytes": 95,
+    "delta": "One fixture pin changed, two old controller pins replaced with two versioned derivatives; old files/history retained."
+  },
+  "retention": {
+    "qualified": 37,
+    "methods": 21,
+    "provenance": [
+      {
+        "compiled": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+        "qualified": 26
+      },
+      {
+        "compiled": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+        "qualified": 11,
+        "scopes": [
+          "repaired2",
+          "refusal9"
+        ]
+      }
+    ],
+    "reason": "Exact fixture inverse and unchanged code/default-path dependencies preserve prior observations. Shared crash observer retains byte-exact null-cut early return; changed native branches are reached only by crash5/integrity4. No old-positive replay or fresh assembly byte-equality/execution claim.",
+    "history": "Original five crash fixture FAILs and two intake fixture FAILs remain immutable, unqualified historical executions; corrected crash5 plus fifteen previously unrun cases remain pending."
+  },
+  "tools": {
+    "preparation": {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "sha256": "0968f998c95983eb46a91ea2f0559374a2019ad0373e953bce525ccfa4b8a70e"
+    },
+    "actual": {
+      "path": "/tmp/t179pd-ni-iobs-l01-process-first-run.py",
+      "sha256": "9ecd219574553ef37a08b863cde9aa23e563c3ae82b74c00ab2b5c32445bad89"
+    },
+    "archiver": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f"
+    },
+    "verdict": "ACCEPT_SOURCE_ONLY_UNRUN",
+    "guards": "Clean exact source, 98 pin digest/ledger, fixed categories, fresh nine and full dynamically enumerated output file set, metadata-only compiled descendants, exclusive FIRST sentinels, archived temporary selectors, original outcome before utility assertions. Each command separately named; no auto advance/retry/build in actual controller."
+  },
+  "preparation": {
+    "verdict": "UNRUN_NOT_QUALIFIED",
+    "eligibleAfterRootNamedRelease": [
+      {
+        "mode": "catalog",
+        "effect": "Fresh BOTH + catalog, zero tests"
+      },
+      {
+        "mode": "plan",
+        "prerequisite": "Successful same-source catalog record",
+        "effect": "Whole 16/33/57 PlanOnly-NoBuild, zero tests"
+      },
+      {
+        "mode": "remaining-plan",
+        "prerequisite": "Successful same-source catalog record",
+        "effect": "Exact pending 7/12/20 PlanOnly-NoBuild, zero tests"
+      }
+    ],
+    "requiredEvidence": "Freeze original three records/archives; verify actual method/case partition, zero executions, current source/ledger, fresh nine plus complete output file-set/hash and namespace/process cleanup; save/recover carrier before independent PREP acceptance."
+  },
+  "actualEligibility": "HELD. Fresh PREP acceptance and separately named Root releases required. This report authorizes no runtime and supplies no new product/crash/resume evidence.",
+  "scopeLimits": [
+    "Linux process identity only; no Windows qualification.",
+    "No whole NI/HOT/F1/M3/T197/A3, CI, ZIP or full-wounds acceptance.",
+    "No review of old raw or current binaries repeated; no build/test/discovery or repository mutation performed."
+  ],
+  "recovery": {
+    "receipt": "/tmp/t179pd-ni-iobs-l01-process-fixture-delta-github-c4c0c62f-20261018.json",
+    "newRecoveredFiles": 20,
+    "allChangedPaths": 16,
+    "rootComposition": "/tmp/t179pd3d-root-recovery-composition-c4c0c62f-20261017.json",
+    "retainedDeltas": 115,
+    "trackedPaths": 55686,
+    "meaning": "Independent immediate recovered-byte/hash/blob/mode/Git binding; prior full composition retained, not replayed."
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-process-source-independent-check-c4c0c62f-20261018.json",
+    "sha256": "39ab124f536d888f18e68efaf465b599fb2b415741b084d62e23d27461c585d0"
+  }
+}

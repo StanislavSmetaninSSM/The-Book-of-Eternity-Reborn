@@ -1,0 +1,1248 @@
+{
+  "SHA": "760d673b460e09f8308d9086efa1f9bad00e64fd",
+  "Base": "5849401195f8f6f995ea0660ae8c1895195929ed",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1608482,
+      "SHA256": "e6a007a27d2a6e83238695b568bde95e0a7b99c68ae83898523d7d420ec34f3d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-cold-cleanup-controls-remote.json",
+      "Bytes": 2370,
+      "SHA256": "c917ed2d5f422bccfb46a8644ce6eb32840c8bba4beb7f8bc6c3fc61eea07176",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/manifest.json",
+      "Bytes": 107435,
+      "SHA256": "b7189309f46fbc1f73b22031113a15cdac96981263af4641776bac5cec9b3775",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/native-package/build-provenance.json.gz",
+      "Bytes": 686,
+      "SHA256": "83cc64df18836111fc90f421901bf79a9a0616869e0620cbb08e4e7ee8d95d1f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/native-package/package-manifest.json.gz",
+      "Bytes": 628,
+      "SHA256": "9d1b85dcc80908dfcf13833b811ef925008d7e1a3b66f21fc4485cd0d77d80cf",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/authored-1.json.gz",
+      "Bytes": 1657,
+      "SHA256": "afad01e44fba2479bf6ddc2747be6132bb460341ce16f33d614a64a794551dd7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/bridge-first-echo.raw.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/bridge-first.raw.gz",
+      "Bytes": 12827,
+      "SHA256": "56a61430effa69e3c89fdcece797a549ace8a2e528715f85c8919427d7fa4a60",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/browser-queued-idle-ack.json.gz",
+      "Bytes": 113,
+      "SHA256": "c50a836eb4e7d9c5c399fcc9748f6656817985a5ba072edbc77c3f440fd0025c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/chain.log.gz",
+      "Bytes": 7820,
+      "SHA256": "fde4ef4f5333491380791a573f66da3ce6b06c405da4c14f5d7b1f212b3993e4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/client-first-echo.raw.gz",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/client-first.raw.gz",
+      "Bytes": 1422,
+      "SHA256": "a4e0472bad5f4b750a9a6d05c976fb9f4a84762822ed3205c4f02a6c181046f8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/client-queued-cold-echo.raw.gz",
+      "Bytes": 22,
+      "SHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/client-queued-cold.raw.gz",
+      "Bytes": 1128,
+      "SHA256": "5034d40e289afa68fd6e8dca4a02a61991c3da71848fb1a45d5aee7eb2b1cba1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/daemon-first-echo.raw.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/daemon-first.log.gz",
+      "Bytes": 500,
+      "SHA256": "e1080197a5b742cad22ee5b6e34e16bb797085fc63780af96e84509722034014",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/daemon-first.raw.gz",
+      "Bytes": 554,
+      "SHA256": "5d68f60d381cd89514d3e85e6c995bc196db5173e66791d4d47b882dcb8e4918",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/events.json.gz",
+      "Bytes": 4876,
+      "SHA256": "ce097147c45430c33602190c26a7369c7021005ab0c555722013bf94ed927338",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/guardian.json.gz",
+      "Bytes": 107,
+      "SHA256": "88f1fe773e0ceb5fb010e137883b3abeadc116ca002306d958bc1d78093b38cf",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/native-preparation.log.gz",
+      "Bytes": 69,
+      "SHA256": "d13b05f69827aa4854e935b1f96b89c0866aa58d8411113f221dbc70bf25db90",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/postrun-published-binary-inventory.json.gz",
+      "Bytes": 242,
+      "SHA256": "4d5a2baf8504986f39bb1fc26d83960c2a19f3f822453f168b858cbc3249af4c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/publish-BookOfEternityClient.log.gz",
+      "Bytes": 74,
+      "SHA256": "9ed4b3dbd5666a3e7a3f9aef7c486614ea38fbfa38a412dbf0e417943132175a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 76,
+      "SHA256": "44086a75cbcf545c4422f935e3eba82ccb2c995ccd0035979051c3952a93809d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/request-1.json.gz",
+      "Bytes": 17896,
+      "SHA256": "10157d3d365811f47c1a8f0b4719c9edde0ad6211bd937c3ef1e748fbbfa6c07",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/result.json.gz",
+      "Bytes": 8158,
+      "SHA256": "36ef066aa5cc3bf357fecc4ecccee29373ac2f3a94d2432b7bde6f57c0c09028",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/turn-1-before-authority.json.gz",
+      "Bytes": 11147,
+      "SHA256": "24bc11393709e48c277dc98dded3d0b05c2663df551161283b11fe8d6f4eb1ac",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/turn-1-before-manifest.json.gz",
+      "Bytes": 6228,
+      "SHA256": "ae69a9e028c4196a99c0f8f03631f97a20d9aaa59a964b87b9fbbb5e13c992ed",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/turn-1-before-request.json.gz",
+      "Bytes": 17896,
+      "SHA256": "10157d3d365811f47c1a8f0b4719c9edde0ad6211bd937c3ef1e748fbbfa6c07",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/web-action-1-echo.raw.gz",
+      "Bytes": 22,
+      "SHA256": "d898b9a41b916259772322fde2a2f9e0190a468477d5d067d3541e8c7a833489",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/web-action-1-pending-action.json.gz",
+      "Bytes": 300,
+      "SHA256": "80415f3257d64d4d00b7062b7f3b21094717295c72a38f2357fdab1c0e11f3a3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/web-action-1-submitted.html.gz",
+      "Bytes": 2452,
+      "SHA256": "d40ce4c5bf316992601f4c240d1478d3b944a9fca352495c90258b2eae87f015",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/web-action-1-submitted.png.gz",
+      "Bytes": 693420,
+      "SHA256": "744d09159bc11b4aa3d89ec236d4269ff314f29ad361070a6e07cb5a2a945e92",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/web-action-1.raw.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/owned/worker.log.gz",
+      "Bytes": 91,
+      "SHA256": "8c8d2aa57b391ff3d68f94617f63b52abcd59de5b62cf61b4d7c3344e8022b66",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/close-request.json.gz",
+      "Bytes": 23,
+      "SHA256": "37a641f5b71f361a83c4bb5aae7e62bb31dff4340708786bd20df2313b0f1173",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/closed.json.gz",
+      "Bytes": 88,
+      "SHA256": "2b3ee3715f357d5390f8d54f01aa0d070cfe424b90429fc7bb204579f58bfd46",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/consumer.log.gz",
+      "Bytes": 224,
+      "SHA256": "35e982c2f8ef1addece49805ac7c03b114762db469948cc23f2188714a72ad9c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/executing-response.json.gz",
+      "Bytes": 1657,
+      "SHA256": "afad01e44fba2479bf6ddc2747be6132bb460341ce16f33d614a64a794551dd7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/execution.json.gz",
+      "Bytes": 74,
+      "SHA256": "c6810566f6ea95130ff51b5970f277973258b6af2b58ccb69d0c4454fae8a0f4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/game-request.json.gz",
+      "Bytes": 17896,
+      "SHA256": "10157d3d365811f47c1a8f0b4719c9edde0ad6211bd937c3ef1e748fbbfa6c07",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/prompt.txt.gz",
+      "Bytes": 12560,
+      "SHA256": "e54649e9ccc196dd13f12385f2e29b57cf4934fbc3b047864d536794bf40c0c7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/reply.json.gz",
+      "Bytes": 303,
+      "SHA256": "5b796d738205359d0b3dd75d503058ef2455ba0e653addba6d54b08414baf096",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/request.json.gz",
+      "Bytes": 558,
+      "SHA256": "59efddb41972c63bac2df9dce166fe33353a6d1813a8649b362935471bd14482",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/response.json.gz",
+      "Bytes": 1657,
+      "SHA256": "afad01e44fba2479bf6ddc2747be6132bb460341ce16f33d614a64a794551dd7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/relay/queue-1/request-1-d706ad9f65f740b4adfecde3a1e018fc/started.json.gz",
+      "Bytes": 179,
+      "SHA256": "36aac49bdf3826ab40a85aa7bd740813a82ea08ef8bc4233af066688a4f5d8c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/runner/c5-browser-staged-idle-duration-diagnostic-unit-001.trx.gz",
+      "Bytes": 21411,
+      "SHA256": "66bec9fbc6de88bb974cca3913625ee757953d576d76a43f3fc2e11631725a87",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/runner/dotnet-test.log.gz",
+      "Bytes": 195316,
+      "SHA256": "c7dfd2d1b927a266925473f4dc748ea5bc422e87b5b689ac6ddb5c4695e315bc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/runner/plan.json.gz",
+      "Bytes": 507,
+      "SHA256": "56d8e17177455105a22017a6421007b646e5989ebec1e05876ef2f04997f409e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/runner/summary.json.gz",
+      "Bytes": 622,
+      "SHA256": "d506f9dc49c11edf21c8b89e884536c45c0316ecab98e101f2709e543e359b5f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/.boe_runtime/gm-runs/main.json.gz",
+      "Bytes": 309,
+      "SHA256": "8e1b269eeb2149b8796530e296e4f2d4e61eb41012597b81961c1ab5549b5183",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/.boe_runtime/session-generation/current.json.gz",
+      "Bytes": 87,
+      "SHA256": "6a81203161d8a7c6075a68b9a5bcca1804e2db5d065e9b4cd3999a7c695952fb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "Bytes": 100,
+      "SHA256": "79aad1cc128a86e002744ebec78748c3e4db0d44e606fd193d3d832386fd4c3e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/.boe_runtime/worker-runs-v1/state.json.gz",
+      "Bytes": 128,
+      "SHA256": "dd33d2960c1c4cc56fe17f84285c9dfd1a358de7384f1d50e817553f93e7cab6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/config.json.gz",
+      "Bytes": 519,
+      "SHA256": "d0e29f7561b18e6b1700e42f0a95c59fe780ab3e765a1685bd26ac41192f7acd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_bridge_status.json.gz",
+      "Bytes": 925,
+      "SHA256": "fd64daf52f816ea8b5435c759030d64640228d15649433a726d9180df2df8c1e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.rollback.639272438943254406.gz",
+      "Bytes": 51237,
+      "SHA256": "af09ae2d32fd20d67203d7a5ec675bf2ff19d593ab1a19b57b2e1a33cbc59e0b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "Bytes": 168583,
+      "SHA256": "2470dc31afd783d987a09bf065a8dbfcd1d7cfb98bb7ad2dfe1f4a72524559d7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.rollback.639272438943254406.gz",
+      "Bytes": 168583,
+      "SHA256": "2470dc31afd783d987a09bf065a8dbfcd1d7cfb98bb7ad2dfe1f4a72524559d7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.rollback.639272438943254406.gz",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.rollback.639272438943254406.gz",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.rollback.639272438943254406.gz",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.rollback.639272438943254406.gz",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.rollback.639272438943254406.gz",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.rollback.639272438943254406.gz",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.rollback.639272438943254406.gz",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "Bytes": 314,
+      "SHA256": "523dfbbf510bfa38e3e5668c73b4e486cfe76eabc0969416871370cc86ee578d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.rollback.639272438943254406.gz",
+      "Bytes": 314,
+      "SHA256": "de31e2da9fae0d8968d12dc57eb33d5dd72a9cb40bb23d6f69bb3a60db9770d2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.rollback.639272438943254406.gz",
+      "Bytes": 193,
+      "SHA256": "486c6f9bb5352fd6c0fa3d32373d8963952a133dfcbff789993d479c95ce2fab",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.rollback.639272438943254406.gz",
+      "Bytes": 17164,
+      "SHA256": "f597b796f7cacda91f05bb2cd4e78aa33e11964b18fdb63c21434ff0c7ca142d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.rollback.639272438943254406.gz",
+      "Bytes": 80153,
+      "SHA256": "be78ba9323ae16b548416cf398f2be02bd26a3ea923ef9bb9ee94b8a5400a8ca",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.rollback.639272438943254406.gz",
+      "Bytes": 11098,
+      "SHA256": "fd40d5fb3e0d3b31987f568f73895f03cb7ada478f2780378a29b39d0591b6db",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.rollback.639272438943254406.gz",
+      "Bytes": 27879,
+      "SHA256": "f9acac83039b5774a4f415254028e9e5d2a66d9f7f94308db9cc744259870668",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "Bytes": 1809,
+      "SHA256": "d3541ad23446d3ca28d849a6fcf3983b7c43875be4d33346d94db09c172ec31b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.rollback.639272438943254406.gz",
+      "Bytes": 1809,
+      "SHA256": "d3541ad23446d3ca28d849a6fcf3983b7c43875be4d33346d94db09c172ec31b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.rollback.639272438943254406.gz",
+      "Bytes": 1253,
+      "SHA256": "d47e41c6a34b05095bf61a6af83addf254df3da31f8e3bfc5bb9b4c448f5df83",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/README.md.rollback.639272438943254406.gz",
+      "Bytes": 881,
+      "SHA256": "5c3f3430db8e24371c36b6bac21e9d330b193c41d16c94956d7e500eed137692",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "Bytes": 900,
+      "SHA256": "b10435ae6d3ace35f67a065b78acf29375cdce01e15e3f8ac4ecb8e941b6d689",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.rollback.639272438943254406.gz",
+      "Bytes": 900,
+      "SHA256": "b10435ae6d3ace35f67a065b78acf29375cdce01e15e3f8ac4ecb8e941b6d689",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.rollback.639272438943254406.gz",
+      "Bytes": 1023,
+      "SHA256": "35cd1a2b35e791cbfd6864479cda76ef352ecb8b8a8985f0618a67146dac04de",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.rollback.639272438943254406.gz",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 1803,
+      "SHA256": "a5aeab08a06660a15d07d59360139a439a326e6eb8f6fdb8d5b42814792afaaa",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 1695,
+      "SHA256": "c5cb2a8731e1ec47b910b7af29610f4766605f4086bc54c51b4b9d6e4fd0a7e4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.rollback.639272438943254406.gz",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 1544,
+      "SHA256": "daa0262c7b1e138ba869942bc17f00cd6c66d627132e78f5b7af30b7aa7339b1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 1472,
+      "SHA256": "2c4e2e541c5bf536785e6390238bb335202d4f2bbea4ad92edf30bc1f689db06",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 2417,
+      "SHA256": "949255e6e50dc6192c4a53e2c451cbfa40092316da460cb36a3fdf92cd0726ad",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 1808,
+      "SHA256": "3c6615ddda684b4ceba9f0e49397a2fd6ccb2da51c708a15a2ddc279638e0b81",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 2382,
+      "SHA256": "220e486984ad67a147373263711d637a44c91bc76508d784d97fba1c1b821b61",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 4878,
+      "SHA256": "98c0a8b3d50cd1d74d272e05c7f7e652bf8a2dc78cb5c2af6e01dde48744bd95",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 3016,
+      "SHA256": "3bee293f5a4ee0880511becae051180033feb4fa9cbfacc7b14fc178855d6e2d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 2274,
+      "SHA256": "3ebbbc1d841a5c2ab6605c8e94767ef9e6d8e949fbb82e9ca8fd299fae938efc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.rollback.639272438943254406.gz",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 3237,
+      "SHA256": "c357322707d2b3abf8d3e2105aa16bc1604f3fe6e5726922eaad779e6018ed19",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.rollback.639272438943254406.gz",
+      "Bytes": 3907,
+      "SHA256": "45e581937215ac0e8f4f55d83db3a8ea9c94bb5ad5873c5ab51eac0e0886c880",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "Bytes": 2071,
+      "SHA256": "fdb0fc93166e895ef8549f2b467c9f583b4b49151c4327900ae677364eaec47b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.rollback.639272438943254406.gz",
+      "Bytes": 2071,
+      "SHA256": "fdb0fc93166e895ef8549f2b467c9f583b4b49151c4327900ae677364eaec47b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_daemon_status.json.gz",
+      "Bytes": 714,
+      "SHA256": "fe878171dc1e486846f2098b7f0a309056670eba6fe23f8ee0268576de2bc5cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_daemon_status.json.rollback.639272438943254406.gz",
+      "Bytes": 355,
+      "SHA256": "bb96051e6e43bec546cbc4efc3d50d408e1abd24216551eeffd9884faaf41e70",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.rollback.639272438943254406.gz",
+      "Bytes": 279,
+      "SHA256": "3dc356949ab589bdf7899655d8ccbd13db14701a5eb7929317d15f3208e2c336",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 284,
+      "SHA256": "b114ab6edbee8ffdb07bfef13cd372201946378a40127c0460d6ec021f526d97",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "Bytes": 11147,
+      "SHA256": "24bc11393709e48c277dc98dded3d0b05c2663df551161283b11fe8d6f4eb1ac",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "Bytes": 6228,
+      "SHA256": "ae69a9e028c4196a99c0f8f03631f97a20d9aaa59a964b87b9fbbb5e13c992ed",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "Bytes": 168583,
+      "SHA256": "2470dc31afd783d987a09bf065a8dbfcd1d7cfb98bb7ad2dfe1f4a72524559d7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "Bytes": 11099,
+      "SHA256": "17a314b4a73f152a4c689572b61b3a8044249e29c1033d456d63fc97757347ff",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "Bytes": 4346,
+      "SHA256": "2289bf774fadb60f51a557eebddc8058dd6969515462c63530091b1c50b2952a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "Bytes": 3910,
+      "SHA256": "fd6accbf220abf4aebf94e6f038498fd7cfeec66a4b5990eb618ab6a2ac233a8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "Bytes": 3750,
+      "SHA256": "dd8214f1691819721873936a17aeb4f8b112f8cb2a99b57575dd27fbc382ac99",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "Bytes": 32863,
+      "SHA256": "ed2ceff145e6be16fd96fa32f49898250e3ecee1c551a3fbef5ce6abc6ae6904",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "Bytes": 8557,
+      "SHA256": "4ecc9045d6194a0a8cac4848377c1ee662a77e5d349404fb4fc81768750ee855",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "Bytes": 15177,
+      "SHA256": "e99fa15e1dfee08dbab05103c8e3f01ca08520b57aee73f6f2ea8114d26d4834",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "Bytes": 314,
+      "SHA256": "de31e2da9fae0d8968d12dc57eb33d5dd72a9cb40bb23d6f69bb3a60db9770d2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "Bytes": 1809,
+      "SHA256": "d3541ad23446d3ca28d849a6fcf3983b7c43875be4d33346d94db09c172ec31b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "Bytes": 900,
+      "SHA256": "b10435ae6d3ace35f67a065b78acf29375cdce01e15e3f8ac4ecb8e941b6d689",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "Bytes": 57847,
+      "SHA256": "35083a3d218b48e643b3f598ea155edbcb67891a5cc46d9b090c368c84e47f38",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "Bytes": 325,
+      "SHA256": "7c247d5af2cbaf92e3f1c25c31438201dccaabb6f3e46a7f29e1942c24d1f295",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "Bytes": 309,
+      "SHA256": "ac50790050ff92064158076c1267333bb732f5ccb5fa7bbaaddd53ac43f7d724",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "Bytes": 2071,
+      "SHA256": "fdb0fc93166e895ef8549f2b467c9f583b4b49151c4327900ae677364eaec47b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_daemon_status.json.gz",
+      "Bytes": 355,
+      "SHA256": "bb96051e6e43bec546cbc4efc3d50d408e1abd24216551eeffd9884faaf41e70",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+      "Bytes": 284,
+      "SHA256": "b114ab6edbee8ffdb07bfef13cd372201946378a40127c0460d6ec021f526d97",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+      "Bytes": 369,
+      "SHA256": "7893de7b41fc55de9e7ee260ae8ebed09de30c4b249b0c1968213ead8d2aef2e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+      "Bytes": 163,
+      "SHA256": "62014a288fbadad7398277537709dcc9404be63457ae5aaf7dc8eeba5efdc20d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+      "Bytes": 148,
+      "SHA256": "9de8cef19d66614fe6224791035cdf886ce5716221c136d25e9e812595bb0495",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+      "Bytes": 1870,
+      "SHA256": "b3543cae0619d2d6eb42002d711efa24395cac6f4383f0b5ddfd2965c2d531b2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+      "Bytes": 2562,
+      "SHA256": "4bc83c4113b773f6ad13d397dc2cbeb0823ad2830d9f15a77cf0fd30a825313c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+      "Bytes": 861,
+      "SHA256": "60fbf3ece6fa0a06d8cb265ed2fd0f2b20ce730252192e14aef2de5699acf5a3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/progression_report.json.gz",
+      "Bytes": 340,
+      "SHA256": "2d32bb2ea2cace77bd6cb1b33edcafdee20d0a1c841750e7f42039b74b202b77",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/progression_schedule.json.gz",
+      "Bytes": 370,
+      "SHA256": "a13838f050256e6ec9023899e58c2ea1ed61d3ff70155ff1bc0c716920423395",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/control/progression_schedule.json.rollback.639272438943254406.gz",
+      "Bytes": 369,
+      "SHA256": "7893de7b41fc55de9e7ee260ae8ebed09de30c4b249b0c1968213ead8d2aef2e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/core/game_settings.json.gz",
+      "Bytes": 163,
+      "SHA256": "62014a288fbadad7398277537709dcc9404be63457ae5aaf7dc8eeba5efdc20d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/core/game_settings.json.rollback.639272438943254406.gz",
+      "Bytes": 163,
+      "SHA256": "62014a288fbadad7398277537709dcc9404be63457ae5aaf7dc8eeba5efdc20d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/core/system_mods.json.gz",
+      "Bytes": 148,
+      "SHA256": "9de8cef19d66614fe6224791035cdf886ce5716221c136d25e9e812595bb0495",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/core/system_mods.json.rollback.639272438943254406.gz",
+      "Bytes": 148,
+      "SHA256": "9de8cef19d66614fe6224791035cdf886ce5716221c136d25e9e812595bb0495",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/history/chat_log.json.gz",
+      "Bytes": 109,
+      "SHA256": "6ea4ff0852cb26341ca808ec33932ed4583900b43dfa37fc6969dbed773ee1b4",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/inventory/item_identity_index.json.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/inventory/item_identity_index.json.rollback.639272438943254406.gz",
+      "Bytes": 61,
+      "SHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/achievements.json.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/achievements.json.rollback.639272438943254406.gz",
+      "Bytes": 202,
+      "SHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272438943254406.gz",
+      "Bytes": 64,
+      "SHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "Bytes": 1870,
+      "SHA256": "b3543cae0619d2d6eb42002d711efa24395cac6f4383f0b5ddfd2965c2d531b2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272438943254406.gz",
+      "Bytes": 1870,
+      "SHA256": "b3543cae0619d2d6eb42002d711efa24395cac6f4383f0b5ddfd2965c2d531b2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272438943254406.gz",
+      "Bytes": 59,
+      "SHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272438943254406.gz",
+      "Bytes": 84,
+      "SHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/character_chronicle.json.gz",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/character_chronicle.json.rollback.639272438943254406.gz",
+      "Bytes": 476,
+      "SHA256": "20828e59cdcb2a51fd13d369f692bd2061fee01cb697a1732fbe6c8f730970e8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/guardian_projects.json.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/guardian_projects.json.rollback.639272438943254406.gz",
+      "Bytes": 84,
+      "SHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/guardian_thought_journal.json.gz",
+      "Bytes": 418,
+      "SHA256": "22f2e061d108f6d3cce65dfee404f4a7cd0fc280f8c0f2d3ce1362c7e8f5f410",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/guardians.json.gz",
+      "Bytes": 2562,
+      "SHA256": "4bc83c4113b773f6ad13d397dc2cbeb0823ad2830d9f15a77cf0fd30a825313c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/guardians.json.rollback.639272438943254406.gz",
+      "Bytes": 2562,
+      "SHA256": "4bc83c4113b773f6ad13d397dc2cbeb0823ad2830d9f15a77cf0fd30a825313c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/soul_state.json.gz",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/meta/soul_state.json.rollback.639272438943254406.gz",
+      "Bytes": 457,
+      "SHA256": "04a13e2f4cc80158da68bbc0e59628f6ad458b4e65d68a10c6cf631155065103",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_definitions.json.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_definitions.json.rollback.639272438943254406.gz",
+      "Bytes": 924,
+      "SHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_history.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_history.json.rollback.639272438943254406.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_owner_authority.json.rollback.639272438943254406.gz",
+      "Bytes": 80,
+      "SHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_state.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/resources/resource_state.json.rollback.639272438943254406.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/wounds/wound_history.json.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/wounds/wound_history.json.rollback.639272438943254406.gz",
+      "Bytes": 71,
+      "SHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/game_state/wounds/wound_identity_index.json.rollback.639272438943254406.gz",
+      "Bytes": 55,
+      "SHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/input/pending_player_action.json.gz",
+      "Bytes": 36257,
+      "SHA256": "996cb9bd6cd837ba90ddc922a3d77d0b3d98edb3ee7b5d9445738770aa79c7ff",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/input/turn_request.json.gz",
+      "Bytes": 17896,
+      "SHA256": "10157d3d365811f47c1a8f0b4719c9edde0ad6211bd937c3ef1e748fbbfa6c07",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/cosmology.json.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/cosmology.json.rollback.639272438943254406.gz",
+      "Bytes": 594,
+      "SHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272438943254406.gz",
+      "Bytes": 546,
+      "SHA256": "1ebf39b4c410b8e7cd94fa4e1eb0552453fb3244b509e2945c7078b73b1dd40e",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272438943254406.gz",
+      "Bytes": 42,
+      "SHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272438943254406.gz",
+      "Bytes": 513,
+      "SHA256": "699ed1e48c6592d9db280773be98e47e7371ea44dbb736e60409198acbca13d0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/codex_entries.json.gz",
+      "Bytes": 861,
+      "SHA256": "60fbf3ece6fa0a06d8cb265ed2fd0f2b20ce730252192e14aef2de5699acf5a3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/lore/codex_entries.json.rollback.639272438943254406.gz",
+      "Bytes": 861,
+      "SHA256": "60fbf3ece6fa0a06d8cb265ed2fd0f2b20ce730252192e14aef2de5699acf5a3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-cold-cleanup-retry-helper-refusal/state/game_session/output/narrative_response.json.gz",
+      "Bytes": 178,
+      "SHA256": "5378610b594769c183f0807f1a6e51a01e59d2fdba5d9f2613f0ca2927caaa19",
+      "RemoteExact": true
+    }
+  ]
+}

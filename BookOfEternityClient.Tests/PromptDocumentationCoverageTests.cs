@@ -10,6 +10,33 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void QtePhysicalOpportunityProjection_IsDocumentedAsClosedReadOnlyInput()
+    {
+        foreach (var path in new[]
+        {
+            new[] { "CLI_API_Specification.md" }, new[] { "CLI_Agent_Daemon_Specification.md" },
+            new[] { "Rules", "Block_CLI_QTE.txt" }, new[] { "TaskGuides", "CLI_Step_Main.txt" },
+            new[] { "Examples", "E_CLI_QTE_Offer.txt" },
+            new[] { "BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs" }
+        })
+        {
+            var text = ReadRepoFile(path);
+            foreach (var token in new[] { "woundOpportunities", "default `[]`", "canonical pending order",
+                         "complete pending/consumed batch", "ordered accepted-event", "official new-turn snapshot",
+                         "opportunityRef", "maximumSeverity", "safeContext", "allowedLocationKinds",
+                         "signed observed absence", "no live fallback", "single closed NONE/materialize draft",
+                         "output/mortal_wound_decisions.json", "acquisitionNarration verbatim", "narration-only repair", "entire pinned decision/proposal", "same resource/effect/wound transaction",
+                         "NONE consumes the occurrence", "exact durable replay", "Mortal-only", "excluded from save/import archives" })
+                Assert.Contains(token, text, StringComparison.Ordinal);
+            Assert.DoesNotContain("N+1 wound decision/consumer remains pending", text, StringComparison.Ordinal);
+        }
+        var manifest = JsonNode.Parse(ReadRepoFile("Examples", "example_validation_manifest.json"))!;
+        var entry = manifest["qtePhysicalOpportunityProjectionCoverage"]!;
+        Assert.Equal("mortal_qte_physical_opportunity_projection_v1", entry["contractId"]!.GetValue<string>());
+        Assert.Contains("Closed public JSON grammar", entry["coverageLimit"]!.GetValue<string>(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings()
     {
         var issueClassification = ReadRepoFile(
@@ -158,6 +185,27 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Contains("mortal_qte_terminal_resource_penalty_v1", qteExample, StringComparison.Ordinal);
         Assert.Contains("turn_42:qte_terminal:2:resource:1", qteExample, StringComparison.Ordinal);
         Assert.Contains("turn_42:qte_terminal:3:resource:1", qteExample, StringComparison.Ordinal);
+
+        var runtimePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        foreach (var document in new[] { apiSpec, daemonSpec, qteRules, stepGuide, qteExample, runtimePrompt })
+        {
+            foreach (var token in new[]
+                     {
+                         "physicalInjury", "schemaVersion", "resourceCommandOrdinal", "maximumSeverityRank",
+                         "allowedLocationKinds", "2000", "anatomical", "systemic", "mental", "spiritual_axis", "other",
+                         "no default IV", "before selection", "mortal_qte_terminal_health_damage_v1",
+                         "same resource/effect transaction", "complete ordered accepted sibling events",
+                         "awaiting receipt and preallocation publish no occurrence", "single closed NONE/materialize draft"
+                     })
+                Assert.Contains(token, document, StringComparison.Ordinal);
+            Assert.DoesNotContain("occurrence production remains pending", document, StringComparison.Ordinal);
+        }
+        Assert.Contains("mortal_qte_physical_injury_declaration_v1", qteExample, StringComparison.Ordinal);
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        Assert.Contains("mortal_qte_terminal_health_damage_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("single closed NONE/materialize draft", manifest, StringComparison.Ordinal);
+        foreach (var token in new[] { "clientStoryAppend", "exact client-written row", "same-root paused/deferred resume", "every other story/history guard stays enabled", "never offer fields or GM receipt authority", "corruption/correlation checks" })
+            Assert.Contains(token, qteRules, StringComparison.Ordinal);
     }
 
     [Fact]

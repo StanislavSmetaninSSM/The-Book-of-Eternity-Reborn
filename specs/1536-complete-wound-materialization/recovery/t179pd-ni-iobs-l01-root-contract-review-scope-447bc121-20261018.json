@@ -1,0 +1,72 @@
+{
+  "kind": "ROOT_NI_IOBS_L01_CONTRACT_MAP_REVIEW_SCOPE_NOT_IMPLEMENTATION_ACCEPTANCE",
+  "createdUtc": "2026-10-18T04:38:08.005749+00:00",
+  "source": "447bc1210c507742758243e1c254860bea0c4539",
+  "verdict": "ACCEPT_TRACKED_DOCUMENT_WIP_AND_INDEPENDENT_WHOLE_VERTICAL_REVIEW_ONLY",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018.md",
+      "bytes": 12683,
+      "sha256": "eed71ed8bb685da3f40868e0fa08c2b912f3cdacf6365e6a975b4535496708ed"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018.json",
+      "bytes": 4208,
+      "sha256": "3fe37044f666674ffe4897de3b561b50e482cf810c8083f44b8c6f97d7b44fa7"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018-check.json",
+      "bytes": 21637,
+      "sha256": "329c3677ef1a6df40527f3dedf054228792fb4f7ceb4581522e6cd87ce97de3e"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-origin-fresh-cold-precision-447bc121-20261018.json",
+      "bytes": 4010,
+      "sha256": "d0d9cb79a4c9fb0204adb0c53323ac16a309a0fd9f199f5840395a513b178ebe"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-enums-resume-precision-447bc121-20261018.json",
+      "bytes": 9011,
+      "sha256": "fbc4126a863812ea31b3169acdf38babfeae73a6f02b185914439bd9710cc52a"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-enums-resume-precision-447bc121-20261018-v2.json",
+      "bytes": 10598,
+      "sha256": "1e6cfc9e37c8dda2134f517a280c46bb35c4a58ddcde5d7da49ba33c10722076"
+    },
+    {
+      "path": "/tmp/t179pd-ni-result-enums-resume-precision-447bc121-20261018-check.json",
+      "bytes": 6981,
+      "sha256": "2cbbec2a8f479c6e8536a0c1ec0eaf66e843fbe86f7f9be027b582ec56d84d27"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.md",
+      "bytes": 23519,
+      "sha256": "aae9ffeabc718106db4de89ecdc463f466c42a288a7f3cc2fd4e45d2ef3fd692"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.json",
+      "bytes": 30259,
+      "sha256": "8955898327df2819b82b3e4ef40c2ff6a539cbfcd4e4845750dd392bc6c10018"
+    }
+  ],
+  "rootChecks": [
+    "Exactremote447bc/clean and maind024 unchanged; retainedfull7a+82/55,302 verified earlier, no clone/recovery replay.",
+    "Read derived origin contract plus fresh/cold and authoritative enums/resumev2; hashverified frozen9files. Enumsv1 fallbackkind authoring snapshot remains immutable and explicitly superseded byv2 required/sampled/value; not a native failure.",
+    "Independently verified contract29pins/47ranges, enum10pins/18ranges and engineeringmap38pins/64ranges exact447bc Git/currentbytes/blob+rangehashes.",
+    "Read actual current entry/rawcollector/publicI/common/cold/restore sources; current rawcollector is critical/NPC/faction/location/items, not N/I. Original ordinary I behavior unchanged."
+  ],
+  "selectedVertical": "Actual privateFIRSTcheckpoint2/protocol1 fornewwaves → one-shot Iprepare → pendingPrepared → I+pendingPublished → actual pre-prep Published DATA consumer → genuine common/take/markerchild3 → late/coldDATA insteadofIreprojection. Existingv1/child1 unchanged; child2ReturnedI remains DESIGN only.",
+  "reviewQuestions": [
+    "Exact freshprivatecapability installation/readback/owningrelease and consumption atprepareSTART beforeIreads/projector/UTC; sameprocessstickyfailure/newmissingresultrestartHELD.",
+    "Adapter usesactualIowninglease outsideLp and observes requiredreadback/release before handing result tocommonconsumer; no missinglease-return fact inferred frompublishercommit. Exact freshReady ownedbefore→after transition preservesoriginalReady snapshot.",
+    "Concrete currentreadonly6family/N admission and authentic newMain/frame/request/resource/mechanical/common/take owneronresume; noPublishedI-as-upstreamAccepted, noEnsure/genericnormalizer/reviveoldReady.",
+    "DirectRestore andouterdestructivefallback retention; common/terminal consume whole exactgraph atomically androllback restoresPublished/Iafter.",
+    "Legacy1fixture musthavegenuineexistingproducer/retainedgraph provenance, no modifiedv2version/callerprotocolflag. Realabruptenginechildcuts, not typedexceptiononly; causalFIRSTassert afterrealbaselinework.",
+    "Recordbounds mustreuseexistingconstraints whereapplicable, no gratuitous new2MiB Iadmissionrestriction or anti-owner policy. Exact strictschema/diagnosticorder/no addedauthority, acycliccommon/coldlinks andsource-backedlimits."
+  ],
+  "writerNext": "Solewriter maynowcopy exact frozen9+thisRoot andprior447bcGitHubreceipt/82composition into existing1536recovery, prependcurrentNI-IOBS-L01 trackedtask/plan/spec status andselectedvertical as DOC_WIP_FOR_REVIEW. ExistingCUT01 accepted/noreplay, immutable design/history preserved. CommitWIP/nonforcepush/exactremote/completechangedpathGitHubrecovery BEFORE long independentcandidate review. No product/tests/catalog/selection/tools/build/discovery/runtime authoring or execution until acceptedwholecandidate and laterSOURCE/FIXTURE/PREP gates.",
+  "authorization": "User explicitly conditionally authorizes testsfirst/causalRED/minimalimplementation if independentreviewconfirmswholeverticalinsideaccepteddesign. No extraordinarypermission question. If concretegame-rule/newarchitecturechoice unavoidable, reportchoice+consequences beforeimplementation.",
+  "preflight": "Root initial bash127 pwshmissingPATH beforeSpecKitscript entry was environmentdiscovery, notnative/test outcome. Existing /workspace/.onboarding/activate.sh resolved retainedpwsh/dotnet; readonlySpecKitprerequisites succeededfor1536. No install/security change.",
+  "holds": "FullNI/HOT/M3/F1/T197/platform/A3 unchanged; Windowsartifact403/CI/ZIP held. No main/merge/forcepush/delete/issueclose/security/backend/newjournal/newpath/newQTE."
+}

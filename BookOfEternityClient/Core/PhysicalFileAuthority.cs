@@ -6,7 +6,10 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
-internal static class PhysicalFileAuthority
+/// <summary>
+/// Validates filesystem namespace entries and manages physical file and directory authorities.
+/// </summary>
+internal static partial class PhysicalFileAuthority
 {
     private const uint DeleteAccess = 0x00010000;
     private const uint SynchronizeAccess = 0x00100000;
@@ -94,10 +97,29 @@ internal static class PhysicalFileAuthority
         ReparsePoint
     }
 
+    /// <summary>
+    /// Classifies a direct child using a fresh non-following metadata handle on Windows.
+    /// </summary>
+    /// <param name="parent">
+    /// Existing stable authority for the entry's direct parent.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Absolute child path whose final component is not followed.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in authority failures.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional scoped observer of actual Windows native open attempts.
+    /// </param>
+    /// <returns>
+    /// The fresh observed entry kind, including Missing for native errors 2 or 3.
+    /// </returns>
     internal static NamespaceEntryKind ProbeNamespaceEntry(
         StableDirectory parent,
         string expectedPath,
-        string authorityName)
+        string authorityName,
+        PhysicalNamespaceProbeHooks? hooks = null)
     {
         EnsureDirectChild(parent, expectedPath, authorityName);
         var normalizedPath = Path.GetFullPath(expectedPath);
@@ -122,23 +144,32 @@ internal static class PhysicalFileAuthority
             }
         }
 
-        var handle = CreateFile(
-            ToWindowsExtendedPath(normalizedPath),
-            FileReadAttributes | SynchronizeAccess,
-            FileShareRead | FileShareWrite,
-            IntPtr.Zero,
-            OpenExisting,
-            FileFlagOpenReparsePoint | FileFlagBackupSemantics,
-            IntPtr.Zero);
-        if (handle.IsInvalid)
+        var access = FileReadAttributes | SynchronizeAccess;
+        var share = FileShareRead | FileShareWrite;
+        var flags = FileFlagOpenReparsePoint | FileFlagBackupSemantics;
+        ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
+            PhysicalNamespaceOpenKind.NamespaceEntry);
+        SafeFileHandle handle;
+        using (FileSystemManager.MeasureCurrentOperation("WindowsNative.CreateFileW.NamespaceEntry"))
         {
-            var error = Marshal.GetLastWin32Error();
-            handle.Dispose();
-            if (error is ErrorFileNotFound or ErrorPathNotFound)
-                return NamespaceEntryKind.Missing;
-            throw CreateIoException(
-                $"Could not inspect {authorityName} namespace entry.",
-                error);
+            handle = CreateFile(
+                ToWindowsExtendedPath(normalizedPath),
+                access,
+                share,
+                IntPtr.Zero,
+                OpenExisting,
+                flags,
+                IntPtr.Zero);
+            if (handle.IsInvalid)
+            {
+                var error = Marshal.GetLastWin32Error();
+                handle.Dispose();
+                if (error is ErrorFileNotFound or ErrorPathNotFound)
+                    return NamespaceEntryKind.Missing;
+                throw CreateIoException(
+                    $"Could not inspect {authorityName} namespace entry.",
+                    error);
+            }
         }
 
         using (handle)
@@ -157,106 +188,31 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Classifies one fresh namespace entry through the original physical traversal.
+    /// </summary>
+    /// <param name="rootPath">
+    /// Root path resolved to an absolute physical anchor; it may be missing, and the target must be a strict descendant.
+    /// </param>
+    /// <param name="expectedPath">
+    /// Target path resolved to an absolute entry whose final component is not followed.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in existing authority refusals.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional per-invocation observations and controlled test boundaries; <see langword="null"/> preserves ordinary operation.
+    /// </param>
+    /// <returns>
+    /// The observed final entry kind, or Missing after a missing validated ancestor.
+    /// Invalid ancestors and authority failures retain their exceptions.
+    /// </returns>
     internal static NamespaceEntryKind ProbeNamespaceEntryFromRoot(
         string rootPath,
         string expectedPath,
-        string authorityName)
-    {
-        var root = Path.GetFullPath(rootPath).TrimEnd(
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar);
-        var expected = Path.GetFullPath(expectedPath);
-        if (!IsSameOrDescendant(expected, root) ||
-            PathsEqual(expected, root))
-        {
-            throw new InvalidDataException(
-                $"{authorityName} entry is outside its physical root.");
-        }
-
-        var segments = Path.GetRelativePath(root, expected).Split(
-            [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
-            StringSplitOptions.RemoveEmptyEntries);
-        if (segments.Length == 0 ||
-            segments.Any(segment => segment is "." or ".."))
-        {
-            throw new InvalidDataException(
-                $"{authorityName} namespace path is invalid.");
-        }
-
-        StableDirectory? current = null;
-        try
-        {
-            var rootParentPath = Path.GetDirectoryName(root);
-            if (rootParentPath == null)
-            {
-                throw new InvalidDataException(
-                    $"{authorityName} physical root has no parent directory.");
-            }
-
-            using (var rootParent = OpenStableDirectory(
-                       rootParentPath,
-                       authorityName + " root parent"))
-            {
-                var rootKind = ProbeNamespaceEntry(
-                    rootParent,
-                    root,
-                    authorityName + " root");
-                if (rootKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (rootKind != NamespaceEntryKind.Directory)
-                {
-                    throw new InvalidDataException(
-                        $"{authorityName} root is not a physical directory.");
-                }
-
-                try
-                {
-                    current = OpenStableDirectory(root, authorityName);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    rootKind = ProbeNamespaceEntry(
-                        rootParent,
-                        root,
-                        authorityName + " root");
-                    if (rootKind == NamespaceEntryKind.Missing)
-                        return NamespaceEntryKind.Missing;
-                    throw;
-                }
-            }
-
-            for (var index = 0; index < segments.Length - 1; index++)
-            {
-                var childPath = Path.Combine(current.FullPath, segments[index]);
-                var childKind = ProbeNamespaceEntry(
-                    current,
-                    childPath,
-                    authorityName + " parent");
-                if (childKind == NamespaceEntryKind.Missing)
-                    return NamespaceEntryKind.Missing;
-                if (childKind != NamespaceEntryKind.Directory)
-                {
-                    throw new InvalidDataException(
-                        $"{authorityName} parent is not a physical directory.");
-                }
-
-                var child = OpenStableDirectory(
-                    childPath,
-                    authorityName + " parent");
-                current.Dispose();
-                current = child;
-            }
-
-            return ProbeNamespaceEntry(
-                current,
-                expected,
-                authorityName);
-        }
-        finally
-        {
-            current?.Dispose();
-        }
-    }
+        string authorityName,
+        PhysicalNamespaceProbeHooks? hooks = null) =>
+        ProbeNamespaceEntryFromRootCore(rootPath, expectedPath, authorityName, hooks, combineDirectoryOpens: false);
 
     internal static StableDirectory EnsureStableDirectory(
         string rootPath,
@@ -473,11 +429,33 @@ internal static class PhysicalFileAuthority
             authorityName);
     }
 
+    /// <summary>
+    /// Opens the existing directory authority and retains its configured rename exclusion.
+    /// </summary>
+    /// <param name="expectedPath">
+    /// Existing absolute directory path.
+    /// </param>
+    /// <param name="authorityName">
+    /// Description included in authority failures.
+    /// </param>
+    /// <param name="allowRename">
+    /// Whether the returned authority also requests delete access for its caller's rename operations.
+    /// </param>
+    /// <param name="shareDelete">
+    /// Whether other handles may request delete access; false retains ordinary rename exclusion.
+    /// </param>
+    /// <param name="hooks">
+    /// Optional per-invocation native observations and a controlled validation boundary.
+    /// </param>
+    /// <returns>
+    /// An owned directory authority that the caller must dispose.
+    /// </returns>
     internal static StableDirectory OpenStableDirectory(
         string expectedPath,
         string authorityName,
         bool allowRename = false,
-        bool shareDelete = false)
+        bool shareDelete = false,
+        PhysicalNamespaceProbeHooks? hooks = null)
     {
         var normalizedPath = Path.GetFullPath(expectedPath);
         if (!Directory.Exists(normalizedPath))
@@ -492,27 +470,35 @@ internal static class PhysicalFileAuthority
         var access = FileListDirectory | SynchronizeAccess;
         if (allowRename)
             access |= DeleteAccess;
-        var handle = CreateFile(
-            ToWindowsExtendedPath(normalizedPath),
-            access,
-            FileShareRead |
-            FileShareWrite |
-            (shareDelete ? FileShareDelete : 0),
-            IntPtr.Zero,
-            OpenExisting,
-            FileFlagBackupSemantics,
-            IntPtr.Zero);
-        if (handle.IsInvalid)
+        var share = FileShareRead | FileShareWrite |
+            (shareDelete ? FileShareDelete : 0);
+        var flags = FileFlagBackupSemantics;
+        ObserveNamespaceNativeOpen(hooks, normalizedPath, access, share, flags,
+            PhysicalNamespaceOpenKind.DirectoryAuthority);
+        SafeFileHandle handle;
+        using (FileSystemManager.MeasureCurrentOperation("WindowsNative.CreateFileW.DirectoryAuthority"))
         {
-            var error = Marshal.GetLastWin32Error();
-            handle.Dispose();
-            throw CreateIoException(
-                $"Could not open {authorityName} directory authority.",
-                error);
+            handle = CreateFile(
+                ToWindowsExtendedPath(normalizedPath),
+                access,
+                share,
+                IntPtr.Zero,
+                OpenExisting,
+                flags,
+                IntPtr.Zero);
+            if (handle.IsInvalid)
+            {
+                var error = Marshal.GetLastWin32Error();
+                handle.Dispose();
+                throw CreateIoException(
+                    $"Could not open {authorityName} directory authority.",
+                    error);
+            }
         }
 
         try
         {
+            hooks?.BeforeDirectoryHandleValidation?.Invoke(normalizedPath);
             EnsureHandleMatchesExpectedPath(
                 handle,
                 normalizedPath,
@@ -1525,6 +1511,21 @@ internal static class PhysicalFileAuthority
         return true;
     }
 
+    /// <summary>
+    /// Checks <paramref name="handle"/> against <paramref name="expectedPath"/> and then the existing regular-file single-link constraint; other platforms return without these checks.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle; this check does not dispose it.
+    /// </param>
+    /// <param name="expectedPath">
+    /// The expected physical path compared with the opened handle name.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in existing authority refusals.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
     internal static void EnsureHandleMatchesExpectedPath(
         SafeFileHandle handle,
         string expectedPath,
@@ -1534,6 +1535,7 @@ internal static class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return;
 
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalFileAuthority.ValidateHandle");
         EnsureHandlePathMatchesExpectedPath(
             handle,
             expectedPath,
@@ -1542,6 +1544,21 @@ internal static class PhysicalFileAuthority
         EnsureRegularFileHasSingleLink(handle, authorityName);
     }
 
+    /// <summary>
+    /// Compares the Windows name of <paramref name="handle"/> with <paramref name="expectedPath"/>; other platforms return without this comparison.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle; this check does not dispose it.
+    /// </param>
+    /// <param name="expectedPath">
+    /// The expected physical path compared with the opened handle name.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in existing authority refusals.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
     internal static void EnsureHandlePathMatchesExpectedPath(
         SafeFileHandle handle,
         string expectedPath,
@@ -1551,6 +1568,7 @@ internal static class PhysicalFileAuthority
         if (!OperatingSystem.IsWindows())
             return;
 
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("PhysicalFileAuthority.ValidateHandlePath");
         var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle, flags));
         var normalizedExpectedPath = NormalizeWindowsHandlePath(expectedPath);
         if (!PathsEqual(openedPath, normalizedExpectedPath))
@@ -1580,6 +1598,18 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Reads the native final name of <paramref name="handle"/>, retrying with the required buffer capacity and retaining native error capture.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned handle whose final native name is requested.
+    /// </param>
+    /// <param name="flags">
+    /// Native final-name flags; zero retains the existing normalized-name request.
+    /// </param>
+    /// <returns>
+    /// The native handle path before the caller applies Windows path normalization.
+    /// </returns>
     internal static string GetFinalPath(
         SafeFileHandle handle,
         uint flags = 0)
@@ -1588,16 +1618,20 @@ internal static class PhysicalFileAuthority
         while (true)
         {
             var buffer = new StringBuilder(capacity);
-            var length = GetFinalPathNameByHandle(
-                handle,
-                buffer,
-                (uint)buffer.Capacity,
-                flags);
-            if (length == 0)
+            uint length;
+            using (FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFinalPathNameByHandle"))
             {
-                throw new IOException(
-                    "Could not resolve an opened physical file handle.",
-                    new Win32Exception(Marshal.GetLastWin32Error()));
+                length = GetFinalPathNameByHandle(
+                    handle,
+                    buffer,
+                    (uint)buffer.Capacity,
+                    flags);
+                if (length == 0)
+                {
+                    throw new IOException(
+                        "Could not resolve an opened physical file handle.",
+                        new Win32Exception(Marshal.GetLastWin32Error()));
+                }
             }
 
             if (length < buffer.Capacity)
@@ -1783,10 +1817,23 @@ internal static class PhysicalFileAuthority
         return true;
     }
 
+    /// <summary>
+    /// Reads the Windows attribute tag for <paramref name="handle"/> and preserves the existing native-error refusal.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle to inspect.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in the existing native-error refusal.
+    /// </param>
+    /// <returns>
+    /// The native attribute and reparse-tag data for the opened object.
+    /// </returns>
     private static FileAttributeTag GetAttributeTag(
         SafeFileHandle handle,
         string authorityName)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFileInformationByHandleEx.AttributeTag");
         if (!GetFileInformationByHandleEx(
                 handle,
                 FileAttributeTagInfo,
@@ -1829,10 +1876,23 @@ internal static class PhysicalFileAuthority
         }
     }
 
+    /// <summary>
+    /// Reads the Windows standard information for <paramref name="handle"/> and preserves the existing native-error refusal.
+    /// </summary>
+    /// <param name="handle">
+    /// The caller-owned opened handle to inspect.
+    /// </param>
+    /// <param name="authorityName">
+    /// The description retained in the existing native-error refusal.
+    /// </param>
+    /// <returns>
+    /// The native standard information, including directory kind and link count.
+    /// </returns>
     private static FileStandardInfo GetStandardInfo(
         SafeFileHandle handle,
         string authorityName)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WindowsNative.GetFileInformationByHandleEx.StandardInfo");
         if (!GetFileInformationByHandleEx(
                 handle,
                 FileStandardInfoClass,
@@ -1989,7 +2049,7 @@ internal static class PhysicalFileAuthority
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 
-    private static string ToWindowsExtendedPath(string path)
+    internal static string ToWindowsExtendedPath(string path)
     {
         var normalized = Path.GetFullPath(path);
         if (normalized.StartsWith(@"\\?\", StringComparison.Ordinal))

@@ -1,8 +1,10 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$OutputDirectory, [switch]$IncludeFixture, [switch]$IncludeHostGuardian, [switch]$IncludeTerminalFixture)
+param([Parameter(Mandatory)][string]$OutputDirectory, [switch]$IncludeFixture, [switch]$IncludeHostGuardian, [switch]$IncludeTerminalFixture,
+    [ValidateRange(8,180)][int]$TerminalFixtureLifetimeSeconds = 8)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 if (-not $IsLinux) { throw 'Native lineage build requires Linux.' }
+if ($TerminalFixtureLifetimeSeconds -ne 8 -and -not $IncludeTerminalFixture) { throw 'A nondefault inert terminal lifetime requires IncludeTerminalFixture.' }
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $out = [IO.Path]::GetFullPath($OutputDirectory)
 [IO.Directory]::CreateDirectory($out) | Out-Null
@@ -10,6 +12,7 @@ $compiler = (Get-Command cc -CommandType Application -ErrorAction Stop | Select-
 $version = (& $compiler --version | Out-String).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Compiler version failed.' }
 $flags = @('-std=c11', '-O2', '-g', '-Wall', '-Wextra', '-Werror', '-D_FORTIFY_SOURCE=2', '-fstack-protector-strong', '-Wl,-z,relro,-z,now')
+if ($TerminalFixtureLifetimeSeconds -ne 8) { $flags += "-DBOE_NEUTRAL_FIXTURE_ALARM_SECONDS=$TerminalFixtureLifetimeSeconds" }
 $inputs = @(@{ source = 'native/linux/boe-lineage-supervisor.c'; binary = 'boe-lineage-supervisor' })
 if ($IncludeFixture) { $inputs += @{ source = 'tests/fixtures/LinuxLineage/lineage-fixture.c'; binary = 'lineage-fixture' } }
 if ($IncludeHostGuardian) { $inputs += @{ source = 'tests/fixtures/LinuxHost/host-guardian.c'; binary = 'host-guardian' } }

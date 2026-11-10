@@ -1,5 +1,18 @@
 # NPC Local Trade Examples
 
+## Session-local helper use
+
+Dot-source the session's generated GM helper bootstrap before reading or completing
+an NPC trade request. Initialization binds the existing session generation. Public
+helper calls admit current canonical bytes and keep policy reads plus their writes
+inside a short owned scope; a later Load requires a fresh helper session.
+
+Keep the public Read-BoeJson/Complete-BoeNpcTradeInventoryRequest workflow below.
+After reported storage uncertainty or lost transport, stop using that initialized
+helper and retain the diagnostic evidence. Catching an error does not authorize a
+retry or another Initialize in the same session. Large JSON uses the helper's bounded
+transfers; do not replace it with raw file writes or a second lock.
+
 ## Canon
 
 - Local NPC trade is client-side only.

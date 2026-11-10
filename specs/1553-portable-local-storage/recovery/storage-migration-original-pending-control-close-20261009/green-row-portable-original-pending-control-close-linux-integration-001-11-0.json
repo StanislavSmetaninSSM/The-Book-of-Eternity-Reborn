@@ -1,0 +1,49 @@
+{
+  "mode": "journal_repair",
+  "uncertain": false,
+  "root": "/tmp/boe-original-pending-close-a3ce8fa87f5444cfabf611b17f24f0c2",
+  "boundary": "GuardianPowerEventState+<RepairJournalAsync>",
+  "actualOwnerState": "BookOfEternityClient.Services.GuardianPowerEventState+<RepairJournalAsync>d__16/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 0,
+  "Calls": 0,
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "gateAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIxZjY0ZTIzYmU0YTE0OGU0OTkzM2Q2NjMwNDU5NGYzNSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIxZjY0ZTIzYmU0YTE0OGU0OTkzM2Q2NjMwNDU5NGYzNSJ9",
+  "targetAfter": "77u/ewogICJlbnRyaWVzIjogWwogICAgewogICAgICAiZXZlbnRJZCI6ICJldmVudC1yZWFsIiwKICAgICAgImd1YXJkaWFuSWQiOiAiZ3VhcmRpYW4tcmVhbCIsCiAgICAgICJyZWFzb25UeXBlIjogInByb2plY3RfYXNzaXN0IiwKICAgICAgInNvdXJjZUlkIjogInByb2plY3QtcmVhbCIsCiAgICAgICJzb3VyY2VTdXJmYWNlIjogImFzc2lzdEd1YXJkaWFuUHJvamVjdCIsCiAgICAgICJkZWx0YSI6IDEsCiAgICAgICJ2aXNpYmlsaXR5IjogInBsYXllcl9rbm93biIsCiAgICAgICJ0dXJuIjogMSwKICAgICAgImF1ZGl0IjogewogICAgICAgICJwcm9qZWN0R3VhcmRpYW5JZCI6ICJndWFyZGlhbi1yZWFsIiwKICAgICAgICAicHJvamVjdElkIjogInByb2plY3QtcmVhbCIsCiAgICAgICAgInByb2plY3ROYW1lIjogIlByb2plY3QiLAogICAgICAgICJwcm9qZWN0VHlwZSI6ICJjb3VudGVyX3JpdmFsX29wZXJhdGlvbiIsCiAgICAgICAgInByb2plY3RUaWVyIjogIm1pbm9yIgogICAgICB9CiAgICB9CiAgXQp9",
+  "beforeFiles": {
+    "/tmp/boe-original-pending-close-a3ce8fa87f5444cfabf611b17f24f0c2/game_session/game_state/meta/abode_power_journal.json": "77u/eyJlbnRyaWVzIjpbeyJldmVudElkIjoiZXZlbnQtcmVhbCIsImd1YXJkaWFuSWQiOiJndWFyZGlhbi1yZWFsIiwicmVhc29uVHlwZSI6InByb2plY3RfYXNzaXN0Iiwic291cmNlSWQiOiJwcm9qZWN0LXJlYWwiLCJzb3VyY2VTdXJmYWNlIjoiYXNzaXN0R3VhcmRpYW5Qcm9qZWN0IiwiZGVsdGEiOjEsInZpc2liaWxpdHkiOiJwbGF5ZXJfa25vd24iLCJ0dXJuIjoxfV19",
+    "/tmp/boe-original-pending-close-a3ce8fa87f5444cfabf611b17f24f0c2/game_session/game_state/meta/guardian_projects.json": "77u/eyJhY3RpdmVQcm9qZWN0cyI6W3siZ3VhcmRpYW5JZCI6Imd1YXJkaWFuLXJlYWwiLCJwcm9qZWN0Ijp7InByb2plY3RJZCI6InByb2plY3QtcmVhbCIsInByb2plY3ROYW1lIjoiUHJvamVjdCIsCiAgInByb2plY3RUeXBlIjoiY291bnRlcl9yaXZhbF9vcGVyYXRpb24iLCJwcm9qZWN0VGllciI6Im1pbm9yIn19XSwiY29tcGxldGVkUHJvamVjdHMiOltdfQ=="
+  },
+  "afterFiles": {
+    "/tmp/boe-original-pending-close-a3ce8fa87f5444cfabf611b17f24f0c2/game_session/game_state/meta/abode_power_journal.json": "77u/ewogICJlbnRyaWVzIjogWwogICAgewogICAgICAiZXZlbnRJZCI6ICJldmVudC1yZWFsIiwKICAgICAgImd1YXJkaWFuSWQiOiAiZ3VhcmRpYW4tcmVhbCIsCiAgICAgICJyZWFzb25UeXBlIjogInByb2plY3RfYXNzaXN0IiwKICAgICAgInNvdXJjZUlkIjogInByb2plY3QtcmVhbCIsCiAgICAgICJzb3VyY2VTdXJmYWNlIjogImFzc2lzdEd1YXJkaWFuUHJvamVjdCIsCiAgICAgICJkZWx0YSI6IDEsCiAgICAgICJ2aXNpYmlsaXR5IjogInBsYXllcl9rbm93biIsCiAgICAgICJ0dXJuIjogMSwKICAgICAgImF1ZGl0IjogewogICAgICAgICJwcm9qZWN0R3VhcmRpYW5JZCI6ICJndWFyZGlhbi1yZWFsIiwKICAgICAgICAicHJvamVjdElkIjogInByb2plY3QtcmVhbCIsCiAgICAgICAgInByb2plY3ROYW1lIjogIlByb2plY3QiLAogICAgICAgICJwcm9qZWN0VHlwZSI6ICJjb3VudGVyX3JpdmFsX29wZXJhdGlvbiIsCiAgICAgICAgInByb2plY3RUaWVyIjogIm1pbm9yIgogICAgICB9CiAgICB9CiAgXQp9",
+    "/tmp/boe-original-pending-close-a3ce8fa87f5444cfabf611b17f24f0c2/game_session/game_state/meta/guardian_projects.json": "77u/eyJhY3RpdmVQcm9qZWN0cyI6W3siZ3VhcmRpYW5JZCI6Imd1YXJkaWFuLXJlYWwiLCJwcm9qZWN0Ijp7InByb2plY3RJZCI6InByb2plY3QtcmVhbCIsInByb2plY3ROYW1lIjoiUHJvamVjdCIsCiAgInByb2plY3RUeXBlIjoiY291bnRlcl9yaXZhbF9vcGVyYXRpb24iLCJwcm9qZWN0VGllciI6Im1pbm9yIn19XSwiY29tcGxldGVkUHJvamVjdHMiOltdfQ=="
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

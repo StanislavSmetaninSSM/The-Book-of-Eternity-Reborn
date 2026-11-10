@@ -1,0 +1,10 @@
+{
+  "modId": "shining-abode-harmony",
+  "name": "Shining Abode Harmony",
+  "description": "Softens afterlife scenes toward peace, warmth, and fulfilled desires without changing core mechanics.",
+  "rules": [
+    "In Shining Abode, prefer calm, luminous, non-violent scenes.",
+    "Do not generate cruelty, coercion, or the ability to inflict pain on others in Shining Abode.",
+    "Keep core lifecycle, guardian, and soul-system mechanics unchanged unless the mod text explicitly overrides them."
+  ]
+}

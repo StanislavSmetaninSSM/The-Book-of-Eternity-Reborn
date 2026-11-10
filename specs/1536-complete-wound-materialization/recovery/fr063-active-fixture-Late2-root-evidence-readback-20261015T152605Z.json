@@ -1,0 +1,181 @@
+{
+  "source": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "compiledSource": "20cf5dcac0779fbcc8f775999cae636c392ec776",
+  "reviewedSource": "c61ea445231932a34aed18a97a996bf8c65c40a7",
+  "scope": "ROOT recorded-data readback; no runtime helper/provider executed; independent EVIDENCE pending",
+  "packet": "fr063-active-fixture-corrected-Late2-frozen-20cf5dcac-20261015T151831Z",
+  "manifestSha256": "4f5b173fbbc0c8c62ddefaa3cbe397d38e9a3d4bc333cf18b1c21109b76a524d",
+  "allCompressedRawChainsVerified": 63,
+  "allSourcePinsEqualExactGitAndCurrent": 650,
+  "freshBinaryPinsCurrentExact": 11,
+  "manualA6Only": true,
+  "actualRelease": "NONE to ACTIVE3/successors until independent EVIDENCE and new compiled-controller provenance",
+  "oracles": {
+    "bindingProof": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "requestId": "44bb503e38c44070bdc7297e49106fad",
+        "outputBasisFields": 6,
+        "exactBytesWithBomAndTimestampHash": "D9A8B194052F37E824FBB2711E2CE7B173B3A0FADDBC501701D0949E3CC70BF9",
+        "samePreparedCreateIds": true,
+        "receiptSourceTurn": 42,
+        "originalAndStoryTurn": 43,
+        "storyRequestGenerationNarrativeTimestampMatched": true,
+        "bothActualMarkerImagesAndNarrativeBytesMatched": true,
+        "distinctReportRemovalTransactions": 2,
+        "progressionMemberCount": 3,
+        "inertRepeatPaths": 84
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "requestId": "81126a7161c54268971ed3006337155d",
+        "outputBasisFields": 6,
+        "exactBytesWithBomAndTimestampHash": "19B4B032F8AF3298A8624A2163114D60A24895072DC9F93F17FACD8C8E7AB8EE",
+        "samePreparedCreateIds": true,
+        "receiptSourceTurn": 42,
+        "originalAndStoryTurn": 43,
+        "storyRequestGenerationNarrativeTimestampMatched": true,
+        "bothActualMarkerImagesAndNarrativeBytesMatched": true,
+        "distinctReportRemovalTransactions": 0,
+        "progressionMemberCount": null,
+        "inertRepeatPaths": 84
+      }
+    ],
+    "trxRawSha256": "930dd73ce964bc0878318f8580543930bbefa14b35bd9ed9d4794f9edb7328f3",
+    "trxReparsedExactAllJson": true,
+    "nativeCases": [
+      {
+        "executionId": "99896e27-f067-4f8d-8cde-4dd1960767ac",
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:23.7885183",
+        "startTime": "2026-10-15T15:23:56.0617260+00:00",
+        "endTime": "2026-10-15T15:23:56.0617360+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "99896e27-f067-4f8d-8cde-4dd1960767ac"
+      },
+      {
+        "executionId": "ff1d1731-fbf3-4872-8421-a0199fd8259a",
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "computerName": "9bd05b0fec52",
+        "duration": "00:01:03.9440354",
+        "startTime": "2026-10-15T15:25:00.0105736+00:00",
+        "endTime": "2026-10-15T15:25:00.0105739+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ff1d1731-fbf3-4872-8421-a0199fd8259a"
+      }
+    ],
+    "cleanup": [
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5b19fc03d0ca40dc98fea77f43024dd4",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-bc47c9fb57524af48436bb88d7e6a3ed",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "progression": [
+      {
+        "requestId": "44bb503e38c44070bdc7297e49106fad",
+        "nonzero": true,
+        "worldCycles": 1,
+        "lastWorldBefore": 1260,
+        "lastWorldAfter": 1500,
+        "signedOriginalExact": true,
+        "allFourImageDigestsVerified": true,
+        "fullPairEqualExceptPhase": true,
+        "independentArithmeticAllFieldsEqual": true
+      },
+      {
+        "requestId": "81126a7161c54268971ed3006337155d",
+        "nonzero": false,
+        "worldCycles": 0,
+        "lastWorldBefore": 1260,
+        "lastWorldAfter": 1260,
+        "signedOriginalExact": true,
+        "allFourImageDigestsVerified": true,
+        "fullPairEqualExceptPhase": true,
+        "independentArithmeticAllFieldsEqual": true
+      }
+    ],
+    "union": [
+      {
+        "requestId": "44bb503e38c44070bdc7297e49106fad",
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "distinctWounds": true,
+        "receiptCreateIdentityMatches": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "fullOwnerCanonicalValidationReported": true,
+        "actualTurn": 43
+      },
+      {
+        "requestId": "81126a7161c54268971ed3006337155d",
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "distinctWounds": true,
+        "receiptCreateIdentityMatches": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "fullOwnerCanonicalValidationReported": true,
+        "actualTurn": 43
+      }
+    ],
+    "repeats": [
+      {
+        "paths": 84,
+        "turn": 43,
+        "entireRecordedMapsEqual": true
+      },
+      {
+        "paths": 84,
+        "turn": 43,
+        "entireRecordedMapsEqual": true
+      }
+    ],
+    "childEvidence": "NONE_IN_LATE2",
+    "buildWarnings": {
+      "unit": 35,
+      "integration": 129
+    },
+    "buildErrors": 0,
+    "catalog": {
+      "Valid": true,
+      "Methods": 11605,
+      "Categories": 752,
+      "Unmapped": [],
+      "StaleSelectors": []
+    }
+  },
+  "utc": "2026-10-15T15:26:05.952058+00:00"
+}

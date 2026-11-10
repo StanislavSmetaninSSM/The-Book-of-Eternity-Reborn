@@ -1,0 +1,26 @@
+{
+  "reader_final_review": {
+    "sha256_md": "333f1a4b42af5308b3904cc350cda30f223eaf206636087dafb63949a5db086e",
+    "sha256_json": "b0cb5f301817dd2e6f7beb9d91bbb25134ee6b59db6b9a69563937d0e9247e54",
+    "verified_pin_diff_tmp_projection_entries": [
+      121,
+      5,
+      16,
+      15
+    ],
+    "verdict": "bounded unactivated observed-reader/storage prerequisite ACCEPTED; fullPd/F1/admission/S/C/B/M3/P0/T197/activation OPEN"
+  },
+  "producer_review": {
+    "sha256_md": "5c49cc8e7c7ed96dc06ef61fb0c7b5bf81d79e53116a0ff0f7adfcd098fae012",
+    "sha256_json": "eeba70cd30e9074195befa561da1d98e8ed33615555c6715ffb69a5dda1d2702",
+    "verified_pin_diff_tmp_projection_entries": [
+      41,
+      5,
+      1,
+      55
+    ],
+    "verdict": "conditional discussion only;producer contract UNACCEPTED;8OPENprerequisites/20UNRUNchecks"
+  },
+  "fresh_source_recovery": "NEW GitHub-only shallow filtered sparse clone:e4d438e2e/962exactselectedfiles;clean/noalternates/mainunchanged/no restoredruntime",
+  "fresh_restore_v2": "Same GitHub-only verification with committed receipt as selection profile and cwd repo; no dependency on old local clone. Used for final checkpoint verification."
+}

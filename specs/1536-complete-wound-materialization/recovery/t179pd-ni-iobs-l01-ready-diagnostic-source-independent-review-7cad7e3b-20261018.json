@@ -1,0 +1,177 @@
+{
+  "kind": "INDEPENDENT_READY_DRIFT_DIAGNOSTIC_SOURCE_REVIEW",
+  "reviewer": "independent GPT-6 Astra XHigh",
+  "reviewedUtc": "2026-10-18T11:34:55.294305+00:00",
+  "verdict": "ACCEPT_MINIMAL_READY_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+  "candidate": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+  "base": "40920dab235f48abc07988b231a8bf0481c646bd",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "sourcePacketSha256": "b5d2f838c22d3933fab0ca9a2bb52afe434192be391290d700107d6f555e1f88",
+  "evidence": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-ready-diagnostic-source-independent-check-7cad7e3b-20261018.json",
+      "bytes": 12758,
+      "sha256": "9b3d1990e13151db8a6c94829d4849f2d6dd8df0bbdbcfcaf44ceff643af116e"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_ready_diagnostic_source.py",
+      "bytes": 15419,
+      "sha256": "ab93fb9d0edc5e75113144da60500cf876e9b10c1015ae43f0abf95de7375688"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-ready-diagnostic-source-blocker-8e1fedfe-20261018.json",
+      "bytes": 1212,
+      "sha256": "b225b8838246bd4f4238341f664c003be7a61e57db023ac3dd40d42b8d6b7e4f"
+    }
+  ],
+  "resolvedFinding": {
+    "id": "L01_PRODUCT_DELTA_BINDING_20_VS_21",
+    "firstCandidate": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
+    "firstCandidateEffect": "ZERO held: stale packet20 plus both hardcoded20 guards disagreed with exact Git product21. No ZERO/build/runtime ran on that binding.",
+    "resolution": "Corrected candidate carries the sorted exact21 product delta, both guards21, regenerated two controller pins/tool hashes and current98 digest. Original production patch unchanged."
+  },
+  "productionAssessment": {
+    "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+    "change": "Three added lines: logging import and one general LogError(original error, actual retained Disposition) immediately after existing result=Retain. Exact inverse returns qualified42 base bytes.",
+    "causalFit": "ReadyDrift throws in mandatory current-interface/Ready recheck; existing canonical-publication catch retains the exact issue but previously failed to emit the original exception. The new statement uses that original error object, preserving its type/message/stack with a neutral disposition message. No message-specific condition or issue reconstruction.",
+    "unchanged": [
+      "Catch filter and SessionReplaced exclusion.",
+      "CloseCurrentJointAttempt, existing committed-versus-uncertain choice, retained Plan/Issues/Completed/Frame.",
+      "Owning lease exit/finally attempt expiry, runtime-refresh condition and returns.",
+      "Ready immutable-source comparisons, selected DATA permissions, common/take/once-only mechanics, restore and recovery behavior.",
+      "Tests/fixtures/assertions, bounded logger class, catalog/selectors, runner, GM contracts/docs and budgets."
+    ],
+    "loggerBehavior": "The existing logger accepts Error, formats the disposition and appends original Exception.ToString. The reason appears before stack truncation in this fixture collector. New emission occurs once in the existing caught-failure branch, not on every retained-read or Held return. This is SOURCE reasoning; compilation and runtime remain pending.",
+    "minimality": "Only this existing production file changes against qualified42 base. Cumulative product delta relative to productBase447bc is now21 files and is explicitly bound; no historical20-path claim is retained as current."
+  },
+  "exactSelection": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "corrective": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 2
+    },
+    "remaining": {
+      "descriptors": 4,
+      "methods": 5,
+      "cases": 13
+    },
+    "modes": {
+      "crash5": {
+        "categories": [
+          "fr063-joint-interface-crash-current"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+        },
+        "timeoutMinutes": 15
+      },
+      "integrity4": {
+        "categories": [
+          "fr063-joint-interface-current-integrity"
+        ],
+        "methods": 1,
+        "cases": 4,
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4
+        },
+        "timeoutMinutes": 15
+      },
+      "races2": {
+        "categories": [
+          "fr063-joint-interface-source-races"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1
+        },
+        "timeoutMinutes": 15
+      },
+      "settlement3": {
+        "categories": [
+          "fr063-joint-interface-settlement"
+        ],
+        "methods": 2,
+        "cases": 3,
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2
+        },
+        "timeoutMinutes": 15
+      },
+      "uncertain1": {
+        "categories": [
+          "fr063-joint-interface-uncertain-current"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+        },
+        "timeoutMinutes": 10
+      }
+    },
+    "bijection": "26 retained methods/42 cases + 2 corrective methods/2 cases + 5 remaining methods/13 cases =33 methods/57 cases across16 whole descriptors. Existing method/row identities and selectors unchanged. Static expansion is not new discovery.",
+    "retainedExcludedFromActualController": [
+      "legacy3",
+      "close2"
+    ],
+    "correctivePrepMapping": "races2 requires corrective-plan; settlement3/integrity4/uncertain1/crash5 require remaining-plan."
+  },
+  "retention42": {
+    "priorEvidence": "Original37 compiled45cc/4c6d, cloudlegacy3 actual9acc/compiled6ab43, correctedclose2 actualb5d9/compiledcf522. All original records/archives remain exact; no runtime equivalence across builds is claimed.",
+    "currentCaptureStopDependency": "Retained GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner also traverses this catch. Its unchanged assertions inspect the retained issue/disposition, actual attempt and lease expiry, empty stages/reservations/takes and exact canonical images. They do not assert logger silence or exact logger counts. A new log emission changes diagnostics only and does not justify replaying this accepted case; its existing runtime evidence retains original provenance.",
+    "otherPaths": "Successful common paths bypass this catch; previously corrected I-close/ReadRace diagnostic refusal happens before it. Existing races2 is the nearest coherent corrective pair and controls these distinct paths.",
+    "noReplay": true
+  },
+  "controllerAssessment": {
+    "syntax": "Both Python controllers parsed statically without execution.",
+    "bindings": "Exact98 pins/hash/digest, ledger hash, exact21 Git delta, clean named HEAD, source/compiled lineage, fresh catalog-to-plan bindings, nine DLL/full output inventory continuity, exact method/category subset identities.",
+    "finiteExecution": "Four named ZERO modes only; catalog fresh BOTH discovery and three PlanOnly-NoBuild plans. Each actual mode has one Popen, exclusive first sentinel and unused label; no loops, retries, automatic advance, retained-family replay or build. Original native record precedes post-run utility qualification.",
+    "processCensusLimit": "Original exe-link-dependent arrays remain incomplete telemetry. Unchanged accepted v2 argv/stat observer is mandatory at PREP acceptance and immediately before/after every actual; any active/unknown/root blocks."
+  },
+  "environmentAndIsolation": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "runtimeMode": "0700",
+    "uid": 1000,
+    "homeUnchanged": true,
+    "crashPlan": "Accepted separate new crash5 isolation and all pinned child helpers unchanged: GUID fixture/container/nonce, genuine new child handles, PID+starttick identity, exit73/join/EOF/containment, unresolved-child retention, disposable fixture state and existing strong assertions. No old environment/process interaction.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_NO_RECOVERY"
+  },
+  "recovery": [
+    {
+      "carrier": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
+      "base": "40920dab235f48abc07988b231a8bf0481c646bd",
+      "paths": 12,
+      "receiptSha256": "9c1490f603ea16f0ed966bca4ea4d13d7adebbed4353cd03da8788dd953f2c2e",
+      "bytesGitBlobsModesVerified": true
+    },
+    {
+      "carrier": "7cad7e3b22df9e06e045bbde9068599906041bc1",
+      "base": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
+      "paths": 6,
+      "receiptSha256": "b45b3948b2329c767f36cc47b104aa94ef0a6772630eea04bf82b9db3f471c08",
+      "bytesGitBlobsModesVerified": true
+    }
+  ],
+  "independentGitHubRemote": "7cad7e3b22df9e06e045bbde9068599906041bc1\trefs/heads/1536-wound-b2-cloud-20261012",
+  "preservedOutcomes": [
+    "Original races2 native1 with observed ReadRace PASS and ReadyDrift FAIL remains frozen; neither is newly qualified here.",
+    "ReadyDrift final mechanical foreach/direct restore were not reached; separate raw15 comparison remains separately labelled.",
+    "Original close2 native1, seven old fixture failures and old corrected crash UNKNOWN remain immutable."
+  ],
+  "findings": [],
+  "eligibility": "After this SOURCE acceptance is saved/pushed/exactly recovered, only separately named fresh ZERO4: catalog/BOTH; whole16/33/57; corrective races1/2/2; remaining4/5/13. No actual authorization.",
+  "remainingGate": "Fresh independent PREP must verify original ZERO records/raw archives, builds/catalog, exact plans, new9DLL/full outputs, source bindings, cleanup, authoritative dated v2 boundary and recovery. Then a separately named corrective races2 gate may be considered. Remaining actual modes retain separate releases; unexpected outcome freezes progression.",
+  "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 blocked/no retry, CI prohibited; no whole-runtime PASS.",
+  "reviewActions": "Read-only Git/source/evidence/inventory metadata and static AST parsing; artifacts written only under /tmp/1536-cloud-tools/review. No build, discovery, tests, product/controller/observer execution, process intervention or repository edits."
+}

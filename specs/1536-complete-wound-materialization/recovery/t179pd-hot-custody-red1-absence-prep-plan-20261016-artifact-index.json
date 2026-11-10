@@ -1,0 +1,122 @@
+{
+  "source_sha": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/dotnet-test.log",
+      "raw_bytes": 1683096,
+      "raw_sha256": "e5603c6c7ed13e10f485fa87141f0462d839789b014bb6cfca4d58ed6d23a351",
+      "stored_sha256": "17cdcb498e42af8f7bd19cdde046ca62ca8f1dc4d0bc48a26aad137369747a55"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/native-exit.json",
+      "raw_bytes": 586,
+      "raw_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430",
+      "stored_sha256": "22c77f74e417954bd922e3b13f5fcebaf7f0513f335ca47d44943b6215f24430"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/plan.json",
+      "raw_bytes": 4408,
+      "raw_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17",
+      "stored_sha256": "ca2e91b5a32c57058afe7cdc7c1cc77533ff357044477cab697a15498cba0f17"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/stdout.log",
+      "raw_bytes": 2415,
+      "raw_sha256": "39fe34e383a869f52452df2771fc207a866cd0b21fa630e81013c5f72cfbbc0a",
+      "stored_sha256": "3f6e9105b0e59c9de9fedccd45ff493e0bba09860cc4a6b84f72cafd2dabed7d"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-prep-plan-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-180922-833-201291-5f14ee2fc65d440d9020725c5d937cd2-categories/summary.json",
+      "raw_bytes": 3446,
+      "raw_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f",
+      "stored_sha256": "13925250abc9d0ba0e0fd1f336bf207335c8e9f20eba234979820bcf0ed5174f"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion",
+      "fr063-hot-joint-attempt-ownership"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 FIRST only: both protected method bodies unchanged; default helper branch must retain actual v2 union/source/G/held request/native cohort/story/progression/turn/inert and strict cleanup before separate EVIDENCE.",
+        "contracts": [
+          "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+        ]
+      },
+      {
+        "category": "fr063-hot-joint-attempt-ownership",
+        "reason": "One genuine missing-private-custody-result causal RED after actual ProcessPlayerTurn/Stage43, post-original submitted changes including genuine uncovered-original/status submitted-present, repair/Ready and exact existing v2 held/uncovered-present-refusal/no-consequence preconditions. Not released before separate Late2 EVIDENCE.",
+        "contracts": [
+          "#1536 T179-Pd.3b independently accepted bounded custody/attempt engineering design d149d3757; initial HS01 causal TEST-ONLY source, no product implementation. Fresh BOTH/catalog/PlanOnly -> separate SOURCE/FIXTURE/SELECTION -> FIRST protected Late2 -> immutable freeze/push/readback/recovery -> separate EVIDENCE -> specifically released HS01 causal RED. Preserve expected feature-absence only after genuine existing owner/refusal/held/source/no-consequence facts; stop and freeze any setup/fixture/unexpected failure. No new actual release/full stage acceptance/S/M3/F1/T197/activation."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "47364c47f5788427fa6360d99c4babdce8f2d717",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1125895,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0455881,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1453102,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0058577,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 15,
+    "WallTime": "00:00:04.7508023",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 3,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-hot-joint-attempt-ownership-integration-001",
+        "fr063-joint-late-completion-integration-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

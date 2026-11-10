@@ -211,6 +211,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var worsening = JsonNode.Parse(OriginalSpiritualWoundDecision(
             secondOffer.Offer.OpportunityRef, "spiritual_action_cost_burden", "guard").GetRawText())!;
         worsening["proposal"]!["severity"] = "II";
+        worsening["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
         var definitions = worsening["proposal"]!["consequenceDefinitions"]!.AsArray();
         var extra = definitions[0]!.DeepClone();
         extra["definitionRef"] = "maneuver_burden";

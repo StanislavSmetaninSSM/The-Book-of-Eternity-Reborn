@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "gm-main-worker-cleanup-admission-linux",
+    "gm-main-worker-cleanup-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9141d1ba9cfa67721ea1f0315c25118ca7b71a06",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 8.25559,
+  "Descriptors": [
+    {
+      "Name": "gm-main-worker-cleanup-admission-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-worker-cleanup-admission-linux",
+      "Categories": [
+        "gm-main-worker-cleanup-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_DeferredNoLaunchCleanupPreservesExactAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_DeferredNoLaunchCleanupPreservesExactAuthority",
+          "Cases": 7
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-worker-cleanup-neighbors-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-main-worker-cleanup-neighbors",
+      "Categories": [
+        "gm-main-worker-cleanup-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

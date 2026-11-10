@@ -1,0 +1,18 @@
+{
+  "incident": "fr063-j7-phase-fault-read-transport-incident-20261014",
+  "originalTrackedRawSHA256": "def4e6b63082dcb7574e0b370c6bc159f0883df1b9ae2378267414c6aa0e0814",
+  "purpose": "Supplement exact attempted arguments; original raw record is immutable.",
+  "attemptedTool": "tools.exec_command via functions.exec",
+  "attemptedToolArguments": {
+    "cmd": "sed -n '1,230p' BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs\nsed -n '290,325p' BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+    "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+    "max_output_tokens": 5000
+  },
+  "returnedText": "Script failed\nWall time 2.2 seconds\nScript error:\nexec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "operationId": "NOT PROVIDED",
+  "chunkId": "NOT PROVIDED",
+  "sessionId": "NOT PROVIDED",
+  "laterSameEnvironmentRead": "6d8afb/exit0, then normal same-branch WIP publication and selected recovery; no alternate route or environment",
+  "securitySpecificReason": "NOT PROVIDED",
+  "projectExecution": "UNRUN"
+}

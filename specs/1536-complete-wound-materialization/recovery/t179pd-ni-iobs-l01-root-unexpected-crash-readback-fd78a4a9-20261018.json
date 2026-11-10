@@ -1,0 +1,110 @@
+{
+  "kind": "ROOT_UNEXPECTED_ORIGINAL_ACTUAL_FAILURE_RAW_READBACK_NOT_CAUSAL_VERDICT",
+  "createdUtc": "2026-10-18T08:36:40.089411+00:00",
+  "mode": "crash5",
+  "actualSource": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "nativeExit": 1,
+  "seconds": 83.02463500200247,
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 0,
+    "Failed": 5
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 5,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "7940aeb2-456a-a92e-c0f7-bee2b97e6c6e",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 3)",
+      "outcome": "Failed",
+      "duration": "00:00:13.1579168",
+      "error": "\n          Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:32.2670399Z\nActual:   2026-10-18T08:34:32.2690111Z\n             at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---\n        "
+    },
+    {
+      "testId": "01a4e250-3ce8-04df-baac-84d51ced01ba",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 2)",
+      "outcome": "Failed",
+      "duration": "00:00:16.4721599",
+      "error": "\n          Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:00.4970399Z\nActual:   2026-10-18T08:34:00.4985478Z\n             at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---\n        "
+    },
+    {
+      "testId": "afe936a6-177b-5bb9-9a66-12a329faa301",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 4)",
+      "outcome": "Failed",
+      "duration": "00:00:16.1167273",
+      "error": "\n          Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:33:44.3770399Z\nActual:   2026-10-18T08:33:44.3775197Z\n             at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---\n        "
+    },
+    {
+      "testId": "9b6eddcd-c186-edf6-d0da-91a3b2827108",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 1)",
+      "outcome": "Failed",
+      "duration": "00:00:16.1973235",
+      "error": "\n          Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:33:28.2270399Z\nActual:   2026-10-18T08:33:28.2269671Z\n             at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---\n        "
+    },
+    {
+      "testId": "d3375844-8bb0-87cf-a98b-f3cfdcee3e49",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 0)",
+      "outcome": "Failed",
+      "duration": "00:00:15.2951199",
+      "error": "\n          Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:16.9770399Z\nActual:   2026-10-18T08:34:16.9798787Z\n             at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---\n        "
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-crash-current/record.json",
+    "sha256": "858e214ce50a000d5b9606e0450ef5e6caa512e3058dea5f6a13d477e2f5199f"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-crash-archive-first-fd78a4a9-20261018/archive.json",
+    "sha256": "debe6ab711fc559a97c888078328a3f98db16f245f5726e7cf43033b1da2cda8",
+    "rawChains": 11
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-08d9183616924b568a3fcd621edc3750",
+    "/tmp/boe-gameengine-turnlifecycle-0bd7490e67e4463286e2c2f88d5ac487",
+    "/tmp/boe-gameengine-turnlifecycle-1941f07396ed48f88acfab5e33d58f56",
+    "/tmp/boe-gameengine-turnlifecycle-50493ef1a3204e8ebdb3a80d920f66f5",
+    "/tmp/boe-gameengine-turnlifecycle-f938f607c9804c4fa92ebd33a7dabd74",
+    "/tmp/boe-joint-interface-crash-05b333612f0249558c5b68d74d6aff97",
+    "/tmp/boe-joint-interface-crash-1a2e9cd8a62b45cb90b768f45e0dd54c",
+    "/tmp/boe-joint-interface-crash-541b400314454c6bb6d847ec6a52ecc7",
+    "/tmp/boe-joint-interface-crash-84f7988cb8ab4ed29c691193b0fb553f",
+    "/tmp/boe-joint-interface-crash-f1ffbe9c702b462cb4e1a3febc2046dc"
+  ],
+  "uniqueStdoutPayloads": 6,
+  "originalRecordSourceHeadClean": true,
+  "currentMetadataArchiveStagingOnly": "",
+  "currentHead": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "metadataOnlyDescendantPaths": [
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-refusal-carrier-check-fd78a4a9-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-refusal-check-1611b5c7-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00000-4c6d8334b441193cbda6de539347bcf7998d4db6-ni-iobs-l01-intake-crash5.FIRST.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00001-exact-selected-scope.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00002-ledger-context.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00003-process.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00004-record.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00005-source-binding.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00006-stdout.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00007-dotnet-test.log.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00008-fr063-joint-interface-crash-current-integration-001.trx.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00009-plan.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/00010-summary.json.gz",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-crash5-files-20261018/archive.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-refusal-raw-delta-github-fd78a4a9-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-fd78a4a9-20261017.json"
+  ],
+  "readOnlyUtilityNote": "Two read-only structural passes reached final current-state guards while authorized raw-only staging advanced to metadata commit. Prior checks passed both times. Final check verifies actual ancestor and recovery-only committed/pending paths; no native/raw/source/test retry.",
+  "limits": "Unexpected original native1/all5FAIL frozen. Shared exact BirthUtc equality assertions observed; no causal attribution or target qualification. Independent causal review required before source correction or runtime continuation."
+}

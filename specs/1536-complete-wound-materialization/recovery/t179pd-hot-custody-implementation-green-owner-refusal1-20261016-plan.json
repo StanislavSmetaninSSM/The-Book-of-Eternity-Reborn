@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-hot-joint-owner-refusals"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b5d2a8d466a047cb7ecc2110a31d5d72a1235b77",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8716772,
+  "Descriptors": [
+    {
+      "Name": "fr063-hot-joint-owner-refusals-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-hot-joint-owner-refusals",
+      "Categories": [
+        "fr063-hot-joint-owner-refusals"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualJointOwnerRefusesForeignCloseReentryAndDelegatedClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualJointOwnerRefusesForeignCloseReentryAndDelegatedClose",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "SHA": "e2b0122a2088ad3ea9c040d4c3d967063a764110",
+  "Base": "034889cecca3d97925cb9a7e08fc48d2e0604d15",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1674823,
+      "SHA256": "a53caef7e1fd2641e223fcdd6c5e0c929ce3953b389097a8224a643bdeeb5214",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-checkpoint.md",
+      "Bytes": 7516,
+      "SHA256": "7d93c375b4eeadb15989e4d237490fd56af3d0c348371c03924476943102ff24",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-readonly-restore.json",
+      "Bytes": 457276,
+      "SHA256": "80745cf260c3375e4ef66cabb369e232d2bcecb83e59e4f9ae08e7d2e3a2be98",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-replay-safe.py",
+      "Bytes": 410,
+      "SHA256": "708eee64106f61a9e56596086f1510105800133bdbead154da819e55208e9be8",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-safe-replay-validation.json",
+      "Bytes": 1334,
+      "SHA256": "f174d02650b261b00a05344f4b825a7a04f09f66aaea99980fdce7045d769507",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-coherent-checkpoint.md",
+      "Bytes": 10701,
+      "SHA256": "f465f4cb648cc31d847718eb57ebc01639ac2c6f24320991aa22fda9a08c2757",
+      "RemoteExact": true
+    }
+  ]
+}

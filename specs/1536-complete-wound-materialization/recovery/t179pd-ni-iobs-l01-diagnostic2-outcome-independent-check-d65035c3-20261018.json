@@ -1,0 +1,925 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC2_ORIGINAL_OUTCOME_READER_NOT_CAUSAL_VERDICT",
+  "checkedUtc": "2026-10-18T17:45:16.321817+00:00",
+  "carrier": "d65035c392163a00925b6e88b667e9efe0b36b70",
+  "actualSource": "52dc426673a14ce718ab85481234109063be0317",
+  "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+  "reader": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic2_outcome.py",
+    "bytes": 36508,
+    "sha256": "e16cf8b97462c2b1b7706201cad21c6c17c7a22bfefd67f3cc2d6f4b37a12bfa"
+  },
+  "recordSha256": "928dba485ac9f40087d57a844834933be7712ed45a2fd68487a7c012f1d3674d",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/archive.json",
+    "sha256": "693c876bfbf731b885e530640db22ae95a004d5da6d97af36e9d94e38be7a8e8",
+    "chains": 11,
+    "allGzipRawOriginalNonfixtureAndCloneBytesMatch": true,
+    "retainedRootBytesFromArchiveOnly": true
+  },
+  "sourcePins": 101,
+  "productPaths": 23,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "externalAccounting": {
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/archive.json",
+      "sha256": "5bd3d3b0643b3aa3bce066e393eba2f949df3abe6b2a1b7fcd55f95dedf6df26",
+      "chains": 3,
+      "missingOriginalPaths": []
+    },
+    "originals": [
+      {
+        "path": "/tmp/1536-cloud-tools/diagnostic2-diagnostic2-accounting-de0f3e20.jsonl",
+        "bytes": 5760352,
+        "sha256": "da22fe601b89574c6199a76579e77e8b2d4aa37556816233c2380617a4143adc"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/diagnostic2-diagnostic2-accounting-status-de0f3e20.json",
+        "bytes": 7216,
+        "sha256": "280949ad817192c7a5dc2d12782503eba16cbdb6a9967dcf607e930a0f501b8b"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/diagnostic2-wrapper-session-de0f3e20.log",
+        "bytes": 1598,
+        "sha256": "4b237c82199537f4a780b1cfc1c01cfce94a4f8bb26754cb9cc002afa5b7751a"
+      }
+    ],
+    "profileRows": 400,
+    "profileParseErrors": [],
+    "status": {
+      "kind": "ONE_DIAGNOSTIC2_EXTERNAL_READONLY_ACCOUNTING_STATUS_NOT_VERDICT",
+      "actualSource": "52dc426673a14ce718ab85481234109063be0317",
+      "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+      "label": "t179pd-ni-iobs-l01-process-first-diagnostic2-accounting-cloud-de0f3e20",
+      "mode": "diagnostic2",
+      "controllerMode": "diagnostic1",
+      "controllerExit": 1,
+      "afterCensusExit": 0,
+      "profile": {
+        "path": "/tmp/1536-cloud-tools/diagnostic2-diagnostic2-accounting-de0f3e20.jsonl",
+        "bytes": 5760352,
+        "sha256": "da22fe601b89574c6199a76579e77e8b2d4aa37556816233c2380617a4143adc"
+      },
+      "summary": {
+        "kind": "PROFILE_FINISH",
+        "utc": "2026-10-18T17:43:37.927562+00:00",
+        "nativeControllerExit": 1,
+        "scans": 397,
+        "elapsedSeconds": 406.59287096799744,
+        "samplerTotalCpuSeconds": 38.541609343999994,
+        "cpuAccounting": "Process ticks already include threads; never add task ticks to process ticks. Per-task stats locate observed activity only.",
+        "identities": [
+          {
+            "pid": 68330,
+            "startTick": 2967858,
+            "role": "engine-joint-interface-original-crash",
+            "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "own": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+            "parentPid": 68292,
+            "parentSha256": "816e813f071f0c0d6bd7bf3916f80dbbfc255a5d32219eca2d1afdab7b7478e9",
+            "argv": [
+              "/tmp/1536-cloud-tools/dotnet/dotnet",
+              "exec",
+              "--runtimeconfig",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+              "--depsfile",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+              "engine-joint-interface-original-crash",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/cut.json",
+              "1",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7"
+            ]
+          },
+          {
+            "pid": 68412,
+            "startTick": 2979925,
+            "role": "engine-joint-interface-resume",
+            "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+            "own": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+            "parentPid": 68292,
+            "parentSha256": "816e813f071f0c0d6bd7bf3916f80dbbfc255a5d32219eca2d1afdab7b7478e9",
+            "argv": [
+              "/tmp/1536-cloud-tools/dotnet/dotnet",
+              "exec",
+              "--runtimeconfig",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+              "--depsfile",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+              "engine-joint-interface-resume",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/resume.json",
+              "1",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7"
+            ]
+          }
+        ],
+        "gaps": [],
+        "status": "OBSERVATIONS_SAVED_REQUIRES_INDEPENDENT_CAUSAL_REVIEW",
+        "countsToward57": false,
+        "noNativeIntervention": true
+      },
+      "observationErrors": [],
+      "tools": {
+        "sampler": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+          "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+          "bytes": 15006
+        },
+        "wrapper": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+          "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+          "bytes": 5867
+        },
+        "environmentShell": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+          "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+          "bytes": 902
+        },
+        "discriminators": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+          "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+          "bytes": 5041
+        },
+        "fakeProcChecker": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+          "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+          "bytes": 11225
+        },
+        "fakeProcProof": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+          "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+          "bytes": 4170
+        },
+        "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+        "status": "INDEPENDENT_SOURCE_ACCEPTED_ZERO3_UNRUN",
+        "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+      },
+      "countsToward57": false,
+      "limits": "One original only; preserve every gap/timeout/failure, independent causal review before any action. Never sum process plus thread CPU. No old timeout cause reconstructed."
+    },
+    "wrapperOriginalExits": [
+      {
+        "kind": "ORIGINAL_CONTROLLER_EXIT_INDEPENDENT_OF_OBSERVERS",
+        "controllerExit": 1
+      }
+    ],
+    "wrapperObservationStatuses": [
+      {
+        "kind": "ONE_CONTROLLER_OBSERVATION_STATUS_NOT_VERDICT",
+        "controllerExit": 1,
+        "afterCensusExit": 0,
+        "observationErrors": [],
+        "countsToward57": false
+      }
+    ],
+    "profileFinishes": [
+      {
+        "kind": "PROFILE_FINISH",
+        "utc": "2026-10-18T17:43:37.927562+00:00",
+        "nativeControllerExit": 1,
+        "scans": 397,
+        "elapsedSeconds": 406.59287096799744,
+        "samplerTotalCpuSeconds": 38.541609343999994,
+        "cpuAccounting": "Process ticks already include threads; never add task ticks to process ticks. Per-task stats locate observed activity only.",
+        "identities": [
+          {
+            "pid": 68330,
+            "startTick": 2967858,
+            "role": "engine-joint-interface-original-crash",
+            "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "own": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+            "parentPid": 68292,
+            "parentSha256": "816e813f071f0c0d6bd7bf3916f80dbbfc255a5d32219eca2d1afdab7b7478e9",
+            "argv": [
+              "/tmp/1536-cloud-tools/dotnet/dotnet",
+              "exec",
+              "--runtimeconfig",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+              "--depsfile",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+              "engine-joint-interface-original-crash",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/cut.json",
+              "1",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7"
+            ]
+          },
+          {
+            "pid": 68412,
+            "startTick": 2979925,
+            "role": "engine-joint-interface-resume",
+            "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+            "own": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+            "nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+            "parentPid": 68292,
+            "parentSha256": "816e813f071f0c0d6bd7bf3916f80dbbfc255a5d32219eca2d1afdab7b7478e9",
+            "argv": [
+              "/tmp/1536-cloud-tools/dotnet/dotnet",
+              "exec",
+              "--runtimeconfig",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+              "--depsfile",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+              "engine-joint-interface-resume",
+              "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/resume.json",
+              "1",
+              "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7"
+            ]
+          }
+        ],
+        "gaps": [],
+        "status": "OBSERVATIONS_SAVED_REQUIRES_INDEPENDENT_CAUSAL_REVIEW",
+        "countsToward57": false,
+        "noNativeIntervention": true
+      }
+    ],
+    "limits": "Separate controller exit, native test exit and observer status. Paired archive exact; arithmetic and identity/window/cgroup causal interpretation requires separate independent accounting review. Missing bytes are not reconstructed."
+  },
+  "outputInventory": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allCurrentBytesExact": true
+  },
+  "nativeExit": 1,
+  "wallSeconds": 400.7790696589982,
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-crash-diagnostic"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-crash-diagnostic",
+        "reason": "Separate cut1 diagnostic after native124/220s child waits; same original strong fixture with flushed readonly scalar stages/live bounded logs. Excluded from whole57/counts. No runtime from this selection alone.",
+        "contracts": [
+          "Preserve genuine producer73/new resumer PID+kernel starttick/nonce/containment/join/EOF, exact cut bytes/Ready/current DATA/one I/mechanics/story/cleanup/inert repeat, primary exceptions and220s child bound; original900s crash5 budget unchanged."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "52dc426673a14ce718ab85481234109063be0317",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-crash-diagnostic",
+        "Seconds": 365.5963495,
+        "BudgetMinutes": 15,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.2198066,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.53193,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 1.7405269,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 20,
+    "WallTime": "00:06:26.3703206",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "descriptor": {
+    "Name": "fr063-joint-interface-crash-diagnostic-integration-001",
+    "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+    "Category": "fr063-joint-interface-crash-diagnostic",
+    "Categories": [
+      "fr063-joint-interface-crash-diagnostic"
+    ],
+    "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "Adapter": "integration",
+    "Exclusive": true,
+    "FrontendBuild": false,
+    "BudgetMinutes": 15,
+    "EstimatedCases": 1,
+    "ExpectedMethodCounts": [
+      {
+        "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+        "Cases": 1
+      }
+    ]
+  },
+  "trxResults": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx",
+      "executionId": "ec039fe6-ba0d-443c-bcd6-aeba1a005f24",
+      "testId": "369be9a5-029a-6120-c204-4e0b2092a5ad",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "computerName": "735aec146281",
+      "duration": "00:05:48.7815165",
+      "startTime": "2026-10-18T17:43:31.9588119+00:00",
+      "endTime": "2026-10-18T17:43:31.9588309+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Failed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "ec039fe6-ba0d-443c-bcd6-aeba1a005f24"
+    }
+  ],
+  "directErrors": [
+    {
+      "source": "dotnet-test.log",
+      "line": 10481,
+      "text": "  Failed BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss [5 m 48 s]\n  Error Message:\n   System.TimeoutException : The operation has timed out.\n  Stack Trace:\n     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 129\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 153\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault, Boolean diagnostic) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 65\n--- End of stack trace from previous location ---"
+    },
+    {
+      "source": "dotnet-test.log",
+      "line": 10503,
+      "text": "[xUnit.net 00:05:59.01]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss [FAIL]\n\n===== fr063-joint-interface-crash-diagnostic-integration-001: exit 1 =====\n\nCategory result\n  Categories: fr063-joint-interface-crash-diagnostic\n  Filter: <none>\n  Timeout: 20 minute(s)\n  Wall time: 00:06:26.3703206\n  Exit code: 1\n  Timed out: False\n  Owned-tree cleanup: complete\n  Planned selection: descriptors=1, cases=1; completed descriptors=1, cases=1, complete=True\n  Tests: total=1, executed=1, passed=0, failed=1\n  Duplicate test IDs: 0\n  Results: /workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories\n  Log: /workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/dotnet-test.log\n  Failure: Test run 'fr063-joint-interface-crash-diagnostic-integration-001' failed with exit code 1."
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx",
+      "message": "System.TimeoutException : The operation has timed out.",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 129\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 153\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault, Boolean diagnostic) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 65\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "joinObservations": [
+    {
+      "role": "engine-joint-interface-original-crash",
+      "pid": 68330,
+      "birthTick": 2967858,
+      "birthUtc": "2026-10-18T17:37:50.5627598Z",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+      "ownedContainer": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+      "exit": 73,
+      "eof": true,
+      "joined": true,
+      "primaryFailure": null,
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutSource": "join.RawStdout",
+      "stdoutBytes": 355586,
+      "stdoutSha256": "97df81f08e3b7d48c9bc7fa9f6093d7fd31f26fc1123fa9c9306a225ee13cf40",
+      "stderr": "",
+      "sources": [
+        {
+          "source": "dotnet-test.log",
+          "line": 10490
+        },
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:ec039fe6-ba0d-443c-bcd6-aeba1a005f24",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "role": "engine-joint-interface-resume",
+      "pid": 68412,
+      "birthTick": 2979925,
+      "birthUtc": "2026-10-18T17:39:51.2327598Z",
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+      "ownedContainer": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+      "exit": 137,
+      "eof": true,
+      "joined": true,
+      "primaryFailure": "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 129",
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutSource": "join.RawStdout",
+      "stdoutBytes": 9185,
+      "stdoutSha256": "f9ce93bdd93126167c4bac5247b8e0e1077953cf031ee8e16af325225ca87ced",
+      "stderr": "",
+      "sources": [
+        {
+          "source": "dotnet-test.log",
+          "line": 10493
+        },
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:ec039fe6-ba0d-443c-bcd6-aeba1a005f24",
+          "line": 4
+        }
+      ]
+    }
+  ],
+  "streamedDiagnostics": [
+    {
+      "identity": {
+        "pid": 68412,
+        "birthTick": 2979925
+      },
+      "root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+      "nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+      "cutIdentityAvailable": true,
+      "stdoutSource": "join.RawStdout",
+      "otherChildBoundaries": [],
+      "events": [
+        {
+          "line": 1,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "factory-enter",
+          "Utc": "2026-10-18T17:39:51.4587039+00:00",
+          "ElapsedMilliseconds": 2,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 2,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "factory-return",
+          "Utc": "2026-10-18T17:39:51.8383824+00:00",
+          "ElapsedMilliseconds": 382,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 3,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "file-system-enter",
+          "Utc": "2026-10-18T17:39:51.8391865+00:00",
+          "ElapsedMilliseconds": 383,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 4,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "file-system-return",
+          "Utc": "2026-10-18T17:39:51.840505+00:00",
+          "ElapsedMilliseconds": 384,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 5,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "engine-enter",
+          "Utc": "2026-10-18T17:39:51.8414084+00:00",
+          "ElapsedMilliseconds": 385,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 6,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "engine-return",
+          "Utc": "2026-10-18T17:39:51.9658044+00:00",
+          "ElapsedMilliseconds": 509,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 7,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-enter",
+          "Utc": "2026-10-18T17:39:51.9679509+00:00",
+          "ElapsedMilliseconds": 512,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 8,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-return",
+          "Utc": "2026-10-18T17:39:52.0332113+00:00",
+          "ElapsedMilliseconds": 577,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 9,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "snapshot-enter",
+          "Utc": "2026-10-18T17:39:52.0332906+00:00",
+          "ElapsedMilliseconds": 577,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 10,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "snapshot-return",
+          "Utc": "2026-10-18T17:39:52.189373+00:00",
+          "ElapsedMilliseconds": 733,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 11,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "runtime-refresh-enter",
+          "Utc": "2026-10-18T17:39:52.3350553+00:00",
+          "ElapsedMilliseconds": 879,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 12,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "runtime-refresh-return",
+          "Utc": "2026-10-18T17:39:52.6384232+00:00",
+          "ElapsedMilliseconds": 1182,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 13,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "before-images-enter",
+          "Utc": "2026-10-18T17:39:52.6399816+00:00",
+          "ElapsedMilliseconds": 1184,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 14,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "before-images-return",
+          "Utc": "2026-10-18T17:39:53.1954286+00:00",
+          "ElapsedMilliseconds": 1739,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 15,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "preflight-lease-release-return",
+          "Utc": "2026-10-18T17:39:53.1956264+00:00",
+          "ElapsedMilliseconds": 1739,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 16,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-first-enter",
+          "Utc": "2026-10-18T17:39:53.1963538+00:00",
+          "ElapsedMilliseconds": 1740,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        },
+        {
+          "line": 17,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T17:39:53.2721+00:00",
+          "ElapsedMilliseconds": 1816,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 18,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T17:39:53.2722076+00:00",
+          "ElapsedMilliseconds": 1816,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": "LateTerminalAndIdleOperationBound"
+        },
+        {
+          "line": 19,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-enter",
+          "Utc": "2026-10-18T17:40:06.7603754+00:00",
+          "ElapsedMilliseconds": 15304,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": "MortalJointCustodyCaptureCompletedBeforePreparation"
+        },
+        {
+          "line": 20,
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "finalization-return",
+          "Utc": "2026-10-18T17:40:06.7605658+00:00",
+          "ElapsedMilliseconds": 15304,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": "MortalJointCustodyCaptureCompletedBeforePreparation"
+        }
+      ],
+      "observedStages": [
+        "factory-enter",
+        "factory-return",
+        "file-system-enter",
+        "file-system-return",
+        "engine-enter",
+        "engine-return",
+        "preflight-lease-enter",
+        "preflight-lease-return",
+        "snapshot-enter",
+        "snapshot-return",
+        "runtime-refresh-enter",
+        "runtime-refresh-return",
+        "before-images-enter",
+        "before-images-return",
+        "preflight-lease-release-return",
+        "late-first-enter",
+        "finalization-enter",
+        "finalization-return"
+      ],
+      "sourceStagesNotObserved": [
+        "after-images-enter",
+        "after-images-return",
+        "completed-proof-lease-enter",
+        "completed-proof-lease-return",
+        "late-first-return",
+        "late-second-enter",
+        "late-second-return",
+        "repeat-images-enter",
+        "repeat-images-return",
+        "resume-finally"
+      ],
+      "lastEvent": {
+        "line": 20,
+        "Boundary": "iobs_current_resume_diagnostic",
+        "Stage": "finalization-return",
+        "Utc": "2026-10-18T17:40:06.7605658+00:00",
+        "ElapsedMilliseconds": 15304,
+        "Pid": 68412,
+        "BirthTick": 2979925,
+        "Cut": 1,
+        "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+        "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+        "Detail": "MortalJointCustodyCaptureCompletedBeforePreparation"
+      },
+      "enteredWithoutObservedReturn": [
+        {
+          "Boundary": "iobs_current_resume_diagnostic",
+          "Stage": "late-first-enter",
+          "Utc": "2026-10-18T17:39:53.1963538+00:00",
+          "ElapsedMilliseconds": 1740,
+          "Pid": 68412,
+          "BirthTick": 2979925,
+          "Cut": 1,
+          "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+          "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+          "Detail": null
+        }
+      ],
+      "limit": "An unreturned observed enter is a trace boundary, not proof of a unique blocked await, deadlock or product cause. Stages not observed may be conditional or omitted by interruption."
+    }
+  ],
+  "resultObservations": [],
+  "cleanupRows": [
+    {
+      "observation": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "sources": [
+        {
+          "source": "dotnet-test.log",
+          "line": 10494
+        },
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:ec039fe6-ba0d-443c-bcd6-aeba1a005f24",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "observation": {
+        "CleanupOwnedRoot": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-gameengine-turnlifecycle-dd11607526ad4a74bdd42af05d64b11b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "sources": [
+        {
+          "source": "dotnet-test.log",
+          "line": 10495
+        },
+        {
+          "source": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173707-446-68151-627b579d43654a3fb44129f344ad40c7-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx:case:ec039fe6-ba0d-443c-bcd6-aeba1a005f24",
+          "line": 6
+        }
+      ]
+    }
+  ],
+  "jsonParseErrors": [],
+  "transportUniqueRows": 6,
+  "cut": {
+    "Pid": 68330,
+    "BirthTick": 2967858,
+    "Nonce": "f72d11dd4b1d4a0db24b00691b7a38b2",
+    "Root": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892/boe-joint-interface-crash-7275a922d3df4394a011189e40bff1e7/tmp/boe-gameengine-turnlifecycle-b22f264dd98342a9b464d84d3457c6d6",
+    "Cut": 1,
+    "Phase": "MemberPublished",
+    "Index": 1,
+    "CommonCallbacks": 0,
+    "Turn": 42,
+    "FirstMarker": null
+  },
+  "censuses": {
+    "before": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-before-census-de0f3e20-20261018.json",
+      "sha256": "c416ed8522c5330ffb34be1c73d054b1d721a1ffbb0efde3af39dcadca6df11b",
+      "entries": 178,
+      "startedUtc": "2026-10-18T17:36:51.137347+00:00",
+      "finishedUtc": "2026-10-18T17:36:51.247988+00:00",
+      "cleanBoundary": true,
+      "active": [],
+      "unknown": [],
+      "ownedRoots": [],
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 68124,
+          "expectedStartTick": 2961887,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ],
+      "gapSeconds": 4.593755,
+      "scope": "Dated observation only, no continuous absence or reconstruction."
+    },
+    "after": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-after-census-de0f3e20-20261018.json",
+      "sha256": "d5cd42d7f2f727940b151ab84bd16cd1b2fcb8fcf8c59bad9ff77f555e89e6a4",
+      "entries": 177,
+      "startedUtc": "2026-10-18T17:43:37.887903+00:00",
+      "finishedUtc": "2026-10-18T17:43:37.912071+00:00",
+      "cleanBoundary": true,
+      "active": [],
+      "unknown": [],
+      "ownedRoots": [],
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 68575,
+          "expectedStartTick": 3002581,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ],
+      "gapSeconds": 1.267196,
+      "scope": "Dated observation only, no continuous absence or reconstruction."
+    }
+  },
+  "frozenSeparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-frozen-separation-de0f3e20-20261018.json",
+    "sha256": "1f057c6a1883c4aeb1f9193b3b7fbf5ba38af961cda893c8dbbc9bf074f64854",
+    "record": {
+      "kind": "READ_ONLY_FROZEN_CURRENT_CLOUD_ROOTS_SEPARATION",
+      "checkedUtc": "2026-10-18T17:36:50.859314+00:00",
+      "actualSource": "52dc426673a14ce718ab85481234109063be0317",
+      "mode": "diagnostic2",
+      "newMutableRoot": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+      "physicalCloudUnchanged": true,
+      "frozenRoots": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "verifiedFiles": 237,
+      "unchanged": true,
+      "limits": "Read-only current-cloud frozen fixtures only; no root/process intervention, no old66529 access, no continuous absence claim."
+    }
+  },
+  "recovery": [
+    {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-d65035c3.json",
+        "bytes": 9553,
+        "sha256": "b84bd23790ae7ccdb731441e4f26347e46d4882c1303b53b3ac6800ff5173487"
+      },
+      "base": "52dc426673a14ce718ab85481234109063be0317",
+      "sha": "d65035c392163a00925b6e88b667e9efe0b36b70",
+      "paths": 24
+    }
+  ],
+  "checksPassed": 2483,
+  "findings": [],
+  "qualifiedBeforeAndAfter": 52,
+  "countsToward57": false,
+  "runtimeReleaseOrRemedy": false,
+  "limits": [
+    "No native/test/build/discovery/controller/observer/process action or live fixture-root read; report/check files only.",
+    "Original failure/timeout is preserved independently of reader findings. No TRX or zero summary counts never proves that no case ran.",
+    "Per-child stdout attribution only; identical transport copies deduplicated with locations retained. No pooling across roots/nonces/cases.",
+    "Dated snapshots do not prove continuous absence. No old missing diagnostics reconstructed, and no automatic product-versus-fixture diagnosis or retry.",
+    "This diagnostic Fact is outside57 and cannot qualify any of the five original crash targets."
+  ]
+}

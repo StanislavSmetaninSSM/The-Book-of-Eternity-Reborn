@@ -1,0 +1,13 @@
+{
+  "kind": "G02_REVIEWER_UTILITY_HISTORY",
+  "reviewedSource": "c0a05c8eef5f4de73fb03272bb1855090eaf60ab",
+  "firstReaderSha256": "3353c014aae8f701c2efc76781827116155ee05b93e5d564da0445c8c8640416",
+  "failure": "AssertionError: 395_installed_inputs_and_unit_metadata_unchanged",
+  "correction": "Accept exactly the two independently checked current watchdog/Collect input hashes, preserving395 rows; all unit and metadata inputs remain identical.",
+  "sourceOrNativeOutcomeChanged": false,
+  "nativeActions": 0,
+  "artifacts": [
+    "check_g02_c0_source_20261019_v1.py",
+    "g02-c0-source-reader-v1-failure-20261019.txt"
+  ]
+}

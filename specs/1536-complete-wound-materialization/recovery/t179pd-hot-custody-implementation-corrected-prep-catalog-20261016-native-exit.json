@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 0,
+  "actual_head": "870a4703aca5779e26dea0bf682f9345e23e462e",
+  "compiled_source": "870a4703aca5779e26dea0bf682f9345e23e462e",
+  "started_utc": "2026-10-16T21:23:38.273396+00:00",
+  "ended_utc": "2026-10-16T21:25:49.270257+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b corrected bounded custody owner and genuine registry/browser/worker controls WIP; fresh BOTH/catalog/PlanOnly ZERO actual tests"
+}

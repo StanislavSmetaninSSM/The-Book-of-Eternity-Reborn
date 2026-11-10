@@ -267,6 +267,12 @@ public partial class ValidationService
             internal static async Task<bool> CheckOriginalBindingAsync(SpiritualWoundSourceSession owner,
                 FileSystemManager.CanonicalWriteLease lease, SpiritualOriginalTurnCapture capture, JsonObject frozenRaw,
                 int ordinal, ResourceOwnerAuthority owners, ResourceStateLedger state)
+                => await CheckOriginalLastSourceFreeExchangeAsync(owner, lease, capture, frozenRaw, ordinal, owners, state);
+
+            /// <summary>Proves one complete ordinary last exchange without consuming source, dice or resource authority.</summary>
+            internal static async Task<bool> CheckOriginalLastSourceFreeExchangeAsync(SpiritualWoundSourceSession owner,
+                FileSystemManager.CanonicalWriteLease lease, SpiritualOriginalTurnCapture capture, JsonObject frozenRaw,
+                int ordinal, ResourceOwnerAuthority owners, ResourceStateLedger state)
             {
                 owner._validator._fs.EnsureCanonicalWriteLeaseActive(lease);
                 await owner._continuationGate.WaitAsync();

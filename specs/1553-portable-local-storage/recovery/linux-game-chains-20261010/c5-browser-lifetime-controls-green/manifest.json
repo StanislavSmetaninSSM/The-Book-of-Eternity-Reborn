@@ -1,0 +1,59 @@
+{
+  "SourceSHA": "2e9683cef35c173df3520d2360d897c8042ee460",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-player-terminal-disposition\",\"browser-player-terminal-provenance\",\"portable-terminal-wait-storage-linux\",\"c5-browser-lifetime-source\")'",
+  "Status": "21PASS/0FAIL,complete5/5descriptors21/21cases,240.1117938s,0skip/duplicate/timeout,ownedcleanupcomplete",
+  "Scope": "Fresh integration/unit builds and actual cancellation/provenance/original wait/key-task ownership controls with affected source guards. One untracked Python bytecode cache existed at runner fingerprint; all tracked source matches SourceSHA. Actual staged-idle C5 remains unrun.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "85605ed2923670849a7364d3a41608691d2e90fefed460b2883e78a981fc9b4b",
+      "RawBytes": 5930
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "52b3ea5433693ff13fd1b2787a748b704af3bd4ba9ffc6bf4de2817f1c74908b",
+      "RawBytes": 2234
+    },
+    {
+      "Path": "runner/c5-browser-lifetime-source-unit-003.trx.gz",
+      "RawSHA256": "c25605ef8ca508a999941f92ae26ee535bd458e97a21bcbb5a5baf8981ac7198",
+      "RawBytes": 8982
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "97c2cde6f4b8348d2681dcd56c8c79c5939a2b8029bd9a7fdaedd41f25ee9d3d",
+      "RawBytes": 50345
+    },
+    {
+      "Path": "runner/portable-terminal-wait-storage-linux-integration-004.trx.gz",
+      "RawSHA256": "ba4685778bf7fca9a04b3f3bf8553f5aa4e8a990b7f6f84a37d8cabc3bb43edc",
+      "RawBytes": 73307
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "bbdfd8edc4452e37f74eaf049a697dcebd44010335d0ec74dea3f0ed1c53c9c4",
+      "RawBytes": 23979
+    },
+    {
+      "Path": "runner/portable-terminal-wait-storage-linux-unit-005.trx.gz",
+      "RawSHA256": "d3f68fad59a3453a606804b6d6474bc41fa73b5b10a991f118bcccf059f88bed",
+      "RawBytes": 3051
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "75e57df8c050d3f2b4a7da7ca9415330a049870d045f2777764af05627ccfce2",
+      "RawBytes": 3361131
+    },
+    {
+      "Path": "runner/browser-player-terminal-provenance-integration-002.trx.gz",
+      "RawSHA256": "93b1d11dd416111f611649a78c5e128a71b7068b62bb93334581645404cab44e",
+      "RawBytes": 9098
+    },
+    {
+      "Path": "runner/browser-player-terminal-disposition-integration-001.trx.gz",
+      "RawSHA256": "718716f7573187e2a5f18bb9fb0dbb9a3fd3484fa4143fb4814d2f417070cbeb",
+      "RawBytes": 9187
+    }
+  ]
+}

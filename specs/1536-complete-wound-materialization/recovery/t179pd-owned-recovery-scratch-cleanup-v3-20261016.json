@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-16T18:37:18.013825+00:00",
+  "reason": "completed SOURCE and separate Late2 EVIDENCE permit retiring only two older clean reconstructable task clones before next fresh RED recovery; tmp794MBfree",
+  "removed": [
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-absence-prepared-github-20261016",
+      "head": "9186fedcffd1fe7d5d14760fc5a7f7827810a00c",
+      "count": 1067,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-prepared-recovery-20261016.json",
+      "receipt_sha256": "4173222e7d91752fe98f810100de773e409bfce981beee34af8e3660a2114ffd",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red1-absence-source-accepted-github-20261016",
+      "head": "1a5ec68f90fec0834c460e4519508abaa57017a2",
+      "count": 1082,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red1-absence-source-accepted-recovery-20261016.json",
+      "receipt_sha256": "33d2a3484d3a784a744cfae05e57378041ade6d1020a221a6bd584af5321526b",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+      "removed": true
+    }
+  ],
+  "preserved": "all receipts/reports/raw test evidence/writer/bab1098+9c1113currentclones/3fdacceptedreaderclone;allremoteRefs",
+  "no_product_or_security_change": true,
+  "no_remote_branch_deletion": true
+}

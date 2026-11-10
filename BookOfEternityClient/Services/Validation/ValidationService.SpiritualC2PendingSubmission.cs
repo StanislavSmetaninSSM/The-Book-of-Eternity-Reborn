@@ -176,7 +176,8 @@ public partial class ValidationService
                     return SavedTransportFailure("blocked", "spiritual_c2_pair_changed");
                 var bytes = Encoding.UTF8.GetBytes(SpiritualWoundCaptureCheckpointState.SerializeCanonical(candidate.State));
                 try { await writer(lease, this, SpiritualWoundCaptureCheckpointState.StatePath, bytes); }
-                catch (Exception) { /* Exact read-back resolves the replacement. */ }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+                { /* Exact read-back is permitted only for a known ordinary transport failure. */ }
                 var confirmed = await _validator._fs.ReadFileBytesAsync(lease,
                     SpiritualWoundCaptureCheckpointState.StatePath);
                 if (!ExactBytes(confirmed, bytes))
@@ -203,9 +204,10 @@ public partial class ValidationService
                     return new("blocked", null, null, reopened.Issues);
                 return await resumed.CommitC2SavedTransportAsync(lease, writer, expectedCommandBytes);
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
-            {
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                    InvalidOperationException or FormatException or JsonException or OverflowException))
+                {
                 return SavedTransportFailure("blocked", "spiritual_c2_submission_failed");
             }
             finally
@@ -266,8 +268,9 @@ public partial class ValidationService
                 succeeded = true;
                 return [];
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 return DecisionDraftFailure("spiritual_c2_submission_replay_failed").Issues;
             }
@@ -298,8 +301,9 @@ public partial class ValidationService
                 if (!_allocations.Journal.IsAppendMode) _allocations.Journal.EnableAppendAfterReplay();
                 return await ProbeC2SelectedContinuationCoreAsync(lease, changes);
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 if (IsCurrentOwner) RevokeUnderLease(lease);
                 return DecisionDraftFailure("spiritual_c2_submission_context_changed").Issues;
@@ -378,8 +382,9 @@ public partial class ValidationService
                 _c2DecisionDrafted = true;
                 return result;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or FormatException or JsonException or OverflowException))
             {
                 return DecisionDraftFailure("spiritual_c2_submission_resume_failed");
             }

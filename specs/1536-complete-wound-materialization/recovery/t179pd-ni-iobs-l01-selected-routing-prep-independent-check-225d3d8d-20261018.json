@@ -1,0 +1,601 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_ZERO4_PREPARATION_CHECK",
+  "checkedUtc": "2026-10-18T15:22:21.272645+00:00",
+  "carrier": "225d3d8d20e65b3586bcb15b4e70689a32d68889",
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "sourcePinCount": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-preparation-813f1057-files-20261018/archive.json",
+    "sha256": "1cf277ad899da2ccb2abb3e585c387dfd09bbe1ca601224d03d9d3bb0ff921fc",
+    "rawChains": 43,
+    "completeRawCoverage": true,
+    "allOriginalStoredRestoredBytesMatched": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057/record.json",
+      "sha256": "946ebfbf670608d49c133bdfa5849cbde7c7d98ab3fc709cb17cac09be30085b",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 366.0095347150018,
+      "nativeWallSeconds": 360.4517419,
+      "timeoutMinutes": 10,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057/record.json",
+      "sha256": "94ae54916f49069d389926f0bd4e022491cd6a0be10c2376a7f5f0056eb12e14",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 35.834032512000704,
+      "nativeWallSeconds": 28.7466269,
+      "timeoutMinutes": 30,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "corrective-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+      "sha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 19.593556258001627,
+      "nativeWallSeconds": 13.4690581,
+      "timeoutMinutes": 15,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "remaining-plan",
+      "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+      "sha256": "24e4203c515ae6f761d79c5bc51f8174fc54dab015800f26930c4c00f0008890",
+      "nativeExit": 0,
+      "executed": 0,
+      "seconds": 19.094928958998935,
+      "nativeWallSeconds": 13.5914504,
+      "timeoutMinutes": 20,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "plans": {
+    "plan": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "corrective-plan": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "executed": 0
+    },
+    "remaining-plan": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5,
+      "executed": 0
+    }
+  },
+  "retained": {
+    "methods": 31,
+    "cases": 51,
+    "exactPriorProvenancePreserved": true
+  },
+  "binaries": {
+    "copies": 9,
+    "completeFiles": 1575,
+    "allPhysicalPathsSizesHashesMatch": true,
+    "allPlansNoBuildExactContinuity": true,
+    "fourClientCopiesEqual": true,
+    "twoSupportCopiesEqual": true,
+    "correctedClientSha256": "7bddc89288d60102df8abb2211585a55d0aa93a99684c00d8d18c4979ce425d0",
+    "selectedCopiesChangedDuringFreshCatalog": [
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+    ]
+  },
+  "processLaunchRecords": [
+    {
+      "mode": "catalog",
+      "pid": 48068,
+      "startTick": 2091950,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 48900,
+      "startTick": 2132948,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "corrective-plan",
+      "pid": 49177,
+      "startTick": 2137765,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    },
+    {
+      "mode": "remaining-plan",
+      "pid": 49402,
+      "startTick": 2143542,
+      "cmdlineCaptured": true,
+      "launchAndResultDirectoryBound": true
+    }
+  ],
+  "originalProcessArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+  "nativeRunnerCleanup": true,
+  "ownedFixtureRootsEmpty": true,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-before-813f1057.json",
+      "sha256": "fdb034cba911174cd3af3bca677eee89fde56ec7b3bbdc70170833fab4f45191",
+      "version": 2,
+      "phase": "selected-routing-catalog-before",
+      "startedUtc": "2026-10-18T15:11:48.749699+00:00",
+      "finishedUtc": "2026-10-18T15:11:48.771660+00:00",
+      "entries": 120,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 48043,
+          "expectedStartTick": 2091667,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-after-813f1057.json",
+      "sha256": "e5a0243084d0eb06a4f00932a399d774d8b5c86e8270009c9be6d1e7a90d251c",
+      "version": 2,
+      "phase": "selected-routing-catalog-after",
+      "startedUtc": "2026-10-18T15:17:59.292896+00:00",
+      "finishedUtc": "2026-10-18T15:17:59.318882+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 48828,
+          "expectedStartTick": 2128706,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-before-813f1057.json",
+      "sha256": "d59222aac2d284d79d8bc731ee05b6574eb7d7e06270e52c45aaa5aba7129a7e",
+      "version": 2,
+      "phase": "selected-routing-whole-before",
+      "startedUtc": "2026-10-18T15:18:39.615871+00:00",
+      "finishedUtc": "2026-10-18T15:18:39.637212+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 48872,
+          "expectedStartTick": 2132752,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-after-813f1057.json",
+      "sha256": "122a979f22d5d746484324ff9386d88c003ab90936d4a4a68fb05dd6c00b7768",
+      "version": 2,
+      "phase": "selected-routing-whole-after",
+      "startedUtc": "2026-10-18T15:19:17.903877+00:00",
+      "finishedUtc": "2026-10-18T15:19:17.927406+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49114,
+          "expectedStartTick": 2136584,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-before-813f1057.json",
+      "sha256": "37d140de1b810b256379034b6736fcf83a97fa10edeccd0121a7c0e8d5215e71",
+      "version": 2,
+      "phase": "selected-routing-corrective-before",
+      "startedUtc": "2026-10-18T15:19:27.712246+00:00",
+      "finishedUtc": "2026-10-18T15:19:27.729313+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49152,
+          "expectedStartTick": 2137566,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-after-813f1057.json",
+      "sha256": "f732180d400aac16ee9b3baabb88a0fef9b33c6613a4dfb0ed4af98d08998bc1",
+      "version": 2,
+      "phase": "selected-routing-corrective-after",
+      "startedUtc": "2026-10-18T15:19:49.940722+00:00",
+      "finishedUtc": "2026-10-18T15:19:49.961461+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49305,
+          "expectedStartTick": 2139789,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-before-813f1057.json",
+      "sha256": "e4d795c0fd88f7ece36a3df80fff74814d4eebf99e3c49cbadde7b8ad6ac46ac",
+      "version": 2,
+      "phase": "selected-routing-remaining-before",
+      "startedUtc": "2026-10-18T15:20:25.349322+00:00",
+      "finishedUtc": "2026-10-18T15:20:25.368633+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49377,
+          "expectedStartTick": 2143329,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-after-813f1057.json",
+      "sha256": "3cf50dc7af05c1140b0aee1cec83db4b851af80440e3f68157202cc8bb106fc2",
+      "version": 2,
+      "phase": "selected-routing-remaining-after",
+      "startedUtc": "2026-10-18T15:20:47.121399+00:00",
+      "finishedUtc": "2026-10-18T15:20:47.152336+00:00",
+      "entries": 124,
+      "classes": {
+        "other-readable": 9,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49527,
+          "expectedStartTick": 2145505,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-prep-qualification-813f1057.json",
+      "sha256": "73c64ad9fde9ddf1e3e3801ebc7a3e0cd6d5098aef2108e167254392a957b08d",
+      "version": 2,
+      "phase": "selected-routing-prep-qualification",
+      "startedUtc": "2026-10-18T15:21:24.366064+00:00",
+      "finishedUtc": "2026-10-18T15:21:24.388426+00:00",
+      "entries": 123,
+      "classes": {
+        "other-readable": 8,
+        "exited-nonexecuting": 110,
+        "build-infrastructure": 4,
+        "observer-self": 1
+      },
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 49552,
+          "expectedStartTick": 2149229,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "observerV2": {
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "bytes": 7410,
+    "exactReviewedSource": true,
+    "mandatoryBeforeAfterEveryActual": true
+  },
+  "recovery": [
+    {
+      "carrier": "225d3d8d20e65b3586bcb15b4e70689a32d68889",
+      "base": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+      "changedPaths": 59,
+      "receiptSha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8",
+      "bytesHashesBlobsModesVerified": true
+    }
+  ],
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "homeUnchanged": true,
+    "scope": "Saved correction/env evidence only; no new live boot/root/process observation"
+  },
+  "boundaryGaps": {
+    "catalog": {
+      "beforeFinishToStartSeconds": 2.7214,
+      "finishToAfterStartSeconds": 1.790495
+    },
+    "plan": {
+      "beforeFinishToStartSeconds": 1.82721,
+      "finishToAfterStartSeconds": 0.605463
+    },
+    "corrective-plan": {
+      "beforeFinishToStartSeconds": 1.906753,
+      "finishToAfterStartSeconds": 0.711136
+    },
+    "remaining-plan": {
+      "beforeFinishToStartSeconds": 2.039846,
+      "finishToAfterStartSeconds": 0.618143
+    }
+  },
+  "orchestrationEvidence": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+      "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+      "bytes": 2404
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-readback-c391c030-20261018.json",
+      "sha256": "f9b523a17fee26ac2e682f1d874443d1849a3f6ac80f50e9d4d9c897b6d2e359",
+      "bytes": 2576
+    }
+  ],
+  "wrapperProvenanceLimit": "Current selected-routing wrapper was saved before launch and equals the accepted source version; prior borrowed wrapper reconstruction remains historical. Actual controller/process/record argv and original ZERO evidence bind each phase. Same-invocation census is dated observation, not continuous absence.",
+  "metadataObservation": "Current selected-routing SOURCE accepted; original ZERO4 records and dated v2 boundaries checked; final independent PREP verdict must be separately authored.",
+  "eligibility": "CHECKER_RESULT_ONLY_NO_AUTOMATIC_PREP_ACCEPTANCE_OR_RUNTIME_RELEASE. Independent review of complete recovered ZERO4 required; each later actual separately gated.",
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "actualExecuted": 0,
+  "findings": [],
+  "limits": "Evidence/hash/source reads only. No builds/discovery/tests/controller/observer execution, process intervention or repo writes. No product runtime PASS or cross-build equivalence for retained51."
+}

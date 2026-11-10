@@ -1,0 +1,70 @@
+{
+  "kind": "INDEPENDENT_SETTLEMENT_SOURCE_ACCEPTANCE_METADATA_READBACK",
+  "checkedUtc": "2026-10-18T12:39:52.452807+00:00",
+  "acceptanceCarrier": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "reviewedSourceCandidate": "c79cdea9c29a513863439966685c99fdddb8ca3e",
+  "verdict": "ALL_THREE_SOURCE_ACCEPTANCE_CONDITIONS_SATISFIED_NAMED_ZERO4_ONLY",
+  "conditions": {
+    "currentLedgerPointer": true,
+    "currentCrashGatesCorrective123Remaining3310": true,
+    "priorReadySourcePrepHistoricalOriginalsUnchanged": true
+  },
+  "sourcePinCount": 98,
+  "sourcePinDigest": "304a7e8beb3174246ac3db792c6aa63319fa8ead9f3bab62f91346d4f204248d",
+  "pinnedPathsAndFixedLedgerUnchanged": true,
+  "productDelta21Unchanged": true,
+  "reviewArtifactsCopiedVerbatim": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.json",
+      "sha256": "9c2dabd460915093d300e3099aa8c5210dc6660cf488c99b2a6b159836a84365",
+      "bytes": 22432
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-review-20261018.md",
+      "sha256": "075815981b028e76d82d52242fd2b6b15dbb2256609433794d0bfa378974a3f7",
+      "bytes": 2906
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-independent-check-c79cdea9-20261018.json",
+      "sha256": "f902810dcafb0b8545c903271b0a9d26bb3160443211798efe76235227b89ab8",
+      "bytes": 15476
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement-fixture-source-checker-20261018.py",
+      "sha256": "b3fcf6119101cf48e2834002cc93a877ab278e9aed02d1ea4dcd5fd3b6f60ca9",
+      "bytes": 17721
+    }
+  ],
+  "namedZeroRelease": {
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-settlement-fixture-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-settlement-fixture-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-settlement-fixture-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-settlement-fixture-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": "Only four explicit separate invocations at saved/recovered SOURCE acceptance SHA after metadata condition readback. Previous original native0/ZERO and inventories/censuses verified before next. Fresh BOTH/catalog then whole16/33/57, corrective settlement1/2/3, remaining3/3/10 PlanOnly-NoBuild. Any unexpected failure freezes. Fresh independent PREP before any actual.",
+    "actualRelease": false
+  },
+  "noNamedZeroOutcomeExistsYet": true,
+  "noActualRelease": true,
+  "independentPrepRequired": true,
+  "recovery": {
+    "paths": 8,
+    "allBytesShaGitBlobsModesPhysicalBothCheckoutsMatched": true,
+    "receiptSha256": "ff393ea0803180c3914d5fd2492dd1a18420c7cbe4c259a42744d2c8e685d09e",
+    "exactRemoteReadback": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c\trefs/heads/1536-wound-b2-cloud-20261012",
+    "bothCheckoutsClean": true
+  },
+  "qualified44Unchanged": true,
+  "originalOutcomesUnchanged": true,
+  "oldCrashUnknownUnchanged": true,
+  "blockingFindings": [],
+  "next": "Root may explicitly invoke only the first named fresh catalog at this saved acceptance SHA. Each later named ZERO requires original preceding native0/ZERO and inventory/census verification. No automatic advance or actual release.",
+  "limits": "Bounded metadata/readback only; prior SOURCE checks not rerun. No build/discovery/tests/controller/observer execution, process intervention or repository writes."
+}

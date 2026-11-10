@@ -1,0 +1,106 @@
+{
+  "id": "HS01-F01",
+  "source": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "candidate": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+  "confirmed": true,
+  "scenario": "Signed original status_changes absent; fixture authors it after original; first actual mechanical mismatch is absent-to-present.",
+  "expected_by_test": "Concurrent joint mechanical input changed: game_state/player/status_changes.json",
+  "actual_source_branch": "Uncovered joint mechanical input is present: game_state/player/status_changes.json",
+  "test_expected_message_line": 109,
+  "test_call_path": "HotSubmissionCustody.cs:125\u2013131 -> JointCompletionActiveTail.cs:109,117",
+  "production_path": "GameEngine.MortalJointRepairMechanicalAdmission.cs:122\u2013126",
+  "historical_support": {
+    "trx_pin": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-fixture-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 4828310,
+      "sha256": "1455812f2ab3bc30f3c9b43c4a04b77028629e0a8a15d30054a9f287c1700dbb",
+      "git_blob": "c0b476a591464a609404e41736d2f2f6df808c4c"
+    },
+    "raw_sha256": "1a2bb8054bb9122bc5448fef13a8f48c199f7a23952ec5cca1ffb37a9ca503b2",
+    "raw_bytes": 13976522,
+    "observations": [
+      {
+        "test_name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "test_id": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "boundary": "fr063_joint_actual_prior42_inactive_tail",
+        "session_id": "session_qte_story_append",
+        "request_id": "f9d8d905408547eabdd49dd2e1eebd34",
+        "prior_turn": 42,
+        "before_joint_original_turn": 43,
+        "status_changes_original_before_stage": null
+      },
+      {
+        "test_name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "test_id": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "boundary": "fr063_joint_actual_prior42_inactive_tail",
+        "session_id": "session_qte_story_append",
+        "request_id": "40941b4eebb34c6baffa76fafb65f9cb",
+        "prior_turn": 42,
+        "before_joint_original_turn": 43,
+        "status_changes_original_before_stage": null
+      }
+    ],
+    "qualification": "Prior unchanged genuine baseline support only; no new HS01 runtime executed."
+  },
+  "source_reasoning": [
+    "TreatmentOrdinaryGuardPaths is composed from effect/source/item paths and fixed roots; none of the three new authored inputs appear there.",
+    "MortalJointInactiveTailPaths starts with status_changes.json; first authored match is therefore status_changes.",
+    "The genuine prior42 lifecycle leaves status_changes absent; Stage43 signs absence and its retained original is not rewritten by this fixture.",
+    "AuthorHotJointSubmissionAfterOriginalAsync accepts absent optional original and creates statsIncreased under the live lease.",
+    "ReadCurrent CoveredLogicalPaths contains present selected bytes, not absent paths.",
+    "MC checks uncovered-present before semantic changed equality, so the exact issue-message assertion prevents the missing export assertion."
+  ],
+  "minimal_correction": "Keep genuine absence. Explicitly assert absent original and newly present submission and expect the exact uncovered-present error for this known branch; alternatively derive one exact expected message from independently retained original coverage, without accepting either message or changing production.",
+  "extra_pins": [
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "git_blob": "11c5b9c02627550b5477a3ef8929cd8591c87b62"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 20793,
+      "sha256": "e0d9d290889eb598d1568b867a1514c141a66a4be17e1c72036f8d9647be3928",
+      "git_blob": "19c73713357ef4263455ce1343d1b03cb440e9bd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "git_blob": "9aacb56c60f7bdc9882852dfe96b4d005c106990"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "git_blob": "6900c679f40653c79c859f0620be26d6d215ed19"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 35308,
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "git_blob": "253c2e7f5abd3ec66245d7725a910f8bc280e8bb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 26937,
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "git_blob": "bc47100731a575e2cbb376e32de712a995681df8"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-fixture-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "commit": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "bytes": 4828310,
+      "sha256": "1455812f2ab3bc30f3c9b43c4a04b77028629e0a8a15d30054a9f287c1700dbb",
+      "git_blob": "c0b476a591464a609404e41736d2f2f6df808c4c"
+    }
+  ]
+}

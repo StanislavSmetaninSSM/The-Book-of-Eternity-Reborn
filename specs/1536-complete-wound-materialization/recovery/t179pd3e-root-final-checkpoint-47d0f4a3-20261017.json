@@ -1,0 +1,155 @@
+{
+  "kind": "ROOT_FINAL_VERIFIED_BOUNDED_ORDINARY3E_CHECKPOINT",
+  "head": "47d0f4a33770f028963b5d112eb6b22859010a3b",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "remoteBranchExact": true,
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "historyAncestorsPreserved": true,
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "compiledToFinalMetadataOnly": true,
+  "sourcePinCount": 55,
+  "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+  "sourcePinsCurrentAndCompiledGitShowExact": true,
+  "nineFreshCurrentBinaryPins": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9601024,
+      "sha256": "4ff0d74f3858a972058e8d3076ee4ad79515ae831179cdaaf288f6f8615785c8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29179904,
+      "sha256": "95ff04a3507ce90fe0f8756ded64436ce92c5b637c9f2a0b75b425c3ea09177c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1830912,
+      "sha256": "b787f0335addf521939678a3e636b4563b6bfe7c86dfb92aad3ab68c71f2c53f"
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "1e8249186a4ea225d00564f93664cbb6501f81a8b74ff85d26463b24a268921d"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26178560,
+      "sha256": "d1e036b81d15e25ec609a1dbde921963967fcec7d50289f0f34e0a6b957f00e1"
+    }
+  ],
+  "ledgerPath": "specs/1536-complete-wound-materialization/recovery/t179pd3e-ordinary-method-row-ledger-20261017.json",
+  "ledgerSha256": "caf7c85b39c337bd166f72673b3e84c57cec225d8f67e911cec0946c19555bc7",
+  "packetStatus": "BOUNDED_ORDINARY_PREFIX_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_PENDING",
+  "currentPacketSha256": "613591a7267c0736b5e7dd7d391ef14707781b413b957ce607040458e9025d5f",
+  "independentReports": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.md",
+      "bytes": 3071,
+      "sha256": "1c66224a243a9183d33eb676952fbb7a70e2153f9dc708e134343c6be2a54079"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-review-20261017.json",
+      "bytes": 5245,
+      "sha256": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-boundary1-evidence-independent-check-20261017.json",
+      "bytes": 19840,
+      "sha256": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-review-20261017.md",
+      "bytes": 3742,
+      "sha256": "22f627dce75eb793261b8b63880d1503ebd646080888d5981d7611cb65843942"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-review-20261017.json",
+      "bytes": 7690,
+      "sha256": "aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-minimal-product-source-independent-check-20261017.json",
+      "bytes": 33077,
+      "sha256": "329065d832c8de3cbf004f61181228e56bd9e746b1f75e6a75711c0e272e0fd1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.md",
+      "bytes": 2580,
+      "sha256": "3d6bb865b9018d4374817b9eafc5ffb6747e6781a64fea17eefdf5484a140df2"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-review-20261017.json",
+      "bytes": 4695,
+      "sha256": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-late2-evidence-independent-check-20261017.json",
+      "bytes": 27372,
+      "sha256": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.md",
+      "bytes": 3046,
+      "sha256": "b8b82769f9a57a21000f21fef4cfa74d15657e16aef9edeaaa2cd04b405a5765"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-review-20261017.json",
+      "bytes": 9606,
+      "sha256": "3fbb67b35ecb344948ae185cc86d6ea92c65b53c400711d22965299f84c8b1cd"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+      "bytes": 110911,
+      "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+    }
+  ],
+  "newOrdinary": {
+    "cases": 45,
+    "methods": 18,
+    "nativeExit": 0,
+    "wrapperSeconds": 18.01654913800303,
+    "runnerSeconds": 17.3104676,
+    "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+    "strictPhysicallyAbsentRoots": 41,
+    "legacyRowsNamespaceOnly": 2,
+    "sourceFactsRootNA": 2
+  },
+  "separateNewProtected": {
+    "cases": 2,
+    "methods": 2,
+    "nativeExit": 0,
+    "wrapperSeconds": 121.93179388899443,
+    "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f"
+  },
+  "distinctNewBoundedCases": 47,
+  "distinctMethods": 20,
+  "fullRecovery": {
+    "receipt": "/tmp/t179pd3d-root-recovery-composition-47d0f4a3-20261017.json",
+    "sha256": "f0340bc63d099af318ca09a94e3771d36f5f42c955a8994be034c0f5aae2f25e",
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "deltas": 61,
+    "paths": 55090
+  },
+  "scope": "Only bounded ordinary3e prefix complete; all source/initialFAILEDprep/RED/evidence retained. PriorA1and3d52/2 are history, not newcounts. Full3e/HOT/history/broaderFull/S/B/M3/F1/T197/Windows/CI/A3/OldWorld33 remain held. No additional code/runtime needed.",
+  "utc": "2026-10-17T18:47:48.834602+00:00"
+}

@@ -338,6 +338,26 @@ public partial class ValidationService
         }
 
         var actorType = RequireProfileString(profile, context, "actorType", "afterlife_entity_profile_missing_actor_type", issues);
+        if (string.Equals(GetProfileString(profile, "actorId"), AfterlifeWoundTreatmentAuthority.ElyaraId, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetProfileString(profile, "actorRef"), AfterlifeWoundTreatmentAuthority.ElyaraId, StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                // Only the small invariant DATA is copied, never the actor's
+                // complete wound/effect/agency graph a second time.
+                var invariant = new System.Text.Json.Nodes.JsonObject();
+                foreach (var field in new[] { "actorId", "actorRef", "actorType", "realm", "lifeState", "locationId", "standardArts", "healingServiceProfile" })
+                    if (profile.TryGetProperty(field, out var value))
+                        invariant[field] = System.Text.Json.Nodes.JsonNode.Parse(value.GetRawText());
+                AfterlifeHealingServiceContract.RequireElyaraInvariant(invariant);
+            }
+            catch (InvalidDataException failure)
+            {
+                issues.Add(new ValidationIssue(context, IssueSeverity.Error, failure.Message,
+                    code: "elyara_healing_service_invariant_invalid", section: "AfterlifeEntityProfiles",
+                    expected: "exact canonical Elyara life/location/HealingV/public100% profile", actual: "invalid healing service invariant"));
+            }
+        }
         var actorId = GetProfileString(profile, "actorId") ?? GetProfileString(profile, "actorRef");
         if (string.IsNullOrWhiteSpace(actorId))
         {

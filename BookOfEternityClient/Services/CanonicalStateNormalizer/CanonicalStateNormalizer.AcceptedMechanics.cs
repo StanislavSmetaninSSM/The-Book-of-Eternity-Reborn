@@ -1,12 +1,14 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    private IReadOnlyList<CanonicalLocalFileChange>? _mortalQteCommittedChanges;
     internal abstract record AcceptedMechanicsNormalizationPreflight
     {
         internal sealed record NoPlan : AcceptedMechanicsNormalizationPreflight;
@@ -48,10 +50,24 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BindTo(writeLease).NormalizeAcceptedMechanicsAsync(
-                backups,
-                mortalLocationPlan);
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                return await BindTo(writeLease).NormalizeAcceptedMechanicsAsync(
+                    backups,
+                    mortalLocationPlan);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureHeldTreatmentPublicationUsesCoordinator();
@@ -80,8 +96,10 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsNormalizationPreflight preflight,
         bool normalizedAcceptedCarrierBaselines,
         MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
-        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
+        MortalJointRepairPublicationTransaction? jointTransaction = null)
     {
+        using var innerTiming1 = _fs.MeasureOperation("MechanicsPublish.PublishAsync");
         ArgumentNullException.ThrowIfNull(preflight);
         if (preflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
         {
@@ -98,6 +116,21 @@ public partial class CanonicalStateNormalizer
         }
 
         var plan = validated.Plan;
+        var spiritualHealing = plan.WoundStageBundle?.PreparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+        spiritualHealing?.RequireCurrent(_fs, _writeLease);
+        var spiritualBatchCommitted = false;
+        _mortalQteCommittedChanges = null;
+        if (plan.JointRepairCommonAuthority is not null && jointTransaction is null)
+            throw new InvalidOperationException("Joint repair common publication requires its distinct owning transaction.");
+        if (jointTransaction is not null)
+        {
+            if (treatmentPublicationReceipt is not null || spiritualPublicationReceipt is not null ||
+                !ReferenceEquals(jointTransaction.Receipt.Plan, plan))
+                throw new InvalidDataException("Joint publication cannot share or impersonate another receipt family.");
+            using var innerTiming2 = _fs.MeasureOperation("MechanicsPublish.ValidateTakenJointInputsAsync");
+            await ValidateTakenJointPublicationInputsAsync(jointTransaction.Receipt);
+            innerTiming2?.Dispose();
+        }
         if (spiritualPublicationReceipt is not null)
         {
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
@@ -130,7 +163,7 @@ public partial class CanonicalStateNormalizer
         }
         try
         {
-            if (plan.EffectPlan != null)
+            if (plan.EffectPlan != null && jointTransaction is null)
             {
                 await ValidateEffectPlanPublicationBindingAsync(
                     plan.EffectPlan,
@@ -140,35 +173,39 @@ public partial class CanonicalStateNormalizer
                         plan.DirectWoundPublicationAuthority is not null,
                     resourcePublicationAuthority:
                         plan.TreatmentResourcePublicationAuthority,
-                    spiritualPublicationReceipt: spiritualPublicationReceipt);
+                    spiritualPublicationReceipt: spiritualPublicationReceipt, commonPlan: plan);
             }
 
             // Other normalizers may intentionally consume plan before-images. The exact
             // authority roots selected by preflight are never mutable normalization
             // outputs, so bind them again immediately before consuming the handoff.
+            using var innerTiming3 = _fs.MeasureOperation("MechanicsPublish.ValidateAuthorityBeforeImagesAsync");
             await ValidateAcceptedMechanicsPublicationAuthorityBeforeImagesAsync(
                 validated.PublicationAuthorityBeforeImages);
+            innerTiming3?.Dispose();
         }
         catch
         {
-            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
         try
         {
+            using var innerTiming4 = _fs.MeasureOperation("MechanicsPublish.ValidateItemFinalBaselineAsync");
             await ValidateMortalItemFinalPublicationBaselineAsync(plan);
+            innerTiming4?.Dispose();
         }
         catch
         {
             // A held publication was already taken by the top-level transaction.
             // Keep its exact handoffs intact so byte-exact compensation can rearm
             // this same plan. A non-held plan still owns its invalidation here.
-            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
-        if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null &&
+        if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null && jointTransaction is null &&
             (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
                  _fs,
                  _writeLease,
@@ -182,6 +219,7 @@ public partial class CanonicalStateNormalizer
                 "Accepted mechanics validated handoff changed before publication.");
         }
 
+        using var innerTiming5 = _fs.MeasureOperation("MechanicsPublish.BuildWrites");
         var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         if (!plan.AwaitsPendingResolution)
         {
@@ -200,6 +238,11 @@ public partial class CanonicalStateNormalizer
                 writes,
                 ResourceMaterializationContract.HistoryPath,
                 plan.HistoryAfterImage);
+            JsonObject resourceOwnerAfterImage;
+            if (spiritualHealing?.HasCanonicalDiagnosisRequirements == true)
+                resourceOwnerAfterImage = spiritualHealing.DiagnosisResourceOwnerAfterImage(plan);
+            else
+            {
             var definitions = ResourceDefinitionCatalog.ParseCanonical(
                 plan.DefinitionAfterImage.ToJsonString(),
                 allowMissingPristine: false);
@@ -220,15 +263,13 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException(
                     "Accepted mechanics cannot compose canonical resource owner authority from invalid after-images.");
             }
-            AddTreatmentResourceWriteIfChanged(
-                plan,
-                writes,
-                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
-                JsonNode.Parse(
+            resourceOwnerAfterImage = JsonNode.Parse(
                     CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
                         plan.OwnerAuthority,
                         state,
-                        history))!.AsObject());
+                        history))!.AsObject();
+            }
+            AddTreatmentResourceWriteIfChanged(plan, writes, CanonicalResourceOwnerAuthorityComposer.AuthorityPath, resourceOwnerAfterImage);
             writes[EffectAcceptedTurnPlan.IdentityIndexPath] = plan.EffectIdentityAfterImage;
             foreach (var pair in plan.OwnerCompanionAfterImages)
                 writes[pair.Key] = pair.Value;
@@ -254,33 +295,142 @@ public partial class CanonicalStateNormalizer
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static path => path, StringComparer.Ordinal)
             .ToArray();
-        var retainedPublicationBeforeImages =
-            await CaptureRetainedPublicationAgreementBeforeImagesAsync(
-                plan,
-                writes.Keys,
-                deletePaths);
+        innerTiming5?.Dispose();
+        IReadOnlyDictionary<string, CanonicalBeforeImage> retainedPublicationBeforeImages;
 
-        foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        var mortalQtePublication = !plan.AwaitsPendingResolution &&
+            plan.OwnerCompanionAfterImages.ContainsKey(MortalWoundOpportunityReceiptState.StatePath);
+        if (jointTransaction is not null && !mortalQtePublication)
+            throw new InvalidDataException("Joint publication cannot fall back to individual ordinary writes without its actual QTE receipt.");
+        try
         {
-            var publicationRoot = exactItemPublicationAfterImages.TryGetValue(
-                pair.Key,
-                out var exactItemRoot)
-                ? exactItemRoot
-                : pair.Value;
-            await WriteCanonicalFileAtomicAsync(
-                pair.Key,
-                publicationRoot.ToJsonString(JsonOpts));
+        if (spiritualHealing is not null)
+        {
+            spiritualHealing.RequireCurrent(_fs, _writeLease);
+            spiritualHealing.RequireServicePublication(writes, plan, deletePaths);
+            spiritualHealing.Scheduler.ClaimSpiritualTreatmentMutation(_writeLease, spiritualHealing.SchedulerMutation);
+            var changes = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))
+            {
+                if (!plan.BeforeImages.TryGetValue(pair.Key, out var before))
+                    throw new InvalidDataException("Spiritual publication lost an exact original member: " + pair.Key);
+                var after = pair.Key == ProgressionScheduleService.SchedulePath
+                    ? spiritualHealing.SchedulerMutation.ScheduleAfter.Bytes!
+                    : MortalQteDecisionPublication.SerializePublicationRoot(pair.Value);
+                changes.Add(new(pair.Key, before.Bytes, after));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path) || !plan.BeforeImages.TryGetValue(path, out var before))
+                    throw new InvalidDataException("Spiritual publication has a missing/conflicting delete: " + path);
+                changes.Add(new(path, before.Bytes, null));
+            }
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
+            await _fs.VerifySourceDataAsync(_writeLease);
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, changes));
+            spiritualBatchCommitted = true;
+            foreach (var change in changes)
+                if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
+                    throw new InvalidDataException("Spiritual common publication readback differs: " + change.RelativePath);
         }
-        foreach (var path in deletePaths)
+        else if (spiritualPublicationReceipt?.Authority.HasCombatHealing == true)
         {
-            _fs.DeleteFile(_writeLease, path);
+            var scheduler = new ProgressionScheduleService(_fs,
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
+            var mutation = await scheduler.PrepareCombatOutcomeMutationAsync(_writeLease, spiritualPublicationReceipt.Authority);
+            scheduler.ClaimSpiritualTreatmentMutation(_writeLease, mutation);
+            var changes = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(p => p.Key, StringComparer.Ordinal))
+            {
+                if (pair.Key is ProgressionScheduleService.SchedulePath or ProgressionScheduleService.ReportPath or EffectAcceptedTurnInputComposer.WorldTimePath)
+                    throw new InvalidDataException("Combat cannot compose a separate world-cycle writer.");
+                var root = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactRoot) ? exactRoot : pair.Value;
+                changes.Add(new(pair.Key, await _fs.ReadFileBytesAsync(_writeLease, pair.Key),
+                    MortalQteDecisionPublication.SerializePublicationRoot(root)));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path) || path is ProgressionScheduleService.SchedulePath or ProgressionScheduleService.ReportPath or EffectAcceptedTurnInputComposer.WorldTimePath)
+                    throw new InvalidDataException("Combat has a conflicting consumed member.");
+                changes.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
+            }
+            var original = spiritualPublicationReceipt.Authority.ReadCombatSchedulerOriginal(_fs, _writeLease);
+            changes.Add(new(ProgressionScheduleService.SchedulePath, mutation.ScheduleBefore.Bytes, mutation.ScheduleAfter.Bytes));
+            changes.Add(new(ProgressionScheduleService.ReportPath, mutation.ReportBefore.Bytes, mutation.ReportAfter.Bytes));
+            changes.Add(new(EffectAcceptedTurnInputComposer.WorldTimePath, original.WorldTime.Bytes, original.WorldTime.Bytes));
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
+            await _fs.VerifySourceDataAsync(_writeLease);
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, changes));
+            spiritualBatchCommitted = true;
+            foreach (var change in changes)
+                if (!ExactBytes(await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath), change.After))
+                    throw new InvalidDataException("Combat common publication differs: " + change.RelativePath);
+        }
+        else if (mortalQtePublication)
+        {
+            using var innerTiming6 = _fs.MeasureOperation("MechanicsPublish.PrepareBeforeImages");
+            var prepared = new List<CanonicalLocalFileChange>();
+            foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+            {
+                var root = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactRoot) ? exactRoot : pair.Value;
+                prepared.Add(new(pair.Key, await _fs.ReadFileBytesAsync(_writeLease, pair.Key),
+                    MortalQteDecisionPublication.SerializePublicationRoot(root)));
+            }
+            foreach (var path in deletePaths)
+            {
+                if (writes.ContainsKey(path)) throw new InvalidDataException("A Mortal common member cannot be written and consumed together.");
+                prepared.Add(new(path, await _fs.ReadFileBytesAsync(_writeLease, path), null));
+            }
+            innerTiming6?.Dispose();
+            using var innerTiming7 = _fs.MeasureOperation("MechanicsPublish.CreateQtePublicationAsync");
+            var completion = jointTransaction is null
+                ? await MortalQteDecisionPublication.CreateAsync(_fs, _writeLease, plan, validated.Binding, prepared)
+                : await MortalQteDecisionPublication.CreateJointAsync(_fs, _writeLease, jointTransaction.Receipt, prepared);
+            innerTiming7?.Dispose();
+            using var innerTiming8 = _fs.MeasureOperation("MechanicsPublish.ReadCompletionBeforeImageAsync");
+            if (completion is not null)
+                prepared.Add(new(MortalQteDecisionPublication.StatePath,
+                    await _fs.ReadFileBytesAsync(_writeLease, MortalQteDecisionPublication.StatePath), completion));
+            innerTiming8?.Dispose();
+            using var innerTiming9 = _fs.MeasureOperation("MechanicsPublish.CaptureAgreementBeforeImagesAsync");
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan,
+                completion is null ? writes.Keys : writes.Keys.Append(MortalQteDecisionPublication.StatePath), deletePaths);
+            innerTiming9?.Dispose();
+            using var innerTiming10 = _fs.MeasureOperation("MechanicsPublish.PublishLocalBatchAsync");
+            jointTransaction?.BindIntendedMembers(JointBatchPublicationIssuer, prepared);
+            if (jointTransaction != null) await _fs.VerifySourceDataAsync(_writeLease);
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(_writeLease, prepared));
+            jointTransaction?.ObserveCommittedBatch(JointBatchPublicationIssuer);
+            innerTiming10?.Dispose();
+            // Joint compensation belongs exclusively to the typed transaction:
+            // the old v1 outer compensation API has no claim/receipt proof.
+            if (jointTransaction is null) _mortalQteCommittedChanges = prepared;
+            using var innerTiming11 = _fs.MeasureOperation("MechanicsPublish.ReadBackBatchAsync");
+            foreach (var change in prepared)
+            {
+                var actual = await _fs.ReadFileBytesAsync(_writeLease, change.RelativePath);
+                if (!ExactBytes(actual, change.After)) throw new InvalidDataException("Mortal common batch readback differs at " + change.RelativePath);
+            }
+            innerTiming11?.Dispose();
+        }
+        else
+        {
+            retainedPublicationBeforeImages = await CaptureRetainedPublicationAgreementBeforeImagesAsync(plan, writes.Keys, deletePaths);
+            foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+            {
+                var publicationRoot = exactItemPublicationAfterImages.TryGetValue(pair.Key, out var exactItemRoot) ? exactItemRoot : pair.Value;
+                await WriteCanonicalFileAtomicAsync(pair.Key, publicationRoot.ToJsonString(JsonOpts));
+            }
+            foreach (var path in deletePaths) _fs.DeleteFile(_writeLease, path);
         }
 
+        using var innerTiming12 = _fs.MeasureOperation("MechanicsPublish.ValidateAgreementAsync");
         await ValidateAcceptedMechanicsPublicationAgreementAsync(
             writes,
             exactItemPublicationAfterImages,
             deletePaths,
             retainedPublicationBeforeImages);
+        innerTiming12?.Dispose();
 
         if (plan.AwaitsPendingResolution)
         {
@@ -294,17 +444,59 @@ public partial class CanonicalStateNormalizer
         }
         else
         {
+            using var innerTiming13 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedWoundsAsync");
             await ValidatePublishedWoundAfterImagesAsync(plan, spiritualPublicationReceipt);
+            innerTiming13?.Dispose();
+            using var innerTiming14 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedOwnerTransitionsAsync");
             await ValidatePublishedOwnerTransitionsAsync(plan);
+            innerTiming14?.Dispose();
+            using var innerTiming15 = _fs.MeasureOperation("MechanicsPublish.ValidatePublishedResourcesAsync");
             await ValidatePublishedResourceAfterImagesAsync(plan);
+            innerTiming15?.Dispose();
         }
         if (spiritualPublicationReceipt is not null)
         {
             RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
-            await ValidatePublishedSpiritualReceiptAsync(plan);
+            await ValidatePublishedSpiritualReceiptAsync(plan, spiritualPublicationReceipt);
         }
+        spiritualHealing?.MarkPublished();
         return plan;
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
+        {
+            spiritualHealing?.Close();
+            if (spiritualBatchCommitted)
+                throw new CoordinatedStatePublicationUncertainException(failure);
+            // The joint coordinator re-proves its current taken receipt and hold
+            // before any rollback. Never run the v1 compensation ahead of it.
+            if (jointTransaction is not null) throw;
+            try { await CompensateMortalQteCommonPublicationAsync(); }
+            catch (CoordinatedStatePublicationUncertainException) { throw; }
+            catch (Exception compensation) { throw new AggregateException("Mortal common publication failed and compensation refused.", failure, compensation); }
+            throw;
+        }
     }
+
+    internal async Task CompensateMortalQteCommonPublicationAsync()
+    {
+        if (_mortalQteCommittedChanges is not { } published) return;
+        var lease = _writeLease ?? throw new InvalidOperationException("Common compensation requires its original held lease.");
+        var restore = new List<CanonicalLocalFileChange>();
+        foreach (var change in published)
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, change.RelativePath);
+            if (!ExactBytes(current, change.After) && !ExactBytes(current, change.Before))
+                throw new InvalidDataException("Mortal common compensation refuses unknown bytes at " + change.RelativePath);
+            restore.Add(new(change.RelativePath, current, change.Before));
+        }
+        _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(lease, restore));
+        foreach (var change in restore)
+            if (!ExactBytes(await _fs.ReadFileBytesAsync(lease, change.RelativePath), change.After))
+                throw new InvalidDataException("Mortal common compensation readback differs at " + change.RelativePath);
+        _mortalQteCommittedChanges = null;
+    }
+
+    private static bool ExactBytes(byte[]? left, byte[]? right) => left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
 
     private static IReadOnlyDictionary<string, JsonNode>
         CloneExactTreatmentItemPublicationAfterImages(
@@ -313,6 +505,16 @@ public partial class CanonicalStateNormalizer
     {
         var itemAuthority = plan.TreatmentResourcePublicationAuthority?
             .ItemPublicationAuthority;
+        if (plan.JointRepairCommonAuthority is { } joint)
+        {
+            var exact = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+            foreach (var pair in joint.ExactFinalItemRoots)
+                if (writes.TryGetValue(pair.Key, out var projected))
+                    exact.Add(pair.Key, pair.Value is not null
+                        ? MortalItemProjectionRootParser.RestorePublicationRoot(pair.Value, projected, pair.Key)
+                        : throw new InvalidDataException("Joint item publication lacks its exact complete root: " + pair.Key));
+            return exact;
+        }
         if (itemAuthority is null)
             return new Dictionary<string, JsonNode>(StringComparer.Ordinal);
 
@@ -532,6 +734,9 @@ public partial class CanonicalStateNormalizer
             throw new InvalidOperationException(
                 "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
         }
+        if (AcceptedMechanicsPlanAuthority.TryPeekValidated(_fs, writeLease, out _, out var joint) &&
+            joint.Plan?.JointRepairCommonAuthority is not null)
+            throw new InvalidOperationException("Joint repair publication requires its distinct participating-lease transaction coordinator.");
         if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, _writeLease, out _))
             throw new InvalidOperationException(
                 "Spiritual publication requires the top-level accepted-turn transaction coordinator.");

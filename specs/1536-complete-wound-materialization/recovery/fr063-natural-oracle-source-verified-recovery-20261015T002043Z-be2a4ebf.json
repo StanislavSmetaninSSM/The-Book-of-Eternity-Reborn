@@ -1,0 +1,30 @@
+{
+  "checkpoint": "405e684c6d6a176f6cc42f2c93c23f04acd00de8",
+  "publicationNative": {
+    "launch": "3c5655",
+    "session": 32293,
+    "completion": "b2b0aa",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "2444d4",
+    "session": 17128,
+    "completion": "496049",
+    "exitCode": 0
+  },
+  "publicationReadbackSHA256": "4dbb7dda9ef6e275b0b9d2d6ca4d54c402a343c35907dcc56292401b13fb2e60",
+  "selectedRecovery": {
+    "checkpoint": "405e684c6d6a176f6cc42f2c93c23f04acd00de8",
+    "remoteSha": "405e684c6d6a176f6cc42f2c93c23f04acd00de8",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2566,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2037,
+    "consumerProduction": "NaturalStage43fixtureSOURCEWIP/all7currentvsoriginalrollback/exactoncereminder;productionunchanged;compilerAPIbehaviorUNCHECKED/focusedgatesnext;5componentPASS2fixtureFAILimmutable/12laterUNRUN;runtimeHELD",
+    "verifiedUtc": "2026-10-15T00:20:31.462342+00:00"
+  },
+  "independentCorrectionReview": "NEXT same retained reviewer; sourcefixtureselection closure only",
+  "sourceWriterSTOP": "FINAL STOPPED; no pending tools/writes",
+  "allRuntime": "HELD"
+}

@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-wound-original-rollback-publication",
+    "portable-location-offscreen-rollback-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0d16af64926ded3a1492aff1a3648a2d895ff764",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8301727,
+  "Descriptors": [
+    {
+      "Name": "portable-location-offscreen-rollback-publication-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-location-offscreen-rollback-publication",
+      "Categories": [
+        "portable-location-offscreen-rollback-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_OffscreenPublicationFailureRestoresEveryTrackedPathByteExact",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_OffscreenPublicationFailureRestoresEveryTrackedPathByteExact",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-wound-original-rollback-publication-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-wound-original-rollback-publication",
+      "Categories": [
+        "portable-wound-original-rollback-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WoundMaterializationRollbackTests_FailureBeforeOrAfterEveryPublicationSurfaceRestoresExactSnapshot",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 24,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WoundMaterializationRollbackTests_FailureBeforeOrAfterEveryPublicationSurfaceRestoresExactSnapshot",
+          "Cases": 24
+        }
+      ]
+    }
+  ]
+}

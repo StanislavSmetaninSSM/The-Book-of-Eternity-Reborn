@@ -1,0 +1,202 @@
+{
+  "kind": "INDEPENDENT_SETTLEMENT3_FROZEN_FAILURE_CAUSAL_REVIEW",
+  "reviewedUtc": "2026-10-18T12:30:56.684547+00:00",
+  "verdict": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+  "classification": "ONE_SHARED_FIXTURE_FAULT_CLASSIFICATION_ERROR_TWO_DISTINCT_OWNING_PATHS",
+  "carrier": "4406e7238ae254f74e516e67dc3d7bec7db9b295",
+  "actualSource": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "originalRecordSha256": "dc135269fb73456f61e1e508d3031df0f25793a237398f029649e649bf3d18ab",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-settlement3-frozen-813f1057-files-20261018/archive.json",
+    "sha256": "764ef854f6c66cb6804452954d36c80746efd3cd734068f25791a722ed8e47b2",
+    "rawChains": 11,
+    "rawBytes": 62406039,
+    "completeOriginalCoverage": true,
+    "originalStoredRestoredExact": true
+  },
+  "independentCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+    "bytes": 20056,
+    "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_settlement3_failure.py",
+    "bytes": 24885,
+    "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd"
+  },
+  "originalOutcome": {
+    "nativeExit": 1,
+    "tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 1,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "categoryResult": {
+      "Category": "fr063-joint-interface-settlement",
+      "Seconds": 419.9442425,
+      "BudgetMinutes": 15,
+      "Completed": false
+    },
+    "wallSeconds": 440.25795118099995,
+    "noTimeout": true,
+    "status": "Original RED remains 1 PASS / 2 FAIL. Complete planned selection does not mean a passed category: CategoryResults.Completed is false."
+  },
+  "verifiedEvidence": {
+    "all11RawGzipOriginalRestoredChains": true,
+    "exactOriginalCoverage": true,
+    "frozenSourcePins": 98,
+    "frozenSourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+    "freshCompiledOutputs": "9 selected managed copies and complete1575 output set match original before/after, accepted remaining-plan and physical outputs. No build performed.",
+    "restoredCarrierPaths": 18,
+    "rawImageLengthAndShaChecks": 1905,
+    "embeddedImageShaChecks": 12,
+    "journalImageShaChecks": 107,
+    "jsonParseErrors": 0,
+    "sourceReviewBoundary": "Original diagnosis uses frozen4406 and compiled e2d0a10f bytes. Parent-reported later fixture edit is a separate SOURCE candidate and is not accepted by this report.",
+    "recovery": "Independently compared all18 changed files, modes, blobs and hashes against the independent GitHub clone objects and saved carrier; exact-remote receipt retained. No new clone/build/test run."
+  },
+  "sharedCause": {
+    "fixture": "GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs33 creates an IOException; lines53–59 throw it once at actual MemberPublished index0, after the storage publisher applies a real member. The same classification feeds CommonFault and TerminalFault.",
+    "lowLevelRecovery": "TrustedLocalFilePublication.cs176–188 catches the observer exception, recovers the uncommitted journal, and returns RolledBack only after the generation and every intended member before-image match. A committed or uncertain outcome cannot take this retry branch.",
+    "retry": "FileSystemManager.TrustedLocalStorage.cs235–246 retries that known RolledBack IOException under the same active lease/frozen changes and repeats validatePreparedNamespace. It explicitly excludes InvalidDataException. FileSystemManager.cs1722–1723 classifies IOException as transient; its bounded retry count is20. The fixture counter suppresses its fault on subsequent publication attempts.",
+    "ownership": "RequireCommittedLocalPublication consumes the final publication outcome, not the transient attempt error. Successful low-level retry therefore does not enter the higher common transaction compensation catch or terminal release compensation catch.",
+    "contract": "The existing NI contract preserves Published I through refused common/rollback and permits whole-operation terminal removal only with owned cohort/readback/claim release. Retrying an exactly rolled-back frozen storage cohort under its same owner is not a second I projection, a generic baseline restore, an accepted-turn replay, or an inferred lost return. These originals do not demonstrate a violated compensation contract; their injected transient fault fails to target the intended owning failure boundary.",
+    "qualificationLimit": "This diagnosis does not certify the as-yet-unobserved common/terminal compensation paths. Corrected injection may expose a separate issue; retain every strong assertion and freeze on any unexpected result."
+  },
+  "commonFault": {
+    "failedAssertion": "Settlement.cs65 Assert.NotNull(_mortalJointRepairCanonicalRefresh). Prior assertions at64 establish one fault and one completed capture.",
+    "observations": {
+      "faultJournal": "8501fd1a9b4143a2b02e49778660bd79",
+      "faultMembers": 16,
+      "appliedMemberIndex": 0,
+      "committedI": 1,
+      "captureCallbacks": 1,
+      "laterCommittedMarkerTransactions": [
+        "99da10d73bbf490db389cbcf26689c57",
+        "59a3b55bc3724d788c35191cc793240e"
+      ],
+      "runtimeTurn": 43,
+      "finalIEqualsFrozenPublishedAfterImage": true,
+      "checkpointCorrectionReadyRefreshCleared": true,
+      "mechanicalPathsChangedFromSubmittedBefore": 10,
+      "mechanicalPathsUnchanged": 5
+    },
+    "causalPath": "After the one-shot storage failure is rolled back, the storage retry succeeds. Common publication/validation/readback settles, then ordinary joint story/turn completion succeeds and clears the refresh/checkpoint/correctionReady at GameEngine.MortalJointStoryTurn.cs108–110. The observed completion log and actual turn43 agree. Null refresh is expected completion bookkeeping in this run, not evidence that a retained RetryableHeld result was lost.",
+    "unreachedAssertions": [
+      "non-null refresh",
+      "RetryableHeld disposition",
+      "retained Published pending/record/exact I assertions",
+      "no common marker",
+      "turn42",
+      "mechanical-before retention foreach",
+      "actual Stage direct restore",
+      "common-compensation diagnostic emission"
+    ],
+    "physicalScope": "Original fault journal before-pending contains the exact Published I record and its intended common marker embeds the exact child3 result linkage. The journal has16 intended members; only member0 was applied at the injected cut by source order. The final raw digest map shows ten mechanical paths changed and exact I retained; no no-effects or compensation claim is made.",
+    "limits": "Raw evidence contains the initial fault journal and later committed marker observations. It does not contain an explicit RolledBack callback/count; rollback/retry linkage is established by the actual storage control flow. The failed test did not execute the ordinary full completion assertions or compensation assertions; no new runtime qualification is inferred."
+  },
+  "terminalFault": {
+    "failedAssertion": "Settlement.cs115 expected PublicationUncertain but returned TerminalReleased, after Assert.Equal(1, _settlementFaults).",
+    "observations": {
+      "faultJournal": "3549e227d26c4c65b3f111e47a16ad52",
+      "faultMembers": 6,
+      "appliedMemberIndex": 0,
+      "preTerminalRuntimeTurn": 42,
+      "preTerminalDirectAndOuterRestorePaths": 222,
+      "observedTerminalReturn": "TerminalReleased"
+    },
+    "causalPath": "The same retryable one-shot IOException occurs after the first member of the actual terminal removal batch. The existing storage recovery/retry can complete its six changed members. TerminateMortalJointRepairAsync then requires committed outcome, complete original/cohort readback and the exact prepared claim release; CompleteMortalJointRepairRelease returns TerminalReleased only through that successful path. Its compensation catch is not entered for a final committed outcome.",
+    "reachedAssertions": [
+      "ErrorPrepared exact issue/before-I/mtime/no-common/turn42/mechanical assertions",
+      "actual Stage direct and outer restore retention",
+      "actual terminal owner invoked with actual backup/checkpoint",
+      "non-null settlement and nonempty real member cohort",
+      "after capture executed",
+      "one injected terminal member fault"
+    ],
+    "unreachedAssertions": [
+      "expected PublicationUncertain equality",
+      "post-terminal before/after key equality",
+      "post-terminal full byte equality",
+      "post-terminal pending still present",
+      "whole-terminal diagnostic emission"
+    ],
+    "physicalScope": "The fault journal six before-images equal the prior222-file canonical snapshot from the reached direct/outer restore oracle, and pending contains the exact ErrorPrepared record. The captured generic owner-outcome snapshot is before the explicit terminal call. The post-terminal after capture occurs before the failed equality but is not emitted; the whole-terminal diagnostic row is absent. Consequently final full byte retention/removal and compensation cannot be independently reconstructed from raw output.",
+    "limits": "The generic owner-outcome image snapshot precedes the explicit terminal invocation. The failed assertion prevents emission of its captured post-terminal Before/After and trace. No independent post-terminal raw full-inventory or rollback/compensation success is claimed."
+  },
+  "terminalNoFaultCompanion": {
+    "nativeOutcome": "PASS",
+    "independentlyQualified": false,
+    "diagnosticEvidence": "Original successful row reaches ErrorPrepared/direct+outer retention, then TerminalReleased with0 injected faults, six changed members,222 before paths/219 after paths and exact unaffected-member preservation. This is retained comparison evidence only; the coherent settlement category remains unqualified."
+  },
+  "minimumCorrectionPlan": {
+    "change": "Only replace the fixture field type IOException with InvalidDataException, retaining the identical message, one-shot actual MemberPublished cut, journal selection, counters, callback ordering and all assertions.",
+    "why": "InvalidDataException is explicitly nonretryable at the actual storage boundary and already handled by both owning exception filters. It allows the original real member failure/verified low-level rollback to reach the intended owning compensation/retention code.",
+    "excludedChanges": [
+      "No production source, global retry classification, journal, lease or ownership semantics change.",
+      "No persistent/repeated fault, longer budget, synthetic outcome, direct compensation invocation, fixture-made token, fallback or weakened assertion.",
+      "No reinterpretation or overwrite of either original failure or the companion PASS."
+    ],
+    "selection": {
+      "corrective": {
+        "category": "fr063-joint-interface-settlement",
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 3,
+        "reason": "Two owning failure paths share the corrected exception field; the no-fault row is the coherent whole-terminal success companion. Exact existing methods/InlineData identities remain unchanged."
+      },
+      "remaining": {
+        "descriptors": 3,
+        "methods": 3,
+        "cases": 10,
+        "casesByMode": {
+          "integrity4": 4,
+          "uncertain1": 1,
+          "newCrash5": 5
+        }
+      },
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "retained44": "No new dependency warrants replay. The fault field is thrown only in CommonFault/TerminalFault; the existing guard returns without it for accepted cases. The no-fault terminal companion is not in retained44."
+    },
+    "gates": [
+      "Save the concrete fixture/controller/packet candidate and exact98 bindings; productDelta remains21. Preserve the old packet and every original raw file.",
+      "Independent SOURCE must inspect the actual minimal diff, unchanged assertions/catalog/selection, exact method/row bijection and corrected controller group exclusions. This diagnosis is not that candidate SOURCE acceptance.",
+      "After SOURCE acceptance, separately named fresh BOTH/catalog and whole16/33/57, corrective1/2/3 and remaining3/3/10 PlanOnly ZERO records; no actual tests in PREP.",
+      "Preserve/save/recover originals, complete output inventories and mandatory v2 boundary observations; obtain independent PREP.",
+      "Only then a separately named corrective settlement3 actual with fresh clean v2 preflight and after-census. No automatic retry or next mode; freeze any unexpected outcome."
+    ],
+    "status": "Parent reports implementing the one-line fixture edit after the preliminary recommendation; no build/discovery/actual has run. New SOURCE is still required."
+  },
+  "cleanup": {
+    "nativeOwnedTreeAndRuntimeCleanup": true,
+    "distinctGuidRootsRemoved": 3,
+    "v2BeforeEntries": 64,
+    "v2AfterEntries": 65,
+    "noActiveUnknownOwnedRootsAtThoseBoundaries": true,
+    "beforeSnapshotToLaunchSeconds": 2.676426,
+    "finishToAfterSnapshotSeconds": 2.914252,
+    "scope": "Finite dated snapshots. Original exe-link-dependent process arrays remain incomplete. No continuous absence claim or observer/process action by reviewer."
+  },
+  "stateAndLimits": {
+    "qualifiedTargets": "44/57 from separately accepted evidence after parent races2 acceptance metadata save67e143b24645e0a5b25829b17cb27e80edf3f000; this review adds zero settlement targets. Frozen4406 itself still records42 pending that separate acceptance.",
+    "allFurtherActuals": "FROZEN until new SOURCE/PREP and separately named release.",
+    "oldFailures": "All original RED files immutable; old corrected crash5 remains UNKNOWN/unavailable.",
+    "newCrash5": "Separate unrun isolation qualification; no outcome inferred.",
+    "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited.",
+    "reviewActions": "Only read-only evidence/source/Git/inventory checks and writes under /tmp/1536-cloud-tools/review. No test/build/discovery/observer/process control or repository edits."
+  }
+}

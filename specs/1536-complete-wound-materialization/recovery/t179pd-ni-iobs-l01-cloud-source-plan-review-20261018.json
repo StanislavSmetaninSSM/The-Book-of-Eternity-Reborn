@@ -1,0 +1,96 @@
+{
+  "kind": "INDEPENDENT_L01_NEW_CLOUD_SOURCE_DEPENDENCY_SELECTION_AND_CRASH_PLAN_REVIEW",
+  "reviewedUtc": "2026-10-18T09:43:25.809175+00:00",
+  "candidate": "bb156d0d84d4f2911f356ad79205a3f2697c1cf9",
+  "metadataDescendantObserved": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "verdict": "ACCEPT_UNCHANGED_SOURCE_RETENTION37_EXACT_SELECTION_AND_SEPARATE_NEW_CRASH5_PLAN",
+  "findings": [],
+  "source": {
+    "pins": 98,
+    "digest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "binding": "All98 file bytes/length/SHA256/Git blob/mode independently match working tree, initial cloud candidate bb156, accepted process-source c4c0c62f and observed metadata descendant. Entire non-spec tree unchanged since c4; production20-path delta unchanged. Existing accepted production is retained, not redesigned or requalified by this review."
+  },
+  "retention": {
+    "qualifiedCases": 37,
+    "methods": 21,
+    "compiled45ccCases": 26,
+    "compiled4c6dCases": 11,
+    "evidence": "Independently checked100 stored-gzip/raw hash chains across9 actual archives, actualSource/compiledSource bindings, summaries and TRX identities. Exactly44 historical rows:37 distinct passed method/case names and7 fixture failures. Passed method counts equal whole minus pending.",
+    "limits": "Original actual/compiled provenance preserved. No fresh-build binary equality, fresh37 execution or changed old verdict. Original intake2FAIL and crash5FAIL remain immutable. Original corrected crash session66529 remains UNKNOWN/unavailable; no restoration claimed."
+  },
+  "selection": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "pending": {
+      "descriptors": 7,
+      "methods": 12,
+      "cases": 20
+    },
+    "modes": {
+      "legacy3": 3,
+      "close2": 2,
+      "races2": 2,
+      "settlement3": 3,
+      "integrity4": 4,
+      "uncertain1": 1,
+      "crash5": 5
+    },
+    "basis": "Current catalog exact selectors, fixed ledger and source attributes; unchanged controllers. Fresh discovery still required. The six ordinary pending modes total15; crash5 is a separate new qualification."
+  },
+  "crashPlan": {
+    "verdict": "ACCEPT_SEPARATE_NEW_RUN_ISOLATION_AND_EXISTING_ORACLES_AT_SOURCE_ONLY",
+    "identity": "New cloud environment ID and GUID TMPDIR. Every parent test creates fresh GUID own/tmp container and nonce; original and resume are genuine new Process.Start handles using pinned TestSupport/integration runtimeconfig/deps. Parent-observed and child-self PID/kernel field22 birth ticks agree exactly; UTC remains diagnostic. Original must exit73; resumed PID differs.",
+    "roots": "Original child constructs its own GameEngineTurnLifecycleTests GUID fixture under child-only TMPDIR; parent checks returned root containment. Resume consumes only that just-created cut root; separate contrast/factory scratch is also child-local. BaseSessionRoot is tracked FileSystemExample/game_session copied into the independent root; BOE_REPO_ROOT is unset in reviewed environment and template contains no symlinks. All real lifecycle services receive the fixture FileSystemManager. InertRealmSettings disables auto bridge/music/sound, autosave disabled, clipboard/console are test implementations, default worker profiles disabled. No old root/save/checkpoint is imported and no real user game operation is selected.",
+    "oracle": "Full cut byte length/SHA256/base64 emitted before parse/identity checks. Cut0 Prepared-commit, cut1 physical I-member before commit, cut2 Published-commit before acknowledgment, cut3 genuine FIRST2 without result, cut4 ErrorPrepared. Genuine pre-common no-effects images and journal commit flag checked. Fresh current engine has no cached Ready/authority; lease-driven recovery proves original43/current42 and exact cut/result fingerprints/bytes; only cuts0-2 complete. Full current DATA proof/settled actual owner frozen before terminal cleanup, exact one-pass tags, energy2→0, health5→2, two target-turn resource rows, create/treat suffix with original prefix, binding and cleanup/inert-repeat checks remain. Missing-result/error hold all captured bytes; Published en-GB→en-US contrast proves stored timestamp policy despite independent ordinary rejection. No tolerance or assertion weakening.",
+    "cleanup": "Original/resume stdout+stderr fully drained and joined before owned child is marked settled. Only owned Process handles are eligible for cleanup; unresolved exit/join/EOF retains container. Strict owned fixture cleanup throws on failure; no broad-prefix deletion or old process intervention.",
+    "sourceReferences": [
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:38",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:91",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:105",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:156",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:190",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:382",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:440",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:83",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:10920",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs:245",
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:24",
+      "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:18",
+      "BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs:359"
+    ]
+  },
+  "controllers": {
+    "verdict": "RETAIN_UNCHANGED_FIXED_CONTROLLERS",
+    "guards": "Clean exact saved source/98pins/ledger/product delta; fresh nine DLLs plus entire dynamically inventoried output file set; metadata-only descendant; explicit finite mode, exact selection and exclusive FIRST sentinel; NoBuild actual, original record before outcome assertions. No automatic advance/retry or retained37 selectable mode. Each actual still needs separate named Root release."
+  },
+  "freshPreparation": {
+    "verdict": "NOT_ACCEPTED",
+    "reason": "Original cloud catalog failed native1 before compilation/discovery with0 tests. Independent environment diagnosis separately permits one newly named corrected catalog ZERO after saved private0700 XDG_RUNTIME_DIR setup. Successful catalog and whole57/pending20 PlanOnly raw/recovery/output/cleanup evidence remain required before PREP acceptance."
+  },
+  "recoveryLimit": "100 saved direct raw chains verified. Historical117-edge/84-receipt/33-missing-basename composition is disclosed by parent and not reconstructed by this review. Full independent GitHub clone still requires successful completion/readback; review does not substitute for that persistence gate.",
+  "actualEligibility": "HELD until successful new-cloud ZERO3, independent recovered PREP, saved source/plan acceptance and separately named mode release. Plan acceptance supplies no new semantic PASS, old-crash result or authorization to recover/kill old processes.",
+  "holds": [
+    "FullNI",
+    "HOT",
+    "F1",
+    "M3",
+    "T197",
+    "A3_NO_PROCEED",
+    "Windows_raw403_BLOCKED_NO_RETRY",
+    "CI_NO_RUN",
+    "No_main_merge_force_push_delete_issues_or_secrets"
+  ],
+  "support": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-source-check-20261018.json",
+    "sha256": "473548b98f1f4737847a7d31d0b99409d32e0e488fc4dabacfcfe69611276749"
+  },
+  "environmentDiagnosis": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-cloud-environment-diagnosis-20261018.json",
+    "sha256": "a5f27297cad5774a040660748615c7cadc0521429afe9fa28be4f552d6cf553f"
+  },
+  "reviewerActions": "No repository edits, build, test, discovery, pushes, old-environment access or process intervention. Only source/evidence reads, hash/XML/static-selector checks and review files under authorized /tmp directory."
+}

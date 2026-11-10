@@ -1,0 +1,72 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_SOURCE_BOUNDED_FEEDBACK",
+  "reviewedUtc": "2026-10-18T14:04:43.512054+00:00",
+  "candidate": "ef981a4606fb9f7813ed5390114da823f3704dac",
+  "verdict": "HOLD_FOR_NEW_TELEMETRY_ABSENT_VS_UNREADABLE_CORRECTION",
+  "findings": [
+    {
+      "id": "L01-BORROWED-LEASE-SOURCE-OBSERVATION-001",
+      "severity": "bounded-source-acceptance-blocker",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "lines": "83-87 in ef981a46",
+      "fact": "ObserveImage delegates to ReadPhysical, whose File.Exists gate can return false on an inaccessible/existence-check error before the explicit exception catch; null bytes with null ReadError therefore do not strictly distinguish absent from unreadable.",
+      "impact": "New diagnostic precision only; no change to original positive assertions or product lease ownership. Native remains held until the scoped telemetry correction is reviewed.",
+      "requiredCorrection": "Read File.ReadAllBytes(fixture._fs.ResolvePath(path)) directly in ObserveImage; classify FileNotFoundException/DirectoryNotFoundException as absent and IOException/UnauthorizedAccessException as ReadError. No lease, recovery, parsing, existing helper/assertion change, or swallowed real caller exception."
+    }
+  ],
+  "completedChecks": {
+    "sourceExactInverses": 7,
+    "sourcePins": 98,
+    "changedPinnedFiles": 9,
+    "productDelta": 22,
+    "restoredChangedPaths": 11,
+    "whole": [
+      16,
+      33,
+      57
+    ],
+    "corrective": [
+      2,
+      2,
+      5
+    ],
+    "remaining": [
+      1,
+      1,
+      5
+    ],
+    "retained": [
+      30,
+      47
+    ],
+    "otherCodeOrBindingFinding": false
+  },
+  "additionalCompatibilityRuntimeRequired": false,
+  "metadataSaveConditions": [
+    {
+      "id": "CURRENT_LEDGER_POINTER",
+      "observed": "Fixed authored method inventory only. Current runtime SOURCE/fresh PREP gates are packet.currentVerificationContract and cloud.settlementFixtureCorrection; historical ReadyDrift and ledger statuses are not a current native release.",
+      "required": "Point to cloud.borrowedLeaseCorrection and packet.currentVerificationContract; preserve authored ledger bytes."
+    },
+    {
+      "id": "CURRENT_CAUSAL_FIELDS",
+      "observedDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+      "observedReviewPaths": [
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py"
+      ],
+      "required": "Current causalReview/Decision must identify saved joint blocker plus accepted borrowed-lease plan and this SOURCE; preserve prior settlement causal references explicitly as historical, and retain uncertain1 direct-versus-inferred cause limits."
+    }
+  ],
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_source.py",
+    "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112"
+  },
+  "checkResult": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+    "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a"
+  },
+  "nativeStatus": "No build, discovery, observer or actual performed; all original outcomes remain unchanged."
+}

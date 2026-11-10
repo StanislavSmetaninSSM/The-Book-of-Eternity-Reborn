@@ -51,13 +51,16 @@ public partial class ValidationService
         /// <param name="BindingOriginal">
         /// Privately rederived pre-selection legality comparison, or <see langword="null"/> when no last-binding refinement applies.
         /// </param>
+        /// <param name="StrainOriginal">Privately reproved ordinary last-pressure comparison and the actual selected wound roots.</param>
         private sealed record C2SelectedDecision(JsonObject PacketRoot, JsonObject Staged,
             AcceptedMechanicsPlanner.SpiritualExchangeInterval Interval, byte[]? CommandBytes,
-            OriginalBindingComparison? BindingOriginal);
+            OriginalBindingComparison? BindingOriginal, OriginalStrainComparison? StrainOriginal = null);
 
         private C2SelectedDecision? _c2SelectedDecision;
         private bool _c2SelectionVerified;
         private bool _c2PendingSubmission;
+
+        private enum C2DecisionLayerMode { LiveSelection, SavedCommittedAdvance }
 
         /// <summary>
         /// Validates one physical GM command at the verified next-source frontier and drafts its successor.
@@ -103,7 +106,7 @@ public partial class ValidationService
                 if (_c2DecisionDrafted || _c2SelectionVerified || _matchedC2Pair is null)
                     return DecisionDraftFailure("spiritual_c2_decision_pair_required");
                 var next = await ReadC2NextSourceCoreAsync(lease);
-                if (next.Source is null || next.Interval is null || next.Issues.Count != 0)
+                if (!next.Healing && next.Source is null || next.Interval is null || next.Issues.Count != 0)
                     return new(null, null, next.Issues);
                 var pair = _matchedC2Pair;
                 var baseline = SpiritualWoundCaptureCheckpointState.Parse(
@@ -159,11 +162,16 @@ public partial class ValidationService
                 _c2DecisionDrafted = !selectionOnly;
                 return stagedResult;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException or
-                DecoderFallbackException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
+                DecoderFallbackException))
             {
-                return DecisionDraftFailure("spiritual_c2_decision_draft_failed");
+                // Technical details stay in the existing diagnostic report field;
+                // Message/player narrative is unchanged. Legacy injury diagnostics keep
+                // their current shape; actual combat ownership selects this detail.
+                return DecisionDraftFailure("spiritual_c2_decision_draft_failed",
+                    _combatHealingOrigin is null ? null : "combat saved-decision preparation: " + error.Message);
             }
             finally
             {
@@ -217,14 +225,16 @@ public partial class ValidationService
                     return new(null, null, inputIssues);
                 attempted = true;
                 var result = await ComposeC2DecisionLayerCoreAsync(lease,
-                    priorPending, priorCheckpoint, proposed, changes, append: false);
+                    priorPending, priorCheckpoint, proposed, changes, append: false,
+                    mode: C2DecisionLayerMode.SavedCommittedAdvance);
                 succeeded = result.Checkpoint is not null && result.Pending is not null &&
                     result.Issues.Count == 0;
                 return result;
             }
-            catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-                InvalidOperationException or FormatException or JsonException or OverflowException or
-                DecoderFallbackException)
+            catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+                InvalidOperationException or InvalidDataException or FormatException or JsonException or OverflowException or
+                DecoderFallbackException))
             {
                 return DecisionDraftFailure("spiritual_c2_saved_layer_replay_failed");
             }
@@ -281,12 +291,12 @@ public partial class ValidationService
             row["contentFingerprint"] = image.Fingerprint;
         }
 
-        private static SpiritualC2DecisionDraftResult DecisionDraftFailure(string code) =>
+        private static SpiritualC2DecisionDraftResult DecisionDraftFailure(string code, string? actual = null) =>
             new(null, null,
             [
                 new ValidationIssue(SpiritualWoundCaptureCheckpointState.StatePath,
                     IssueSeverity.Error, "The saved spiritual decision cannot be derived from its owners.",
-                    code: code, section: "AcceptedTurnWoundMaterialization")
+                    code: code, section: "AcceptedTurnWoundMaterialization", actual: actual)
             ]);
         /// <summary>
         /// Reexecutes one registered decision layer through source, wound, resource and effect owners.
@@ -313,6 +323,9 @@ public partial class ValidationService
         /// <param name="selectionOnly">
         /// Retains the real selected decision before any later exchange when <see langword="true"/>.
         /// </param>
+        /// <param name="mode">
+        /// Distinguishes original selection from strict replay of an already committed dependent advance.
+        /// </param>
         /// <returns>
         /// Owner-derived successor packet and checkpoint or validation issues.
         /// </returns>
@@ -322,12 +335,36 @@ public partial class ValidationService
             SpiritualWoundCaptureCheckpointState priorCheckpoint,
             IReadOnlyDictionary<string, CanonicalBeforeImage> proposed,
             IReadOnlyList<(string Path, CanonicalBeforeImage Image)> changes,
-            bool append, bool selectionOnly = false)
+            bool append, bool selectionOnly = false, C2DecisionLayerMode mode = C2DecisionLayerMode.LiveSelection)
         {
             if (changes.Any(change => change.Path != AcceptedMechanicsPlan.WoundCommandPath &&
                                       change.Path != FixedOriginalOutputPaths[0] &&
                                       change.Path != AfterlifeSpiritualConflictState.StatePath))
                 return DecisionDraftFailure("spiritual_c2_input_change_outside_decision_layer");
+            var priorPacket = SpiritualWoundStateJson.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(priorPending))["pending"]!.AsObject();
+            if (SpiritualWoundDecisionPendingState.HasPendingHealing(priorPacket))
+            {
+                if (changes.Count != 0 && (mode != C2DecisionLayerMode.SavedCommittedAdvance || selectionOnly ||
+                    changes.Any(change => change.Path == AcceptedMechanicsPlan.WoundCommandPath)))
+                    return DecisionDraftFailure("spiritual_c2_healing_automatic_input_changed");
+                if (append) _allocations.Journal.EnableAppendAfterReplay();
+                // Reconstruct the original automatic choice before considering a later raw correction.
+                var selected = ApplyC2CombatHealingDecision(priorPending);
+                _c2SelectedDecision = selected;
+                if (selectionOnly) return new(null, null, []);
+                var correction = changes.FirstOrDefault(change => change.Path == AfterlifeSpiritualConflictState.StatePath);
+                if (correction.Path is not null)
+                {
+                    var committed = ReadC2CommittedInputLayer(priorCheckpoint);
+                    var derived = await ReadC2SelectedDependentPolicyCoreAsync(lease,
+                        committed[AfterlifeSpiritualConflictState.StatePath]);
+                    if (derived.Policy is null || correction.Image.Bytes is null ||
+                        !derived.Policy.Allows(SpiritualWoundDependentDraftPolicy.ReadStrictRoot(
+                            SpiritualWoundStateJson.DecodeUtf8JsonText(correction.Image.Bytes))))
+                        return DecisionDraftFailure("spiritual_c2_dependent_correction_invalid");
+                }
+                return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending, priorCheckpoint, changes, selected);
+            }
             var next = ResolveC2NextSourceFromPending(priorPending);
             if (next.Source is null || next.Interval is null || next.Issues.Count != 0)
                 return new(null, null, next.Issues);
@@ -342,6 +379,7 @@ public partial class ValidationService
             string opportunityRef;
             byte[]? selectedCommandBytes = null;
             OriginalBindingComparison? bindingOriginal = null;
+            OriginalStrainComparison? strainOriginal = null;
             WoundMaterializationEnvelope? wound = null;
             byte[]? woundDraft = null;
             string? projectedNarrative = null;
@@ -403,7 +441,19 @@ public partial class ValidationService
                         return DecisionDraftFailure("spiritual_c2_dependent_narrative_invalid");
                 }
                 if (decisionKind == "materialize")
+                {
                     bindingOriginal = await ReadOriginalBindingComparisonAsync(lease, priorCheckpoint);
+                    // This is only a cheap request filter; actual materialization and owned projection prove applicability.
+                    if (decisionRoot["proposal"] is JsonObject proposal &&
+                        proposal["consequenceDefinitions"] is JsonArray definitions &&
+                        definitions.OfType<JsonObject>().Any(definition =>
+                            definition["definition"] is JsonObject declared &&
+                            declared["components"] is JsonArray components &&
+                            components.OfType<JsonObject>().Any(component =>
+                                component["profile"] is JsonValue profile && profile.TryGetValue<string>(out var name) &&
+                                name == "spiritual_strain_burden")))
+                        strainOriginal = await ReadOriginalStrainComparisonAsync(lease, priorCheckpoint);
+                }
                 // All old allocations were replayed before a new decision can append.
                 if (append)
                     _allocations.Journal.EnableAppendAfterReplay();
@@ -412,6 +462,11 @@ public partial class ValidationService
                 if (applied.Issues.Count != 0)
                     return new(null, null, applied.Issues);
                 wound = applied.Wound;
+                if (strainOriginal is not null)
+                    strainOriginal = wound is { Severity.Rank: >= 3, Owner.OwnerKind: "player_soul" }
+                        ? strainOriginal with { WoundId = wound.WoundId, Realm = wound.Owner.Realm,
+                            ActorId = wound.Owner.OwnerId, RootEffects = wound.Consequences.OwnedEffectSources.RootBindings.ToArray() }
+                        : null;
                 if (decisionKind == "none" && wound is not null ||
                     decisionKind == "materialize" && wound is null)
                     return DecisionDraftFailure("spiritual_c2_decision_result_mismatch");
@@ -427,6 +482,9 @@ public partial class ValidationService
             var sourceOrdinal = packet["cursor"]!["nextSourceOrdinal"]!.GetValue<int>();
             var waveOrdinal = packet["cursor"]!["waveOrdinal"]!.GetValue<int>();
             var sourceRow = packet["sources"]![sourceOrdinal]!.AsObject();
+            if (strainOriginal is not null && wound is not null)
+                strainOriginal = BindStrainParentComparison(strainOriginal, wound,
+                    sourceRow["sourceId"]!.GetValue<string>());
             var staged = new JsonObject
             {
                 ["opportunityRef"] = opportunityRef,
@@ -459,7 +517,7 @@ public partial class ValidationService
                 nextOrdinal++;
             packet["cursor"]!["nextSourceOrdinal"] = nextOrdinal;
 
-            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes, bindingOriginal);
+            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes, bindingOriginal, strainOriginal);
             if (selectionOnly)
                 return new(null, null, []);
             return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending,
@@ -519,7 +577,7 @@ public partial class ValidationService
             if (conflictChange.Path is not null &&
                 (nextOrdinal != sourceRows.Count || !conflictChange.Image.Existed))
                 return DecisionDraftFailure("spiritual_c2_conflict_continuation_before_source_resolution");
-            if (nextOrdinal == sourceRows.Count)
+            if (SpiritualWoundDecisionPendingState.AllSourcesHandled(packet))
             {
                 if (!_source.TryReadInitialActiveExchangeInventory(out _,
                         out var originalExchangeIds) ||
@@ -605,7 +663,7 @@ public partial class ValidationService
                 return pendingParsed.Issues.Count != 0
                     ? new(null, null, pendingParsed.Issues)
                     : DecisionDraftFailure("spiritual_c2_decision_packet_invalid");
-            if (packet["cursor"]!["nextSourceOrdinal"]!.GetValue<int>() == sourceRows.Count)
+            if (SpiritualWoundDecisionPendingState.AllSourcesHandled(packet))
             {
                 var completed = await CompleteOrdinaryReductionUnderGateAsync(lease);
                 if (!completed.Success || completed.Reduction is null)
@@ -666,7 +724,8 @@ public partial class ValidationService
             IReadOnlyList<ValidationIssue> issues) =>
             issues.Count != 0 && issues.All(issue =>
                 issue.FilePath.StartsWith("activeConflict.exchangeLog[", StringComparison.Ordinal) &&
-                (PositionDependencyIndex(issue) is not null || BindingDependencyIndex(issue) is not null || issue.Code switch
+                (PositionDependencyIndex(issue) is not null || BindingDependencyIndex(issue) is not null ||
+                 StrainDependencyIndex(issue) is not null || issue.Code switch
                 {
                     "afterlife_conflict_wound_force_cost_audit_missing" or
                     "afterlife_conflict_wound_force_cost_audit_obsolete" =>
@@ -789,7 +848,7 @@ public partial class ValidationService
                 packet["bounds"]!["exchangeCount"]!.GetValue<int>(), originalDice,
                 inventory.RegisteredPaths, inventory.BeforeImages, inventory.BeforeImages,
                 responseBytes)["pending"]!.AsObject();
-            foreach (var field in new[] { "sources", "diceClaims" })
+            foreach (var field in new[] { "sources", "diceClaims" }.Concat(SpiritualWoundDecisionPendingState.HasHealing(packet) ? new[] { "healingSources" } : []))
             {
                 var oldRows = packet[field]!.AsArray();
                 var rebuiltRows = rebuilt[field]!.AsArray();

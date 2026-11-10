@@ -1,0 +1,21 @@
+{
+  "kind": "ROOT_NAMED_FIRST_MINIMAL_PRODUCT_PROTECTED_LATE2_ACTIVATION",
+  "actualSource": "e1d9885ab0bf8f4a8ed2fad962e2a47bf106fa63",
+  "compiledSource": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "controller": "/tmp/t179pd3d-product-first-run.py",
+  "controllerSha256": "0da9cbbb4845ce3efc6971a2e52a4aeb1c44eeb7b54a1f14c8fb9cac44e39846",
+  "mode": "protected-late2",
+  "label": "t179pd3d-product-late2-first-e1d9885a-20261017",
+  "prepRecord": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-prep-first-build-plan-0f00ee25-20261017/record.json",
+  "sourcePinsExact": 67,
+  "freshLiveManagedPins": 9,
+  "savedDecisionExact": {
+    "t179pd3d-minimal-product-source-independent-review-20261017.md": "e381e52b4e07fe030ef941af36991c204d24db82d6012c5f9d986ffe41b3a587",
+    "t179pd3d-minimal-product-source-independent-review-20261017.json": "176fec432f9c48cb287b2d9f6ceec6f20c2af987925aaed5cd4126d353d5fb6a",
+    "t179pd3d-root-product-source-accepted-late2-conditional-a06ac89a-20261017.json": "8672a985eea4da83276c7bd0626c081e7ded899a7ad647d5425f582026e97ec2"
+  },
+  "recovery": "15newGitHubfiles/all11metadata paths, full7a+43completeconsecutivedeltas verified",
+  "release": "ONCE ONLY exact fr063-joint-late-completion -NoBuild twoexisting genuinelyaffected staged/Latecases. Freezefirstactual/native/fullraw+strictroots andpublish/exactremote/recovery; separate independent EVIDENCE before otheractual.",
+  "held": "ordinary52, any additionalactual/rebuild/codechange, oldWorld/HOT/fullF1/platform/Windows/ZIP/CI/newQTE/main/merge/force/delete/issues/credentials/security. No automatic advance on native0.",
+  "utc": "2026-10-17T17:01:00.089808+00:00"
+}

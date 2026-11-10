@@ -1,0 +1,101 @@
+{
+  "kind": "EXACT_PD3D_PRODUCT_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE",
+  "createdUtc": "2026-10-17T16:53:14.709116+00:00",
+  "actualSources": [
+    "0f00ee256797a4e21b6f314a2a0053ec6084f972"
+  ],
+  "compiledSources": [
+    "0f00ee256797a4e21b6f314a2a0053ec6084f972"
+  ],
+  "nativeExits": [
+    0
+  ],
+  "actualTestExecutions": [
+    0
+  ],
+  "rawChainCount": 10,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd3d-implementation-tools/0f00ee256797a4e21b6f314a2a0053ec6084f972-pd3d-product-build-plan.FIRST.json",
+      "storedPath": "000-0f00ee256797a4e21b6f314a2a0053ec6084f972-pd3d-product-build-plan.FIRST.json.gz",
+      "bytes": 265,
+      "sha256": "f46e2e52bb48dd43ad1bf37e8677ed907a7c04853b88f67e3834ee057f6d6141",
+      "storedBytes": 223,
+      "storedSha256": "acc05c0e058f4d2ade3b48a8f951f8795d1aa53421679784242430948b2b13d9"
+    },
+    {
+      "rawPath": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-prep-first-build-plan-0f00ee25-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 732,
+      "sha256": "cc99c1780d857d54e307b822e14625b5f4a9b0b62291349d2183eb1e310f0a35",
+      "storedBytes": 373,
+      "storedSha256": "4ad14f8c295468fbe85f776fecc0d9d02810b19a7f10a7a06a17b7ff9d26b750"
+    },
+    {
+      "rawPath": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-prep-first-build-plan-0f00ee25-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 77587,
+      "sha256": "e1450640b5f10479e5aac527321d67bfcd30fdf6450929e7e804938979c735c2",
+      "storedBytes": 23211,
+      "storedSha256": "31bc6377b63f8a2e15f43e2dba2a142e7ae024ce83af1e9be057b879aa6585b6"
+    },
+    {
+      "rawPath": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-prep-first-build-plan-0f00ee25-20261017/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 65294,
+      "sha256": "53f1ef4840fa238af89f20f045a09f95725f8e79572c2d2176065d53cb8a5391",
+      "storedBytes": 16599,
+      "storedSha256": "e742897b388b0b3cc3198bde6289af66d5d5159740931a4f7e338ddd2cd6fdac"
+    },
+    {
+      "rawPath": "/tmp/t179pd3d-implementation-tools/t179pd3d-product-prep-first-build-plan-0f00ee25-20261017/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 13081,
+      "sha256": "2b055f2da370cfc42c03ecebee8305215c9de25a8876d489817a1a951ac3039a",
+      "storedBytes": 1902,
+      "storedSha256": "4631ec5290db4a7fb33287605bd04a44fb13513b61ed7963f37443dc5fb7507d"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-165129-402-154400-7fd30e38b2bf4a0bb8c61bf517594361-categories/Build-integration.log",
+      "storedPath": "005-Build-integration.log.gz",
+      "bytes": 120171,
+      "sha256": "5f4e6cd8132167c8aa37da6f74344a17fb77c56ca7d6a3626efa9ee3c88bf729",
+      "storedBytes": 9252,
+      "storedSha256": "8de5dffb3cd9e3a75630701cc2b1fe6cd362ff95ec0df8bc27efb601899d10ce"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-165129-402-154400-7fd30e38b2bf4a0bb8c61bf517594361-categories/Build-unit.log",
+      "storedPath": "006-Build-unit.log.gz",
+      "bytes": 26198,
+      "sha256": "1a1388a11f081c2aa8809cf67351c2ee3b2e411cc4fc41ad26f69113e72465e9",
+      "storedBytes": 1716,
+      "storedSha256": "ad8bb9471061e203c3b0d4962f8a044be8a5152d551ef918b24bc266de0d2974"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-165129-402-154400-7fd30e38b2bf4a0bb8c61bf517594361-categories/dotnet-test.log",
+      "storedPath": "007-dotnet-test.log.gz",
+      "bytes": 3557134,
+      "sha256": "76401de927573fe64569b7bd1fa775a8c71819216f794ced398fe5db3f92db2d",
+      "storedBytes": 388922,
+      "storedSha256": "0c73f49fdac8702262fdd01ec97865d1b5bd8605919534a98cec1db674e2d2e9"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-165129-402-154400-7fd30e38b2bf4a0bb8c61bf517594361-categories/plan.json",
+      "storedPath": "008-plan.json.gz",
+      "bytes": 18270,
+      "sha256": "fd902167faa226dcd019719e93de9f05355362248542eb3ae1eddb3db187e747",
+      "storedBytes": 2752,
+      "storedSha256": "7b9d3761d55ed1acfbe63908a9c87c420d2dc6160319c0ccc4c7c0ac4e7ef197"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-165129-402-154400-7fd30e38b2bf4a0bb8c61bf517594361-categories/summary.json",
+      "storedPath": "009-summary.json.gz",
+      "bytes": 5562,
+      "sha256": "c4e3cec4ffd6f0d7918b74610af5b6803bf251f9f3e31702dc0723f8abfa5352",
+      "storedBytes": 1687,
+      "storedSha256": "d209ea98f7943991585cbb940a248ca6ae3a31ae742976868b4d63bd95158b60"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact FIRST zero-test raw archive. No runtime, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_paths=[Path(x) for x in sys.argv[1:-1]];destination=Path(sys.argv[-1]);assert record_paths and not destination.exists();destination.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\nfiles=[];paths=[];records=[]\nfor p in record_paths:\n j=json.loads(p.read_text());assert j['kind']=='FIRST_PD3D_PRODUCT_ZERO_EXECUTION_PREPARATION_NOT_RUNTIME_ACCEPTANCE';records.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json'])\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_PD3D_PRODUCT_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in records],compiledSources=[x['compiledSource'] for x in records],nativeExits=[x['nativeExit'] for x in records],actualTestExecutions=[x['actualTestsExecuted'] for x in records],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs."
+}

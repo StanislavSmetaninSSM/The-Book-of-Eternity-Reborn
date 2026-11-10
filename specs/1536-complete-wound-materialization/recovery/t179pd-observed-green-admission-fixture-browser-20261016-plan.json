@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "fr063-observed-original-browser"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "54e07796d5fca6bac5940b447ef65379727f2247",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.258913,
+  "Descriptors": [
+    {
+      "Name": "fr063-observed-original-browser-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-observed-original-browser",
+      "Categories": [
+        "fr063-observed-original-browser"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_AllManifestReadersRetainActualSignedCondition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_GenuineBrowserRollbackRefusesDriftAbsenceAndFault",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ObservedOriginal_SecondaryPrivateCallbackRetainsOccurrencesAndStickyDrift",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

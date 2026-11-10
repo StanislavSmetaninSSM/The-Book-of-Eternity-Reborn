@@ -1,0 +1,20 @@
+{
+  "checkpoint": "e34b04985650c614e9770428bb1c8da42363da47",
+  "publicationNative": "3f5a78 session7697/9aa59d exit0",
+  "recoveryNative": "90492f session87744/00a696 exit0",
+  "readbackSHA256": "9ef84152b0588c94eee8445b7b9e15ab7b51b0d959d01f98bcb830e59a82492f",
+  "verification": {
+    "checkpoint": "e34b04985650c614e9770428bb1c8da42363da47",
+    "remoteSha": "e34b04985650c614e9770428bb1c8da42363da47",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 3085,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2556,
+    "consumerProduction": "P5 typed full completion/base-final consumer alignment SOURCE WIP preserved; corrected gates pending; runtime HELD",
+    "verifiedUtc": "2026-10-15T05:19:49.302462+00:00"
+  },
+  "sourceReview": "UNRUN corrected P5 WIP",
+  "runtime": "HELD",
+  "utc": "2026-10-15T05:20:00.528716+00:00"
+}

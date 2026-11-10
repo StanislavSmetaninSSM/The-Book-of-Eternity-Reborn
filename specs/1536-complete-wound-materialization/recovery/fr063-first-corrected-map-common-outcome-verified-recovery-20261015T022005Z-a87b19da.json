@@ -1,0 +1,32 @@
+{
+  "checkpoint": "456fd0e853a981e1c30485669f0c14ebafd0bda0",
+  "publicationNative": {
+    "launch": "50f1f5",
+    "session": 71071,
+    "completion": "a6adc2",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "cfe28b",
+    "session": 52710,
+    "completion": "fff858",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "456fd0e853a981e1c30485669f0c14ebafd0bda0",
+    "remoteSha": "456fd0e853a981e1c30485669f0c14ebafd0bda0",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2794,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2265,
+    "consumerProduction": "FirstcorrectedmapLate2actual2FAIL68.7795346scomplete/notimeout;49artifactfreeze/160source11binary/2cleanuprootsabsent;locationissuesABSENT/newcommoncontextguard;captureCount0vsrequiredsameOutcome1source-supported/EVIDENCEpending;no sourcefixorretryreleased/checkpoint5norepeat/later12UNRUN",
+    "verifiedUtc": "2026-10-15T02:19:48.817651+00:00"
+  },
+  "testedAndCompileSource": "39be635be4cbeb4c080ab05e3b09ed6d40c984e6",
+  "sourceAfterActual": "codeunchanged;2ROOTfactualMD2fronts only",
+  "actual": "Late2exec2/0PASS2FAIL68.7795346s;onecommoncontextissue/no priorlocationissues",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same independentEVIDENCE/commoncaptureconsumeronce-onlycausalreview",
+  "furtherSourceFixRuns": "HELD"
+}

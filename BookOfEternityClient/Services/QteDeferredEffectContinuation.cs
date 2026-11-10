@@ -105,7 +105,9 @@ internal static class QteDeferredEffectContinuation
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         QteSceneService.QteOffer offer,
-        int acceptedSourceTurn)
+        int acceptedSourceTurn,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null,
+        QtePhysicalInjurySource? physicalSource = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -133,14 +135,32 @@ internal static class QteDeferredEffectContinuation
                 actualGeneration: null);
         }
 
+        var declared = QtePhysicalInjurySource.IsDeclared(offer);
+        if (declared != (physicalSource is not null))
+            throw new InvalidDataException("qte_physical_injury_original_source_missing: declared QTE requires genuine original source capture.");
+        if (physicalSource is not null)
+            await physicalSource.ValidateCurrentAsync(fileSystem, writeLease, acceptedSourceTurn);
         var sealedRoots = new Dictionary<string, CanonicalBeforeImage>(
             StringComparer.Ordinal);
-        foreach (var path in SealedRootPaths)
+        var capturePaths = declared
+            ? SealedRootPaths.Concat(QtePhysicalInjurySource.WoundRootPaths).Distinct(StringComparer.Ordinal)
+            : SealedRootPaths;
+        foreach (var path in capturePaths)
         {
             var bytes = await fileSystem.ReadFileBytesAsync(writeLease, path);
             sealedRoots.Add(
                 path,
                 new CanonicalBeforeImage(bytes != null, bytes));
+        }
+        if (declared) _ = QtePhysicalWoundOccurrenceProducer.ValidateCapturedWounds(sealedRoots);
+
+        if (acceptedStoryAppend != null)
+        {
+            var request = ParseObject(sealedRoots["input/turn_request.json"]);
+            var soul = ParseObject(sealedRoots["game_state/meta/soul_state.json"]);
+            await acceptedStoryAppend.ValidateQteBindingAsync(fileSystem, writeLease,
+                ResolveSessionId(sealedRoots, sessionGeneration), sessionGeneration, acceptedSourceTurn, request, soul);
+            sealedRoots.Add(acceptedStoryAppend.StoryPath, new CanonicalBeforeImage(true, acceptedStoryAppend.AfterBytes));
         }
 
         var runtimeBytes = await fileSystem.ReadFileBytesAsync(
@@ -270,6 +290,8 @@ internal static class QteDeferredEffectContinuation
             ["state"] = "armed",
             ["resolvedWaveBindings"] = new JsonArray()
         };
+        if (acceptedStoryAppend != null) root["clientStoryAppend"] = acceptedStoryAppend.Persisted;
+        if (physicalSource != null) root["physicalInjurySource"] = physicalSource.Persisted;
         root["identityLedger"] = await QteDeferredAcceptedMechanicsPlanner
             .PreallocateIdentityLedgerAtAcceptanceAsync(root, offer);
         var authorityFingerprint = HashNode(
@@ -466,7 +488,13 @@ internal static class QteDeferredEffectContinuation
             throw new InvalidDataException(
                 "qte_deferred_continuation_roots_invalid: sealedRootBindings must be an array.");
         }
+        var acceptedStoryAppend = await StoryService.RehydrateQteStoryAppendAsync(fileSystem, writeLease, root);
+        var physicalSource = QtePhysicalInjurySource.ReadValidatedContinuation(root, offer);
+        if (physicalSource is not null)
+            await physicalSource.ValidateCurrentAsync(fileSystem, writeLease, acceptedSourceTurn);
         var expectedPaths = SealedRootPaths.ToHashSet(StringComparer.Ordinal);
+        if (physicalSource is not null) expectedPaths.UnionWith(QtePhysicalInjurySource.WoundRootPaths);
+        if (acceptedStoryAppend != null) expectedPaths.Add(acceptedStoryAppend.StoryPath);
         var actualPaths = new HashSet<string>(StringComparer.Ordinal);
         var sealedRoots = new Dictionary<string, CanonicalBeforeImage>(
             StringComparer.Ordinal);
@@ -584,7 +612,7 @@ internal static class QteDeferredEffectContinuation
             "acceptedMechanicsAuthority", "identityLedger", "state",
             "selectedTerminalBinding", "currentWave",
             "resolvedWaveBindings", "terminalFingerprint",
-            "authorityFingerprint"
+            "authorityFingerprint", "clientStoryAppend", "physicalInjurySource"
         };
         if (root.Select(static pair => pair.Key)
             .Any(key => !allowed.Contains(key)))

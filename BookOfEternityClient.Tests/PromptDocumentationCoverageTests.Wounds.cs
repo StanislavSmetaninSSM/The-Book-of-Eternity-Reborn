@@ -11,6 +11,38 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership()
+    {
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Rules/Block_12.txt",
+                     "TaskGuides/CLI_Step_Main.txt", "Examples/E_CLI_Step_Main.txt", "CLI_API_Specification.md",
+                     "CLI_Agent_Daemon_Specification.md", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = ReadRepoFile(file.Split('/'));
+            foreach (var required in new[] { "Same-scene Mortal joint severity repair:",
+                         "current client-issued construct_wound packet", "do not recreate the consumed draft",
+                         "including timestamp and formatting", "not silently normalized or reaccepted", "correct only the permitted severity leaf",
+                         "do not recreate it on a retry", "no replacement command, claim, receipt, seal or lifecycle acknowledgement",
+                         "active training, level-up or new-QTE task cannot be cleared or skipped",
+                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly",
+                         "freezes interface_updates.json once before mechanical publication",
+                         "same operation remains held", "do not rewrite the response, delete private pending files",
+                         "no interface-result record or protocol version", "retained older wave" })
+                Assert.Contains(required, text, StringComparison.Ordinal);
+        }
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        Assert.Equal(2, Regex.Matches(daemon, "Same-scene Mortal joint severity repair:").Count);
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        foreach (var required in new[] { "wound_mortal_joint_severity_repair_source_v1",
+                     "wound_mortal_joint_severity_repair_rejected_v1", "wound_mortal_joint_severity_repair_packet_view_v1",
+                     "wound_mortal_joint_severity_repair_corrected_v1", "not a literal runnable",
+                     "sessionId, requestId, snapshotToken", "candidateRef and semanticFingerprint",
+                     "The real sealed", "no public mixed command", "Worked continuation:",
+                     "stored one-pass publication", "frozen interface error", "No interface-result record",
+                     "read-only adapter example guard does not qualify joint completion or crash recovery" })
+            Assert.Contains(required, example, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WoundTreatmentAdditionPublicationDocumentation_PinsSelectedBatchAndRetainedHistory()
     {
         foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Examples/E_CLI_Wound_Materialization.txt" })
@@ -26,10 +58,14 @@ public sealed partial class PromptDocumentationCoverageTests
                 "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
                 "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
                 "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
-                "Direct treatment death, heal and legacy publication remain unfinished.",
+                "Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.",
+                "`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.",
+                "The later direct death-outcome consumer remains outside this executor.",
                 "mortal_wound_treatment_selected_policy_v1"
             }) Assert.Contains(required, text, StringComparison.Ordinal);
             Assert.DoesNotContain("the failed complication band is preview-only here", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("Direct treatment death, heal and legacy publication remain unfinished.", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation", text, StringComparison.Ordinal);
         }
     }
     [Fact]
@@ -178,7 +214,7 @@ public sealed partial class PromptDocumentationCoverageTests
                 ["visibility"] = "known_to_player",
                 ["requiresKnownFacts"] = new JsonArray(),
                 ["requirements"] = new JsonArray(),
-                ["check"] = new JsonObject(),
+                ["check"] = MortalDiagnosisDocumentationTests.CreateExplicitFreeSampleCheck(index == 0 ? 0 : 30),
                 ["reveals"] = new JsonArray("route:ashglass_clean_and_bind"),
                 ["failurePolicy"] = "no_reveal"
             };
@@ -211,6 +247,8 @@ public sealed partial class PromptDocumentationCoverageTests
                      "woundDecisions",
                      "\"decision\": \"none\"",
                      "\"decision\": \"materialize\"",
+                     "I=2, II=4, III=6, IV=8",
+                     "wound_spiritual_recovery_threshold_mismatch",
                      "woundRef",
                      "acquisitionNarration",
                      "severity I-IV",
@@ -688,14 +726,18 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The direct treatment `heal`, explicit death and legacy producers remain pending implementation",
+                @"The later direct death-outcome consumer remains outside this executor\.",
                 RegexOptions.CultureInvariant);
-            Assert.True(pending.Success, "The exact heal/death/legacy pending boundary must remain synchronized.");
+            Assert.True(pending.Success, "The separate direct death-outcome consumer boundary must remain synchronized.");
+            Assert.Contains("Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.", document, StringComparison.Ordinal);
+            Assert.Contains("`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.", document, StringComparison.Ordinal);
             Assert.Contains("Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.", document, StringComparison.Ordinal);
             Assert.DoesNotContain("apply_deterioration", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_complication", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("remove_complication", pending.Value, StringComparison.Ordinal);
+            Assert.DoesNotContain("Direct treatment death, heal and legacy publication remain unfinished.", document, StringComparison.Ordinal);
+            Assert.DoesNotContain("The direct treatment `heal`, explicit death and legacy producers remain pending implementation", document, StringComparison.Ordinal);
         }
         foreach (var field in new[] { "courseId", "activeCourseId", "sourceId", "woundId", "effectId",
             "fingerprint", "authorityFingerprint", "attemptId", "operationKey", "resolvedAtGameTimeMinutes" })
@@ -857,6 +899,16 @@ public sealed partial class PromptDocumentationCoverageTests
             packet["kind"]!.GetValue<string>());
         var preservedProposal = packet["preservedProposal"]!.AsObject();
         Assert.False(preservedProposal.ContainsKey("severity"));
+        var rejected = JsonNode.Parse(Assert.Single(exampleDocument.Descendants("rejectedwoundresponseslice")).Value)!;
+        var corrected = JsonNode.Parse(Assert.Single(exampleDocument.Descendants("correctedwoundresponseslice")).Value)!;
+        var rejectedProposal = rejected["woundDecisions"]![0]!["proposal"]!;
+        var correctedProposal = corrected["woundDecisions"]![0]!["proposal"]!;
+        Assert.Equal("III", rejectedProposal["severity"]!.GetValue<string>());
+        Assert.Equal("II", correctedProposal["severity"]!.GetValue<string>());
+        foreach (var proposal in new[] { rejectedProposal, preservedProposal, correctedProposal })
+            Assert.Equal(4, proposal["recovery"]!["currentStepThreshold"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(rejectedProposal["recovery"], preservedProposal["recovery"]));
+        Assert.True(JsonNode.DeepEquals(preservedProposal["recovery"], correctedProposal["recovery"]));
         Assert.Equal(
             "proposal.severity",
             packet["requiredResponseShape"]!["woundDecisions"]![0]!["proposal"]!

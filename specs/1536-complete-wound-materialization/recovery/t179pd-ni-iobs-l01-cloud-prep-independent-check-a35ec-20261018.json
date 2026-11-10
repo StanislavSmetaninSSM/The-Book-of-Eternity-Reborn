@@ -1,0 +1,246 @@
+{
+  "kind": "INDEPENDENT_NEW_CLOUD_ZERO3_PREPARATION_AND_RECOVERED_CARRIER_CHECK",
+  "checkedUtc": "2026-10-18T09:53:08.790857+00:00",
+  "carrier": "a35ec692e79538f255f850842f4ade1afdbf298f",
+  "compiledSource": "6ab43f6add261d90628fc07d6aacf42dfbae0561",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1f11670a1e063bed010e2e03585fb6e8b5ad4da64157a5ce877317475d3c7bc4",
+  "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-preparation-813f1057-files-20261018/archive.json",
+    "sha256": "06abc6c48256844aafd5e4b9761c505f82aa3ae6b906c20378c7c9075b80081d",
+    "originalGzipRawChainsVerified": 32,
+    "completeRawCoverage": true,
+    "allLocalOriginalBytesMatchedSavedAndRestored": true
+  },
+  "records": [
+    {
+      "mode": "catalog",
+      "record": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-cloud-xdg-813f1057/record.json",
+      "sha256": "67f629deb5a6e2ce48086c0e4d47a3281ef0113d6847c4731f30ce1c0b7f1cb7",
+      "nativeExit": 0,
+      "seconds": 343.4147662790001,
+      "executed": 0,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "Build-integration",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "Build-unit",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "plan",
+      "record": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-cloud-813f1057/record.json",
+      "sha256": "614457d4e636be2056ba8baa6d32032ba4d545e46277a8edb2c68055f968323e",
+      "nativeExit": 0,
+      "seconds": 26.61719420899999,
+      "executed": 0,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ],
+        [
+          "unit-discovery",
+          "0"
+        ]
+      ]
+    },
+    {
+      "mode": "remaining-plan",
+      "record": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-cloud-813f1057/record.json",
+      "sha256": "896e477b1dc543eb5d28969479b63cf009211450eb6aa49d244f1717b471e74a",
+      "nativeExit": 0,
+      "seconds": 15.637611821000064,
+      "executed": 0,
+      "phaseExits": [
+        [
+          "Revision",
+          "0"
+        ],
+        [
+          "Changed-paths",
+          "0"
+        ],
+        [
+          "New-paths",
+          "0"
+        ],
+        [
+          "integration-discovery",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "builds": {
+    "Build-integration": {
+      "warnings": 148,
+      "errors": 0,
+      "codes": {
+        "CS8604": 9,
+        "xUnit1031": 4,
+        "xUnit2031": 34,
+        "xUnit1013": 18,
+        "xUnit2029": 7,
+        "xUnit2030": 1,
+        "CS8602": 37,
+        "CS1573": 15,
+        "xUnit2013": 2,
+        "CS0219": 1,
+        "xUnit2012": 2,
+        "xUnit2009": 1,
+        "CA1416": 3,
+        "CS9124": 1,
+        "CS1587": 3,
+        "CS8629": 1,
+        "CS8618": 2,
+        "CS8601": 2,
+        "CS1572": 5
+      }
+    },
+    "Build-unit": {
+      "warnings": 37,
+      "errors": 0,
+      "codes": {
+        "xUnit2031": 12,
+        "xUnit1031": 3,
+        "CA1416": 4,
+        "CS4014": 1,
+        "xUnit2009": 2,
+        "CS8600": 1,
+        "CS0649": 12,
+        "CS8602": 2
+      }
+    }
+  },
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57,
+    "executed": 0
+  },
+  "pending": {
+    "descriptors": 7,
+    "methods": 12,
+    "cases": 20,
+    "executed": 0
+  },
+  "retainedDifference": {
+    "methods": 21,
+    "cases": 37,
+    "equalsPreviouslyQualifiedOriginalProvenance": true
+  },
+  "binaries": {
+    "copies": 9,
+    "allFourClientCopiesEqual": true,
+    "bothSupportCopiesEqual": true,
+    "allNineFreshlyChangedOrAddedDuringCatalog": true,
+    "all1575PathsSizesHashesMatchPhysicalOutputAndBothPlans": true
+  },
+  "processRecords": [
+    {
+      "mode": "catalog",
+      "pid": 3501,
+      "kernelBirthTick": 104075,
+      "cmdlineCaptured": true,
+      "launchArgvAndRunnerPidBound": true
+    },
+    {
+      "mode": "plan",
+      "pid": 4417,
+      "kernelBirthTick": 141614,
+      "cmdlineCaptured": true,
+      "launchArgvAndRunnerPidBound": true
+    },
+    {
+      "mode": "remaining-plan",
+      "pid": 4626,
+      "kernelBirthTick": 144884,
+      "cmdlineCaptured": false,
+      "launchArgvAndRunnerPidBound": true
+    }
+  ],
+  "cleanup": {
+    "allZeroRecordsAndRunnerClean": true,
+    "currentGameProcesses": [],
+    "currentOwnedFixtureRoots": [],
+    "runtimeScratch": "Ordinary compiler/runtime scratch remains under GUID TMPDIR; no claim entire TMPDIR is empty, no deletion or process intervention."
+  },
+  "recovery": {
+    "independentClone": "/workspace/1536-cloud-clean-restore",
+    "head": "a35ec692e79538f255f850842f4ade1afdbf298f",
+    "clean": true,
+    "originGitHub": true,
+    "noObjectAlternates": true,
+    "remoteBranchShaVerified": "a35ec692e79538f255f850842f4ade1afdbf298f",
+    "changedPaths": 40,
+    "bytesSha256GitBlobsMatch": true
+  },
+  "environment": {
+    "xdgRuntimePath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "realpath": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "uid": 1000,
+    "mode": "0700",
+    "envShellSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "exactOnlyXdgRuntimeAddition": true,
+    "homeNotReassigned": true,
+    "sameNewCloudBoot": true,
+    "originalFailedCatalog": {
+      "nativeExit": 1,
+      "tests": 0,
+      "separateArchiveChainsVerified": 8
+    }
+  },
+  "legacy3Eligibility": "After saved independent PREP acceptance and Root named activation, exact legacy3 NoBuild is eligible first; other modes require their own named release; crash5 remains separate under accepted new isolation plan. No automatic advance/retry.",
+  "limits": "ZERO preparation only. No new product semantic result, old37 replay/cross-build equality, recovered old corrected crash result, Windows/CI/fullNI/HOT/F1/M3/T197/A3 qualification.",
+  "findings": [],
+  "evidenceLimitations": [
+    "The remaining-plan immediate /proc cmdline snapshot is empty. Its explicit controller Popen argv, matching process PID4626 and (pwsh) comm/positive kernel birth tick, runner result directory containing PID4626, original native0 log and plan/source binding establish the launched phase. No claim that this cmdline was recovered.",
+    "GUID TMPDIR retains ordinary compiler/runtime scratch. Empty cleanup claims are scoped to owned game fixtures and game/test processes, not all toolchain scratch."
+  ],
+  "reviewerUtilityNotes": "Read-only checker initially assumed nonempty cmdline for every launch, then retained the actual empty snapshot and used recorded launch argv plus runner PID binding. Its file-set ordering was corrected from string order to the unchanged controller Path order; physical and recorded sets already matched with no extra/missing paths. These were checker assumptions, not build/test failures; no native phase was repeated."
+}

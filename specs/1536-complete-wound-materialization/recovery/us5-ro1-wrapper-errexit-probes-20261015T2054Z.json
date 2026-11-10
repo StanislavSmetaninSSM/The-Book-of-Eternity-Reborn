@@ -1,0 +1,61 @@
+{
+  "task": "#1536 harmless wrapper diagnostics only; no native C# build/test retry",
+  "results": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "plain",
+        "cmd": "printf 'PROBE=plain\\n'\nexit 0",
+        "result": {
+          "chunk_id": "71baa6",
+          "wall_time_seconds": 0.000044228,
+          "exit_code": 0,
+          "original_token_count": 3,
+          "output": "PROBE=plain\n"
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "errexit",
+        "cmd": "set -e\nprintf 'PROBE=errexit\\n'\nexit 0",
+        "result": {
+          "chunk_id": "a8f3b4",
+          "wall_time_seconds": 0.000039852,
+          "exit_code": 1,
+          "original_token_count": 4,
+          "output": "PROBE=errexit\n"
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "activate_no_errexit",
+        "cmd": "source /workspace/boe-fr063-tools-20261015/activate.sh\nprintf 'PROBE=activate_no_errexit\\n'\nexit 0",
+        "result": {
+          "chunk_id": "d3bffc",
+          "wall_time_seconds": 0.000109285,
+          "exit_code": 0,
+          "original_token_count": 7,
+          "output": "PROBE=activate_no_errexit\n"
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "errexit_restored",
+        "cmd": "set -e\nsource /workspace/boe-fr063-tools-20261015/activate.sh\ntrue\nprobe_exit=$?\nprintf 'PROBE=errexit_restored CHILD_EXIT=%s\\n' \"$probe_exit\"\nset +e\nexit \"$probe_exit\"",
+        "result": {
+          "chunk_id": "d09e62",
+          "wall_time_seconds": 0.000039576,
+          "exit_code": 0,
+          "original_token_count": 9,
+          "output": "PROBE=errexit_restored CHILD_EXIT=0\n"
+        }
+      }
+    }
+  ]
+}

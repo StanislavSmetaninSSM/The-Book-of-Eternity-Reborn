@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "task": "#1536 US5-RO2 intentional RED SOURCE/FIXTURE/SELECTION gate",
+  "reviewedAt": "2026-10-15 21:30:08 UTC",
+  "configuration": {
+    "requested": "Retained explicit Astra XHigh independent reviewer configuration",
+    "actualBackendTelemetry": "unavailable"
+  },
+  "reviewed": {
+    "base": "681e49dd7c9208884208fa392a8b7a95fcc46002",
+    "head": "627643abe902c03c0ed9132629e84eb80cce93ae",
+    "changedPaths": 9,
+    "productionChanges": 0,
+    "localStatus": "clean",
+    "remote": "Parent-reported actual remote verified; no new reviewer remote read."
+  },
+  "disposition": "HOLD_PREPARATION_AND_RUNTIME_FOR_TWO_FIXTURE_CORRECTIONS",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P1",
+      "source": "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:79-81",
+      "case": "Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(mortal_world)",
+      "problem": "knownRouteIds is cleared and sole route is hidden while diagnosisPaths remains empty. InputInRealm immediately parses the wound, so fixture construction fails before either real status entrypoint.",
+      "proof": [
+        "WoundPlayerProjectionTestData.cs:18-19",
+        "WoundMaterializationContract.cs:2026-2048",
+        "MortalWoundTreatmentContract.cs:261-308"
+      ],
+      "requiredCorrection": "Add a complete valid public diagnosis path revealing route:<actual routeId> before building the typed fixture. Keep current knownRouteIds empty and hidden route name omitted; future discoverability must not grant current method knowledge. Preserve materialization validation and assertions.",
+      "priorPattern": "Matches already corrected RO1 unknown-hidden-route fixture pattern; no native run is needed to confirm this deterministic source prerequisite."
+    },
+    {
+      "id": "F2",
+      "priority": "P1",
+      "source": "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:150-155",
+      "cases": "Both afterlife realms in visible-known-method, privacy and markup theories (six cases; privacy+markup four cases immediately index routes[0]).",
+      "problem": "CreateSpiritualActiveWound deliberately provides routes=[] and knownRouteIds=[]; the new status helper does not add a route. Afterlife positives therefore lack their asserted known method, and privacy/markup setup indexes an empty array.",
+      "proof": [
+        "BookOfEternityClient.Tests/WoundContractTestData.cs:355-363",
+        "WoundPlayerStatusTests.cs:38",
+        "WoundPlayerStatusTests.cs:80-81",
+        "WoundPlayerStatusTests.cs:140"
+      ],
+      "requiredCorrection": "Populate one complete structurally valid spiritual route and its matching knownRouteIds entry in the local status helper before tests mutate it. Use the existing closed route fields and allowed mode; no new spiritual resolver or executable authority. The privacy variant can then remove current knowledge and add the public revelation path. Preserve known-method, generic-declared-requirement and markup assertions.",
+      "contract": "WoundMaterializationContract.ReadTreatmentRoute:2169-2182; existing afterlife ProjectMethods returns a generic requirement notice for known structurally valid routes without inventing provider/price/resource semantics."
+    }
+  ],
+  "unaffectedChecks": {
+    "taskOrder": "Existing TASK-ORDER-US5-READONLY explicitly authorizes RO2 real /статус and /status consumer work after accepted RO1 foundation. Full guided workflow remains gated.",
+    "realEntrypoints": [
+      "ExplorerMode.TryProcessCommand(\"/статус\")",
+      "ExplorerWebCommandService.ExecuteAsync(new ExplorerWebCommandRequest(\"/status\"))"
+    ],
+    "apiReview": "Constructors, hooks, command/result APIs, UiEntityDossierBlock/UiEntityCard fields and Spectre rendering APIs match existing local declarations/usages; no identified compile API mismatch.",
+    "readOnlyFixture": "Per-case real owned root; existing exact cleanup unchanged. Normal GetOrCreateSessionGeneration runs through the existing lease-bound API before full-tree baseline. Both real calls precede full-tree/mutation-count/no-repair-hook assertions. No fake generation token, bypassed ownership API or suppressed repair implementation.",
+    "currentMissingBehavior": "Existing console ShowDetailedStatus and browser BuildMigratedResultAsync call RefreshGameStateAsync and current raw consumers do not supply the new wound-status/history blocks. Read-only/typed-block assertion RED is intended once fixtures are valid.",
+    "historyExtraction": {
+      "byteEquivalentBody": true,
+      "bodySha256": "b00f459f3ff907e7510be5db932b209cc977420c3466a0f100068debcfd4a29f",
+      "newFileSha256": "757a988e3278ca9716411e633d870a14db109d38ac6ef1f5a2c8a41a9cd79e57",
+      "helperOnly": true,
+      "liveAuthorityClaim": false,
+      "scope": "Previously accepted strict detached history codec/reconstruction fixture, not a new live recovery/publication issuer."
+    },
+    "suppliedInput": "Optional parameter selects provided typed fixture input; all pre-existing callers retain the same default branch. Existing carrier/identity/history writes and cleanup remain unchanged.",
+    "identityAndPrivacy": "InputInRealm clones before deriving fingerprints and validates wound, identity/history and carrier agreement. Self/foreign afterlife actor IDs map through existing player_soul→player effect target adapter; no private owner normalization introduced.",
+    "selection": {
+      "id": "wounds-player-status",
+      "project": "integration",
+      "selector": "BookOfEternityClient.Tests.WoundPlayerStatusTests.*",
+      "staticMethods": 6,
+      "staticCases": 15,
+      "staticDescriptors": 1,
+      "literalInlineDataCases": 14,
+      "factCases": 1,
+      "categoryBudgetMinutes": 3,
+      "onlySelectedOwner": true,
+      "helperLinkedWithoutTests": true
+    },
+    "scopeLimits": "Browser test checks actual command transport DTO plus literal dynamic values, not DOM rendering. Source guards/guidance/examples and broader connected GREEN selection remain later RO2 obligations.",
+    "diffCheck": "clean"
+  },
+  "sourcePinsAtReview": {
+    "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs": "22bd098fda486307b5c6656ab2cedeaed72bccd368693dcf31e6a50e3eed5d6b",
+    "BookOfEternityClient.Tests/WoundPlayerHistoryTestData.cs": "757a988e3278ca9716411e633d870a14db109d38ac6ef1f5a2c8a41a9cd79e57",
+    "BookOfEternityClient.IntegrationTests/WoundPlayerReadServiceTests.cs": "c0fd5acfe28bcf0c3d01451c82565dbcef7af59b3e0f42b62eaf61a3e9894e79"
+  },
+  "release": {
+    "preparation": false,
+    "nativeIntentionalRed": false,
+    "next": "Publish the narrow fixture correction and obtain affected-only static gate. Then fresh selected integration preparation, official Plan/catalog zero execution and status-only intentional RED can be released; original provisional6/15/1 count should remain unless correction changes test declarations.",
+    "firstFailureRule": "Any unexpected build/setup/runtime failure freezes and publishes before correction. Intended RED also freezes before product changes.",
+    "existingRO1": "Accepted RO1 evidence is unchanged; no requalification/rerun claimed."
+  },
+  "reviewerActions": {
+    "sourceEdits": 0,
+    "nativeBuilds": 0,
+    "tests": 0,
+    "runnerOrDiscoveryCalls": 0,
+    "reportWrites": "Only this external MD/JSON pair"
+  },
+  "finalStop": {
+    "status": "FINALSTOP",
+    "pendingReviewerWrites": 0
+  }
+}

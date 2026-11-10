@@ -1,0 +1,1772 @@
+{
+  "recovery": {
+    "receiptPath": "/tmp/t179pd-hot-custody-red2-first-late-recovery-20261016.json",
+    "receiptSha256": "6ec1e2b47c098650533e4ab0c5a4177f045a1e8cda382a70b7c423514a1a5aa9",
+    "receiptBytes": 19984004,
+    "reported": {
+      "sha": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "directory": "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+      "utc": "2026-10-16T20:11:42.564729+00:00",
+      "count": 54180,
+      "tracked_bytes": 3602184081,
+      "new_directory": true,
+      "clean": true,
+      "noAlternates": true,
+      "noSparseCheckout": true,
+      "source": "NEW GitHub-only full current working-tree shallow clone; no local object/reference/cache transport",
+      "remoteReadback": "2ab809d4ca590fd5c7583914d40121f0c0ee5699\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+      "restoredBuildOrRuntime": "NOT_RUN",
+      "scope": "ALL tracked current-tree files, modes and raw bytes verified against writer and exact Git blobs; shallow history only, no build/runtime or external dependency qualification"
+    },
+    "independentlyVerified": {
+      "HEAD": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "trackedTreeEntries": 54180,
+      "exactTreeMatchesWriter": true,
+      "currentCleanIncludingIgnored": true,
+      "origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+      "noAlternates": true,
+      "noSparse": true,
+      "reviewedFileBytesMatched": 39
+    },
+    "limits": "Root reports all 54180 raw-file hashes. Reviewer checks complete Git tree identity and exact raw bytes of all reviewed pinned files; does not repeat full 3.6GB filesystem comparison or network readback.",
+    "gzipSha256": "fa0043dd16e03517dd8fba92b260bb455e9fd868cbc200791e1981925bcf883c"
+  },
+  "scope": "Independent FINAL DESIGN-only F1 review; no runtime or implementation release",
+  "candidate": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+  "base": "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+  "priorR2Review": "bddf930414b12944b5383ec2857404c26f7b01a9",
+  "generatedUtc": "2026-10-16T20:13:55.158399+00:00",
+  "configuredReviewer": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "receipt": "retained coordinator spawn configuration",
+    "backendTelemetry": "unavailable"
+  },
+  "writerCleanAtInitialRead": true,
+  "writerStatusAtFinalPinCheck": " M specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n M specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n M specs/1536-complete-wound-materialization/plan.md\n M specs/1536-complete-wound-materialization/spec.md\n M specs/1536-complete-wound-materialization/tasks.md\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-independent-inspection-20261016.json\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-author-production-command.diff.gz\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-carrier.diff.gz\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-diff-index.json\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-production-continuity.diff.gz\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016-scoped-design.diff.gz\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.json\n?? specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md\n",
+  "candidateReviewUsesGitAndCleanRecovery": true,
+  "baseIsAncestor": true,
+  "pins": [
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+      "bytes": 229597,
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "worktreeMatches": false
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "gitBlob": "8d0c96cfb709d420d8b6411d0999f8526dbedc81",
+      "bytes": 2162692,
+      "sha256": "8f4e175fd8bdb089953591770187ecfe689f93c5f8d86a72b383091d2d5bbb14",
+      "worktreeMatches": false
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "gitBlob": "ebba9ac1ceff1c15895004827f0117b176d3b29c",
+      "bytes": 1522820,
+      "sha256": "0fa519c65120b8ec96b13cb7ae1b70fb2f39034a4e797d65971d602c7f587e7c",
+      "worktreeMatches": false
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "gitBlob": "142ce6682b88ab2760a39f78471c18be6c9ddb97",
+      "bytes": 107389,
+      "sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "worktreeMatches": false
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "gitBlob": "ecd0e511926fcb050586cd1101f0eba53f673612",
+      "bytes": 134743,
+      "sha256": "877ea52bbf6c2bdb3de16c861436ef2f61deb66b9e2e293b9cae73e9ccce1530",
+      "worktreeMatches": false
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "gitBlob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "bytes": 63665,
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "gitBlob": "0d58236f7c1ea6ca8149dd1ae6fe26fa6928f99b",
+      "bytes": 72329,
+      "sha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-independent-design-corrected-20261016-review.md",
+      "gitBlob": "45101cecb41ac7360a471aef458cbc7588db88e7",
+      "bytes": 10259,
+      "sha256": "350f2e5842e8b393ffcafa5daf706d2c5561eeac50d0aecdade2e3694d77d4a0",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-initial-20261016-review.md",
+      "gitBlob": "aa17f57bd0ca1bbc68727baf57351c8c1ae941d4",
+      "bytes": 14390,
+      "sha256": "f49aa036c66499e2f61fe82d948705f6a924f0b4cf877584dcf83a46202e35d3",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md",
+      "gitBlob": "e3b0b17f91d4ac911ff3ab72913910985286ed7f",
+      "bytes": 12619,
+      "sha256": "549507e6bdfc2253b7df14e314fe0afa44f92043a455392a723874a078b25541",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.json",
+      "gitBlob": "d5e36abac98047bd88245216dcda046697217555",
+      "bytes": 19299,
+      "sha256": "e76124c8d89107b2037d95488d50de14b7ad230d9a58356fd043afcdbc92d33b",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md",
+      "gitBlob": "75f0b45894e20f53ee38f3cd0cb4855fcc782ded",
+      "bytes": 5325,
+      "sha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-observed-reader-final-independent-review-20261016.md",
+      "gitBlob": "f263fc0891a7f60101590fe0da196931b4f50aea",
+      "bytes": 15216,
+      "sha256": "333f1a4b42af5308b3904cc350cda30f223eaf206636087dafb63949a5db086e",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-full-recovery-independent-review-20261016.md",
+      "gitBlob": "1cde9ec65c0ed1efcc087dd3de27ec8283db244f",
+      "bytes": 7816,
+      "sha256": "4cdd4cb1272adcd423d011f6123a9fde0f59375e7c25fe23218b40679a047948",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "AGENTS.md",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "docs/development-workflow.md",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "docs/testing.md",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": ".specify/memory/constitution.md",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Models/GameResponse.cs",
+      "gitBlob": "d12d8cfe75ec76aa474c0ed34c614197121d2a44",
+      "bytes": 24047,
+      "sha256": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Configuration/FileMapping.cs",
+      "gitBlob": "874055dd1984edd660c62cecf1f8dc73ae519cbc",
+      "bytes": 15562,
+      "sha256": "0e657357c315ffe740983d3f9c3347475dc1907d84f059753eddcf95f707b538",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "gitBlob": "c99933a8bc5de098180bba4b16fd7811270fcf8f",
+      "bytes": 33511,
+      "sha256": "0ceecfb1f5d517673504e413f138bad5593065791f1f85a222238c7f19a3893d",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "gitBlob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "bytes": 294934,
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/WebUi/QteWebInteractionService.cs",
+      "gitBlob": "1b7ffbed260ee04eb19e00191e50f76a668022dc",
+      "bytes": 82146,
+      "sha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "gitBlob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "bytes": 14974,
+      "sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs",
+      "gitBlob": "f6addc82da35dea8d08650fd67d9fbde75e7220c",
+      "bytes": 19794,
+      "sha256": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "gitBlob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "gitBlob": "7c31d28d6fdd22fa6b1b7aee635d9a8774860311",
+      "bytes": 17581,
+      "sha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "gitBlob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "gitBlob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs",
+      "gitBlob": "3cf17d591800a2acea287548e2b0e7476d85e203",
+      "bytes": 56278,
+      "sha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "gitBlob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "bytes": 264036,
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "gitBlob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "bytes": 11393,
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "gitBlob": "584d5aed93072d4b523462eeb68fab5af2c212ef",
+      "bytes": 15932,
+      "sha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "gitBlob": "44e85e5be97145d0d6d9135e3f87b42f8f5cf1c9",
+      "bytes": 23872,
+      "sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "gitBlob": "c93281051e0c4259220acb874ea881ab025cb410",
+      "bytes": 60209,
+      "sha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "gitBlob": "e5e9e8d77a5313eba8c7d2fe6515a476c0f81ad5",
+      "bytes": 157001,
+      "sha256": "96042bf2e790c80932810689d5dc0ee2f13ed567c2be47487effa05c6730c0a0",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "gitBlob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+      "bytes": 21662,
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "gitBlob": "31b5302758e6e6afe388d29e589c22b38388e638",
+      "bytes": 20977,
+      "sha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+      "worktreeMatches": true
+    },
+    {
+      "commit": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "gitBlob": "04aacf85244601da516466216ff565dfefb868ae",
+      "bytes": 17372,
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "worktreeMatches": true
+    }
+  ],
+  "diffs": [
+    {
+      "path": "/tmp/lawful-active-f1-final-design-base-current-docs-20261016.diff",
+      "bytes": 746358,
+      "sha256": "a70f7bd9b081cc71b2cbdb2694c638520854c2bb49e733c7a150a12916e09e91",
+      "from": "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+      "to": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "paths": [
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "empty": false
+    },
+    {
+      "path": "/tmp/lawful-active-f1-final-design-r2-current-canonical-20261016.diff",
+      "bytes": 9281,
+      "sha256": "efa98e781b066e4687d145f949ccc1370470d24aaaa9f848c559cdf6086b4a0a",
+      "from": "bddf930414b12944b5383ec2857404c26f7b01a9",
+      "to": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "paths": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "empty": false
+    },
+    {
+      "path": "/tmp/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff",
+      "bytes": 468454,
+      "sha256": "9966a883abee7af45be0d9f99b971a09b49ec3df8c3c0548fd1d38c87786ded3",
+      "from": "bddf930414b12944b5383ec2857404c26f7b01a9",
+      "to": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "paths": [
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "empty": false
+    },
+    {
+      "path": "/tmp/lawful-active-f1-final-design-frozen-production-20261016.diff",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "from": "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "to": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "paths": [
+        "BookOfEternityClient"
+      ],
+      "empty": true
+    },
+    {
+      "path": "/tmp/lawful-active-f1-final-design-compiled-current-source-20261016.diff",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "from": "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "to": "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "paths": [
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.WebFrontend",
+        "scripts",
+        "tests/categories.json",
+        "tests/selection.json"
+      ],
+      "empty": true
+    }
+  ],
+  "projections": {
+    "path": "/tmp/lawful-active-f1-final-design-projections-20261016.json",
+    "bytes": 130637,
+    "sha256": "fa5e0ca18915b9a1c24c73bb5b84c8899172e2b09c0de378e285a067d5c391b2"
+  },
+  "projectionCount": 22,
+  "diffCheck": "",
+  "historicalProductTestChangesSinceRecoveryBase": "M\tBookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs\nM\tBookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs\nA\tBookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotSubmissionReadyDrift.cs\nA\tBookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ObservedOriginalReader.cs\nA\tBookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.HotSubmissionCustody.cs\nM\tBookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs\nM\tBookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs\nA\tBookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs\nM\tBookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs\nM\tBookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs\nA\tBookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs\nA\tBookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs\nA\tBookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs\nA\tBookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs\nA\tBookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs\nA\tBookOfEternityClient.Tests/PendingTurnObservedOriginalBarrierTests.cs\nA\tBookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs\nA\tBookOfEternityClient.Tests/PendingTurnObservedOriginalReaderTests.cs\nM\tBookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs\nM\tBookOfEternityClient.Tests/PortableOrdinaryReadTests.cs\nA\tBookOfEternityClient.Tests/ResourcePendingResolutionTests.CommonBoundary.cs\nM\tBookOfEternityClient/Core/FileSystemManager.cs\nM\tBookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs\nA\tBookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs\nM\tBookOfEternityClient/Services/AcceptedMechanicsPlanner.cs\nM\tBookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs\nA\tBookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs\nM\tBookOfEternityClient/Services/EffectAcceptedTurnPlan.cs\nM\tBookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs\nM\tBookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs\nA\tBookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs\nA\tBookOfEternityClient/Services/MortalJointActionBoundary.cs\nA\tBookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs\nM\tBookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs\nA\tBookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs\nM\tBookOfEternityClient/Services/PendingTurnSnapshotReader.cs\nM\tBookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs\nM\tBookOfEternityClient/Services/StoryService.MortalJointRepair.cs\nA\tBookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs\nA\tBookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs\nM\tBookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs\nM\tBookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs\nM\ttests/categories.json\nM\ttests/selection.json\n",
+  "matrix": {
+    "F1": [
+      "F101",
+      "F102",
+      "F103",
+      "F104",
+      "F105",
+      "F106",
+      "F107",
+      "F108",
+      "F109",
+      "F110",
+      "F111",
+      "F112",
+      "F113",
+      "F114",
+      "F115"
+    ],
+    "R2": [
+      "R201",
+      "R202",
+      "R203",
+      "R204",
+      "R205",
+      "R206",
+      "R207",
+      "R208",
+      "R209",
+      "R210",
+      "R211",
+      "R212",
+      "R213",
+      "R214",
+      "R215",
+      "R216",
+      "R217",
+      "R218"
+    ],
+    "status": "future full-F1 qualification UNRUN"
+  },
+  "mainTasks": [
+    {
+      "id": "T178",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T179",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T180",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T181",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T182",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T183",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T184",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T185",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T186",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T187",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T188",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T189",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T190",
+      "count": 1,
+      "checked": false
+    },
+    {
+      "id": "T191",
+      "count": 1,
+      "checked": false
+    }
+  ],
+  "inventory": {
+    "dto": 169,
+    "mapped": 176,
+    "primaryPaths": 83,
+    "union": 182,
+    "mappedNotDto": 13,
+    "allRowsExact": true
+  },
+  "localLinkCheck": {
+    "count": 587,
+    "missing": [],
+    "note": "current link existence only, not semantic acceptance of linked historical reviews"
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdoutSha256": "02040e7ac4199c27aac8c908467edf0808f469f39b1ab13310d3537cfceaaac5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "stdoutSha256": "54f8523930fca8ae8fbb1563d77713948fb42165b7a2bb7191b10d89ea5de2e6",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "merge-base",
+        "--is-ancestor",
+        "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/spec.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/spec.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9e861782510575357f54b1265148188a9aba682016fe01cee5f0e8ee972c5ade",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8f4e175fd8bdb089953591770187ecfe689f93c5f8d86a72b383091d2d5bbb14",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9e7d24b0c70922a42a596a84bb6318ff095b7210b0e8246b1ddfba4991569c6b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0fa519c65120b8ec96b13cb7ae1b70fb2f39034a4e797d65971d602c7f587e7c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "cb3d839483bd831fb6889fff1c49173df7b0ffeb796056f83f9318d621d924b5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "416914426cdce3e4e24ca7dca0d0357113adb736b101bd82e44698c3faae90e7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "877ea52bbf6c2bdb3de16c861436ef2f61deb66b9e2e293b9cae73e9ccce1530",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "fe76acdfd6560bb5c4b775756536f22ea2da339c3e9fb4e6181415cfcf4336a5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "96cdda159ff382d2d2a03257cf3aab849be7b2e59d8a34c27537315a1486d8f0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "bfd35f9c095fe707154ebde2641f6627f267bd8dd998f128351f6b9cfcf5fe9e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "eee48a080d2fd8da2aa7011fca3a18e15aea601267f5e2bec32cd0b33fda27cc",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-independent-design-corrected-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "350f2e5842e8b393ffcafa5daf706d2c5561eeac50d0aecdade2e3694d77d4a0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-independent-design-corrected-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "df6592cdf59e138b71f6588a7ec5d3aa06845f557652719d27c620f8a1c03b6b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-initial-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "f49aa036c66499e2f61fe82d948705f6a924f0b4cf877584dcf83a46202e35d3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-initial-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "6e5e76ab5238f7a948b98a6d509af07ebc7957ad08cbe57e89bf55dfa272c349",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "549507e6bdfc2253b7df14e314fe0afa44f92043a455392a723874a078b25541",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "bd4e3a64c6bae01524aaf178aaa43387d7f415089262bef1d429258ea4368a0d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.json"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e76124c8d89107b2037d95488d50de14b7ad230d9a58356fd043afcdbc92d33b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/lawful-active-f1-r2-independent-design-corrected-20261016-review.json"
+      ],
+      "exit": 0,
+      "stdoutSha256": "1d336bb13d211135912f6bf1e59923bce2991d3eb697424e3bf699bfa9f94132",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "29ffdf2fb07da78e82fa37a3ee8f6ac3f7f4047836fe3f78479c0f0f944a1860",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pd-observed-reader-final-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "333f1a4b42af5308b3904cc350cda30f223eaf206636087dafb63949a5db086e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pd-observed-reader-final-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0537061fc69695f1ccbfc41d4af8b870869e55e9dc57fa7c100ca8cdb3ae8abf",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-full-recovery-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "4cdd4cb1272adcd423d011f6123a9fde0f59375e7c25fe23218b40679a047948",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-full-recovery-independent-review-20261016.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "d2f840565ec190812d63262ac6f5fd189941008c4657814d51684e073e9eab3e",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:AGENTS.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:AGENTS.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "122a32268e895bde359056daad6681dccbc7e31021a93f17bce70a9dbee058a3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:docs/development-workflow.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "a09da1666e8a7396192bd4ee2b08fc52bd06ef366e32d35e5c4ab36934db144f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:docs/testing.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:docs/testing.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "ef2847176f4f4afd9bd40ce251e4931e3df29b925981ea3069b5cff6a08994aa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:.specify/memory/constitution.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:.specify/memory/constitution.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "6184c8749c383d345edf74f17dc4d4a0013a3f33a4b8845d05abc904d5406696",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Models/GameResponse.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "dcc178fdcb21ed5bd5d14d2fc48c03371b8f0858e0ada86d65ab9778271f27bb",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Models/GameResponse.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "05eccb2bcbce9d8893e7449f8e7e59c4af7e312cac5b157d9d6dfb722316602f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Configuration/FileMapping.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0e657357c315ffe740983d3f9c3347475dc1907d84f059753eddcf95f707b538",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Configuration/FileMapping.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "ee718ce9419420984ea484c3fb4a986ea3b50d99aa15b69ca45b3095f87efdd0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0ceecfb1f5d517673504e413f138bad5593065791f1f85a222238c7f19a3893d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/IO/StateDistributor.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "935fde20beb9f8d88d070ccea129c223c521be990ee09cd56755875e50d03876",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "4bc8fc02e65f101dc741f1d93e4234d09123ec6b280c5a422d049f78ef4309d4",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/WebUi/QteWebInteractionService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "36003dc767c41e6ad6ca58962da50fb65a6ef8542a042c4c20fbdcb35eddbf85",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/WebUi/QteWebInteractionService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "cc6130e9a5b5cd3c972bcb99876f85a46d97f0f710770d89792f54006c7ccc0d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/StoryService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/StoryService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "24a7867a66e7db301a9c6814709f7a5522b4f51944c97f43e3e4e16c054c1631",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "3d3b83d5966822ef36c58a1864b7bca69f9c6bf664be5708bf1c6e6505555d10",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/PendingTurnSnapshotReader.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "a5f6a497f151c975100836f1f073a7c7c84500e3303ddb85b0816c718fa36d46",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "656a0e0e3f7dcef887eaac08e740494cd09e373fc26c63790c28fcedfeab5a77",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "f5a42a361fa0c0fce20cdac70a6a36aa437fc4dd62b61a61140753de8d1a5282",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/EffectLifecycleScheduler.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/EffectLifecycleScheduler.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e1b3d8f480fd3c89dbda79f0cd89ef89c24d0544ebc46ef44cec2a1e1bea4397",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8558d2df4ad3d2362361c9b1ff3ae38656432711a5bf39487aacfbf47ad7a18f",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteDeferredAcceptedMechanicsPlanner.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "cf0601ca62660805e98e5009b18017f16f573d0dd388f9176cbe18859879b911",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/QteSceneService.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "5bee7bd852ef9d374cd559fdc0ff53017a98699e0e840b4235efe369b2f0dea9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "5ebbe2b6fff5b262de54eaa0d00ad2754bc7781bff08b5539a1bc9aa533038e0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "83f16a17b9d167d5f956ce1abfdecc2e0268c962354c4354d5b21dd52343dd9b",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/CanonicalStateNormalizer.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/CanonicalStateNormalizer.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "6822994f53f924150248a949720afff7ecb47a02be9448646111b660e381cd9a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9d6a6b4c9fa688def2b1452050cf139cffac81a3e78ab2bd3717dd4c924e432d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "ef86540d5c96aa63abab93ff18f1d68baa93f8a5ec431640879ff8494d7ee8c3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "96042bf2e790c80932810689d5dc0ee2f13ed567c2be47487effa05c6730c0a0",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "d8106991e0baed3276a90b51bff269f543f065ecd5e4f623bfbc1863d4a1bb3d",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "2bac08ed54db0cfb22143bac3ae67502cb6984415a3114a0b485f4e46461e4c9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "0d91ac352532cd4e725d6aabf838981f7acee9c28e19b324d6ad25ffc65acfe9",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "show",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "rev-parse",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs"
+      ],
+      "exit": 0,
+      "stdoutSha256": "58d2307504c72b65534e8fe43d1cde1992b9878f40031ea2933674cc4ead31b2",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "a70f7bd9b081cc71b2cbdb2694c638520854c2bb49e733c7a150a12916e09e91",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "bddf930414b12944b5383ec2857404c26f7b01a9",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "efa98e781b066e4687d145f949ccc1370470d24aaaa9f848c559cdf6086b4a0a",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "bddf930414b12944b5383ec2857404c26f7b01a9",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "9966a883abee7af45be0d9f99b971a09b49ec3df8c3c0548fd1d38c87786ded3",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "BookOfEternityClient"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.WebFrontend",
+        "scripts",
+        "tests/categories.json",
+        "tests/selection.json"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--check",
+        "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "diff",
+        "--name-status",
+        "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests/categories.json",
+        "tests/selection.json",
+        "scripts"
+      ],
+      "exit": 0,
+      "stdoutSha256": "15a8b248051d6705b1d128770ce04341f223bc5c691785f26b877bc0e5a4b698",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stdoutSha256": "02040e7ac4199c27aac8c908467edf0808f469f39b1ab13310d3537cfceaaac5",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+        "--ignored"
+      ],
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "config",
+        "--get",
+        "core.sparseCheckout"
+      ],
+      "exit": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "remote",
+        "get-url",
+        "origin"
+      ],
+      "exit": 0,
+      "stdoutSha256": "c1627cfe41b9a1e551f24932abdb29df408e9efe67eb64951ff15969594d6835",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/f1-r2-hot-custody-red2-first-late-github-20261016",
+        "ls-tree",
+        "-rz",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699"
+      ],
+      "exit": 0,
+      "stdoutSha256": "c9ff0be6190cca1ab2cfb802bcb204c1dd1f5e599a4afa7f1c0985d25c3877dd",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/workspace/The-Book-of-Eternity-Reborn",
+        "ls-tree",
+        "-rz",
+        "2ab809d4ca590fd5c7583914d40121f0c0ee5699"
+      ],
+      "exit": 0,
+      "stdoutSha256": "c9ff0be6190cca1ab2cfb802bcb204c1dd1f5e599a4afa7f1c0985d25c3877dd",
+      "stderr": ""
+    }
+  ],
+  "runtimeExecuted": false,
+  "repoWrites": false,
+  "networkUsed": false,
+  "delegationUsed": false
+}

@@ -1,0 +1,104 @@
+{
+  "kind": "INDEPENDENT_SOURCE_FINDING_CONTINUITY_NOT_FINAL_VERDICT",
+  "date": "2026-10-18",
+  "findingId": "NI-IOBS-S04",
+  "sourceCommit": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+  "severity": "material",
+  "status": "OPEN_AT_AEE4",
+  "title": "Fresh ErrorPrepared refusal does not report its frozen diagnostics",
+  "contract": {
+    "path": "/tmp/t179pd-ni-iobs-l01-engineering-map-447bc121-20261018.md",
+    "sha256": "aae9ffeabc718106db4de89ecdc463f466c42a288a7f3cc2fd4e45d2ef3fd692",
+    "line": 35,
+    "text": "Fresh no-Error consumption only checks stored diagnostics; it does NOT append their Warning vector early. Append a defensive stored-I issue copy exactly ONCE at the original late-I slot per validation invocation, after late sealed-N. Error-held delivery reports its frozen issues at the owning refusal without entering late/common."
+  },
+  "scenario": "A genuine selected fresh operation prepares and commits a result containing an Error. Owning release returns; canonical refresh retains Prepared and its issues, then exits with publication-held disposition.",
+  "actualSourceBehavior": "ValidationAndRepair stores and returns the frozen issue vector, but its joint branch directly calls ValidateMortalJointPostPublicationAsync; the noncommitted guard returns Held before enumerating/reporting issues. The outer owner displays only generic recovery text. Resume separately logs each frozen issue.",
+  "consequence": "The first owning refusal fails the accepted diagnostics-delivery contract even though durable retention is present; the concrete repair cause is not delivered on that invocation.",
+  "requiredCorrection": "Report the frozen ordered diagnostic vector at the selected fresh owning refusal without interactive ordinary validation prompts, repair, recomputation, I publication, or common effects. Verify actual delivered diagnostic contents rather than only reading the stored record.",
+  "existingControlLimit": "AssertHeld currently proves Prepared/Error/current bytes and no effects; it does not observe logger/UI delivery.",
+  "scopeLimits": [
+    "Source-derived only; no native test execution or observed runtime failure.",
+    "No repository writes.",
+    "S03 and final integrated SOURCE remain open; this does not introduce a new architecture gate."
+  ],
+  "sourceEvidence": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 506896,
+      "sha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "gitBlob": "2f594d225f87daaf6bae922af590bf1a0658dd4c",
+      "startLine": 854,
+      "endLine": 863,
+      "excerpt": "            if (canonicalRefresh.JointPublication is { } jointPublication)\n            {\n                if (activeSnapshotContext is null)\n                    return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;\n                // The known common batch/readback and original claim settlement\n                // have returned with the issuing lease closed. A configured test\n                // pause cannot throw through the publisher or apply progression.\n                if (jointPublication.Disposition == MortalJointRepairPublicationDisposition.Committed)\n                    await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCommonReadbackSettledBeforeProgression);\n                return await ValidateMortalJointPostPublicationAsync(source, activeSnapshotContext, jointPublication);\n",
+      "excerptSha256": "bc44c48a36bb9eec3d6c539cf6551767e583039edf897493601a9610e59af438"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 506896,
+      "sha256": "4c6b0d7cfc2c54bea41568357b716bd6473c4e3882cb2a10b9e5b77141f35c0b",
+      "gitBlob": "2f594d225f87daaf6bae922af590bf1a0658dd4c",
+      "startLine": 2285,
+      "endLine": 2298,
+      "excerpt": "        if (_mortalJointRepairCorrectionReady)\n        {\n            if (activeSnapshotContext is null || !MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))\n                throw new InvalidDataException(\"Joint canonical refresh requires the exact validated original frame.\");\n            var interfaceResult = await PrepareCurrentMortalJointInterfaceAsync(activeSnapshotContext);\n            if (interfaceResult?.HasErrors == true)\n            {\n                var held = new MortalJointRepairCanonicalRefresh(MortalJointRepairPublicationDisposition.PublicationUncertain,\n                    null, interfaceResult.Issues, Frame: activeSnapshotContext);\n                _mortalJointRepairCanonicalRefresh = held;\n                return new AcceptedTurnCanonicalRefreshResult(true, held.Issues, JointPublication: held);\n            }\n            var joint = await PublishCurrentMortalJointRepairAsync(activeSnapshotContext, expectedTurn, snapshot);\n            return new AcceptedTurnCanonicalRefreshResult(true, joint.Issues, joint.Plan, JointPublication: joint);\n",
+      "excerptSha256": "c18371459a0d2dafacbce5f78b2779020052600ce39631da63909ccc497426e1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 10811,
+      "sha256": "0678579868f754eba3cafd9b1adc10c9345fa38e819faf032be42d3e99fe3efe",
+      "gitBlob": "08710465de59f2a58ef4d85ca2650cd6dc90239e",
+      "startLine": 50,
+      "endLine": 56,
+      "excerpt": "    private async Task<AcceptedTurnValidationDisposition> ValidateMortalJointPostPublicationAsync(\n        string source, ValidatedPendingTurnSnapshotContext frame, MortalJointRepairCanonicalRefresh publication,\n        WoundAcceptedTurnOutputBindingResult? continuationOutput = null)\n    {\n        if (publication.Disposition != MortalJointRepairPublicationDisposition.Committed ||\n            !SameMortalJointOriginalFrame(publication.Frame, frame, frame.TurnNumber))\n            return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;\n",
+      "excerptSha256": "f546f64bd2b7b65dafc1b26eb00ade073a6bf9d3e55e407e28c8cceaa9b83d9a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 10616,
+      "sha256": "cbfaa0a223778c19eb393ccf5bdc20ba57a7ba91b1d126cb8133ccd7a2b77c3f",
+      "gitBlob": "b1b3d3badd80d78b02b2fab021ec37dc06fbc2c1",
+      "startLine": 47,
+      "endLine": 49,
+      "excerpt": "                retained = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(data));\n                retained.RequireLegacyPending(pending);\n                if (retained.HasErrors) return HeldWithFrozenIssues(retained.Issues);\n",
+      "excerptSha256": "832293ad46e0c3934f6d4377ceb91f9aa7f4b909824144594eab4966361c45e8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 10616,
+      "sha256": "cbfaa0a223778c19eb393ccf5bdc20ba57a7ba91b1d126cb8133ccd7a2b77c3f",
+      "gitBlob": "b1b3d3badd80d78b02b2fab021ec37dc06fbc2c1",
+      "startLine": 125,
+      "endLine": 130,
+      "excerpt": "        AcceptedTurnValidationDisposition HeldWithFrozenIssues(IReadOnlyList<ValidationIssue> issues)\n        {\n            _mortalJointInterfacePreparationHeld = true;\n            foreach (var issue in issues) _logger.LogWarning(\"Selected joint I owning refusal: {Issue}\", issue);\n            return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;\n        }\n",
+      "excerptSha256": "da343b5e3557f037c99bde88254a1dcd1b19d2710d143db950301f3d9ebd8491"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 296492,
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "gitBlob": "078269837c9f5bf049824d5e3ddf89b667f7f537",
+      "startLine": 60,
+      "endLine": 85,
+      "excerpt": "        if (disposition is AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or\n            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or\n            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or\n            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady or\n            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased)\n            _inGame = false;\n        else\n            ClearReadySignals();\n        var message = disposition switch\n        {\n            AcceptedTurnValidationDisposition.RetryablePublicationRearmed =>\n                \"[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]\",\n            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased =>\n                \"[yellow]↩ Совместное исправление отменено. Исходное состояние восстановлено, запрос лечения удалён и удержанный ресурс освобождён.[/]\",\n            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady =>\n                \"[yellow]⚠ Совместный ход готов к завершению только своим владельцем. Исходные данные сохранены.[/]\",\n            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked =>\n                \"[yellow]⚠ Совместное исправление смертного хода заблокировано. Текущее состояние оставлено без дальнейшего отката; требуется безопасное восстановление.[/]\",\n            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked =>\n                \"[yellow]⚠ Уже опубликованное состояние смертного хода сохранено. Повторный ответ не принят; исходный ход удержан для безопасного восстановления.[/]\",\n            AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked =>\n                \"[yellow]⚠ Духовный ход приостановлен. Состояние хода сохранено. Вернитесь в сессию после устранения ошибки, чтобы продолжить.[/]\",\n            _ => \"[yellow]⚠ Финальная публикация лечения заблокирована безопасно. Ход и удержанный ресурс сохранены; требуется перезапуск или восстановление сессии.[/]\"\n        };\n        AnsiConsole.MarkupLine(message);\n        return true;\n",
+      "excerptSha256": "8c82454265cfa308a6aee31030f8a58fa704e4b645af4d61befef77283f72760"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "source": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+      "bytes": 19823,
+      "sha256": "5d16772ebc9ae3fa4b1f43dc960d402fa4c6de24219ad0f7dd38ab44c9f41130",
+      "gitBlob": "cc26fc71bd42085f5bbf87ca982de6472b7c6ea1",
+      "startLine": 268,
+      "endLine": 290,
+      "excerpt": "        internal void AssertHeld(GameEngine engine)\n        {\n            var pendingBytes = ReadPhysical(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);\n            var pending = ParseJsonObjectBytes(Assert.IsType<byte[]>(pendingBytes));\n            var result = MortalJointInterfacePublication.Read(JsonSerializer.SerializeToElement(pending[MortalJointInterfacePublication.PendingField]));\n            var after = _mechanicalBefore.Keys.ToDictionary(path => path, ReadPhysical, StringComparer.Ordinal);\n            fixture.WritePhysicalInjuryDiagnostic(\"iobs_actual_error_prepared_held\", new\n            { scenario, Result = result.ToJson(), Interface = Raw(ReadPhysical(InterfacePath)), Mtime = Mtime(),\n                MechanicalBefore = _mechanicalBefore.ToDictionary(row => row.Key, row => Raw(row.Value)),\n                MechanicalAfter = after.ToDictionary(row => row.Key, row => Raw(row.Value)), Trace = _publications,\n                ActualTurn = GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber });\n            Assert.Equal(\"Prepared\", result.State); Assert.True(result.HasErrors);\n            var error = Assert.Single(result.Issues.Where(issue => issue.Severity == IssueSeverity.Error));\n            Assert.Equal(\"interface_updates_unknown_field\", error.Code);\n            Assert.Single(_resultCommits); Assert.Empty(_publications);\n            Assert.Equal(_submitted, result.BeforeBytes);\n            Assert.False(Assert.IsType<byte[]>(_submitted).AsSpan().SequenceEqual(Assert.IsType<byte[]>(result.AfterBytes)));\n            Assert.Equal(_submitted, ReadPhysical(InterfacePath)); Assert.Equal(_submittedMtime, Mtime());\n            Assert.Equal(0, _captureCallbacks); // Prepared is positive reach evidence; capture/preparation did not begin\n            Assert.Equal(42, GetPrivateField<GameLoop>(engine, \"_gameLoop\").TurnNumber);\n            Assert.True(GetPrivateField<bool>(engine, \"_mortalJointInterfaceFreshConsumed\"));\n            Assert.True(GetPrivateField<bool>(engine, \"_mortalJointInterfacePreparationHeld\"));\n            foreach (var (path, before) in _mechanicalBefore) Assert.Equal(before, after[path]);\n",
+      "excerptSha256": "ea3eaf409359c59294121b343425b0c96f07bd1049396c1c28690f24ccac5bbf"
+    }
+  ]
+}

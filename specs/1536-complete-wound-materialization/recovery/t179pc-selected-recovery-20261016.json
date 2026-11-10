@@ -1,0 +1,1438 @@
+{
+  "sha": "c31dc84a5898af0e45e7cff8825c81230decd7bf",
+  "directory": "/tmp/f1-r2-story-clean-restore",
+  "utc": "2026-10-16T10:59:31.582469+00:00",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "bdeca1d95d323754354ae3dfc3bd505ed65829130230b8e79f31f4428041dadd",
+      "bytes": 4433
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "693385ec742d102922473fee743ec1afcb71db94cdeaa983eb6eb4bed98e615f",
+      "bytes": 1946218
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "bytes": 81688
+    },
+    {
+      "path": "docs/testing.md",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "bytes": 18979
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432
+    },
+    {
+      "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "bytes": 5795
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourcePendingResolutionTests.CommonBoundary.cs",
+      "sha256": "ea71608825f4ab493288125c53072e27c5f79f6f2d53255f173bbcbb2f147047",
+      "bytes": 3308
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+      "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "bytes": 1200
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs",
+      "sha256": "c8229c88d9c8eef71ebc0d83108405b6b5b7e7e1878f1a9dc329af36cae88874",
+      "bytes": 8619
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4",
+      "bytes": 12668
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "bytes": 1682
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+      "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "bytes": 38927
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+      "sha256": "c0019711959a36075cc705835c65851bd12052120b0940046cc4f4336dccde6e",
+      "bytes": 5572
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+      "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "bytes": 71591
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "bytes": 82535
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+      "bytes": 1991
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "sha256": "b42660d3c8493b377675603b72af4b8d598261c9ef64664a2e0d412cf4cb1400",
+      "bytes": 1405867
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "sha256": "3609bd5935eaa7f82dda82a016045277bbe1aec803e638c8965a5ead7fa71377",
+      "bytes": 1958189
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "bytes": 229597
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.md",
+      "sha256": "859b2f2e3088cf241a5a0577d5b4428ee57b8fb2349e7cb9740b796370289b15",
+      "bytes": 37866
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.json",
+      "sha256": "433594bd787f343fb532898893209bc39c0b9f7c42e05ed0fd3e24216bfc16b5",
+      "bytes": 259726
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-summary.json",
+      "sha256": "fc15000c3aaed52060b5ecd7d37ad69c62817f90dea46d8ac04a2d50527435ba",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-plan.json",
+      "sha256": "a2703d16789e18ceddee6a13872579d85f6fcd033efadac4979eac9c79094538",
+      "bytes": 1533
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "sha256": "b4888f6bdea1b2cac22580492a9b39f5ec457b220d2ca933824d94e15e908eb6",
+      "bytes": 4832234
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-dotnet-test.log.gz",
+      "sha256": "25cfd92e760240cf011b6f95fd6bf9ea7689f5dee988dbeb6eeb5feb0a49df4b",
+      "bytes": 187084
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-artifact-index.json",
+      "sha256": "1e9a9106450a4592e3fb3d43f93adeb0e5be9febb7156887c72065db505c99e8",
+      "bytes": 3573
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-summary.json",
+      "sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+      "bytes": 6428
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-plan.json",
+      "sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+      "bytes": 17857
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+      "sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+      "bytes": 374440
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-artifact-index.json",
+      "sha256": "7da743b8b781c06f037e1b1e8850b399ac57b84b724d299ebc2eade346d02da8",
+      "bytes": 8218
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-summary.json",
+      "sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+      "bytes": 1598
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+      "bytes": 385436
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+      "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-artifact-index.json",
+      "sha256": "fe6e0aa38f4273f1b341af7d957a04be3098407b849935cb3511db6ce6b95da2",
+      "bytes": 4166
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+      "sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+      "bytes": 1717
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+      "sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+      "bytes": 9206
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-binaries-20261016.json",
+      "sha256": "e37e4fa6f9aa7eea27556f3adb4c4a85cad41032f891a45b052aa314f5ecb11a",
+      "bytes": 928
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-summary.json",
+      "sha256": "299efccdcb82c7543388ce965473ee6fbc37676a41b59cf4806e727beef96bf7",
+      "bytes": 1487
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-plan.json",
+      "sha256": "8e7563278584c309e7539fcf49ed9f3fc7e757f76df641dd704f4678aefea2b6",
+      "bytes": 1231
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+      "sha256": "26e50e4ecbcb3cd3877be9709fc567141037095c5a0ca9a6112cda65dd6b7b33",
+      "bytes": 2532380
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-dotnet-test.log.gz",
+      "sha256": "08c93f18b9c2dd32f619b67ccccfca06906ebeb5a2fdf86fc392ef3ab93bfe3e",
+      "bytes": 187090
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-artifact-index.json",
+      "sha256": "b57cfb0e01b3abeaa26582fb5abd44c002f5570ef196a684f3d8985ba7324270",
+      "bytes": 3635
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-summary.json",
+      "sha256": "0e5d58e76917dc22c5a7ab4d6ad925f4970d4720133fa2a528897d5cfa6982f2",
+      "bytes": 1475
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-plan.json",
+      "sha256": "315afed133e7f42c3440f56558b3cf610bacedbe7aade0d2cd4f5357ba98a3ce",
+      "bytes": 1582
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-fr063-common-resource-continuation-integration-001.trx.gz",
+      "sha256": "03315bbbf665e7c52b2f6ebc0863b0972e49e82cd166074709772264080e419e",
+      "bytes": 1581
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-dotnet-test.log.gz",
+      "sha256": "d3af98dea4d7a40c08d6d1ef139c147f18e47d6862f6bd63d41700a5e959c9f0",
+      "bytes": 187086
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-artifact-index.json",
+      "sha256": "5542e45d8f37a2a54c178997a17ca1cf5b71a1aa5942c19cf6bf917a1900c811",
+      "bytes": 3638
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-summary.json",
+      "sha256": "20342f2af6142cbf8c4fd1cf1184a93478cd9580de75928e6960a3b082af7ba5",
+      "bytes": 1458
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-plan.json",
+      "sha256": "76035b591f727a2d8ca19f9d65395495d417e7a0e52fb888a8977721a72e74f3",
+      "bytes": 1559
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-fr063-common-qte-consumers-integration-001.trx.gz",
+      "sha256": "4d16290c5a7b624acfec61c53311d89f6a13f95bbb086fc8dfb23bda0c358ec6",
+      "bytes": 9966
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-dotnet-test.log.gz",
+      "sha256": "0f0b5bd5e0c1e26e38b2b68c341a702085d245c70adb9839cf6315b3c7149304",
+      "bytes": 187077
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-artifact-index.json",
+      "sha256": "5cdaf12ed2549a50bd56e2b5f1b97ad9ae9d3734438ba17176210db228aadead",
+      "bytes": 3574
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-summary.json",
+      "sha256": "b733c2c4a43fc659fc527e17cd23eafadbaba0930ed70eb2926896e680df5a56",
+      "bytes": 1481
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-plan.json",
+      "sha256": "f8c04c0995a0d88825280fc72428797228c8969956a7319ee07f853779c6994c",
+      "bytes": 4917
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-fr063-common-calculation-regression-unit-001.trx.gz",
+      "sha256": "aa9a594360b856d7ae83bfe768d9185aabd2fa8f1b2f113c31e6110bb2a11e52",
+      "bytes": 3331
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-dotnet-test.log.gz",
+      "sha256": "0fda3faad0052effd2917c574c8c5337711ffe6147a2d0501cb59f4a0c2f6b29",
+      "bytes": 188728
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-artifact-index.json",
+      "sha256": "5d3750afaf1c58452c5aa8a71b2786999bc3b803b5429481cfedcd3320621e94",
+      "bytes": 3625
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-summary.json",
+      "sha256": "82de37d65a9a1f167b622b6088a696742c2f09001b78540cb37517995f5ea831",
+      "bytes": 1473
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-plan.json",
+      "sha256": "4bd076a8d4012e0fd6e7d66a93c23db249592ae92007b311dc5549f4441d172e",
+      "bytes": 1133
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-fr063-joint-c1-common-mixed-guard-unit-001.trx.gz",
+      "sha256": "dee21c9da13ad74bc74bf48d1b005c2de93f0265a9f109a5bd4a1edd1f50a635",
+      "bytes": 1343
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-dotnet-test.log.gz",
+      "sha256": "069cc8ad5401e086af21a4f8d0df880b67975b47a81f1af085de6ac637f1cd99",
+      "bytes": 188722
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-artifact-index.json",
+      "sha256": "e6cc73ed0053e181bc8ba2be0913c933cde8efffff221d1dd9d7093074ac9deb",
+      "bytes": 3580
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.md",
+      "sha256": "575e525521006301bbefdf2d16c6b7f9bea4295ee2afccd50dc13690c81cb1ce",
+      "bytes": 5241
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.json",
+      "sha256": "5bb960ca59b7a4c5294b4a33b36ccb88ecf34359e8252aaf1be73042fb2184f6",
+      "bytes": 107736
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.md",
+      "sha256": "fbab152a2f273834960347b0120e5daa3eea8cf52380e8ac6412d8d658063f30",
+      "bytes": 3711
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.json",
+      "sha256": "33afc9680dcde6f100403f8a565223f5488cf5a9304f358037f864ccdc25aeec",
+      "bytes": 75892
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-summary.json",
+      "sha256": "cc294318a4eac7daf49775bdc1c2bfb8de133a619d80dee7b62d9de718e9945a",
+      "bytes": 1478
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-plan.json",
+      "sha256": "5e8ad9b4f3aafaa3d6823c139e2d340777258f72dcadf75e85a3c410106dc71c",
+      "bytes": 2433
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+      "sha256": "d82c31ae4cdb48b214dce95f5850280ff51a0ad0a72476553d0b23ed98b5570b",
+      "bytes": 2501
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-dotnet-test.log.gz",
+      "sha256": "9a276a2a034cc2ef17d291938f7e9afc2cd8a6a13e3fec5f1d2168564f04eb4e",
+      "bytes": 188716
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-artifact-index.json",
+      "sha256": "49c88095b4e8a9c3b6abf090aa3b492286b5fec8f7c680d82e5f1d337d541f82",
+      "bytes": 3598
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-summary.json",
+      "sha256": "4222f93fc86f443ea244208bc16789b6e9b0056ce04de1d15c467cfabec51dcc",
+      "bytes": 1455
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-plan.json",
+      "sha256": "c20b273e865a1fb62dac1b7116bcbc98cc5d89b32eda229daae796ce97096573",
+      "bytes": 1159
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-fr063-joint-active-tail-integration-001.trx.gz",
+      "sha256": "386c79acebfec0a83f3e5e38ef203bed70a2b14312560030a00eeee2ad20e44d",
+      "bytes": 8209323
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-dotnet-test.log.gz",
+      "sha256": "ec8c92d4ab4ef734caf628ab648dd7bc661305fc8925d68cea80bf098cd4d906",
+      "bytes": 187074
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-artifact-index.json",
+      "sha256": "bf791bcc40d9760fa8d35e8a9d32be415da8248c7f52420cf93cb1136eff9b7d",
+      "bytes": 3572
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+      "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+      "bytes": 23359
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+      "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+      "bytes": 17161
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.md",
+      "sha256": "3b60c3f36928aa77c5dc77e7c48c1af70f57739444b133967564bec4260b4afe",
+      "bytes": 14477
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.json",
+      "sha256": "1324f4ae3ad4dac3ddebe4f89c9a867bf894e066ee5b0276bd7788e64b345338",
+      "bytes": 130555
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.md",
+      "sha256": "55f46433f8069dd91173ad82c72c0ef9b62e7952492f92e8e9547f0d4ccafe5d",
+      "bytes": 9371
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.json",
+      "sha256": "8482bb778dc576c0c4d9b1db62676ef56d58e4bdc3394d740284607fbf176aac",
+      "bytes": 54630
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.md",
+      "sha256": "42aa4c29c028feb0212e3fbe62b91a692efe1b14a72fba92d291e10aa153861c",
+      "bytes": 33884
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.json",
+      "sha256": "0b754c394dd64371a1d36045139162ab74eab3ddb029e09b18c70156206d4f60",
+      "bytes": 234797
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.diff.gz",
+      "sha256": "c62f333eed9cfb0f2e2a57478f90be38a283c64a066068ac96b5aadd8058c555",
+      "bytes": 6656
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016-diff-artifact-index.json",
+      "sha256": "53acbd3f75898e402b1acb7296f5a1fdbd77e137a2c575e0203a87769bfc7bf7",
+      "bytes": 428
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.md",
+      "sha256": "088e4bac5c708eb6a487893416658945c972a5859034608f31baf61c1eb7fbd2",
+      "bytes": 31325
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.json",
+      "sha256": "693bfe316f320322ef598cdd2ae8493bfd00b49c7d98e7f9264b12a00fa5711d",
+      "bytes": 227345
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-summary.json",
+      "sha256": "24011a04ef80e3e036b5a5b5a6008baf714de633d6d83277af45127e26426672",
+      "bytes": 6214
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-plan.json",
+      "sha256": "8fcedbe9659bf1736c493ef5ecd691b7e9a391af38324ca4785131646097d2f5",
+      "bytes": 17939
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-dotnet-test.log.gz",
+      "sha256": "9e60554210ff8820f4addb9a355bce13a502a62c75f5bf2d8f9d82e2218f06af",
+      "bytes": 374433
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-artifact-index.json",
+      "sha256": "263775a244b78ea3076dabe43f99801aa5ff15e087aa1d3b35b0f3356b708158",
+      "bytes": 7974
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-summary.json",
+      "sha256": "55958dadaf04d66a0cbb6679d60c28733807b634efe087b7c7b7166e0fd734ec",
+      "bytes": 1600
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "a84f6ee1942fb9936013f172f483c7516c90d53f57780a5ee061ff3af9cf7dc2",
+      "bytes": 385416
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-catalog-audit.json",
+      "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-artifact-index.json",
+      "sha256": "a3fea5b23d24d191f691797061b720334fa29b7758aacb56802d40fb64a2dd51",
+      "bytes": 4118
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-unit.log.gz",
+      "sha256": "74d72027eff41c4baea362699c0b98dd95e6ebbea997c79a5176ddeff3f110fd",
+      "bytes": 1711
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-integration.log.gz",
+      "sha256": "ad2ce8d8ab0ba352195459497314c906f4815411ca51e440436fb0c43c1136c0",
+      "bytes": 9196
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-binaries-20261016.json",
+      "sha256": "e5441a0a410998fee294b41db7e2a866227e0ee5e3c0ad7d64ea6a54de2a234c",
+      "bytes": 946
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-summary.json",
+      "sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+      "bytes": 1382
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-plan.json",
+      "sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+      "bytes": 2433
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+      "sha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b",
+      "bytes": 3763
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-dotnet-test.log.gz",
+      "sha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9",
+      "bytes": 189723
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-artifact-index.json",
+      "sha256": "05933c76094219a8b0e01a3225aa481a6737dea382d28d47dd8ffa88f6398479",
+      "bytes": 3468
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-summary.json",
+      "sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+      "bytes": 1391
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-plan.json",
+      "sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+      "bytes": 1231
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+      "sha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+      "bytes": 5065030
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-dotnet-test.log.gz",
+      "sha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+      "bytes": 2718816
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-artifact-index.json",
+      "sha256": "f934d101f515c4df864bfd27015d957fa58159e7a88a602e4b80e5f4a5a02874",
+      "bytes": 3534
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-summary.json",
+      "sha256": "809856ea3aa3e384fda2712f9df84779281029d8b01fd8f56d9a513914f82e46",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-plan.json",
+      "sha256": "fd06c930cab065f56789a69bf3e35833f9fc5eeef76bf7ca4415016876bbacaf",
+      "bytes": 1533
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "sha256": "91aa2ffaa1379196a6b1857cd2ba608f813dbf382bf85773b60123f4ea11e541",
+      "bytes": 4829924
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-dotnet-test.log.gz",
+      "sha256": "54a02d398e887ca0202400c710b7df60e6b83338c2bca22616857736a49f6302",
+      "bytes": 187087
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-artifact-index.json",
+      "sha256": "6cd6b6e9e7cdc1b80ea65eebad890614b5d253691517c7aa938a8f3cb0a60d63",
+      "bytes": 3581
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.md",
+      "sha256": "204f01978f5279cbbd20b8380eac8d9418024015d97eaabd0912f0f0af93beb5",
+      "bytes": 6067
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.json",
+      "sha256": "952bc768d218abb52adf11f7160ad408f3ab8acb84571f4c6cc8290a045761fc",
+      "bytes": 50838
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.md",
+      "sha256": "ec6892bc91555fda01b531f8b73f167ec27d6d6239771af94c0e169b587de37d",
+      "bytes": 6924
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.json",
+      "sha256": "0476401c3008838de06cb0e77bdde988d590fcc681ec6718dc17cdb6415b4656",
+      "bytes": 83457
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.md",
+      "sha256": "582bc4489d17e20cefa9a7e7b73218ccc3e97dc63ecf050ea58bb654bf4e4ccb",
+      "bytes": 14590
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.json",
+      "sha256": "1a9090816120836b560e541f6ceba5981c08fb1d84246d277c49f1970a36a88e",
+      "bytes": 36545
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-summary.json",
+      "sha256": "b81ec9eab08cb9281804c612762ddd27dedb78000c36dc9635dc3698025e135b",
+      "bytes": 5449
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-plan.json",
+      "sha256": "a270afd81b7d245af665f2fb2cf697cb69b8ce67756028bc2bdf6ce664f8802c",
+      "bytes": 15387
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-dotnet-test.log.gz",
+      "sha256": "0751df4c4c42fc9da55c12a4f240f977e38a8f47889befdacc3dbe90dd92d44a",
+      "bytes": 374426
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-artifact-index.json",
+      "sha256": "956a994fa4a14709a7647fadb2120feb816dcb958bd25e6113cb5a5fa0573527",
+      "bytes": 7197
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-summary.json",
+      "sha256": "b0f6660299c29f92c425d06eb034bbfcf7f2f5f5a0d0f2e71717eb6cafec1715",
+      "bytes": 1600
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "0691963acdae5b0545553c0d63ca05592ca81820157d247fabf03c3d3e133d94",
+      "bytes": 385128
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-catalog-audit.json",
+      "sha256": "7bb1aab5de01bbba7274b7348a987d02559463f815daeadded77031516cf55be",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-artifact-index.json",
+      "sha256": "5ba204837554bbaf11817e2f40ec617a15b9df69d37581f96e3813779c2c4eb2",
+      "bytes": 4128
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-unit.log.gz",
+      "sha256": "58ce8df35b97c027e2f2a5ec1b8a93ee5ed180d9cd6afa5724e931a340a4daec",
+      "bytes": 1721
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-integration.log.gz",
+      "sha256": "666d26d15861b11f0eccc974af8ee1f786cfa1ca4a082e742299f442c8be0174",
+      "bytes": 8909
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-binaries-20261016.json",
+      "sha256": "9266db74e8c2bc1ff05dd74ae5392b983ef72bb3e9330b1446b6948150bd8763",
+      "bytes": 934
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+      "sha256": "a2f2076f09cc9913df3101fe00029209b3cf4aae2ab5568335a2322191e8697c",
+      "bytes": 29810
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+      "sha256": "6272be6527da1dfb069307f31044f72ddaf604450c1e566692dfbdc5b39e68c7",
+      "bytes": 19024
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.md",
+      "sha256": "5f7cc9c46927ea89e662769c4281a3aefaae27bda36b4869e071bdb346ac49b2",
+      "bytes": 31524
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.json",
+      "sha256": "ad9f520c58fda6e5783399801f9d501e2e5bd2754bb8db2a9eb793796c29cd8a",
+      "bytes": 29446
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.md",
+      "sha256": "0acf79729e6f65398a7b7d77139b5070433dc141077382da91bb1ae9caca2043",
+      "bytes": 17223
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.json",
+      "sha256": "2d3b80106195e235298cf8dc68ee8139030c911a7918892e8bbf8ec3ae5d1721",
+      "bytes": 36042
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.md",
+      "sha256": "2dc55d211e1cef3ebdea8eed2cafd55f513eac1f73bca6de584d6f8d3f406443",
+      "bytes": 2729
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.json",
+      "sha256": "99e00758c8271b444bb589dd22d19a07b71318499362011f48a955b1c08a5f22",
+      "bytes": 9830
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+      "sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+      "bytes": 15301
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+      "sha256": "3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6",
+      "bytes": 26634
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-summary.json",
+      "sha256": "048046e04979807207fc8eaf7cae4b4c8a0e5d34551eb6be278063ad68cddce8",
+      "bytes": 1457
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-plan.json",
+      "sha256": "5c407bee32285a6d544e28cba06ea75ef053b7a2de196ee369671aa256f7e72f",
+      "bytes": 1139
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-fr063-joint-story-owner-integration-001.trx.gz",
+      "sha256": "b812f14986afd710c5a1bfe77c0d2a3d303110d2dfa247c146d0b3a7e6d55365",
+      "bytes": 27023338
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-dotnet-test.log.gz",
+      "sha256": "79522eceb0424ab223d80e43564bd23297a2981cf88c0b915656f68c19e9eb1d",
+      "bytes": 187054
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-artifact-index.json",
+      "sha256": "fe886d267601153da666fd4597c08d42f3b433176b9364b259afd6e06b439f9d",
+      "bytes": 3562
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-summary.json",
+      "sha256": "1f456862e01946fdd83a91e3ce0cd9953b655bac160037a359b577179c78e000",
+      "bytes": 1461
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-plan.json",
+      "sha256": "95fd4d59de95fcf1b47e0f34c6c6d1fe089c6a9581ffcb9bd74e0e62850aa354",
+      "bytes": 1195
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-fr063-joint-retained-story-integration-001.trx.gz",
+      "sha256": "2e7def12453cd53d977e39a68bea0d64c64c014b9722be9691048d39a16f3d2a",
+      "bytes": 10459200
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-dotnet-test.log.gz",
+      "sha256": "88817fc9dbb097782053b68569f038885914fa76b3099f87d5901cbaeb4366ab",
+      "bytes": 187052
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-artifact-index.json",
+      "sha256": "a4796060d7bba4be3f4495145f4bdbc0951a1dbcd78da00aa227b4ca4c6c7b9f",
+      "bytes": 3584
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.md",
+      "sha256": "cd2f118a4680be3b8ff08712a8a5d12b8c0896c52966988f7f5d847378c10547",
+      "bytes": 7607
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.json",
+      "sha256": "86645af676dddeb1808155e9e6c66c3d845902aa2b069ffe2092bcb20691c817",
+      "bytes": 114413
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.md",
+      "sha256": "9dca2681c7bc63a909c23b3245d8db3357a9e31e0b21133ee2fc0c8134a366ba",
+      "bytes": 3074
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.json",
+      "sha256": "b27f8025c8c475941e4c9c182b3f4c287446766e201ac3cff7fd5e1be9266be2",
+      "bytes": 25450
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.md",
+      "sha256": "6e4cf1ab6bacc4cac85c7786c91efeae53d6275ff871a6e30d0bd289dca5e76a",
+      "bytes": 4111
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.json",
+      "sha256": "5871dd9dc78dc7306b06638cead1a80d7c5ff8bcefd44003113e4792e669003f",
+      "bytes": 17518
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-summary.json",
+      "sha256": "2f95ee98ab511e9d9a195325dcff9f3cf46251c6f6e35ca098e78a40f8a36d87",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-plan.json",
+      "sha256": "d0a631d9311e04f774b3e57b7087ec369834540c06210fe36eaeb09c178129eb",
+      "bytes": 1533
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "sha256": "d12a6af436570578f5f05da2ca29495100cd1b45542c0405c822128a7b1cc3dc",
+      "bytes": 4833093
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-dotnet-test.log.gz",
+      "sha256": "d3f5f5e7e7cb83b90c1e9aeba2624c964e059c965860984686daac94eb392754",
+      "bytes": 187052
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-artifact-index.json",
+      "sha256": "6f242aa42d616ae57b71ed193856dff276eb4f1834b712d3bd587b2b9804894f",
+      "bytes": 3589
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-summary.json",
+      "sha256": "65ba4698f82f67525181058fa209eeb975f18611ea10d1ccbb9dee8337b86562",
+      "bytes": 1470
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-plan.json",
+      "sha256": "beb1bbc061afaa8a481d0be0a0cd386bf490cba09230415d4d2a973a17d0fbd2",
+      "bytes": 4103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+      "sha256": "fb9803596847865b498d7e4af47520929e2113edff72afb08c67da7115fb4369",
+      "bytes": 4107
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-dotnet-test.log.gz",
+      "sha256": "629bc87768ef062d0fb9b66d5734483902177dace3d7d3c6358f2a428e4f0e15",
+      "bytes": 188519
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-artifact-index.json",
+      "sha256": "012bbf1a82c20f3eb6c7ad97345062cd12adc588f36839bb6247f483de833101",
+      "bytes": 3630
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+      "bytes": 22799
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+      "bytes": 14010
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-summary.json",
+      "sha256": "64fece84d5381fc10f6410c9f282074f5ea5c759b1dde8a91dcc396555ba9836",
+      "bytes": 3527
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-plan.json",
+      "sha256": "efb789b7cb2b169a748e8207cdc9bcaf6712baab1651ac5c71f6004be0cff94c",
+      "bytes": 8978
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-dotnet-test.log.gz",
+      "sha256": "886880bde159db5a85edced7a6753b25a9d58ad66c8ad025382ed8dd273c8c5b",
+      "bytes": 374145
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-artifact-index.json",
+      "sha256": "756af9320a759b0ae55626e25cbce01f8fcc00c3ad133032d48364f4bf23898b",
+      "bytes": 5214
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-summary.json",
+      "sha256": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-plan.json",
+      "sha256": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a",
+      "bytes": 1533
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "sha256": "5b0b5b637dff7856b99078b67da5a164fbed996697d2843459a9f3f409e8b7b2",
+      "bytes": 4831168
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-dotnet-test.log.gz",
+      "sha256": "ec9bc730e2e58981a04c775866bfb9ad2132809fa218fe32c4f1bd63c89201d0",
+      "bytes": 187059
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-artifact-index.json",
+      "sha256": "98596a05ce014333f69eff7e77f7fc98a874cc6f403d296e9e795c5a9971a728",
+      "bytes": 3573
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-summary.json",
+      "sha256": "5ffdf837adf851d6299b59b5932869c1430625a74bd75b656112949b0f8a0a85",
+      "bytes": 1600
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "8b99df58348678ddeb2c2289b00f54347d07380c8abecbdfc32e3ae4ff515c81",
+      "bytes": 384915
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-catalog-audit.json",
+      "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-artifact-index.json",
+      "sha256": "fe4c37cff4d237ba0925fd51453bc01bb0625d6777cb01e44805e284f503e920",
+      "bytes": 4118
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-unit.log.gz",
+      "sha256": "23a8f09999e2abaed85976cc4046bcea1a8ad19e8861db2f1f5980ec4be7de89",
+      "bytes": 1710
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-integration.log.gz",
+      "sha256": "ba97d8120009c817d234bb6a28057924aaa97898ff174b41d8dc1e5b3b4d2514",
+      "bytes": 8930
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-binaries-20261016.json",
+      "sha256": "888a99f06367ce7430f40dfe8658e9e75f5c15c2ef2c515c399e99db946371e3",
+      "bytes": 916
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-summary.json",
+      "sha256": "747e4f34c46c2249df204adb27f5cf1c8d2feb2d0deaace1458d0bb424404e03",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-plan.json",
+      "sha256": "d749c0b8c869214dfe8fc88d52f819ae51158195db6ed614e3096e399d9fefc3",
+      "bytes": 1533
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "sha256": "d6d3fd14706a901cbbfbcc7670c182425f11cd1d4c00df4f79256b83d831e852",
+      "bytes": 4831008
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-dotnet-test.log.gz",
+      "sha256": "9d1bc07e9eae52857b467e063818840b65359940ad38e0e715c57bfb6ec62602",
+      "bytes": 187056
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-artifact-index.json",
+      "sha256": "71c9103b6e0644432d1675d992edc8cc0d548383ae95d6966b25730a0d0bb891",
+      "bytes": 3581
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.md",
+      "sha256": "af7bd1bc2a220580691f67e7d4caa75b7ac67464cfcacca822d73aed28b6114b",
+      "bytes": 5708
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.json",
+      "sha256": "458d4f56c43c2e9e58bdf14f95440fe0da2a1eb170bdac1030cb4863cc1e887b",
+      "bytes": 38200
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.md",
+      "sha256": "a5e71f4144b317207a028df78796662dca5b0c97b2b527fc5cb57afbecb52333",
+      "bytes": 4768
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.json",
+      "sha256": "02c78967947b45b1daf7f0c0949dd21829365e4945c7bc5681422b0c3dc3e019",
+      "bytes": 16807
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.md",
+      "sha256": "1c04ce1d90d4dde7d8875ae2f3d472c8f25f5c13e30d735b3729aaf087d349ba",
+      "bytes": 5052
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.json",
+      "sha256": "164bc8ca460681417fefddf83ca2b69c3837ec95d92129259a8fd0458518b8ab",
+      "bytes": 15531
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.md",
+      "sha256": "5f0d4372c9f5854bae6f60cf0d55d23594dabd65b8d3a04a43ad3d14950e68a1",
+      "bytes": 5618
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.json",
+      "sha256": "f4b9f4b266357472d071759c10a76e6f0353b5d95fd71eeed36e5dd3c32daa4f",
+      "bytes": 11681
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.md",
+      "sha256": "aa0956be2fb4ff60648f0664e83ee9e5ca342677b88aa95605d99bc5ed076d14",
+      "bytes": 5111
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.json",
+      "sha256": "ea340f07d7867e66aa8db6fafb56001f9bef951b63d9af6dd85b6ec084c888c1",
+      "bytes": 20558
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-summary.json",
+      "sha256": "09cb94777b2a7daf57ef048bf5f407688002cebf60b23a69dc35f80483076e14",
+      "bytes": 1374
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-plan.json",
+      "sha256": "0aa23e7bdf7d479cb905eb7b8025aaa09e3011ff2267bc2284b703ad91b1e2ff",
+      "bytes": 4102
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+      "sha256": "de9980ef310d7fa8f46f546665b2e539dab7ec1b703a02749211688e8de95bda",
+      "bytes": 5534
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-dotnet-test.log.gz",
+      "sha256": "354498825ddb86c1edfba1d5a5cef5a98030347e6ae2b8cb500ee167c7c9f3f9",
+      "bytes": 189624
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-artifact-index.json",
+      "sha256": "75887ed63ae0da8aa714a70fbd81348f79c0768ec5ffbf6c0c6970af67739a44",
+      "bytes": 3496
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-summary.json",
+      "sha256": "cec01d5def31df45a6217cf3461ac30ffae9eb1faaf0be3563cd34ad350f60c8",
+      "bytes": 3527
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-plan.json",
+      "sha256": "8e5ed211837dc938bb6ce035e2e71a939670a2edb4310ba56bf923e68ae16684",
+      "bytes": 8978
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-dotnet-test.log.gz",
+      "sha256": "814671c00938ff60f5efe9408852defb36441e1fccda2e5e9f6f12bd027496ee",
+      "bytes": 374141
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-artifact-index.json",
+      "sha256": "332b580de494534b0f1c9930c46b454c28fb2f772935591f27eb78271b121144",
+      "bytes": 5226
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-summary.json",
+      "sha256": "369d1ba3d26327a566a37268213d9ce69dd8696eb520959d63824e792388aae2",
+      "bytes": 1601
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "34be7e4d7a3806471b2aa22f5f934c85aa262f394ac25a6f74b5e790f5628d23",
+      "bytes": 384943
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-catalog-audit.json",
+      "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-artifact-index.json",
+      "sha256": "cb4fe11208014243c86ba4c238f21909e6bea3e3e049c71a02927de12d6b98d2",
+      "bytes": 4139
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-unit.log.gz",
+      "sha256": "1c2f35e18db1f487b428d9a374e75f42a16ceff31c3d619a66755c2fcc863fec",
+      "bytes": 1714
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-integration.log.gz",
+      "sha256": "9fbaccf98f600abc3f7f3397d85c97d82f649bc8cd5b3765307ce20d60782d17",
+      "bytes": 8955
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-binaries-20261016.json",
+      "sha256": "c7a9d027e34b22065c42bac86dd128575f6f61042781508343a9faaaa9a28d38",
+      "bytes": 928
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-summary.json",
+      "sha256": "9f2a211d43706ae6eb5c69f42e35f46c854f15e1542476fb544bdfcc222c1b04",
+      "bytes": 1374
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-plan.json",
+      "sha256": "88325b651e48103bbe80895e3e131cc5d96065b7df614e54ca94c9b673375f4b",
+      "bytes": 4103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+      "sha256": "8c37ac1077366d767e0597e5a7eae35f0e954e5565749d78e11ee0162a1c732a",
+      "bytes": 6770
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-dotnet-test.log.gz",
+      "sha256": "8a5588b909516a1f9b5fa46bb0abf53dda64efdb32b4b0a8c43dce1e5d1efbc4",
+      "bytes": 190324
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-artifact-index.json",
+      "sha256": "6c5a0583db9c73deb449162c8f2803677c901a83dcc358764a872cfe7122587e",
+      "bytes": 3476
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.md",
+      "sha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692",
+      "bytes": 8999
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.json",
+      "sha256": "0ca8ee93dfb74313c63d151a37ec6591dc9540ca4b633255e02f199fba3f6ab5",
+      "bytes": 9173
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-summary.json",
+      "sha256": "4a74a4563dc286e73fe469d9e835883a40b62921599acc6ee32ee1b1a238e3f1",
+      "bytes": 3465
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-plan.json",
+      "sha256": "52e3d28c22d196f582f6e6dd9e3735241b18f637e8fe34432fcc1863fb550186",
+      "bytes": 8917
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-dotnet-test.log.gz",
+      "sha256": "bce617846165062e3c84bf656a4da8398679d686f5e5119c5cebe18d24e525f9",
+      "bytes": 374139
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-artifact-index.json",
+      "sha256": "04cf1a5656b4b21b98fc08b3ec75cdba5f1eb94f1f028db1468ed596feee31e3",
+      "bytes": 5158
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-summary.json",
+      "sha256": "43d8c6a3d7e3ca0b0266cb05009027815e18beb949a888428d9158e6646393ea",
+      "bytes": 1600
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-dotnet-test.log.gz",
+      "sha256": "6ec66aa2379b02adbda2b8ce84a3e59984cba0bb06896b8284d589b0563fb002",
+      "bytes": 384863
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-catalog-audit.json",
+      "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-artifact-index.json",
+      "sha256": "6206e3019e5d71467acd15be2c7b0b173729c63b5df23b66d2635d422e5c28b1",
+      "bytes": 4128
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-unit.log.gz",
+      "sha256": "b9ea8bf6d1c47d0cc1e8cf894e68d7c726864d6e39c55b6c96e6fa908e844d4d",
+      "bytes": 1707
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-integration.log.gz",
+      "sha256": "ace288aa21b7742e4c47085b0019eb481e7658ce03e00304097de1ec1792e01f",
+      "bytes": 8885
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-binaries-20261016.json",
+      "sha256": "3408c80be46c9a69456612c8bdcd7deedd8b89339a6e656b44b93d71b781f4d9",
+      "bytes": 922
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-summary.json",
+      "sha256": "7f5277278f1e3085366e8bbf1dd7de9f6bca8d2f38b733886b5c026d219a9c60",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-plan.json",
+      "sha256": "f62d67fde923c771287dfaa1d595f349e81ec0d0a33e46b024b332dff4bbe329",
+      "bytes": 4545
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-fr063-automatic-calculation-unit-001.trx",
+      "sha256": "3eeed08ffb6390f1bc0a9844eaf061fcd417e8469ba9410c7dcc3f3700275979",
+      "bytes": 150789
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-dotnet-test.log.gz",
+      "sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821",
+      "bytes": 197063
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-artifact-index.json",
+      "sha256": "3358874268775724301d39ebbe623e64925e8edb5b293e6f18f7540e9fa06155",
+      "bytes": 537
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-summary.json",
+      "sha256": "7b5604bfbdbd8a4c71efe8f24956e89de17d1f81ec5baa006cb1e268acc05c5f",
+      "bytes": 1464
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-plan.json",
+      "sha256": "2bcf819b0b0b8eb1698554a85a9430e795b2d2d80ebe487ef3ad6c6d782831f6",
+      "bytes": 5216
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-fr063-automatic-calculation-unit-001.trx",
+      "sha256": "be23a75752dcffa7a650e75bbaaf8191448030f2a73ede8228c5281a74c64b27",
+      "bytes": 76824
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-dotnet-test.log.gz",
+      "sha256": "5782863a48dd15c4ca15980fa802961e0781c543072a721e3917e8435b59b2ba",
+      "bytes": 195757
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-artifact-index.json",
+      "sha256": "1551506b17a4022774a8e9abb382b86d3cecc049c6a741f5e6705956e0d547ea",
+      "bytes": 2540
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.md",
+      "sha256": "b89bdff92a5e1e91b34862eecd9a648e6b2bf85a7dff311297939d2f300834c5",
+      "bytes": 6101
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.json",
+      "sha256": "8bab7e26b8d4ca4b8d9779549edc25c04157f965f259bcbfa5a2b89850a26f2b",
+      "bytes": 25503
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.md",
+      "sha256": "9c21ef1b46732bdb29b892edd0a23d12507ff5e7a9ded18eee77dc7b93e1a709",
+      "bytes": 5252
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.json",
+      "sha256": "700c9a70de475f424d6be937a6e2beb2efd62bc2953227bd5cdf9c108c83fa0f",
+      "bytes": 37162
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-summary.json",
+      "sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+      "bytes": 1560
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-plan.json",
+      "sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+      "bytes": 4544
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-fr063-automatic-calculation-unit-001.trx",
+      "sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+      "bytes": 53680
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-dotnet-test.log.gz",
+      "sha256": "797b3f4bba8924878f7735f8f1a4cfac05068c62e4a4cb5649ec0f9f13f193d1",
+      "bytes": 194716
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-artifact-index.json",
+      "sha256": "3a74daa30c707341f6268429873cf226a3aeecf22cc9e3a1ae0cd0330b5b8421",
+      "bytes": 1619
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-summary.json",
+      "sha256": "d1b64d26efc20104ad72bbeca124ea09908ead3cc51e4d9d306d0f4df4e4359d",
+      "bytes": 1559
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-plan.json",
+      "sha256": "58d3581def61f5982dad25ddcad5c4d7f2fd2e30044f18e39cb8a8768f8b563a",
+      "bytes": 5216
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-fr063-automatic-calculation-unit-001.trx",
+      "sha256": "be8bcc0036ee5d90021cd186a5c896b65b33c3c11be84302f1146a8464715fed",
+      "bytes": 63307
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-dotnet-test.log.gz",
+      "sha256": "79bfefc8046c567346621aff4f83d578c225645100e2c12fd6bb56275d70caf5",
+      "bytes": 194861
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-artifact-index.json",
+      "sha256": "8c556065cc0236b9e3e11ea9d093c97983551667b0eadd70ca02582311e1038f",
+      "bytes": 1674
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-summary.json",
+      "sha256": "e61a275091d44e10a0a0e616279a2fdcf33346f879da62d42d06335e913f5b06",
+      "bytes": 1598
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-dotnet-test.log.gz",
+      "sha256": "d3b46b969762badbb9d3042073419b65d1c0c94a7a377cfa2bc9e49bb1d0026c",
+      "bytes": 377669
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-catalog-audit.json",
+      "sha256": "a0fc61801b09e592ab42e244578562f246f4b87b7e106ea346807ebd413d0e0b",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-artifact-index.json",
+      "sha256": "e93cd11fc4d7d8b5d489f7b8fbbcdf8a87d8bfd24635ca57ce7817207c772549",
+      "bytes": 1407
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-summary.json",
+      "sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+      "bytes": 1599
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-dotnet-test.log.gz",
+      "sha256": "35a147758c781fbbddc2aa12dc089c7495b4a07c5a8fde2f23417062cd5b8378",
+      "bytes": 377540
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-catalog-audit.json",
+      "sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-artifact-index.json",
+      "sha256": "eaad4529691ca3fbf75cb6f6766536b192d7da24c0106d7dc6f8b3f88b4a3e2a",
+      "bytes": 1338
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-architecture-preflight-20261016.md",
+      "sha256": "b2a894f13c9c1a1f213b33441282c777cbc00d75b5d3c106c5abca3bbacff56e",
+      "bytes": 11144
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "sha256": "da1bfbef77da6d665305c1eb3ebc4bc63b8a0d93d0f089a2d68c95d7202e5a61",
+      "bytes": 68611
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "sha256": "fd8eb911f02361a868d706ae4dff17bf51f677bb06b4f851f88697c13d3e6e1c",
+      "bytes": 99387
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+      "bytes": 104607
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "bytes": 63665
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+      "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+      "bytes": 123449
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "sha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+      "bytes": 20977
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "bytes": 21662
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "bytes": 5254
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+      "bytes": 13079
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "bytes": 405766
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "bytes": 30382
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+      "sha256": "27b3754cb9ff867b3d76e913528fcd32af691daaadda9fc16c56646780cffa42",
+      "bytes": 6623
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+      "sha256": "bdeb4200ac73f113359ba81a2b2db8a56af21d886fe2954236793ec31bb7b0cf",
+      "bytes": 4811
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+      "bytes": 22909
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+      "sha256": "64c3d989c4f20fc01c9a07e09b2254da010bf9ddb6aef043004e0815ecd49e90",
+      "bytes": 5022
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "sha256": "e628d6d382eef03a8535a3db192a27944d6a545fd797566e09c96ca8ea74ee6e",
+      "bytes": 7480
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081
+    }
+  ],
+  "count": 285,
+  "clean": true,
+  "noAlternates": true,
+  "source": "GitHub-only filtered sparse exact SHA fetch; no localobject copy",
+  "remoteReadback": "c31dc84a5898af0e45e7cff8825c81230decd7bf\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "restoredBuildOrRuntime": "NOT_RUN"
+}

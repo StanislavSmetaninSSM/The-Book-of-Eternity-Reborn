@@ -4,11 +4,15 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class StateManagerTests
 {
+    private readonly ITestOutputHelper _output;
+    public StateManagerTests(ITestOutputHelper output) => _output = output;
+
     [Fact]
     public void AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite()
     {
@@ -440,10 +444,15 @@ public sealed class StateManagerTests
     [Fact]
     public async Task RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var root = CreateTempRoot();
         var mirrorInputsRead = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var releaseMirrorRepair = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var writerContended = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task? refreshTask = null;
+        Task? writerTask = null;
         try
         {
             var fs = new FileSystemManager(
@@ -454,11 +463,13 @@ public sealed class StateManagerTests
                 {
                     MainOwnerLockContendedAsync = () =>
                     {
+                        Interlocked.Increment(ref mainContentions);
                         writerContended.TrySetResult();
                         return Task.CompletedTask;
                     },
                     CanonicalWriteLockContendedAsync = () =>
                     {
+                        Interlocked.Increment(ref canonicalContentions);
                         writerContended.TrySetResult();
                         return Task.CompletedTask;
                     }
@@ -472,6 +483,7 @@ public sealed class StateManagerTests
                 {
                     AfterPlayerSoulProfileInputsReadAsync = async () =>
                     {
+                        Interlocked.Increment(ref paused);
                         mirrorInputsRead.SetResult();
                         await releaseMirrorRepair.Task;
                     }
@@ -508,9 +520,9 @@ public sealed class StateManagerTests
             }
             """);
 
-            var refreshTask = manager.RefreshGameStateAsync();
-            await mirrorInputsRead.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            var writerTask = fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+            refreshTask = manager.RefreshGameStateAsync();
+            Assert.Same(mirrorInputsRead.Task, await Task.WhenAny(refreshTask, mirrorInputsRead.Task).WaitAsync(TimeSpan.FromSeconds(5)));
+            writerTask = fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
             {
               "schemaVersion": 1,
               "profiles": [
@@ -530,6 +542,8 @@ public sealed class StateManagerTests
             """);
 
             await writerContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions + canonicalContentions > 0);
             Assert.False(writerTask.IsCompleted);
             releaseMirrorRepair.SetResult();
             await Task.WhenAll(refreshTask, writerTask);
@@ -542,6 +556,16 @@ public sealed class StateManagerTests
         finally
         {
             releaseMirrorRepair.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                refreshTask ?? Task.CompletedTask, writerTask ?? Task.CompletedTask));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-dual-contention-settlement",
+                method = nameof(RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease), root = root, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = refreshTask?.IsCompleted ?? false,
+                secondSettled = writerTask?.IsCompleted ?? false
+            }));
             CleanupTempRoot(root);
         }
     }

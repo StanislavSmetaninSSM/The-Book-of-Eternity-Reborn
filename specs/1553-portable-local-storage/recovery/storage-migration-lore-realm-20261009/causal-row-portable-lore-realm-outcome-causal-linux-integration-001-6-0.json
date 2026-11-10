@@ -1,0 +1,10 @@
+{
+  "Failure": null,
+  "remaining": {
+    "lore/current_world/a.json": null,
+    "lore/current_world/nested/b.json": null,
+    "lore/current_world/literal\\name.json": null
+  },
+  "Committed": {},
+  "Sentinel": "retained rollback"
+}

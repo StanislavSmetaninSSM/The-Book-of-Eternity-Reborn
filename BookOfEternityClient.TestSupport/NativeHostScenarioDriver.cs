@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.IO.Pipes;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Win32.SafeHandles;
@@ -11,8 +12,71 @@ namespace BookOfEternityClient.Tests;
 // the actual Process.Start caller, so SO_PEERCRED is checked against the right Process.
 internal static class NativeHostScenarioDriver
 {
+    /// <summary>
+    /// Dispatches isolated test fixture roles to their original scenario implementations.
+    /// </summary>
+    /// <param name="args">
+    /// The exact role and role-specific paths supplied by the owning test.
+    /// </param>
+    /// <returns>
+    /// The selected fixture exit code, or64 when no role matches.
+    /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0].StartsWith("finite-pipe-", StringComparison.Ordinal))
+            return await NativeFinitePipeScenarioDriver.RunAsync(args[0]["finite-pipe-".Length..], args[1], args[2]);
+        if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
+            return await EngineRollbackColdProbe.RunAsync(args[1], args[2]);
+        if ((args.Length == 4 && args[0] is "engine-browser-recovery-cold" or "engine-qte-story-resume") ||
+            (args.Length == 6 && args[0] is "engine-joint-interface-source-probe" or "engine-joint-interface-original-crash" or "engine-joint-interface-resume" or "engine-mortal-joint-applied-cold" or "engine-mortal-guaranteed-treatment-cold" or "engine-mortal-guided-treatment-cold" or "engine-qte-wound-archive" or "engine-qte-wound-durable" or "engine-browser-staging-cut" or "engine-browser-staging-publisher" or "engine-browser-quiescent-admission" or "engine-browser-status-phase" or "engine-browser-consumer-profile" or "engine-musings-repair" or "engine-musings-cut" or "engine-musings-original-cut" or "engine-musings-cold" or "engine-browser-active-poll-original"))
+        {
+            // The integration fixture supplies the real lifecycle service factory.
+            // Resolve its test-only dependencies in this isolated child, without a project cycle.
+            var resolver = new AssemblyDependencyResolver(args[1]);
+            AssemblyLoadContext.Default.Resolving += (_, name) =>
+            {
+                var path = resolver.ResolveAssemblyToPath(name);
+                return path == null ? null : AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+            };
+            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(args[1]);
+            var name = args[0] switch
+            {
+                "engine-joint-interface-source-probe" => "WriteJointInterfaceSourceProbeAsync",
+                "engine-joint-interface-original-crash" => "WriteJointInterfaceOriginalCrashAsync",
+                "engine-joint-interface-resume" => "WriteJointInterfaceCurrentResumeAsync",
+                "engine-mortal-joint-applied-cold" => "WriteMortalJointAppliedColdProbeAsync",
+                "engine-mortal-guaranteed-treatment-cold" => "WriteMortalGuaranteedTreatmentColdProbeAsync",
+                "engine-mortal-guided-treatment-cold" => "WriteMortalGuidedTreatmentColdProbeAsync",
+                "engine-qte-story-resume" => "WriteQteStoryResumeProbeAsync",
+                "engine-qte-wound-archive" => "WriteMortalQteArchiveProbeAsync",
+                "engine-qte-wound-durable" => "WriteMortalQteDurableProbeAsync",
+                "engine-browser-staging-cut" => "WriteBrowserStagingCutProbeAsync",
+                "engine-browser-staging-publisher" => "RunOriginalBrowserStagingPublisherAsync",
+                "engine-browser-quiescent-admission" => "WriteBrowserQuiescentAdmissionProbeAsync",
+                "engine-browser-status-phase" => "WriteBrowserStatusPhaseProbeAsync",
+                "engine-musings-repair" => "WriteMusingsRepairProbeAsync",
+                "engine-musings-cut" => "WriteMusingsCutProbeAsync",
+                "engine-musings-original-cut" => "RunOriginalMusingsCutAsync",
+                "engine-browser-active-poll-original" => "RunOriginalBrowserActivePollAsync",
+                "engine-musings-cold" => "WriteMusingsColdProbeAsync",
+                "engine-browser-consumer-profile" => "WriteBrowserConsumerProfileProbeAsync",
+                _ => "WriteBrowserRecoveryColdProbeAsync"
+            };
+            var method = assembly.GetType("BookOfEternityClient.Tests.GameEngineTurnLifecycleTests", true)!
+                .GetMethod(name, BindingFlags.Public | BindingFlags.Static)!;
+            object[] values = args.Length == 4 ? [args[2], args[3]] : [args[2], args[3], int.Parse(args[4]), args[5]];
+            await (Task)method.Invoke(null, values)!;
+            return 0;
+        }
+        if(args.Length==5 && args[0]=="browser-game-fault-host")return await BrowserGameFaultHost.RunAsync(args[1],args[2],args[3],args[4]);
+        if(args.Length==3 && args[0]=="inventory-read-cold")return await InventoryReadContextColdProbe.RunAsync(args[1],args[2]);
+        if(args.Length==3 && args[0]=="daemon-storage-bootstrap")return await GmDaemonStorageScenario.RunChildAsync(args[1],args[2]);
+        if(args.Length==3 && args[0]=="terminal-main-helper-contract")return await GmHelperContractScenario.RunDriverAsync(args[2]);
+        if(args.Length==5 && args[0]=="helper-current-bootstrap")return await GmHelperCurrentScenario.RunChildAsync(args[1],args[2],args[3],args[4]);
+        if(args.Length==3 && args[0].StartsWith("terminal-main-helper-current-",StringComparison.Ordinal) && args[0] is not ("terminal-main-helper-current-running-owner" or "terminal-main-helper-current-admission-cancel"))return await GmHelperCurrentScenario.RunAsync(args[0]["terminal-main-helper-current-".Length..],args[2]);
+        if(args.Length==4 && args[0]=="helper-storage-bootstrap")return await GmTurnHelperStorageScenario.RunHelperChildAsync(args[1],args[2],args[3]);
+        if(args.Length==3 && args[0].StartsWith("terminal-main-helper-storage-",StringComparison.Ordinal))return await GmTurnHelperStorageScenario.RunAsync(args[0],args[2]);
+        if(args.Length==3 && args[0].StartsWith("control-outcome-bootstrap-",StringComparison.Ordinal))return await ParticipatingControlOutcomeScenario.RunChildAsync(args[0]["control-outcome-bootstrap-".Length..],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-systemd-",StringComparison.Ordinal))return await SystemdControlledScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-crash-",StringComparison.Ordinal))return await MainRunCrashScenarioDriver.RunAsync(args[0],args[1],args[2]);
@@ -61,6 +125,7 @@ internal static class NativeHostScenarioDriver
         var longTemp = Path.Combine(output, new string('t', 100));
         var disposeAllowed = false; var hostAliveBeforeDispose = false; var pidfdClosedAfterDispose = false;
         var releaseDenied = false; var canceled = false; GmWorkerStopEvidence? laterStop = null;
+        GmWorkerStopEvidence? outputAuditStopBeforeProtocolClose = null;
         string? hostStdout = null, hostStderr = null; JsonElement? fdAudit = null;
         NamedPipeClientStream? foreign = null;
         if (mode == "constructor-path")
@@ -124,6 +189,10 @@ internal static class NativeHostScenarioDriver
         finally
         {
             Environment.SetEnvironmentVariable("TMPDIR", originalTemp);
+            // Output auditing keeps its protocol intact until the original native
+            // stop; owner-close/EOF scenarios below retain their original ordering.
+            if (mode == "output-audit" && owner is not null)
+                outputAuditStopBeforeProtocolClose = await owner.StopAndObserveAsync();
             await host.DisposeAsync(); // Named-channel owner-close, not helper control EOF.
             foreign?.Dispose();
             if (owner != null && mode != "helper-loss-closed-output")
@@ -148,7 +217,7 @@ internal static class NativeHostScenarioDriver
                 ready, failure, hostPid, supervisorPid, stop, workerReleased = File.Exists(marker),
                 bootstrapDirectoriesAfter = mode == "constructor-path" ? Directory.GetDirectories(longTemp).Length : 0,
                 disposeAllowed, hostAliveBeforeDispose, pidfdClosedAfterDispose, releaseDenied, canceled, laterStop,
-                hostStdout, hostStderr, fdAudit
+                hostStdout, hostStderr, fdAudit, outputAuditStopBeforeProtocolClose
             }));
         }
         return 0; // Assertions live outside the independently reaped scenario driver.

@@ -63,10 +63,26 @@ in-process coordinator gate freezes transitions, not another durable journal.
 Standalone bounded ordinary-file I/O reuses trusted-local scope/publication
 primitives **below canonical recovery**; main metadata must never recursively call
 the canonical publisher. Publish frozen exact bytes through same-directory staging,
-file flush, atomic replacement and the platform directory durability barrier;
-acknowledge only after exact readback and required barriers. A platform without a
-qualified adapter refuses admission; this is application-process crash ordering,
-not power-loss/reboot salvage. Metadata retry repeats only that same frozen write,
+file flush, atomic replacement and the platform acknowledgement described below;
+acknowledge only after exact readback and required barriers. Linux retains its
+file flush plus directory and initialization-parent fsync. The Windows adapter
+uses exclusive `CreateDirectoryW`, fully flushed staging, same-directory
+`MoveFileExW(WRITE_THROUGH)` (plus `REPLACE_EXISTING` only for a frozen existing
+baseline), then reopens the actual final file for `Flush(true)` and exact readback.
+It never enables `COPY_ALLOWED` or delayed reboot moves. It reports
+`WindowsFileAcknowledged`, not a synthetic `DirectoryFlushed` or parent-fsync event.
+The same pending plan and original guard remain retained until every required step
+and readback succeeds; visible after-bytes alone are not acknowledgement.
+
+This is application-process ordering, not Windows directory-fsync equivalence or
+power-loss/reboot salvage. Microsoft's [MoveFileExW contract](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw)
+describes WRITE_THROUGH flushing for copy/delete and does not establish universal
+namespace durability. [CreateDirectoryW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw)
+provides exclusive final-name creation; [FlushFileBuffers](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers)
+requires the actual writable file handle. No volume flush or administrator privilege
+is added. Native adapter bodies remain unexecuted in the Linux cloud: source/build
+and Linux controls alone do not qualify Windows activation. Unsupported platforms
+still refuse admission. Metadata retry repeats only that same frozen write,
 never launch, input, stop signal or an unknown command.
 
 Missing means a verified absent entire `gm-runs` namespace under the original guard
@@ -193,6 +209,17 @@ existing worker-purpose/inventory condition AND generation/storage condition**.
 | Recovery without generation change | May run under the same original Running capability and generation; otherwise quiescent. Inspect retained intent without writing first. Unknown or generation-changing evidence requires quiescence; block before its first mutation, not after a partly recovered tree. |
 | Worker task/audit/publication | Main condition additionally applies, without broadening existing exact worker purposes or recreating accepted permits. Worker state still owns its reservation/slot. Original worker process/workspace cleanup remains independently possible without canonical writes. |
 | Diagnostics | Strict bounded no-recovery reader and live volatile pipe status. Existing `ReadFileAsync`, save-list and status helpers that can acquire a recovery lease are not automatically diagnostic. Stale canonical status never grants authority. |
+
+Required quarantine terminal audit also retains its own established outcome. An
+actually exhausted matching original operation pin may make canonical audit
+unavailable, allowing the existing exact-event local receipt after confirmed
+original cleanup. Closed-but-live pins, metadata/guard failures, wrong owners and
+unknown publication are not that classification. Once required canonical audit
+has become Uncertain, the retained cleanup owner keeps that exact cause: neither
+later admission loss nor session replacement permits local receipt or slot release.
+Only the actual canonical callback confirming Appended (including exact equivalent
+event after valid recovery) clears this audit debt. No new journal or canonical
+permission follows from cleanup; permanently unavailable authority may retain debt.
 
 For real separate clients, extend the **existing real pipe loop** with a typed,
 bounded begin/finish operation-pin exchange. The live owner mints an opaque pin on

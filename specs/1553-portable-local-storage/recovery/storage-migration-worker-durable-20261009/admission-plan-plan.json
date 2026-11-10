@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-worker-cleanup-admission-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d4edc6d4f3c62f0d2000b9bb806fd8ae470794ee",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 78.8487723,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-cleanup-admission-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-cleanup-admission-linux",
+      "Categories": [
+        "portable-worker-cleanup-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

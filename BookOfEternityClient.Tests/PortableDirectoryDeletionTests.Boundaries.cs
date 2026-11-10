@@ -229,13 +229,15 @@ public sealed partial class PortableDirectoryDeletionTests
             }
         });
         SeedGeneration(files); Seed(files, Tree + "/a.bin", [1]); Seed(files, Tree + "/z.bin", [2]);
+        Exception? failure;
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
-            Assert.Throws<CanonicalDirectoryDeletionUncertainException>(() => files.DeleteDirectoryTree(lease, Tree));
+            failure = Record.Exception(() => files.DeleteDirectoryTree(lease, Tree));
         Assert.True(reached); Assert.False(File.Exists(files.ResolvePath(Tree + "/a.bin")));
         Assert.Equal(new byte[] { 42 }, File.ReadAllBytes(files.ResolvePath(Tree + "/z.bin")));
         var evidence = File.ReadAllBytes(Journal(files));
         await Assert.ThrowsAsync<InvalidDataException>(async () => { await using var lease = await Manager().AcquireCanonicalWriteLeaseAsync(); });
         Assert.Equal(evidence, File.ReadAllBytes(Journal(files)));
+        Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
     }
 
     [Fact]

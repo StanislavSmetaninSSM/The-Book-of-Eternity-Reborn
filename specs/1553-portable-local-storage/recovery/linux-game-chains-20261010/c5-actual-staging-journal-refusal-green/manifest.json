@@ -1,0 +1,208 @@
+{
+  "SourceSHA": "5603151fa209ad9e4867445908ace4fb46de2906",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-staging-crash\",\"c5-original-browser-pending-recovery\")'",
+  "Status": "PASS",
+  "Scope": "Actual original GameEngine staging SIGKILL0/1 and exact original journal at physical lock; guarded quiescent component, not active-owner/live game qualification",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "952e1a032cdd0e098aa96a0c8176ad52fd4d25ca961e4870a61324db6dc793ce",
+      "RawBytes": 2100
+    },
+    {
+      "Path": "runner/c5-original-browser-pending-recovery-integration-001.trx.gz",
+      "RawSHA256": "d2c27987f1e9920d3b9d0d2c6707478ea564a3f62b5b3d21f2c8cf3a46aea822",
+      "RawBytes": 4784
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "e543e098debffa54a5bfbbee5e48ff3330e9818a5f712d2e52c04d767bb328dc",
+      "RawBytes": 1768
+    },
+    {
+      "Path": "runner/c5-original-browser-staging-crash-integration-002.trx.gz",
+      "RawSHA256": "d9e5ea883dd09b4bb52b2303a5cc75c8828e97bf7568c1fbe9bc34b85bc8100f",
+      "RawBytes": 6822
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "8f0f68d355f3eec2f00eff96d43bc0840b62771cbd07605eab129508c8f86f61",
+      "RawBytes": 49253
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "152bf1a1a70e52fe04d4b4ba02cd98b561a08508ffbd1dbabd582c005fee6cd7",
+      "RawBytes": 1667892
+    },
+    {
+      "Path": "owned/0/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/0/result.json.gz",
+      "RawSHA256": "07c2c9e0b1990a88ced31c6a5a38b5880cec470a74d59668bb9b2a646fffe8a5",
+      "RawBytes": 3770
+    },
+    {
+      "Path": "owned/0/result.json.original-authority.json.gz",
+      "RawSHA256": "e33f57367e9c4ef566ef83e5eab865147c722930dc15e908b1a758eca7b1bb71",
+      "RawBytes": 2083
+    },
+    {
+      "Path": "owned/0/result.json.original-manifest.json.gz",
+      "RawSHA256": "3c001f5ddb8e02f7c771a69e00b5f4c79e8a1919741089085f7e63a0afa6b173",
+      "RawBytes": 4680
+    },
+    {
+      "Path": "owned/0/result.json.original-request.json.gz",
+      "RawSHA256": "12ae319c9921e0e37b34c7a8fa6bd6aafb38780bcefc51a7fd3255af314a14ec",
+      "RawBytes": 2154
+    },
+    {
+      "Path": "owned/0/result.json.original-slot.json.gz",
+      "RawSHA256": "9a5c79e2be192ce17fd568fd333945c028c25dcb8fd9eb35381ef04317cf0fab",
+      "RawBytes": 950
+    },
+    {
+      "Path": "owned/0/result.json.original-journal.json.gz",
+      "RawSHA256": "c338b07defa376c020b3fc63862d8d391ac1e9e27956e08a485a048f1455ec0b",
+      "RawBytes": 21908
+    },
+    {
+      "Path": "owned/0/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/0/result.json.0e4da33e7c524635bde0e98d08a0e7e2.cut.json.gz",
+      "RawSHA256": "8a7a02f64a25f2072e30460f05dac8c07a5e037e906f441e54e038a0a99d3535",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/0/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/0/native.log.gz",
+      "RawSHA256": "8cf2911a3e939eecf0c2f742dcc6f7121a2a721d54731af613cbce205af5dcf5",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/1/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/1/result.json.gz",
+      "RawSHA256": "af7c69a75ff9713136934da5490bbeabb30e6b29bb3ac8b31784a3a4cc4114c8",
+      "RawBytes": 3768
+    },
+    {
+      "Path": "owned/1/result.json.original-authority.json.gz",
+      "RawSHA256": "19172bb963e8da2234d29b48cc27e478da62fab4a03c4f128c6fbf5144d90eb6",
+      "RawBytes": 2083
+    },
+    {
+      "Path": "owned/1/result.json.original-manifest.json.gz",
+      "RawSHA256": "59a6bb68d5ae2b15fd58c339feb4917bd107d09f0b34f3de22a6b81c8a1b2042",
+      "RawBytes": 4680
+    },
+    {
+      "Path": "owned/1/result.json.original-request.json.gz",
+      "RawSHA256": "26c3971c7d939d4e754620fae2625342d58f70526bd6c1047559f0e45fe3edc1",
+      "RawBytes": 2154
+    },
+    {
+      "Path": "owned/1/result.json.original-slot.json.gz",
+      "RawSHA256": "2b1fc28169eb9d6b84685dd8bebacd34cd1f4d2fd16643b23628dcbd47aacfb4",
+      "RawBytes": 12675
+    },
+    {
+      "Path": "owned/1/result.json.original-journal.json.gz",
+      "RawSHA256": "b458499830ae85a6642c5c863e8581cd17f7d1534fd5ef15e4461bb8ce157d18",
+      "RawBytes": 21908
+    },
+    {
+      "Path": "owned/1/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/1/result.json.8ca0dc640fee4798879ab40ac31bb931.cut.json.gz",
+      "RawSHA256": "372c45f52cc42607a288556040cd8b144161a10a90127e716faf4e145380c673",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/1/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/1/native.log.gz",
+      "RawSHA256": "b119d51e0a32732310b86a57183fc4302c2935a0b0c6baa93cdd1dac3e09151c",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/2/probe.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/2/result.json.gz",
+      "RawSHA256": "415d5426327ac99689e9685360fed237f4929ff2f489b3cf6aae17a029e4ebeb",
+      "RawBytes": 3767
+    },
+    {
+      "Path": "owned/2/result.json.original-authority.json.gz",
+      "RawSHA256": "6858f0347851495ea558e8f167be85d6ba4bf53cce2330cc01adb8d517314945",
+      "RawBytes": 2083
+    },
+    {
+      "Path": "owned/2/result.json.original-manifest.json.gz",
+      "RawSHA256": "8a02d3bc56e958fd6f4106ddaf156e27b8a5354f8435cc986e9b64a67056e7a7",
+      "RawBytes": 4680
+    },
+    {
+      "Path": "owned/2/result.json.original-request.json.gz",
+      "RawSHA256": "2819818ad21628bab47891efc285d502849b2ecf7eb5dac6dacb8f55019245a8",
+      "RawBytes": 2154
+    },
+    {
+      "Path": "owned/2/result.json.original-slot.json.gz",
+      "RawSHA256": "be996dbcdad0d97002cc5452fbcadcf198d480cf1224f320fbf1694425741a3e",
+      "RawBytes": 12675
+    },
+    {
+      "Path": "owned/2/result.json.original-journal.json.gz",
+      "RawSHA256": "24708ddb4835d225026a962b665221af37a5e624728eaceacee5bc3e491b2748",
+      "RawBytes": 21908
+    },
+    {
+      "Path": "owned/2/result.json.original.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned/2/result.json.264156a6e4804f12bb6bdeb48728c605.cut.json.gz",
+      "RawSHA256": "e709d7ed1d38db438c6926faa76abefc8597f23db6da6baf917220c643e5601b",
+      "RawBytes": 140
+    },
+    {
+      "Path": "owned/2/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/2/native.log.gz",
+      "RawSHA256": "163c405d0844e381ed162863972cf225ea09bc0a4ed10e334ad2a822ed8975c5",
+      "RawBytes": 51
+    }
+  ],
+  "Category": [
+    "c5-original-browser-staging-crash",
+    "c5-original-browser-pending-recovery"
+  ]
+}

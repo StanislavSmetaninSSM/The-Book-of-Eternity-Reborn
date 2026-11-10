@@ -1,0 +1,9 @@
+# D02 first binding failure — diagnosed; minimal correction plan accepted
+
+Exact carrier `77dabfb227209c625158193aa7dd370c62c8861b`, actual `82da1cdaed7fa593c2c217cecdb9abb8ba77b727`. Property query and preprocessing each returned **0**, joined, with empty owned-session observations. The phase then stopped with the recorded `KeyError`; controller2, aggregate nativeNone, **catalog discovery UNREACHED**. Duration9.725s. No build/restore/compiler/test/synthetic/game ran.
+
+The original preprocessed integration project contains129import paths. Exactly16external paths lack bindings: already installed `sdk-manifests/10.0.100/.../WorkloadManifest.targets`, outside the inventory's `sdk/10.0.402` tree. The JSON lists their exact paths, sizes and hashes. This is an input-inventory omission caught by the intended fail-closed guard; it does not establish a workload, compiler or binary incompatibility. The integration property output proves the intended private TargetPath/assets/test configuration; unit binding remains unobserved.
+
+Independent checks verify all11raw chains, saved/clean GitHub copies, reviewed controller/bindings, both staged closures/metadata and all899normal files unchanged. Current source gate is frozen. Original process cleanup claims are dated observations only.
+
+Minimal correction: preserve the first outcome/root, add exactly16installed hashes to the existing360inputs, choose a new unused root, and retain strict import refusal plus all current functions/accounting/149pins/budgets. Save/recover the affected SOURCE candidate before a separately named corrected ZERO. These additions cover the observed integration import set only; any further unknown import must still hold. No install, ignore rule, resolver disable, restore or rebuild is indicated. Independent PREP and separately saved synthetic admission remain required; **this diagnosis grants no execution release**. Original124/137, L0152/57 and old66529UNKNOWN are unchanged.

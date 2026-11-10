@@ -1,0 +1,167 @@
+#!/usr/bin/env python3
+"""One explicitly released FR063 stage; immutable corrected-build provenance, freeze first."""
+import argparse
+import datetime
+import hashlib
+import json
+import pathlib
+import shutil
+import subprocess
+
+ROOT = pathlib.Path('/workspace/boe-fr063-tools-20261015')
+REPO = pathlib.Path('/workspace/The-Book-of-Eternity-Reborn')
+RUNNER = ROOT / 'fr063-root-runner-A-v6.py'
+COMPILED = '9161fbd603a2fd8d4a4baebc6ea4ae888899e011'
+STAMP = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+
+def read(path): return json.loads(pathlib.Path(path).read_text())
+def digest(path): return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+def git(*args): return subprocess.check_output(['git', *args], cwd=REPO, text=True).strip()
+def write(path, value):
+    with pathlib.Path(path).open('x') as stream:
+        stream.write(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+
+p = argparse.ArgumentParser()
+p.add_argument('--gate', required=True)
+p.add_argument('--selection', required=True)
+p.add_argument('--label', required=True)
+a = p.parse_args()
+assert a.label.replace('-', '').isalnum()
+gate = read(a.gate)
+source = git('rev-parse', 'HEAD')
+assert gate['source'] == source and gate['actualRelease'] == [a.selection]
+assert gate['reviewerStopped'] is True
+assert not git('status', '--porcelain')
+changes = git('diff', '--name-status', COMPILED, source).splitlines()
+for line in changes:
+    status, path = line.split('\t')
+    assert (status == 'M' and path in (
+        'specs/1536-complete-wound-materialization/plan.md',
+        'specs/1536-complete-wound-materialization/tasks.md')) or (
+        status == 'A' and path.startswith('specs/1536-complete-wound-materialization/recovery/')), line
+inventory_path = ROOT / 'approved-A-finite-stage-inventory-9161fbd60.json'
+assert digest(inventory_path) == '0255cc89d93b5d1a96f3516186157cdd0ab94ab326553bf147b31cc59dcf5abb'
+assert digest(RUNNER) == 'a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e'
+inventory = read(inventory_path)
+rows = [r for r in inventory['stages'] if r['selection'] == a.selection]
+assert len(rows) == 1
+row = rows[0]
+expected = [str(row[k]) for k in ('methods', 'cases', 'descriptors')]
+original_scratch = pathlib.Path((ROOT / 'manifest-admission-corrected-scratch-path.txt').read_text().strip())
+original_packet = pathlib.Path((ROOT / 'manifest-admission-corrected-frozen-path.txt').read_text().strip())
+assert digest(original_packet / 'manifest.json') == '8527ae4f3fa6ce59d2f44aff286fbb957fa3ac5a28fa3777d71409d215c66d10'
+original_manifest = read(original_packet / 'manifest.json')
+assert original_manifest['source'] == COMPILED
+binary_chain = [r for r in original_manifest['artifacts'] if r['name'] == 'fresh-binary-pins.json.gz']
+assert len(binary_chain) == 1
+assert digest(original_scratch / 'fresh-binary-pins.json') == binary_chain[0]['uncompressedSha256']
+binary = read(original_scratch / 'fresh-binary-pins.json')
+assert binary['source'] == binary['compileSource'] == COMPILED and len(binary['files']) == 11
+for pin in binary['files']:
+    assert digest(REPO / pin['path']) == pin['sha256'], pin['path']
+scratch = ROOT / ('finite-' + a.label + '-' + STAMP)
+scratch.mkdir(exist_ok=False)
+packet = ROOT / ('fr063-finite-' + a.label + '-frozen-' + source[:9] + '-' + STAMP)
+write(scratch / 'inherited-both-build-provenance.json', {
+    'source': source, 'compileSource': COMPILED,
+    'officialPreparation': inventory['officialPreparation'],
+    'originalScratch': str(original_scratch),
+    'frozenPreparationPacket': str(original_packet),
+    'frozenPreparationManifestSha256': digest(original_packet / 'manifest.json'),
+    'originalBinaryPinsSha256': digest(original_scratch / 'fresh-binary-pins.json'),
+    'metadataChanges': changes,
+    'buildInputsUnchanged': True,
+    'stage': row,
+    'binaryReuseReview': gate.get('binaryReuseReview'),
+    'runtime': 'UNRUN'
+})
+shutil.copyfile(original_scratch / 'fresh-binary-pins.json', scratch / 'fresh-binary-pins.json')
+for origin, name in [(pathlib.Path(a.gate), 'exact-independent-gate-proof.json'),
+                     (RUNNER, 'exact-used-root-runner-v6.py.txt'),
+                     (inventory_path, 'exact-used-finite-stage-inventory.json'),
+                     (pathlib.Path(__file__), 'exact-used-finite-stage-controller.py.txt')]:
+    shutil.copyfile(origin, scratch / name)
+console = (scratch / 'orchestration-stdout.log').open('x')
+
+def run(action, *args, required=True):
+    result = subprocess.run(['python', str(RUNNER), action, '--scratch', str(scratch), *args],
+                            cwd=REPO, stdout=console, stderr=subprocess.STDOUT)
+    console.flush()
+    if required and result.returncode:
+        raise RuntimeError(f'{action} {args} native exit {result.returncode}; raw artifacts retained')
+    return result.returncode
+
+native = None
+readback = None
+try:
+    run('pin', '--gates', a.gate)
+    run('run', '--stage', 'exact-plan', '--selection', a.selection,
+        '--no-build', '--plan-only', '--expected', *expected, '--compile-source', COMPILED)
+    run('readback', '--stage', 'exact-plan', '--plan-only', '--expected', *expected,
+        '--classification', 'exact released selection; zero execution; inherited unchanged 9161fbd60 BOTH')
+    native = run('run', '--stage', 'actual', '--selection', a.selection,
+                 '--no-build', '--expected', *expected, '--compile-source', COMPILED, required=False)
+    readback = run('readback', '--stage', 'actual', '--expected', *expected,
+                   '--classification', 'actual finite stage; inherited unchanged 9161fbd60 BOTH; independent EVIDENCE pending',
+                   *(['--require-pass'] if native == 0 else []), required=False)
+    raw_readback_path = scratch / 'actual-root-readback.json'
+    if not a.selection.endswith('/1536-fr063-joint-output-basis.json') and raw_readback_path.exists():
+        observed = read(raw_readback_path)
+        receipts = observed['strictCleanupReceipts']
+        origins = observed['strictCleanupReceiptOrigins']
+        required_cases = [r for r in observed['allNativeResults']
+                          if '.GameEngineTurnLifecycleTests.' in r.get('testName', '') or
+                          '.MortalJointGenerationAdmissionTests.' in r.get('testName', '')]
+        coverage = [{'testId': r['testId'], 'testName': r['testName'],
+                     'parsedReceiptObserved': any('/' + r['testId'] + '#' in o['origin'] for o in origins)}
+                    for r in required_cases]
+        valid = bool(receipts) and observed['allParsedStrictRootsActuallyAbsent'] is True and all(
+            r['parsedReceiptObserved'] for r in coverage)
+        isolated_unit_roots = None
+        if a.selection == 'tests/selections/1536-fr063-joint-generation-admission.json':
+            # Attribute exactly one distinct real root to each actual native case;
+            # global counts cannot substitute for this bijection.
+            isolated_unit_roots = []
+            for case in required_cases:
+                indices = sorted({o['receiptIndex'] for o in origins
+                                  if '/' + case['testId'] + '#' in o['origin']})
+                roots = sorted({receipts[i]['CleanupOwnedRoot'] for i in indices})
+                isolated_unit_roots.append({'testId': case['testId'], 'testName': case['testName'],
+                                            'receiptIndices': indices, 'roots': roots})
+            mapped_indices = {i for case in isolated_unit_roots for i in case['receiptIndices']}
+            mapped_roots = {root for case in isolated_unit_roots for root in case['roots']}
+            valid = valid and len(required_cases) == row['cases'] and len(receipts) == row['cases'] and (
+                all(len(case['receiptIndices']) == len(case['roots']) == 1 for case in isolated_unit_roots) and
+                len(mapped_roots) == row['cases'] and mapped_indices == set(range(len(receipts))))
+        write(scratch / 'required-owned-root-cleanup-readback.json', {
+            'strictReceiptCount': len(receipts), 'gameEngineCaseCoverage': coverage,
+            'isolatedUnitCaseRoots': isolated_unit_roots,
+            'validated': valid,
+            'scope': 'observed strict receipts cover every GameEngine/new generation-admission fixture case; new isolated unit selection requires exactly one distinct root per native case; other pure cases grant no filesystem cleanup claim'})
+        if not valid:
+            readback = 1
+    if a.selection.endswith('/1536-fr063-joint-output-basis.json'):
+        raw = read(scratch / 'actual-all-json-observations-raw.json')
+        cleanup = [r for r in raw if r.get('Boundary') == 'joint_readonly_owned_cleanup']
+        checks = [{'raw': r, 'absoluteRoot': isinstance(r.get('Root'), str) and pathlib.Path(r['Root']).is_absolute(),
+                   'rootActuallyAbsent': isinstance(r.get('Root'), str) and not pathlib.Path(r['Root']).exists()}
+                  for r in cleanup]
+        valid = len(checks) == 1 and all(r['absoluteRoot'] and r['rootActuallyAbsent'] and
+                                       r['raw'].get('Removed') is True for r in checks)
+        write(scratch / 'custom-owned-root-cleanup-readback.json', {
+            'boundary': 'joint_readonly_owned_cleanup', 'receipts': checks,
+            'validated': valid, 'standardStrictCollector': 'UNOBSERVED, not inferred PASS'})
+        if not valid:
+            readback = 1
+finally:
+    console.close()
+    subprocess.run(['python', str(RUNNER), 'freeze', '--scratch', str(scratch), '--packet', str(packet),
+                    '--classification', 'first finite stage outcome; frozen before diagnosis; independent EVIDENCE pending'],
+                   cwd=REPO, check=True)
+    outcome = {'source': source, 'compileSource': COMPILED, 'selection': a.selection,
+               'expected': row, 'actualNative': native, 'readbackNative': readback,
+               'scratch': str(scratch), 'packet': str(packet),
+               'manifestSha256': digest(packet / 'manifest.json')}
+    write(ROOT / ('finite-' + a.label + '-outcome-' + STAMP + '.json'), outcome)
+    print(json.dumps(outcome, ensure_ascii=False), flush=True)
+assert native == 0 and readback == 0, 'Finite stage not PASS; stop and independently inspect frozen outcome'

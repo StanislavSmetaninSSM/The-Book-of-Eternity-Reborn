@@ -196,7 +196,10 @@ public sealed partial class EffectAcceptedTurnPlannerTests
 
     private static OrdinaryReductionFixture CreateOrdinaryReductionFixture(
         bool effects, bool bounded = false, bool createDefinition = false, int ordinaryCount = 0,
-        ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false)
+        ResourceStateLedger? state = null, ResourceHistoryState? history = null, bool rejectSource = false,
+        Func<EffectAcceptedTurnInput, EffectAcceptedTurnInput>? configureEffectInput = null,
+        Func<EffectAcceptedTurnPlan, EffectAcceptedTurnPlan>? configureEffectPlan = null,
+        bool includeConfiguredCarrierBeforeImages = false)
     {
         var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 41, 10, 10, 10, 10, 10);
         Assert.True(bootstrap.IsValid, DescribeOrdinaryReductionIssues(bootstrap.Issues));
@@ -221,9 +224,10 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             lifecycle["causalEventRef"] = "turn_42:owner_turn_end:1";
             lifecycle["phase"] = "owner_turn_end";
             lifecycle["triggerId"] = "on_owner_turn_end";
+            effectInput = configureEffectInput?.Invoke(effectInput) ?? effectInput;
             var result = new EffectAcceptedTurnPlanCache(fixture.Effects).GetOrBuild(effectInput);
             Assert.True(result.Success, DescribeOrdinaryReductionIssues(result.Issues));
-            effectPlan = result.Plan!;
+            effectPlan = configureEffectPlan?.Invoke(result.Plan!) ?? result.Plan!;
             effectCommands = effectInput.RawCommands.DeepClone().AsObject();
             events = effectInput.EventInput.DeepClone().AsObject();
             identity = effectInput.PreTurnIdentityIndex!.DeepClone().AsObject();
@@ -287,6 +291,17 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             ResourcePendingResolutionState.PendingPath
         })
             beforeImages[path] = new CanonicalBeforeImage(false, null);
+        if (includeConfiguredCarrierBeforeImages && effectPlan is not null)
+        {
+            // New nonplayer fixtures must supply their actual input carrier;
+            // the common plan's real path-coverage guard remains mandatory.
+            var carriersBefore = effectPlan.CarrierBeforeImages;
+            foreach (var (path, root) in carriersBefore.Where(pair => !beforeImages.ContainsKey(pair.Key)))
+            {
+                beforeImages.Add(path, new CanonicalBeforeImage(root is not null,
+                    root is null ? null : System.Text.Encoding.UTF8.GetBytes(root.ToJsonString())));
+            }
+        }
         fixture.Input = new AcceptedMechanicsInput(
             "session_effect_reaction", "request_reduction", "snapshot_effect_reaction", "mortal_world", 42,
             events, commands.Root, effectCommands, new JsonObject(), new JsonObject(),
@@ -301,7 +316,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     private const string ReductionHash =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     private static string DescribeOrdinaryReductionIssues(IEnumerable<ValidationIssue> issues) =>
-        string.Join(Environment.NewLine, issues.Select(issue => $"{issue.Code}: {issue.Expected}; {issue.Actual}"));
+        string.Join(Environment.NewLine, issues.Select(issue => $"{issue.Code} at {issue.FilePath}: {issue.Expected}; {issue.Actual}"));
 
     private sealed class OrdinaryReductionFixture
     {

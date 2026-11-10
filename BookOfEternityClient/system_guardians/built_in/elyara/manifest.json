@@ -62,5 +62,18 @@
   "authoring": {
     "author": "system",
     "version": "1.0"
+  },
+  "healingService": {
+    "contractId": "spiritual_public_service_v7",
+    "spiritualHealingTier": 5,
+    "initialLocationId": "abode_system_elyara_001",
+    "publicPriceMultiplierPercent": 100,
+    "compensationKinds": [
+      "ink_feathers",
+      "favor",
+      "quest",
+      "free_aid"
+    ],
+    "lifeStateContract": "alive|dead; accepted death cannot be reset by bootstrap/upsert"
   }
 }

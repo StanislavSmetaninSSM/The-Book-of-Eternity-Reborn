@@ -832,13 +832,13 @@ public sealed class CanonicalStateNormalizerEffectTests
     }
 
     /// <summary>
-    /// Verifies that NPC skill effect publication preserves exact adjacent wound state and accepted metadata on an original canonical carrier.
+    /// Verifies that NPC skill effect publication preserves legal adjacent non-wound metadata on an original canonical carrier.
     /// </summary>
     /// <returns>
     /// A task that completes after the scenario assertions have run.
     /// </returns>
     [Fact]
-    public async Task Apply_NpcPreservesAdjacentWoundState()
+    public async Task Apply_NpcPreservesLegalAdjacentMetadata()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await context.SeedPlayerSkillSourceAsync(CreateNonResourceDefinition());
@@ -861,19 +861,15 @@ public sealed class CanonicalStateNormalizerEffectTests
                     ["NPCId"] = "npc_test_healer",
                     ["activeEffects"] = new JsonArray()
                 }),
-                ["NPCWoundChanges"] = new JsonArray(new JsonObject
+                ["_fixtureNote"] = new JsonObject
                 {
-                    ["NPCId"] = "npc_test_healer",
-                    ["wounds"] = new JsonArray(new JsonObject
-                    {
-                        ["woundId"] = "wound_npc_arm",
-                        ["severity"] = "moderate"
-                    })
-                }),
+                    ["label"] = "known NPC note",
+                    ["state"] = "recorded"
+                },
                 ["_lastUpdated"] = "2026-08-15T00:00:00Z"
             });
-        var adjacentWoundsBefore = (await context.ReadJsonAsync(
-            EffectMaterializationTestContext.NpcEffectsPath))!["NPCWoundChanges"]!.ToJsonString();
+        var adjacentMetadataBefore = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.NpcEffectsPath))!["_fixtureNote"]!.ToJsonString();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
@@ -896,10 +892,10 @@ public sealed class CanonicalStateNormalizerEffectTests
         Assert.Equal(EffectMaterializationContract.SchemaVersion, root["schemaVersion"]!.GetValue<int>());
         Assert.Equal("npc_test_healer", npc["NPCId"]!.GetValue<string>());
         Assert.Single(npc["activeEffects"]!.AsArray());
-        Assert.Equal(adjacentWoundsBefore, root["NPCWoundChanges"]!.ToJsonString());
+        Assert.Equal(adjacentMetadataBefore, root["_fixtureNote"]!.ToJsonString());
         Assert.Equal(
-            "moderate",
-            root["NPCWoundChanges"]![0]!["wounds"]![0]!["severity"]!.GetValue<string>());
+            "recorded",
+            root["_fixtureNote"]!["state"]!.GetValue<string>());
         Assert.Equal("2026-08-15T00:00:00Z", root["_lastUpdated"]!.GetValue<string>());
     }
 

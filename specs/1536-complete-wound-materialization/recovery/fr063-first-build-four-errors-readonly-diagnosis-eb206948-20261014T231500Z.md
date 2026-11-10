@@ -1,0 +1,33 @@
+# FR063 first preparation failure: read-only four-error diagnosis
+
+Status: diagnosis only; no implementation or repository/MD2/Git mutation. Source checkpoint supplied by ROOT: `eb2069484c2d8dc69a1237b61e494585df320788`. Independent EVIDENCE classification and a later explicit correction release remain prerequisites. The frozen failure is not a runtime causal RED.
+
+The actual native integration build log contains four distinct compiler errors and ten warnings. ROOT measured the build phase at 51.9005145 seconds; the native log reports `Time Elapsed 00:00:51.52`. Zero tests executed/zero planned; unit/discovery were not reached and no fresh binary pins exist. This diagnosis did not run a compiler, project script, loader, test, provider or fault.
+
+## Four precise causes and minimal proposed corrections
+
+1. **CS1061, UI/WoundPlayerNotification.cs:282.** `WoundPreparedAcceptedTurnPlan` (Services/WoundAcceptedTurnPlan.cs:804) has no `Transitions`. The transitions are owned by `WoundAcceptedTurnInput`; the same output binder already reads `bundle.Input.Transitions` at lines 110–113. The private joint preparation compares the actual input fingerprint to its privately retained acquisition input before PrepareCore (WoundAcceptedTurnPlanner.MortalJointRepair.cs:303–310). Proposed edit: replace only `bundle.PreparedPlan.Transitions` with `bundle.Input.Transitions`. Retain the joint prepared/effect/final agreement gate, exact one CREATE/acquisition batch/addition checks, and treatment separation. Do not add a public prepared-plan property or synthesize transitions from final JSON. Source-consistent candidate only; its final behavior/compilation remains unverified.
+
+2. **CS1061, Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs:89.** `WoundCarrierCatalogInput` is the fixed five-slot record in WoundCarrierCatalog.cs:19, not a keyed collection. `WoundAcceptedTurnSnapshotContract.CarrierPaths` (lines 8–16, 85) is the existing complete inventory; the common composer independently maps those same five paths at lines 941–950. Proposed edit: replace `.Concat(bundle.Input.PreTurnCarriers.Keys)` with `.Concat(WoundAcceptedTurnSnapshotContract.CarrierPaths)`. Include all five slots even when a value/file is absent, preserving authenticated absence coverage, current-byte checks, original/frame binding and existing distinct-path handling. Do not reduce to non-null/touched slots or invent a dictionary/Keys API.
+
+3. **CS0136, Core/GameEngine/GameEngine.ValidationAndRepair.cs:454.** Inside local function `BeforeDestructiveRefusalAsync`, the joint-completed nested block declares `await using var lease`, while a later declaration named `lease` occupies its enclosing local-function block for the old completed-owner path. This is a C# lexical declaration-space collision, not a lease runtime failure. Proposed edit: rename only the inner joint local to `jointCompletionLease` and its `ValidateCurrentAsync` argument. Preserve exact acquisition/disposal scope, same-instance proof call, catch filter, unconditional held outcome and unchanged v1 branch. Do not move acquisition/lifetime or reuse an earlier lease.
+
+4. **CS0411, Services/MortalWoundTreatmentPersistence.cs:282.** `ParsePending` receives `ICollection<ValidationIssue>` (lines 230–237), which has no `AddRange`. `MortalJointRepairCheckpoint.ValidatePendingEnvelope` returns `IReadOnlyList<ValidationIssue>` (line 257), so this is not an incompatible diagnostic type. The compiler names the unrelated List/ReadOnlySpan extension while failing overload inference. Proposed edit: `foreach (var issue in MortalJointRepairCheckpoint.ValidatePendingEnvelope(root)) issues.Add(issue);`. This preserves every issue object/order and the same pending-binding/graph/parser refusal. Existing code in this persistence source already uses foreach plus `issues.Add` at lines 1074–1075. Do not cast the interface to List, mutate a temporary ToList, remove checkpoint validation or alter parser signatures.
+
+## Review and execution limits
+
+All four are proposed minimal source corrections, not applied fixes or a claim that a subsequent build passes. Focused source review must verify the input member substitution, five-slot absence inventory, lexical-only lease rename and identical diagnostic insertion. Their intended scope leaves the exclusive private joint family, separate vectors, original/G/confirmed-hold guards, old default/six-argument/singleton/disjoint/mixed boundaries, selectors and 32-method/58-case definition unchanged. No additional tests, nullable-warning cleanup, API expansion or feature redesign is proposed. Ten native warnings remain out of scope. Further compile errors or fixture/runtime failures may emerge only after a released fresh preparation.
+
+The systematic-debugging skill was read and applied to actual diagnostics, contracts and working references; reproduction/test execution was expressly prohibited. Requested configuration is the same retained Sol writer; actual model/effort telemetry is unavailable. No model override or agent was used.
+
+A final pure-text locator command returned exit 2/chunk `be6cf4` because `BookOfEternityClient/Services/AcceptedMechanicsWoundStageBundle.cs` does not exist. Its preceding sed read succeeded and established the real binder's `bundle.Input.Transitions`; this locator error is not a compiler/project/security event and does not establish a missing type. Exact operation/error is retained in the companion readback. No implementation depends on the guessed filename.
+
+## Evidence
+
+Frozen packet: `/workspace/boe-cloud-tools-20261014/fr063-preparation-first-build-failure-frozen-eb206948-20261014T230528Z-160f4dfc`; ROOT supplied manifest SHA256 `99fc7529644b33547c486c094aaf3b47fabfd5818e14e76382ff9058b7b40987` (not rewritten).
+
+Actual native log: `/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261014-230323-160-464888-982feb44bb74454386ff75960c4ab31f-categories/dotnet-test.log`; SHA256 `a45d4d14b7b210752b4cc27d717eba8c2bd249fd228222310e6088d096e0df2b`.
+
+Frozen root readback: `/workspace/boe-cloud-tools-20261014/fr063-connected-fresh-evidence-eb206948-20261014T230309Z-45ecfd5c/preparation-root-readback.json`; independently read SHA256 `05be820184f3af342dc99b33d5fdc8a2a23d64294a8f5fe0b684192226db2b35` matches the supplied value. Companion JSON pins the ten bounded current source files and records ten nonempty source observations; these are text/API observations, not compiler or test passes. Original frozen artifacts remain untouched.
+
+FINAL STOPPED. No pending tools or writes; no correction released or implemented.

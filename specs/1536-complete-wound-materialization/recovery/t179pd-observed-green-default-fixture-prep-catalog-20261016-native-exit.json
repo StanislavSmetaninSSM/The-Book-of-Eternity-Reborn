@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 0,
+  "actual_head": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "compiled_source": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "started_utc": "2026-10-16T16:16:00.978952+00:00",
+  "ended_utc": "2026-10-16T16:18:17.754629+00:00",
+  "test_execution": "ZERO_REQUIRED"
+}

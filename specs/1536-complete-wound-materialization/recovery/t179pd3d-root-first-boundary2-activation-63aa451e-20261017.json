@@ -1,0 +1,20 @@
+{
+  "kind": "ROOT_NAMED_FIRST_ORDINARY_BOUNDARY2_ACTIVATION",
+  "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+  "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "controller": "/tmp/t179pd3d-ordinary-boundary-first-run.py",
+  "controllerSha256": "74c15e75ea4dc52f2847fb148a019d670dcaff63cefd3581783527913cfad45c",
+  "label": "t179pd3d-ordinary-boundary-first-63aa451e-20261017",
+  "prepRecord": "/tmp/t179pd3d-implementation-tools/t179pd3d-nis01-prep-first-build-plan-b501b2b7-20261017/record.json",
+  "freshCurrentSourcePins": 64,
+  "freshLiveBinaryPins": 9,
+  "savedAcceptedDecisionVerified": {
+    "t179pd3d-nis01-source-independent-review-20261017.md": "6eca0af6840caec2c2bca13677b3f2b2797b5f1e4cad60ea01e77449dfe10daa",
+    "t179pd3d-nis01-source-independent-review-20261017.json": "c6f90bf2d9105c9ec26bbd3e5e2dfd1c5b4b0c9e5fc1f9cbcc133352258ff274",
+    "t179pd3d-root-source-accepted-first-boundary2-conditional-b5859fcf-20261017.json": "b189985c7baacdf8710bf966b39b190aafc1b91b1f474df66627f2b3fac53726"
+  },
+  "newGitHubRecovery": "15files/all11metadata paths verified; retainedfull7a+38deltas exacttargettree",
+  "release": "ONCE ONLY exact category fr063-ordinary-output-policy-boundary -NoBuild, one method/two rows. Freeze first actual, publish full raw+remote+recovery then separate causal EVIDENCE. No product changes or other actual runs.",
+  "limits": "Structural extraction RED expected only after real ordinary prerequisites; native1 alone never qualifies. OldWorld/HOT/fullF1 and future protectedLate2 held.",
+  "utc": "2026-10-17T16:29:56.908652+00:00"
+}

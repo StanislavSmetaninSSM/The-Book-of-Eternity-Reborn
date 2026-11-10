@@ -1,0 +1,116 @@
+{
+  "kind": "T148_M01_INDEPENDENT_SOURCE_REVIEW",
+  "createdUtc": "2026-10-18T18:51:28.029477+00:00",
+  "reviewedCandidate": "8b1b80f76603a11fd6280e20246262019da8b85f",
+  "implementationBase": "de8ba1d1bdb9efe76395a2cc0b55468ac6ee37c4",
+  "historicalBase": "0292234faa8eb1cd405ade611057be07bafa5e19",
+  "acceptedPlan": "b5f6ab881fa80cdea260a6dccde968dea5f1383d",
+  "verdict": "HOLD_SOURCE_FOR_RUNNER_NATIVE_OUTCOME_FIX",
+  "findings": [
+    {
+      "id": "M01-01",
+      "severity": "blocking SOURCE before PREP",
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "lines": [
+        85,
+        86,
+        87,
+        88,
+        104,
+        105,
+        108
+      ],
+      "problem": "Post-native output/persistence exceptions can mask a known nonzero native exit, or allow native0 plus output-close failure to return success.",
+      "directSourceEvidence": [
+        "record.json write at104 and summary print at105 are outside observer protection: either exception bypasses the intended return at108 and yields Python failure status instead of the known native code.",
+        "A stdout/stderr context-manager close exception after nativeExit was assigned is caught at87 and stored only as launchOrControllerError; observerErrors remains empty, so native0 can return0."
+      ],
+      "impact": "The new controller cannot guarantee its promised original-native-outcome priority or fail-closed observation on actual success. No such failure has occurred; this is a source-established reachable error path.",
+      "minimalCorrection": "Keep known nativeExit independently; protect output close, record persistence and summary output as observation steps, preserve native!=0 as controller result and mark native0 with any observation failure held/nonzero. Best-effort durable/stdout evidence should distinguish original native status from observer failure. Do not retry native or add game/runtime changes.",
+      "verification": "Small fake-callback/child outcome proof for native0 and nonzero7 with record/print/output-close failure and clean completion; assert exact one invocation and no native retries. Save corrected source/repins/recovery, then affected SOURCE readback only."
+    }
+  ],
+  "nativeRelease": "NONE; catalog/plan/actual remain unrun and unreleased",
+  "positiveConclusions": [
+    "Production unchanged. One new integration Fact; existing helper assertion/body bytes restored exactly by inverse of the two optional preparation seams. No broad compatibility category justified by this source diff.",
+    "Optional callback executes before PrepareSignedCreationTurn and before lease acquisition, inside existing owned preparation cleanup. isolatedSource ?? GetOrAdd(...).Value selects lazily; new factory directly bypasses both cache dictionaries and asserts their absence. Unique wound name/source key avoid cache/profile aliasing.",
+    "PreparedFixtureTree.ReadFileBytes matches one captured relative path and returns ToArray, exposing no mutable cached bytes. Existing Capture/Materialize are unchanged. This narrow getter is justified to check completed source after source-root deletion without reflection or third mutable root.",
+    "Real production ApplyUpdate produces two distinct fixed historical outcomes at turns1/2 with memory_attack, memory_suppression, nonempty motivation and audit data; no response wrapper remains. Physical bytes are captured before creation signing and compared after completed source, new evaluation, pre-heal and actual post-heal.",
+    "Fact follows raw item authority -> binding readmission -> current pre-heal capture -> InvokePlan/Compose -> no-write assertion -> PublishWithCanonicalRefresh. Same composed plan must publish; no canonical Error allowed. Current roots have active/suspended wound source identities before heal and exact expired transition/active absence afterward. Existing wound identity/history helper proves genuine healed terminal state.",
+    "Separate pre/post SarefStory validation retains all diagnostics and rejects Saref Error by path or code; it does not claim global validation. Common refresh reaches existing Saref normalizer. No runtime Saref effect, spiritual/E01 or joint crash route is introduced.",
+    "Exactly one new exclusive integration category at existing10-minute bound and exact singleton selection. All old category entries remain semantically identical. New getter/default-branch equivalence creates no need for broad cache/recovery/L01 replay.",
+    "Recovery verifies changed file bytes/blob/mode and91 current M01 pins; old L01 packet/cloud/method ledgers stay byte-exact, exactly catalog/selection differ among101 historical pins, other99 and all production/product23 unchanged. Full compiled closure is additionally bound to clean source commit and future inventories; pin list alone is not a whole-product equivalence claim."
+  ],
+  "sourceBinding": {
+    "packetPath": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+    "packetSha256": "b38d9938508b3655cb955cde360ecdeb859fdacc095c336fb369b642a571bc29",
+    "pinCount": 91,
+    "pinDigest": "ddddb4ea17fce7e0cfacf46cece99da9062f21aa4ebd8723fee39b5716b9a3e2",
+    "reviewedChangedFiles": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+        "sha256": "058d9be5aff1897bb80be5e870f27c875ae35356c970792a6dfa0bfe54ee21bd"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+        "sha256": "41ea9966751a693a858cf85c1db2ce83dd7d8bfc30d2a0d8b1e15e1c986c0964"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+        "sha256": "429c1eeb63cc80a0776cd48253b6cf3ce786e20f7d23cccfe2c4a5f18745e5a5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+        "sha256": "b268e345106f0cdb8ce8eb0e156b8c1a3230e84186d14f4d99cb8c57d38c4be8"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "sha256": "b40635484f2560d2c2d3eb8707d58652f18ee339324b7c269b11cc5dd6b151d3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+        "sha256": "2d8213fb9bd306c19ed332935fed0ae24ec9da79d4c4c46151ac6d9d84b860b2"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+        "sha256": "b94a7da8b3d20981e5c2c1ebeca717528265d5f89cc6df509f4abeb7bc582531"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+        "sha256": "b38d9938508b3655cb955cde360ecdeb859fdacc095c336fb369b642a571bc29"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "e1fce3f722777efb741dbc8edd85277f702c2a3e205c62b7fa4265e20154d696"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "8ed0e422dc7464252758fbc126fec536477392d6300c26d353009daf14c62578"
+      }
+    ]
+  },
+  "staticEvidence": {
+    "path": "/tmp/1536-cloud-tools/review/t148-m01-source-static-8b1b80f7-20261018.json",
+    "sha256": "08de1539535104ebf4cd973a5ca1ccfe7c7fe8e52570328ab92028ad98f81840",
+    "checks": 115,
+    "findings": []
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-8b1b80f7.json",
+    "sha256": "8197541caa803b46fb01c82ae7cd287dd12f000ef9edd2d5cbcddb45bf070094",
+    "source": "Existing writer receipt plus independent exact local/clone readback; no new recovery executed."
+  },
+  "selectionSufficiency": "One M01 Fact remains sufficient after the bounded runner correction. Preserve all C# assertion/production/category bytes; affected SOURCE can focus on runner finalization, proof, new pin digest and exact recovery. Fresh catalog/build/discovery and singleton PlanOnly still require independent PREP before actual.",
+  "retention": {
+    "L01Qualified": "52/57 at original provenance",
+    "fiveCrashTargets": "unqualified",
+    "old66529": "UNKNOWN/unavailable/recoveryClaim=false",
+    "E01_T148_Phase10": "open",
+    "broaderHolds": "unchanged"
+  },
+  "limits": [
+    "No C# compilation, build, discovery, test, observer, process, diagnostic or native execution performed.",
+    "No production data-loss defect established. M01 remains UNRUN.",
+    "This HOLD concerns evidence-controller correctness, not a claimed observed native/product failure."
+  ]
+}

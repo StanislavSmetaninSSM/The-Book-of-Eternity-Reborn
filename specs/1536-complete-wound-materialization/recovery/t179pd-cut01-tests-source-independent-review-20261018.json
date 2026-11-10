@@ -1,0 +1,76 @@
+{
+  "kind": "INDEPENDENT_CUT01_SOURCE_FIXTURE_SELECTION_PREP_REVIEW",
+  "date": "2026-10-18",
+  "carrier": "172455c2b66c15c56db759d564b7ca211a8ebf74",
+  "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+  "productSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "verdict": "ACCEPT_BOUNDED_SOURCE_PREP_FOR_FIRST_STOP1_ONLY",
+  "dimensions": {
+    "SOURCE": "ACCEPT_BOUNDED_TESTS_ONLY",
+    "FIXTURE": "ACCEPT_SOURCE_CAUSAL_ELIGIBILITY_NOT_EXECUTION",
+    "SELECTION": "ACCEPT_FIRST_STOP1_AND_POSTPRODUCT_AFFECTED5_PLAN",
+    "PREP": "ACCEPT_FRESH_ZERO_EXECUTION_BINDING"
+  },
+  "materialFindings": [],
+  "sourceAssessment": [
+    "Product and TestSupport remain byte-unchanged; new probe observes genuine existing attempt/lease/authority through read-only reflection, without minting or rewriting state.",
+    "The four optional shared-fixture substitutions inverse exactly to the whole accepted base fixture. Essential original/setup callback and original completion/inert-repeat oracles remain.",
+    "Guaranteed present pending-wave read in Reconstruct at actual preparation entry distinguishes preparation execution from the earlier PreparationStarted attempt phase.",
+    "Typed IO cut observes completed current custody capture before preparation, then existing catch/close/lease/finally Expire behavior; physical image and authority observations are finite and source-bound. Current capture is not NI completeness."
+  ],
+  "selection": {
+    "owners": 3,
+    "descriptors": 3,
+    "methods": 4,
+    "plannedCases": 5,
+    "firstEligibleCategory": "fr063-joint-capture-cut-stop",
+    "firstEligibleCases": 1,
+    "remainingHeldCases": 4,
+    "budgetMinutes": 5,
+    "postProduct": "Separate affected protected Late2 followed by new stop/transparency3, after product SOURCE/PREP and named decisions"
+  },
+  "preparation": {
+    "nativeExits": [
+      0,
+      0
+    ],
+    "catalogSeconds": 89.49147019498923,
+    "planSeconds": 3.400628739007516,
+    "catalogCategories": 795,
+    "catalogMethodsFiles": 11772,
+    "executed": 0,
+    "rawChains": 19,
+    "freshBinaryCopies": 9,
+    "managedOutputFilesChecked": 335
+  },
+  "eligibleCommand": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-joint-capture-cut-stop",
+    "-NoBuild"
+  ],
+  "controllers": {
+    "firstRecorderSha256": "2946a501dc52d593c5d3c0bde417b07e0ff8487f324433c13bdec8136e073950",
+    "currentArchiveSha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
+    "status": "Both UNRUN; old archive v1 preserved and superseded before use; preparation recorder/archive already used"
+  },
+  "firstActualConditions": [
+    "Persist this decision and obtain Root exact source/carrier recovery readback and named singleton activation. Report grants no execution authority.",
+    "FIRST causal qualification must prove genuine Stage43/correction/Ready prerequisites, actual old preparation present-pending read, real attempt/lease and old reached disposition/images, intended callback-count assertion, exact one complete case, and successful owned cleanup. A lone callback failure/native1/setup/cleanup failure is not causal RED.",
+    "Preserve original raw on any unexpected failure; no auto retry, advance or product change."
+  ],
+  "nonmaterialPrecision": [
+    "_commonPublications counts observed committed marker-containing cohorts and may include later progression; zero at the stop and positive transparency witnesses are valid, but no exact first-common invocation total may be claimed.",
+    "False transparency means no additional capture observer; essential original/setup callback remains. No runtime-global-null claim."
+  ],
+  "holds": [
+    "No case has executed in this preparation. No RED/GREEN or future product acceptance.",
+    "Transparency2 and protectedLate2 remain unrun until the relevant product/source gates.",
+    "Full NI, precommon NI-IOBS-L01/origin bridge, HOT/full F1/M3, Windows/CI/ZIP and A3 boundaries unchanged; accepted older evidence is not replayed or recounted."
+  ],
+  "supportPath": "/tmp/t179pd-cut01-tests-source-independent-check-20261018.json"
+}

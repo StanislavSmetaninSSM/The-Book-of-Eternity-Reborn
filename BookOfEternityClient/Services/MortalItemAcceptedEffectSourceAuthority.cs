@@ -414,16 +414,30 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             Array.Empty<ValidationIssue>());
     }
 
+    /// <summary>
+    /// Reprojects the private item phase and complete publication baseline, then compares its original proof.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when the retained baseline exists and every replay and proof agrees; otherwise, <see langword="false"/>.
+    /// </returns>
     internal bool RecomputesFinalPublicationBaseline()
     {
+        using var operationTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.RecomputeFinalPublication");
         if (!HasFinalPublicationBaseline)
             return false;
+        using var heavyTimingItemBaselineCloneProjectionSource = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.CloneProjectionSource");
         var baseSnapshot = CreateClone(includeFinalBaseline: false);
+        heavyTimingItemBaselineCloneProjectionSource?.Dispose();
+        using var heavyTimingItemBaselineProjectItemPhase = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.ProjectItemPhase");
         if (!baseSnapshot.TryProjectItemPhase(out var itemPhase, out _) ||
             itemPhase is null)
             return false;
+        heavyTimingItemBaselineProjectItemPhase?.Dispose();
+        using var heavyTimingItemBaselineCompareItemPhase = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.CompareItemPhase");
         if (!ItemPhaseAgrees(itemPhase))
             return false;
+        heavyTimingItemBaselineCompareItemPhase?.Dispose();
+        using var heavyTimingItemBaselineProjectFinalPublication = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.ProjectFinalPublication");
         var finalBaseline = MortalItemPublicationBaselinePlanner.Project(
             new MortalItemPublicationBaselineInput(
                 itemPhase,
@@ -433,6 +447,7 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 CloneBeforeImage(_trainingPending)!,
                 _npcTradeDisposition!.Value,
                 baseSnapshot.CloneBackupProjectionRoots()));
+        heavyTimingItemBaselineProjectFinalPublication?.Dispose();
         return FinalBaselineAgrees(finalBaseline) &&
                string.Equals(
                    ProofFingerprint,
@@ -611,8 +626,15 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         return prefix + fingerprint["sha256:".Length..];
     }
 
+    /// <summary>
+    /// Recomputes the item publication proof from the original projection and complete retained publication data.
+    /// </summary>
+    /// <returns>
+    /// The original projection proof when no final baseline exists, otherwise the complete publication-proof digest.
+    /// </returns>
     private string ComputeProofFingerprint()
     {
+        using var operationTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.ComputeProofFingerprint");
         if (!HasFinalPublicationBaseline)
             return ProjectionProofFingerprint;
 
@@ -754,9 +776,20 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             itemPhase.IdentityIndexAfterImage,
             _itemPhaseIdentityIndexAfterImage);
 
+    /// <summary>
+    /// Compares the replayed final item publication with its retained roots, identity and transform order.
+    /// </summary>
+    /// <param name="finalBaseline">
+    /// The actual result of the final publication replay.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the replay has no issues and every retained field agrees; otherwise, <see langword="false"/>.
+    /// </returns>
     private bool FinalBaselineAgrees(
-        MortalItemPublicationBaselineResult finalBaseline) =>
-        finalBaseline.Issues.Count == 0 &&
+        MortalItemPublicationBaselineResult finalBaseline)
+    {
+        using var operationTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentOperation("ItemBaseline.CompareFinalPublication");
+        return finalBaseline.Issues.Count == 0 &&
         string.Equals(
             finalBaseline.Fingerprint,
             _finalBaselineFingerprint,
@@ -770,6 +803,7 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         finalBaseline.AppliedTransformIds.SequenceEqual(
             _appliedTransformIds,
             StringComparer.Ordinal);
+    }
 
     private static MortalItemTreatmentPublicationBaselineSealResult
         InvalidBaselineSeal(string code, string expected, string actual) => new(

@@ -1,0 +1,69 @@
+{
+  "source": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "compileSource": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "packet": "/workspace/boe-cloud-tools-20261014/fr063-late2-first-inmemory-diagnostic-outcome-frozen-76b7d5ff-20261015T012537Z-76e2a453",
+  "manifestSha256": "5ef3d53518ff80d49b220c219f7c1f11f245e7d31858a3213cec6f6fc9343d41",
+  "artifacts": 49,
+  "actualNative": {
+    "launch": "0124cc",
+    "session": 5313,
+    "completion": "d29356",
+    "exitCode": 1
+  },
+  "actual": {
+    "run": "20261015-012449-310-552689-77aa61fc8eee4f6584c42cc04fc9a840-categories",
+    "wallTime": "00:00:34.0093501",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 155,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-66356d0764474eafbd0dfb25126d7eaf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ab88c6b658224d98abe11df0eda14ebf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 2,
+      "qte_story_actual_client_append": 2,
+      "qte_story_actual_engine_result": 2,
+      "qte_physical_actual_occurrence": 2,
+      "fr063_joint_actual_prior42_inactive_tail": 2,
+      "fr063_joint_natural_stage43_image_before_assert": 38,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+      "fr063_confirmed_claim_inspection": 2,
+      "fr063_joint_completion_actual_prerequisites": 2,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+      "fr063_joint_completion_actual_owner_outcome": 2
+    }
+  },
+  "freshPrerequisites": "BOTH134.8964081s/exactPlan4.5818031s/catalog5.4483279s;allnative0/0exec;catalogValid746/11588",
+  "rawFrozenBeforeDiagnosisOrMetadata": true,
+  "historicalCheckpoint5": "componentPASSretained/no repeat",
+  "priorLate2Failures": "immutable retained",
+  "later12": "UNRUN/HELD",
+  "furtherSourceFixOrRun": "HELD independentEVIDENCE",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes"
+}

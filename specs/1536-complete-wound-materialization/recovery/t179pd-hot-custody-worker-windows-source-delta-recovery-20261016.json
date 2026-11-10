@@ -1,0 +1,1205 @@
+{
+  "sha": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "base_full_tree": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+  "base_full_tree_directory": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+  "base_full_tree_receipt": "/tmp/t179pd-hot-custody-implementation-final-full-recovery-20261016.json",
+  "directory": "/workspace/f1-r2-hot-custody-worker-windows-source-delta-github-20261016",
+  "started_utc": "2026-10-16T22:41:05.742342+00:00",
+  "completed_utc": "2026-10-16T22:41:15.480018+00:00",
+  "count": 148,
+  "changed_count": 145,
+  "name_status": "A\t.github/workflows/fr063-hot-worker-windows.yml\nM\tBookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs\nM\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\nM\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\nM\tspecs/1536-complete-wound-materialization/plan.md\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-blocked-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.md\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-evidence-accepted-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-full-recovery-20261016.json.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-binaries-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-integration.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-unit.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-catalog-audit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prepared-docs-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-root-preservation-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.md\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-inspection-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-supports-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-worker-failure-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-fr063-joint-active-tail-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-fr063-hot-browser-stage-lifetime-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-fr063-hot-joint-attempt-ownership-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-fr063-joint-live-completion-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-full-bindings.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-strong-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-fr063-hot-joint-owner-refusals-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-full-bindings.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-strong-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-fr063-hot-joint-ready-custody-drift-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-fr063-hot-worker-ready-disposition-integration-001.trx.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-inspection.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-supports.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-late-root-bindings-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-source-accepted-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-binaries-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-integration.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-unit.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-catalog-audit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-artifact-index.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-dotnet-test.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-native-exit.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-plan.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-stdout.log.gz\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-summary.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prepared-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.md\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-causal-classified-delta-recovery-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspect-20261016.py\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspection-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-audit-v8-20261016.json\nA\tspecs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-result-v8-20261016.json\nM\tspecs/1536-complete-wound-materialization/spec.md\nM\tspecs/1536-complete-wound-materialization/tasks.md\nM\ttests/categories.json\nM\ttests/selection.json\n",
+  "mode_change_summary": " create mode 100644 .github/workflows/fr063-hot-worker-windows.yml\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-blocked-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.md\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-evidence-accepted-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-full-recovery-20261016.json.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-binaries-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-integration.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-unit.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-catalog-audit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prepared-docs-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-root-preservation-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.md\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-inspection-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-supports-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-worker-failure-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-fr063-joint-active-tail-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-fr063-hot-browser-stage-lifetime-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-fr063-hot-joint-attempt-ownership-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-fr063-joint-live-completion-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-full-bindings.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-strong-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-fr063-hot-joint-owner-refusals-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-full-bindings.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-strong-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-fr063-hot-joint-ready-custody-drift-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-fr063-hot-worker-ready-disposition-integration-001.trx.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-inspection.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-supports.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-late-root-bindings-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-source-accepted-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-binaries-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-integration.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-unit.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-catalog-audit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-artifact-index.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-dotnet-test.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-native-exit.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-plan.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-stdout.log.gz\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-summary.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prepared-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.md\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-causal-classified-delta-recovery-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspect-20261016.py\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspection-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-audit-v8-20261016.json\n create mode 100644 specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-result-v8-20261016.json\n",
+  "deleted_paths": [],
+  "files": [
+    {
+      "path": ".github/workflows/fr063-hot-worker-windows.yml",
+      "bytes": 13761,
+      "git_blob": "9cded218aca368b0bbec652748523e944bea25ef",
+      "mode": "100644",
+      "sha256": "242e95680cbe60a38466a2448da4b25a63192f0aa8d4753fad8ff13db5710f61",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/.github/workflows/fr063-hot-worker-windows.yml"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "mode": "100644",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "mode": "100644",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/AGENTS.md"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs",
+      "bytes": 14105,
+      "git_blob": "8a57a4465fa83c3ba5707e89ca35aab937486a17",
+      "mode": "100644",
+      "sha256": "cc5aeb628bf53dbb7cb1f9513cec31d65ce6a9c9b5e65a3d552355f8e4fd4c69",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotWorkerDisposition.cs"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "mode": "100644",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/docs/development-workflow.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "bytes": 138181,
+      "git_blob": "2678b395f3e1d76bbb91ac9d6dd6503d87035f2a",
+      "mode": "100644",
+      "sha256": "3ace6186cecda3411f0035e9950c19a5ce8663de0dc01ece18fbe18985530480",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "bytes": 109263,
+      "git_blob": "ea4d351a88357cb534ae385a4ba1ffe77b7efdaf",
+      "mode": "100644",
+      "sha256": "3dd3fbf6baab43d787b2b20c0fb9bd21fee9eef645abf48ac929e26c724460d5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2208939,
+      "git_blob": "4da47d1cc30e992534a5b78f8a1c204af06a0f54",
+      "mode": "100644",
+      "sha256": "15d124e1bd76ea1f8bce88f49b5439dca9847d71371149133ff38e51eb7ae10d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json",
+      "bytes": 647157,
+      "git_blob": "63619b0752d7731d780828aa0ae6cda5651d7286",
+      "mode": "100644",
+      "sha256": "723a3f38082695a3bde617b6f04e07b8fc661b46fac122f02b9f179a9b92d6fb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md",
+      "bytes": 9591,
+      "git_blob": "46258a02d5b2c10e65aa9769e9a93d254112071e",
+      "mode": "100644",
+      "sha256": "fcb71dd6db6e64d587e088b1a766fd8ac188b280f49f0cd96d92048b305fe099",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-first-worker-failure-causal-review-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-blocked-delta-recovery-20261016.json",
+      "bytes": 24773,
+      "git_blob": "7bac890654fe6b5a64baca5e75e48f4dddacdd5a",
+      "mode": "100644",
+      "sha256": "97f3f90b87ad32654a908635918707ab774a41210e21db5381c7caafb583cbe6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-blocked-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.json",
+      "bytes": 943764,
+      "git_blob": "d1ca182358dc5f8bf9551cd3f7fee4a7fb4772cb",
+      "mode": "100644",
+      "sha256": "3611f5cb157fe803f51a48c461ecc60a92073812221aeda00da5d8eae2c7bf59",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.md",
+      "bytes": 10420,
+      "git_blob": "6401ad8f5d0dc4c22d18f19af95ae9aed6b071cb",
+      "mode": "100644",
+      "sha256": "3c5e0c2f151ae13f636733e8782533e9737c470ee7ca693af77a252a17549456",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-corrected-source-independent-review-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-evidence-accepted-delta-recovery-20261016.json",
+      "bytes": 56030,
+      "git_blob": "0ab86fd422f8d55d3e5462778f6dfd23e0138d36",
+      "mode": "100644",
+      "sha256": "f0f7c3c9cf45201c4dd5f90aca48ca88211b096f49e11a63a5a00493fad9442e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-evidence-accepted-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-full-recovery-20261016.json.gz",
+      "bytes": 3276144,
+      "git_blob": "a38ac2f08f15bd71cba3bf8f2370ed8d7405f46e",
+      "mode": "100644",
+      "sha256": "abca175e87fceb22697b6c1055822e59644804b0d7736a5d2dd0da001d1490aa",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-full-recovery-20261016.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-binaries-20261016.json",
+      "bytes": 1018,
+      "git_blob": "90a69f0f2ca1864f874c5742859c3481e580c608",
+      "mode": "100644",
+      "sha256": "f8f9b6f56a98226b59a95131e2e7a4dd799f702b3c3285073f03cbbcd2846fd4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-binaries-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-integration.log.gz",
+      "bytes": 9226,
+      "git_blob": "d812b4585c347421bcf86acbdb8d2f5c7ac6f2bd",
+      "mode": "100644",
+      "sha256": "d4ab38560a137b22d4a2df779d21d288442b2a9b7f02c6b233f9215869b10302",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-integration.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-unit.log.gz",
+      "bytes": 1716,
+      "git_blob": "f4fbcd4e1c8a0e4aba452751925430ff109f5143",
+      "mode": "100644",
+      "sha256": "131d83d05c83c83d8de14452bb5fcdcc722c8e932dfd689621808aeec8ad1042",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-Build-unit.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-artifact-index.json",
+      "bytes": 5444,
+      "git_blob": "f9858069bc220d9d4848f6d844bf2034c4a39172",
+      "mode": "100644",
+      "sha256": "828b12a0631c1e99037ff7271e42201156651225920573df64f094ccded425d5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-catalog-audit.json",
+      "bytes": 103,
+      "git_blob": "fdfba89c4481854af5fc6db1421ea92d94355275",
+      "mode": "100644",
+      "sha256": "2156f686e0c5f16d99f0823c72cc7b82ceeb43fc3f918bda460e30802323e439",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-catalog-audit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-dotnet-test.log.gz",
+      "bytes": 386630,
+      "git_blob": "96d8e2c8586d5808bb74ab157fc7186250c48aa6",
+      "mode": "100644",
+      "sha256": "3ea4b117959d4847d70056e427a00b051b8eada0cdf324bcb848e03a88ce2105",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-native-exit.json",
+      "bytes": 587,
+      "git_blob": "bd15b66ad5d2ad9ef2c2bcc9246944c9424ead1d",
+      "mode": "100644",
+      "sha256": "cac73d81a6fea18228317825ab8a911ec6db55aa4a5585c3314e37f8499670a4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-stdout.log.gz",
+      "bytes": 394,
+      "git_blob": "e928e14eda812f42a9d34c1666f972c154746d5e",
+      "mode": "100644",
+      "sha256": "8adff3df6aa1c279b124e6a20f35293ec49e60c0f0fc3112c556c6f4e46a9d07",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-summary.json",
+      "bytes": 1600,
+      "git_blob": "b8fdc07c07ca527921faf531b9c70cab7615a411",
+      "mode": "100644",
+      "sha256": "44760c240f4215c2ecb3e9f80bc46d08b684fcb961ee46d11d74bc8d9ee2c687",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-catalog-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-artifact-index.json",
+      "bytes": 11100,
+      "git_blob": "7e2ea7ae18afb102db27268350cfdd10d03b19cc",
+      "mode": "100644",
+      "sha256": "07f4a333f8215e2ac96d0e62703b92c4ad4e10453b4e711cb7b0a357ac28eaf7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-dotnet-test.log.gz",
+      "bytes": 187213,
+      "git_blob": "484e70bfde63ba21de5d89d5a1d500fce747cd30",
+      "mode": "100644",
+      "sha256": "43f34c54574ae183e5a3bbad57148b92605164cc25bb30d46b901dadadc583d8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-native-exit.json",
+      "bytes": 646,
+      "git_blob": "fb4af25b449a4c26f26dbf8c5efce255e404c61c",
+      "mode": "100644",
+      "sha256": "b1b5988eadd4086a0575c1e5c0a90783bed2c4ba69fab6c0f6b35f0f598445a7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-plan.json",
+      "bytes": 14443,
+      "git_blob": "5cacbd88e251d38b5dc76e7da674213e354cbec3",
+      "mode": "100644",
+      "sha256": "8e75069176506a6892350ad7df57610b9c02427f5b4dc7d2f89ce02311b6ed6e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-stdout.log.gz",
+      "bytes": 1252,
+      "git_blob": "be9d693a6b51d2f7690a78a032fa1639ff38845b",
+      "mode": "100644",
+      "sha256": "74b747678301b5e428684c9bd7c09e7e3310234185ebf6e40d3c2f5afb6f1d10",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-summary.json",
+      "bytes": 8163,
+      "git_blob": "fe2425bf893e4967df4f5ea60440c02e03f00395",
+      "mode": "100644",
+      "sha256": "9722df16b433c49ee34fdb4bde3e6d9adb11d94e5a9038590f0d36f3ae53afba",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prep-plan-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prepared-docs-recovery-20261016.json",
+      "bytes": 16724,
+      "git_blob": "a7348898f2248da04544c46e6585d794d9e031f1",
+      "mode": "100644",
+      "sha256": "b7357abc97d120ee218d6743c187c59b05af00e9400d18eb7ec173aa2db287b7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-prepared-docs-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-root-preservation-20261016.json",
+      "bytes": 731,
+      "git_blob": "ffb3cb49f1cea4ca7b558fa3cbb8c09585c2b441",
+      "mode": "100644",
+      "sha256": "52ec07bbcb0e9b40dfcbb0e5c5f30fe35be06dd2d5694bd383b780c00deab008",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-final-root-preservation-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-artifact-index.json",
+      "bytes": 4792,
+      "git_blob": "217cd48f6cef3943173a9582a728517b46fcc6e6",
+      "mode": "100644",
+      "sha256": "8e1debfcdffcbda1307d73cdae868be8cbb69dc3736987f3c2c4db1ed45cf689",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-dotnet-test.log.gz",
+      "bytes": 187410,
+      "git_blob": "c73ed7310a6294c56ecd8acf9b584d84ca0962aa",
+      "mode": "100644",
+      "sha256": "70d6c11706f2932c0a99401ff3e1316d8d95a88c39ba61eee629b81fd65cfc28",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "bytes": 4829334,
+      "git_blob": "4b71e658b0f49d990212537bc90c294bf54c1277",
+      "mode": "100644",
+      "sha256": "43c55aab2aace54888b98e4727e5ee59ec0558a98354723bf410bcdf723cd9d2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-fr063-joint-late-completion-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-native-exit.json",
+      "bytes": 1308,
+      "git_blob": "1f28975d9f69fbbc5abcb28ec883b4a52bf254f4",
+      "mode": "100644",
+      "sha256": "ae4208ea1a0c7a5bd4dbeafb38d15ecacf59b835b3bd5edd3cb353630dbd0a48",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-plan.json",
+      "bytes": 1533,
+      "git_blob": "0b926b070e13dd3a8ebccd91d52f5ae34b01422f",
+      "mode": "100644",
+      "sha256": "db556276704338356e1123b08d932e24344c43b1cf3c2c77e920ad2a302968bc",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-stdout.log.gz",
+      "bytes": 821,
+      "git_blob": "e8cf09a8594f73b0ebb573715f7df25c84349b28",
+      "mode": "100644",
+      "sha256": "24e2093a076f49f5055385534a4c39ac31ce277c51cabfd9d56a5dd505152ffa",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-summary.json",
+      "bytes": 1463,
+      "git_blob": "ae64882571926e7f22b2085d0560bad90c23e607",
+      "mode": "100644",
+      "sha256": "547673c2e7c8a7ee11b57fee665f476a06921135eb58e9d523c54591c75ac837",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-delta-recovery-20261016.json",
+      "bytes": 53364,
+      "git_blob": "7d96aa52f86630b96286b83608ba713f76654ace",
+      "mode": "100644",
+      "sha256": "cd3f4ac30f8032cd6794cf6e0c63cd0f04a91c10f4a8666b6dab2ad7b68af07f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.json",
+      "bytes": 671179,
+      "git_blob": "cc40476dd237a73ba719c2b940905786cbd053f9",
+      "mode": "100644",
+      "sha256": "82895e224b3cf8527ba3259681f64088f96f51bc0451a52ea8984241d4d69e52",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.md",
+      "bytes": 10025,
+      "git_blob": "a948ef0ad252600ceb70df345ced42243003922d",
+      "mode": "100644",
+      "sha256": "3ff31d0c5c544666a0728b4f56f0b263f0585affda6c7c77c66ee047125d6ed3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-evidence-review-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-inspection-20261016.json",
+      "bytes": 21817,
+      "git_blob": "db3b6d252ebe591803e59c357542e04e928b0e5a",
+      "mode": "100644",
+      "sha256": "e0da0c797c4b6b389c422620fa622633d0dd0b04d808fd6b38ac76616e680de1",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-inspection-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-supports-20261016.json",
+      "bytes": 27687,
+      "git_blob": "410ce6f20c837d5ce4c61fbe36d921afd7e53198",
+      "mode": "100644",
+      "sha256": "47537f9fd64ce9f32b9b52066fd7787cf13c8fbcc35f53d6d857ea88ddf5fbf9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-late-root-supports-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-worker-failure-delta-recovery-20261016.json",
+      "bytes": 123057,
+      "git_blob": "fd96764cdfa0922ce9d853555d3c9ad60378148d",
+      "mode": "100644",
+      "sha256": "1e1a564e6d0669e1236f62ae1c24fdcbaf614a062e7e36f5ce3886fce725b1b4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-first-worker-failure-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-artifact-index.json",
+      "bytes": 4824,
+      "git_blob": "70bd31388b5f078c06cf007723663b5e7288fb01",
+      "mode": "100644",
+      "sha256": "09b180ed7d975bceb79e332ae554191bd86bbbfe25c03f13a73e7a375ad1f657",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-dotnet-test.log.gz",
+      "bytes": 187412,
+      "git_blob": "bc3dc3c29055a1d5360ba1a524b98c72adb2aa9d",
+      "mode": "100644",
+      "sha256": "49c0f9dad54e7441b1b814f05b7292a1e4597e61592dc7696894af07f88db097",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-fr063-joint-active-tail-integration-001.trx.gz",
+      "bytes": 8211724,
+      "git_blob": "f16680053f5ebe4f683f6cd42630e7d5ead0f014",
+      "mode": "100644",
+      "sha256": "8bbc916c52565e975f187d3ce242650a20602f4dbf5e09b592d1a3adf8664918",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-fr063-joint-active-tail-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-native-exit.json",
+      "bytes": 1334,
+      "git_blob": "90715d0742952e7f2a524096e3a7bba2c92447fb",
+      "mode": "100644",
+      "sha256": "0fdca444d88b940266e5122d782fd077851a9af9463c3ffae5cc5871d68dabd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-plan.json",
+      "bytes": 1159,
+      "git_blob": "4b2c31a9d8393649c305ab0bf88a98baf82cb85f",
+      "mode": "100644",
+      "sha256": "35f116a39dd389f24a7964da80587d04ddd702a91880ba3825017f566ceecb29",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-inspection.json",
+      "bytes": 10143,
+      "git_blob": "10154d9f8d804f5dc8c885e5226d8538d56d88c1",
+      "mode": "100644",
+      "sha256": "ff588a0d92ec20142dd81ea952ab09d181cd9cce11d21c39ed91c480b25767b2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-supports.json",
+      "bytes": 16081,
+      "git_blob": "c7a6ce213bde6eda88cbc21c0704ad5e626a88c0",
+      "mode": "100644",
+      "sha256": "9c1d5d2943ad2b59cef4c045e6c24c3be22704569d5821e424e6e9b998953241",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-stdout.log.gz",
+      "bytes": 772,
+      "git_blob": "98d062990041c61adeea13ea43b4b2ccc3d0f58d",
+      "mode": "100644",
+      "sha256": "c1fe5d29b254247111454b0a14fb40387425ace770387fb1a0615b89a83d5232",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-summary.json",
+      "bytes": 1455,
+      "git_blob": "ecfc22928d3fced5abbe126aae099efe4ceea919",
+      "mode": "100644",
+      "sha256": "a3afe7bdfe3967d02366c4618af928e8bfccbd1762b847d637c5bde846650a5a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-delta-recovery-20261016.json",
+      "bytes": 93804,
+      "git_blob": "3d3c332e418c341cbc604eaa35052f722ee65c5e",
+      "mode": "100644",
+      "sha256": "3e6011c7f8bc721b501ff4e82a2f8613887b0eb77048ce299613e7cf321d387e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-active-tail3-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-artifact-index.json",
+      "bytes": 4833,
+      "git_blob": "c9c7b7ac6024efcfa58d900fc4abf5d95121ba97",
+      "mode": "100644",
+      "sha256": "1a126bc2162b711b68648cf750c333c7615ffa72e51cbd31e73ff55d23d22945",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-dotnet-test.log.gz",
+      "bytes": 187420,
+      "git_blob": "f797811958e74498e8372eec8f3d47bb15ba8c7c",
+      "mode": "100644",
+      "sha256": "06d23423e2476a3f9a5fcd9846b7f1c3decab9e2281031ebe97a40b043c2497b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-fr063-hot-browser-stage-lifetime-integration-001.trx.gz",
+      "bytes": 3239,
+      "git_blob": "6e386096f8752de092e83d9f13d56a606b294a93",
+      "mode": "100644",
+      "sha256": "892a999147fddb3ea3f1bc158e2550ba9bb9946d56f1c4233d721d23ccfbf0dd",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-fr063-hot-browser-stage-lifetime-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-native-exit.json",
+      "bytes": 1361,
+      "git_blob": "e9e99774eef11627ea27752c09367c4e3c9a9a69",
+      "mode": "100644",
+      "sha256": "975c6bfa3f4a22e1accdd8f3106996be54d0f577f8bb2dbd57d84a3fde72119d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-plan.json",
+      "bytes": 1163,
+      "git_blob": "424f05a3f73b9904bb76f1c9518f413d74d38d27",
+      "mode": "100644",
+      "sha256": "cc2b6bbd8b52f43327a8f35f7e115ff37211d874008301e0c6ae5aa55691e8cc",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-inspection.json",
+      "bytes": 5657,
+      "git_blob": "7b56111c56dde9b9f07d24b27eb4b078d53a86b0",
+      "mode": "100644",
+      "sha256": "0c453645a6fcb8fa4d8cb64ff963fb7223605078a44d8f80db3d0400b00b7c58",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-supports.json",
+      "bytes": 17947,
+      "git_blob": "7466133e3e2eacafa84c27c877d4ede2190f6d94",
+      "mode": "100644",
+      "sha256": "fb05cb36d022067d50b8d25bdc05657e766095f7451ca38ef3e98b85ebe1350c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-stdout.log.gz",
+      "bytes": 769,
+      "git_blob": "349037720e45fe3c5e80510f8826410ab81a2f00",
+      "mode": "100644",
+      "sha256": "63d2569261df61c0aa25e2d5c9ba40d145c44d8c00cf3aec26cc54ff96c70b65",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-summary.json",
+      "bytes": 1473,
+      "git_blob": "1da23672e5da3df8bd600a096872ada01fbf3072",
+      "mode": "100644",
+      "sha256": "415b80f73d659962c44e25a50a50498fefeb36db8817b498465b8f1ecfb4ac47",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-delta-recovery-20261016.json",
+      "bytes": 114029,
+      "git_blob": "a041d11b1760f4a16b9776484287974a25625d5d",
+      "mode": "100644",
+      "sha256": "de6b8007debdcf01c47b31efd673b240b4fdc43575c21fb3fdc92f91089479f6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-browser2-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-artifact-index.json",
+      "bytes": 4815,
+      "git_blob": "a53a86f284e6e339a9420483320db1371e73491b",
+      "mode": "100644",
+      "sha256": "4e2d0e67150b63c762cda5e290ec461408c5960245b52070cde746fbfd688307",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-dotnet-test.log.gz",
+      "bytes": 187417,
+      "git_blob": "683726e1f25fe9d3009adb1ae861158ecc7f5336",
+      "mode": "100644",
+      "sha256": "7a80b8a6b3fdc4ca0376b32fb19e0dab859d5ce9000a2873a03c73a6bc591af6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-fr063-hot-joint-attempt-ownership-integration-001.trx.gz",
+      "bytes": 2583288,
+      "git_blob": "c1607cc3e2fdddce5be4637182480571ea0bbb85",
+      "mode": "100644",
+      "sha256": "0c74d8e01f21f2fade24ee2284608b0ed59f9d11489dd04d05112d634d6425c2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-fr063-hot-joint-attempt-ownership-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-native-exit.json",
+      "bytes": 1355,
+      "git_blob": "05679ff424dededd48439d939b03eefec7323c92",
+      "mode": "100644",
+      "sha256": "3fb29498a93e1e100af8c303e42705095a68addb7b8a6d491d743143548f90cf",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-plan.json",
+      "bytes": 1203,
+      "git_blob": "6c300e31eeeb6fd9e259300989643fe252e64a85",
+      "mode": "100644",
+      "sha256": "903715f5a537d2060c2a75c8976011409a2ace0f7c51af8417f0047d708e4976",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-inspection.json",
+      "bytes": 5362,
+      "git_blob": "b6806a9bbce07cb7ab05a1a61fbbe734e3db1b89",
+      "mode": "100644",
+      "sha256": "83e806ed711a2eda20df53a2c2b8a656639357944f32af91fe3a36dd59972c10",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-supports.json",
+      "bytes": 13777,
+      "git_blob": "cc82404afce6fc5ab58698b263d2325351b758c1",
+      "mode": "100644",
+      "sha256": "789c0320b1fe00e68e8468d2b50b42d60caf4b034db59d488602755f637ec9ea",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-stdout.log.gz",
+      "bytes": 785,
+      "git_blob": "c6800c4bdc509f7e3025a30eb2262dae5fe6faa4",
+      "mode": "100644",
+      "sha256": "d26e4068173733910531ab71b783c72005b4351d5ac7d405df8cc365948f0ba7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-summary.json",
+      "bytes": 1475,
+      "git_blob": "3ed77b9d1dd4578dda56b651d9df8280725fafc6",
+      "mode": "100644",
+      "sha256": "47fb5136ff855fec8233498a80c7ab7da53bbf0ffda9434d2370058d9e06216c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-delta-recovery-20261016.json",
+      "bytes": 73930,
+      "git_blob": "9182b207e3369e06def18ca74ab34aa619e112aa",
+      "mode": "100644",
+      "sha256": "15843c525098abab89e2a65ae542f7f6f55db1f3f1c5c513bf6318485fb80448",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-hs01-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-artifact-index.json",
+      "bytes": 4797,
+      "git_blob": "72e7a5241f4634b989464fc16f19b05a627f4563",
+      "mode": "100644",
+      "sha256": "03a0ea39b61c7ef41a3db09d8bd92b182509bc08b4451cd72c100a98b0b2eeac",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-dotnet-test.log.gz",
+      "bytes": 187416,
+      "git_blob": "000edea70dd6f237c28391531f3a580381790eea",
+      "mode": "100644",
+      "sha256": "a79fc417b0cd4a7d0dd7e8e5fe6ae11c5efc1b0bf95dce77ab6bb8a5ef4b7e67",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-fr063-joint-live-completion-integration-001.trx.gz",
+      "bytes": 2532434,
+      "git_blob": "c1429a5918a236d9129aaf11e86b808c3cc57d55",
+      "mode": "100644",
+      "sha256": "7a2afcb98723223f1aae954e99ad5a9da128cf9487021f94b0b969a1e109b375",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-fr063-joint-live-completion-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-full-bindings.json",
+      "bytes": 5457,
+      "git_blob": "91e639bbeb94b1ab9da4fad906692b967c20682f",
+      "mode": "100644",
+      "sha256": "174183007bda1b56e3a1a4246d2306c4d4a16a07d05f9df2506aba98fe154207",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-full-bindings.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-native-exit.json",
+      "bytes": 1341,
+      "git_blob": "824413e7c7c66c3a8c1f428fc1cccfe66c6da143",
+      "mode": "100644",
+      "sha256": "843e2da4de4987697051bcbc75f3108bf7d0991a27fb4eb9357071f11af67240",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-plan.json",
+      "bytes": 1177,
+      "git_blob": "687aa09c2425d75c84b1c97188c3db6e6128f8e3",
+      "mode": "100644",
+      "sha256": "cd7cd9a6a665954ac9c48e2498316332d92d3c4d3d6413ed52a5c9ec36c5305e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-inspection.json",
+      "bytes": 4391,
+      "git_blob": "c68fdb6f6dac584125ca06552e062c9946ee6373",
+      "mode": "100644",
+      "sha256": "5b74119f202529e27cd773755e5f3d1442965af663f5235f83ec30f12a9e895f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-supports.json",
+      "bytes": 35818,
+      "git_blob": "968dee8395081a6b1393d27950cc5a7b7699fd3e",
+      "mode": "100644",
+      "sha256": "2dbd733e676cc35b9da3dc5692d48fd95377fbec70a61eb2f433e9d647309115",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-stdout.log.gz",
+      "bytes": 776,
+      "git_blob": "27336b0a441495dba6708b29a4720fdbde51457a",
+      "mode": "100644",
+      "sha256": "5642364f5916fef44f5e2a6a9cce5c4dfd21603b984d7a66423b86b2e6f38336",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-strong-root-inspection.json",
+      "bytes": 16740,
+      "git_blob": "f66c59548286ca04fde606a15bf9f841290e970c",
+      "mode": "100644",
+      "sha256": "2179dfe5fbcc35b3b42dfffe3c23db2da460369e10a3a1b63ca1c17f5be1bc7f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-strong-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-summary.json",
+      "bytes": 1463,
+      "git_blob": "5d55ca15e4d50d7ac3a090a99b64f79e41fc3baf",
+      "mode": "100644",
+      "sha256": "fb6330372c8b5b2695c727ff41672467267f78ccfb23f58dc74f8d241c78fd82",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-delta-recovery-20261016.json",
+      "bytes": 84646,
+      "git_blob": "638737fdd8cf7e826d9c0d4a930ba18f35d12430",
+      "mode": "100644",
+      "sha256": "31e6672a57eae47da7786042212f40fea45cb77cd3f075d1333d4c27a8d44788",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-live1-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-artifact-index.json",
+      "bytes": 4864,
+      "git_blob": "3eb0e4aacaf37be51c4fc1097a3c06de89a95aa7",
+      "mode": "100644",
+      "sha256": "3a73913e46f925bd0c2d23c22599d05e7de085e922afc618e0e6a0b73c3d070d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-dotnet-test.log.gz",
+      "bytes": 187424,
+      "git_blob": "a27b12face9e8e84e0ab8835f500efe1c8140dab",
+      "mode": "100644",
+      "sha256": "5a462ca0dbdd666af52ef6fc6cd7e3c137245506a06cf4199ccb8f8b9eaedfbf",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-fr063-hot-joint-owner-refusals-integration-001.trx.gz",
+      "bytes": 2300221,
+      "git_blob": "a30d59a75f20addeb53105202da893af2d11d8d7",
+      "mode": "100644",
+      "sha256": "0e2c35b44ed86b105399fa7872dcb012c49acb198fa2c0ddadd9d4c22f3adbac",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-fr063-hot-joint-owner-refusals-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-full-bindings.json",
+      "bytes": 5246,
+      "git_blob": "5bbaaabf538ab7646c6b2f534ca76437f712d7d9",
+      "mode": "100644",
+      "sha256": "f02b5e1590f4b84baa2e53ff50b1c0e3f6b44d878ba6e6a8a436faa5faf3d9f4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-full-bindings.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-native-exit.json",
+      "bytes": 1355,
+      "git_blob": "546947432ad834814871d8a7d73deb1799673bdf",
+      "mode": "100644",
+      "sha256": "bb557e50357e19735773421f921b028a65d2bab9075c98a2aa87c325d48904de",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-plan.json",
+      "bytes": 1191,
+      "git_blob": "41913f83311bdfa594b8c33637538d205b438d10",
+      "mode": "100644",
+      "sha256": "401ecc2298973fb4026f720b478f49c37fc73e77934860b71b94468948b39428",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-inspection.json",
+      "bytes": 4997,
+      "git_blob": "4cb9aa19921b74831c85bbc11be234758a3aa52a",
+      "mode": "100644",
+      "sha256": "029893202c08e2e77feba86653eebea2296dd6ec8a9c2677d183cf7ed906deb3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-supports.json",
+      "bytes": 38891,
+      "git_blob": "b3d85538150981d67c58aad293f43ad9fa703a2b",
+      "mode": "100644",
+      "sha256": "301884fb7fed572daac4b84fd9fb568105a40da208c1b22fd88724b037e10387",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-stdout.log.gz",
+      "bytes": 778,
+      "git_blob": "ad6df5574fdd83618505b791dddb8ae950898cb1",
+      "mode": "100644",
+      "sha256": "8edc70d2de79abc02d502dc5dfc26259970ed7051708be7302ff4684d3d5d9c8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-strong-root-inspection.json",
+      "bytes": 16831,
+      "git_blob": "9036cd220cd73476d7d36e86b225526c2c650392",
+      "mode": "100644",
+      "sha256": "0ba31523afc4c3c3c91864871dca9a139bc2272d60f9cc2b2b1d4fef15b542d2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-strong-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-summary.json",
+      "bytes": 1470,
+      "git_blob": "d9ffa10da04c5c8f4dc9769ca9867473b6bc206b",
+      "mode": "100644",
+      "sha256": "4f324ce816a8dbb7f9c7b1c7d2cf1ae3192463186898d33f9dbc6c3588fb4df6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-delta-recovery-20261016.json",
+      "bytes": 104961,
+      "git_blob": "c5b1a5146e7e2d60ea2f9490d16fe43e05a149d3",
+      "mode": "100644",
+      "sha256": "097111d6fff4d8f1d4f2782bd1f590d857d4895865e394625a65ad7a789beef5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-owner-refusal1-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-artifact-index.json",
+      "bytes": 4833,
+      "git_blob": "4a9d6207fd0f41d7ae37ac35ddc1a55e56bc32c8",
+      "mode": "100644",
+      "sha256": "33207d7430ccf3de1b21a70e32d191a1a8758dc4d3a2a9581f962b6ed838e35a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-dotnet-test.log.gz",
+      "bytes": 187424,
+      "git_blob": "21fadd4e225ce7c5a6fd61d97403595ad61443dd",
+      "mode": "100644",
+      "sha256": "5dac7fc270de669c4eeb783bb16b7392fca7f5086a45b1763f574da456e81f31",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-fr063-hot-joint-ready-custody-drift-integration-001.trx.gz",
+      "bytes": 158851,
+      "git_blob": "411c6c45c058ea5335e733e4c2dba8ead09fbce6",
+      "mode": "100644",
+      "sha256": "e447c2b75b24c178f548489d578c618ae48377be4edb637050d52a49b2b81dd2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-fr063-hot-joint-ready-custody-drift-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-native-exit.json",
+      "bytes": 1364,
+      "git_blob": "7a38774122b813ef20b0859c90c2ef545a4554a9",
+      "mode": "100644",
+      "sha256": "3bb82ce9f0d9dee5ee46265b23453dc4fc2337b57edbcce9488c75e4d8e8ad72",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-plan.json",
+      "bytes": 1803,
+      "git_blob": "f6c762e8e9f8eb2431beb33a51e03397bcbf6dbf",
+      "mode": "100644",
+      "sha256": "e7c9e7e8522d1849710a9c5fe1390eb00edf29091a3a48b1439bda9ddd02d537",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-inspection.json",
+      "bytes": 5269,
+      "git_blob": "7c21e7624e8885feabc132b12ab586081bda6eb3",
+      "mode": "100644",
+      "sha256": "1a85c674b24e2c880102ba0c68a59790fb9df04f4f2dbe8abf21aa92aeb9a14f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-supports.json",
+      "bytes": 11038,
+      "git_blob": "80e39b8a867e461f865dc977d4b01e1d1153a654",
+      "mode": "100644",
+      "sha256": "2ea9c4d27d5d4e56554ef155fdd618d0a1f91da3515436050c500b4ebe3c513f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-stdout.log.gz",
+      "bytes": 853,
+      "git_blob": "f0024efc7087574a81f92876efc2a079f98d7e42",
+      "mode": "100644",
+      "sha256": "db0d07dca8aafb76b0b8c3299f8823b05e0eb2e0e8578b5b8b2aa810684fbead",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-summary.json",
+      "bytes": 1478,
+      "git_blob": "61707f9b537df7615fd133fa1383fa83cb72fcda",
+      "mode": "100644",
+      "sha256": "81bf04975ff74cb1761a68abf99cabc2c9c99386d434def11311ba6182980a59",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-delta-recovery-20261016.json",
+      "bytes": 65028,
+      "git_blob": "64c20d511d8ced0a2230ae33fb421449451d1c0f",
+      "mode": "100644",
+      "sha256": "e187a66f182ee84f001fe575b3ebdcff3d4663f55738266dc4e6a2ccb9ec21e6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-ready3-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-artifact-index.json",
+      "bytes": 4728,
+      "git_blob": "96f2c6f46d17e000703edc1372141ab93ef7f7ce",
+      "mode": "100644",
+      "sha256": "dedf0ba7e311024879cb8969396a7e8730aba25dec9199a572110cf212d18ab9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-dotnet-test.log.gz",
+      "bytes": 189685,
+      "git_blob": "9d79c7a57e7a1b326dda243e8a3660262cddec80",
+      "mode": "100644",
+      "sha256": "18649c69d42d2db41625b649ffb91149f7cb36773e69ad2e5ffd9635a7edab23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-fr063-hot-worker-ready-disposition-integration-001.trx.gz",
+      "bytes": 4567,
+      "git_blob": "5192e4c07ca11d5f2d0804cf79c96ef728057838",
+      "mode": "100644",
+      "sha256": "94f0a470ef1892c875db60ca875290c42b96e8a59305b4f4415df6faa402224d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-fr063-hot-worker-ready-disposition-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-native-exit.json",
+      "bytes": 1359,
+      "git_blob": "67945a757b59c7422524cdc9e072bb59827fbcd0",
+      "mode": "100644",
+      "sha256": "a103de5aa148c0cff9f5d4cde56dc6b5ad0b6506a7a1a5e49741c52e860a4e54",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-plan.json",
+      "bytes": 1173,
+      "git_blob": "bf30a4050deb25d052eed1480ea52e7f262d368f",
+      "mode": "100644",
+      "sha256": "ff8a1dc89701bd830c0ffe6eddff3e70683b0467da419b821249b17d1bac3523",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-inspection.json",
+      "bytes": 2784,
+      "git_blob": "f671ea01993a789e02da38ade5d15d4780badfba",
+      "mode": "100644",
+      "sha256": "04c81fce0f21f98f61f39b180bf2b4fd5b7afae63d5f1208ebb31a09e21ea2ec",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-supports.json",
+      "bytes": 9171,
+      "git_blob": "628682b6c6b254c184004397b7508eb8273e452e",
+      "mode": "100644",
+      "sha256": "c06c9c3466f1a2873a67745fd9849782fc9deb98940a571aeb8e058e6ffe5c4f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-root-supports.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-stdout.log.gz",
+      "bytes": 2966,
+      "git_blob": "836317353d47b21efe686bd9f00ed65652b1df92",
+      "mode": "100644",
+      "sha256": "94d5293ec191f8537392ab4dbfa80bcc0c8df09a931ea701cd210409f23583ed",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-summary.json",
+      "bytes": 1379,
+      "git_blob": "b626bece0646c36a67be779d356f6be122ab73d6",
+      "mode": "100644",
+      "sha256": "3c6fac5e56897e6f4a6740796f140fd6dd31b45460c0c6eab6bddfd1ae396c8d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-green-worker2-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-late-root-bindings-20261016.json",
+      "bytes": 10701,
+      "git_blob": "0f398e101babd4d80bba05868a8383fecc3e4e20",
+      "mode": "100644",
+      "sha256": "8dab98e71d629ae20eb565370209bd3dab363820731174f229912ef3581c4074",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-late-root-bindings-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-source-accepted-delta-recovery-20261016.json",
+      "bytes": 43618,
+      "git_blob": "5dfba6d067ad7feb277e87e29694cf4708f17165",
+      "mode": "100644",
+      "sha256": "75fe3d76ea4931feed6c10bd5c95e6c2b10dd439eecb3c99298f19142fc3de6e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-source-accepted-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-binaries-20261016.json",
+      "bytes": 1026,
+      "git_blob": "5a825a4d64c1ae2ddb6fb47d38403d28619d2c15",
+      "mode": "100644",
+      "sha256": "5f4ec843b7ca6818863f193e0a7de46f4c4c94baecdbdbedeabd3fe0d295a712",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-binaries-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-integration.log.gz",
+      "bytes": 9238,
+      "git_blob": "8448c67280f12c6b5dde4f68431093c2b97cd7b9",
+      "mode": "100644",
+      "sha256": "88c7a584a44717a769c1c118dcf93d1834594a3521678dc798cf56cda1ef6049",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-integration.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-unit.log.gz",
+      "bytes": 1704,
+      "git_blob": "e83ae9919d0bc42981e5429c103bf12f770711ad",
+      "mode": "100644",
+      "sha256": "27d1e585033c2594822593d5d24b5dbf33230452d2070ced27d99745c5e5f022",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-Build-unit.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-artifact-index.json",
+      "bytes": 5472,
+      "git_blob": "465ce6ef190aaf0795c0cc97f050126fa0da89dd",
+      "mode": "100644",
+      "sha256": "de04774ee578c144ac54961abe65660c0dae45bc539c14a58b266e2603095639",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-catalog-audit.json",
+      "bytes": 103,
+      "git_blob": "fdfba89c4481854af5fc6db1421ea92d94355275",
+      "mode": "100644",
+      "sha256": "2156f686e0c5f16d99f0823c72cc7b82ceeb43fc3f918bda460e30802323e439",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-catalog-audit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-dotnet-test.log.gz",
+      "bytes": 386645,
+      "git_blob": "f86567da49b1f8dd6f8b638b0aec07d097de03ce",
+      "mode": "100644",
+      "sha256": "69c3f9be199562ad6c3421615807d9e440f1d82c7c207bca3947806a96cb1012",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-native-exit.json",
+      "bytes": 618,
+      "git_blob": "40a4a45e576c994f1aa97dd4497d404692e017f1",
+      "mode": "100644",
+      "sha256": "c9835bb03ee2ac4d692806a16c34578c35a8bd977870889247afaae34da1af6a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-stdout.log.gz",
+      "bytes": 393,
+      "git_blob": "4b066b31e9cb0b9aa80cede479dd687298cde478",
+      "mode": "100644",
+      "sha256": "181844c1588cefd84d130f94b3013108bff99c38f7a8e0edc497d2c1008b9ed5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-summary.json",
+      "bytes": 1600,
+      "git_blob": "8ee196357d06b98e00afc3f8958b9df7a22a6583",
+      "mode": "100644",
+      "sha256": "b0e5bbfd1b9c7846a6084b29ef413ca57d980c33b1bd1b7b49193afd2c1925ab",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-catalog-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-artifact-index.json",
+      "bytes": 11121,
+      "git_blob": "c5c9bc30216811a9135dea357d52783c80451233",
+      "mode": "100644",
+      "sha256": "602b2a3029bad0d457357f40123fc7a3deb29a86933f768ec3fd3d57f77124da",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-artifact-index.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-dotnet-test.log.gz",
+      "bytes": 187217,
+      "git_blob": "3dc4cb3b71ca587635cb881996e977c69cc9c578",
+      "mode": "100644",
+      "sha256": "977f3b2110bd9a35924decc291db5464f274a88c6142ec618a46eca9f3fd0a65",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-native-exit.json",
+      "bytes": 677,
+      "git_blob": "f8c47370644d00e2fb5f93947d6ba4df36f6de89",
+      "mode": "100644",
+      "sha256": "9d54f35a1563016e0823c2d0bb1cd1c8c09e5e5d3811bdf41772504818ce064a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-native-exit.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-plan.json",
+      "bytes": 14443,
+      "git_blob": "5286eedb71e0aadf5b76e135362bfbe364ac018d",
+      "mode": "100644",
+      "sha256": "fab56c8ae47316dc682d7fd5ca43472f68728a8b37a84d38e6d651f10230e053",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-plan.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-stdout.log.gz",
+      "bytes": 1256,
+      "git_blob": "acd611c335f97f3214469b3cb7a3410a159e43f0",
+      "mode": "100644",
+      "sha256": "3dce6ff0e335f1adcbdb821a531ea09bc41deeb8c87992c0ffdcd5d1c2ce972c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-summary.json",
+      "bytes": 8164,
+      "git_blob": "94d07a8f52abed97b7d0190e7c99bef1e42f4a09",
+      "mode": "100644",
+      "sha256": "da650f25768a6fe785cfbecc69e9dd1c73aa600acda6aa17039ea768103363fb",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prep-plan-20261016-summary.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prepared-delta-recovery-20261016.json",
+      "bytes": 40907,
+      "git_blob": "fbc3762f15613e67ace0c6a2904929e0da8f5f90",
+      "mode": "100644",
+      "sha256": "61cf53da51fe5ad00bfc0a9d87efdd835280a90ae1988f75048a35fe393959e0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-prepared-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-delta-recovery-20261016.json",
+      "bytes": 26294,
+      "git_blob": "e89a13a8f1ca0203bbfc79e94f7584240a48ed84",
+      "mode": "100644",
+      "sha256": "8169c960e4d2e7c1f7bb00b3167ca2270eb837a7cc18f02a0c01de5122405888",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.json",
+      "bytes": 872952,
+      "git_blob": "b303cdd83ba40cb66d1a506eb8105ca5eba412b2",
+      "mode": "100644",
+      "sha256": "8a25f781f92f22f06180438c9cd7efb64117c415a7136a576480f696fe81593c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.md",
+      "bytes": 8485,
+      "git_blob": "2699a5b363170b6dada56a578684fba9fc69860b",
+      "mode": "100644",
+      "sha256": "7c17aae7ab14c47bf4efa4f75b7d72dafee3635fbf1bb515345074d09ea1eca5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-implementation-workerfix-source-verification-20261016.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-causal-classified-delta-recovery-20261016.json",
+      "bytes": 127562,
+      "git_blob": "786dbf185fa45ea0bf6e15ed5638540cd46ff576",
+      "mode": "100644",
+      "sha256": "6560e44fcbaef05fb8c30ad79ebe473980656046d3d97dc1a21e97a40bdbf684",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-causal-classified-delta-recovery-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspect-20261016.py",
+      "bytes": 13403,
+      "git_blob": "248d37d723a6736cf3a787cb868039afb81360aa",
+      "mode": "100644",
+      "sha256": "67bc8c1f267f87574f92d1b0494616e22e7a9c1789270dfe0c446f9d8307288e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspect-20261016.py"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspection-20261016.json",
+      "bytes": 586834,
+      "git_blob": "7cb4e597db44f76001447cd5c66bb46042b4cbf1",
+      "mode": "100644",
+      "sha256": "17f9c377cc551d10b01ee336a6f64c6df771db8dcd65ab02a1fd0f8305f380ee",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-worker-failure-inspection-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-audit-v8-20261016.json",
+      "bytes": 1148,
+      "git_blob": "884dfe4976bcb8c84162f16bbe880aef4d45cdde",
+      "mode": "100644",
+      "sha256": "1f71b1b799f26a8c7414fadd91ed7d64315d611db09416d1b36c2e6ad9d03c8e",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-audit-v8-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-result-v8-20261016.json",
+      "bytes": 1738,
+      "git_blob": "e64a1a4f3fd0e19b0418c0f6548a012c52748698",
+      "mode": "100644",
+      "sha256": "456130a7357bfdfe3fe0dfac884a0e67d297a25a7a537a4c8260ee52081e7848",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/recovery/t179pd-owned-full-recovery-retention-result-v8-20261016.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 231132,
+      "git_blob": "8a546480031425d46c3fb0812168e6202b5447b1",
+      "mode": "100644",
+      "sha256": "5e3ea9ef01b62346d242e8363f038441dddd9760241b431cff7792239d9f423f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/spec.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1536187,
+      "git_blob": "ad6c10d894f773b0a552231cf302b3b9a1ffe595",
+      "mode": "100644",
+      "sha256": "3cd565f4bf63722ab33fa2922375f12225317083f2186522a1b2987629cdaf32",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/specs/1536-complete-wound-materialization/tasks.md"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1967517,
+      "git_blob": "2bd27c9956e90014905693f2a70f7d5cd165b950",
+      "mode": "100644",
+      "sha256": "52c5f5edfe6c31a9dc37ad034fe3b5fd5c72d324dcbde04ed0f2a61a0c4d2ab9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/tests/categories.json"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 6287,
+      "git_blob": "39d5cd8543efb864614b17090c9d05fc234c90c9",
+      "mode": "100644",
+      "sha256": "dc4d66b771e97e9582c018083e7ec7976820ca7fd77f9ed5aa3af7786d317320",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/a09272e91b379adb792450cd9e9d4f2a928d8a9b/tests/selection.json"
+    }
+  ],
+  "new_empty_directory": true,
+  "source": "NEW GitHub raw exact-commit transport; no local content used as transport",
+  "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification.",
+  "remoteReadback": "a09272e91b379adb792450cd9e9d4f2a928d8a9b\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN"
+}

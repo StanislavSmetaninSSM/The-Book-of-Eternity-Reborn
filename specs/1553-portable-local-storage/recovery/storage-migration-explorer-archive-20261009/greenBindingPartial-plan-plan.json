@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "portable-explorer-archive-outcome-causal-linux",
+    "portable-explorer-archive-binding-controls"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "18475a51455b53c102e3919f24a42374df5e425a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 100.971504,
+  "Descriptors": [
+    {
+      "Name": "portable-explorer-archive-binding-controls-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-archive-binding-controls",
+      "Categories": [
+        "portable-explorer-archive-binding-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitRetainsCommittedFollowUp",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.SubmitAsync_ShiningRelicForgeReshape_WritesExistingForgeRequestAndCommitsRelicReroll",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-explorer-archive-binding-controls-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-explorer-archive-binding-controls",
+      "Categories": [
+        "portable-explorer-archive-binding-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeArchiveCandidateServiceTests.RefreshFromCurrentStateAsync_MalformedCurrentSoulState_RetainsExistingManifest",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-explorer-archive-outcome-causal-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-archive-outcome-causal-linux",
+      "Categories": [
+        "portable-explorer-archive-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback|FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 18,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput",
+          "Cases": 10
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

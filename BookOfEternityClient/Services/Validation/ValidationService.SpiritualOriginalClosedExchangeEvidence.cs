@@ -91,7 +91,7 @@ public partial class ValidationService
             SpiritualClosedD20Claim[] DiceClaims,
             string ConflictBeforeFingerprint, string ConflictAfterFingerprint,
             string ResourceResultFingerprint, string EffectPlanFingerprint,
-            string DangerDeclarationFingerprint, JsonObject ConflictAfter);
+            string DangerDeclarationFingerprint, JsonObject ConflictAfter, CombatHealingExchangeData? Healing);
 
         private readonly List<RetainedClosedExchange> _closedExchangeEvidence = [];
 
@@ -207,7 +207,8 @@ public partial class ValidationService
             _closedExchangeEvidence.Add(new(interval, _source.CheckedExchanges[interval.Ordinal],
                 sources, claims.ToArray(), beforeFingerprint, afterFingerprint,
                 resourceFingerprint, effectFingerprint, dangerFingerprint,
-                after.DeepClone().AsObject()));
+                after.DeepClone().AsObject(), _combatHealingOrigin is null || interval.Ordinal != 0 ? null :
+                    ResolveCombatHealingExchange(_source.ReadMechanicsConflict(this)["activeConflict"]!.AsObject(), exchange, interval.Ordinal)));
         }
     }
 }

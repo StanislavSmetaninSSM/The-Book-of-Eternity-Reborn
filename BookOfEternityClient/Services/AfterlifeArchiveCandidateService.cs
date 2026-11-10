@@ -198,7 +198,7 @@ public sealed class AfterlifeArchiveCandidateService
 
             await _fs.WriteFileAtomicAsync(ManifestPath, JsonSerializer.Serialize(manifest, JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось обновить archive candidate manifest");
         }

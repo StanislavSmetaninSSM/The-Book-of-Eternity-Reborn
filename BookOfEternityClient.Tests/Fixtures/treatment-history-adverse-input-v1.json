@@ -1,0 +1,510 @@
+{
+  "FixtureKind": "detached_raw_treatment_input_only",
+  "Provenance": "Unchanged raw terminal INPUT extracted from OrdinaryProcedureAdversePrefixProjectsHealedHistory composed_not_published capture plain-terminal-history-composed-15605ce332c14a5d9b3062cb6193717b.json. This is not a History envelope, accepted archive, live authority or proof of an eight-field publication. Parser-test metadata and preparation comparators are newly computed detached lexical DATA only; the original seven-field capture is unchanged.",
+  "CurrentGameMinute": 1260,
+  "Result": {
+    "kind": "treat",
+    "mode": "procedure",
+    "routeId": "procedure_t061_procedure_normal_uses_lowest_free_die",
+    "attemptDisposition": "accepted_terminal",
+    "resultCategory": "partial_success",
+    "selectedOutcomeIndex": 1,
+    "interruption": false,
+    "declaredResult": [
+      {
+        "policyRef": "policy_preparation",
+        "kind": "apply_deterioration"
+      },
+      {
+        "steps": 1,
+        "kind": "reduce_severity"
+      },
+      {
+        "steps": 2,
+        "kind": "reduce_severity"
+      },
+      {
+        "legacies": [],
+        "kind": "heal"
+      }
+    ],
+    "consumptionTrigger": "none",
+    "requestAuthority": {
+      "mode": "procedure",
+      "coordinates": {
+        "schemaVersion": 1,
+        "sessionId": "session_t061",
+        "sessionGeneration": "be7e77fa174f4d9ea51967ed410bcb4d",
+        "requestId": "request_t061",
+        "snapshotToken": "DA7D23DA7DEAE1E050ED6C2001A8A583CD158D420C97F786DFC7C4D97E583C76",
+        "operationKey": "operation_plain_adverse_terminal_history",
+        "attemptId": "wound_treatment_attempt_ceadeb10c0240a1b9b96d4f048ea9fe0c4d2b05821e86d2d581ec22471c904c4",
+        "woundId": "wound_test_torn_side",
+        "routeId": "procedure_t061_procedure_normal_uses_lowest_free_die",
+        "expectedBeforeFingerprint": "sha256:fb59f0904b669bd12f95e1b9e096e869a63c9de167c8f5150f42b557f658a04b",
+        "eventRef": "turn_42:accepted_effect",
+        "eventKind": "accepted_turn",
+        "eventAuthorityId": "turn_42",
+        "eventSemanticFingerprint": "sha256:3572531d2b200ecb0bcd89dbd532e2479acc175052e6006426b8ed3622f30e8e",
+        "turn": 42,
+        "realm": "mortal_world",
+        "providerKind": "npc",
+        "providerId": "field_medic_01",
+        "targetKind": "player",
+        "targetId": "player_current",
+        "locationId": "loc_field_clinic_001",
+        "contextFingerprint": "sha256:7c9f72af2baa3bf5bfd199f3fbcdbb102b715f595f711eb752dbcd2b0f3847b8",
+        "acceptedStateFingerprint": "sha256:3d9fde0bbb8528c3eb2261534fcc436930b1329620a9008f0606ed3355eb385b",
+        "coordinatesFingerprint": "sha256:e4c25487aab2f468e0beb8eb591cd14edfbe84479390629cda635041dc8fda2f"
+      },
+      "milestoneOrdinal": null,
+      "routeSourceWound": {
+        "schemaVersion": 1,
+        "woundId": "wound_test_torn_side",
+        "lifecycle": "active",
+        "owner": {
+          "realm": "mortal_world",
+          "ownerKind": "player",
+          "ownerId": "player_current",
+          "carrierPath": "game_state/player/wounds.json"
+        },
+        "origin": {
+          "eventRef": "turn_42:wound_opened",
+          "sourceKind": "combat_action",
+          "sourceId": "combat_action_test_001",
+          "sourceState": "active",
+          "createdAtTurn": 42,
+          "createdAtCycleId": null,
+          "opportunityId": "opportunity_test_001",
+          "guaranteedTriggerId": null,
+          "readableCause": "Рваная рана получена в подтверждённом столкновении."
+        },
+        "classification": {
+          "domain": "physical",
+          "woundType": "Рваная режущая травма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "левый бок",
+            "authorityKind": "body_part",
+            "authorityRef": "left_side",
+            "affectedSide": "left"
+          }
+        },
+        "display": {
+          "name": "Рваная рана левого бока",
+          "description": "Края раны расходятся при резком движении.",
+          "visibleSymptoms": [
+            "кровотечение",
+            "боль при движении"
+          ],
+          "prognosis": "При своевременной обработке рана заживёт без осложнений.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Острый край распорол бок в короткой схватке."
+        },
+        "severity": {
+          "value": "III",
+          "rank": 3,
+          "maximumAtCreation": "III",
+          "lastChangeEventRef": "turn_42:wound_opened"
+        },
+        "care": {
+          "state": "untreated",
+          "stabilizedAtTurn": null,
+          "activeCourseId": null,
+          "lastAttemptId": null
+        },
+        "complications": [],
+        "consequences": {
+          "slotBudget": 3,
+          "slotsUsed": 1,
+          "ownedEffectSources": {
+            "definitions": [
+              {
+                "allowedRealms": [
+                  "mortal_world"
+                ],
+                "allowedTargetKinds": [
+                  "player"
+                ],
+                "components": [
+                  {
+                    "componentId": "component_001",
+                    "payload": {
+                      "amount": 3,
+                      "damageType": "bleeding",
+                      "floorPolicy": "registered_resource_floor",
+                      "resource": "health"
+                    },
+                    "priority": 100,
+                    "profile": "periodic_damage"
+                  }
+                ],
+                "definitionKey": "definition_wound_test_bleeding",
+                "display": {
+                  "category": "debuff",
+                  "description": "Рана продолжает отнимать силы.",
+                  "name": "Кровотечение",
+                  "visibility": "visible"
+                },
+                "lifetime": {
+                  "activePredicate": "active",
+                  "mode": "source_bound",
+                  "onSourceLoss": "expire"
+                },
+                "links": [
+                  {
+                    "kind": "wound",
+                    "role": "source",
+                    "targetId": "wound_test_torn_side"
+                  }
+                ],
+                "parameterBounds": {},
+                "removal": {
+                  "cureKinds": [
+                    "stop_bleeding"
+                  ],
+                  "dispelCategories": [
+                    "physical_treatment"
+                  ],
+                  "manualAuthorities": [],
+                  "onConditionLoss": null,
+                  "onSourceLoss": "expire"
+                },
+                "schemaVersion": 1,
+                "stacking": {
+                  "atMaximum": "no_change",
+                  "maxStacks": 1,
+                  "mergeRule": null,
+                  "policy": "independent",
+                  "refreshMode": null,
+                  "stackKey": "stack_definition_wound_test_bleeding"
+                },
+                "triggers": [
+                  {
+                    "componentIds": [
+                      "component_001"
+                    ],
+                    "consumeUses": false,
+                    "eventType": "owner_turn_end",
+                    "priority": 100,
+                    "resolutionMode": "deterministic",
+                    "triggerId": "on_owner_turn_end"
+                  }
+                ]
+              }
+            ],
+            "rootBindings": [
+              {
+                "effectId": "effect_wound_test_bleeding",
+                "definitionKey": "definition_wound_test_bleeding"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "slot": 1,
+              "profileKey": "periodic_damage",
+              "effectId": "effect_wound_test_bleeding",
+              "readableSummary": "Рана продолжает кровоточить."
+            }
+          ]
+        },
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "procedure_t061_procedure_normal_uses_lowest_free_die",
+              "displayName": "Procedure",
+              "visibility": "known_to_player",
+              "mode": "procedure",
+              "requirements": [
+                {
+                  "kind": "skill_tier",
+                  "capabilityRef": "field_medicine",
+                  "minimumTier": 2,
+                  "actorRole": "target"
+                }
+              ],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": [],
+                "refundOn": [
+                  "cancelled",
+                  "validation_failed",
+                  "rolled_back"
+                ],
+                "mutations": []
+              },
+              "resolution": {
+                "formulaKey": "mortal_wound_procedure_v1",
+                "difficulty": 15,
+                "rollSource": "accepted_d20",
+                "criticalPolicy": "natural_20_first_natural_1_last",
+                "modifierSource": {
+                  "kind": "resolved_skill_tier",
+                  "requirementIndex": 0
+                }
+              },
+              "outcomes": [
+                {
+                  "bandId": "success",
+                  "minimumMargin": 5,
+                  "maximumMargin": null,
+                  "category": "success",
+                  "result": [
+                    {
+                      "kind": "stabilize"
+                    },
+                    {
+                      "kind": "reduce_severity",
+                      "steps": 1
+                    }
+                  ]
+                },
+                {
+                  "bandId": "partial",
+                  "minimumMargin": 0,
+                  "maximumMargin": 4,
+                  "category": "partial_success",
+                  "result": [
+                    {
+                      "kind": "apply_deterioration",
+                      "policyRef": "policy_preparation"
+                    },
+                    {
+                      "kind": "reduce_severity",
+                      "steps": 1
+                    },
+                    {
+                      "kind": "reduce_severity",
+                      "steps": 2
+                    },
+                    {
+                      "kind": "heal",
+                      "legacies": []
+                    }
+                  ]
+                },
+                {
+                  "bandId": "failed",
+                  "minimumMargin": null,
+                  "maximumMargin": -1,
+                  "category": "failed_attempt",
+                  "result": [
+                    {
+                      "kind": "no_improvement"
+                    }
+                  ]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": [
+            "procedure_t061_procedure_normal_uses_lowest_free_die"
+          ],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "recoveryAnchor": null,
+          "deteriorationAnchor": null,
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": [
+            "not_stabilized"
+          ],
+          "carryOverflow": true,
+          "deteriorationPolicy": {
+            "cadenceMinutes": 10,
+            "graceMinutes": 30,
+            "policyRef": "policy_preparation",
+            "result": {
+              "kind": "increase_severity"
+            },
+            "unmetConditions": [
+              "not_stabilized"
+            ]
+          }
+        },
+        "relations": {
+          "priorWoundId": null,
+          "legacyRefs": [],
+          "independentEffectRefs": []
+        },
+        "lastTransition": {
+          "transitionId": "wound_transition_test_001",
+          "ordinal": 1,
+          "turn": 42,
+          "kind": "create"
+        }
+      },
+      "routeSourceWoundFingerprint": "sha256:fb59f0904b669bd12f95e1b9e096e869a63c9de167c8f5150f42b557f658a04b",
+      "modeAuthority": {
+        "sourcePath": "input/turn_request.json",
+        "rollMode": "normal",
+        "rollActorKind": "player",
+        "rollActorId": "player_current",
+        "rollSkillId": "skill_field_medicine_01",
+        "rollSourceAuthority": {
+          "schemaVersion": 1,
+          "rows": [],
+          "authorityFingerprint": "083443B87A3430B42F6D8056637DAD601103B3C5446167A62D0875053DF18D64"
+        },
+        "rollContributions": [],
+        "sourceIndices": [
+          0
+        ],
+        "sourceRolls": [
+          13
+        ],
+        "selectedSourceIndex": 0,
+        "naturalRoll": 13,
+        "modifier": 3,
+        "complicationDifficultyModifier": 0,
+        "effectiveDifficulty": 15,
+        "requirementAuthorityFingerprint": "sha256:f9694df83aa7f1d4b8f6456a8db1008da9b28d528ceec8a34e2cd4ae390fcb5a",
+        "coordinatesFingerprint": "sha256:e4c25487aab2f468e0beb8eb591cd14edfbe84479390629cda635041dc8fda2f",
+        "acceptedStateFingerprint": "sha256:3d9fde0bbb8528c3eb2261534fcc436930b1329620a9008f0606ed3355eb385b",
+        "preparedCriticalReaction": null,
+        "authorityFingerprint": "sha256:f02f72e652dfd5ef9c1358340f4aa006524bb2b39ef5093c472f794a40b85088"
+      },
+      "requirementAuthority": {
+        "mode": "procedure",
+        "contextFingerprint": "sha256:7c9f72af2baa3bf5bfd199f3fbcdbb102b715f595f711eb752dbcd2b0f3847b8",
+        "acceptedStateFingerprint": "sha256:3d9fde0bbb8528c3eb2261534fcc436930b1329620a9008f0606ed3355eb385b",
+        "routeFingerprint": "sha256:84c37657759fa4183f9e533b25c6501da8f00d518cd33a26960565275d64c858",
+        "courseId": null,
+        "courseMilestoneOrdinal": null,
+        "courseCoordinateFingerprint": null,
+        "courseRequirementStatus": null,
+        "interruptionReason": null,
+        "scopes": [
+          {
+            "scope": "common",
+            "courseMilestoneOrdinal": null,
+            "status": "Satisfied",
+            "bindings": [
+              {
+                "requirementIndex": 0,
+                "resolvedRequirement": {
+                  "requirementIndex": 0,
+                  "kind": "skill_tier",
+                  "authorityRef": "field_medicine",
+                  "skillId": "skill_field_medicine_01",
+                  "realm": "mortal_world",
+                  "ownerKind": "player",
+                  "ownerId": "player_current",
+                  "providerKind": "npc",
+                  "providerId": "field_medic_01",
+                  "targetKind": "player",
+                  "targetId": "player_current",
+                  "locationId": "loc_field_clinic_001",
+                  "requestedQuantity": null,
+                  "minimumTier": 2,
+                  "currentTier": 3,
+                  "currentState": null,
+                  "authorityFingerprint": "sha256:0dd29c7b132bda451263a5e1c83dfba20b0912cb2438fbff6692cfc881a0b618"
+                },
+                "successWitness": {
+                  "scope": "common",
+                  "requirementIndex": 0,
+                  "kind": "skill_tier",
+                  "authorityRef": "field_medicine",
+                  "snapshotToken": "DA7D23DA7DEAE1E050ED6C2001A8A583CD158D420C97F786DFC7C4D97E583C76",
+                  "realm": "mortal_world",
+                  "ownerKind": "player",
+                  "ownerId": "player_current",
+                  "providerKind": "npc",
+                  "providerId": "field_medic_01",
+                  "targetKind": "player",
+                  "targetId": "player_current",
+                  "locationId": "loc_field_clinic_001",
+                  "evidence": {
+                    "actorRole": "target",
+                    "skillId": "skill_field_medicine_01",
+                    "minimumTier": 2,
+                    "currentTier": 3,
+                    "actorCurrentLocationId": "loc_field_clinic_001",
+                    "requiredLocationId": "loc_field_clinic_001",
+                    "actorLifecycle": "active",
+                    "actorActive": true,
+                    "actorReachable": true,
+                    "actorPresent": true,
+                    "skillLifecycle": "active",
+                    "skillActive": true,
+                    "kind": "skill_tier"
+                  },
+                  "witnessFingerprint": "sha256:f8877e0083926f03c7ccd874a515f118ba1ce22532ac134144a35c06e974da2e"
+                },
+                "bindingFingerprint": "sha256:c108a98b59a31cf07ae4499b7f3e97caf6b30cbec3d8ae49c12fadecfbc84a55"
+              }
+            ],
+            "failureWitnesses": [],
+            "authorityFingerprint": "sha256:7ded7a23ec3814c124eae1ef0c79352471b7a60ccbd11d3676cebbe74ece3d27"
+          }
+        ],
+        "authorityFingerprint": "sha256:f9694df83aa7f1d4b8f6456a8db1008da9b28d528ceec8a34e2cd4ae390fcb5a"
+      },
+      "resourceAuthority": {
+        "reservationDisposition": "not_required",
+        "reservationId": null,
+        "coordinatesFingerprint": "sha256:e4c25487aab2f468e0beb8eb591cd14edfbe84479390629cda635041dc8fda2f",
+        "acceptedStateFingerprint": "sha256:3d9fde0bbb8528c3eb2261534fcc436930b1329620a9008f0606ed3355eb385b",
+        "routeFingerprint": "sha256:84c37657759fa4183f9e533b25c6501da8f00d518cd33a26960565275d64c858",
+        "courseId": null,
+        "courseMilestoneOrdinal": null,
+        "courseCoordinateFingerprint": null,
+        "requirementAuthorityFingerprint": "sha256:f9694df83aa7f1d4b8f6456a8db1008da9b28d528ceec8a34e2cd4ae390fcb5a",
+        "policy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": [],
+          "refundOn": [
+            "cancelled",
+            "validation_failed",
+            "rolled_back"
+          ],
+          "mutations": []
+        },
+        "claims": [],
+        "authorityFingerprint": "sha256:945f44333fa083ca7fb7fc2269ffd77d80e190cdf937f968442b0673214b7ba3"
+      },
+      "requestFingerprint": "sha256:69ddfaaa932f943597805cbc24e122852f016603a96eaa5e323e0f11fdbd5d5e"
+    },
+    "modeEvidence": {
+      "rollMode": "normal",
+      "rollActorKind": "player",
+      "rollActorId": "player_current",
+      "sourceIndices": [
+        0
+      ],
+      "sourceRolls": [
+        13
+      ],
+      "selectedSourceIndex": 0,
+      "naturalRoll": 13,
+      "modifier": 3,
+      "total": 16,
+      "baseDifficulty": 15,
+      "complicationDifficultyModifier": 0,
+      "effectiveDifficulty": 15,
+      "margin": 1,
+      "originalOutcome": "ordinary",
+      "resolvedOutcome": "ordinary",
+      "selectedBandId": "partial",
+      "selectedOutcomeIndex": 1,
+      "reactionEffectId": null,
+      "reactionTriggerId": null,
+      "reactionFingerprint": null,
+      "acceptedRollFingerprint": "sha256:ab70ac9d5d2b6e812b7d90e0713ab211d5e3abca8dabc20b7bd86900b179a0b5"
+    },
+    "routeFingerprint": "sha256:84c37657759fa4183f9e533b25c6501da8f00d518cd33a26960565275d64c858",
+    "resolutionAuthorityFingerprint": "sha256:564cd01585062789b376fa320fc648f4f152ccca6d6ffb079e242a2567b71d5b",
+    "resultFingerprint": "sha256:9d080147be349fd4b402b5434fadefe4602672763bd0b93a22cf8c47d22806a1",
+    "routeCompletion": "none",
+    "receiptFingerprint": "sha256:3eb6ef0f17cc6e57f13c54f679865959ab90f73a0015a747f2e75863682fda49"
+  }
+}

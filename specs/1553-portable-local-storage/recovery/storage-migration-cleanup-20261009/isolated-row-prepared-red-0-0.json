@@ -1,0 +1,34 @@
+{
+  "mode": "prepared_unknown",
+  "result": {
+    "Disposition": 3,
+    "NeedsFollowUp": true,
+    "Message": "Не удалось подтвердить состояние сохранения настроек. Требуется восстановление сохранённых свидетельств; прежние настройки не считаются подтверждёнными."
+  },
+  "applied": false,
+  "lockBefore": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMiwKICAic2Vzc2lvbkdlbmVyYXRpb24iOiAiNmE2M2I5ZGFkMzJhNGNjNWI3NTcwY2I3YThhN2YzNTQiLAogICJvd25lcklkIjogImxpbnV4LWJyb3dzZXIiLAogICJvd25lcktpbmQiOiAiYnJvd3NlciIsCiAgIm93bmVyTGFiZWwiOiAiRml4dHVyZSIsCiAgImxlYXNlVG9rZW4iOiAiZTgxNjg3N2U4YmU3NDM0YTkxZGZiYzkwOTc2MzM4MzAiLAogICJhY3F1aXJlZEF0VXRjIjogIjIwMjYtMTAtMDlUMDA6NTE6NTQuMjczNTc1NloiLAogICJoZWFydGJlYXRBdFV0YyI6ICIyMDI2LTEwLTA5VDAwOjUxOjU0LjI3MzU3NTZaIiwKICAibGVhc2VTZWNvbmRzIjogMTIwLAogICJsYXN0T3BlcmF0aW9uIjogImJvdW5kYXJ5Igp9",
+  "RetainedLock": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMiwKICAic2Vzc2lvbkdlbmVyYXRpb24iOiAiNmE2M2I5ZGFkMzJhNGNjNWI3NTcwY2I3YThhN2YzNTQiLAogICJvd25lcklkIjogImxpbnV4LWJyb3dzZXIiLAogICJvd25lcktpbmQiOiAiYnJvd3NlciIsCiAgIm93bmVyTGFiZWwiOiAiRml4dHVyZSIsCiAgImxlYXNlVG9rZW4iOiAiZTgxNjg3N2U4YmU3NDM0YTkxZGZiYzkwOTc2MzM4MzAiLAogICJhY3F1aXJlZEF0VXRjIjogIjIwMjYtMTAtMDlUMDA6NTE6NTQuMjczNTc1NloiLAogICJoZWFydGJlYXRBdFV0YyI6ICIyMDI2LTEwLTA5VDAwOjUxOjU0LjI3MzU3NTZaIiwKICAibGVhc2VTZWNvbmRzIjogMTIwLAogICJsYXN0T3BlcmF0aW9uIjogImJvdW5kYXJ5Igp9",
+  "Cut": {
+    "Cuts": 1,
+    "Index": 0,
+    "Target": "/tmp/boe-browser-linux-boundary-8f00b4a9697a417db23166bf5772a695/game_session/game_state/meta/browser-member.bin",
+    "JournalAtCut": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI0NGZkYjA4YzE0OTQ0ZmUxOWFhNDc3ZGQzYjVkNDAyYSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6IjZhNjNiOWRhZDMyYTRjYzViNzU3MGNiN2E4YTdmMzU0In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiNmE2M2I5ZGFkMzJhNGNjNWI3NTcwY2I3YThhN2YzNTQifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWJyb3dzZXItbGludXgtYm91bmRhcnktOGYwMGI0YTk2OTdhNDE3ZGIyMzE2NmJmNTc3MmE2OTUvZ2FtZV9zZXNzaW9uL2dhbWVfc3RhdGUvbWV0YS9icm93c2VyLW1lbWJlci5iaW4iLCJCZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6Ijc3dS9BUDhwIiwiU2hhMjU2IjoiNTVGQjVGQzlCRjY2Rjc0QUIyOTlFOEU2RDdDRjA3NUQ1OTU0Mzk1MUZGQzRCRDM1NkFGNjExQTY2NTJBQTBGRCJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiMEovUmdOQzQwTExRdGRHQ0lPUzRsdWVWakFvPSIsIlNoYTI1NiI6IjQ5QjNGNjJGOUY0MTU1Njg5ODVEMjNGQ0E4Q0UxNTc2NzAyMjhGRTJBNUUzNUI5ODVCRUU5NDIwQzk3MTBGQzEifX1dfQ==",
+    "PublishedBytes": "0J/RgNC40LLQtdGCIOS4lueVjAo=",
+    "JournalSha256": "2D502BCE4767534E342F807B2C892687B5248BDF18899174696AD857F68E36B1",
+    "RetainedJournal": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI0NGZkYjA4YzE0OTQ0ZmUxOWFhNDc3ZGQzYjVkNDAyYSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6IjZhNjNiOWRhZDMyYTRjYzViNzU3MGNiN2E4YTdmMzU0In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiNmE2M2I5ZGFkMzJhNGNjNWI3NTcwY2I3YThhN2YzNTQifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLWJyb3dzZXItbGludXgtYm91bmRhcnktOGYwMGI0YTk2OTdhNDE3ZGIyMzE2NmJmNTc3MmE2OTUvZ2FtZV9zZXNzaW9uL2dhbWVfc3RhdGUvbWV0YS9icm93c2VyLW1lbWJlci5iaW4iLCJCZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6Ijc3dS9BUDhwIiwiU2hhMjU2IjoiNTVGQjVGQzlCRjY2Rjc0QUIyOTlFOEU2RDdDRjA3NUQ1OTU0Mzk1MUZGQzRCRDM1NkFGNjExQTY2NTJBQTBGRCJ9LCJBZnRlciI6eyJFeGlzdHMiOnRydWUsIkJ5dGVzIjoiMEovUmdOQzQwTExRdGRHQ0lPUzRsdWVWakFvPSIsIlNoYTI1NiI6IjQ5QjNGNjJGOUY0MTU1Njg5ODVEMjNGQ0E4Q0UxNTc2NzAyMjhGRTJBNUUzNUI5ODVCRUU5NDIwQzk3MTBGQzEifX1dfQ==",
+    "RetainedTarget": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl",
+    "ActualUncertainty": null,
+    "LaterMutations": [
+      "game_state/control/local_ui_session_lock.json"
+    ],
+    "LaterReads": [
+      "game_state/control/local_ui_session_lock.json",
+      "game_state/control/local_ui_session_lock.json"
+    ],
+    "LaterLeases": 0,
+    "ClosingLeases": 1,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

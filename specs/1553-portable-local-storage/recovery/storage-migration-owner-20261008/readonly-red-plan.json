@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-finalization-readonly-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "66d47daa6de3bb36b1f157824ea84b8b9e2677be",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.9105124,
+  "Descriptors": [
+    {
+      "Name": "gm-main-finalization-readonly-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-finalization-readonly-linux",
+      "Categories": [
+        "gm-main-finalization-readonly-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalClosingFrame_FinalizationLeaseCanReadButCannotPublish",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalClosingFrame_FinalizationLeaseCanReadButCannotPublish",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

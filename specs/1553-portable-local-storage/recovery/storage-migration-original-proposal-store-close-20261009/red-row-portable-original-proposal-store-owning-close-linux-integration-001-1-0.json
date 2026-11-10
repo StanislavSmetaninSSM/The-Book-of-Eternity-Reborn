@@ -1,0 +1,53 @@
+{
+  "mode": "task_refused",
+  "root": "/tmp/boe-original-proposal-close-1a3a540f9316416a99e9b83098e4ec4e",
+  "target": null,
+  "acquisitions": 1,
+  "pauses": 0,
+  "callbacks": 0,
+  "actualOwnerState": null,
+  "attachments": 0,
+  "Calls": 0,
+  "result": {
+    "Published": false,
+    "SessionReplaced": false,
+    "Error": "Worker task no longer belongs to the current game session generation.",
+    "Warning": null
+  },
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "activeAfter": null,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJlMmZjZDhmNTQ3ZDQ0NjkyOTRmZmM3ODhkMmNkMDg5YSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJlMmZjZDhmNTQ3ZDQ0NjkyOTRmZmM3ODhkMmNkMDg5YSJ9",
+  "retainedStagingFiles": [],
+  "beforeFiles": {
+    "/tmp/boe-original-proposal-close-1a3a540f9316416a99e9b83098e4ec4e/game_session/worker_tasks/worker_task_20260620_0002/task.json": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAidGFza0lkIjogIndvcmtlcl90YXNrXzIwMjYwNjIwXzAwMDIiLAogICJzZXNzaW9uR2VuZXJhdGlvbiI6ICJlMmZjZDhmNTQ3ZDQ0NjkyOTRmZmM3ODhkMmNkMDg5YSIsCiAgIndvcmtlcklkIjogIm5hcnJhdGl2ZV9kcmFmdF9jb2RleCIsCiAgInJvbGUiOiAibmFycmF0aXZlLWRyYWZ0IiwKICAidGFza1R5cGUiOiAibmFycmF0aXZlLWRyYWZ0IiwKICAiY3JlYXRlZEF0VXRjIjogIjIwMjYtMDYtMjBUMDA6MDU6MDBaIiwKICAidGltZW91dFNlY29uZHMiOiAxNTAsCiAgInNvdXJjZVR1cm4iOiB7CiAgICAic2Vzc2lvbklkIjogInRlc3Qtc2Vzc2lvbiIsCiAgICAicmVxdWVzdElkIjogInRlc3QtcmVxdWVzdCIsCiAgICAidHVybk51bWJlciI6IDEyCiAgfSwKICAidmFsaWRhdGlvbklzc3VlcyI6IFtdLAogICJkcmFmdFJlcXVlc3QiOiB7CiAgICAic2NlbmVHb2FsIjogIkRyYWZ0IGEgdGVuc2UgZGVzY3JpcHRpb24gb2YgdGhlIGxvY2tlZCBtYW5vciBjb3JyaWRvciBiZWZvcmUgdGhlIHBsYXllciBjaG9vc2VzIGhvdyB0byBwcm9jZWVkLiIsCiAgICAidG9uZSI6ICJkYXJrIGZhbnRhc3ksIGNvbmNpc2UsIG5hdHVyYWwgUnVzc2lhbiBwcm9zZSIsCiAgICAiY29udGludWl0eU5vdGVzIjogWwogICAgICAiVGhlIHBsYXllciBpcyBjdXJyZW50bHkgaW5zaWRlIHRoZSBtb3J0YWwgd29ybGQuIiwKICAgICAgIkRvIG5vdCByZXNvbHZlIHRoZSBwbGF5ZXIncyBhY3Rpb24uIiwKICAgICAgIkRvIG5vdCBpbnRyb2R1Y2UgY2Fub25pY2FsIHN0YXRlIGNoYW5nZXMuIgogICAgXSwKICAgICJ0YXJnZXRMZW5ndGgiOiAiMTIwLTE4MCB3b3JkcyIKICB9LAogICJjb250ZXh0RmlsZXMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogImdhbWVfc3RhdGUvd29ybGQvY3VycmVudF9sb2NhdGlvbi5qc29uIiwKICAgICAgInNoYTI1NiI6ICJleGFtcGxlIgogICAgfQogIF0sCiAgImFsbG93ZWRQcm9wb3NhbFBhdGhzIjogW10sCiAgInJlc3BvbnNlQ29udHJhY3QiOiAid29ya2VyLXByb3Bvc2FsLXYxIiwKICAiYWNjZXB0YW5jZUNyaXRlcmlhIjogWwogICAgIlJldHVybiBhIHdvcmtlci1wcm9wb3NhbC12MSBKU09OIHByb3Bvc2FsLiIsCiAgICAiSW5jbHVkZSBkcmFmdFRleHQgZm9yIG1haW4tR00gcmV2aWV3LiIKICBdLAogICJmb3JiaWRkZW5BY3Rpb25zIjogWwogICAgIkRvIG5vdCBlZGl0IGNhbm9uaWNhbCBnYW1lX3Nlc3Npb24gZmlsZXMgZGlyZWN0bHkuIiwKICAgICJEbyBub3QgaW5jbHVkZSBjaGFuZ2VkRmlsZXMuIgogIF0sCiAgImluc3RydWN0aW9ucyI6ICJSZXR1cm4gZHJhZnRUZXh0IGFuZCBvcHRpb25hbCBmaW5kaW5ncyBvbmx5LiBEbyBub3QgaW5jbHVkZSBjaGFuZ2VkRmlsZXMuIgp9"
+  },
+  "atWitnessFiles": null,
+  "afterFiles": {
+    "/tmp/boe-original-proposal-close-1a3a540f9316416a99e9b83098e4ec4e/game_session/worker_tasks/worker_task_20260620_0002/task.json": "ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAidGFza0lkIjogIndvcmtlcl90YXNrXzIwMjYwNjIwXzAwMDIiLAogICJzZXNzaW9uR2VuZXJhdGlvbiI6ICJlMmZjZDhmNTQ3ZDQ0NjkyOTRmZmM3ODhkMmNkMDg5YSIsCiAgIndvcmtlcklkIjogIm5hcnJhdGl2ZV9kcmFmdF9jb2RleCIsCiAgInJvbGUiOiAibmFycmF0aXZlLWRyYWZ0IiwKICAidGFza1R5cGUiOiAibmFycmF0aXZlLWRyYWZ0IiwKICAiY3JlYXRlZEF0VXRjIjogIjIwMjYtMDYtMjBUMDA6MDU6MDBaIiwKICAidGltZW91dFNlY29uZHMiOiAxNTAsCiAgInNvdXJjZVR1cm4iOiB7CiAgICAic2Vzc2lvbklkIjogInRlc3Qtc2Vzc2lvbiIsCiAgICAicmVxdWVzdElkIjogInRlc3QtcmVxdWVzdCIsCiAgICAidHVybk51bWJlciI6IDEyCiAgfSwKICAidmFsaWRhdGlvbklzc3VlcyI6IFtdLAogICJkcmFmdFJlcXVlc3QiOiB7CiAgICAic2NlbmVHb2FsIjogIkRyYWZ0IGEgdGVuc2UgZGVzY3JpcHRpb24gb2YgdGhlIGxvY2tlZCBtYW5vciBjb3JyaWRvciBiZWZvcmUgdGhlIHBsYXllciBjaG9vc2VzIGhvdyB0byBwcm9jZWVkLiIsCiAgICAidG9uZSI6ICJkYXJrIGZhbnRhc3ksIGNvbmNpc2UsIG5hdHVyYWwgUnVzc2lhbiBwcm9zZSIsCiAgICAiY29udGludWl0eU5vdGVzIjogWwogICAgICAiVGhlIHBsYXllciBpcyBjdXJyZW50bHkgaW5zaWRlIHRoZSBtb3J0YWwgd29ybGQuIiwKICAgICAgIkRvIG5vdCByZXNvbHZlIHRoZSBwbGF5ZXIncyBhY3Rpb24uIiwKICAgICAgIkRvIG5vdCBpbnRyb2R1Y2UgY2Fub25pY2FsIHN0YXRlIGNoYW5nZXMuIgogICAgXSwKICAgICJ0YXJnZXRMZW5ndGgiOiAiMTIwLTE4MCB3b3JkcyIKICB9LAogICJjb250ZXh0RmlsZXMiOiBbCiAgICB7CiAgICAgICJwYXRoIjogImdhbWVfc3RhdGUvd29ybGQvY3VycmVudF9sb2NhdGlvbi5qc29uIiwKICAgICAgInNoYTI1NiI6ICJleGFtcGxlIgogICAgfQogIF0sCiAgImFsbG93ZWRQcm9wb3NhbFBhdGhzIjogW10sCiAgInJlc3BvbnNlQ29udHJhY3QiOiAid29ya2VyLXByb3Bvc2FsLXYxIiwKICAiYWNjZXB0YW5jZUNyaXRlcmlhIjogWwogICAgIlJldHVybiBhIHdvcmtlci1wcm9wb3NhbC12MSBKU09OIHByb3Bvc2FsLiIsCiAgICAiSW5jbHVkZSBkcmFmdFRleHQgZm9yIG1haW4tR00gcmV2aWV3LiIKICBdLAogICJmb3JiaWRkZW5BY3Rpb25zIjogWwogICAgIkRvIG5vdCBlZGl0IGNhbm9uaWNhbCBnYW1lX3Nlc3Npb24gZmlsZXMgZGlyZWN0bHkuIiwKICAgICJEbyBub3QgaW5jbHVkZSBjaGFuZ2VkRmlsZXMuIgogIF0sCiAgImluc3RydWN0aW9ucyI6ICJSZXR1cm4gZHJhZnRUZXh0IGFuZCBvcHRpb25hbCBmaW5kaW5ncyBvbmx5LiBEbyBub3QgaW5jbHVkZSBjaGFuZ2VkRmlsZXMuIgp9"
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

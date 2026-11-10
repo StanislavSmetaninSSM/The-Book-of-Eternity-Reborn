@@ -1,0 +1,145 @@
+{
+  "kind": "D01_INDEPENDENT_CONSOLIDATED_SOURCE_ACCEPTANCE",
+  "reviewer": "Independent delegated Astra XHigh reviewer",
+  "candidate": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+  "originalCandidate": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+  "verdict": "ACCEPT_SOURCE_ONLY_FRESH_ZERO_AND_COMPILATION_PREPARATION",
+  "sourcePinCount": 149,
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "findings": [],
+  "resolvedOriginalFindings": [
+    {
+      "id": "D01-S01",
+      "status": "RESOLVED",
+      "evidence": "phase.py emit_summary uses os.write and checks complete length. FINALIZE retains known7 for short/error writes and returns2 for native0 observer failures. Exact-source fake matrix covers native0/7 × success/short/error."
+    },
+    {
+      "id": "D01-S02",
+      "status": "RESOLVED",
+      "evidence": "Inventory is a new current pin, unchanged bytes. verify_installed_inputs validates length/SHA of9 availableFiles+163 references before all phase branches and records count/digest. Fake exact/drift checks and AST branch-order proof pass. All172 current files also matched on read-only readback.",
+      "limit": "This is the explicitly inventoried installed-input set, not a claim to hash every transitive operating-system/runtime dependency."
+    }
+  ],
+  "originalHold": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-original-hold-20261018.json",
+      "bytes": 7640,
+      "sha256": "9eaa57967d3091b556bd131cdbc14b02cd3c118c1ee330679afcf4fe8af87cc6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-original-hold-20261018.md",
+      "bytes": 1148,
+      "sha256": "c831e6d89ab2fe07e783641c4fbb0e022356f106ffe3bb0657c35c0ce07273ad"
+    }
+  ],
+  "acceptedSourceConclusions": [
+    "The helper preserves one raw decoded stdout reader, exact raw character order and EOF/read-fault semantics. Observer construction fallback is allowed only before first read; observer faults never start a replacement reader.",
+    "Bounded Channel64 uses FullMode.Wait but only TryWrite, asynchronous continuations and one writer/reader. No callback, consumer I/O or awaited queue write runs on the drain; raw capture remains the prior unbounded stdout contract.",
+    "Typed exact Boundary and PID/starttick/root/nonce/cut validation, exact duplicates and monotonic regression, bounded fingerprint tracking, local drops/malformed/oversize/tail/reader faults are explicit. Equal elapsed values with different markers remain legal. Sticky health/EOF/cancellation indications remain outside the queue; source latency/emission completeness/capture phase are UNKNOWN.",
+    "Crash wiring is diagnostic-resumer-only with original producer/ordinary route, native join shape, strong assertions, child protocol and220/900 bounds preserved. LIVE Reader and health exist before child completion, but no collector/game consumer is attached by this change.",
+    "The uncompiled own synthetic directly assigns target stdout only to the reader-host helper; Python reads the reader-host report file. PID/starttick/UID/PPID/exe/argv plus pidfd ownership gates signals; private STOP follows observed event while target/reader are alive. Actual target0/7, reader native, synthetic aggregate and observer failures are separate.",
+    "Original baseline native7 is the expected bounded non-live ReadToEndAsync delivery-gap witness, compiler0 and joined; original helper20 host0/compiler0/all20PASS are bound to the exact unchanged helper. Neither is gameplay qualification. No unchanged harness was rerun.",
+    "Initial generator parents[3] selected specs and failed its first input read before packet writes; current parents[4] is correct. The exact historical source/failure is preserved. Final narrow catalog delta is inspectable; original formatting-guard execution is parent-reported, not independently replayed."
+  ],
+  "focusedCorrectionScope": "Exactly6 paths from original candidate: phase.py reporting/172-input guard, generator inventory inclusion, current packet/control hashes and source-only fake proof script+JSON. Helper, Crash wiring, Live.cs, archived baseline/helper20 and their sources are byte-identical.",
+  "checks": {
+    "artifact": {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-focused-checks-0db1f418-20261018.json",
+      "bytes": 112224,
+      "sha256": "921e4f34c9de9a4f3989dda2ccd97ff1fe9b3e71c9f7c749bedb438e4d6f3267"
+    },
+    "script": {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_source_review.py",
+      "bytes": 9426,
+      "sha256": "e226fd6c1b54d1afe938a5af0f5b92f0c9a522ec533d3d54c189c66908507815"
+    },
+    "passed": 711,
+    "writerFaultProof": {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller-fault-checks.json",
+      "bytes": 1490,
+      "sha256": "58973e84ab874161d2356a66a6f68f5ea6a0f3eabe363d390739e95f1b655052"
+    },
+    "writerFaultScript": {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/controller_fault_checks.py",
+      "bytes": 3565,
+      "sha256": "fd31dface9538742cbddbb6a1a95d371f226dbb90f7aaad5b9cade0695344575"
+    },
+    "writerFaultScope": "9 AST-exact fake-source checks inspected; not rerun by reviewer. No real subprocess target."
+  },
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-4810d2ad.json",
+    "bytes": 31905,
+    "sha256": "69242dce2f876749424b251b39326ca72a21888a66e8136e1a9cee57864a60f2"
+  },
+  "sourceBindings": [
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "bytes": 14723,
+      "sha256": "722f7de047ef0eaf951aa10bbd6e51d2ade1d85b0e0f0b0925810b783c27e5ad"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-source-packet-20261018.json",
+      "bytes": 34514,
+      "sha256": "2cd4639fb27349404a1409c6f517a1d164f484136e78f264e6ec6294d4345c1b"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-control-20261018.json",
+      "bytes": 260,
+      "sha256": "82bd9bcd3a3ba7fc0352e98a0313c156da3145932916945face9aef50d724e8b"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 44529,
+      "sha256": "dd4d1b1db97288f619b7d97fb9795ff93e4df9f091aed9b8d9605e821abadd35"
+    },
+    {
+      "commit": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "bytes": 4206,
+      "sha256": "09742d448715952261d145a883bdc325cd07eecb4e8dba2257443fbc54a6114a"
+    }
+  ],
+  "admissionConditions": [
+    "Save this SOURCE acceptance and exact report hashes in current control/packet metadata; recover the carrier before invocation. control.source.status must be SOURCE_ACCEPTED_ZERO_ONLY with reviewPath/reviewSha256 and unchanged current149-pin digest. Keep synthetic CLOSED_UNRUN and gameplayRelease NONE.",
+    "Only separately invoked catalog, plan and prepare modes are admitted: fresh scripts/test-csharp.ps1 -ValidateCatalog (ZERO execution); exact fr063-joint-interface-crash-diagnostic -PlanOnly -NoBuild (1descriptor/1method/1case, ZERO execution); direct csc compilation of unchanged helper+Live.cs. No automatic advance or retry; any unexpected original failure freezes the phase.",
+    "Fresh PREP must retain original native0 records/logs/warnings/errors and zero executed tests, exact catalog/selection, source/compiled identity, full binary inventory/NoBuild continuity, compiler/runtimeconfig/output hashes, verified172-input digest and cleanup/observer outcomes. Archive and independently recover originals before independent PREP review.",
+    "Genuine synthetic remains UNRUN until independent PREP acceptance and separately saved/recovered SOURCE_PREP_ACCEPTED_ONCE gate bind exact successful catalog/plan/prepare record hashes, current pins and prepared outputs. The sole finite synthetic is expected target0 then target7 (at most2 targets+2 reader-hosts), stops on failure, preserves each actor outcome and records aggregate separately. No helper20, old52 or S01 replay.",
+    "No source byte may change after this review without affected SOURCE review; metadata acceptance does not qualify D01 runtime or release gameplay. Future owned-game live consumer/collector/snapshot requires its own reviewed plan and explicit user decision."
+  ],
+  "actualRelease": "NONE — independent fresh PREP pending",
+  "gameplayRelease": "NONE",
+  "retention": {
+    "L01": "101 historical pins:98 unchanged+3 explicit current exceptions; original52 qualification only",
+    "M01": "93 historical pins:91 unchanged+2 explicit current exceptions; narrow qualification retained",
+    "S01": "11 accepted helper pins unchanged; accepted one smoke remains consumed",
+    "production": "23-path historical product delta unchanged; no production change from accepted S01 base"
+  },
+  "limits": [
+    "L01 remains52/57 with five original targets unqualified; old66529 remains UNKNOWN/unavailable with no restoration claim.",
+    "M01 narrow qualification, S01 consumed accepted smoke, all prior failures and provenance are retained; no E01/T148/Phase10/broader closure.",
+    "No gameplay, managed snapshot/attach, crash5, Windows, CI, installation/security/policy change or old-environment action is admitted. Cloud Linux gameplay hold, future Windows-five qualification and artifact403 hold remain distinct."
+  ],
+  "bookkeepingLimits": [
+    "Corrected recovery used exact4810d2ad2ac5121aacabb21bf49cfb0b56a0da09. Parent reports an earlier mistyped-SHA recovery guard rejection before fetch/checkout; it is not a runtime/fixture result.",
+    "One review read used an incorrect proposed fault-check filename; FileNotFound was resolved by reading actual controller_fault_checks.py. No source or native execution resulted.",
+    "Source/claim checks and archived evidence were read; no compiler, dotnet, live fixture, game, diagnostic attach, process intervention or repo mutation was performed by reviewer."
+  ]
+}

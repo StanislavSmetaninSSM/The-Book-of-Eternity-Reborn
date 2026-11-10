@@ -1,0 +1,33 @@
+{
+  "baseline": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "source": "3fe28a9df69cd943d0f920260ff3882274a0841e",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs",
+      "baselineSha256": "5eb7c6b3e08dd6e3c8893ff848703be497dc976aafb1251328b3646694b7a0c1",
+      "sourceSha256": "5eb7c6b3e08dd6e3c8893ff848703be497dc976aafb1251328b3646694b7a0c1",
+      "identical": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "baselineSha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc",
+      "sourceSha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc",
+      "identical": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "baselineSha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "sourceSha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "identical": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "baselineSha256": "5eb03db7c9b75486404bb4219d79b62d8c6981d63f06af31a8e4dd07529e1e6f",
+      "sourceSha256": "5eb03db7c9b75486404bb4219d79b62d8c6981d63f06af31a8e4dd07529e1e6f",
+      "identical": true
+    }
+  ],
+  "finding": "Original force_binding tier3 fixture contradicts ordinary soul art whitelist before storage migration. Entity player profile derives standardArts from soul, and action cost lookup uses exact operation key; deleting/renaming seed would change actual force_binding authority and expected cost.",
+  "actual": "20261009-150152-683-376907-8110859540b24ba48f49a78c1508b94a-categories",
+  "disposition": "Paused #1536/B2 gameplay contract blocker. F18 original transport and warm B cut reached; cold business acceptance FAILED. No runtime/artlist/fixture weakening authorized."
+}

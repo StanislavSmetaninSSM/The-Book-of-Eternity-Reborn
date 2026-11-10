@@ -1,0 +1,37 @@
+{
+  "kind": "ROOT_NAMED_FIRST_NI_IOBS_L01_REAL_ORDERING_SINGLETON_ACTIVATION",
+  "createdUtc": "2026-10-18T05:16:33.626472+00:00",
+  "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+  "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+  "productSource": "447bc1210c507742758243e1c254860bea0c4539",
+  "verdict": "ACCEPT_FRESH_PREP_AND_ACTIVATE_ONLY_FIRST_REAL_ORDERING1",
+  "rootChecks": "Independent SOURCE accepted88b/test80bf plus2actualhelperpins. Verified bothfreshZERO native0/0cases/cleanup, actualcatalog796/11773, exact1integrationdescriptor/method/case. All19archivechains gzip/raw exact. All9copies and actual335maininventory catalog\u2192plan\u2192current. All1234current outputfiles unchanged afterrawsave. Actual9079 differscompileda650 only30specmetadata/rawpaths;44pins+digest and tools/test/selector/product unchanged. Exactremote/clean/mainunchanged. Independentlyverified34GitHubfiles/all30paths/full7a+88deltas/55368tree.",
+  "command": [
+    "python",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+    "t179pd-ni-iobs-l01-order-first-causal",
+    "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+    "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-prep-first-plan/record.json"
+  ],
+  "scope": "Exactly fixedcategory fr063-joint-interface-lifecycle-order / actualFact GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce /1case. NoBuild validonlycurrentfreshbinaries. No otheractual/retry/product/CI/oldpackage replay.",
+  "causalRequirement": "Expectedoriginalnative1 is NOT acceptance byitself: actualgenuineStage43/original/TREAT/rejectedwave/restore/correctedReady/fullcommoncompletion/inertrepeat must finish, actualCUT01callback1/earlyIchangingcohort0/lateractualIchangingcohort1 and commontrace, firstEqual expected1 actual0 actualsource/PDBline124, strictphysicalrootcleanup and settledruntime. No missingtype/schema2/setup/cleanup substitute.",
+  "after": "Freeze originaloutcome/record/process/FIRST/stdout/TRX/runner/allqualifiedownedroots/raw regardlessunexpected, verify1234inventoryunchanged, archiveexact throughreviewedarchiver and WIP/push/exactremote/fullnewGitHubdelta BEFORE independentcausalEVIDENCE. No production until savedqualifiedRED/separateindependentEVIDENCE. Remainingfinitecontrols notauthored/unrun; no wholecoverage.",
+  "support": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+      "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-order-implementation-tools/t179pd-ni-iobs-l01-order-prep-first-plan/record.json",
+      "sha256": "60232c916bc3e39166170b20e22d48e017b6a33ebc43f58099373877260b8740"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-prep-delta-github-9079452d-20261018.json",
+      "sha256": "eb9f164f17a31093550ff31b5e071f1a60b8ac61d57dd9aacb3834d607a4aac8"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-9079452d-20261017.json",
+      "sha256": "30aa9977636c65957ee601ac3f9dd891b19ec3ebee046fa842ea6e96f387f4d4"
+    }
+  ]
+}

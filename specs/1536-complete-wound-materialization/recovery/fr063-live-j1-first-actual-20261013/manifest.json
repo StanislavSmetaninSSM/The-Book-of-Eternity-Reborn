@@ -1,0 +1,365 @@
+{
+  "source": "09660079344c832f1b06b86f2653382bc2f8f36a",
+  "classification": "First genuine live owner1 causal failure:generic concurrent-work repair; severity full-resubmission/wave/pending absent; productionunreleased",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 1810940,
+      "uncompressedSha256": "e05960948f50eda9a33dea593e6fa562ab9bed4141ec7bd4d22fe06344837f41",
+      "compressedBytes": 628016,
+      "compressedSha256": "77879031daa57b93cc86dba5669052956b7268439ce63fd9f201e67a5a3427d2"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 1807881,
+      "uncompressedSha256": "26f51b199bf513118b03c3b75ca2fca0c9902825a4394163cf364a04fb0be30c",
+      "compressedBytes": 626825,
+      "compressedSha256": "1069afef1c600387943b0b331a342e17db989df03b044d553dd288ebd78ac59f"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 530,
+      "uncompressedSha256": "3ba52ae95a88d924f4795525e0974bb44c11dcb3f5faf7dd8f218a9c83a37dbb",
+      "compressedBytes": 321,
+      "compressedSha256": "aa5e5b97ef3f2a4101c35ff962e7f4121304561a900ec38bb5bdcb846846fa10"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 1832932,
+      "uncompressedSha256": "881aba39bdead34b9a05868365bfe067ce03d4f5c9e24eb30e60e04a95da8590",
+      "compressedBytes": 625541,
+      "compressedSha256": "67ac4d14cc78ad1f7fed883260fbe15fbeaff512ea0f2da07a978c8f2f8045ad"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 3134,
+      "uncompressedSha256": "d5dc189d4f8d83a98ce290bb39ec9ef9c0869291050972786bead14a5c0e87e7",
+      "compressedBytes": 1372,
+      "compressedSha256": "35f5a64ccaa5a08f792d74f9a31075ab4546905fb0faa709fad1518335c47b0f"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 458,
+      "uncompressedSha256": "259bb067d07fc52dca4d8def47fcec78c5d38f111cfa6b1a1028b94615438dde",
+      "compressedBytes": 268,
+      "compressedSha256": "d53e4d868411a7f56fa03448a89ac823cf53717635d258c3a5b39fafdce7da99"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 459057,
+      "uncompressedSha256": "3d7babc6c9568f4c508fdcdaf42cff92f6833951f9435a2500ace9060d195353",
+      "compressedBytes": 123559,
+      "compressedSha256": "a2f0587f3dc817d5b9f51f4cd33021558faf0fc832b59172c51d4e1485bbbff2"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1480,
+      "uncompressedSha256": "5605ea3c746c6228cead75135891df66969fe7fa11f9160fec755c96e6e86417",
+      "compressedBytes": 650,
+      "compressedSha256": "57a01da182c37fafd5f4d04254c22002b6c19707b9cdfa66bddd0c5a3d595a1e"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 547,
+      "uncompressedSha256": "907da559bd8e6d0ecd7a46096d64730296fc477eed6d671c58c6cfc3dbc69ef1",
+      "compressedBytes": 328,
+      "compressedSha256": "507306a4ab1e3d13184fbac9f14019e53c57b62946dd14375014f2b5b9f55fd9"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1294,
+      "uncompressedSha256": "0a10811cc12d817886717ca691137cb0eec7e51fff686f31574d276cb4122110",
+      "compressedBytes": 634,
+      "compressedSha256": "49fa84a588396996019c77335861b4d3d5cb5af3b476d8d337365b1a6c635d2c"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 458,
+      "uncompressedSha256": "00a99afb667165f272eb04bb267209981426b5ee2bbb75c2157b1f3ead51f6f5",
+      "compressedBytes": 269,
+      "compressedSha256": "92024a430eb3c446115429898fbb9c3e8d8aed105e81f44f67e8636fe74577ad"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2867,
+      "uncompressedSha256": "0d9e1a2fa0a0f3ff4f7d8973d1b5ade97851bf82e18d39b6ad2d75b6b3b3a2c6",
+      "compressedBytes": 810,
+      "compressedSha256": "665b7b8ae373ff4a8bece09b114bfd64afaeff6e2c4fe53782647ab68faccbfb"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 766,
+      "uncompressedSha256": "3d6f4de2ebbaa49b8802dd36f2a42fe67f3c0e47496b97125c6df0346c5dcd5e",
+      "compressedBytes": 409,
+      "compressedSha256": "d072dbd633713cd5ad548f0e3fafdf0199b636897969fe19ce3447c59d33cd16"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 417,
+      "uncompressedSha256": "234dbd19c157373790c812c233591e21218bc26e6eab399c96251d477cda4c59",
+      "compressedBytes": 276,
+      "compressedSha256": "405a4e50f5be2bb49d05e46c63ebde8df5b47491dedb67a52bd7dbed97fbb26c"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 1441,
+      "uncompressedSha256": "b2478e1d75dbf12eb913507a23d9448347be2435ef468b4c49d5cc6a4b872b3a",
+      "compressedBytes": 668,
+      "compressedSha256": "eb1be4ffe652f452998ed907892085f2a0cff5b741611cf8b9cbc77287b8b014"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 458,
+      "uncompressedSha256": "d61a6bfcbbe9a2ef70a5ec84ccf65f095cc48c9e300005b5f38d5d5370c46775",
+      "compressedBytes": 269,
+      "compressedSha256": "ece4c8652e172b1bcaf14601819f8d104b6c400a7f6ddb87332ae3eb5157d0ce"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 3473777,
+      "uncompressedSha256": "d949f4b68617fddfc56b193db58c56a65a54536d4ae9b8149c558c7a9b7667fa",
+      "compressedBytes": 812132,
+      "compressedSha256": "92442332e4f93f2516fa555c11574282c8db14ef421b0885dffba52ea92a0458"
+    },
+    {
+      "name": "actual-fr063-guaranteed-live-joint-repair-entrance-integration-001.trx.gz",
+      "uncompressedBytes": 3624694,
+      "uncompressedSha256": "7e2122363055f07c2aacb0daad973942e5a51ff8a1d6cba1f151819bc3f3296b",
+      "compressedBytes": 1255661,
+      "compressedSha256": "27787484ca7f843a4e77dd1930368a074539b7f8d5ebaf406bb81143d4fbc2bf"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2458,
+      "uncompressedSha256": "0867e83c63aa5d1d80d173960a12ba8b49026556e187cc8eb11a63d8ab2e0be4",
+      "compressedBytes": 1169,
+      "compressedSha256": "fe2107b1d38adabd85692f26eca1d644db921e06ac28cd86f574b42c3373678d"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2610,
+      "uncompressedSha256": "e6e55efc5db37db0b75a787a67535fa0770345212295de50f546ad3df4f82688",
+      "compressedBytes": 1240,
+      "compressedSha256": "e5c185fa64220fdaf74aa18c462c378ed5808719a8b415a7e50059c375fa4783"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1663855,
+      "uncompressedSha256": "ed78a5001831d929a12f8e213ae84a0da91c0317e2da74d1abdfa057eda61bc7",
+      "compressedBytes": 185044,
+      "compressedSha256": "b3ebea958466db4170c8fcf0621efd9c1007b62a2165cadd90593ea2352d4949"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 2458,
+      "uncompressedSha256": "7ae0233dffcfa10d9d160286e4e1c7f90e95fce2e7d650b7444633fb6f8d51ff",
+      "compressedBytes": 1169,
+      "compressedSha256": "4c00445e4c23528a232feba6d0f26d9986ec4f8708b3aef5bce6e8305bddaa61"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 2621,
+      "uncompressedSha256": "27f700c2a0b81dd5e00f47d67fe1582478b1e35ed26fdea4fc1d65aed7d8b646",
+      "compressedBytes": 1248,
+      "compressedSha256": "edb416191bdac155e4afef443c9b13d4ca22934c48620851df6bb8f13a12d3ee"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 99688,
+      "uncompressedSha256": "69baf13a69f3873c83ff280d2401ebd0b68c11bbda226451d74da6045964a6fd",
+      "compressedBytes": 6750,
+      "compressedSha256": "f88b7308d46b780399ee3dc7f23af3bdfb3f1b80ba55a5222c954381dc53a447"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "be33c007418648191da80a9abaa1a70ec5837050a101733880040262dcf4aea8",
+      "compressedBytes": 1753,
+      "compressedSha256": "1712e13f91731dad4346630b6104a0fd18b0b962cbeff059e5605fbc886bbf95"
+    },
+    {
+      "name": "preparation-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "d23c93c53736ea505172c0c3a703eec4fa4546daafda901435b360b23c75a611",
+      "compressedBytes": 102,
+      "compressedSha256": "22bc2c5f79127a1cc3d39f3b832c7b25e1a8856c8789b91158153484fd12dd25"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3461164,
+      "uncompressedSha256": "aa044fc02fed8800cad9e0e9aa28d21617c42c4400a57d51cef6ff80daff045c",
+      "compressedBytes": 377376,
+      "compressedSha256": "71871fe205d946787e8b2b0fe4e0286e48fa96dcd19c0812f1aafdd50b23e07e"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 1599,
+      "uncompressedSha256": "21caf8b5afe534bb9a48fd5acbc8f6848879ff29e01109a48c721b04300b00d6",
+      "compressedBytes": 640,
+      "compressedSha256": "5ec8bb2ed5a0f33f322a8a921f104e86c58e49b8fb76fe70515ce5b66a736a7c"
+    }
+  ],
+  "frozenUtc": "2026-10-13T23:29:20.254507+00:00",
+  "preparation": {
+    "source": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "compileSource": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "run": "20261013-232523-912-74251-e6e95c9673004544843907c6dec5e698-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-232523-912-74251-e6e95c9673004544843907c6dec5e698-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T23:27:40.303389+00:00",
+    "classification": "Fresh BOTH J1 compilation/catalog discovery only; zero executions",
+    "wallTime": "00:02:16.3409715",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2216,
+    "freshBinaryPinsPrePostMatched": 10,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:28:07.946116+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11569,
+      "Categories": 729,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {
+      "Build-integration.log": 102,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    }
+  },
+  "exact-plan": {
+    "source": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "compileSource": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "run": "20261013-232808-863-74801-fbcbbc598ed447f38780894b31ef56c4-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-232808-863-74801-fbcbbc598ed447f38780894b31ef56c4-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T23:28:11.434768+00:00",
+    "classification": "Exact one live owning causal case; zero executions",
+    "wallTime": "00:00:02.5233693",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 1,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-guaranteed-live-joint-repair-entrance-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 2216,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:28:25.100945+00:00",
+    "methods": 1,
+    "cases": 1,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "compileSource": "09660079344c832f1b06b86f2653382bc2f8f36a",
+    "run": "20261013-232825-942-74951-e1ee8a1b8dd54e0ca5778751613c9047-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-232825-942-74951-e1ee8a1b8dd54e0ca5778751613c9047-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T23:28:45.519455+00:00",
+    "classification": "First real live owning causal attempt; native outcome requires classification",
+    "wallTime": "00:00:19.5386536",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 2216,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T23:28:59.857019+00:00",
+    "methods": 1,
+    "cases": 1,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "155c1cce-7690-4d08-b733-4621a102008e",
+        "testId": "02a3a412-d886-adee-dbc6-77a0b739e4e5",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairPersistsSameConfirmedRequestBeforeDispatch",
+        "computerName": "28b8447448e8",
+        "duration": "00:00:14.3996038",
+        "startTime": "2026-10-13T23:28:45.1227640+00:00",
+        "endTime": "2026-10-13T23:28:45.1227798+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "155c1cce-7690-4d08-b733-4621a102008e",
+        "errorMessage": "Assert.True() Failure\nExpected: True\nActual:   False",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairPersistsSameConfirmedRequestBeforeDispatch() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs:line 189\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 7,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 1,
+      "qte_story_actual_client_append": 1,
+      "qte_story_actual_engine_result": 1,
+      "qte_physical_actual_occurrence": 1,
+      "fr063_confirmed_claim_inspection": 1,
+      "fr063_live_repair_actual_prerequisites": 1,
+      "fr063_live_repair_actual_owner_outcome": 1
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8e97d56954d94d89bdb38e6e08a81c39",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING"
+  }
+}

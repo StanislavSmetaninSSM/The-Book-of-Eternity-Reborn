@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "qte-story-append-receipt"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-receipt",
+      "reason": "#1536 isolated bounded receipt fixture correction after the preserved first pre-QTE failure and corrected mixed-state refusal/timeout: matching mastery plus settled six-root canonical pre-staging baseline and consistent effect carrier; exactly one existing method/one case, category5/default10. Preserve both first outcomes and all passing neighbors without rerun.",
+      "contracts": [
+        "Full ordinary current-state validation requires mastery initialization for seeded Кровавый след before an actual original request can be staged; first emitted code remains a source inference because the first TRX did not log it",
+        "Before protected bytes or genuine source capture, authored identity/four resource roots and full accumulated skills use existing pretty UnsafeRelaxed serialization; omit only empty removeActiveSkills, preserve all nested values/order and canonical effect carrier; never copy runtime afterimages or change mixed-state validation",
+        "Actual ProcessPlayerTurn/official original snapshot/live QTE action precede awaiting receipt; no snapshot fabrication, validator waiver or direct Begin substitute",
+        "Actual idle without receipt preserves awaiting state, turn42 and exact protected/story/original bytes; real correlated GM receipt then actual idle completion yields selected Damage5 plus bounded2, one story and source artifact cleanup",
+        "Per-test strict owned cleanup and original lifecycle/harm/receipt oracles remain intact; early-refusal diagnostics are observational only"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0341862,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0394441,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1390001,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 113.3788074,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.003711,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:01:55.9553813",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "qte-story-append-receipt-integration-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

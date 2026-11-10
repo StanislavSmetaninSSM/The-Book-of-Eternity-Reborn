@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-worker-ready-storage-outcomes-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8d2689753166d174b95878c13506602ad6e727a7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 45.9556707,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-ready-storage-outcomes-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-worker-ready-storage-outcomes-linux",
+      "Categories": [
+        "portable-worker-ready-storage-outcomes-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorkerAuditUnknown_OriginalEngineDispatcherDoesNotReturnFallbackOutcome|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorkerAuditUnknown_OriginalEngineDispatcherDoesNotReturnFallbackOutcome",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

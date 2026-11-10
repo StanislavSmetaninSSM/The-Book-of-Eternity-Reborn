@@ -9,12 +9,19 @@
 #include <termios.h>
 #include <unistd.h>
 
+#ifndef BOE_NEUTRAL_FIXTURE_ALARM_SECONDS
+#define BOE_NEUTRAL_FIXTURE_ALARM_SECONDS 8
+#endif
+#if BOE_NEUTRAL_FIXTURE_ALARM_SECONDS < 8 || BOE_NEUTRAL_FIXTURE_ALARM_SECONDS > 180
+#error "The inert terminal fixture requires a finite 8..180 second lifetime."
+#endif
+
 /* Fixed inert CLI: input is text, never a shell command/GM/save operation. */
 static volatile sig_atomic_t resized;
 static void winch(int unused) { (void)unused; resized = 1; }
 static void view(const char *draft) { dprintf(1, "\033[2J\033[HNEUTRAL READY\r\n> %s\r\n", draft); }
 int main(void) {
-    alarm(8);
+    alarm(BOE_NEUTRAL_FIXTURE_ALARM_SECONDS);
     if (!isatty(0) || !isatty(1) || !isatty(2) || tcgetsid(0) != getpid() || tcgetpgrp(0) != getpid()) return 78;
     struct termios original, raw;
     if (tcgetattr(0, &original)) return 79;

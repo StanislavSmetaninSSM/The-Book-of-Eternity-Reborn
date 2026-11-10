@@ -1,0 +1,39 @@
+{
+  "source_sha": "f679ea25f70112addc15ea76fab1df0db9dfd01b",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-081214-805-20804-3ff637ddbb474078aa8b78c7273b072a-categories",
+  "artifacts": [
+    {
+      "path": "t179pa-corrected-catalog-discovery-20261016-catalog-audit.json",
+      "raw_sha256": "a0fc61801b09e592ab42e244578562f246f4b87b7e106ea346807ebd413d0e0b",
+      "stored_sha256": "a0fc61801b09e592ab42e244578562f246f4b87b7e106ea346807ebd413d0e0b",
+      "raw_bytes": 103
+    },
+    {
+      "path": "t179pa-corrected-catalog-discovery-20261016-dotnet-test.log.gz",
+      "raw_sha256": "6fbff173dd38a4b3908dfa0eb771c3e0bf84c3bbc1f43b3438308024330a69a5",
+      "stored_sha256": "d3b46b969762badbb9d3042073419b65d1c0c94a7a377cfa2bc9e49bb1d0026c",
+      "raw_bytes": 3440308
+    },
+    {
+      "path": "t179pa-corrected-catalog-discovery-20261016-summary.json",
+      "raw_sha256": "e61a275091d44e10a0a0e616279a2fdcf33346f879da62d42d06335e913f5b06",
+      "stored_sha256": "e61a275091d44e10a0a0e616279a2fdcf33346f879da62d42d06335e913f5b06",
+      "raw_bytes": 1598
+    }
+  ],
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "exit_code": 0
+}

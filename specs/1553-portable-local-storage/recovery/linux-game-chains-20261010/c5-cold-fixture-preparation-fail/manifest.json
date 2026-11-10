@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "32a2d50da6b84355e9461a06f8e11f36058c95f5",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery",
+  "Status": "FAIL",
+  "Scope": "27 executed20PASS7FAIL63.2322002s complete0skipduplicateTimeout cleanup complete. Five actual separateprocess phases PASS; settled/5damaged/failedrollback fixtures failed before behavior due to null params reflection dispatch; no settled GREEN claim.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "97c1ee14d2312b2e4f8d46c8e257dc2de10c0bd4c68c9aef13d010c65d227958",
+      "RawBytes": 4887
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "92910a6c85c6f329c1f66b858c0c501e90c16412aab76b59b3e8a0198b3aa6eb",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "7b309621db0457f768b3c965b7ba7424e85a14e8a5d5f6e479fd39bb8c2d07b3",
+      "RawBytes": 43489
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "720dac406b5d766b0f38103defc354e088491a6a58047f1611d4b4a5831c22e2",
+      "RawBytes": 1662457
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "a85c1bc9a360e335ba7d754aa93413b6d47e191a06b9c9bb0ff36f73a0f74179",
+      "RawBytes": 66429
+    }
+  ]
+}

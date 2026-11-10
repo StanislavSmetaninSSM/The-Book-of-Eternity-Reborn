@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-explorer-archive-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5dc0a2a0cca403571072062670eb8761a6ae2c47",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.957131,
+  "Descriptors": [
+    {
+      "Name": "portable-explorer-archive-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-archive-outcome-causal-linux",
+      "Categories": [
+        "portable-explorer-archive-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback|FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageCompensation_OriginalCommandStopsUnknownAndPreservesKnownRollback",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.StorageUnknown_OriginalExplorerCommandStopsWithoutCompensationOrInput",
+          "Cases": 14
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ArchiveUnknown_OriginalIdleNormalizationStopsAfterReservationOrRequestPublication",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserShiningRelicForgeParityTests.StorageUnknown_OriginalBrowserForgeSubmitDoesNotCompensateSanitizedFailure",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

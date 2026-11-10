@@ -10,7 +10,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class PendingTurnSnapshotPresenceIntegrationTests
+public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
 {
     private const string SoulPath = "game_state/meta/soul_state.json";
     private const string SettingsPath = "game_state/core/game_settings.json";
@@ -123,10 +123,14 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         var observations = manifest["originalPathPresenceV1"]!.AsObject();
         Assert.True(observations.Remove(SpiritualWoundCaptureCheckpointState.StatePath));
         Assert.True(observations.Remove(SpiritualWoundDecisionPendingState.StatePath));
         Assert.True(observations.Remove(SpiritualWoundOpportunityReceiptState.StatePath));
+        Assert.True(observations.Remove(MortalWoundOccurrenceState.StatePath));
+        Assert.True(observations.Remove(MortalWoundOpportunityReceiptState.StatePath));
+        Assert.True(observations.Remove(MortalQteDecisionPublication.StatePath));
         await ResignAsync(context, manifest);
 
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -150,6 +154,32 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
             issue.FilePath == SpiritualWoundCaptureCheckpointState.StatePath);
     }
 
+    [Fact]
+    public async Task PriorNineteenPresence_OrdinaryReadCannotAuthorizeUnobservedMortalAbsence()
+    {
+        await using var context = await CreateSeededContextAsync();
+        await PrepareLiveAsync(context);
+        var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+        var observations = manifest["originalPathPresenceV1"]!.AsObject();
+        Assert.True(observations.Remove(MortalWoundOccurrenceState.StatePath));
+        Assert.True(observations.Remove(MortalWoundOpportunityReceiptState.StatePath));
+        Assert.True(observations.Remove(MortalQteDecisionPublication.StatePath));
+        Assert.Equal(19, observations.Count);
+        // This existing reader-contract fixture deliberately re-publishes a prior closed map;
+        // it is not a manufactured original source for a gameplay/consumer proof.
+        await ResignAsync(context, manifest);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease, [SoulPath]).Success);
+        foreach (var path in new[] { MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath })
+        {
+            var read = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths([SoulPath], [path]));
+            Assert.False(read.Success);
+            Assert.Contains(read.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven" && issue.FilePath == path);
+        }
+    }
+
     /// <summary>
     /// Keeps an eighteen-path signed manifest readable while requiring proof of receipt absence.
     /// </summary>
@@ -169,7 +199,11 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
             await context.WriteExactBytesAsync(receiptPath, originalBytes);
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(receiptPath));
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalWoundOccurrenceState.StatePath));
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalWoundOpportunityReceiptState.StatePath));
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalQteDecisionPublication.StatePath));
         await ResignAsync(context, manifest);
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
 
@@ -191,6 +225,26 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
                 issue.Code == "pending_turn_snapshot_reader_absence_unproven" &&
                 issue.FilePath == receiptPath);
         }
+    }
+
+    [Fact]
+    public async Task PriorTwentyOnePresence_OrdinaryReadCannotAuthorizeUnobservedCompletionMarkerAbsence()
+    {
+        await using var context = await CreateSeededContextAsync();
+        await PrepareLiveAsync(context);
+        var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalQteDecisionPublication.StatePath));
+        Assert.Equal(21, manifest["originalPathPresenceV1"]!.AsObject().Count);
+        // Existing component snapshot-writer fixture establishes only this old closed-map reader contract.
+        await ResignAsync(context, manifest);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease, [SoulPath]).Success);
+        var read = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths([SoulPath], [MortalQteDecisionPublication.StatePath]));
+        Assert.False(read.Success);
+        Assert.Contains(read.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven" &&
+            issue.FilePath == MortalQteDecisionPublication.StatePath);
     }
 
     [Fact]
@@ -226,6 +280,16 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
                 .Order(StringComparer.Ordinal));
         Assert.Throws<KeyNotFoundException>(
             () => result.Snapshot.ReadRequiredBytes(SettingsPath));
+
+        // Knowing the combat observation allowlist is not signed absence. This
+        // actual ordinary producer still emits only the default closed form.
+        Assert.Null(captured["files"]![ProgressionScheduleService.ReportPath]);
+        Assert.False(captured["originalPathPresenceV1"]!.AsObject().ContainsKey(ProgressionScheduleService.ReportPath));
+        var unobservedCombatSource = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths, [ProgressionScheduleService.ReportPath]));
+        Assert.False(unobservedCombatSource.Success);
+        Assert.Null(unobservedCombatSource.Snapshot);
+        Assert.Contains(unobservedCombatSource.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven");
     }
 
     [Fact]

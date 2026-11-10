@@ -1,0 +1,42 @@
+{
+  "CurrentSourceSHA": "1be03a0d274ca092011576f8adf0792e441a5f3d",
+  "HistoricalSHA": "5657107343a0dcb58f09212f7de48f478dea45d3",
+  "FixtureSHA": "1be03a0d274ca092011576f8adf0792e441a5f3d",
+  "Files": [
+    {
+      "Path": "boe-c5-duration-historical-prepare.log.gz",
+      "RawBytes": 848,
+      "RawSHA256": "e9353753c37304c3535f8dfaab93e836d79553d8b0409b6aa8601abccdf31d3f"
+    },
+    {
+      "Path": "boe-c5-duration-historical-prepare-2.log.gz",
+      "RawBytes": 161,
+      "RawSHA256": "afbb3ab6bfb00a46bbc6b868dd0bcc96dded3608582008404230e77642ecee58"
+    },
+    {
+      "Path": "boe-c5-duration-baseline-1be03a0d-receipt.json.gz",
+      "RawBytes": 194119,
+      "RawSHA256": "8542aa6658816e199350ec0838490867c44d97eafc703e198a938974a690eeff"
+    },
+    {
+      "Path": "boe-c5-duration-current-bridge-build.log.gz",
+      "RawBytes": 10636,
+      "RawSHA256": "7e0268ed745fda5c64f1de2aabbaacb55b3c0c15f5a2da004c6fd88fabc19651"
+    },
+    {
+      "Path": "boe-c5-duration-environment-start.json.gz",
+      "RawBytes": 2515,
+      "RawSHA256": "395b6cd6a732ab6da5f139d3e5af7f0f6e9c566405fe71778654659c19678ba5"
+    },
+    {
+      "Path": "boe-c5-duration-current-plan.log.gz",
+      "RawBytes": 1351,
+      "RawSHA256": "7a608d185281a3c17372bd0cf610d22ec427abf950831b44e6042f7a9882835b"
+    }
+  ],
+  "Status": "PREPARATION_ONLY_0_RUNTIME",
+  "SourcePinnedCurrentIntegrationBuild": "63567c18; only loader/plan changed at1be, selected project and profile unchanged",
+  "CurrentBridgeBuild": "Exit0, 0errors,41.53s",
+  "HistoricalPreparation": "newempty GitHub-only samecloud; fsck0;956production/native/script files exact565;3allowlistedtestoverlays; firstloaderfailure preserved",
+  "Scope": "Diagnostics only, no original40sGREEN/fullC5/throughput or recovery acceptance."
+}

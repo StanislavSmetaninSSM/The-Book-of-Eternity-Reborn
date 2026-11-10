@@ -1,0 +1,115 @@
+{
+  "reviewerTask": "/root/completed_v2_design_review",
+  "createdUtc": "2026-10-15T06:59:59.591873+00:00",
+  "configurationRequested": "gpt-6-astra/xhigh (Astra XHigh)",
+  "configurationActual": "Tool launch configuration recorded; backend model/effort telemetry unavailable",
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "projectExecution": false,
+  "runtimePassClaim": false,
+  "reviewedSource": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "observedHeadAtArtifactWrite": "d3c9156ca756d35a1a2b3f53ab8717249e0d9515",
+  "observedWorkingTreeDirtyAtArtifactWrite": true,
+  "concurrentWriterNote": "Parent has begun a separate WIP after receiving bounded verdicts. Current working tree is not reviewed or qualified by these reports. Frozen reviewed source/design remain authoritative.",
+  "reviewerStopped": true,
+  "reviewType": "bounded scope2 EVIDENCE",
+  "testedSource": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "compiledSource": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "verdict": "ACCEPTED_FACTUAL_EXTENT_ONLY",
+  "findingsCritical": [],
+  "findingsImportant": [],
+  "manifest": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-new-cloud-severity-first-late2-frozen-85caae3c-20261015T064600Z/manifest.json",
+    "sha256": "cc89495959d49c34a9b8d62984cdd3c61db7cd06e5c72817cb5c64d9138b3e35",
+    "compressedRawChainsVerified": 49
+  },
+  "sourcePins": {
+    "count": 162,
+    "rawSha256": "522e3a7e8e9865000db2b109cf039c9e9093ddc211f38c61949d2da0b31f4260",
+    "gitMatched": true,
+    "historicalPrePostAttestation": 162
+  },
+  "binaryPins": {
+    "count": 11,
+    "rawSha256": "986c0b522bc7dbaf6a812ff00816b82b65c4edbc0d53370a067ad1b868d22cdb",
+    "bytesMatchedAtEvidenceReadback": true,
+    "historicalPrePostAttestation": 11,
+    "exhaustiveLoadedBindings": false
+  },
+  "actual": {
+    "nativeInvocations": 1,
+    "seconds": 132.2628509,
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "complete": true,
+    "timedOut": false,
+    "skips": 0,
+    "duplicateTestIDs": 0,
+    "derivedNativeRowsExact": 2,
+    "derivedJsonRowsExact": 62,
+    "failure": "Assert.Single empty story suffix JointCompletion.cs:823",
+    "reachedAssertions": "severity793-799; receipt/occurrence800-807; canonical808-811; phase812-818",
+    "unqualified": "story/turn43/lastResponse/terminal824+; repeat; later progression arithmetic",
+    "canonical": "both Committed/0issues",
+    "observerFailure": null,
+    "turn": 42,
+    "reason": "changed_or_malformed_public_decision; story held"
+  },
+  "phase": {
+    "baselineId": "edc4b787fa9049e2844d16a60e3e7b63",
+    "baselineMembers": 8,
+    "phaseId": "17b239d80e5144af9f3d5d81531436ed",
+    "phaseMembers": 3,
+    "count": 1,
+    "zeroHistoryCount": 0,
+    "exactImagesVerified": true
+  },
+  "cleanup": {
+    "receipts": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a3311887630d4d6eae903cc9f2f1ca28",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3dd1ec31ab284a788e73946a29a69529",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "ownedRootsAbsentAtEvidenceReadback": true,
+    "namedChildContainers": 0
+  },
+  "preparation": {
+    "seconds": 138.3835822,
+    "exactPlanSeconds": 4.9387988,
+    "catalogSeconds": 5.6485606,
+    "executedTests": 0,
+    "inventory": [
+      32,
+      58,
+      18
+    ],
+    "catalog": [
+      746,
+      11588
+    ],
+    "warnings": {
+      "unit": 35,
+      "integration": 130
+    },
+    "errors": 0,
+    "warningCleanClaim": false
+  },
+  "wholeLate2": "FAIL",
+  "later12": "HELD",
+  "designA": "separate ACCEPTED; implementation SOURCE/runtime not reviewed",
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-scope2-evidence-review-85caae3c-20261015T065959Z-completed-v2-design-review.md",
+    "sha256": "c6b0615c5c46ae00cdedc70c77b385d63b2d96bcc8d3f7136855171b50562a31"
+  }
+}

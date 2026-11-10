@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "task": "#1536 US5-RO1 reader first runtime failure, exact root-definition binding and affected-only correction gate",
+  "reviewedAt": "2026-10-15 21:13:37 UTC",
+  "configuration": {
+    "requested": "Astra XHigh retained explicit independent reviewer configuration",
+    "actualBackendTelemetry": "unavailable"
+  },
+  "disposition": "CORRECTIONS_ACCEPTED_FOR_FRESH_BOUNDED_VERIFICATION",
+  "reviewed": {
+    "baseSource": "60574090d862e54ca576748b9ff8d84a01200f4c",
+    "failedCompiled": "193dc5890d4582d68ece897f64189af65e73d81b",
+    "failedTested": "5d4b416a84e64620d8fee38a48c61595aab433ad",
+    "failureCarrier": "ac093e21052c5b322304e794dbe753e6b993b541",
+    "correctedHead": "7c1db7294a1678a5f630cc67b0d3080cdd6e5dae",
+    "localStatus": "clean",
+    "remote": "Parent reports actualremote7c1d verified; reviewer did not repeat remote read."
+  },
+  "reviewerActions": {
+    "sourceEdits": 0,
+    "builds": 0,
+    "nativeTests": 0,
+    "runnerOrControllerCalls": 0,
+    "discoveryCalls": 0,
+    "reflectionProbes": 0,
+    "scope": "Source/contracts, recorded evidence and immutable/current Git bytes only; this unique external report pair."
+  },
+  "evidence": {
+    "packets": [
+      {
+        "packet": "us5-ro1-corrected-catalog-5d4b416a8-20261015T205940Z",
+        "sha256": "51356dae85ac77d35bdb5ffaa8c2fc66ecc345443e9c69edaff5a7500bfb47af",
+        "testedGit": "5d4b416a84e64620d8fee38a48c61595aab433ad",
+        "chains": 6,
+        "gitSourcePins": 2551,
+        "currentOutputPins": 8,
+        "nativeExit": 0,
+        "summary": {
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "ExitCode": 0,
+          "WallTime": "00:00:05.8028151",
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11640,
+            "Categories": 756,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "DuplicateTests": []
+        }
+      },
+      {
+        "packet": "us5-ro1-corrected-exact-plan-5d4b416a8-20261015T205953Z",
+        "sha256": "e68c195dce802dbebcf9a3b31615838603e21b572868114bc989caaf1fd3889a",
+        "testedGit": "5d4b416a84e64620d8fee38a48c61595aab433ad",
+        "chains": 6,
+        "gitSourcePins": 2551,
+        "currentOutputPins": 8,
+        "nativeExit": 0,
+        "summary": {
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "ExitCode": 0,
+          "WallTime": "00:00:04.8306413",
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 65,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "wounds-player-projection-unit-001",
+              "wounds-player-read-integration-002"
+            ],
+            "Complete": false
+          },
+          "CatalogAudit": null,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "DuplicateTests": []
+        }
+      },
+      {
+        "packet": "us5-ro1-reader-first-failure-5d4b416a8-20261015T210058Z",
+        "sha256": "c7a897796018ebe5e2e422ae32b7fbd2eb8be39ddb9652d3751883fdd2b95b64",
+        "testedGit": "5d4b416a84e64620d8fee38a48c61595aab433ad",
+        "chains": 8,
+        "gitSourcePins": 2551,
+        "currentOutputPins": 8,
+        "nativeExit": 1,
+        "summary": {
+          "Tests": {
+            "Total": 65,
+            "Executed": 65,
+            "Passed": 53,
+            "Failed": 12
+          },
+          "ExitCode": 1,
+          "WallTime": "00:00:12.5043371",
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 2,
+            "PlannedCases": 65,
+            "CompletedCases": 65,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "CatalogAudit": null,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "DuplicateTests": []
+        }
+      }
+    ],
+    "verification": "All20 compressed/raw/origin chains independently matched; strict duplicate-key JSON; each packet's2551 source pins verified against immutable tested Git via git cat-file --batch; all8 original193 output pins still match current. Current source differs only in the3 reviewed correction files.",
+    "currentExpectedSourceChanges": [
+      {
+        "path": "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs",
+        "oldSha256": "9cff26521140f92beb6f1bff7926db81a09664309dca02b33d0fffbbec019bd2",
+        "currentSha256": "d061e50672504f6e37ebc13034221937a0a32b6c7c82841c06b8f758388e320f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+        "oldSha256": "351f8a0c259efb8b8040460a8923f24f6336ee393989051b7f56e7769a7d03b2",
+        "currentSha256": "8e2f84de1bfa5b315937dc3d06181ec2a7553dc58e9772184b538ea39853f181"
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+        "oldSha256": "42dae3059514b6df83ec6f5163831621ad7cdd5652ca66a086811c31de361e21",
+        "currentSha256": "4ef01325bfc624e5fc2ec3974455ab86f94f93001336e6547607b90c067f5300"
+      }
+    ],
+    "trx": {
+      "fullResultsDefinitionsEntriesAndMethodsBijection": true,
+      "testIdsAndExecutionIdsUnique": true,
+      "codeBases": "Exact unit/integration net8.0 DLL codeBase paths matched frozen rows.",
+      "methods": 33,
+      "cases": 65,
+      "projection": {
+        "executed": 32,
+        "passed": 32,
+        "failed": 0
+      },
+      "reader": {
+        "executed": 33,
+        "passed": 21,
+        "failed": 12
+      },
+      "all": {
+        "executed": 65,
+        "passed": 53,
+        "failed": 12
+      },
+      "nativeExit": 1,
+      "wallSeconds": 12.5043371,
+      "selectionComplete": true,
+      "completedDescriptors": 2,
+      "timedOut": false,
+      "duplicates": 0
+    },
+    "failedCases": [
+      {
+        "fault": "missing_enemy",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_resources",
+        "exception": "System.IO.InvalidDataException : Required wound display authority is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.RequiredText(FileSystemManager fs, CanonicalWriteLease lease, String path) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 70",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "invalid_utf8",
+        "exception": "System.IO.InvalidDataException : Canonical JSON bytes are not valid UTF-8.",
+        "throwSite": "at BookOfEternityClient.Services.CanonicalJsonUtf8.DecodeOneOptionalBom(Byte[] bytes) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CanonicalJsonUtf8.cs:line 30",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_soul",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_history",
+        "exception": "System.IO.InvalidDataException : Required wound display authority is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.RequiredText(FileSystemManager fs, CanonicalWriteLease lease, String path) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 70",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_npc",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_ally",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_player",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_identity",
+        "exception": "System.IO.InvalidDataException : Required wound display authority is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.RequiredText(FileSystemManager fs, CanonicalWriteLease lease, String path) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 70",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "invalid_effect_utf8",
+        "exception": "System.IO.InvalidDataException : Canonical JSON bytes are not valid UTF-8.",
+        "throwSite": "at BookOfEternityClient.Services.CanonicalJsonUtf8.DecodeOneOptionalBom(Byte[] bytes) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/CanonicalJsonUtf8.cs:line 30",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "missing_profiles",
+        "exception": "System.IO.InvalidDataException : Required wound display carrier is absent.",
+        "throwSite": "at BookOfEternityClient.Services.WoundPlayerReadService.Root(FileSystemManager fs, CanonicalWriteLease lease, String path, Boolean required) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/WoundPlayerReadService.cs:line 80",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      },
+      {
+        "fault": "duplicate",
+        "exception": "System.IO.InvalidDataException : Wound display input contains duplicate JSON property '$.schemaVersion'.",
+        "throwSite": "at BookOfEternityClient.Core.StrictJsonAuthority.EnsureUniqueProperties(JsonElement value, String path, StringComparer propertyComparer, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 68",
+        "testReadCall": "WoundPlayerReadServiceTests.cs:76; post-read assertions77–81 unreached"
+      }
+    ],
+    "cleanup": {
+      "strictReceipts": 33,
+      "distinctAbsoluteRoots": 33,
+      "removed": true,
+      "leaseInactive": true,
+      "explicitNullFailure": true,
+      "currentPhysicalPathsAbsent": true,
+      "perCaseOriginBijection": true,
+      "limit": "Cleanup completed even in12 failed cases; their generic-unavailable and post-read full-tree assertions were unreached."
+    },
+    "passingReaderPrecision": {
+      "faultMatrixPassed": [
+        "stale_history",
+        "duplicate_identity",
+        "stale_identity",
+        "legacy_shape",
+        "foreign_owner"
+      ],
+      "otherReaderCasesPassed": 16,
+      "note": "These16 include inventory/privacy negative controls; they are not16 positive cases. Correct the historical plan/tasks wording in the next metadata carrier without rewriting frozen failure evidence."
+    }
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "status": "FIXED_STATIC_RUNTIME_UNRUN",
+      "severity": "P1",
+      "title": "Strict-data rejection escapes the reader instead of returning generic unavailable",
+      "evidence": "All12 actual net8 failures are System.IO.InvalidDataException at required roots/text, strict duplicate JSON or strict UTF8; test call at reader tests:76 throws before assertions77–81.",
+      "source": "BookOfEternityClient/Services/WoundPlayerReadService.cs:60",
+      "contract": "Missing/malformed/incoherent display authority must return the generic unavailable result without changing canonical state or leaking diagnostics.",
+      "cause": "IOException does not cover InvalidDataException (the latter derives SystemException). Local throw sites explicitly use InvalidDataException; the actual net8 TRX escape is the primary proof. Parent's harmless .NET10 reflection is supporting context only and was not rerun.",
+      "correction": "Add InvalidDataException to the existing bounded exception filter; retain parser strictness, catch body, lease scope, generic unavailable, root requirements and all assertions.",
+      "supportingSources": [
+        "BookOfEternityClient/Services/WoundPlayerReadService.cs:70",
+        "BookOfEternityClient/Services/WoundPlayerReadService.cs:80",
+        "BookOfEternityClient/Core/StrictJsonAuthority.cs:68",
+        "BookOfEternityClient/Services/CanonicalJsonUtf8.cs:30"
+      ],
+      "cases": 12
+    },
+    {
+      "id": "R2",
+      "status": "FIXED_STATIC_RUNTIME_UNRUN",
+      "severity": "P1",
+      "title": "Owned effect association omits exact persisted definition key",
+      "evidence": "Old Mortal positive associates effect_wound_test_bleeding with canonical source key bleeding_consequence while wound root binding requires definition_wound_test_bleeding. It passed under the incomplete filter. EffectMechanicsSnapshot.IsAccepted checks carrier/index agreement, not this cross-wound-root association.",
+      "contractSources": [
+        "specs/1536-complete-wound-materialization/spec.md:321 FR-018",
+        "specs/1536-complete-wound-materialization/spec.md:324 FR-021",
+        "specs/1536-complete-wound-materialization/contracts/wound-effects-and-atomicity.md:163",
+        "specs/1536-complete-wound-materialization/contracts/wound-player-commands-and-projection.md Projection visibility"
+      ],
+      "modelSources": [
+        "BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs:212-224",
+        "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs:64-99",
+        "BookOfEternityClient/Services/WoundMaterializationContract.cs:101-109"
+      ],
+      "decision": "Exact effectId→definitionKey root binding is required. Source kind/id plus target/realm/owner/known effectId is insufficient; merely finding a key anywhere in the wound graph would also be insufficient.",
+      "correction": "Build an ordinal dictionary from already-parsed RootBindings, then require source.definitionKey to equal the value for this exact EffectId. Preserve every existing ownership, visibility, source and realm guard. Exclude mismatched effect from linked consequences; do not manufacture authority or repair state.",
+      "fixtureCorrection": "Set correct existing bleeding/pain definition keys in four Mortal fixtures, so positive/foreign-target/hidden-complication/wrong-source assertions still isolate their intended conditions.",
+      "newCoverage": "Three realm cases; each constructs a structurally accepted expected-key positive and a structurally accepted foreign-key negative with consistent identity index, same effect/target/owner/source IDs and visible label. Positive label appears; foreign label and technical key do not.",
+      "limits": "This is direct-root association using existing parsed authority, not full source-definition component/fingerprint validation or descendant expansion. The old32 PASS observation remains true but is not full genuine joint wound-root binding proof."
+    }
+  ],
+  "correctedDiff": {
+    "paths": [
+      "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs",
+      "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+      "BookOfEternityClient/Services/WoundPlayerReadService.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "sourceChanges": "Exactly2 production guards and affected fixtures/new3-case theory; no authority/schema/write/delete/rollback/storage membership, source definitions, helper/catalog/selection or budget changes.",
+    "diffCheck": "git diff --check clean",
+    "compileApiAssessment": "Existing exception type, LINQ ordinal ToDictionary and JsonElement string checks; existing root uniqueness is validated before projection. New fixture uses existing helpers and JsonNode APIs, preserving semantic afterlife identity owner player and carrier OwnerKind afterlife_profile."
+  },
+  "release": {
+    "sourceFixtureSelectionAccepted": true,
+    "freshBothSelectedBuilds": true,
+    "officialPlanAndCatalogZeroExecution": true,
+    "actualConditionalAfterSuccessfulPreparation": true,
+    "categories": [
+      {
+        "id": "wounds-player-projection",
+        "project": "unit",
+        "expectedMethods": 26,
+        "expectedCases": 35,
+        "budgetMinutes": 3
+      },
+      {
+        "id": "wounds-player-read",
+        "project": "integration",
+        "expectedMethods": 8,
+        "expectedCases": 33,
+        "budgetMinutes": 3
+      }
+    ],
+    "expectedTotal": {
+      "methods": 34,
+      "cases": 68,
+      "descriptors": 2
+    },
+    "conditions": [
+      "Official discovery must confirm static counts and ownership; no aggregate or historical A7/Late2/header/G3 grant reuse.",
+      "Build both selected projects from corrected source; old193 binaries are obsolete for these source changes. Freeze new source/output pins.",
+      "Preserve prior accepted shell status-capture correction and exact native outcomes; stop/freeze on first unexpected material discrepancy.",
+      "Actual success needs complete68cases, no failures/skips/duplicates/timeouts, all17 reader fault assertions including after-read tree comparisons reached, and all33 genuine reader cleanup roots.",
+      "Final independent runtime evidence acceptance remains required."
+    ],
+    "noPublicConsumerWiringAcceptance": true
+  },
+  "limits": [
+    "Corrected GREEN is UNRUN; static correction acceptance is not behavioral acceptance.",
+    "All earlier RED/build/runtime/exit-conflict evidence remains immutable.",
+    "RO2 existing console/browser status consumers remains next tracked work after RO1 qualification; unwired foundation does not finish it.",
+    "FullUS5, treatment-only History/guided staging, fullFR063/T070/#1536 and lawfulACTIVE architectural decision remain open."
+  ],
+  "finalStop": {
+    "status": "FINALSTOP",
+    "pendingReviewerWrites": 0
+  }
+}

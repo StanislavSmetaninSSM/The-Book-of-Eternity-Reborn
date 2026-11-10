@@ -5,7 +5,7 @@ using BookOfEternityClient.Configuration;
 
 namespace BookOfEternityClient.Services;
 
-internal static class GuardianPolicyContracts
+internal static partial class GuardianPolicyContracts
 {
     internal const string InvalidMetaStateUpdatesMessage =
         "game_state/meta/soul_state.json current metaStateUpdates must be a JsonObject if present.";

@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "qte-physical-injury-finalization"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-finalization",
+      "reason": "#1536 T070 first test-only finalized-health-harm/missing-occurrence causal cohort: one real ordinary GameEngine QTE case, category5/default overall10; accepted admission51 unchanged and not selected again.",
+      "contracts": [
+        "Actual ProcessPlayerTurn stages the ordinary request/signed source snapshot; coordinates are read by official PendingTurnSnapshotReader while that request is live, never manufactured from raw request JSON",
+        "Offline correlated GM raw offer plus real queued Agent Console acceptance/action/final screen establishes frozen branch declaration before any health mutation",
+        "Actual common QTE resource/effect finalization must yield exact canonical health160->155, one matching Applied Damage/history row, lawful resource owner agreement, terminal continuation/history and ordinary cleanup before the missing-occurrence assertion",
+        "Exactly one strict pending source occurrence must retain original signed source coordinates and explicit maximum2; no producer/binding/occurrence/receipt/after-image fabrication",
+        "Per-test owned root and strict cleanup; protected wound identity/history/receipt/command bytes unchanged; any preceding fixture/admission/finalization failure is a blocker, not causal producer RED"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.036295,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0424628,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1163852,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0033414,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:02.6550154",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "qte-physical-injury-finalization-integration-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

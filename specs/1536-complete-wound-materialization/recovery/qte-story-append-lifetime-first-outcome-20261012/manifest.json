@@ -1,0 +1,121 @@
+{
+  "scope": "#1536 lifetime first outcome5PASS1FAIL; bounded receipt fixture pre-QTE blocker, no receipt lifecycle RED claim",
+  "runtimeSource": "d2fede0c15b587aa3a8488122a808becbebc141a",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "acceptedSourceGate": "1969223f594193a48516d70b0819d8a0d866515d",
+  "runs": {
+    "plan": "20261012-125440-737-295870-cc6607eff0af4eecade6aff5b8da61be-categories",
+    "actual": "20261012-125523-567-295969-6ddeed4760f342f99de72aab736990f7-categories"
+  },
+  "firstActualInvocations": 1,
+  "counts": {
+    "methods": 5,
+    "plannedCases": 6,
+    "executed": 6,
+    "passed": 5,
+    "failed": 1,
+    "descriptors": 1,
+    "complete": true
+  },
+  "timedOut": false,
+  "failureClass": "PRE_QTE_ORDINARY_ADMISSION_FIXTURE_BLOCKER_NOT_YET_DIAGNOSED",
+  "deferredHandoff": "UNREACHED",
+  "noReceiptIdle": "UNREACHED",
+  "receiptResumeAndCleanup": "UNREACHED",
+  "coldSameRootActualEngineIdle": "REACHED/PASS with distinct child PID and source artifact cleanup",
+  "strictDistinctOwnedCleanupRootsAbsent": 6,
+  "sourcePins": 35,
+  "binaryPins": 10,
+  "artifacts": [
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125440-737-295870-cc6607eff0af4eecade6aff5b8da61be-categories/summary.json",
+      "sha256": "33a0e0c1764ca25d1ba4d41f52872e56507a604fce488f529a2ccf64949bed14",
+      "originalSha256": "33a0e0c1764ca25d1ba4d41f52872e56507a604fce488f529a2ccf64949bed14"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125440-737-295870-cc6607eff0af4eecade6aff5b8da61be-categories/plan.json",
+      "sha256": "9df1bffa557bff38a56bf01fd4d70669b897c0e516dd920a74cad59c7a89bff7",
+      "originalSha256": "9df1bffa557bff38a56bf01fd4d70669b897c0e516dd920a74cad59c7a89bff7"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125440-737-295870-cc6607eff0af4eecade6aff5b8da61be-categories/dotnet-test.log",
+      "sha256": "cc0197b9e40fa9a9efaecb48121ed2379cb4f9d22a918aadef42f3a0cf0ef021",
+      "originalSha256": "e61660415fb1429eef21ee609b1a9dac558de7ccd8bd9defcf9447238d8a32cb"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125523-567-295969-6ddeed4760f342f99de72aab736990f7-categories/summary.json",
+      "sha256": "6717bbb0102418a6e6bbe1de613bcf220458872b133349837baf338bdcc2c85e",
+      "originalSha256": "6717bbb0102418a6e6bbe1de613bcf220458872b133349837baf338bdcc2c85e"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125523-567-295969-6ddeed4760f342f99de72aab736990f7-categories/plan.json",
+      "sha256": "f54f091db57bbc509633fcf8917d63a12d2d78cd3f4f26b7ba00e2067f80ff68",
+      "originalSha256": "f54f091db57bbc509633fcf8917d63a12d2d78cd3f4f26b7ba00e2067f80ff68"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125523-567-295969-6ddeed4760f342f99de72aab736990f7-categories/dotnet-test.log",
+      "sha256": "13f07d93cf7b5e507fa35d4ca4ff15e33022ae8512daf4ab4a24f926ca237da5",
+      "originalSha256": "c3c5b9260a7952907c844b26da974658a629f9a1934fe3de3ae9b8b52ee3bca0"
+    },
+    {
+      "path": "actual-qte-story-append-lifetime-integration-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-125523-567-295969-6ddeed4760f342f99de72aab736990f7-categories/qte-story-append-lifetime-integration-001.trx",
+      "sha256": "8164d5efeca6e6330b9cf2653f46bb332bd0e6f831401c64cfe5bd880807fbaf",
+      "originalSha256": "d141a5edae7fdd41d4568e6ba9fc0ead801bbbdff5e96c478a03b1a5b4d6b5ec"
+    },
+    {
+      "path": "lifetime-source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-source-pins.json",
+      "sha256": "8be8b5e437c4fd79967c7b94c46e46696379c9741134e0bf4f0fde82d9154068",
+      "originalSha256": "8be8b5e437c4fd79967c7b94c46e46696379c9741134e0bf4f0fde82d9154068"
+    },
+    {
+      "path": "fresh-build-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/fresh-build-binaries.json",
+      "sha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923",
+      "originalSha256": "a4a4bbdd2c65b96d9e49fa71eaa0b1370c04b7fdc996cf3773d8071a3a763923"
+    },
+    {
+      "path": "lifetime-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-plan-invocation-prewritten.json",
+      "sha256": "54dfc72a77406ea3396eff5fa5347c562318c66cd7f68875784bb15cc0fdd871",
+      "originalSha256": "54dfc72a77406ea3396eff5fa5347c562318c66cd7f68875784bb15cc0fdd871"
+    },
+    {
+      "path": "lifetime-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-actual-invocation-prewritten.json",
+      "sha256": "86a2e9fa0a3f209a32e5f6dfe6eadd775300ee2617c14c4379f8d8c554abd613",
+      "originalSha256": "86a2e9fa0a3f209a32e5f6dfe6eadd775300ee2617c14c4379f8d8c554abd613"
+    },
+    {
+      "path": "lifetime-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-first-actual-readback.json",
+      "sha256": "e033367e89494a864e43977469cd550c18118d743ca32ff27d029fc5d5a6fbdc",
+      "originalSha256": "e033367e89494a864e43977469cd550c18118d743ca32ff27d029fc5d5a6fbdc"
+    },
+    {
+      "path": "lifetime-full-trx-output.txt.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-full-trx-output.txt",
+      "sha256": "f60de82d35d284a3333f83b90c9ebf41bf14975cfa8c9a52e92329c8333fe9f2",
+      "originalSha256": "92f39f80faa15ad5e9e51f101975d6b23063075cbf959c413194cdfdb09dd1df"
+    },
+    {
+      "path": "lifetime-plan-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-plan-console.log",
+      "sha256": "7eb5e1c0da45c4ecf45696f70ee11904cd1dccfc67990ce6b685c4b01766a736",
+      "originalSha256": "1571df720c9132d0ebbebfcd8c963d3ea086d3e41a49ae7f1e16821dbd73d384"
+    },
+    {
+      "path": "lifetime-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/lifetime-actual-console.log",
+      "sha256": "7c2954e239b7b8878a48110db45418c6aa94d3d7ef9f29d8f19c3b492211f8eb",
+      "originalSha256": "10d1f0290022da61b1d9a8a5bda0f8ed775c1e3a70effd154559dc46b357ed95"
+    }
+  ]
+}

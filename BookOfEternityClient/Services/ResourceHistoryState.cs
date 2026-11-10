@@ -505,15 +505,21 @@ internal sealed class ResourceHistoryState
             Array.Empty<ValidationIssue>());
     }
 
-    internal string ToCanonicalJson()
+    internal string ToCanonicalJson() => SerializeCanonicalTransitions(Transitions);
+
+    /// <summary>Serializes already ordered transitions without validating or rebuilding history indexes.</summary>
+    /// <param name="transitions">Detached or exclusively owned transitions in canonical history order.</param>
+    /// <returns>The complete canonical history image without changing the supplied transitions.</returns>
+    internal static string SerializeCanonicalTransitions(IEnumerable<ResourceTransition> transitions)
     {
+        ArgumentNullException.ThrowIfNull(transitions);
         using var stream = new MemoryStream();
         using (var writer = new Utf8JsonWriter(stream))
         {
             writer.WriteStartObject();
             writer.WriteNumber("schemaVersion", ResourceMaterializationContract.SchemaVersion);
             writer.WriteStartArray("entries");
-            foreach (var transition in Transitions)
+            foreach (var transition in transitions)
                 WriteTransition(writer, transition);
             writer.WriteEndArray();
             writer.WriteEndObject();

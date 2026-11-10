@@ -145,73 +145,85 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
                 StringComparison.Ordinal);
 
     internal bool ProvesExactPublishedNpcInventoryContinuityIssue(
-        ValidationIssue issue,
-        JsonObject publishedNpcRoot)
+        ValidationIssue issue, JsonObject publishedNpcRoot)
     {
         ArgumentNullException.ThrowIfNull(issue);
         ArgumentNullException.ThrowIfNull(publishedNpcRoot);
-
-        if (issue.Severity != IssueSeverity.Error ||
-            !string.Equals(
-                issue.Code,
-                "npc_existing_inventory_resend_forbidden",
-                StringComparison.Ordinal) ||
-            !string.Equals(issue.Section, "NPCInventory", StringComparison.Ordinal) ||
-            !TryParseNpcInventoryIssuePath(
-                issue.FilePath,
-                out var section,
-                out var index) ||
-            !TryRecompose(
-                out var skillAfterImages,
-                out var finalRoots,
-                out var publicationAfterImages) ||
-            finalRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath)
-                is not JsonObject finalNpcRoot ||
-            !publicationAfterImages.TryGetValue(
-                NpcCoreChangesContract.NpcCorePath,
-                out var publicationNpcRoot) ||
-            !JsonNode.DeepEquals(finalNpcRoot, publicationNpcRoot) ||
-            !JsonNode.DeepEquals(finalNpcRoot, publishedNpcRoot))
-        {
+        if (issue.Severity != IssueSeverity.Error || issue.Code != "npc_existing_inventory_resend_forbidden" ||
+            issue.Section != "NPCInventory" || !TryParseNpcInventoryIssuePath(issue.FilePath, out _, out _))
             return false;
-        }
-
-        var skillNpcRoot = skillAfterImages.TryGetValue(
-            NpcCoreChangesContract.NpcCorePath,
-            out var skillAfterImage)
-            ? skillAfterImage
-            : _baseline.FinalCarrierRoots.GetValueOrDefault(
-                NpcCoreChangesContract.NpcCorePath) as JsonObject;
-        if (skillNpcRoot is null ||
-            !TryReadNpcInventoryAtExactPath(
-                skillNpcRoot,
-                section,
-                index,
-                out var beforeActorId,
-                out var beforeInventory) ||
-            !TryReadNpcInventoryAtExactPath(
-                finalNpcRoot,
-                section,
-                index,
-                out var finalActorId,
-                out var finalInventory) ||
-            !string.Equals(beforeActorId, finalActorId, StringComparison.Ordinal) ||
-            !string.Equals(
-                issue.Actor,
-                "mortal_npc:" + finalActorId,
-                StringComparison.Ordinal) ||
-            JsonNode.DeepEquals(beforeInventory, finalInventory) ||
-            !TryParseExactInventory(issue.Expected, out var issueExpected) ||
-            !TryParseExactInventory(issue.Actual, out var issueActual))
-        {
-            return false;
-        }
-
-        return JsonNode.DeepEquals(beforeInventory, issueExpected) &&
-               JsonNode.DeepEquals(finalInventory, issueActual);
+        return CaptureExactPublishedNpcInventoryComparison(publishedNpcRoot)?.Proves(issue) == true;
     }
 
-    private static bool TryParseNpcInventoryIssuePath(
+    /// <summary>
+    /// Recomposes the genuine complete item transition once and returns immutable
+    /// comparison DATA. It grants no current publication or inventory authority.
+    /// </summary>
+    /// <param name="publishedNpcRoot">The complete actual published NPC image.</param>
+    /// <returns>One exact comparison, or null for a changed/foreign root.</returns>
+    internal NpcInventoryContinuityComparison? CaptureExactPublishedNpcInventoryComparison(JsonObject publishedNpcRoot)
+    {
+        ArgumentNullException.ThrowIfNull(publishedNpcRoot);
+        if (!TryRecompose(out var skillAfterImages, out var finalRoots, out var publicationAfterImages) ||
+            finalRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) is not JsonObject finalNpcRoot ||
+            !publicationAfterImages.TryGetValue(NpcCoreChangesContract.NpcCorePath, out var publicationNpcRoot) ||
+            !JsonNode.DeepEquals(finalNpcRoot, publicationNpcRoot) || !JsonNode.DeepEquals(finalNpcRoot, publishedNpcRoot))
+            return null;
+        var skillNpcRoot = skillAfterImages.TryGetValue(NpcCoreChangesContract.NpcCorePath, out var skillAfterImage)
+            ? skillAfterImage : _baseline.FinalCarrierRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject;
+        return skillNpcRoot is null ? null : new NpcInventoryContinuityComparison(skillNpcRoot, finalNpcRoot);
+    }
+
+    /// <summary>
+
+    /// Closed before/after inventory comparison DATA; it cannot mint an execution or publication permit.
+
+    /// </summary>
+    internal sealed class NpcInventoryContinuityComparison
+    {
+        private readonly JsonObject _before;
+        private readonly JsonObject _after;
+
+        /// <summary>
+
+        /// Copies the two complete already recomposed roots for this comparison.
+
+        /// </summary>
+        /// <param name="before">The actual skill/item baseline.</param>
+        /// <param name="after">The actual complete item publication image.</param>
+        internal NpcInventoryContinuityComparison(JsonObject before, JsonObject after)
+        { _before = before.DeepClone().AsObject(); _after = after.DeepClone().AsObject(); }
+
+        /// <summary>
+
+        /// Checks the unchanged exact issue/actor/path/before/after inventory contract.
+
+        /// </summary>
+        /// <param name="issue">A candidate emitted by the ordinary inventory guard.</param>
+        /// <returns>True only for this exact client-owned inventory transition.</returns>
+        internal bool Proves(ValidationIssue issue)
+        {
+            ArgumentNullException.ThrowIfNull(issue);
+            if (issue.Severity != IssueSeverity.Error || issue.Code != "npc_existing_inventory_resend_forbidden" ||
+                issue.Section != "NPCInventory" || !TryParseNpcInventoryIssuePath(issue.FilePath, out var section, out var index) ||
+                !TryReadNpcInventoryAtExactPath(_before, section, index, out var beforeActorId, out var beforeInventory) ||
+                !TryReadNpcInventoryAtExactPath(_after, section, index, out var finalActorId, out var finalInventory) ||
+                beforeActorId != finalActorId || issue.Actor != "mortal_npc:" + finalActorId ||
+                JsonNode.DeepEquals(beforeInventory, finalInventory) ||
+                !TryParseExactInventory(issue.Expected, out var expected) || !TryParseExactInventory(issue.Actual, out var actual))
+                return false;
+            return JsonNode.DeepEquals(beforeInventory, expected) && JsonNode.DeepEquals(finalInventory, actual);
+        }
+    }
+
+    /// <summary>
+    /// Reads only the canonical NPC inventory issue coordinate, before expensive recomposition.
+    /// </summary>
+    /// <param name="path">Actual ordinary guard issue path.</param>
+    /// <param name="section">Exact supported NPC array name.</param>
+    /// <param name="index">Canonical nonnegative row index.</param>
+    /// <returns>Whether the whole path has the existing exact inventory shape.</returns>
+    internal static bool TryParseNpcInventoryIssuePath(
         string path,
         out string section,
         out int index)

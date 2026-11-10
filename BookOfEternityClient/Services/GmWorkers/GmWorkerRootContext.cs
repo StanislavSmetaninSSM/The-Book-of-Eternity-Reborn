@@ -147,17 +147,38 @@ internal sealed class GmWorkerRootContext
                     throw new InvalidOperationException("Task generation changed before admission or reservation.");
                 return;
             }
-            if (!Durable || !ReferenceEquals(purpose.Execution.Context, this) || _coordinator == null ||
-                _pending.Count != 0 || !_coordinator.VerifyAdmission())
-                throw new InvalidOperationException("Original worker purpose has no current journal authority.");
-            if (Volatile.Read(ref _closed) != 0 ||
-                purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && _cleanupDeferred.Count != 0)
-                throw new InvalidOperationException("Worker root closed before canonical operation.");
-            purpose.Execution.ValidatePurpose(purpose);
+            ValidateExecutionPurpose(purpose);
             if (purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit &&
                 fs.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id != purpose.Execution.Identity.GenerationId)
                 throw new InvalidOperationException("Worker generation changed before its canonical operation.");
         }
+    }
+    // The main guard must preserve the same exact cleanup capability admitted
+    // below. A cleanup enum alone, a foreign event, or ordinary writer is insufficient.
+    internal void ValidateMainAdmission(FileSystemManager fs, GmWorkerCanonicalPurpose? purpose)
+    {
+        lock (_root.WorkerContextGate)
+        {
+            RequireCanonicalRoot(fs);
+            if (purpose?.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit)
+            {
+                RequireOpen();
+                return;
+            }
+            if (_disposed || purpose.Dispatch != null)
+                throw new InvalidOperationException("Original cleanup admission is unavailable.");
+            ValidateExecutionPurpose(purpose);
+        }
+    }
+    private void ValidateExecutionPurpose(GmWorkerCanonicalPurpose purpose)
+    {
+        if (!Durable || !ReferenceEquals(purpose.Execution.Context, this) || _coordinator == null ||
+            _pending.Count != 0 || !_coordinator.VerifyAdmission())
+            throw new InvalidOperationException("Original worker purpose has no current journal authority.");
+        if (Volatile.Read(ref _closed) != 0 ||
+            purpose.Operation != GmWorkerCanonicalOperation.ConfirmedCleanupAudit && _cleanupDeferred.Count != 0)
+            throw new InvalidOperationException("Worker root closed before canonical operation.");
+        purpose.Execution.ValidatePurpose(purpose);
     }
     internal GmWorkerDispatchAdmission CreateDispatch(GmWorkerRootExecutionLease lease, WorkerTaskPacket task, byte[] bytes)
     {

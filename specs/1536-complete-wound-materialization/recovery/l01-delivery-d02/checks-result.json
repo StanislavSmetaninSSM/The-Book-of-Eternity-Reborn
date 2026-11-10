@@ -1,0 +1,18 @@
+{
+  "kind": "D02_PURE_STAGING_CHECKS",
+  "passed": 4,
+  "checks": [
+    "exact complete independent copy; no hardlink/original mutation",
+    "hash drift refuses before destination creation",
+    "complete-set mismatch refuses before copy",
+    "symlink refuses even when broken"
+  ],
+  "controllerSha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388",
+  "sdkOrProcessActions": 0,
+  "firstRedObservation": {
+    "exit": 1,
+    "featureMissing": "Missing composite exact-tree staging safety functions.",
+    "controllerFileExisted": false,
+    "scope": "Observed expected pure test-first failure before controller implementation; not a game/fixture qualification outcome."
+  }
+}

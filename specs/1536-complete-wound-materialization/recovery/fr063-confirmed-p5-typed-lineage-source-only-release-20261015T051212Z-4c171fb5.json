@@ -1,0 +1,34 @@
+{
+  "base": "8be39c6fd298248d224fee3414d341575e51653b",
+  "testedCompileDiagnosticSource": "e666887b30acde3d68f360b4d3158682e5cdd9db",
+  "acceptedEvidenceReportSHA256": "ffe21bfd79078b3b6b2e64520ca468fff52535b4efbff034b177937705856d45",
+  "acceptedEvidenceReadbackSHA256": "e44c4f06602e68880aceaf1ba350418048fc6b713f1938c8101d5de2084760b2",
+  "decision": "Important P5 consumer contract mismatch CONFIRMED; bounded source-only alignment RELEASED; runtime HELD",
+  "soleWriter": "/root/t070_sol_implementation",
+  "scope": [
+    "only P5 consumer span: require existing IsAcceptedBoundaryComplete plus exact ordinal storedBase==initial full payload and storedFinal==current full payload",
+    "preserve current-before-initial hash computation and actual typed plan/bundle references; fail closed on absent/invalid proof/hashes",
+    "successful P5 must reach existing strict P6 owner/bundle/anchors check; P1-4 and final ValidateJoint unchanged",
+    "retain source/original/currentbytes/lease/G/frame/claim/reservation/inventory/probe/cache/candidate/singleTake/fullunion/readback/compensation/settlement",
+    "truthful additive plan/tasks fronts preserving oldtails/checkmarks; native P6 still unevaluated before correction"
+  ],
+  "forbidden": [
+    "five-field substitute",
+    "blanket guard deletion or singletonfallback",
+    "parsed-hash/caller-flag grant or forged proof/seal/clone",
+    "new issuer/replay/reduction/Project/Apply/publication",
+    "source/owner/Take waiver",
+    "fixture/oracle/selection/budget expansion",
+    "new writer/model/environment"
+  ],
+  "regression": "existing two native Late2 RED meaningful; no mirror test or passing checkpoint5 repeat; actual later failure distinct outcome requiring freezeEVIDENCE",
+  "afterSource": "writer FINAL STOP; ROOT publish actualremoteSHA and selectedrecovery; corrected independent SOURCE/FIXTURE/SELECTION; freshBOTH0exec/inventory/catalog/newpins before onlybothLate2 first corrected outcome freezeEVIDENCE",
+  "runtime": "HELD; no compiler/project/build/discovery/PlanOnly/catalog/tests/runtime/fault/provider calls or Git mutation by writer",
+  "later12": "UNRUN/HELD",
+  "checkpoint5": "no repeat",
+  "qualification": "fullFR063T070/allprioropencontours UNQUALIFIED; P6 unknown/laterpublicationunproved",
+  "configuration": "historical retained Sol XHigh requested; actual telemetryUNAVAILABLE",
+  "authStatus": "access restored by authorized existing-auth read and full selectedrecovery native0; no credentials changed; prior failure records retained",
+  "relayImprovement": "separate coordinator issue; no scopechange",
+  "utc": "2026-10-15T05:12:12.087325+00:00"
+}

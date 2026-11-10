@@ -132,6 +132,13 @@ internal sealed class ResourceOwnerAuthority
 
     internal string Fingerprint { get; }
 
+    /// <summary>Exports detached ledger-only owner keys, without current capabilities or references.</summary>
+    internal IReadOnlyList<ResourceOwnerKey> ExportHistoricalOwners() =>
+        _historicalOwners.OrderBy(static value => value.Realm, StringComparer.Ordinal)
+            .ThenBy(static value => value.OwnerKind)
+            .ThenBy(static value => value.ResourceOwnerId, StringComparer.Ordinal)
+            .ToArray();
+
     internal ResourceOwnerAuthorityInput ExportInput()
     {
         var preTurn = new List<ResourceOwnerExport>();
@@ -173,8 +180,15 @@ internal sealed class ResourceOwnerAuthority
     }
 
     internal static ResourceOwnerAuthority Combine(
+        params ResourceOwnerAuthority[] authorities) =>
+        Combine(Array.Empty<ResourceOwnerKey>(), authorities);
+
+    /// <summary>Combines current owners and independently verified ledger-only history in one build.</summary>
+    internal static ResourceOwnerAuthority Combine(
+        IReadOnlyList<ResourceOwnerKey> historicalOwners,
         params ResourceOwnerAuthority[] authorities)
     {
+        ArgumentNullException.ThrowIfNull(historicalOwners);
         ArgumentNullException.ThrowIfNull(authorities);
         var preTurn = new List<ResourceOwnerExport>();
         var sameTurn = new List<ResourceOwnerExport>();
@@ -186,6 +200,18 @@ internal sealed class ResourceOwnerAuthority
             preTurn.AddRange(input.PreTurnOwners);
             sameTurn.AddRange(input.SameTurnOwners);
             historical.AddRange(input.HistoricalOwners);
+        }
+
+        // An exact overlap is the same earlier ledger fact. Preserve duplicates
+        // within either supplied collection so the existing builder still rejects
+        // malformed or confusable identities; never deduplicate current exports.
+        if (historicalOwners.Count != 0)
+        {
+            var currentHistorical = new HashSet<ResourceOwnerKey>(historical, ResourceOwnerKeyComparer.Instance);
+            var carried = new HashSet<ResourceOwnerKey>(ResourceOwnerKeyComparer.Instance);
+            foreach (var key in historicalOwners)
+                if (!carried.Add(key) || !currentHistorical.Contains(key))
+                    historical.Add(key);
         }
 
         return Build(new ResourceOwnerAuthorityInput(

@@ -172,7 +172,7 @@ public sealed class MortalWoundTreatmentWorkingGraphProjectionTests
         {
             ["diagnosisPathId"] = "retained_complication_fact", ["displayName"] = "Проверить известное осложнение",
             ["visibility"] = "known_to_player", ["requiresKnownFacts"] = new JsonArray("complication:old_complication"),
-            ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+            ["requirements"] = new JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
             ["reveals"] = new JsonArray("complication:old_complication"), ["failurePolicy"] = "no_reveal"
         });
         var before = Parse(source);

@@ -31,7 +31,7 @@ internal static partial class EffectAcceptedTurnPlanner
             EffectAcceptedTurnPlan completedPlan, BaseResourceRouting routing,
             AcceptedEffectBoundaryTranscript transcript,
             AcceptedMechanicsPlanner.ResourceExecutionSession resources,
-            IReadOnlyList<(ValidationService.SpiritualOriginalTurnCapture.WoundSelection Selection,
+            IReadOnlyList<(EffectDraftWoundSelection Selection,
                 EffectDraftWoundInsertion Insertion)> selected)
         {
             ArgumentNullException.ThrowIfNull(completedPlan);
@@ -59,13 +59,14 @@ internal static partial class EffectAcceptedTurnPlanner
                 var insertion = ordered[index];
                 var (selection, supplied) = selected[index];
                 if (!ReferenceEquals(insertion, supplied) ||
-                    !ReferenceEquals(insertion.Selection, EffectDraftWoundSelection.From(selection)) ||
+                    !ReferenceEquals(insertion.Selection, selection) ||
                     insertion.Interval is null ||
-                    !ReferenceEquals(insertion.Interval, selection.Admission.Interval) ||
+                    !ReferenceEquals(insertion.Interval, selection.Interval) ||
                     insertion.VersionAfter != index + 1 ||
                     insertion.Interval.Ordinal < priorExchange ||
-                    !sourceSides.Add((selection.Admission.Source.Coordinate,
-                        selection.Admission.Source.AffectedSide)))
+                    !sourceSides.Add(selection.Combat is { } combat
+                        ? ("combat_healing/" + combat.SourceId, "combat_healing")
+                        : (selection.Spiritual!.Admission.Source.Coordinate, selection.Spiritual.Admission.Source.AffectedSide)))
                     return false;
                 var before = insertion.OperationBefore;
                 var reduced = insertion.ReducedState;

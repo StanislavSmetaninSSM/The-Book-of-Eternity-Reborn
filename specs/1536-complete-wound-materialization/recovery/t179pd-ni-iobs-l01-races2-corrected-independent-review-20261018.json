@@ -1,0 +1,223 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_RACES2_EVIDENCE_REVIEW",
+  "reviewedUtc": "2026-10-18T12:21:05.683954+00:00",
+  "verdict": "ACCEPT_CORRECTED_RACES2_EVIDENCE_WITH_EXPLICIT_DATED_CENSUS_TIMING_LIMITS",
+  "findings": [],
+  "scope": "The two unchanged source-race methods in the separately named corrective races2 run. Read-only evidence review; no build, discovery, tests, observer execution, process intervention or repository writes.",
+  "carrier": "f0bfcda832db851a2768d6af13ce60695c24a9cd",
+  "actualSource": "1e2bdb75d51bd7ee549ed399d5a744b366beceff",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "label": "t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057",
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057/record.json",
+    "sha256": "59d772bb17a915158a1140ae4c41434ca179e5db463e93f369bb75f66295510a"
+  },
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-races2-corrected-813f1057-files-20261018/archive.json",
+    "sha256": "e6717c30e673e77d02b0d634e1b24a776d432b3d9ad6b2f4c36ab0713ec9a4a9",
+    "rawChains": 11,
+    "rawBytes": 14163554,
+    "completeOriginalCoverage": true,
+    "originalStoredIndependentRestoreBytesMatched": true
+  },
+  "independentCheck": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-races2-corrected-independent-check-f0bfcda8-20261018.json",
+    "bytes": 12417,
+    "sha256": "848edc80be9e0248e54209c77a0c11e585753ceda6d65fa9a73d3f300ae0f251"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_races2_corrected.py",
+    "bytes": 22732,
+    "sha256": "39e08c59983a7eed028eab2950ff3e50b008d47685d9d88b14f0017590fe73ac"
+  },
+  "bindings": {
+    "sourcePins": 98,
+    "digest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+    "productDelta": 21,
+    "allPinnedSourceHashesBytesGitBlobsModesMatched": true,
+    "testFixtureSupportCatalogSelectionBytesUnchangedFromOriginalRaces2Failure": true,
+    "exactCorrectivePlan": "1 descriptor / 2 methods / 2 cases",
+    "prepRecordSha256": "24d642d31bc8bcb8debb366ae353b3c6c51bb7588f2b03a4e401f451ff85bd8c",
+    "noBuild": true,
+    "freshBuildProvenance": "Accepted fresh ZERO4 at compiled e2d0a10f; this review confirms retained inventories, not a new build.",
+    "selectedManagedCopies": 9,
+    "completeOutputFiles": 1575,
+    "beforeAfterPrepAndCurrentPhysicalHashesExact": true,
+    "clientSha256": "eb0b35ec8993dc65d5d6f280663415e97d9067f275de693b17867309e9387d98",
+    "recoveredCarrierPaths": 19,
+    "recoveryScope": "Independently compared all19 changed paths and98 pins against the saved carrier and independent GitHub clone objects; the existing exact-remote receipt records the parent remote readback. No download/build rerun."
+  },
+  "native": {
+    "exit": 0,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallSeconds": 188.27205169899935,
+    "categorySeconds": 142.629409,
+    "categoryBudgetSeconds": 900,
+    "timeout": false,
+    "jsonDiagnosticParseErrors": 0,
+    "rawImageLengthAndShaChecks": 1914,
+    "embeddedImageShaChecks": 10,
+    "launch": {
+      "pid": 20448,
+      "startTick": 966261,
+      "argvMatchesController": true,
+      "immediateCmdlineEmpty": true
+    }
+  },
+  "semanticOracles": {
+    "ReadRace": {
+      "originalInterfaceSnapshotAbsent": true,
+      "actualReturnedReadAfterLeasedPreimage": true,
+      "readyDeleteAndReleaseReturned": true,
+      "freshConsumed": true,
+      "physicalInterfaceWhitespaceFaultRetained": true,
+      "interfaceMtimeUnchangedByReachedAssertion": true,
+      "noPreparedOrPublishedRecord": true,
+      "noFreshDataAndPreparationHeldByReachedAssertions": true,
+      "outerWrapperInvoked": true,
+      "outerWrapperDisposition": "MortalJointRepairPublicationHeldBlocked",
+      "physicalMutationCount": 1,
+      "heldAtTurn42": true,
+      "noCompletedCaptureOrCommonMarker": true,
+      "finalMechanicalForeachReached": true,
+      "mechanicalPaths": 15,
+      "mechanicalBytesEqualExpectedOriginalOrInjectedFault": true,
+      "directActualStageBackupRestoreReached": true,
+      "directRestoreHold": true,
+      "directBeforeAfterPaths": 220,
+      "directBeforeAfterBytesEqual": true,
+      "diagnosticSha256": "a1dc73a8e371a30df16af3eab80a96c3249ed6902bf54fa3696733870e261af2",
+      "diagnosticReason": "joint_interface_consumed_read_preimage_changed"
+    },
+    "ReadyDrift": {
+      "realPreparedThenPublished": true,
+      "exactPublishedPendingAndInterfaceRetained": true,
+      "onlyInterfaceOwnedTransitionPermitted": true,
+      "foreignExperienceWhitespaceRetained": true,
+      "readySourceOriginalNotReseededByReachedAssertion": true,
+      "attemptNotLiveOrDelegatedAndNoContinuationReservationStagesByReachedAssertions": true,
+      "capabilitiesExpiredByReachedAssertion": true,
+      "originalExceptionLoggedExactlyOnce": true,
+      "retainedIssueUnchangedFromOriginalFailure": true,
+      "inMemoryDisposition": "PublicationUncertain",
+      "outerWrapperInvoked": false,
+      "physicalMutationCount": 1,
+      "heldAtTurn42": true,
+      "noCompletedCaptureOrCommonMarker": true,
+      "finalMechanicalForeachReached": true,
+      "mechanicalPaths": 15,
+      "mechanicalBytesEqualExpectedOriginalOrInjectedFault": true,
+      "directActualStageBackupRestoreReached": true,
+      "directRestoreHold": true,
+      "directBeforeAfterPaths": 222,
+      "directBeforeAfterBytesEqual": true,
+      "diagnosticSha256": "4c7a1d805bbe7b7ebc624ea62fd360ca8f02f722092632af6f89dabab9f4d283",
+      "diagnosticReason": "joint_interface_ready_submitted_source_changed"
+    }
+  },
+  "semanticInterpretation": [
+    "Both cases use the genuine live accepted-turn path from source turn42 toward original43, energy2/health5, held before entry, without a precomposed common plan. Both finish held at42; neither establishes common completion.",
+    "ReadRace removes original I before Stage43, then changes the physical writer preimage by one ASCII space only after the actual public read has returned and Ready deletion/release have returned. The unchanged test proves no Prepared/Published record, no fresh DATA, preparation held, exact foreign I bytes and mtime, exact pending bytes, and the original preimage diagnostic. Direct restore and the actual outer validation wrapper retain all220 canonical files.",
+    "ReadyDrift first reaches real Prepared and Published I. The single physical experience.json whitespace change must remain foreign to the immutable Ready source; the I publication permission cannot excuse it. The unchanged test proves exact Published record/pending/I, original Ready source not reseeded, attempt closed with no delegated continuation/reservation/stages, expired capabilities, and no completed capture/common marker.",
+    "ReadyDrift now receives the original InvalidDataException in ILogger diagnostics exactly once with retained PublicationUncertain. Its existing retained issue and complete public issue-projection hash remain unchanged from the frozen failure. No issue/state normalization is inferred from the logging correction.",
+    "The source-race diagnostic row is emitted after the unchanged15-path mechanical foreach. Both rows are present and both TRX outcomes are Passed; ReadyDrift therefore newly reaches that loop and the downstream actual Stage backup direct restore oracle. All222 ReadyDrift canonical paths remain byte-identical across the rejected restore. Its optional outer wrapper is not invoked.",
+    "Full original raw hashes were checked, including the injected faults, retained records, mechanical before-images and canonical before/after snapshots. The accepted oracles are supported by source ordering, original raw evidence and passing unchanged assertions, not counters alone."
+  ],
+  "cleanupAndObservation": {
+    "nativeOwnedTreeAndRuntimeCleanupSucceeded": true,
+    "twoDistinctGuidRootsRemovedByReachedAssertionsAndRecordedCleanup": true,
+    "recordedNamespaceBeforeAfterEmpty": true,
+    "originalExeDependentProcessArraysAreIncomplete": true,
+    "observerVersion": 2,
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "savedCensuses": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2corrected-before-census-20261018.json",
+        "sha256": "3e8dcc87432cf1f3db61b00d3bae6f7440ca7bc831123ece0fcd81a2677a9c4c",
+        "startedUtc": "2026-10-18T12:03:26.925190+00:00",
+        "finishedUtc": "2026-10-18T12:03:26.940295+00:00",
+        "entries": 62,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 20413,
+            "expectedStartTick": 961484,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2corrected-after-census-20261018.json",
+        "sha256": "8e3b14b7379bcceac7dc1f8aed6646306f8283ad6848fada104e6616ba18119d",
+        "startedUtc": "2026-10-18T12:10:03.555978+00:00",
+        "finishedUtc": "2026-10-18T12:10:03.568330+00:00",
+        "entries": 62,
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 20852,
+            "expectedStartTick": 1001145,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      }
+    ],
+    "beforeSnapshotToLaunchSeconds": 47.661597,
+    "recordedFinishToAfterSnapshotSeconds": 160.682168,
+    "decision": "The after-census delay is a disclosed departure from the planned immediate capture, accepted as a finite dated observation limit. No contract supplies an arbitrary snapshot cutoff; strong own-tree/runtime cleanup, reached per-case cleanup, empty recorded namespaces and the later clean 62-entry authoritative census remain separate evidence. The delay alone is not a native failure or a concrete blocker to the then separately released settlement3.",
+    "attribution": "Parent reports no intervening actual or process/root intervention during the gap. This review does not independently establish continuous absence, instantaneous cleanup, or reconstruct that interval. Before-to-launch delay includes the controller source/Git and binary/output checks.",
+    "futureBoundaryMethod": "Parent states later after-census capture is chained in the same shell immediately after controller return; this review does not rerun or qualify that future snapshot.",
+    "currentGlobalCensusPerformed": false
+  },
+  "qualification": {
+    "retainedDistinctTargets": 42,
+    "newDistinctTargets": 2,
+    "totalAfterSavingAcceptance": 44,
+    "wholeTarget": 57,
+    "remainingTargetsNotQualifiedHere": 13,
+    "remainingSelection": "settlement3 + integrity4 + uncertain1 + separately named new crash5",
+    "provenance": "Retained42 keep original actual/compiled provenance. No cross-build equivalence or replay of retained42 is claimed.",
+    "settlementGate": "The disclosed races2 census delay alone supplied no concrete blocker to the separately released serial FIRST settlement3 on the accepted remaining-plan after its own explicit release and clean fresh preflight. Parent subsequently reports settlement3 native1; all further actuals are frozen. That new outcome is outside this races2 EVIDENCE review and does not invalidate its two-case evidence. No next mode is authorized."
+  },
+  "preserved": {
+    "originalRaces2Native1": "1PASS/1FAIL original record359cdd08bf17c7b19b8292e946a0be9d964ac0cc42a54e86bf18652fbb0c5dfb and archive12c6c0e7c9d09593a5ee809dadd2439b0136934fe4a7f87c5d3263a69ff0066e remain byte-identical. Original ReadRacePASS was not separately counted; these two corrective cases add two distinct targets once.",
+    "originalClose2RedAndSevenFixtureFailures": "Immutable historical failures, unchanged by this qualification.",
+    "lostOldCorrectedCrash5": "UNKNOWN; original bytes unavailable; no restoration or PASS/FAIL inferred.",
+    "newCrash5": "Separate unrun qualification under the unchanged accepted isolation plan; no claim of a previous crash outcome.",
+    "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited."
+  },
+  "reviewServiceHistory": "Parent reported a transient reviewer-capacity interruption and resumed the same requested reviewer/model task. No acceptance was inferred from the interruption and no native retry occurred. This final saved verdict is the EVIDENCE decision.",
+  "limits": [
+    "Finite local fixture evidence for exactly two methods, with distinct live source-race cuts.",
+    "No cold-child execution, common completion, later actual category or whole-runtime PASS is established here.",
+    "A clean snapshot establishes its dated boundary, not continuous absence; the 160.682168s gap remains visible.",
+    "Review artifacts under /tmp require the parent durable save/readback/recovery before the checkpoint count is advanced."
+  ]
+}

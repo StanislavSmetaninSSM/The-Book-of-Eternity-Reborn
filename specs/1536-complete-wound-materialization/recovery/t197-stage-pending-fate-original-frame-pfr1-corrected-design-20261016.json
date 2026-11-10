@@ -1,0 +1,1057 @@
+{
+  "report": "T197 Stage pending-fate original live-frame application contract — PF-R1 corrected",
+  "source_commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+  "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+  "observed_head_metadata_only": "ad5859121253d7972dca51ced6f77927e9e953b4",
+  "status": "PF_R1_CORRECTED_PROPOSED_CONDITIONAL_HOT_APPLICATION_CONTRACT_FOR_REVIEW",
+  "author": {
+    "configured_model": "Astra",
+    "configured_reasoning": "High",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "sections": {
+    "Ruling and chosen boundary": "The application contract can be specified now as a **conditional hot-retention subcontract**. It closes the intended behavior of the D01–D04 adapter at explicit RNG, clock, file-publication and original-parent interfaces. It does not prove those interfaces implemented/qualified, does not close H-B02, and does not authorize engineering release. This is a new proposal for independent review; acceptance of the prior PARTIAL inventory is not acceptance of this adapter.\n\nChoose a live, single-consumer PendingFateOriginalFrame inside the original surviving Client custodian, born before Attach invokes any service code. No new journal/schema/service is added for entropy. Preserve successful original draws and exact object/bytes in memory; first potential persisted representation remains the existing publication journal/member. Before that representation, custodian death loses unpersisted entropy: this adapter has NO recovery claim. It cannot infer a value from RNG state, a hash, an empty file, a timeout, another host or a new process. Cold/full keeper-loss protocol remains a blocker for full G-C/T197; this finite hot prerequisite need not pretend to solve it.\n\nThe same presentation-loss event remains the goal. Qualified original Client/custodian survival is mandatory. Stopping the native GM scope must not terminate the custody thread executing RNG or the original FS graph. A design with permanent held state would not satisfy the ordinary outcome; source continuation is a separately identified owner contract below, not assumed from retained data.",
+    "Alternatives and recommendation": "A. Recommended: per-slot hot frame, no new persistent format. The chosen contract preserves original entropy and makes seal races finite, with an explicit cold limit. B. Treat GenerateSecureRandomDice(20+4) as one armed black-box call: rejected for this slice because a seal after its first Fill would still initiate later unarmed draws; one composite enrollment is insufficient. C. Persist every returned slot before the next: not chosen. It adds a domain-sensitive new durable owner/schema, write/cold-recovery and secret-value handling contracts, still cannot reconstruct entropy from a Fill that never returned, and would broaden this task. It is an alternative for future full-cold requirements, not an implicitly accepted grant.",
+    "Live authority and construction": "The new frame is internal with a private constructor. Only a proposed PendingTurnStateService.BeginOriginalStageFate(StagePreparationFrame parent, TurnRequest originalRequest, OriginalPendingFateFamilyReservation family) factory, invoked by the shared Stage fate adapter before service effects, may create it. It receives references from the proposed born-owner host: original GameEngine/PendingTurnStateService/FS graph, exact CanonicalRootAuthorityIdentity object, original coordinator Access with nonmetadata actual OperationPin, actual outer+inner admission frame identities, original bound SessionOperationContext/G, parent source-gate/epoch, and the same existing request/action/session/turn identity. Factory comparisons are object identity and genuine owner validation, not strings or caller mode. A private frame ordinal is bookkeeping, not a domain action/request ID or new root pin. No metadata deserializer, UI browser flag, caller boolean, pending JSON or generation string issues this authority.\n\nEligibility is the conjunction of actual original source owner, a genuine pre-effect reservation for the trusted-local pending_dice_state.json family, current G and same root, single registered Stage fate child, and any actual browser-original binding obligations. Ordinary console and ordinary browser Stage can both reach this source family. A live BrowserOriginalOperationScope is an EXTRA obligation: retain its real issuing MainAdmission, Binding and Condition; validate the actual scope owner/current condition and preserve its lifetime through the original held/join protocol. It is neither MutationIntentRecorder nor a reason to reject the adapter by UI mode. Paid browser Reveal/Rewrite transactions are different source owners and remain excluded from this Stage-only adapter even if their physical writer is trusted local.\n\nThe factory cannot inspect a future canonical lease: the current Stage service uses a public no-lease read, draws, then acquires for write. A new parent-issued OriginalPendingFateFamilyReservation must therefore exist BEFORE any RNG. Its issuer must control the original operation's pending-path reservation and lease-family transitions, bind the exact live source operation/root/G/path and optional browser original scope, and prevent or detect recorder/legacy substitution while the frame is live. Current source contains no such complete producer contract. PF-P01/PF-P03/PF-P04 remain OPEN; the factory may not guess this witness from the route or from a future UsesTrustedLocalWriter call. Acquiring a new long-lived lease before RNG solely to classify the family is not silently substituted for current timing.\n\nOnce an actual lease is acquired, revalidate its owner/root/G, live main access, the still-current reservation, optional real browser scope/Condition, MutationIntentRecorder==null, !IsLegacyStorageRecovery and UsesTrustedLocalWriter(lease, PendingDiceStatePath). A real recorder or legacy lease is outside this adapter; a changed/refused family retains already-produced values and original debt and permits no native publication/redraw. No rejection or grant follows merely from browserAction presence/absence. This is a conditional applicability contract, not an implemented mode switch or an authorized fallback to the old helper. The parent keeps its original lane and pin; full browser hosting/held scope lifetime remains unresolved.",
+    "Actual integration and private interfaces": "Proposed production seams (not implemented):\n1. GameEngine.TurnLifecycle: Stage1596 is shared by ProcessPlayerTurn's console1495/1497 and ordinary browser1509/1510 branches. Do NOT unconditionally replace it with a console-only factory or dispatch from a UI flag. The proposed AttachPendingDiceAndGachaOriginalAsync(originalStageFrame, request, familyReservation) can be integrated there only when the actual original owner supplies the genuine PF-P01/PF-P04 family reservation before effects; otherwise this producer interface remains an engineering blocker, not a runtime mode choice. For actual ordinary browser participation, carry and validate the already-issued BrowserOriginalOperationScope from1565 and its real binding/Condition as additional original-parent obligations. Full browser held lifetime is not solved by this correction. At4534 the admitted adapter calls PendingTurnStateService.AdvanceOriginalStageFateAsync(frame); no fallback to GetOrCreate/Rewrite/Rotate. Stage checks Held immediately and returns its private held result before preview, snapshot registration or later code. ProcessPlayerTurn's actual console1497 and browser1510 callsites and their participating wrappers must preserve that typed result and original owner/scope lifetime; they must not classify it as Completed/null/cancellation. These changes depend on the prior parent-seal contract.\n2. PendingTurnStateService gains a dedicated companion partial file PendingTurnStateService.OriginalFrame.cs (the existing class declaration becomes partial). Keep ordinary public Reveal/Rewrite/Rotate APIs separate. New internal methods BeginOriginalStageFate, AdvanceOriginalStageFateAsync, AttachOriginalFateOnce and FreezeForOriginalHold operate only on the private live frame. They do not accept a caller-supplied desired dice array, JSON, operation key or delegate.\n3. GameLoop gains an internal single-slot primitive FillOriginalFateSlot(OriginalFateEntropySlot slot). The slot is issued only by that frame, owns exactly four scratch bytes, and exposes no user-provided RNG callback. The primitive retains the exact current modulo conversion. Existing public GenerateSecureRandomDice behavior for other owners remains separate and outside this proposal. A slot may be invoked once, with successful return recorded before its borrow releases.\n4. FileSystemManager gains a source-observation seam ReadOriginalFateInputAsync(frameReadBorrow), restricted to the one exact pending path. It follows the existing public read recovery/hook/follow-up sequence and returns the exact selected CanonicalFileReadSnapshot plus DecodeFileBytes text; absent is an explicit read result. Carry both snapshots internally if the existing public path reruns its final read, select exactly the original last result, and retain it before resolving the read task. Do not implement this as two independent reads or as the explicit-lease snapshot overload while silently changing the original acquisition timing.\n5. FileSystemManager gains PublishOriginalFatePreparedAsync(actualLease, frameWritePermit, exactChange), exposing the ORIGINAL attempt outcome before facade translation. Before publication it revalidates the actual lease family against the still-live parent-issued reservation and preserves any genuine browser-original scope/Condition; a later trusted-local check never retroactively authorizes earlier RNG. Its exact change has the retained read baseline and retained desired bytes. It uses actual PublishLocalFilesAsync and its owner checks, not a newly inferred trusted DTO or PublishOrdinaryFileWithOutcome that accepts a newer baseline. This additive exact-baseline guard is deliberate proposed refusal of racing writes, not an existing guarantee. Original single-attempt/retry/cleanup settlement and release observations must be supplied by PF-P03; without them the seam cannot claim recovered success.",
+    "Frame fields and closed diagnostic shape": "Private live fields: OriginalParent and Stage references; original FS/service/request references; actual coordinator Access/pin and admission handles; actual parent-issued OriginalPendingFateFamilyReservation, plus genuine BrowserOriginalOperationScope/Binding/Condition references when that original owner has them; currentG binding; root identity; parent epoch; phase; nextVisible in0..20 and nextHidden in0..4; visible[20], hidden[4], twenty-four nonreusable slot records; one read-result record with Exists/ExactBytes/DecodedText/selected parsed object; original freshness decision; exact fresh creation clock and write clock; computed gacha; actual PendingTurnState object; retained serialized desired bytes; native operation/attempt handle; original TrustedLocalPublicationOutcome; actual canonical acquisition task/lease/release task; callback and cleanup/debt handles; attached flag; held/fault details. Arrays/buffers are exclusively frame-owned until attachment. No public mutator/serialization authority and no concurrent Advance.\n\nSlot state is Unissued→Armed→ReturnedRetained OR Faulted; Armed never jumps to Unissued. ReturnedRetained stores the decoded value and actual raw buffer under the frame lock before source registration completes. On Fill failure, record Faulted and the actual exception; partially changed scratch is NOT a valid draw. There is no retry of that RNG slot under this contract, even if a provider may have consumed entropy before throwing.\n\nOptional diagnostic metadata has a CLOSED versioned shape: {kind:\"pending_fate_original_hot_v1\", rootOperationId, childOrdinal, generation, sourcePath:\"game_state/control/pending_dice_state.json\", phase, visibleReturned:0..20, hiddenReturned:0..4, readDisposition:Absent|Present|ReadFailed, desiredDigest:null|sha256, publicationDisposition:NotStarted|InFlight|Committed|RolledBack|Uncertain, held:boolean, faultCode:null|closedCode}. It contains no hidden draws, untrusted callbacks or importable handles, and grants no authority. Unknown fields/version/enum fail diagnostic decoding, not gameplay recovery. No diagnostic file write is authorized by this design; host metadata format/persistence is PF-P01/PF-P06.",
+    "Per-effect enrollment and lock order": "Use the original parent source mutex as the single linearization gate; frame state is guarded in the fixed order parent-gate→frame-state. No I/O, callback, RNG Fill, clock provider, logger, storage lock acquisition or await executes under either mutex. TryArm checks original parent epoch/Open, actual frame ownership and expected phase, then installs a finite registration before returning. Seal takes the same parent gate and sets Sealed; it neither cancels an armed Fill nor grants another slot. Completion may acquire the two mutexes to store the original result even after seal, then release the registration exactly once.\n\nEach Fill is separately enrolled. The current entire loop is NOT one permitted composite. If seal wins before slot arm, no call occurs; if arm wins, exactly that Fill may return and its arithmetic/retention complete. Next slot's TryArm must fail. A thread still inside Fill remains counted until real return/failure; timeout/cancellation/absence of output proves no return. No Task.Run fire-and-forget, thread abort, async-void callback or continuation detached from original parent.\n\nClock reads that create stored CreatedAtUtc/LastUpdatedUtc each have one retained slot; no second clock read while resuming the same prepared phase. Private constructor clocks discarded by later assignment and storage transaction GUIDs are technical allocations, separately accounted by their enclosing original task/attempt. They are not a grant to create domain entropy, another TurnRequest/session/action ID or another pool. The adapter calls no Guid.NewGuid for gameplay and never constructs a replacement GameLoop/TurnRequest.\n\nStorage acquisition is registered before its await. A seal while waiting prevents new write initiation; an actually acquired lease is released under the original release owner and recorded only after release completes. Merely completing a Task or an empty held-lease collection is insufficient. After native write arm, retain C through the original single-attempt decision/cleanup settlement as defined by PF-P03, then release all storage before main-stop metadata takes C. No child waits for parent/metadata while owning or waiting for storage. Native-only stop never requests canonical/lifecycle admission. O/I admission frames remain live owners during before-close joins, excluded only by exact frame identity from child counts. Final read-only disposal may not reopen reads, recovery or storage.",
+    "Fresh result and valid reuse rules": "Existing valid state: select exact final read bytes, parse once using existing SharedJsonOptions and exact IsValid predicate; retain that very returned PendingTurnState object and its visible/Gacha references. Keep lock fields/timestamps unchanged, including values established by earlier Reveal/Rewrite. No application write, no RNG and no rotation. Exact bytes remain an input witness; do not reserialize to replace them. Constructor defaults executed by normal deserialization can read technical clocks; existing supplied JSON fields still win. Preserve existing permissive validity and null-array exception behavior here: schema tightening is a different change.\n\nFresh state: an absent/invalid-data branch is selected once from that original read. Run the creation clock slot, visible slots0..19, hidden0..3, then the existing pure gacha calculation; construct exactly one state with IsFateLocked=false, original creation time, no FateLockedAtUtc; later capture one write clock and serialize once with existing options/UTF8-preamble encoding. Each phase can hold its already-derived objects without starting any later phase after seal. The only materialized member is pending_dice_state.json. Hidden[4] stays private; existing payload publishes BaseScore/BaseRarity/Formula with DiceUsed empty, not hidden rolls. No current-turn increment, reward, fee, domain ID, Rewrite or Reveal action is implied.\n\nIf another owner changes the input between read and native write, the exact-before guard must reject without overwriting, redrawing or adopting the new file as the original decision. Reuse also needs the parent same-action/path exclusion to avoid aliasing a concurrently mutable state. All legitimate pending-file writers and raw replacement/load paths must participate in that exclusion or be rejected by existing current-G/root/lease checks. This is PF-P04, not a claim that PendingTurnStateService currently has such a lock. Holding a new canonical lease across all24 Fill calls is not chosen: it would change the current read/draw/write lock behavior and worsen stop coupling.",
+    "Publication, debts and successful local outcome": "Retained exact desired bytes are data until a real live source write permit is issued. Source admission is not native admission: registering an acquisition, opening a lease or reaching a callback before the native effect does not authorize starting publication after seal. Split the original wrapper at explicit boundaries so directory preparation, before/after-mutation callbacks, native attempt and release each have genuine registrations. If seal occurs before the native attempt, do not enter PublishWithOutcome; settle only already-started preparation/I/O and release. A whole-wrapper registration is not a grant to issue later writes.\n\nIf native publication is already armed, the original publisher/lease/attempt performs only the bounded decision/cleanup for that exact change. Committed→retain actual result, then track journal/scratch/namespace cleanup and lease release separately. Committed+Failure is not wholly settled. RolledBack→retain that native decision and its original failure; any cleanup remains tracked; never re-run CreateFreshState. Uncertain→retain all evidence and block this local success. Do not start another native retry after seal. If normal open-source retry is required by existing transient policy, it must acquire a fresh native-attempt registration while reusing the same prepared bytes/baseline and recorded earlier attempt; no additional RNG/clock. At seal, retry timer joins/cancels as an owned timer without a new attempt. Exactly-once settlement applies to each actual native attempt, not a path-counter approximation.\n\nAfter Committed plus complete local storage/release join and while source still Open, AttachOriginalFateOnce assigns the original visible/Gacha references to the SAME request. It checks request identity/reference and frame not already attached; it does not invoke GetOrCreate. If seal wins just before attachment, assignment is deferred with the retained values; this is not permission to run preview/snapshot or later Stage. A successful local outcome is Ready(state, originalRead, originalPublication-or-Reuse, localJoinEvidence), not a main-stop/HC receipt. Attached once has no dice write and cannot retire the parent.",
+    "Held/fault propagation and continuation": "AdvanceOriginalStageFateAsync returns the private discriminated outcome Ready / HeldAtCut / Faulted. Held contains a reference to the original live frame, cut and actual debt state; it is not null and is not an Exception. Stage must branch immediately at1596 and leave through the separately proposed typed parent-held route BEFORE entering ordinary error cleanup or any next helper. Existing Stage1672 broad catch must never see a manufactured held exception; if an actual ordinary fault occurs, preserve it as Faulted and follow the existing real error policy only when it remains authorized by the parent. A simultaneous seal may retain that actual fault for later owner disposition, but cannot relabel it cancellation or success. Deserializer's broad catch remains a malformed-input policy; gate/control operations execute outside it and an actual read failure does not become missing input.\n\nA Held frame has two independent facts: application progress saved and owned running work/debt joined or not. It may be retained with no unfinished borrows; it cannot complete remaining slots merely to empty a task count. Original supervisor EOF latches uncertainty. Main exit still requires stopping + actual native empty + !exec_pending and the complete original-operation/debt conjunction; this slice supplies none of the missing whole-parent receipt.\n\nContinuation is NOT automatic unsealing. A proposed ResumeOriginalStageFate(frame, OriginalStageContinuationPermit) may advance ONLY the same retained object at its next unissued phase, original sameG/root/request/action/turn and remaining draw budget. The permit must be issued by the lawful existing source-continuation owner after the original stop/storage/metadata handoff, mutually exclusively with prior executor, using the live retained parent reference and validated exact baseline. It cannot be created from the diagnostic record or fresh coordinator, and cannot be exercised on the sealed old admission. PF-P05 must specify that issuer and actual new/retained admission lifetime within the parent protocol. This report defines the consumer refusal/remaining-budget contract, not an accepted issuer. Until PF-P05 is closed there is no demonstrated successful same-situation resumption; a forever-held frame is a blocker, not an acceptable gameplay resolution.",
+    "Recoverability limit and durability cuts": "Before the first successful Fill: hot frame can preserve the selected read/branch; a cold process still cannot prove the original operation and outstanding read/recovery stopped. After any successful Fill but before persisted after-image evidence: only live frame memory preserves that value. Keeper death destroys the value for this contract; never regenerate and call it the original draw. Fill fault has no valid returned value even if scratch changed; the finite failure result cannot resume by trying that slot again.\n\nAfter original journal intent staging, complete desired bytes may exist in the trusted local journal; they contain visible20 and derived gacha, not hidden raw4. Their existence is not a committed decision, power-loss durability qualification, source continuation permit or proof remote work stopped. After native Committed, existing pending file can be data for an ordinarily admitted future read, but that does not retroactively restore this lost original parent. Custodian surviving with retained native owner can use only its actual settlement interface; keeper loss/cold restart/reboot/container-host migration/distinct-root restore need their original lifecycle/lineage issuer, still OPEN. No backup-format or archive grant follows.\n\nThe conditional hot-only application safety proof is sound independently of solving cold entropy recovery: its precondition explicitly requires the original process, frames and native/IO owners to survive. Engineering and user-visible successful bridge-loss recovery remain blocked until those preconditions and continuation are actually qualified. This is an engineering dependency boundary, not a permanent refusal or a narrowed substitute for the requested eventual outcome.",
+    "Scope and grants": "No implementation, activation, F2, mode selection, new target write authority, new archive format, new lifecycle/security/service/endpoint/key grant follows. Prior author/reviewer artifacts remain immutable. The separately authored QTE-reminder owner is not duplicated or certified here. Full Stage/H-B02, whole writer inventory, browser fee/rewrite transactions, source/target DEP-C/I/L, global H2/H3, newQTE, keeper-loss/cold/native platform qualification, full F1 and D4/guided/visual/D8 remain open. Continued design in the already agreed autonomous direction does not require repeat user permission; actual code requires complete owner contracts, independent acceptance and bounded TDD/qualification gates."
+  },
+  "source_facts": [
+    {
+      "id": "F01",
+      "sources": "T:1484-1518;1561-1606;4534-4539;BO:49-95;198-225;L:92-109",
+      "fact": "Both ProcessPlayerTurn console1495/1497 and ordinary browser1509/1510 invoke the same Stage. Browser Stage1565 installs a genuine BrowserOriginalOperationScope and1594 uses its ActionId;1596 still calls the same NO-LEASE fate helper. That scope does not install MutationIntentRecorder. UsesTrustedLocalWriter rejects an actual nonnull recorder or legacy lease, not the UI browser route. Attach4534 assigns the returned visible array and GachaBaseResult to the existing request; direct fresh helper4528 is not this call. Stage does not invoke paid Reveal/Rewrite/Rotate here."
+    },
+    {
+      "id": "F02",
+      "sources": "D:29-49;140-191",
+      "fact": "GetOrCreate reads first, reuses iff nonnull/visible.Length==20/gacha nonnull/nonblank rarity, otherwise creates then writes. IsValid checks neither die range, rarity enum nor score. Explicit JSON-null visible array throws at Length outside deserialize catch. Whitespace reads returnnull; deserialize exceptions log and returnnull; native read failures occur before that catch."
+    },
+    {
+      "id": "F03",
+      "sources": "D:124-137;169-183;195-213;G:36-90",
+      "fact": "Fresh state reads now; generates visible20 then hidden4. Each synchronous loop allocates int[count], byte[4], calls RandomNumberGenerator.Fill per slot, decodes BitConverter.ToUInt32 and value%20+1. Successful fresh branch makes24 Fill calls. Gacha is pure first-four sum with80Legendary/76Epic/68Rare/49Uncommon thresholds; DiceUsed is empty. Pending model default clocks occur during construction then explicit fields overwrite them. Write reads LastUpdatedUtc anew before serialization."
+    },
+    {
+      "id": "F04",
+      "sources": "D:65-122;EXP:1162-1170;1217-1235;WEB:2020-2054;2096-2132",
+      "fact": "Reveal gets existing/create then locks only if unlocked; Rewrite always creates a new locked pool; Rotate always creates a next pool. Explorer fee deduction precedes Reveal/Rewrite. Browser uses explicit owned lease and soul+pending atomic owner, realm/feather/lock guards. These are separate actions, not Stage recovery APIs. Stage valid reuse must preserve their resulting IsFateLocked/FateLockedAtUtc/CreatedAtUtc/LastUpdatedUtc, array and gacha."
+    },
+    {
+      "id": "F05",
+      "sources": "FS:1319-1352;READ:45-139;FS:1529-1545",
+      "fact": "The original public text read runs publication recovery, reads an actual byte snapshot then decodes, invokes after-read hook, and may acquire quiescence and reread. It does not expose exact final bytes to PendingTurnStateService. A second read or reserialization cannot certify the bytes that produced its returned object. Additive observation is needed at the same final snapshot selection, preserving BOM-aware decoding and read/recovery behavior."
+    },
+    {
+      "id": "F06",
+      "sources": "FS:840-883;L:317-332;169-268",
+      "fact": "Ordinary string publication reaches owned canonical lease, UTF8-preamble bytes and trusted local publisher. PublishOrdinaryFileWithOutcomeAsync rereads current before bytes; it does not bind the earlier pending-state read. PublishLocalFilesAsync accepts exact before/after changes and current-generation checks. Wrapper EnsureDirectory precedes mutation registration; hooks, native retry, cleanup and lease release are real work."
+    },
+    {
+      "id": "F07",
+      "sources": "PUB:15-25;245-326;REL:103-122",
+      "fact": "Outcome separates Committed/RolledBack/Uncertain. Journal prepared data and technical transaction GUID precede intent staging; committed decision is retained before cleanup. Facade may return Committed with cleanup Failure. ReleaseOwnedLease can attach/suppress a secondary failure depending on existing failure/completed; facade success/exception alone cannot prove cleanup/release quiescence."
+    },
+    {
+      "id": "F08",
+      "sources": "T:1668-1736;CTX:93-155;MAIN:19-90;COORD:96-154;PINS:44-50",
+      "fact": "Current Stage catches most exceptions and deletes/restores/cleans preparation; uncertainty and SessionReplaced are special. SessionOperationContext actually nests outer+inner main admissions. Access has real Owner/Pin/MetadataOnly, not a DTO grant. Lost keeps original pin counted and uncertainty. No existing dice-specific retained frame, held return or Lost recovery issuer exists."
+    }
+  ],
+  "states": [
+    {
+      "state": "Created",
+      "retained": "Factory accepted actual original parent plus genuine pre-effect pending-family reservation; any real browser original scope retained; no effects",
+      "advance": "Arm selected read only while Open",
+      "seal_or_failure": "No route-based classification. Missing real family producer blocks adapter before RNG; stale actual owner/G/root/duplicate frame refuses"
+    },
+    {
+      "state": "ReadArmed",
+      "retained": "Actual read/recovery/I/O/hook/acquisition registrations",
+      "advance": "Retain final selected snapshot/text or actual error before join",
+      "seal_or_failure": "Seal forbids unissued read retries/follow-up work unless separately authorized existing read-debt settlement; PF-P03"
+    },
+    {
+      "state": "ReadSelected",
+      "retained": "Exact Exists/bytes/text and parsed object once",
+      "advance": "Valid→ReuseReady; invalid→FreshClockPending; malformed parse policy unchanged",
+      "seal_or_failure": "Seal holds before branch side effects; never re-read/reclassify"
+    },
+    {
+      "state": "ReuseReady",
+      "retained": "Original parsed state, arrays/gacha and lock fields",
+      "advance": "Attach once if source Open and parent path reservation valid",
+      "seal_or_failure": "No RNG/write; Held retains exact object/bytes"
+    },
+    {
+      "state": "FreshClockPending",
+      "retained": "Original branch already chosen",
+      "advance": "Arm one CreatedAt clock, retain result",
+      "seal_or_failure": "Losing seal gate reads no clock"
+    },
+    {
+      "state": "Visible(i)",
+      "retained": "0≤i≤20 successful visible slots",
+      "advance": "Arm only slot i<20, retain returned result, increment i once",
+      "seal_or_failure": "On seal retain prefix; do not invoke i+1"
+    },
+    {
+      "state": "Hidden(j)",
+      "retained": "Visible20;0≤j≤4 successful hidden slots",
+      "advance": "Arm only hidden j<4, retain result, increment j once",
+      "seal_or_failure": "No second visible pool; sealed hidden suffix remains undrawn"
+    },
+    {
+      "state": "Derived",
+      "retained": "All24 returned; compute gacha once and original state construction",
+      "advance": "Pure calculation/allocation under pre-enrolled task; phase record before completion",
+      "seal_or_failure": "Do not initiate later clock/write; hidden values remain private"
+    },
+    {
+      "state": "WriteClockPending",
+      "retained": "Original state exists",
+      "advance": "Arm LastUpdatedUtc once; serialize and encode original desired bytes once",
+      "seal_or_failure": "No fresh timestamp on settlement/resumption"
+    },
+    {
+      "state": "BytesFrozen",
+      "retained": "Original desired bytes and exact source baseline",
+      "advance": "Arm canonical acquisition while Open",
+      "seal_or_failure": "Seal before acquisition leaves zero write authority"
+    },
+    {
+      "state": "AcquisitionPending",
+      "retained": "Actual task registered before await",
+      "advance": "Observe actual acquired lease/error; revalidate G/root/main/reservation, any actual browser Condition, recorder==null, !legacy and trusted-local exact path; preserve exact baseline",
+      "seal_or_failure": "Seal or family mismatch releases/settles actual lease without native publication or redraw; later lease proof cannot retroactively authorize RNG"
+    },
+    {
+      "state": "NativePrepared",
+      "retained": "Canonical lease and exact finite change; any prefix effects tracked",
+      "advance": "Each remaining wrapper/callback/native attempt needs its own source gate or exact prior-debt permit",
+      "seal_or_failure": "No whole-wrapper permit to begin postseal native work"
+    },
+    {
+      "state": "NativeArmed",
+      "retained": "One actual native publisher attempt entered under original permit",
+      "advance": "Observe original Committed/RolledBack/Uncertain; settle only that attempt",
+      "seal_or_failure": "Seal permits original bounded decision+cleanup only; no new retry"
+    },
+    {
+      "state": "DecisionCaptured",
+      "retained": "Actual outcome retained before facade translate",
+      "advance": "Join cleanup/native callbacks and exact release task",
+      "seal_or_failure": "Uncertain/cleanup failure prevents local settled success"
+    },
+    {
+      "state": "Ready",
+      "retained": "Reuse or committed desired state; local debts joined",
+      "advance": "AttachOriginalFateOnce to same request under source gate",
+      "seal_or_failure": "Seal→Held; no later Stage helper permitted"
+    },
+    {
+      "state": "Attached",
+      "retained": "Same original references assigned once",
+      "advance": "Return local Ready to original caller",
+      "seal_or_failure": "No parent pin/main/HC retirement proof"
+    },
+    {
+      "state": "HeldAtCut",
+      "retained": "Progress plus every actual outstanding registration/debt preserved",
+      "advance": "Only joins/settlement; unissued semantic work waits lawful continuation issuer",
+      "seal_or_failure": "No automatic unseal/replay/newG; PF-P05 remains open"
+    },
+    {
+      "state": "Faulted",
+      "retained": "Actual read/parser-validity/RNG/write/release failure retained",
+      "advance": "Existing failure disposition only through original parent policy",
+      "seal_or_failure": "Failed RNG slot not retried; not Cancelled/EOF/Completed"
+    }
+  ],
+  "prerequisites": [
+    {
+      "id": "PF-P01",
+      "owner": "Original host and parent issuer",
+      "contract": "Actual born original graph/coordinator pin/O+I/G/root; source gate and task registration before prefix; genuine pre-RNG pending-family/reservation producer; ordinary browser retains its real scope/Binding/Condition/issuing owner.",
+      "remaining": "Producer and browser-scope held lifetime are OPEN. Shared Stage/caller flag/AsyncLocal presence is not eligibility proof; existing source does not certify a future lease family.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P02",
+      "owner": "Same final FS read observation",
+      "contract": "ReadOriginalFateInputAsync retains the final existing read snapshot/text, recovery/hook/reread semantics, absence/error distinctions, before returning to parser.",
+      "remaining": "Additive source specialization; no new gameplay authority. Exact implementation and read-debt behavior unqualified.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P03",
+      "owner": "Original storage/native/IO settlement",
+      "contract": "Actual acquired lease revalidates original family/reservation/browser obligations before native effect; pre-effect directory/callback/native registration, pending acquisition, exact outcome capture and cleanup/release joins.",
+      "remaining": "Lower native/full writer contracts remain OPEN. Read operations can recover; a registered composite call alone does not authorize later effects.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P04",
+      "owner": "Pending fate writer exclusion / baseline",
+      "contract": "Actual original owner reserves pending path and controls future lease-family transitions before RNG; real Reveal/Rewrite/Rotate/Clear, paid browser, restore/load/raw writers are excluded or cause exact-baseline rejection.",
+      "remaining": "No existing complete reservation/family issuer. Need owned specialization and full writer proof; real recorder/legacy families differ from ordinary browser Stage. UI route cannot grant or refuse.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P05",
+      "owner": "Lawful same-action continuation issuer",
+      "contract": "Live original frame can resume only remaining unissued cuts under proper sameG/root source continuation admission, exactly one executor, no sealed-old-pin reuse.",
+      "remaining": "Consumer conditions specified; issuer/admission protocol still OPEN. This is the material liveness gap, not permission for permanent HOLD.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P06",
+      "owner": "Cold/keeper loss and durable lineage",
+      "contract": "Original work stopped + exact root/G/operation/debts and retained source lineage after keeper death/reboot/migration/restore.",
+      "remaining": "Not solved by this hot-only adapter or stored dice bytes. Full G-C/T197 remains blocked.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P07",
+      "owner": "Transitive Stage/caller held integration",
+      "contract": "Actual Stage/participating wrapper catches/finally and upstream MainMenu/Explorer effects preserve typed held and real error results; local receipt cannot certify whole operation.",
+      "remaining": "Full H-B02 remains OPEN; health/reminder/snapshot/cleanup and other helpers need their own exact adapters.",
+      "status": "OPEN_UNQUALIFIED"
+    }
+  ],
+  "races": [
+    {
+      "id": "R01",
+      "cut": "Seal before frame creation/read",
+      "required_outcome": "No effects until actual parent and genuine pre-RNG family reservation validated. UI console/browser label is neither grant nor refusal. Seal before arm executes no draw/read/new root pin."
+    },
+    {
+      "id": "R02",
+      "cut": "Seal during original read or after-read hook",
+      "required_outcome": "Retain actual I/O/hook task. No malformed/absent substitution; remaining follow-up acquisition/recovery requires its own existing-debt authorization, not a blanket read permit."
+    },
+    {
+      "id": "R03",
+      "cut": "Valid locked pool, including previous Reveal/Rewrite",
+      "required_outcome": "Reuse exact read object/bytes/lock timestamps; no Reveal, Rewrite, clock refresh, write or RNG."
+    },
+    {
+      "id": "R04",
+      "cut": "Two concurrent Advance calls on same frame",
+      "required_outcome": "Second rejected before effects by single consumer/phase guard; no duplicate slots or publication."
+    },
+    {
+      "id": "R05",
+      "cut": "Seal races Fill arm",
+      "required_outcome": "Gate establishes winner. Armed Fill can return; unarmed Fill cannot start. Seal holds no mutex over RNG."
+    },
+    {
+      "id": "R06",
+      "cut": "Fill returns while seal already set",
+      "required_outcome": "Retain returned raw buffer/value and mark ReturnedRetained before releasing registration; next slot stays Unissued."
+    },
+    {
+      "id": "R07",
+      "cut": "Fill throws with partially altered buffer",
+      "required_outcome": "Record actual fault; no valid draw, no retry or use of partial bytes, no invented entropy recovery."
+    },
+    {
+      "id": "R08",
+      "cut": "Thread/process dies after Fill return before retention",
+      "required_outcome": "If original thread cannot complete retention, no successful join claim; keeper death beyond hot contract. Raw native success not independently reconstructed."
+    },
+    {
+      "id": "R09",
+      "cut": "Seal after visible20 before hidden0 or mid-hidden",
+      "required_outcome": "Retain exact prefixes; no new hidden draw or recomputed pool during settlement."
+    },
+    {
+      "id": "R10",
+      "cut": "Seal after desired bytes before native arm",
+      "required_outcome": "Retain bytes/time/branch; release any already-acquired C; no write just to make entropy durable."
+    },
+    {
+      "id": "R11",
+      "cut": "Concurrent Reveal/Rewrite/restore changes input",
+      "required_outcome": "Exact baseline guard rejects before replacing value; no adopt-new-baseline/redraw. Separate owner fee/lock actions remain their own obligations."
+    },
+    {
+      "id": "R12",
+      "cut": "Seal during directory preparation/mutation hook",
+      "required_outcome": "Join only actual started work; do not enter later native attempt based on wrapper registration. Prefix cleanup needs original native owner; no fabricated no-op."
+    },
+    {
+      "id": "R13",
+      "cut": "Seal during native attempt; transient rollback retry eligible",
+      "required_outcome": "Finish original bounded attempt; suppress unissued retry after seal, retain failure/bytes; no new entropy. Existing unconditional retry wrapper needs adapter."
+    },
+    {
+      "id": "R14",
+      "cut": "Native committed then cleanup/release/provider failure",
+      "required_outcome": "Keep Committed and secondary debt separately; no second write or Stage rollback generated by held. No local settled receipt until real joins."
+    },
+    {
+      "id": "R15",
+      "cut": "Seal races attach",
+      "required_outcome": "Single source-gate winner; attach once or retain Held without assigning then starting preview. No parent retirement by child."
+    },
+    {
+      "id": "R16",
+      "cut": "Resume request with serialized metadata/crossG/newroot",
+      "required_outcome": "Refuse; metadata/hash/bytes identify data, never original frame authority."
+    },
+    {
+      "id": "R17",
+      "cut": "Source continuation after hot hold",
+      "required_outcome": "Requires PF-P05 actual permit and retained next cut; no GenerateSecureRandomDice restart, no redo of ready/committed work."
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "PF-T01",
+      "check": "Seal before frame creation/read — Factory/arm refuses; no draw, state read or new parent pin.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T02",
+      "check": "Seal during original read or after-read hook — Retain actual I/O/hook task. No malformed/absent substitution; remaining follow-up acquisition/recovery requires its own existing-debt authorization, not a blanket read permit.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T03",
+      "check": "Valid locked pool, including previous Reveal/Rewrite — Reuse exact read object/bytes/lock timestamps; no Reveal, Rewrite, clock refresh, write or RNG.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T04",
+      "check": "Two concurrent Advance calls on same frame — Second rejected before effects by single consumer/phase guard; no duplicate slots or publication.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T05",
+      "check": "Seal races Fill arm — Gate establishes winner. Armed Fill can return; unarmed Fill cannot start. Seal holds no mutex over RNG.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T06",
+      "check": "Fill returns while seal already set — Retain returned raw buffer/value and mark ReturnedRetained before releasing registration; next slot stays Unissued.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T07",
+      "check": "Fill throws with partially altered buffer — Record actual fault; no valid draw, no retry or use of partial bytes, no invented entropy recovery.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T08",
+      "check": "Thread/process dies after Fill return before retention — If original thread cannot complete retention, no successful join claim; keeper death beyond hot contract. Raw native success not independently reconstructed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T09",
+      "check": "Seal after visible20 before hidden0 or mid-hidden — Retain exact prefixes; no new hidden draw or recomputed pool during settlement.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T10",
+      "check": "Seal after desired bytes before native arm — Retain bytes/time/branch; release any already-acquired C; no write just to make entropy durable.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T11",
+      "check": "Concurrent Reveal/Rewrite/restore changes input — Exact baseline guard rejects before replacing value; no adopt-new-baseline/redraw. Separate owner fee/lock actions remain their own obligations.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T12",
+      "check": "Seal during directory preparation/mutation hook — Join only actual started work; do not enter later native attempt based on wrapper registration. Prefix cleanup needs original native owner; no fabricated no-op.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T13",
+      "check": "Seal during native attempt; transient rollback retry eligible — Finish original bounded attempt; suppress unissued retry after seal, retain failure/bytes; no new entropy. Existing unconditional retry wrapper needs adapter.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T14",
+      "check": "Native committed then cleanup/release/provider failure — Keep Committed and secondary debt separately; no second write or Stage rollback generated by held. No local settled receipt until real joins.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T15",
+      "check": "Seal races attach — Single source-gate winner; attach once or retain Held without assigning then starting preview. No parent retirement by child.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T16",
+      "check": "Resume request with serialized metadata/crossG/newroot — Refuse; metadata/hash/bytes identify data, never original frame authority.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T17",
+      "check": "Source continuation after hot hold — Requires PF-P05 actual permit and retained next cut; no GenerateSecureRandomDice restart, no redo of ready/committed work.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T18",
+      "check": "Real owner/lease/publication and callback matrices on each supported platform after source contracts accepted; all source and lower debts observed, no timeout receipt.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T19",
+      "check": "Exact JSON compatibility: missing/whitespace/malformed/nonobject/null array, unusual but currently valid dice/rarity, duplicate properties per existing parser; do not silently tighten schema.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T20",
+      "check": "No extra turn/session/request/domain ID/reward/fee, no Rotate/Rewrite/Reveal invocation; only original24 successful fresh Fill slots and same gacha thresholds/empty DiceUsed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T21",
+      "check": "Outer+inner admissions live through real joins, pending acquisition counted, no C/metadata cycle, final disposal read-only; ordinary wait fault can remain non-Completed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T22",
+      "check": "Verify original input BOM/encoding bytes retained from same final read, no second read reconstruction; fresh desired bytes match existing serializer and UTF8-preamble semantics.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T23",
+      "check": "Eligibility matrix: actual ordinary console owner and ordinary browser Stage with genuine retained scope/binding/Condition both require pre-RNG original family reservation and actual-lease revalidation; actual recorder/legacy families and separately admitted paid browser Reveal/Rewrite transactions do not enter Stage adapter. Missing producer/stale scope/future family drift cause no new native write/redraw, never UI-mode inference.",
+      "status": "FUTURE_UNRUN"
+    }
+  ],
+  "source_pins": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
+      "bytes": 6769,
+      "lines": 214,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "unchanged": true
+    },
+    {
+      "alias": "G",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "bytes": 2673,
+      "lines": 91,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "unchanged": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "unchanged": true
+    },
+    {
+      "alias": "REQ",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "bytes": 10128,
+      "lines": 278,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "unchanged": true
+    },
+    {
+      "alias": "JSON",
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "bytes": 607,
+      "lines": 17,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "unchanged": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "lines": 6246,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "unchanged": true
+    },
+    {
+      "alias": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "bytes": 13822,
+      "lines": 297,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "unchanged": true
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "unchanged": true
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "unchanged": true
+    },
+    {
+      "alias": "REL",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "unchanged": true
+    },
+    {
+      "alias": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "unchanged": true
+    },
+    {
+      "alias": "MAIN",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "unchanged": true
+    },
+    {
+      "alias": "COORD",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "unchanged": true
+    },
+    {
+      "alias": "PINS",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "unchanged": true
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "sha256": "dae8ca299532f3b5db0277e7017be2dfc3ab38c4182c8665e4a25a5654648257",
+      "bytes": 155530,
+      "lines": 2837,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "unchanged": true
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "sha256": "f3ed3ac34ec28d201c1da63b1316496734d23e3b6d9befd075b1dbe771d9fb1f",
+      "bytes": 241907,
+      "lines": 4373,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "unchanged": true
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "bytes": 29382,
+      "lines": 483,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "unchanged": true,
+      "supplement": "PF-R1 actual browser-original scope"
+    }
+  ],
+  "source_projections": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "start": 29,
+      "end": 214,
+      "bytes": 5808,
+      "sha256": "bcfc3892f81d8d105bf4b39a25fe38b71b2d990133f69c23f761af8b15272930",
+      "text": "    public async Task<PendingTurnState> GetOrCreateAsync()\n    {\n        var existing = await ReadAsync();\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(created);\n        return created;\n    }\n\n    internal async Task<PendingTurnState> GetOrCreateAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var existing = await ReadAsync(writeLease);\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(writeLease, created);\n        return created;\n    }\n\n    public async Task<PendingTurnState?> TryReadExistingAsync()\n    {\n        var existing = await ReadAsync();\n        return IsValid(existing) ? existing : null;\n    }\n\n    internal async Task<PendingTurnState?> TryReadExistingAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var existing = await ReadAsync(writeLease);\n        return IsValid(existing) ? existing : null;\n    }\n\n    public async Task<PendingTurnState> RevealAsync()\n    {\n        var state = await GetOrCreateAsync();\n        if (!state.IsFateLocked)\n        {\n            state.IsFateLocked = true;\n            state.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n            state.LastUpdatedUtc = state.FateLockedAtUtc;\n            await WriteAsync(state);\n        }\n\n        return state;\n    }\n\n    internal async Task<PendingTurnState> RevealAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var state = await GetOrCreateAsync(writeLease);\n        if (!state.IsFateLocked)\n        {\n            state.IsFateLocked = true;\n            state.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n            state.LastUpdatedUtc = state.FateLockedAtUtc;\n            await WriteAsync(writeLease, state);\n        }\n\n        return state;\n    }\n\n    public async Task<PendingTurnState> RewriteAsync()\n    {\n        var rewritten = CreateFreshState();\n        rewritten.IsFateLocked = true;\n        rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n        rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;\n        await WriteAsync(rewritten);\n        return rewritten;\n    }\n\n    internal async Task<PendingTurnState> RewriteAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var rewritten = CreateFreshState();\n        rewritten.IsFateLocked = true;\n        rewritten.FateLockedAtUtc = DateTime.UtcNow.ToString(\"o\");\n        rewritten.LastUpdatedUtc = rewritten.FateLockedAtUtc;\n        await WriteAsync(writeLease, rewritten);\n        return rewritten;\n    }\n\n    public async Task<PendingTurnState> RotateAfterAcceptedTurnAsync()\n    {\n        var next = CreateFreshState();\n        await WriteAsync(next);\n        return next;\n    }\n\n    public void Clear() => _fs.DeleteFile(PendingDiceStatePath);\n\n    private PendingTurnState CreateFreshState()\n    {\n        var now = DateTime.UtcNow.ToString(\"o\");\n        var visibleDice = GameLoop.GenerateSecureRandomDice();\n        var hiddenGachaDice = GameLoop.GenerateSecureRandomDice(4);\n\n        return new PendingTurnState\n        {\n            PreGeneratedDices1d20 = visibleDice,\n            GachaBaseResult = GameLoop.ComputeGachaBase(hiddenGachaDice),\n            IsFateLocked = false,\n            CreatedAtUtc = now,\n            LastUpdatedUtc = now\n        };\n    }\n\n    private async Task<PendingTurnState?> ReadAsync()\n    {\n        var json = await _fs.ReadFileAsync(PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private async Task<PendingTurnState?> ReadAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var json = await _fs.ReadFileAsync(writeLease, PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private PendingTurnState? Deserialize(string? json)\n    {\n        if (string.IsNullOrWhiteSpace(json))\n            return null;\n\n        try\n        {\n            return JsonSerializer.Deserialize<PendingTurnState>(json, JsonOpts);\n        }\n        catch (Exception ex)\n        {\n            _logger.LogDebug(ex, \"Не удалось прочитать pending dice state\");\n            return null;\n        }\n    }\n\n    private async Task WriteAsync(PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(PendingDiceStatePath, JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private async Task WriteAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(\n            writeLease,\n            PendingDiceStatePath,\n            JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private static bool IsValid(PendingTurnState? state)\n    {\n        return state != null &&\n               state.PreGeneratedDices1d20.Length == 20 &&\n               state.GachaBaseResult != null &&\n               !string.IsNullOrWhiteSpace(state.GachaBaseResult.BaseRarity);\n    }\n}\n\npublic sealed class PendingTurnState\n{\n    [JsonPropertyName(\"preGeneratedDices1d20\")]\n    public int[] PreGeneratedDices1d20 { get; set; } = Array.Empty<int>();\n\n    [JsonPropertyName(\"gachaBaseResult\")]\n    public GachaResult? GachaBaseResult { get; set; }\n\n    [JsonPropertyName(\"isFateLocked\")]\n    public bool IsFateLocked { get; set; }\n\n    [JsonPropertyName(\"createdAtUtc\")]\n    public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString(\"o\");\n\n    [JsonPropertyName(\"fateLockedAtUtc\")]\n    public string? FateLockedAtUtc { get; set; }\n\n    [JsonPropertyName(\"lastUpdatedUtc\")]\n    public string LastUpdatedUtc { get; set; } = DateTime.UtcNow.ToString(\"o\");\n}\n"
+    },
+    {
+      "alias": "G",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "start": 18,
+      "end": 90,
+      "bytes": 2209,
+      "sha256": "4a6071e348a8cd3d2ce1fef9bed44ff5f0c49b582b9a84d4a67435c62188852b",
+      "text": "    public GameLoop()\n    {\n        _sessionId = Guid.NewGuid().ToString();\n        _turnNumber = 0;\n    }\n\n    public void SetSession(string sessionId, int turnNumber)\n    {\n        _sessionId = sessionId;\n        _turnNumber = turnNumber;\n    }\n\n    public void IncrementTurn() => _turnNumber++;\n\n    /// <summary>\n    /// Generate cryptographically secure random d20 dice rolls.\n    /// Prevents LLM bias in dice outcomes.\n    /// </summary>\n    public static int[] GenerateSecureRandomDice(int count = 20)\n    {\n        if (count <= 0)\n            return Array.Empty<int>();\n\n        var dice = new int[count];\n        var bytes = new byte[4];\n\n        for (int i = 0; i < count; i++)\n        {\n            RandomNumberGenerator.Fill(bytes);\n            var value = BitConverter.ToUInt32(bytes, 0);\n            dice[i] = (int)(value % 20) + 1;\n        }\n\n        return dice;\n    }\n\n    /// <summary>\n    /// Compute the client-side gacha base result from a separate hidden 4d20 roll.\n    /// This result is intentionally kept separate from the GM-facing dice pool.\n    /// Rarity thresholds: 4–48 Common, 49–67 Uncommon, 68–75 Rare, 76–79 Epic, 80 Legendary.\n    /// The GM may only add modifiers on top (guardian reputation, mode bonuses), never reduce.\n    /// </summary>\n    public static GachaResult ComputeGachaBase(int[] dice)\n    {\n        if (dice.Length < 4)\n            return new GachaResult\n            {\n                DiceUsed = Array.Empty<int>(),\n                BaseScore = 0,\n                BaseRarity = \"Common\",\n                Formula = \"client-computed gacha base (insufficient internal rolls)\"\n            };\n\n        var used = new[] { dice[0], dice[1], dice[2], dice[3] };\n        int score = used[0] + used[1] + used[2] + used[3];\n\n        string rarity = score switch\n        {\n            80 => \"Legendary\",\n            >= 76 => \"Epic\",\n            >= 68 => \"Rare\",\n            >= 49 => \"Uncommon\",\n            _ => \"Common\"\n        };\n\n        return new GachaResult\n        {\n            DiceUsed = Array.Empty<int>(),\n            BaseScore = score,\n            BaseRarity = rarity,\n            Formula = \"client-computed gacha base (range 4-80)\"\n        };\n    }\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1484,
+      "end": 1504,
+      "bytes": 1020,
+      "sha256": "bc750947e5f3997d795a6ad95af35d0dea37832b7fb2c27d49e48c8a63810949",
+      "text": "    private async Task ProcessPlayerTurn(\n        string action,\n        string? extraSystemReminder = null,\n        string? waitingTitle = null,\n        string? waitingText = null,\n        bool playerFacingTurn = true,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        if (browserAction == null)\n        {\n            // Console ordinary turns retain their original continuous owner.\n            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n            {\n                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);\n                if (preparation == null) return;\n                PublishAgentConsoleGmWaitingSnapshot(\n                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n                var outcome = await WaitForTerminalSignalAsync();\n                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);\n            });\n            return;\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1561,
+      "end": 1606,
+      "bytes": 2806,
+      "sha256": "8e3243374e6ec2de0c4c52a6d38b0fab9e5041f5dbd0aa80a539ef064871e4d5",
+      "text": "    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(\n        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)\n    {\n        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();\n        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);\n        // Reserve/refuse before health validation can remove an unrelated request.\n        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);\n        if (!await ValidateCurrentGameStateOrShowErrorsAsync(\"перед отправкой хода\"))\n            return null;\n\n        var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();\n        RollbackSnapshot? backedUpFiles = null;\n        TurnRequest? request = null;\n        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;\n        PendingPlayerActionService.Staged? browserStaged = null;\n\n        try\n        {\n            // Create backup of game state files before sending turn (for escape-rollback)\n            var backupId = DateTime.UtcNow.Ticks.ToString();\n            backedUpFiles = await CreatePreTurnBackup(backupId);\n            OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);\n\n            // Write turn request\n            request = new TurnRequest\n            {\n                SessionId = _gameLoop.SessionId,\n                TurnNumber = _gameLoop.TurnNumber + 1,\n                PlayerAction = action,\n                Timestamp = DateTime.UtcNow.ToString(\"o\"),\n                GameMode = _stateManager.Settings.AllowHistoryManipulation ? \"debug\" : \"normal\",\n                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)\n            };\n            if (browserAction != null) request.RequestId = browserAction.ActionId;\n            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n            await AttachPendingDiceAndGachaAsync(request);\n            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)\n                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);\n            RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);\n            var skillScopeAuthority = await EffectMechanicsSnapshot\n                .LoadCurrentSkillScopeAuthorityAsync(_fs);\n            request.EffectSkillScopeCatalog = skillScopeAuthority\n                .CreateGmCatalog()\n                .DeepClone()\n                .AsObject();\n            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1668,
+      "end": 1742,
+      "bytes": 3317,
+      "sha256": "ee89461606e830e09c1c63838f32fe9c288b1cd8aab0e4c46665a59dc846c4f1",
+      "text": "        catch (SessionReplacedException)\n        {\n            throw;\n        }\n        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n        {\n            if (browserAction != null)\n            {\n                // Staging never establishes a successful rollback disposition.\n                // Preserve the original slot, backup and any competing request;\n                // cold preparing/staged classification blocks replay before repair.\n                _inGame = false;\n                _logger.LogError(ex, \"Browser turn staging stopped; original recovery evidence is retained.\");\n                throw;\n            }\n            _logger.LogDebug(ex, \"Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.\");\n            try\n            {\n                _fs.AllowBrowserOriginalCleanup();\n            _fs.DeleteFile(\"input/turn_request.json\");\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception cleanupEx)\n            {\n                _logger.LogDebug(cleanupEx, \"Не удалось удалить частичный turn_request.json после ошибки постановки хода.\");\n            }\n\n            try\n            {\n                if (backedUpFiles != null)\n                {\n                    await RestorePreTurnBackup(backedUpFiles);\n                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);\n                    CleanupBackup(backedUpFiles);\n                }\n                else\n                {\n                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);\n                }\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception rollbackEx)\n            {\n                _logger.LogError(rollbackEx, \"Не удалось восстановить локальную подготовку после ошибки постановки хода.\");\n            }\n\n            try\n            {\n                await CleanupPendingTurnSnapshotAsync();\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception cleanupEx)\n            {\n                _logger.LogDebug(cleanupEx, \"Не удалось полностью очистить частичные артефакты постановки хода.\");\n            }\n\n            throw;\n        }\n\n        if (backedUpFiles == null || request == null || activeSnapshotContext == null)\n            throw new InvalidOperationException(\"Turn staging failed before rollback snapshot and request were created.\");\n\n        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged);\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1858,
+      "end": 1875,
+      "bytes": 885,
+      "sha256": "82efc8d6462966bd23aa86073038e78b248862bc1b2c4e6bd508554ffae4426a",
+      "text": "                await ClassifyBrowserRecoveryAsync();\n            }\n            return;\n        }\n        await InvokeSessionFinalizationCheckpointAsync(\n            SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization);\n        var response = await BuildGameResponseFromFiles();\n\n        // Turn accepted — backup no longer needed after lifecycle readers finish:\n        // pending-turn detached authority still uses rollback backup files as tamper evidence.\n        CleanupAfterAcceptedChaosSeaMarkerTurn(action);\n\n        await _pendingTurnState.RotateAfterAcceptedTurnAsync();\n        await NormalizeRuntimeUiArtifactsAsync();\n        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(\n                backedUpFiles, browserStaged == null ? null : activeSnapshotContext))\n        {\n            _fs.DeleteFile(\"ready/turn_complete.json\");\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 4528,
+      "end": 4539,
+      "bytes": 537,
+      "sha256": "78586bd40f75fb5dc0cd9f7d00bc7ab9086ce7829a9af86cca216b599d55440d",
+      "text": "        var visibleDice = GenerateSecureDice();\n        var hiddenGachaDice = GameLoop.GenerateSecureRandomDice(4);\n        request.PreGeneratedDices1d20 = visibleDice;\n        request.GachaBaseResult = GameLoop.ComputeGachaBase(hiddenGachaDice);\n    }\n\n    private async Task AttachPendingDiceAndGachaAsync(TurnRequest request)\n    {\n        var pending = await _pendingTurnState.GetOrCreateAsync();\n        request.PreGeneratedDices1d20 = pending.PreGeneratedDices1d20;\n        request.GachaBaseResult = pending.GachaBaseResult;\n    }\n"
+    },
+    {
+      "alias": "REQ",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "start": 6,
+      "end": 30,
+      "bytes": 833,
+      "sha256": "0d884fd13f0a05e91089c497419d5f90ea23bebaecff4d9728203ec51e1d37ec",
+      "text": "public class TurnRequest\n{\n    [JsonPropertyName(\"sessionId\")]\n    public string SessionId { get; set; } = string.Empty;\n\n    [JsonPropertyName(\"requestId\")]\n    public string RequestId { get; set; } = Guid.NewGuid().ToString(\"N\");\n\n    [JsonPropertyName(\"turnNumber\")]\n    public int TurnNumber { get; set; }\n\n    [JsonPropertyName(\"playerAction\")]\n    public string PlayerAction { get; set; } = string.Empty;\n\n    [JsonPropertyName(\"timestamp\")]\n    public string Timestamp { get; set; } = DateTime.UtcNow.ToString(\"o\");\n\n    [JsonPropertyName(\"gameMode\")]\n    public string GameMode { get; set; } = \"normal\";\n\n    [JsonPropertyName(\"preGeneratedDices1d20\")]\n    public int[] PreGeneratedDices1d20 { get; set; } = Array.Empty<int>();\n\n    [JsonPropertyName(\"gachaBaseResult\")]\n    public GachaResult? GachaBaseResult { get; set; }\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 840,
+      "end": 883,
+      "bytes": 1640,
+      "sha256": "f611176fe4b37671e23abfc46fb15d061f3cc4809298fcd68d97a61fc5eb3658",
+      "text": "    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)\n    {\n        var writeLock = await AcquireCanonicalWriteLeaseAsync();\n        Exception? publicationUncertainty = null;\n        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content); }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            publicationUncertainty = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                this, writeLock, completed: false, operationFailure: publicationUncertainty);\n        }\n    }\n\n    internal async Task WriteFileAtomicBytesAsync(\n        CanonicalWriteLease writeLease,\n        string relativePath,\n        byte[] content)\n    {\n        EnsureWorkerGeneralMutationAllowed(writeLease);\n        writeLease.EnsureNoPendingLocalDecision();\n        if (UsesTrustedLocalWriter(writeLease, relativePath))\n        {\n            await WriteTrustedLocalFileAsync(writeLease, relativePath, content);\n            return;\n        }\n        await RecordCanonicalMutationIntentAsync(\n            writeLease,\n            relativePath,\n            content);\n        var publication =\n            await WriteFileAtomicBytesCoreAsync(\n                relativePath,\n                content,\n                afterPublicationNotCommitted: () =>\n                    RecordCanonicalMutationNonPublicationAsync(\n                        writeLease,\n                        relativePath));\n        await RecordCanonicalMutationPublicationAsync(\n            writeLease,\n            relativePath,\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1319,
+      "end": 1377,
+      "bytes": 2202,
+      "sha256": "b4e515672e34902d78009db44b71bed48d3797ff9242a41212e1be58c425bd64",
+      "text": "    public async Task<string?> ReadFileAsync(string relativePath)\n    {\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"started\");\n#endif\n#if DEBUG\n        try\n        {\n#endif\n        await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(\n            CancellationToken.None);\n        var result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"initial\", result == null ? \"missing\" : \"present\");\n#endif\n        await InvokeAfterCanonicalReadAttemptAsync(relativePath);\n        if (!HasAmbientCanonicalLease() &&\n            (result == null || HasPendingFilePublications()))\n        {\n#if DEBUG\n            BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup-reason\", result == null ? \"missing\" : \"pending\");\n#endif\n            await using var writeLease =\n                await AcquirePublicationReadQuiescenceLeaseAsync();\n            result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n                BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup\", result == null ? \"missing\" : \"present\");\n#endif\n        }\n\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", result == null ? \"returned-missing\" : \"returned-present\");\n#endif\n        return result;\n\n#if DEBUG\n        }\n        catch { BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"fault\"); throw; }\n#endif\n    }\n\n    internal async Task<string?> ReadFileAsync(\n        CanonicalWriteLease writeLease,\n        string relativePath)\n    {\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"explicit-text-async\", \"semantic\", \"started\");\n        try\n        {\n#endif\n        EnsureValidCanonicalWriteLease(writeLease);\n        var result = UsesTrustedLocalWriter(writeLease, relativePath)\n            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)\n            : await ReadFileCoreAsync(relativePath);\n\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"explicit-text-async\", \"semantic\", result == null ? \"returned-missing\" : \"returned-present\");\n#endif\n        return result;\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1442,
+      "end": 1459,
+      "bytes": 784,
+      "sha256": "cf318f9e163a5e13ea45bcc6f46a3131519c0f4e8f9ebc5b5a33f2a29532edb0",
+      "text": "    internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(\n        CanonicalWriteLease writeLease,\n        string relativePath)\n    {\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"explicit-snapshot-async\", \"semantic\", \"started\");\n        try\n        {\n#endif\n        EnsureValidCanonicalWriteLease(writeLease);\n        var result = UsesTrustedLocalWriter(writeLease, relativePath)\n            ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)\n            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None);\n\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"explicit-snapshot-async\", \"semantic\", result == null ? \"returned-missing\" : \"returned-present\");\n#endif\n        return result;\n"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1529,
+      "end": 1545,
+      "bytes": 520,
+      "sha256": "f5c871fb7af7019bb1339f9591a909ab9f35856122ec41219c2e549937a8db1c",
+      "text": "    private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)\n    {\n        if (snapshot == null)\n            return null;\n\n        return DecodeFileBytes(snapshot.Content);\n    }\n\n    internal static string DecodeFileBytes(byte[] bytes)\n    {\n        using var stream = new MemoryStream(bytes, writable: false);\n        using var reader = new StreamReader(\n            stream,\n            Encoding.UTF8,\n            detectEncodingFromByteOrderMarks: true);\n        return reader.ReadToEnd();\n    }\n"
+    },
+    {
+      "alias": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "start": 45,
+      "end": 139,
+      "bytes": 4050,
+      "sha256": "655ad929c2b2295c4d5d12338a3b913d60aebd4683d97e7db1365b8a3f4b6b7f",
+      "text": "    private async Task<string?> ReadOrdinaryFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null) =>\n        DecodeFileSnapshot(await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, lease));\n\n    private async Task<byte[]?> ReadOrdinaryFileBytesCoreAsync(string relativePath,\n        CancellationToken cancellationToken, CanonicalWriteLease? lease = null) =>\n        (await ReadOrdinaryFileSnapshotCoreAsync(relativePath, cancellationToken, lease))?.Content;\n\n    private bool OrdinaryFileExistsCore(string relativePath)\n    {\n        var expectedPath = ResolvePath(relativePath);\n        EnsureCanonicalPathStillSafe(relativePath, expectedPath);\n        var scope = new TrustedLocalFileScope([GameSessionPath]);\n        // ValidateFile is the non-following type/permission check. File.Exists\n        // supplies presence only after invalid/unreadable entries have failed.\n        return File.Exists(scope.ValidateFile(expectedPath));\n    }\n\n    private async Task<CanonicalFileReadSnapshot?> ReadOrdinaryFileSnapshotCoreAsync(\n        string relativePath, CancellationToken cancellationToken, CanonicalWriteLease? lease = null)\n    {\n#if DEBUG\n        var diagnosticOutcome = \"fault\";\n        long diagnosticBytes = 0;\n        try\n        {\n#endif\n        cancellationToken.ThrowIfCancellationRequested();\n        var expectedPath = ResolvePath(relativePath);\n        var scope = new TrustedLocalFileScope([GameSessionPath]);\n        FileStream? stream;\n        for (var attempt = 0; ; attempt++)\n        {\n#if DEBUG\n            BrowserDiagnosticContent(relativePath, \"ordinary-async\", \"physical-attempt\", \"started\");\n#endif\n            cancellationToken.ThrowIfCancellationRequested();\n            if (lease != null) EnsureValidCanonicalWriteLease(lease);\n            stream = null;\n            try\n            {\n                EnsureCanonicalPathStillSafe(relativePath, expectedPath);\n                if (!File.Exists(scope.ValidateFile(expectedPath)))\n                {\n#if DEBUG\n                    diagnosticOutcome = \"missing\";\n#endif\n                    return null;\n                }\n                await InvokeBeforeCanonicalReadOpenAsync(relativePath);\n                cancellationToken.ThrowIfCancellationRequested();\n                if (lease != null) EnsureValidCanonicalWriteLease(lease);\n                EnsureCanonicalPathStillSafe(relativePath, expectedPath);\n                stream = OpenValidatedOrdinaryFile(scope, expectedPath, asynchronous: true);\n                if (stream == null)\n                {\n#if DEBUG\n                    diagnosticOutcome = \"missing\";\n#endif\n                    return null;\n                }\n                if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)\n                    await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);\n                break;\n            }\n            catch (Exception ex) when (IsTransientOrdinaryReadOpenException(ex) && attempt < TransientFileAccessRetryCount)\n            {\n#if DEBUG\n                BrowserDiagnosticContent(relativePath, \"ordinary-async\", \"retry\", \"open-fault\");\n#endif\n                if (stream != null) await stream.DisposeAsync();\n                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);\n            }\n            catch\n            {\n                if (stream != null) await stream.DisposeAsync();\n                throw;\n            }\n        }\n\n        await using (stream)\n        {\n            var snapshot = await ReadOpenedOrdinarySnapshotAsync(stream, scope, relativePath, expectedPath, cancellationToken);\n            if (lease != null) EnsureValidCanonicalWriteLease(lease);\n#if DEBUG\n            diagnosticOutcome = \"present\"; diagnosticBytes = snapshot.Content.Length;\n#endif\n            return snapshot;\n        }\n\n#if DEBUG\n        }\n        catch { diagnosticOutcome = \"fault\"; throw; }\n        finally { BrowserDiagnosticContent(relativePath, \"ordinary-async\", \"physical-result\", diagnosticOutcome, diagnosticBytes); }\n#endif\n    }\n"
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 92,
+      "end": 109,
+      "bytes": 1173,
+      "sha256": "20ef6ab54844ecf6644037d732e8c0dd9c74b878f0ce493d89701a7d4805d09f",
+      "text": "    internal bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)\n    {\n        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return false;\n        // The old browser recorder owns its own manifest/before-image namespace,\n        // including recorder-free cleanup. Do not journal those artifacts anew.\n        if (lease.BrowserLocalAccess is { } access)\n        {\n            access.Validate();\n            var relative = GetLocalRelativePath(GameSessionPath, ResolvePath(relativePath), OperatingSystem.IsWindows());\n            if (access.OwnsArtifact(relative)) return true;\n        }\n        var path = ResolvePath(relativePath);\n        if (ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(\n                GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows()))) return true;\n        var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);\n        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;\n        return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);\n    }\n"
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 169,
+      "end": 268,
+      "bytes": 5691,
+      "sha256": "ba3f7ccb9c0b2a0fcb0a887ae797d4b0d8309817d41941d4a791b3f6e7bc840b",
+      "text": "        Func<Task>? validatePreparedNamespace = null)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        VerifyCurrentSessionOperation(lease);\n        if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))\n            throw new InvalidOperationException(\"A local publication requires ordinary declared canonical members.\");\n        var generation = GetOrCreateSessionGeneration(lease);\n        return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),\n            changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),\n            cancellationToken, validatePreparedNamespace);\n    }\n\n    private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,\n        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,\n        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        if (standaloneDarenProfile)\n        {\n            RequireStandaloneDarenProfile(lease);\n            if (changes.Count != 1 || changes[0].Path != RegisteredDarenProfilePath)\n                throw new InvalidOperationException(\"Standalone Daren publication requires its exact registered member.\");\n        }\n        EnsureWorkerPurposePublication(lease, generation, changes);\n        if (lease.BrowserLocalAccess is { } browser)\n        {\n            browser.Validate();\n            foreach (var change in changes)\n                if (browser.RecordIntent != null) await browser.RecordIntent(change.Path, change.After);\n        }\n        var scope = new TrustedLocalFileScope([BasePath]);\n        var registrations = new List<InProcessMutationRegistration>();\n        try\n        {\n            foreach (var change in changes)\n            {\n                scope.EnsureDirectory(Path.GetDirectoryName(change.Path)!);\n                scope.ValidateFile(change.Path);\n                registrations.Add(new InProcessMutationRegistration(change.Path));\n            }\n            var windows = OperatingSystem.IsWindows();\n            var generationPath = TrustedLocalFilePublication.NormalizeAuthorityPath(SessionGenerationPath, windows);\n            foreach (var change in changes)\n            {\n                var memberPath = scope.ValidateFile(change.Path);\n                if (string.Equals(memberPath, generationPath,\n                        windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;\n                if (lease.BrowserLocalAccess?.ProfilePath == memberPath || standaloneDarenProfile)\n                {\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    else RequireDeclaredDarenProfile(lease);\n                    await InvokeBeforeCanonicalMutationBoundaryAsync(\"@daren_reward_profile\");\n                    scope.ValidateFile(memberPath);\n                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync(\"@daren_reward_profile\");\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    continue;\n                }\n                var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);\n                var canonicalPath = ResolvePath(relative);\n                await InvokeBeforeCanonicalMutationBoundaryAsync(relative);\n                EnsureCanonicalMutationBoundary(relative, canonicalPath);\n                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);\n            }\n            cancellationToken.ThrowIfCancellationRequested();\n            VerifyCurrentSessionOperation(lease);\n            EnsureWorkerPurposePublication(lease, generation, changes);\n            var publisher = new TrustedLocalFilePublication(this, scope);\n            for (var attempt = 0; ; attempt++)\n            {\n                EnsureWorkerPurposePublication(lease, generation, changes);\n                if (validatePreparedNamespace != null) await validatePreparedNamespace();\n                var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);\n                if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||\n                    outcome.Failure is InvalidDataException || outcome.Failure == null ||\n                    !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)\n                    return outcome;\n                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);\n                VerifyCurrentSessionOperation(lease);\n            }\n        }\n        finally\n        {\n            foreach (var registration in registrations) registration.Dispose();\n        }\n    }\n\n    internal void RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)\n    {\n        if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)\n        {\n            if (outcome.Failure != null)\n            {\n                try { _logger.LogWarning(outcome.Failure, \"Local publication committed; journal cleanup remains pending.\"); }\n                catch { /* Diagnostic transport cannot reverse an established committed result. */ }\n            }\n            return;\n        }\n        if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack && outcome.Failure != null)\n            ExceptionDispatchInfo.Capture(outcome.Failure).Throw();\n        throw new CoordinatedStatePublicationUncertainException(outcome.Failure);\n"
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 317,
+      "end": 332,
+      "bytes": 1008,
+      "sha256": "43bdbe0486da3d6f54c0ed5bda70f46fa2b5ffacccdf727c16c8edf01b9c7191",
+      "text": "    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        RequireCommittedLocalPublication(await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired));\n    }\n\n    // The ordinary facade and retained script command use the same publication.\n    // Returning its original outcome permits capture before facade throw/lease close.\n    internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(\n        CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        EnsureWorkerGeneralMutationAllowed(lease);\n        lease.EnsureNoPendingLocalDecision();\n        if (!UsesTrustedLocalWriter(lease, relativePath))\n            throw new InvalidOperationException(\"An ordinary outcome requires the current local writer.\");\n        var before = await ReadLocalFileBytesAsync(lease, relativePath);\n        return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);\n"
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "start": 15,
+      "end": 25,
+      "bytes": 723,
+      "sha256": "79204fb0c14ba5a73900a7e7d1adc06b91c8e362f8d011156db1dbb0f6b8e333",
+      "text": "internal sealed record TrustedLocalPublishedMember(string Path, bool Exists, string? Sha256);\ninternal sealed record TrustedLocalPublicationResult(string TransactionId, TrustedLocalGeneration Generation,\n    IReadOnlyList<TrustedLocalPublishedMember> Members);\ninternal enum TrustedLocalPublicationDisposition { Committed, RolledBack, Uncertain }\ninternal sealed record TrustedLocalPublicationOutcome(TrustedLocalPublicationDisposition Disposition,\n    TrustedLocalPublicationResult? Publication, Exception? Failure);\n\ninternal enum TrustedLocalPublicationPhase\n{\n    IntentStaged, IntentPublished, MemberStaged, MemberPublished, CommitStaged, Committed,\n    RollbackStaged, MemberRestored, CleanupMember, CleanupComplete,\n"
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "start": 245,
+      "end": 326,
+      "bytes": 4968,
+      "sha256": "fc35737c9fb4505769d7ebea1adef971dd7ec52639ea8eb571d4596ac84ceb26",
+      "text": "    private TrustedLocalPublicationResult PublishMembers(FileSystemManager.CanonicalWriteLease lease,\n        TrustedLocalGeneration generation, Member[] members, int format,\n        Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)\n    {\n        var journal = ApplyMembers(lease, generation, members, format, observer, attempt);\n        return CommitMembers(lease, journal, observer, attempt);\n    }\n\n    private Journal ApplyMembers(FileSystemManager.CanonicalWriteLease lease,\n        TrustedLocalGeneration generation, Member[] members, int format,\n        Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)\n    {\n        if (members.Select(member => member.Path).Distinct(MemberComparer).Count() != members.Length)\n            throw Conflict(\"A publication contains duplicate members.\");\n        var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _generationPath));\n        var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After);\n        if (generationMember != null && ParseGeneration(generationMember.Before) != generation)\n            throw Conflict(\"The generation member does not match its binding.\");\n        _files.EnsureMainRecoveryGeneration(lease,generation,afterGeneration);\n        if (!afterGeneration.Exists)\n            throw Conflict(\"A publication must retain or establish a session generation.\");\n        var journal = new Journal\n        {\n            Format = format, TransactionId = Guid.NewGuid().ToString(\"N\"), Committed = false,\n            GenerationBefore = generation, GenerationAfter = afterGeneration, Members = members\n        };\n        ValidateJournal(journal);\n        if (attempt != null) attempt.Prepared = journal;\n        foreach (var member in members)\n            if (!Matches(member.Path, member.Before))\n                throw Conflict(\"A publication member does not match its expected before image.\");\n        var scratch = ScratchScope(journal);\n        foreach (var path in ScratchPaths(journal))\n            if (File.Exists(scratch.ValidateFile(path)))\n                throw Conflict(\"A publication scratch name already exists.\");\n\n        journal = WriteJournal(IntentStage, journal);\n        if(attempt!=null)attempt.Prepared=journal;\n        Observe(lease, observer, TrustedLocalPublicationPhase.IntentStaged);\n        File.Move(_journalScope.ValidateFile(IntentStage, false), _journalScope.ValidateFile(Active), overwrite: false);\n        if (attempt != null) attempt.IntentPublished = true;\n        journal = RebindJournal(journal, Active);\n        members = journal.Members;\n        if (attempt != null) attempt.Prepared = journal;\n        Observe(lease, observer, TrustedLocalPublicationPhase.IntentPublished);\n        for (var index = 0; index < members.Length; index++)\n        {\n            var member = members[index];\n            if (member.After.Exists)\n            {\n                WriteNew(scratch, ScratchPath(journal, index, rollback: false), member.After);\n                Observe(lease, observer, TrustedLocalPublicationPhase.MemberStaged, index);\n            }\n            // Detect accidental changes before replacing a name. The canonical\n            // lease serializes participating writers; hostile races are excluded.\n            if (!Matches(member.Path, member.Before))\n                throw Conflict(\"A member changed before its publication.\");\n            if (member.After.Exists)\n                File.Move(scratch.ValidateFile(ScratchPath(journal, index, false), false),\n                    _scope.ValidateFile(member.Path), overwrite: member.Before.Exists);\n            else\n                _scope.DeleteOwnedFile(member.Path);\n            Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);\n        }\n        return journal;\n    }\n\n    private TrustedLocalPublicationResult CommitMembers(FileSystemManager.CanonicalWriteLease lease,\n        Journal journal, Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)\n    {\n        Preflight(lease, journal, requireAfter: true);\n        journal = journal with { Committed = true };\n        journal = WriteJournal(CommitStage, journal);\n        Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);\n        File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);\n        journal = RebindJournal(journal, Active);\n        var result = new TrustedLocalPublicationResult(journal.TransactionId, journal.GenerationAfter,\n            journal.Members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());\n        if (attempt != null) attempt.Committed = result;\n        Observe(lease, observer, TrustedLocalPublicationPhase.Committed);\n        Cleanup(lease, journal, observer);\n        return result;\n"
+    },
+    {
+      "alias": "REL",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "start": 103,
+      "end": 122,
+      "bytes": 896,
+      "sha256": "c90ed0f6221fa7734c53b8857d0c6cabc11c041eaa3d00808eb2cef10420c98e",
+      "text": "    internal static async ValueTask ReleaseOwnedLeaseAsync(\n        FileSystemManager fs,\n        FileSystemManager.CanonicalWriteLease writeLease,\n        bool completed,\n        Exception? operationFailure)\n    {\n        try { await writeLease.DisposeAsync(); }\n        catch (Exception failure) when (operationFailure != null)\n        {\n            // A secondary release failure cannot turn unresolved publication\n            // into an ordinary error eligible for compensation or safe retry.\n            operationFailure.Data[\"CoordinatedLeaseReleaseFailure\"] = failure;\n        }\n        catch (Exception failure) when (completed)\n        {\n            // Diagnostics are follow-up after an established completed result.\n            try { fs.LogCompletedCoordinatedWriteReleaseFailure(failure); }\n            catch { /* A failed warning sink cannot change that result. */ }\n        }\n    }\n"
+    },
+    {
+      "alias": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start": 93,
+      "end": 155,
+      "bytes": 5391,
+      "sha256": "6ba06a9f67d5d45a70f3cc652a94374493b72a09b9c61729ca0e1eefb4d1415c",
+      "text": "    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null,CancellationToken admissionCancellation=default)\n    {\n        ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);\n        if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException(\"A session operation requires a generation.\",nameof(expectedGeneration));\n        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;\n        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}\n        catch(Exception e){failure=e;throw;}\n        finally {\n            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure,capturedOutcome?.Invoke());\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n        }\n        return result!;\n    }\n\n    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration=null) =>\n        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default, beforeCurrentGeneration);\n\n    // Dedicated Init-bound callers never bootstrap or adopt a later generation.\n    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,CancellationToken admissionCancellation=default)\n    {\n        if (!Guid.TryParseExact(expectedGeneration, \"N\", out var parsed) || parsed.ToString(\"N\") != expectedGeneration)\n            throw new InvalidDataException(\"An exact existing helper generation is required.\");\n        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation, null);\n    }\n\n    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)\n    {\n        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);\n        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;\n        try {\n            string generation;\n            if(initializedGeneration != null) generation=initializedGeneration;\n            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {\n                var lease=await files.AcquireCanonicalWriteLeaseAsync();\n                CoordinatedStatePublicationUncertainException? uncertainty=null;\n                try {\n                    // A caller may only veto bootstrap under this same admitted\n                    // lease. No claimed generation is returned or installed.\n                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);\n                    generation=files.GetOrCreateSessionGeneration(lease);\n                }\n                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}\n                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}\n            }\n            result=await RunBoundCoreAsync(files,generation,async()=> {\n                var value=await operation();\n                // Freeze the callback's established decision once, before any\n                // actual finalization or close can fail. Later reads use this value.\n                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                return value;\n            },null,()=>outcome,admissionCancellation);\n        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}\n        finally {\n            outcome=failure==null?outcome:OutcomeFor(failure,outcome);\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }\n        }\n"
+    },
+    {
+      "alias": "MAIN",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "start": 19,
+      "end": 90,
+      "bytes": 6011,
+      "sha256": "5d4d6e86d4b048f077288bbb7766d7ae358bcd771b1e5601e8a14b6530bb4f63",
+      "text": "    internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);\n    internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);\n    private MainAdmission BeginMainAdmission(bool participating, WorldValidationReadScope? worldIssuance = null, bool physicalScope = false)\n    {\n        var parent=MainAdmissions.Value;\n        for (var p = parent; p != null; p = p.Parent)\n            if (!p.Closed && p.RootIdentity == CanonicalRootAuthorityIdentity) p.RequireNoWorldReadConflict(worldIssuance);\n        for(var ancestor=parent;ancestor!=null;ancestor=ancestor.Parent)\n            if(ancestor.Closed && ancestor.OwnsRemote && ancestor.RootIdentity==CanonicalRootAuthorityIdentity)throw GmSessionRunPersistence.Invalid();\n        while(parent is { Closed:true })parent=parent.Parent;\n        var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current,participating,worldIssuance,physicalScope);\n        MainAdmissions.Value=frame;return frame;\n    }\n    internal sealed class MainAdmission : IDisposable,IAsyncDisposable\n    {\n        private readonly FileSystemManager _files;\n        private readonly MainAdmission? _parent;\n        private readonly GmSessionRunCoordinator.Access? _requested;\n        private MainAccess? _access, _worldReservedAccess;\n        private bool _closed,_ownsRemote;\n        private GmMainOperationClient? _retainedRemote;\n        private GmSessionRunCoordinator.Access? _retainedOriginal;\n        private readonly bool _participating;\n        private readonly WorldValidationReadScope? _worldIssuance;\n        internal readonly bool PhysicalScope;\n        private GmWorkerCanonicalPurpose? _workerPurpose;\n        internal bool WasRemote {get;private set;}\n        internal bool OwnsRemote=>_ownsRemote;\n        internal MainOperationClose? TerminalClose=>_retainedRemote?.TerminalClose;\n        internal bool CloseObserved=>_retainedRemote?.CloseObserved==true;\n        internal MainOperationClose? DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>_retainedRemote?.DescribeClose(outcome,closingFailed);\n        internal string Root=>_files.BasePath;\n        internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;\n        internal bool Closed=>_closed;\n        internal MainAdmission? Parent=>_parent;\n        internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating, WorldValidationReadScope? worldIssuance, bool physicalScope)\n        {_files=files;_parent=parent;_requested=requested;_participating=participating;_worldIssuance=worldIssuance;PhysicalScope=physicalScope;}\n        internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)\n        {\n            _workerPurpose=workerPurpose;\n            // Finalization borrows an actual original closing frame. The purpose\n            // value alone cannot bypass admission or acquire recovery authority.\n            if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();\n            var browserOriginal=closing?null:_files.PreflightBrowserOriginalAdmission(this,diagnosticOrigin:\"main-admission-acquire\");\n            // A quiescent witness cannot become a new active grant while opening.\n            browserOriginal?.RequireCurrent(_files);\n            if(browserOriginal!=null && _files._hooks?.AfterBrowserOriginalPreflightAsync is { } originalHook)\n                await originalHook();\n            if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();\n            if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);\n            for(var p=_parent;p!=null;p=p._parent)\n                if(!p._closed && p._files.CanonicalRootAuthorityIdentity==_files.CanonicalRootAuthorityIdentity && p._requested==_requested && p._access is { } borrowed)\n                {\n                    if(quiescentOnly && (borrowed.Remote!=null || borrowed.Original?.Pin!=null))throw GmSessionRunPersistence.Invalid();\n                    borrowed.Remote?.Validate(_files.BasePath,closing && borrowed.Remote.Closing);\n                    if(_files._hooks?.BeforeMainBorrowRetainAsync is { } hook)await hook();\n                    _access=borrowed.Retain(this,_worldIssuance);WasRemote=_access.Remote!=null;_retainedRemote=_access.Remote;_retainedOriginal=_access.Original;return;}\n            if(_requested!=null && _requested.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)\n            {_requested.Pin?.Retain();_access=new(this,null,_requested);_retainedOriginal=_requested;return;}\n            // This read can only refuse. Absent/Stopped still requires the original\n            // physical guard and validation below, including a pending Stopped ACK.\n            var observed=GmSessionRunPersistence.Read(_files.BasePath);\n            if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {\n                if(browserOriginal!=null && browserOriginal.ActiveIdentity==null)throw BrowserOriginalMainCondition.Invalid();\n                if(!_participating || closing)throw GmSessionRunPersistence.Invalid();\n                if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();\n                var knownWorkers=!OperatingSystem.IsWindows() && _files.HasKnownMainWorkerInventory();\n                var remote=await GmMainOperationClient.OpenAsync(_files,token,browserOriginal?.ActiveIdentity);\n                _access=new(this,null,null,remote,workerObservationRequired:knownWorkers);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;\n            }\n            _access=new(this,await GmMainOwnerGuard.AcquireAsync(_files.BasePath,token,\n                _files._hooks?.MainOwnerLockContendedAsync,CanonicalWriteLockRetryCount,TransientFileAccessRetryDelay),null);\n"
+    },
+    {
+      "alias": "COORD",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "start": 96,
+      "end": 154,
+      "bytes": 3865,
+      "sha256": "195a51470a3f87f5f3c6248a55ca24160831af12f64c597c120d9757cadca09d",
+      "text": "    internal sealed record Access(GmSessionRunCoordinator Owner,OperationPin? Pin,bool MetadataOnly);\n    private sealed class Scope(Access value) : IDisposable\n    {\n        private readonly Access? _before=Ambient.Value;\n        private bool _disposed;\n        internal void Enter()=>Ambient.Value=value;\n        public void Dispose(){if(!_disposed){_disposed=true;Ambient.Value=_before;}}\n    }\n    private IDisposable Enter(bool metadata,OperationPin? pin=null){var s=new Scope(new(this,pin,metadata));s.Enter();return s;}\n    // Only an actually exhausted original pin grants cleanup's local-receipt\n    // fallback. Metadata/guard failures and closed-but-live pins are distinct.\n    private sealed class OriginalOperationPinExpiredException() : IOException(\"Original main operation pin has expired.\");\n    internal static bool IsOriginalOperationPinExpired(Exception failure)=>failure is OriginalOperationPinExpiredException;\n    private void ValidateOriginalAccessPin(Access access)\n    {\n        if(!ReferenceEquals(access.Owner,this) || access.MetadataOnly && access.Pin!=null)throw GmSessionRunPersistence.Invalid();\n        access.Pin?.Validate(this);\n    }\n    internal sealed class OperationPin : IDisposable\n    {\n        private readonly GmSessionRunCoordinator _owner;\n        private int _references=1;\n        internal OperationPin(GmSessionRunCoordinator owner){_owner=owner;}\n        internal void Retain(){lock(_owner._sync){if(_references==0)throw new OriginalOperationPinExpiredException();_references++;}}\n        internal void Validate(GmSessionRunCoordinator owner){lock(_owner._sync){\n            if(!ReferenceEquals(_owner,owner))throw GmSessionRunPersistence.Invalid();\n            if(_references==0)throw new OriginalOperationPinExpiredException();\n        }}\n        public void Dispose(){lock(_owner._sync){if(_references==0)return;if(--_references==0 && --_owner._pins==0)_owner._drained.TrySetResult();}}\n    }\n    internal async Task<T> RunOperationAsync<T>(Func<Task<T>> operation)\n    {\n        var pin=CreateOperationPin();\n        using(pin)using(Enter(false,pin))return await operation();\n    }\n    internal void ValidateAccessAcquisition(Access access,bool closing=false)\n    {\n        // Check this exact retained pin before a retired guard can obscure its\n        // exhaustion. A current pin still observes every guard/metadata failure.\n        ValidateOriginalAccessPin(access);\n        _guard.Validate();if(_retired)throw GmSessionRunPersistence.Invalid();\n        if(access.Pin!=null && !access.MetadataOnly && AdmissionClosed && !closing)throw GmSessionRunPersistence.Invalid();\n        if(!access.MetadataOnly && !(closing && (_backend==GmSessionRunBackend.WindowsJob || AdmissionClosed)))RequireProductionWorkerConjunction();\n    }\n    internal void ValidateAccess(Access access,bool finalization)\n    {\n        ValidateOriginalAccessPin(access);\n        _guard.Validate();if(_retired)throw GmSessionRunPersistence.Invalid();\n        if(access.MetadataOnly)return; // actual internal scope; never ordinary mutation authority\n        if(access.Pin==null)\n        {\n            // Original start's recovery admission is quiescent only, before Prepared.\n            if(_record!=null && _record.Disposition!=GmSessionRunDisposition.Stopped || _persistence.HasDebt)throw GmSessionRunPersistence.Invalid();\n            RequireProductionWorkerConjunction();return;\n        }\n        var bytes=GmSessionRunPersistence.Read(_files.BasePath);\n        if(bytes==null || _acknowledged==null || !bytes.AsSpan().SequenceEqual(_acknowledged))throw GmSessionRunPersistence.Invalid();\n        if(finalization && _closed && _record?.Disposition is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain)return;\n        if(!finalization || _backend!=GmSessionRunBackend.WindowsJob)RequireProductionWorkerConjunction();\n"
+    },
+    {
+      "alias": "PINS",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "start": 29,
+      "end": 50,
+      "bytes": 1328,
+      "sha256": "35ce1b9707f84440e20478c8a77e5007bc1eba745e7d2abb28780844d4982940",
+      "text": "        internal void ObserveClosed(MainOperationClose close)\n        {\n            lock(owner._sync) {\n                Match(close.PinId,close.CloseId,close.OperationId,close.Identity);\n                if(!Enum.IsDefined(close.Outcome))throw GmSessionRunPersistence.Invalid();\n                if(State==MainOperationState.ClosedObserved){if(_close!=close)throw GmSessionRunPersistence.Invalid();return;}\n                if(State!=MainOperationState.Active)throw GmSessionRunPersistence.Invalid();\n                State=MainOperationState.Closing;_close=close;\n                // Receipt of the exact immutable terminal frame is the retirement\n                // point. Reply write success/peer EOF is not a second authority test.\n                pin.Dispose();State=MainOperationState.ClosedObserved;\n                owner._closedRemotePins.Enqueue(PinId);\n                while(owner._closedRemotePins.Count>32)owner._remotePins.Remove(owner._closedRemotePins.Dequeue());\n            }\n        }\n        internal void Lost()\n        {\n            lock(owner._sync) {\n                if(State==MainOperationState.ClosedObserved)return;\n                State=MainOperationState.Unresolved;owner._closed=true;owner._uncertain=true;\n                // Original pin remains counted. Never timeout/evict/reconnect it.\n            }\n"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 1148,
+      "end": 1237,
+      "bytes": 3785,
+      "sha256": "d79e332a36cb5a347b1652bcf884f348e9d9e1d4940ac8c1c69425de7d3d8d34",
+      "text": "        var costDisplay = $\"{cost} 🪶 (останется {feathers - cost})\";\n\n        var confirm = Prompt(new SelectionPrompt<string>()\n            .Title($\"[bold yellow]🔮 Открыть Судьбу — потратить {Markup.Escape(costDisplay)}?[/]\")\n            .AddChoices(\"✅ Да, потратить\", \"❌ Отмена\"));\n        if (confirm.Contains(\"Отмена\")) return;\n\n        if (_pendingTurnState == null)\n        {\n            MarkupLine(\"[red]❌ Сервис судьбы недоступен.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var pendingState = await _pendingTurnState.GetOrCreateAsync();\n        if (!await DeductInkFeathers(cost))\n        {\n            MarkupLine(\"[red]❌ Не удалось списать перья.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        pendingState = await _pendingTurnState.RevealAsync();\n        var dice = pendingState.PreGeneratedDices1d20;\n        var gacha = pendingState.GachaBaseResult ?? new GachaResult();\n\n        var rarityColor = GetRarityColor(gacha.BaseRarity ?? \"Common\");\n        var text = new List<string>\n        {\n            \"[bold]🎲 Ваши кости судьбы:[/]\",\n            \"\",\n            FormatDiceDisplay(dice),\n            \"\",\n            $\"[bold]🎰 Гача-база:[/] [{rarityColor}]{Markup.Escape(DescribeRarityLabel(gacha.BaseRarity ?? \"Common\"))}[/] (счёт: {gacha.BaseScore})\",\n            \"[dim]Гача-база вычислена отдельно от этих кубиков и не сдвигает ваш dice pool.[/]\",\n            \"\",\n            $\"[dim]Списано: {cost} 🪶[/]\"\n        };\n\n        var panel = new Panel(GameInterface.SafeMarkup(string.Join(\"\\n\", text)))\n        {\n            Header = new PanelHeader(\" 🔮 Судьба открыта \", Justify.Center),\n            Border = BoxBorder.Double,\n            BorderStyle = new Style(Color.Purple),\n            Padding = new Padding(2, 1)\n        };\n        Write(panel);\n        WaitForKey();\n\n        _diceRevealed = true;\n    }\n\n    private async Task HandleRewriteFate(int feathers)\n    {\n        var cost = Math.Max(15, (int)(feathers * 0.25));\n        var costDisplay = $\"{cost} 🪶 (останется {feathers - cost})\";\n\n        var confirm = Prompt(new SelectionPrompt<string>()\n            .Title($\"[bold yellow]✍️ Переписать Судьбу — потратить {Markup.Escape(costDisplay)}?[/]\")\n            .AddChoices(\"✅ Да, потратить\", \"❌ Отмена\"));\n        if (confirm.Contains(\"Отмена\")) return;\n\n        if (_pendingTurnState == null)\n        {\n            MarkupLine(\"[red]❌ Сервис судьбы недоступен.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var currentState = await _pendingTurnState.GetOrCreateAsync();\n        if (!currentState.IsFateLocked)\n        {\n            MarkupLine(\"[yellow]⚠️ Сначала нужно открыть судьбу, чтобы зафиксировать текущие кости.[/]\");\n            WaitForKey();\n            return;\n        }\n\n        // Deduct feathers FIRST (before any dice modification)\n        if (!await DeductInkFeathers(cost))\n        {\n            MarkupLine(\"[red]❌ Не удалось списать перья (недостаточно или ошибка).[/]\");\n            WaitForKey();\n            return;\n        }\n\n        var oldDice = currentState.PreGeneratedDices1d20;\n        var oldGacha = currentState.GachaBaseResult ?? new GachaResult();\n        var newState = await _pendingTurnState.RewriteAsync();\n        var newDice = newState.PreGeneratedDices1d20;\n        var newGacha = newState.GachaBaseResult ?? new GachaResult();\n"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2020,
+      "end": 2054,
+      "bytes": 2312,
+      "sha256": "222008b6f0265a22ab8e3889e6addf50ce5b0881c1be5dca0f06c4431982b899",
+      "text": "            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n            async writeLease =>\n            {\n                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, \"Состояние души сейчас недоступно.\");\n                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot[\"currentRealm\"]), _stateManager.CurrentState.CurrentRealm);\n                if (!RealmSemantics.IsMortalRealm(currentRealm))\n                    throw new InvalidOperationException(\"Раскрытие судьбы доступно только во время смертной жизни.\");\n\n                var currentFeathers = GetSoulInkFeathers(soulRoot);\n                var cost = ComputeRevealFateCost(currentFeathers);\n                if (currentFeathers < cost)\n                    throw new InvalidOperationException($\"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.\");\n\n                var pendingTurnState = new PendingTurnStateService(\n                    _fs,\n                    NullLogger<PendingTurnStateService>.Instance);\n                await pendingTurnState.GetOrCreateAsync(writeLease);\n\n                var remainingFeathers = currentFeathers - cost;\n                SetSoulInkFeathers(soulRoot, remainingFeathers);\n                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);\n\n                var revealed = await pendingTurnState.RevealAsync(writeLease);\n                await _stateManager.RefreshGameStateAsync(writeLease);\n\n                payload[\"spentInkFeathers\"] = cost;\n                payload[\"remainingInkFeathers\"] = remainingFeathers;\n                payload[\"currentInkFeathersBeforeSpend\"] = currentFeathers;\n                payload[\"revealedFate\"] = BuildFatePayload(revealed);\n                payload[\"summary\"] = BuildFateSummary(revealed);\n                completionMessage = $\"Судьба открыта. Списано: {cost}. Осталось: {remainingFeathers}. Кости судьбы: {FormatDiceUsed(revealed.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(revealed.GachaBaseResult)}.\";\n            },\n            \"Судьба открыта\",\n            () => completionMessage,\n            payload);\n"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2096,
+      "end": 2132,
+      "bytes": 2775,
+      "sha256": "142e07c5ffcdc8858dd12fedaa95c6699127ad415516baecb2301bb5b1fbf4a1",
+      "text": "        return await ExecuteAtomicAsync(\n            boundLease,\n            owner,\n            \"Переписывание судьбы\",\n            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],\n            async writeLease =>\n            {\n                var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, \"Состояние души сейчас недоступно.\");\n                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot[\"currentRealm\"]), _stateManager.CurrentState.CurrentRealm);\n                if (!RealmSemantics.IsMortalRealm(currentRealm))\n                    throw new InvalidOperationException(\"Переписывание судьбы доступно только во время смертной жизни.\");\n\n                var currentPending = await pendingTurnState.TryReadExistingAsync(writeLease);\n                if (currentPending == null || !currentPending.IsFateLocked)\n                    throw new InvalidOperationException(\"Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.\");\n\n                var currentFeathers = GetSoulInkFeathers(soulRoot);\n                var cost = ComputeRewriteFateCost(currentFeathers);\n                if (currentFeathers < cost)\n                    throw new InvalidOperationException($\"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.\");\n\n                var remainingFeathers = currentFeathers - cost;\n                SetSoulInkFeathers(soulRoot, remainingFeathers);\n                await WriteObjectAsync(writeLease, SoulStatePath, soulRoot);\n\n                var rewritten = await pendingTurnState.RewriteAsync(writeLease);\n                await _stateManager.RefreshGameStateAsync(writeLease);\n\n                payload[\"spentInkFeathers\"] = cost;\n                payload[\"remainingInkFeathers\"] = remainingFeathers;\n                payload[\"currentInkFeathersBeforeSpend\"] = currentFeathers;\n                payload[\"oldFate\"] = BuildFatePayload(currentPending);\n                payload[\"newFate\"] = BuildFatePayload(rewritten);\n                payload[\"oldSummary\"] = BuildFateSummary(currentPending);\n                payload[\"newSummary\"] = BuildFateSummary(rewritten);\n                completionMessage = $\"Судьба переписана. Списано: {cost}. Осталось: {remainingFeathers}. Старые кости: {FormatDiceUsed(currentPending.PreGeneratedDices1d20)}. Новые кости: {FormatDiceUsed(rewritten.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(rewritten.GachaBaseResult)}.\";\n            },\n"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1507,
+      "end": 1518,
+      "bytes": 698,
+      "sha256": "81e568031d7e0675e95b457b20437e6158cf4130a739e44280b9be4906ae6d5f",
+      "text": "        MainOperationClose? stagingClose = null;\n        bool stagingCloseObserved = false, stagingWasRemote = false;\n        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,\n            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),\n            observeOriginalClose: (close, observed, remote) =>\n            {\n                // Copy actual close facts only. Await-using disposal still follows\n                // this callback; the idle boundary starts after the top-level await.\n                stagingClose = close;\n                stagingCloseObserved = observed;\n                stagingWasRemote = remote;\n            });\n",
+      "supplement": "PF-R1"
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 49,
+      "end": 95,
+      "bytes": 2787,
+      "sha256": "3108fa0a5693c8253598cffd956b93ba076d6fe49968ed9cf86cad8282d9a5e6",
+      "text": "    internal sealed class BrowserOriginalOperationScope : IDisposable\n    {\n        internal readonly FileSystemManager _files;\n        private readonly MainAdmission _owner;\n        internal readonly BrowserOriginalOperationScope? _parent;\n        internal readonly PendingPlayerActionService.Binding Binding;\n        internal readonly BrowserOriginalMainCondition Condition;\n        internal PendingPlayerActionService.Staged? Staged { get; private set; }\n        internal bool Processing { get; private set; }\n        internal bool Cleanup { get; private set; }\n        private bool _disposed;\n        internal string? ExpectedPendingJson { get; private set; }\n        internal PendingPlayerActionService.State? ExpectedState { get; private set; }\n        internal PendingPlayerActionService.Staged? ExpectedStaged { get; private set; }\n        private readonly string _submittedAtUtc;\n        private Dictionary<string,string>? _cleanupInventory;\n        internal BrowserOriginalOperationScope(FileSystemManager files, MainAdmission owner,\n            PendingPlayerActionService.Binding binding, PendingPlayerActionService.Staged? staged,\n            BrowserOriginalOperationScope? parent)\n        {\n            _files=files;_owner=owner;Binding=binding;_parent=parent;\n            var expectedJson=staged?.Json??binding.Json;\n            ExpectedPendingJson=expectedJson;\n            _submittedAtUtc=JsonNode.Parse(binding.Json)![\"submittedAtUtc\"]!.GetValue<string>();\n            var expectedState=PendingPlayerActionService.Parse(expectedJson,binding.Generation);\n            RequireInvariantBinding(expectedState);\n            ExpectedState=expectedState;\n            ExpectedStaged=ReadExpectedStaged(expectedState);\n            Condition=owner.CaptureBrowserCondition(binding.Generation);\n            if(staged != null)\n            {\n#if DEBUG\n                using var diagnostic = files.BrowserDiagnosticContext(\"operation-construction\", staged);\n#endif\n                RequireOriginalTuple(ExpectedStaged??throw BrowserOriginalMainCondition.Invalid(),staged);\n                var manifest=files.ValidateOriginalBrowserAdmission(staged, verifyPhysical: true);\n                if(manifest.BrowserOriginalMainCondition != Condition) throw BrowserOriginalMainCondition.Invalid();\n                Staged=staged;\n            }\n        }\n        internal void ValidateOwner(MainAdmission? current)\n        {\n            if(_disposed || _owner.Closed || !_owner.Acquired || _owner.MetadataOnly) throw BrowserOriginalMainCondition.Invalid();\n            for(var p=current;p!=null;p=p.Parent)\n                if(!p.Closed && p.SharesAccess(_owner)) { _owner.Validate(null);Condition.RequireCurrent(_files);return; }\n            throw BrowserOriginalMainCondition.Invalid();\n        }\n",
+      "supplement": "PF-R1"
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 198,
+      "end": 225,
+      "bytes": 1990,
+      "sha256": "6563a1cd228c9b68d1a174d967b54666bf22cd01b2ed5bd40bd1ec5f8e14fbce",
+      "text": "    internal BrowserOriginalOperationScope BeginBrowserOriginalOperation(PendingPlayerActionService.Binding binding,\n        PendingPlayerActionService.Staged? staged=null)\n    {\n        var owner=MainAdmissions.Value;\n        while(owner!=null && (owner.Closed || owner.RootIdentity!=CanonicalRootAuthorityIdentity || !owner.Acquired))owner=owner.Parent;\n        if(owner==null)throw BrowserOriginalMainCondition.Invalid();\n        var scope=new BrowserOriginalOperationScope(this,owner,binding,staged,BrowserOriginalOperations.Value);\n        BrowserOriginalOperations.Value=scope;return scope;\n    }\n    internal BrowserOriginalMainCondition CaptureBrowserOriginalCondition(CanonicalWriteLease lease,string generation)\n    {\n        EnsurePhysicalCanonicalWriteLease(lease);\n        var condition=lease.MainAdmission!.CaptureBrowserCondition(generation);\n        var scope=CurrentBrowserOriginalScope();\n        if(scope==null || scope.Condition!=condition)throw BrowserOriginalMainCondition.Invalid();\n        scope.ValidateOwner(lease.MainAdmission);return condition;\n    }\n    internal void SealBrowserOriginalPreparation(PendingPlayerActionService.Staged staged) =>\n        (CurrentBrowserOriginalScope()??throw BrowserOriginalMainCondition.Invalid()).Seal(staged);\n    internal void BeginBrowserOriginalProcessing(PendingPlayerActionService.Staged staged) =>\n        (CurrentBrowserOriginalScope()??throw BrowserOriginalMainCondition.Invalid()).BeginProcessing(staged);\n    internal void AllowBrowserOriginalCleanup() => CurrentBrowserOriginalScope()?.BeginCleanup();\n    internal void ObserveBrowserOriginalPhasePublication(string previous,string? next) =>\n        CurrentBrowserOriginalScope()?.ObservePublishedPhase(previous,next);\n    private BrowserOriginalOperationScope? CurrentBrowserOriginalScope()\n    {\n        for(var p=BrowserOriginalOperations.Value;p!=null;p=p._parent)\n            if(p._files.CanonicalRootAuthorityIdentity==CanonicalRootAuthorityIdentity)return p;\n",
+      "supplement": "PF-R1"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 300,
+      "end": 335,
+      "bytes": 1689,
+      "sha256": "d769ded7bea32a90eee287c4e4cd346de81296e34701061cc911c2858186bd4e",
+      "text": "        internal MainAdmission? MainAdmission {get;set;}\n        internal FileSystemManager Owner { get; }\n        internal CanonicalWritePurpose Purpose { get; }\n        internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }\n        internal IDisposable? WorkerRootPin { get; set; }\n        internal object? ExternalPublicationContext { get; set; }\n        internal object? PendingLocalDecision { get; set; }\n        internal void EnsureNoPendingLocalDecision()\n        {\n            if (PendingLocalDecision != null)\n                throw new InvalidOperationException(\"A worker decision is pending on this canonical lease; nested mutation or recovery is not permitted.\");\n        }\n        internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }\n        internal bool IsLegacyStorageRecovery { get; set; }\n        internal BrowserLocalStorageAccess? BrowserLocalAccess { get; set; }\n        internal AmbientCanonicalLeaseRegistration? AmbientRegistration\n        {\n            get => _ambientRegistration;\n            set => _ambientRegistration = value;\n        }\n        internal bool IsActive =>\n            _stream != null &&\n            _parentAuthority != null;\n\n        public async ValueTask DisposeAsync()\n        {\n            var stream = _stream;\n            var parentAuthority = _parentAuthority;\n            var externalPublicationContext =\n                ExternalPublicationContext as IDisposable;\n            _stream = null;\n            _parentAuthority = null;\n            ExternalPublicationContext = null;\n            PendingLocalDecision = null;\n            MutationIntentRecorder = null;\n            BrowserLocalAccess?.Dispose();\n",
+      "supplement": "PF-R1"
+    }
+  ],
+  "prior_immutable_artifacts": [
+    {
+      "path": "/tmp/t197-stage-preparation-transitive-inventory-20261016.md",
+      "sha256": "708d73e43371375a8fb004e6649f29c0436ab51b5e23fed3f16ecbc7e25810fd",
+      "bytes": 68763,
+      "status": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-stage-preparation-transitive-inventory-20261016.json",
+      "sha256": "354a8ccacc84b1073fe6b3412ae6f9342d2a63363000854d8a835019271b0a96",
+      "bytes": 193484,
+      "status": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.md",
+      "sha256": "25c91a0a638074702e47ec36581d673e1a43cd73a65bdf3e473429f03d0499a5",
+      "bytes": 47209,
+      "status": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.json",
+      "sha256": "793b3ffd8ede187f491873e75429cd9835b8916d084dc92ac444f77d3688e34e",
+      "bytes": 107325,
+      "status": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.md",
+      "sha256": "57847988664ad455786d422d59e4e4e81168f82ff0b455c04da9fce112fb8797",
+      "bytes": 43410,
+      "status": "IMMUTABLE_UNCHANGED_PF_R1_ORIGINAL"
+    },
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.json",
+      "sha256": "113bcc146618672647e5e64b44129b14c3da727abd818ee3d4f906192a173133",
+      "bytes": 129565,
+      "status": "IMMUTABLE_UNCHANGED_PF_R1_ORIGINAL"
+    }
+  ],
+  "prior_independent_review": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-independent-review-20261016.md",
+    "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+    "blob": "c6231b79432c837a203b13186d4aa2779a02af12",
+    "sha256": "2b061b814343b34644486d4aa6d546e0f525a935d6697325528332b8b8a14b96",
+    "bytes": 25569,
+    "verdict_scope": "Accepted PARTIAL inventory for conditional discussion only; no engineering release"
+  },
+  "application_contract_proposed": true,
+  "application_contract_independently_accepted": false,
+  "successful_hot_recovery_demonstrated": false,
+  "continuation_issuer_present": false,
+  "full_H_B02_closed": false,
+  "engineering_release": false,
+  "F2": false,
+  "activation": false,
+  "all_proposed_APIs": "UNACCEPTED",
+  "tests": "UNRUN",
+  "builds": "UNRUN",
+  "runtime": "NOT_EXECUTED",
+  "discovery": "NOT_EXECUTED",
+  "network": "NOT_USED",
+  "repo_writes": false,
+  "delegation": false,
+  "final_stop": true,
+  "markdown_artifact": {
+    "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+    "sha256": "0717e9e428b442027505abceec203d76d98bdef79633a22aec43b8a54a0a27f6",
+    "bytes": 52152
+  },
+  "eligibility_matrix": [
+    {
+      "case": "Ordinary console Stage",
+      "actual": "T1495/1497→Stage1596; actual participating owner, G/root and pending path",
+      "pre_rng": "Requires original parent-issued family/reservation witness; caller route alone insufficient",
+      "lease": "Revalidate actual owner/G/root; no recorder/legacy; UsesTrustedLocalWriter exact pending path",
+      "extra": "No browser obligation unless a real original scope is present; scope presence must be observed from actual owner, not supplied bool",
+      "status": "CONDITIONAL; producer OPEN"
+    },
+    {
+      "case": "Ordinary browser Stage",
+      "actual": "T1509/1510→Stage1565 BrowserOriginalOperationScope→1596 same fate helper",
+      "pre_rng": "Same genuine witness; retain actual browser scope, Binding, Condition and issuing MainAdmission",
+      "lease": "Same actual-family checks plus actual browser owner/current-Condition validation",
+      "extra": "Browser-original scope lifetime through held/join remains OPEN; not a recorder merely because browser",
+      "status": "CONDITIONAL; browser lifetime/producer OPEN"
+    },
+    {
+      "case": "Actual mutation recorder or legacy recovery",
+      "actual": "L94 returns false for nonnull lease.MutationIntentRecorder or IsLegacyStorageRecovery",
+      "pre_rng": "A trustworthy source-family producer must classify this actual owner before any Stage-adapter RNG; never guess from route",
+      "lease": "If unexpectedly observed later: no native publication, retain values/debt; do not swap owner/rebind/redraw",
+      "extra": "Existing recorder/recovery owner is separate; this correction supplies no substitute adapter or mode switch",
+      "status": "OUTSIDE this adapter"
+    },
+    {
+      "case": "Paid browser Reveal/Rewrite transaction",
+      "actual": "WEB2020–2054/2096–2132 own soul+pending transaction, fees/realm/lock/refresh",
+      "pre_rng": "Distinct action owner and request; not Stage attach even if physical trusted-local family",
+      "lease": "Actual original paid transaction retains its own receipt/debt; native family does not grant Stage authority",
+      "extra": "No replay/deduction/Reveal/Rewrite via retained Stage frame",
+      "status": "OUTSIDE Stage adapter; not all browser"
+    }
+  ],
+  "correction_provenance": {
+    "finding": "PF-R1",
+    "assessment": "SOURCE_CONFIRMED",
+    "cause": "PF-R1 corrects the original browser/recorder/legacy conflation and unconditional shared1596 replacement. Actual source has no future-lease family proof at factory time. Feasible conditional predicate requires a genuine original-parent family/reservation producer before RNG plus later actual-lease revalidation; that producer remains OPEN under PF-P01/PF-P03/PF-P04. Ordinary browser binding is an additional live authority/lifetime obligation, not a UI-mode eligibility flag. Optional ProcessPlayerTurnAsync name corrected to actual ProcessPlayerTurn. No engineering acceptance follows.",
+    "original_pair": {
+      "md": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.md",
+        "sha256": "57847988664ad455786d422d59e4e4e81168f82ff0b455c04da9fce112fb8797",
+        "bytes": 43410
+      },
+      "json": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.json",
+        "sha256": "113bcc146618672647e5e64b44129b14c3da727abd818ee3d4f906192a173133",
+        "bytes": 129565
+      }
+    },
+    "original16pins_unchanged": true,
+    "original26projections_unchanged": true,
+    "original18states_17races_retained_with_eligibility_refinement": true,
+    "original22future_checks_unchanged": true,
+    "supplemental_source_pins": 1,
+    "supplemental_projections": 4,
+    "added_future_checks": [
+      "PF-T23"
+    ],
+    "review_provenance": "Formal independent review pair available; PF-R1 source-confirmed independently by author",
+    "diff_metadata_path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+    "formal_independent_review": [
+      {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-independent-review-20261016.md",
+        "sha256": "507a443013d03749bf56017e601e99693a9add6aa937a74902ce4fa10b0955a5",
+        "bytes": 22812
+      },
+      {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-independent-review-20261016.json",
+        "sha256": "4448064a59d5c7064af13d90f9d37f19dc52cb72a99427b83c3d06e89341b922",
+        "bytes": 69615
+      }
+    ]
+  }
+}

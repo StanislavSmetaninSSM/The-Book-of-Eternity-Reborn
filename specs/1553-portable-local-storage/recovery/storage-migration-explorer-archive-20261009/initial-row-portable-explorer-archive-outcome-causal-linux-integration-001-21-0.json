@@ -1,0 +1,42 @@
+{
+  "mode": "realignment",
+  "command": "/shining_faction_realignment",
+  "target": "game_state/control/pending_shining_faction_realignments.json",
+  "result": "",
+  "Failure": null,
+  "Inputs": 5,
+  "LaterInputs": 0,
+  "RequestAttempts": 0,
+  "pendingAtCut": null,
+  "priorAtCut": null,
+  "afterImages": null,
+  "ConsoleSelections": [
+    {},
+    {},
+    {},
+    {}
+  ],
+  "ActualSelections": [
+    "Орин [dim](residentId=resident_orin; фракция Хранители Отзвука; лояльность 14, брожение 76)[/]",
+    "Перейти в другую фракцию",
+    "Хор Рассвета [dim](factionId=faction_dawn; сила 73)[/]"
+  ],
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

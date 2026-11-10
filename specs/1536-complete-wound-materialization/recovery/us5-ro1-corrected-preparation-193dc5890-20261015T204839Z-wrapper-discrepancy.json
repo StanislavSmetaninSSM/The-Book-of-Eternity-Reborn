@@ -1,0 +1,12 @@
+{
+  "testedGit": "193dc5890d4582d68ece897f64189af65e73d81b",
+  "execSession": 90681,
+  "completionChunk": "06a9bc",
+  "outerExecExit": 1,
+  "completionWallSeconds": 3.6309e-05,
+  "capturedPwshNativeExit": 0,
+  "officialSummaryExit": 0,
+  "officialSummaryWallSeconds": 156.6964535,
+  "testsExecuted": 0,
+  "classification": "Preserve both conflicting observed exit values; no runtime PASS. Investigate wrapper with harmless diagnostics, no test/build retry."
+}

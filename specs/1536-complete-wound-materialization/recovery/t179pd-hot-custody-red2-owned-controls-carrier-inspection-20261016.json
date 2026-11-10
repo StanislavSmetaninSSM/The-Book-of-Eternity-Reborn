@@ -1,0 +1,313 @@
+{
+  "compiled_source": "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+  "actual_head": "2e16e392d26cd93416f3d521fccef67286643611",
+  "carrier": "cc8caa6ec2d1dd50c965b2cab9acbd3df6a3bfcd",
+  "chains": [
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/dotnet-test.log",
+      "raw_bytes": 1853575,
+      "raw_sha256": "4bf9d103228bd6a323cc198e4a42c9432025e7e64c2a66384a4709a15e630bb9",
+      "stored_sha256": "1b5cbf1445a2729087c2b950328d04f45f6fa78c0b41b24484b54f5dbb07e856"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-fr063-hot-joint-ready-custody-drift-integration-001.trx.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/fr063-hot-joint-ready-custody-drift-integration-001.trx",
+      "raw_bytes": 673794,
+      "raw_sha256": "45f245db8a2b50d75ac255c8a4ec10b378e90228ffc4f77d5253205f60766d76",
+      "stored_sha256": "e2f4f2bf50bc38ebfe721e4d943e86ce43d6841535d9f45b0dbf6abaed013f64"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/native-exit.json",
+      "raw_bytes": 809,
+      "raw_sha256": "5a53aae4abded561fb293ded74747a04a97928a0b4a80f3354fc9e8ca8fbbb06",
+      "stored_sha256": "5a53aae4abded561fb293ded74747a04a97928a0b4a80f3354fc9e8ca8fbbb06"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/plan.json",
+      "raw_bytes": 1803,
+      "raw_sha256": "6a1042a4463afce90bec32237cff3093e398452ad97c74f0242e70292a41e8be",
+      "stored_sha256": "6a1042a4463afce90bec32237cff3093e398452ad97c74f0242e70292a41e8be"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/stdout.log",
+      "raw_bytes": 171615,
+      "raw_sha256": "093855458f094788af4671c79fddf28c97ede007d5dd122f603d8b5513526771",
+      "stored_sha256": "122f5dee9444edf3dafa23827582503c68a8d56476b2004827e40043e0cd80a3"
+    },
+    {
+      "path": "t179pd-hot-custody-red2-owned-controls-red-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-203745-843-243674-a1f477c9886944a5a944e716563bc685-categories/summary.json",
+      "raw_bytes": 1382,
+      "raw_sha256": "185c6ee2349136f1862f5d3514ceaf622faa70cbaa001c78e0f74a1881142586",
+      "stored_sha256": "185c6ee2349136f1862f5d3514ceaf622faa70cbaa001c78e0f74a1881142586"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-joint-ready-custody-drift"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "2e16e392d26cd93416f3d521fccef67286643611",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-hot-joint-ready-custody-drift",
+        "Seconds": 13.6961064,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0645621,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0675554,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1364741,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:18.2469866",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 2,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-hot-joint-ready-custody-drift"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "2e16e392d26cd93416f3d521fccef67286643611",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 4.0856512,
+    "Descriptors": [
+      {
+        "Name": "fr063-hot-joint-ready-custody-drift-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-hot-joint-ready-custody-drift",
+        "Categories": [
+          "fr063-hot-joint-ready-custody-drift"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 3,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "trxCounters": {
+    "total": "3",
+    "executed": "3",
+    "passed": "2",
+    "failed": "1",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "cases": [
+    {
+      "name": "HotSubmission_ReadyReplacedAfterReadCannotIssueConsumedCustody",
+      "outcome": "Failed",
+      "replaceReady": true,
+      "missingDiagnosticTarget": true,
+      "binding": {
+        "SessionId": "session_hot_ready_custody",
+        "RequestId": "758c4c73e2c54061af5593a167f1be4b",
+        "SnapshotToken": "7D186FACF81EC03B84A23C56FF0A7A9BBD8E1561BCA0C91B809B1C8EF89AEB04",
+        "TurnNumber": 43
+      },
+      "generation": "264cd5bd20cd445fb15a8a6c30f5ab4f",
+      "readOrder": [
+        "game_state/control/validation_repair_ready.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/validation_repair_ready.json"
+      ],
+      "observedReadySha256": "244bb1ca24e9bbb09fa1aa19d7da373882d21860c866c13445064f911cd056c5",
+      "beforeDeleteSha256": "eaf8c10e854322514d709c0818d06e87be000061e87738ae54b4c666606d6074",
+      "sourceImageCount": 17,
+      "sourceImageHashes": {
+        "game_state/player/status_changes.json": null,
+        "game_state/player/experience.json": "f053720069352ba800d23b43ac70ba949e8ed3cc39ebd609c73a57cbd06f9117",
+        "game_state/core/player_status.json": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+        "game_state/meta/soul_state.json": "1629172313c71732af9c8619484fe22411bc7986c9a2fb03e03fe196ca3ddd77",
+        "game_state/misc/characteristics.json": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+        "game_state/player/stat_points.json": null,
+        "game_state/control/pending_turn_snapshot.json": "9a5247430c39e090f0a3a4b4f239f6fb2113e93165853c10e9e76f13d7a75964",
+        "game_state/control/pending_turn_snapshot.authority.json": "eb35f022ff306522864acfaf96fd0be77b629f5db493524316716b78a67ff166",
+        "input/turn_request.json": "b089ed1169d4735b0c75a5e73d453be9c6f27d132fe1516bbec4cccf75b719d4",
+        "ready/turn_complete.json": null,
+        "output/narrative_response.json": null,
+        "output/interface_updates.json": null,
+        "output/debug_logs.json": null,
+        "game_state/resources/resource_state.json": "9311aaa91ebc0aa36eea01ec9dcdaa09646f0b92a8b9a96d074de172c78542d6",
+        "game_state/resources/resource_history.json": "260c287b5a5a5cbba61efe05282f4e608da0c1f208a120051b621cdd1219b3bc",
+        "game_state/control/progression_schedule.json": "fd3ae165a8c49f533125a4d30ba7d3b503b0cc7eeff633673c0a49796df9dfae",
+        "game_state/wounds/wound_history.json": null
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4c1cd2fb4f374010b720eae7a62a7c8d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "d77880a585d375305d1c4771a1c01ffc341fe5eec254af79c835c287f36eb1bc"
+    },
+    {
+      "name": "HotSubmission_LegacyUnchangedReadyHasGenuineOrdinaryStage",
+      "outcome": "Passed",
+      "replaceReady": false,
+      "missingDiagnosticTarget": false,
+      "binding": {
+        "SessionId": "session_hot_ready_custody",
+        "RequestId": "c02763fee6c042048da694dff4b9ab0c",
+        "SnapshotToken": "F81EBDFF5C6AFE66C88E3A0FC0B7E5B0E5E3B76D6C626BBE7456ECFD8BCFB33C",
+        "TurnNumber": 43
+      },
+      "generation": "eefbadc895f24d159d6b85627ab3959d",
+      "readOrder": [
+        "game_state/control/validation_repair_ready.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/validation_repair_ready.json"
+      ],
+      "observedReadySha256": "dcd81871918a8a17780b2c01044ae8611711a6c326aae959a4330a39fd91aca8",
+      "beforeDeleteSha256": "dcd81871918a8a17780b2c01044ae8611711a6c326aae959a4330a39fd91aca8",
+      "sourceImageCount": 17,
+      "sourceImageHashes": {
+        "game_state/player/status_changes.json": null,
+        "game_state/player/experience.json": "f053720069352ba800d23b43ac70ba949e8ed3cc39ebd609c73a57cbd06f9117",
+        "game_state/core/player_status.json": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+        "game_state/meta/soul_state.json": "1629172313c71732af9c8619484fe22411bc7986c9a2fb03e03fe196ca3ddd77",
+        "game_state/misc/characteristics.json": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+        "game_state/player/stat_points.json": null,
+        "game_state/control/pending_turn_snapshot.json": "35e8124fd7ef15b0c22376f1508f8466b6394bc3261f7ca2fd3d3b61184d9f43",
+        "game_state/control/pending_turn_snapshot.authority.json": "4b860d27a8c4bf8f6bcf9cf4caefed0816db0672dc663d5c701decc379fa5432",
+        "input/turn_request.json": "de3ed147c48fd4fa1c22494295388c3b4a14e6eec66327933ba1a5f7c03299ff",
+        "ready/turn_complete.json": null,
+        "output/narrative_response.json": null,
+        "output/interface_updates.json": null,
+        "output/debug_logs.json": null,
+        "game_state/resources/resource_state.json": "dc6427fe266c2a9b16b8cd8ecf8564ce44e37bb4b20a34fd6f3f6bf3d315954d",
+        "game_state/resources/resource_history.json": "1f75de1e7f46d5373f153729008a67eaf4cac4999997cd3252fbe526366af600",
+        "game_state/control/progression_schedule.json": "3eb08f098f6c8c62f6c789588f3cceb54d9e6c409fd6cd5615935b1e8bf6c16d",
+        "game_state/wounds/wound_history.json": null
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-d37a849b69164ab18c549853067c7409",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "0c51a12d9a340a14a91bba784a4d3daa99f36357110493420243854953994d7b"
+    },
+    {
+      "name": "HotSubmission_LegacyAcceptedReadyDoesNotProveUnchangedSource",
+      "outcome": "Passed",
+      "replaceReady": true,
+      "missingDiagnosticTarget": false,
+      "binding": {
+        "SessionId": "session_hot_ready_custody",
+        "RequestId": "77e392d669d747ce8a01f73073623d91",
+        "SnapshotToken": "9FD4AD10DDE4CC1B6E00A3A9C6DF8C0D7BC0658C444BCA44644533522FEECA47",
+        "TurnNumber": 43
+      },
+      "generation": "6de1144ee4924b3086a4dfec34de4ff5",
+      "readOrder": [
+        "game_state/control/validation_repair_ready.json",
+        "game_state/control/pending_turn_snapshot.json",
+        "game_state/control/validation_repair_ready.json"
+      ],
+      "observedReadySha256": "37d8c69bc7431cd7538079fcab227dd9504dea7bec7d31cb6d5570d5cb3e6ff5",
+      "beforeDeleteSha256": "eaf8c10e854322514d709c0818d06e87be000061e87738ae54b4c666606d6074",
+      "sourceImageCount": 17,
+      "sourceImageHashes": {
+        "game_state/player/status_changes.json": null,
+        "game_state/player/experience.json": "f053720069352ba800d23b43ac70ba949e8ed3cc39ebd609c73a57cbd06f9117",
+        "game_state/core/player_status.json": "8c9cdaf126f0b97a757327f12fe86d66ea4c0c51fb852ebebcb1ffcc21dff2e3",
+        "game_state/meta/soul_state.json": "1629172313c71732af9c8619484fe22411bc7986c9a2fb03e03fe196ca3ddd77",
+        "game_state/misc/characteristics.json": "a29fbee3856171241586b449b0a785bcf60a12d7d802abae346a1de70a3d1ec5",
+        "game_state/player/stat_points.json": null,
+        "game_state/control/pending_turn_snapshot.json": "4c9e37e61097361d14a40e0f7557a13b58a3e5f45655359289a94dd1aa24f121",
+        "game_state/control/pending_turn_snapshot.authority.json": "b9ad8c98607e896ccde400f84411f56c52485aae1233282e36a93a70e37997c4",
+        "input/turn_request.json": "01b666f07e36f2e81643b36dae7e72ccee9dacd9d284df70d9b3fe5c84454bd1",
+        "ready/turn_complete.json": null,
+        "output/narrative_response.json": null,
+        "output/interface_updates.json": null,
+        "output/debug_logs.json": null,
+        "game_state/resources/resource_state.json": "f42a65a1ba5bcfe4ed17ccb18d74d13e4d9b8d71be36a7c644c6f056f2c24a00",
+        "game_state/resources/resource_history.json": "016436ab4a81b482d253e9f6d92101f887bf76a63ed3429570f3e0fd6097738e",
+        "game_state/control/progression_schedule.json": "5f1d28399024735790a656d34cc683f0e614196b50d044030d1f3abb2e7e93bf",
+        "game_state/wounds/wound_history.json": null
+      },
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-36f5f13661cd4b19ac45375ed25efd2d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "e4429c6e7b0791c9c08d97ac15a777ff149d1f78aa390df0e5e3df54c812489e"
+    }
+  ],
+  "qualification": "Two legacy controls PASS and one sole missing-export RED after real source/drift checks. No custody implementation or semantic admission. The post-wait 17-image equality and correlated-only-ledger assertions are execution/source evidence; this diagnostic retains before-images, not a second raw afterimage ledger."
+}

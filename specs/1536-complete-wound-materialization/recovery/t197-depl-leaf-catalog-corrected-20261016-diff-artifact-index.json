@@ -1,0 +1,8 @@
+{
+  "raw_path": "/tmp/t197-depl-leaf-catalog-corrected-20261016.diff",
+  "raw_bytes": 20206,
+  "raw_sha256": "4db4aa8ab17dad7c9b4dc572ca24bba2482757cf48383a95fc811bb54be19b2c",
+  "stored_path": "t197-depl-leaf-catalog-corrected-20261016.diff.gz",
+  "stored_sha256": "c62f333eed9cfb0f2e2a57478f90be38a283c64a066068ac96b5aadd8058c555",
+  "compression": "gzip mtime=0; exact raw unified diff including context blank-line spaces"
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "path": "t179pd-narrative-interface-nid01-verification-20261016-scoped-wording.diff.gz",
+    "raw_path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-scoped-wording.diff",
+    "raw_sha256": "4ae3ee989d0699b950caec2dcbfd11586a34067144e8710e166bf22a47e88b25",
+    "raw_bytes": 15286,
+    "stored_sha256": "7163182de9c1cb42cdc1002332433df0ff3def9998a09516828ec9f73329f10d",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  },
+  {
+    "path": "t179pd-narrative-interface-nid01-verification-20261016-source-tests-catalog-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-source-tests-catalog-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests/categories.json",
+      "tests/selection.json"
+    ]
+  },
+  {
+    "path": "t179pd-narrative-interface-nid01-verification-20261016-immutable-author-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-narrative-interface-nid01-verification-20261016-immutable-author-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "f186abee075654859d536073d8a582f213af0529",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.json"
+    ]
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "SHA": "a5bc70b592b90f874955a46b503199ba35c89d49",
+  "Base": "2c8e1df41b73407c6477df6d3670491429faf942",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "Bytes": 44932,
+      "SHA256": "c6b71e90924cb0735b2cebd96a693138465e00df9e898c05f9625a3606324bdb",
+      "RemoteExact": true
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Bytes": 4910,
+      "SHA256": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1655473,
+      "SHA256": "716c813fc314f73dba06f77804dfc61f02e681adf069f48ab6535b247560a019",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-cleanup-terminal-failure-remote.json",
+      "Bytes": 45022,
+      "SHA256": "f34f5bc6269877d5cd417a1e1d6a83fb368f02afe11921ab1ef46a500fc0c777",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+      "Bytes": 4334,
+      "SHA256": "b3d27b74f77f55e7b5857142a606e543e566c2fe07016c70226bd04e799d0218",
+      "RemoteExact": true
+    }
+  ]
+}

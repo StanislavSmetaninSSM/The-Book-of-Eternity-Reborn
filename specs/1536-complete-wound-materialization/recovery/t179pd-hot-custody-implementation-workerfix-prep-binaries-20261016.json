@@ -1,0 +1,22 @@
+{
+  "source_sha": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "phase": "Fresh BOTH/catalog and exact PlanOnly after C01/C02 new-worker-only fixture correction; ZERO tests. Affected independent SOURCE pending; no actual release.",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "c7feaec6c186c11ffa768852d5d0760a4c7ed5d586fbe39771fd0cc4b7ddb732"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "d7dafe845550f164ab048385392569275e2cabafcbe5763e9b83fea12812b848"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "c7feaec6c186c11ffa768852d5d0760a4c7ed5d586fbe39771fd0cc4b7ddb732"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "f6624d8a90e25aabe174ff6cb00f13522e9b857ca710840d0e99822c722780a7"
+    }
+  ]
+}

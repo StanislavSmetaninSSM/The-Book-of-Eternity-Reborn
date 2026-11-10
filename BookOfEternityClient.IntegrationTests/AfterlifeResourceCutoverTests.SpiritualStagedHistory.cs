@@ -20,7 +20,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     [Fact]
     public async Task OriginalSpiritualStagedHistory_ForgedBTransportWithoutAcceptedAIsRejected()
     {
-        await using var context = await CreateSpiritualStagedContinuationContextAsync();
+        var context = await CreateSpiritualStagedContinuationContextAsync();
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var history = await CommitSpiritualStagedHistoryAAsync(context);
         await context.FileSystem.WriteFileAtomicBytesAsync(SpiritualWoundCaptureCheckpointState.StatePath, history.BeforeCheckpoint);
         var actualPending = (await context.FileSystem.ReadFileBytesAsync(SpiritualWoundDecisionPendingState.StatePath))!;
@@ -46,11 +48,17 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using var lease = await coldFs.AcquireCanonicalWriteLeaseAsync();
         var evaluated = await cold.EvaluateSpiritualWoundContinuationDraftAsync(lease, forgedB,
             CreateSpiritualStagedEmptyResponse(forgedB));
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, scenario = "forged_b_without_a",
+            genuineA = history.A.ContinuationId, genuineB = history.B.ContinuationId, forgedB = forgedB.ContinuationId,
+            disposition = evaluated.Disposition.ToString(), evaluated.Issues }));
         Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, evaluated.Disposition);
         Assert.Null(evaluated.NextRequest);
-        Assert.NotEmpty(await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, forgedB,
-            CreateSpiritualStagedEmptyResponse(forgedB), new Dictionary<string, byte[]?>(), requireResolvedDraft: true));
+        var resolvedIssues = await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, forgedB,
+            CreateSpiritualStagedEmptyResponse(forgedB), new Dictionary<string, byte[]?>(), requireResolvedDraft: true);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { scenario = "forged_b_strict_resolution", issues = resolvedIssues }));
+        Assert.NotEmpty(resolvedIssues);
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, files);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { scenario = "forged_b_without_a", TransportBytesPreserved = true }));
     }
 
     /// <summary>
@@ -68,7 +76,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task OriginalSpiritualStagedHistory_ColdBRejectsChangedAcceptedCriticalText(string field)
     {
         var history = await CreatePreparedSpiritualStagedContextAsync(acceptedA: true);
-        await using var context = history.Context;
+        var context = history.Context;
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var b = Assert.IsType<SpiritualWoundContinuationRequest>(history.B);
         var candidate = CreateSpiritualStagedCorrectionB(history.AcceptedA);
         candidate["activeConflict"]!["exchangeLog"]![1]!["diceAudit"]!["criticalResult"]![field] =
@@ -80,9 +90,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using var lease = await coldFs.AcquireCanonicalWriteLeaseAsync();
         var result = await cold.EvaluateSpiritualWoundContinuationDraftAsync(lease, b,
             CreateSpiritualStagedEmptyResponse(b));
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, scenario = "accepted_critical_text",
+            field, a = history.A.ContinuationId, b = b.ContinuationId,
+            disposition = result.Disposition.ToString(), result.Issues }));
         Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, result.Disposition);
         Assert.NotEmpty(result.Issues);
+        Assert.Null(result.NextRequest);
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, files);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { scenario = "accepted_critical_text", field, TransportBytesPreserved = true }));
     }
 
     /// <summary>
@@ -107,7 +122,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task OriginalSpiritualStagedHistory_ColdReplayRejectsInvalidJournal(string mutation)
     {
         var history = await CreatePreparedSpiritualStagedContextAsync(acceptedA: true);
-        await using var context = history.Context;
+        var context = history.Context;
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var b = Assert.IsType<SpiritualWoundContinuationRequest>(history.B);
         var root = JsonNode.Parse(history.AfterCheckpoint!)!.AsObject();
         var body = root["checkpoint"]!;
@@ -124,11 +141,15 @@ public sealed partial class AfterlifeResourceCutoverTests
                 rows.Insert(0, duplicate);
                 break;
             case "wrong_owner":
-                await using (var foreign = await CreateSpiritualStagedContinuationContextAsync())
+            {
+                var foreign = await CreateSpiritualStagedContinuationContextAsync();
+                using var foreignOwned = new OriginalFixtureCompletion(foreign.RootPath,
+                    () => foreign.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
                 await using (var foreignLease = await foreign.FileSystem.AcquireCanonicalWriteLeaseAsync())
                     row["acceptedContinuationId"] = (await foreign.Validator.ReadSpiritualWoundContinuationAsync(foreignLease)).Request!.ContinuationId;
                 Assert.NotEqual(history.A.ContinuationId, row["acceptedContinuationId"]!.GetValue<string>());
                 break;
+            }
             case "broadened_fields":
                 row["dependentDraftFields"]!.AsArray().Add(new JsonObject
                 {
@@ -155,9 +176,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         await using var lease = await coldFs.AcquireCanonicalWriteLeaseAsync();
         var opened = await cold.OpenC2PrivateSessionAsync(lease);
         using var owner = opened.Session;
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, scenario = "invalid_journal",
+            mutation, a = history.A.ContinuationId, b = b.ContinuationId, opened.Disposition, opened.Issues }));
         Assert.Equal("blocked", opened.Disposition);
         Assert.NotEmpty(opened.Issues);
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, files);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { scenario = "invalid_journal", mutation, TransportBytesPreserved = true }));
     }
 
     /// <summary>
@@ -170,7 +194,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task OriginalSpiritualStagedHistory_GmAndWorkerCannotWriteAcceptedJournal()
     {
         var prepared = await CreatePreparedSpiritualStagedContextAsync(acceptedA: true);
-        await using var context = prepared.Context;
+        var context = prepared.Context;
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         var b = Assert.IsType<SpiritualWoundContinuationRequest>(prepared.B);
         var afterCheckpoint = Assert.IsType<byte[]>(prepared.AfterCheckpoint);
         var candidate = Encoding.UTF8.GetBytes(CreateSpiritualStagedCorrectionB(prepared.AcceptedA).ToJsonString());
@@ -180,9 +206,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Empty(await context.Validator.ValidateSpiritualWoundContinuationDraftAsync(lease, b, response,
                 new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] = candidate }));
             var files = await ReadSpiritualContinuationTransportFilesAsync(context);
-            Assert.NotEmpty(await context.Validator.ValidateSpiritualWoundContinuationDraftAsync(lease, b, response,
+            var privateWriteIssues = await context.Validator.ValidateSpiritualWoundContinuationDraftAsync(lease, b, response,
                 new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] = candidate,
-                    [SpiritualWoundCaptureCheckpointState.StatePath] = afterCheckpoint }));
+                    [SpiritualWoundCaptureCheckpointState.StatePath] = afterCheckpoint });
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, scenario = "gm_private_journal_write",
+                a = prepared.A.ContinuationId, b = b.ContinuationId, issues = privateWriteIssues }));
+            Assert.NotEmpty(privateWriteIssues);
             await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, files);
             await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, candidate);
         }
@@ -194,9 +223,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         var gate = new GmWorkerApplyGate(context.FileSystem,
             () => throw new InvalidOperationException("Private journal proposal reached ordinary validation."));
         var applied = await gate.ApplyReservedAsync(packet.Proposal, packet.Profile, packet.Task.SessionGeneration);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath, scenario = "worker_private_journal_write",
+            result = applied.Result.ToString(), applied.AppliedFiles, applied.RejectionReasons }));
         Assert.Equal(ApplyGateResult.Rejected, applied.Result);
         Assert.Empty(applied.AppliedFiles);
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, beforeApply);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { scenario = "gm_and_worker_private_journal_write",
+            TransportBytesPreserved = true, AppliedFileCount = applied.AppliedFiles.Count }));
     }
 
     /// <summary>

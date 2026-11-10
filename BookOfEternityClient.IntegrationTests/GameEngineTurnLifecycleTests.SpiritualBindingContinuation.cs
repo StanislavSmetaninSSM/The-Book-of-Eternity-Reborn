@@ -44,24 +44,27 @@ public sealed partial class GameEngineTurnLifecycleTests
         var observed = new SpiritualStagedObservation();
         ResourceMaterializationTestContext? physical = null;
         GameEngine? engine = null;
+        SpiritualLifecyclePublicationWitness? witness = null;
         var bPublished = 0;
         var interrupted = 0;
         var milestones = new System.Collections.Concurrent.ConcurrentQueue<string>();
         var hooks = new FileSystemManagerHooks
         {
-            AfterPhysicalFilePublishedAsync = async path =>
+            LocalPublicationObserver = (phase, index) =>
             {
-                if (physical is null) return;
-                foreach (var relative in new[] { SpiritualWoundOpportunityReceiptState.StatePath,
-                    ResourceMaterializationContract.StatePath, WoundIdentityState.StatePath, "stories/chaos_sea.jsonl" })
-                    if (path == physical.FileSystem.ResolvePath(relative)) milestones.Enqueue(DateTime.UtcNow.ToString("O") + " " + relative);
-                if (path != physical.FileSystem.ResolvePath("game_state/control/validation_repair_request.json")) return;
-                var root = ParseDependentSpiritualBytes(await ReadSpiritualStagedPublishedBytesAsync(path));
-                if (root["spiritualWoundContinuation"]?["dependentDraftFields"] is JsonArray fields &&
-                    fields.Count == 1 && fields[0]?["jsonPointer"]?.GetValue<string>() == "/activeConflict/controlState")
+                if (witness is null) return;
+                foreach (var publication in witness.Observe(phase, index))
                 {
-                    milestones.Enqueue(DateTime.UtcNow.ToString("O") + " terminal B published");
-                    Volatile.Write(ref bPublished, 1);
+                    if (phase != TrustedLocalPublicationPhase.Committed || publication.Bytes is null) continue;
+                    milestones.Enqueue(DateTime.UtcNow.ToString("O") + " " + publication.Path);
+                    if (publication.Path != "game_state/control/validation_repair_request.json") continue;
+                    var root = ParseDependentSpiritualBytes(publication.Bytes);
+                    if (root["spiritualWoundContinuation"]?["dependentDraftFields"] is JsonArray fields &&
+                        fields.Count == 1 && fields[0]?["jsonPointer"]?.GetValue<string>() == "/activeConflict/controlState")
+                    {
+                        milestones.Enqueue(DateTime.UtcNow.ToString("O") + " terminal B committed");
+                        Volatile.Write(ref bPublished, 1);
+                    }
                 }
             },
             BeforeCanonicalWriteLockOpenAsync = () =>
@@ -77,7 +80,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             PlayerAction = "Удержать встречное духовное давление.", Timestamp = DateTime.UtcNow.ToString("O"),
             PreGeneratedDices1d20 = [5, 15, 13, strong ? 11 : 10]
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
             await AfterlifeResourceCutoverTests.SeedOriginalLastBindingInputsAsync(original, strong, mixed: false, seedIntake: false);
             var chat = Assert.IsType<JsonObject>(await original.ReadJsonAsync("game_state/history/chat_log.json"));
@@ -95,7 +98,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             await original.WriteExactJsonAsync("input/turn_request.json", JsonSerializer.Serialize(request, SnapshotHashJsonOpts));
             await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, backup, "binding-original");
         }, hooks: hooks);
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
         physical = context;
+        witness = new(context.FileSystem, text => _directGachaOutput?.WriteLine(text),
+            "game_state/control/validation_repair_request.json", SpiritualWoundCaptureCheckpointState.StatePath,
+            SpiritualWoundOpportunityReceiptState.StatePath, ResourceMaterializationContract.StatePath,
+            WoundIdentityState.StatePath, "stories/chaos_sea.jsonl");
         var originalDraft = await AfterlifeResourceCutoverTests.WriteOriginalLastBindingDraftAsync(context, strong, "lost");
         await WriteBindingLifecycleOutputsAsync(context, request, strong);
         var originalImages = await ReadSpiritualStagedPhysicalImagesAsync(context);
@@ -110,10 +119,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (strong) Assert.IsAssignableFrom<OperationCanceledException>(warm.Error);
             else Assert.True(warm.Error is null && warm.Result is true, $"{warm.Error}; {logger.Describe()}");
         }
+        witness.AssertSettled("binding-warm-actors-settled");
+        Assert.Equal(1, Volatile.Read(ref bPublished));
         var acceptedEngine = engine!;
         if (strong)
         {
             Assert.Equal(1, interrupted);
+            witness.RequireLatestCurrent("game_state/control/validation_repair_request.json");
             Assert.Equal(41, GetPrivateField<GameLoop>(engine!, "_gameLoop").TurnNumber);
             Assert.Equal(2, observed.Phase.FileResponses);
             var held = await ReadSpiritualStagedPhysicalImagesAsync(context);
@@ -142,6 +154,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 responder, stop, coldInput, observed.Phase, logger, TimeSpan.FromMinutes(8));
             Assert.True(cold.Error is null && cold.Result is false, $"{cold.Error}; {logger.Describe()}");
         }
+        witness.AssertSettled("binding-final-actors-settled");
         Assert.Equal(3, observed.Phase.Requests.Count);
         Assert.Equal(3, observed.Phase.FileResponses);
         Assert.NotEqual(observed.A!.ContinuationId, observed.B!.ContinuationId);

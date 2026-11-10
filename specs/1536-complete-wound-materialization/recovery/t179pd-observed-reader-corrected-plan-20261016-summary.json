@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "fr063-observed-original-reader",
+    "fr063-joint-late-completion"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-observed-original-reader",
+      "reason": "One genuine original/current/G/default-reader control followed by missing observed API causal RED; no production success logic. Strict per-test finally cleanup and raw control diagnostics.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "Mandatory G5 first actual after any test/catalog/selection correction; exact existing v2 full union/story/progression/inert repeat/strict cleanup. Freeze and separate EVIDENCE before reader causal RED.",
+      "contracts": [
+        "#1536 T179-Pd.3a accepted bounded observed-original reader DESIGN; initial test-first cycle only. Fresh BOTH/catalog/PlanOnly → independent SOURCE/FIXTURE/SELECTION → first Late2 → frozen separate EVIDENCE → explicitly released causal RED1. Stop unexpected failure; no admission/M3/activation grant."
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "db655665a0f109b39172b4d6806a680bb3cb76e6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1166046,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0520525,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1360344,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040644,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:07.5726896",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 3,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "fr063-joint-late-completion-integration-001",
+      "fr063-observed-original-reader-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

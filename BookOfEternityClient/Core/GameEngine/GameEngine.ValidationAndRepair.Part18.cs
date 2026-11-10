@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private async Task<ConcurrentTerminalSignalResolution> ResolveConcurrentActiveTerminalSignalsAsync(
         TerminalSignalSnapshot terminalSignals,
         ReadySignalMetadata? completionSignal,

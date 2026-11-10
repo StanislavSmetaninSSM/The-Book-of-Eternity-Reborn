@@ -1,0 +1,51 @@
+{
+  "kind": "D01_SOURCE_REVIEW_ARTIFACTS",
+  "candidate": "4810d2ad2ac5121aacabb21bf49cfb0b56a0da09",
+  "artifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-original-hold-20261018.json",
+      "bytes": 7640,
+      "sha256": "9eaa57967d3091b556bd131cdbc14b02cd3c118c1ee330679afcf4fe8af87cc6"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-original-hold-20261018.md",
+      "bytes": 1148,
+      "sha256": "c831e6d89ab2fe07e783641c4fbb0e022356f106ffe3bb0657c35c0ce07273ad"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-independent-review-20261018.json",
+      "bytes": 11072,
+      "sha256": "9244d70026710a46a038b3583d42f5962bf201559f8de7fde2481866190b8822"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-independent-review-20261018.md",
+      "bytes": 1740,
+      "sha256": "f67163324306444afd9732513ea5703f9cda35754bcee4b52477f06d9bd3bee7"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-focused-checks-0db1f418-20261018.json",
+      "bytes": 112224,
+      "sha256": "921e4f34c9de9a4f3989dda2ccd97ff1fe9b3e71c9f7c749bedb438e4d6f3267"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_source_review.py",
+      "bytes": 9426,
+      "sha256": "e226fd6c1b54d1afe938a5af0f5b92f0c9a522ec533d3d54c189c66908507815"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d01-source-buffered-emitter-proof-0db1f418.json",
+      "bytes": 1102,
+      "sha256": "ab6b5816bac215872931312dbb52a5c8f2819a2912fab223f3c53b0bcad1d99c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_source_fault_paths.py",
+      "bytes": 2710,
+      "sha256": "4d121ce2f88c8941c7d6ab260aa30d928241f72102abf2616fd087a9f33691bc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d01-phase-original-source-0db1f418.py",
+      "bytes": 14092,
+      "sha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10"
+    }
+  ]
+}

@@ -135,7 +135,8 @@ internal static partial class EffectAcceptedTurnPlanner
                 if (owner._woundPreparations.TryGetValue(insertion, out var retained))
                     return retained;
                 var previousSources = owner._currentWoundRouting?.Sources ?? owner._plan.SourceAuthority;
-                var sources = previousSources.WithNewPreparedWound(prepared!);
+                var sources = insertion.IsCombatHealing ? previousSources.WithCombatWoundInsertion(insertion)
+                    : previousSources.WithNewPreparedWound(prepared!);
                 issues.AddRange(sources.Issues);
                 var carriers = state!.EffectCarriers!;
                 var identity = state.EffectIdentity!;
@@ -144,14 +145,21 @@ internal static partial class EffectAcceptedTurnPlanner
                 var catalog = EffectCarrierCatalog.Build(carriers);
                 issues.AddRange(catalog.Issues);
                 var replacedRootRefs = new HashSet<string>(StringComparer.Ordinal);
+                if (insertion.IsCombatHealing && previousSources.TryResolveWoundGroup(
+                        new(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId), out var oldCombatGroup))
+                    foreach (var row in oldCombatGroup.ApplicationRootLineage)
+                        if (row.ApplicationRef is not null) replacedRootRefs.Add(row.ApplicationRef);
                 foreach (var batch in prepared!.EffectOperationBatches.Where(batch => batch.TransitionAuthority.TransitionKind == "worsen"))
                     if (previousSources.TryResolveWoundGroup(
                             new EffectIdentitySourceGroup(prepared.Binding.Realm, "wound", batch.PreparedWoundId), out var previousGroup))
                         foreach (var row in previousGroup.ApplicationRootLineage)
                             if (row.ApplicationRef != null)
                                 replacedRootRefs.Add(row.ApplicationRef);
+                var retainedAddedRoots = insertion.IsCombatHealing
+                    ? addedRoots.Where(root => insertion.Wound.Lifecycle == "active" && insertion.Wound.Consequences.OwnedEffectSources.RootBindings.Any(r => r.EffectId == root.EffectId))
+                    : addedRoots;
                 var roots = (owner._currentWoundRouting?.Roots ?? owner._plan.WoundApplicationRootEffectBindings)
-                    .Where(root => !replacedRootRefs.Contains(root.ApplicationRef)).Concat(addedRoots).ToArray();
+                    .Where(root => !replacedRootRefs.Contains(root.ApplicationRef)).Concat(retainedAddedRoots).ToArray();
                 if (issues.Count != 0 || parsed.State is null)
                     return null;
                 var previousLineage = owner._currentWoundRouting?.Lineage ?? WoundReactionLineageAuthority.Build(

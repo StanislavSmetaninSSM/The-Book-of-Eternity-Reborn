@@ -22,7 +22,9 @@ internal enum SessionFinalizationCheckpoint
     IncarnationOperationBound,
     AcceptedOutcomeValidatedBeforeMaterialization,
     LifeEvaluationRequestDispatchedBeforeWait,
-    RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites
+    RawAcceptedOutcomeValidatedBeforeLifeEvaluationFinalWrites,
+    MortalJointCommonReadbackSettledBeforeProgression,
+    MortalJointCustodyCaptureCompletedBeforePreparation
 }
 
 internal sealed class GameEngineSessionFinalizationHooks
@@ -160,6 +162,26 @@ public partial class GameEngine
         _logger = logger;
     }
 
+    /// <summary>
+    /// Captures independent response DATA for direct test observations without exposing the mutable runtime response.
+    /// </summary>
+    /// <returns>
+    /// A serialized copy of the currently installed response, or <see langword="null"/> when no response is installed.
+    /// The snapshot does not grant validation, publication or cleanup authority.
+    /// </returns>
+    internal JsonElement? CaptureCurrentResponseForTesting() =>
+        _lastResponse is null ? null : JsonSerializer.SerializeToElement(_lastResponse, JsonOpts);
+
+    /// <summary>
+    /// Captures detached player wound notification DATA, which is intentionally excluded from the serialized response.
+    /// </summary>
+    /// <returns>
+    /// An independent copy of the installed notification array, or <see langword="null"/> when none is installed.
+    /// This observation does not consume queued notifications or grant publication or cleanup authority.
+    /// </returns>
+    internal string[]? CaptureCurrentWoundNotificationsForTesting() =>
+        _lastResponse?.WoundNotifications?.ToArray();
+
     internal void ConfigureSessionFinalizationHooksForTesting(
         GameEngineSessionFinalizationHooks? hooks)
     {
@@ -172,11 +194,32 @@ public partial class GameEngine
         _snapshotPublicationHooks = hooks;
     }
 
-    private Task InvokeSessionFinalizationCheckpointAsync(
+    /// <summary>
+    /// Invokes the real finalization callback dispatcher for a bounded typed diagnostic control.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// Actual checkpoint value forwarded unchanged; this entry grants no publication authority.
+    /// </param>
+    /// <returns>
+    /// The real dispatch task, including fresh-boundary lifetime and original callback failures.
+    /// </returns>
+    internal Task InvokeSessionFinalizationCheckpointForTestingAsync(SessionFinalizationCheckpoint checkpoint) =>
+        InvokeSessionFinalizationCheckpointAsync(checkpoint);
+
+    /// <summary>
+    /// Runs an existing finalization callback inside a fresh recovery-validation boundary.
+    /// </summary>
+    /// <param name="checkpoint">
+    /// Actual reached checkpoint passed unchanged to the callback.
+    /// </param>
+    /// <returns>
+    /// Completion after the callback settles; its exception remains authoritative.
+    /// </returns>
+    private async Task InvokeSessionFinalizationCheckpointAsync(
         SessionFinalizationCheckpoint checkpoint)
     {
-        return _sessionFinalizationHooks?.AtCheckpointAsync?.Invoke(checkpoint)
-               ?? Task.CompletedTask;
+        if (_sessionFinalizationHooks?.AtCheckpointAsync is not { } callback) return;
+        await _fs.InvokeRecoveryValidationCallbackAsync(() => callback(checkpoint));
     }
 
     private Task InvokeSnapshotFileCapturedAsync(string relativePath) =>
@@ -194,11 +237,20 @@ public partial class GameEngine
         else
             Console.InputEncoding = System.Text.Encoding.UTF8;
 
+        var stagedBrowserRecovery = false;
+        try { stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged"; }
+        catch (Exception failure) when (failure is (InvalidOperationException or InvalidDataException or JsonException)
+            && failure is not CoordinatedStatePublicationUncertainException)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{BrowserRecoveryMessage}[/]");
+            return;
+        }
         await _stateManager.BootstrapLocalStorageAsync();
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
+        if (!stagedBrowserRecovery)
+            await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
 
         while (_isRunning)
         {

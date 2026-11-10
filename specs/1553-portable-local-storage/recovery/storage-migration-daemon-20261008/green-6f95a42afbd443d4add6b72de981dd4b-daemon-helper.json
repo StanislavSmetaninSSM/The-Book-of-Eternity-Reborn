@@ -1,0 +1,1 @@
+{"ProcessId":151978,"CurrentCut":{"Mode":"cohort-change","Phase":"read","Path":"game_state/control/pending_turn_snapshot.json","Count":1},"Completed":true,"ExitCode":0,"Contentions":0,"CanonicalReads":24,"RecoveryPhases":0}

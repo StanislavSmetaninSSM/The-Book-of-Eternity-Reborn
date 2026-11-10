@@ -1,0 +1,79 @@
+{
+  "kind": "ROOT_ACCEPT_BOUNDED_PREINTAKE_EXISTING_ROUTE_SOURCE_HANDOFF_ONLY",
+  "base": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+  "reviewedCarrier": "5e3bfaded1bc854a6bb49a871e625d9d794fc542",
+  "verdict": "ACCEPT_SINGLE_ROUTE_SOURCE_ASSESSMENT_AND_HANDOFF_ONLY",
+  "testsOnlyVerdict": "NO_NEW_TESTS_ONLY_STAGE_ON_THIS_CANDIDATE",
+  "evidenceVerdict": "NO_NEW_EXECUTION_OR_PASS_RED; original accepted evidence and failed histories unchanged",
+  "sourceClosure": "Existing genuine pre-intake N validator before FIRST/eligible correction intake, real Error-only outward consumption; Warning-only discarded, engineSkipped not Passed; publicwriteowningreturn distinct from outeroperationclose; cold bypass preserved. NI-D01 adapter engineering already authorized.",
+  "concreteRemainingBoundary": "Corrected route lacks actual prepublication N→I sequence. NEW mandatory narrative-observation→raw-intake binding would add v2admission semantics beyond intended NI preseal familyconsumer; optional retention has no active newobservationconsumer. No source-drift refusal oracle selected, structural missingAPI/prerequisite-only tests duplicate existingcontrols.",
+  "engineeringSurfaces": [
+    "actual ValidationService narrative invocation and closed-role physical occurrence observations",
+    "real projector/publicwritereturn+owningrelease and laterafterimage; distinct outerfinalization",
+    "engine frame/G/route/iteration handoff across inspection/publicvalidator/intake leases",
+    "explicit raw-intake NEW-consumer admissionpolicy OR lawful NI-complete intendedpreseal consumer"
+  ],
+  "sourceBinding": {
+    "pins": 24,
+    "ranges": 22,
+    "frozenBase": "1afc307292b8ddba49cd1aab0b7bec7a496848da",
+    "wipChangedPinnedPaths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  },
+  "verifiedWipDelta": {
+    "changedPaths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-final-delta-github-1afc3072-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-source-inspection-1afc3072-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-candidate-1afc3072-20261017-v2.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-root-final-checkpoint-1afc3072-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-1afc3072-20261017.json",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "githubFiles": 13,
+    "completeConsecutiveDeltas": 64,
+    "trackedPaths": 55112
+  },
+  "references": [
+    {
+      "path": "/tmp/t179pd-rp01-preintake-route-source-independent-review-20261017.md",
+      "bytes": 3139,
+      "sha256": "d03a41447e2cc1ec13c585f54354908710e3311d0e30518e50f94a32e33b2a90"
+    },
+    {
+      "path": "/tmp/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+      "bytes": 4237,
+      "sha256": "f8e3610d268a206690e34a6b85d5ba94197f551abf42a17ca5b4b2f9ab629a4c"
+    },
+    {
+      "path": "/tmp/t179pd-rp01-preintake-route-source-independent-check-20261017.json",
+      "bytes": 43053,
+      "sha256": "9e556469ddcc55270dbda7245a804c740b687b31f01f642dad778d26a0b59c7c"
+    },
+    {
+      "path": "/tmp/t179pd-rp01-preintake-root-source-inspection-1afc3072-20261017.json",
+      "bytes": 1156,
+      "sha256": "ecb39d57a350f180b9d2c041d58a6b6958de010028dc0187c623a1e410fd64d8"
+    },
+    {
+      "path": "/tmp/t179pd-rp01-preintake-wip-delta-github-5e3bfade-20261017.json",
+      "bytes": 11061,
+      "sha256": "c0d5fa0821224baa24c74fdd17ded71c6ee3060bc70623ad1cf4c171a16fea36"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-5e3bfade-20261017.json",
+      "bytes": 22319,
+      "sha256": "0a54c50893ef2b2809ec3354b7a7a8bcf82ae5c646c91f61ba402e58b162f2d8"
+    }
+  ],
+  "authorizedNextAction": "Save exact independentreview/support/Rootdecision and WIPrecovery; derive completedSOURCEassessment status only, keepproducerconsumerTDDopen; nonforcecommit/push/exactremote/immediatenewGitHubdelta/rootfinalreceipt. No further source/tests/build/discovery/runtime/CI/ZIP action.",
+  "holds": [
+    "HOT/sourcehistory/full3e/S/B/D9/M3/F1/T197/newQTE/A3NO/WindowsrawEVIDENCE",
+    "no forcepush/merge/mainchanges/deletion/issuesclose/newcredentials/security or committedactionreplay"
+  ],
+  "utc": "2026-10-17T19:23:30.530366+00:00"
+}

@@ -1,0 +1,14 @@
+{
+  "classification": "ROOT external metadata schema handling failure before source/Git mutation; not project/test/runtime result",
+  "operation": "publication-input construction expected checks.values() but rawchecks is list; next helper read missing unpublished manifest",
+  "chunkId": "cd861e",
+  "exitCode": 1,
+  "firstScriptCompleteReturnedOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 3, in <module>\nAttributeError: 'list' object has no attribute 'values'\n",
+  "helperOriginalLog": "/workspace/boe-cloud-tools-20261014/fr063-joint-final-caller-cleanup-wiring-publication.log",
+  "helperOriginalLogSHA256": "f3157141b407bfbf180dd8764c93a3cb39e4b5a35c5cf0ed4c7b0674f5b47f10",
+  "helperCompleteReturnedOutput": "Traceback (most recent call last):\n  File \"/workspace/boe-cloud-tools-20261014/publish-fr063-stopped-wip.py\", line 7, in <module>\n    manifest=json.loads((out/(a.slug+'-publication-input.json')).read_text());assert manifest['authorSTOP']=='FINAL STOPPED; no pending tools/writes' and manifest['base']==a.base\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py\", line 1027, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/workspace/boe-cloud-tools-20261014/fr063-joint-final-caller-cleanup-wiring-publication-input.json'\n",
+  "originalCommand": "immutable toolhistory cd861e; no external Source code executed",
+  "primary": "same5authorpaths dirty; writerSTOPPED; no staged/commit/push from failedattempt",
+  "laterCorrection": "fresh metadata adapter handles actual list rows; new corrected log; original outputs unchanged",
+  "utc": "2026-10-14T13:28:27.336715+00:00"
+}

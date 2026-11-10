@@ -1,0 +1,1017 @@
+{
+  "observedHead": "991a078886366d93a2643ab3dfdf6da849ff66dc",
+  "compiledSource": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+  "historicalBinaryAnchorManifestSha256": "2929a7401ada70b4d688d60dac47e90c3283ce0500b61a5a17527a542d9ba406",
+  "historicalBinaryManifestRawSha256": "134cee5bb5599e3b6bf5174bce636f8c90755ba12c598134fb048aeddaa9e3eb",
+  "stages": [
+    {
+      "kind": "positive",
+      "testedSource": "76701d7ed5d89da21be2b9bf2672c80464cf1a2c",
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-positive-v3-frozen-76701d7ed-20261015T093220Z",
+      "manifestSha256": "73d348f8b3bb7cc98b38aa59c6504a9bc54dab2cba810143b3089912eee0022a",
+      "verifiedRawCompressedChains": 36,
+      "sourceGitPinsVerified": 212,
+      "historicalBinaryPins": 11,
+      "frozenGuardedPrePostMatched": true,
+      "nativeExit": 0,
+      "wallTime": "00:02:39.8459178",
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "passed": 2,
+      "failed": 0,
+      "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+      "exactPlanAndNoExecutionConfirmed": true,
+      "caseResults": [
+        {
+          "testId": "e7226b66-b292-1099-a3d0-fff51e45e550",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NarrativeNormalizesBeforeFirstCheckpointAndTimestampCorrectionSealsExactImage",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "f297f8b8-7147-4a29-c7ec-8fb0b54120fe",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ExactPresentDraftColdContinuationRetainsAcceptedScene",
+          "outcome": "Passed"
+        }
+      ],
+      "strictCleanupReceipts": 3,
+      "rootsAbsentAtIndependentReview": true,
+      "children": [
+        {
+          "testId": "f297f8b8-7147-4a29-c7ec-8fb0b54120fe",
+          "pid": 28448,
+          "parentPid": 28226,
+          "scenario": null,
+          "turn": 43,
+          "completed": true,
+          "refusalVerified": false,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 28448,
+            "ParentProcessId": 28226,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": false,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7d9da462b0b04788afc7e976003de00d",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-fb9696b2624d4973b2ca0e7c41cace14"
+        }
+      ],
+      "supplement": "specs/1536-complete-wound-materialization/recovery/fr063-positive-v3-cold-binding-native-root-readback-20261015T093623Z.json",
+      "supplementSha256": "ad6ac09fa9292abe252b638744c5687b357c47a002c871678fa6114c5fc62797"
+    },
+    {
+      "kind": "scene",
+      "testedSource": "72be660ca3abc4b51046c5cf477dd74fccd98b49",
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-scene-v3-frozen-72be660ca-20261015T093715Z",
+      "manifestSha256": "dcb489af62c3092ed204e174b4cab7ace0acc2207d554508c3353b7fd192702b",
+      "verifiedRawCompressedChains": 36,
+      "sourceGitPinsVerified": 213,
+      "historicalBinaryPins": 11,
+      "frozenGuardedPrePostMatched": true,
+      "nativeExit": 0,
+      "wallTime": "00:06:47.2665361",
+      "methods": 1,
+      "cases": 6,
+      "descriptors": 1,
+      "passed": 6,
+      "failed": 0,
+      "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "exactPlanAndNoExecutionConfirmed": true,
+      "caseResults": [
+        {
+          "testId": "0ba89dfa-d1d4-bd25-3cc4-0d8ee88faa83",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_timestamp\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "bb6b14a3-121e-97e4-80e5-bcaeac4b8050",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_formatting\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "af3b9740-30ad-8b31-d9aa-3d76593be95f",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_stale\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "efad4e14-dd51-271e-9a1a-8a2d6999560e",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_missing\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "13ead2ac-4258-db90-b528-7b86049c4219",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_scene_prefix\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "da5f158c-3d35-aeda-943f-5c62771e5f48",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyChangedOutputFreshProcessRefusesWithoutMutation(corruption: \"output_normalization\")",
+          "outcome": "Passed"
+        }
+      ],
+      "strictCleanupReceipts": 12,
+      "rootsAbsentAtIndependentReview": true,
+      "children": [
+        {
+          "testId": "0ba89dfa-d1d4-bd25-3cc4-0d8ee88faa83",
+          "pid": 29120,
+          "parentPid": 28949,
+          "scenario": "output_timestamp",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29120,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-3b0ead8c887e47119373fef4a99cdea8",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-32d6f16e82bb44cbb44ccbb7a183218f"
+        },
+        {
+          "testId": "bb6b14a3-121e-97e4-80e5-bcaeac4b8050",
+          "pid": 29496,
+          "parentPid": 28949,
+          "scenario": "output_formatting",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29496,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-6dd9571d4e9140eda2d1add0eed6dc98",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7422f4983e044f258d28f560aa509879"
+        },
+        {
+          "testId": "af3b9740-30ad-8b31-d9aa-3d76593be95f",
+          "pid": 29257,
+          "parentPid": 28949,
+          "scenario": "output_stale",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29257,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5af69c83f8334c9c87c5369a09aac08d",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0b6e8aeaf65c46c9ad0ba5f1a47dbf72"
+        },
+        {
+          "testId": "efad4e14-dd51-271e-9a1a-8a2d6999560e",
+          "pid": 29459,
+          "parentPid": 28949,
+          "scenario": "output_missing",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29459,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e062d3e55a5143feb3d7cba0bd35465b",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cad23e7bdeac4b098462e3c353808d6f"
+        },
+        {
+          "testId": "13ead2ac-4258-db90-b528-7b86049c4219",
+          "pid": 29545,
+          "parentPid": 28949,
+          "scenario": "output_scene_prefix",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29545,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-40ccfc9d2b28498aa5e73a4ab0b1412d",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-84fac6c0dc6e4cc4b61c445e70aff5fa"
+        },
+        {
+          "testId": "da5f158c-3d35-aeda-943f-5c62771e5f48",
+          "pid": 29348,
+          "parentPid": 28949,
+          "scenario": "output_normalization",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 29348,
+            "ParentProcessId": 28949,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4f25e743039c4f91a5e70c343f764ac8",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-8eac9341c7aa43d4b7c760d1419dc3f3"
+        }
+      ],
+      "supplement": "specs/1536-complete-wound-materialization/recovery/fr063-scene-v3-cold-binding-native-root-readback-20261015T094532Z.json",
+      "supplementSha256": "2cf51710131f2f1ee2b5035dab9d8b50df51a5d04f4a12521ab5643cc763f9df"
+    },
+    {
+      "kind": "binding",
+      "testedSource": "e8675add3c914a03dd4a574b5cf9ef45529488bd",
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-binding-v3-frozen-e8675add3-20261015T094626Z",
+      "manifestSha256": "03e1a9ebaf463b1a78314e109976ba8df82414f4a23b93bad6ad138c5e534347",
+      "verifiedRawCompressedChains": 36,
+      "sourceGitPinsVerified": 216,
+      "historicalBinaryPins": 11,
+      "frozenGuardedPrePostMatched": true,
+      "nativeExit": 0,
+      "wallTime": "00:05:23.8530583",
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "passed": 5,
+      "failed": 0,
+      "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "exactPlanAndNoExecutionConfirmed": true,
+      "caseResults": [
+        {
+          "testId": "8f9fec6d-0444-d2a0-73c6-4d6b7c022e5b",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_transition_rehash\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "7ca8085c-80c0-83ca-33b3-32c0313846ed",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_local_rehash\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "5a1a9c08-1bfe-6a6e-00cb-8b40a8fe805f",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_missing\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "a8d3aa87-4912-9424-9461-52da5e71659c",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_version\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "87a0d231-8913-553f-be32-f1f042457219",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignBindingFreshProcessRefusesWithoutMutation(corruption: \"binding_wound_rehash\")",
+          "outcome": "Passed"
+        }
+      ],
+      "strictCleanupReceipts": 10,
+      "rootsAbsentAtIndependentReview": true,
+      "children": [
+        {
+          "testId": "8f9fec6d-0444-d2a0-73c6-4d6b7c022e5b",
+          "pid": 30397,
+          "parentPid": 30142,
+          "scenario": "binding_transition_rehash",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 30397,
+            "ParentProcessId": 30142,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f9c0a727083d42b590a871f48d318eaf",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4295386ea04843d89d5b4d8a9dc7fa2c"
+        },
+        {
+          "testId": "7ca8085c-80c0-83ca-33b3-32c0313846ed",
+          "pid": 30252,
+          "parentPid": 30142,
+          "scenario": "binding_local_rehash",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 30252,
+            "ParentProcessId": 30142,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9add38b8b90f4f53995e2b3ee63be4c0",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-4489e025ecd141d386e4d86fb1a798e2"
+        },
+        {
+          "testId": "5a1a9c08-1bfe-6a6e-00cb-8b40a8fe805f",
+          "pid": 30356,
+          "parentPid": 30142,
+          "scenario": "binding_missing",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 30356,
+            "ParentProcessId": 30142,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e9cdde09b4f742aca3e751d3f269378f",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d2778aea86ae416f9e261d3977f97dd6"
+        },
+        {
+          "testId": "a8d3aa87-4912-9424-9461-52da5e71659c",
+          "pid": 30302,
+          "parentPid": 30142,
+          "scenario": "binding_version",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 30302,
+            "ParentProcessId": 30142,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-c39da67e8d48416999d665edb18d38ea",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0741d138c205426b9b937025faca15f3"
+        },
+        {
+          "testId": "87a0d231-8913-553f-be32-f1f042457219",
+          "pid": 30688,
+          "parentPid": 30142,
+          "scenario": "binding_wound_rehash",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 30688,
+            "ParentProcessId": 30142,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d27cc3985dc7408a81a3f88425f0656e",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-aa6f5d31a8d44c0cb26d8afd50903c46"
+        }
+      ],
+      "supplement": "specs/1536-complete-wound-materialization/recovery/fr063-binding-v3-cold-binding-native-root-readback-20261015T095356Z.json",
+      "supplementSha256": "158f20a70490ab2a14da02fa2fca7be3f0190abf0b91b218696de88f6727dc97"
+    },
+    {
+      "kind": "draft",
+      "testedSource": "f532e22fb0c66454cbdccfada399a7db069913f9",
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-draft-v3-frozen-f532e22fb-20261015T095440Z",
+      "manifestSha256": "5c46a7475f24a2d7b854887176d133fada135ee6fe8718cebf93844bc7159684",
+      "verifiedRawCompressedChains": 36,
+      "sourceGitPinsVerified": 217,
+      "historicalBinaryPins": 11,
+      "frozenGuardedPrePostMatched": true,
+      "nativeExit": 0,
+      "wallTime": "00:04:18.7336903",
+      "methods": 1,
+      "cases": 4,
+      "descriptors": 1,
+      "passed": 4,
+      "failed": 0,
+      "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "exactPlanAndNoExecutionConfirmed": true,
+      "caseResults": [
+        {
+          "testId": "910457f1-fce5-44cd-4a8d-a433fe2d3b63",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation(corruption: \"draft_changed\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "720d42f0-9087-9a80-aa41-b157d06ebebc",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation(corruption: \"initial_authority_digest\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "217ffbb0-d25a-9904-c17b-61099ce0c1db",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation(corruption: \"draft_malformed\")",
+          "outcome": "Passed"
+        },
+        {
+          "testId": "cbd3722a-4cc5-3c5e-79e2-ccc2531c802f",
+          "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyForeignDraftOrAuthorityFreshProcessRefusesWithoutMutation(corruption: \"draft_foreign\")",
+          "outcome": "Passed"
+        }
+      ],
+      "strictCleanupReceipts": 8,
+      "rootsAbsentAtIndependentReview": true,
+      "children": [
+        {
+          "testId": "910457f1-fce5-44cd-4a8d-a433fe2d3b63",
+          "pid": 31520,
+          "parentPid": 31295,
+          "scenario": "draft_changed",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 31520,
+            "ParentProcessId": 31295,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-cdeb1dacc3134186a4f86f37e9cbe5dc",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-6f9393e9133646279109e2f79c970251"
+        },
+        {
+          "testId": "720d42f0-9087-9a80-aa41-b157d06ebebc",
+          "pid": 31561,
+          "parentPid": 31295,
+          "scenario": "initial_authority_digest",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 31561,
+            "ParentProcessId": 31295,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f31db65eed1341d79c7250ba74a747bf",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-e256fa40c3504dd9be68cead9ba4fe4d"
+        },
+        {
+          "testId": "217ffbb0-d25a-9904-c17b-61099ce0c1db",
+          "pid": 31481,
+          "parentPid": 31295,
+          "scenario": "draft_malformed",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 31481,
+            "ParentProcessId": 31295,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a7d024fe1abd4f6eb93e5dd6b59d2863",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-8d0ffa483a6f4dca8080ae2686992fee"
+        },
+        {
+          "testId": "cbd3722a-4cc5-3c5e-79e2-ccc2531c802f",
+          "pid": 31341,
+          "parentPid": 31295,
+          "scenario": "draft_foreign",
+          "turn": 42,
+          "completed": false,
+          "refusalVerified": true,
+          "entryFinalThreeBindingsAndFiveContextPinsMatched": true,
+          "nativeWitness": {
+            "ChildProcessId": 31341,
+            "ParentProcessId": 31295,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "parentTamperBeforeFirstChildOwnerRawProof": true,
+          "rawBeforeAfterOrRepeatEqual": true,
+          "borrowedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b4880561d86a41648f71fc8413c837ce",
+          "auxiliaryRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-15ec69c9036444158c59ca657c471471"
+        }
+      ],
+      "supplement": "specs/1536-complete-wound-materialization/recovery/fr063-draft-v3-cold-binding-native-root-readback-20261015T100107Z.json",
+      "supplementSha256": "b4c79b901ef13c43564b94a8d6a6ce3a1fcadbe25c303da90475bd41c265ec12"
+    }
+  ],
+  "totals": {
+    "chains": 144,
+    "cases": 17,
+    "passes": 17,
+    "children": 16,
+    "cleanupReceipts": 33,
+    "uniqueCleanupRoots": 33,
+    "uniqueChildPids": 16
+  },
+  "reviewKind": "Independent immutable historical EVIDENCE17; no fresh ce56/new-root verdict",
+  "verdict": "ACCEPTED_SCOPED_17_PASS",
+  "requestedModel": "gpt-6-astra",
+  "requestedReasoningEffort": "xhigh",
+  "configurationActual": "Inherited explicitly requested Astra XHigh; actual backend/effort telemetry unavailable",
+  "reviewedProduction": "693b22ef19b35644ec56f184fa88af4ce93089ff",
+  "reviewedFixture": "4e2f028bf2bd84a6ee24ad6af01caeb42777e378",
+  "observedHeadAtCompletion": "991a078886366d93a2643ab3dfdf6da849ff66dc",
+  "observedWorkingTreeCleanAtCompletion": true,
+  "actualRelease": [],
+  "runtimeExecutedByReviewer": false,
+  "repositoryWrittenByReviewer": false,
+  "actualOldBinaryPayloadVerification": {
+    "currentBinFilesRead": false,
+    "reason": "Fresh ce56 preparation overwrote current bin outputs while this historical review ran",
+    "frozenPacketsContainOldBinaryPayloads": false,
+    "separatelyPreservedOldPayloadAvailability": "NOT_ESTABLISHED; no new actual old-payload byte verification claimed",
+    "basis": "Accepted 093108 review verified original5ad actual bytes; all four frozen eleven-pin manifests byte-equivalent to that original anchor; exact reviewed v3 and guarded pre/post records match; actual sixteen children independently bind entry/final three reported Default assemblies and five DependencyContext files",
+    "allChildDependenciesClaimed": false
+  },
+  "sourcePinRecordsIndependentlyComparedToGit": 858,
+  "coldParentTamperOrigin": "All fifteen parent tamper rows independently recovered from full raw TRX ResultSummary/Output/StdOut; flat per-test all-json/full-trx-stdout projections omit these summary rows. Bound by corruption+parentPID, after bytes/digest and parent context to child first-owner RawBefore; source ordering places mutation before child launch. Full TRX preserved in verified chain.",
+  "oracleReadback": {
+    "owners": [
+      {
+        "testId": "e7226b66-b292-1099-a3d0-fff51e45e550",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1260,
+        "actualTurnBeforeCold": 43
+      },
+      {
+        "testId": "f297f8b8-7147-4a29-c7ec-8fb0b54120fe",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "0ba89dfa-d1d4-bd25-3cc4-0d8ee88faa83",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "bb6b14a3-121e-97e4-80e5-bcaeac4b8050",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "af3b9740-30ad-8b31-d9aa-3d76593be95f",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "efad4e14-dd51-271e-9a1a-8a2d6999560e",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "13ead2ac-4258-db90-b528-7b86049c4219",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "da5f158c-3d35-aeda-943f-5c62771e5f48",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "8f9fec6d-0444-d2a0-73c6-4d6b7c022e5b",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "7ca8085c-80c0-83ca-33b3-32c0313846ed",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "5a1a9c08-1bfe-6a6e-00cb-8b40a8fe805f",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "a8d3aa87-4912-9424-9461-52da5e71659c",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "87a0d231-8913-553f-be32-f1f042457219",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "910457f1-fce5-44cd-4a8d-a433fe2d3b63",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "720d42f0-9087-9a80-aa41-b157d06ebebc",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "217ffbb0-d25a-9904-c17b-61099ce0c1db",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      },
+      {
+        "testId": "cbd3722a-4cc5-3c5e-79e2-ccc2531c802f",
+        "markers": 2,
+        "sixFieldBindingSameAcrossPhase": true,
+        "fullNarrativeBytesAndHashExact": true,
+        "signedOriginalArithmeticVerified": true,
+        "sourceClock": 1260,
+        "afterClock": 1500,
+        "actualTurnBeforeCold": 42
+      }
+    ],
+    "negativeMutations": [
+      {
+        "testId": "0ba89dfa-d1d4-bd25-3cc4-0d8ee88faa83",
+        "corruption": "output_timestamp",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "173AD9E58D7498F6CCA6639C9F95DF216C185D5460AB63E0A08743A830DE8F31",
+        "afterSha256": "BD0911EC98B136E71DCBC420FBDA7312657A67D7C60D99D1855C1E68FFB35BB9"
+      },
+      {
+        "testId": "bb6b14a3-121e-97e4-80e5-bcaeac4b8050",
+        "corruption": "output_formatting",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "5EE1AE03C912E0C089066E35651E8E4E87DF822646624CC09D7EA8E4178377C3",
+        "afterSha256": "3E0DD4185D3B869E4E13E710895258761FAD288C13184C1E6D1EB9DF576637CA"
+      },
+      {
+        "testId": "af3b9740-30ad-8b31-d9aa-3d76593be95f",
+        "corruption": "output_stale",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "E248C9F304689A27B75490DF1A4B226EB330706275AA57F7754AB96EBA23AFE6",
+        "afterSha256": "D1DB0B0E33EAEBB01DB47E6A2890FF95F2C2890D2BBB6AD6B42F90BE21DC3C33"
+      },
+      {
+        "testId": "efad4e14-dd51-271e-9a1a-8a2d6999560e",
+        "corruption": "output_missing",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "C1A1E17166D5B22DE5696CF5E62414D5E36556B83ACFCF7771623C69ADCE81C1",
+        "afterSha256": null
+      },
+      {
+        "testId": "13ead2ac-4258-db90-b528-7b86049c4219",
+        "corruption": "output_scene_prefix",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "F41CB21E3801197A3E754FA0B941A42C3279F8E68EB979384FB0685CF69D2BEA",
+        "afterSha256": "14674CA572CE5D41B52DDEC8C4A9DEF7D8E5D7D9855B9BED66AB68546792E1C4"
+      },
+      {
+        "testId": "da5f158c-3d35-aeda-943f-5c62771e5f48",
+        "corruption": "output_normalization",
+        "target": "output/narrative_response.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "B18792D8E1E3EFFB5BFA11F4D60EDE6D1E170629A793605291CA47336A2949C1",
+        "afterSha256": "64CA40BFC8DA23F4328596824BC07A1109851D55D10D415453150F42D290BEAF"
+      },
+      {
+        "testId": "8f9fec6d-0444-d2a0-73c6-4d6b7c022e5b",
+        "corruption": "binding_transition_rehash",
+        "target": "game_state/wounds/mortal_qte_decision_publication.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "F7C98B258EED1E62D1685155D7442B4AD213EB80E1B1B4099B052373253FDE9A",
+        "afterSha256": "29AF1CD5341D436532D273248565599A7EBA7070593DAD19658B610282105878"
+      },
+      {
+        "testId": "7ca8085c-80c0-83ca-33b3-32c0313846ed",
+        "corruption": "binding_local_rehash",
+        "target": "game_state/wounds/mortal_qte_decision_publication.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "B7D054F66D126DAAEA0D7A892FE21AD250D5D912EDDD51021947837088594B98",
+        "afterSha256": "6827725005D784FF99A033572D5A4C34F18E6488016FA18ABACC5E3B08D591B0"
+      },
+      {
+        "testId": "5a1a9c08-1bfe-6a6e-00cb-8b40a8fe805f",
+        "corruption": "binding_missing",
+        "target": "game_state/wounds/mortal_qte_decision_publication.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "23F23224F870A03E51CD83D2C7AB06ECCF03C54F9D13FD1E3D478F228B4715B4",
+        "afterSha256": "1B96A0F8FB385F69D60FD5B3FE0A3081440B1CB3363ED4537F8513642E87047A"
+      },
+      {
+        "testId": "a8d3aa87-4912-9424-9461-52da5e71659c",
+        "corruption": "binding_version",
+        "target": "game_state/wounds/mortal_qte_decision_publication.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "8592BC1A64DAE872EC9AF364677BBC311E925EA3003981DAE607632154D85F93",
+        "afterSha256": "8C64DC66CB55FF395B7F46A97CB59924A4FE2639A7D3B7812B2036BDC426F33E"
+      },
+      {
+        "testId": "87a0d231-8913-553f-be32-f1f042457219",
+        "corruption": "binding_wound_rehash",
+        "target": "game_state/wounds/mortal_qte_decision_publication.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "1B11742D84DA060FB9E8C356E039FA4E45496AFB9D33785ECDA8EBFBF2263D9A",
+        "afterSha256": "26D06BFE7090BCDA1822143C19730EAC765773F973A83AFF6AC1C207F2A03DB0"
+      },
+      {
+        "testId": "910457f1-fce5-44cd-4a8d-a433fe2d3b63",
+        "corruption": "draft_changed",
+        "target": "output/mortal_wound_decisions.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": null,
+        "afterSha256": "6BFBF5E6E3BC4EC861F577120BBC9C65BFD31DE225433393C2B7F54DBF357B37"
+      },
+      {
+        "testId": "720d42f0-9087-9a80-aa41-b157d06ebebc",
+        "corruption": "initial_authority_digest",
+        "target": "game_state/control/pending_turn_snapshot.authority.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": "1AB0220747E31C15E85E76846649269F31AB0650F8D685683E4D7E42F2BC03A2",
+        "afterSha256": "31F46DC2F861AC398DCCA6906B595A84D19D99FF183D42E23C0EB13810D32BA6"
+      },
+      {
+        "testId": "217ffbb0-d25a-9904-c17b-61099ce0c1db",
+        "corruption": "draft_malformed",
+        "target": "output/mortal_wound_decisions.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": null,
+        "afterSha256": "021FB596DB81E6D02BF3D2586EE3981FE519F275C0AC9CA76BBCF2EBB4097D96"
+      },
+      {
+        "testId": "cbd3722a-4cc5-3c5e-79e2-ccc2531c802f",
+        "corruption": "draft_foreign",
+        "target": "output/mortal_wound_decisions.json",
+        "origin": "full TRX ResultSummary/Output/StdOut",
+        "singleSpecifiedMutationVerified": true,
+        "beforeSha256": null,
+        "afterSha256": "F3DD2C4C24C3435143A9B88FDCB62E0004B987F5D9D6DD573DB4E098358F49FE"
+      }
+    ],
+    "positive": {
+      "normalizedTimestamp": {
+        "testId": "e7226b66-b292-1099-a3d0-fff51e45e550",
+        "firstCheckpointNarrativeHash": "0F8700BD27F0497D23CCB3CFAB5C10CF7680C5C60E831F169891C9E9B045B98D",
+        "acceptedNarrativeHash": "2C51F9A8C1A40D1BD68AE47702B354DA0E575EB5C2BB1AA346E300081C227F52",
+        "firstTimestamp": "2026-10-15T09:32:44.3037716Z",
+        "acceptedTimestamp": "2026-10-15T09:32:45.3037716+00:00",
+        "deltaSeconds": 1,
+        "onlyTimestampDiffersAfterNormalization": true,
+        "knownSceneEqualsActualFirstCheckpoint": true,
+        "fullCanonicalUnionAndStoryTurn43": true,
+        "inertRepeatRawMapsEqual": true
+      },
+      "exactPresentDraftCold": {
+        "testId": "f297f8b8-7147-4a29-c7ec-8fb0b54120fe",
+        "presentBefore": true,
+        "absentAfterCleanup": true,
+        "markerUnchanged": true,
+        "turn": 43,
+        "repeatDigestMapsEqual": true,
+        "realOriginalTupleMatches": true
+      }
+    }
+  },
+  "scopeLimits": [
+    "Only positive2+scene6+binding5+draft4 historical compiled5ad extent",
+    "Historical two-key new-root branch unaffected dependency verdict100826 retained; no new-root or ce56 runtime claim",
+    "No new release of remaining12; new Late2 EVIDENCE/v4 provenance remain separate",
+    "Full FR063/T070/#1536 and ACTIVE direction decision remain OPEN",
+    "Existing trusted-local threat frame; no wider security/authority/storage claim"
+  ],
+  "createdUtc": "20261015T102457Z",
+  "reviewerStopped": true,
+  "reviewAnchors": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-positive-fixture-Late2-evidence-v3-5adbd55ad-20261015T093108Z-completed-v2-design-review.json",
+      "sha256": "f5258634e32edaf4380dfae4dcb798dab0034f3d68a733be5a029207296493eb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-new-root-casing-source-review-d130fdaff-20261015T100826Z-completed-v2-design-review.json",
+      "sha256": "0e3f8c2a5df3005bb6015cb4826410f56fe280cbef7f2fb025a502298bb95f3f"
+    }
+  ],
+  "targetedSourcePins": [
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "sha256": "588bda424d36d77b207d198b0ed4aaa2a417fd3cd13997cf8572970113c685ee"
+    },
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "sha256": "9371ed654cb9acacad52bc54bbfbc7af0bdb52dae7e6c0584e478ab600f3f173"
+    },
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8"
+    },
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs",
+      "sha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907"
+    },
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2"
+    },
+    {
+      "source": "5adbd55add631dcc8afdb621e5e88ab12ee8f952",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e"
+    }
+  ],
+  "metadataCopyPermission": {
+    "allowedRecoveryCopies": [
+      "specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.json"
+    ],
+    "conditions": [
+      "Byte-identical copies only; verify external/report hashes",
+      "Accurate identical plan/tasks metadata front may reference this historical scoped verdict",
+      "No product/test/config/build/controller changes authorized",
+      "This historical verdict grants no additional actual release and does not waive new ce56 Late2/v4 review"
+    ]
+  },
+  "reportMarkdown": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-newA17-independent-evidence-5adbd55ad-20261015T102457Z-completed-v2-design-review.md",
+    "sha256": "f65312aec24ef28d3c08bbfbfe58f07ddd1b3874916d524fdc2dc829070de6d6"
+  }
+}

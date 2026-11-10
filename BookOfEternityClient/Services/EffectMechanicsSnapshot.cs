@@ -10,6 +10,10 @@ internal sealed record EffectMechanicsInput(
     JsonObject? IdentityIndex,
     EffectRollSkillScopeAuthority? SkillScopeAuthority = null);
 
+/// <summary>One load's already validated effect DATA; it grants no mutation permission.</summary>
+internal sealed record EffectMechanicsReadData(EffectMechanicsSnapshot Snapshot,
+    EffectCarrierCatalog Catalog, EffectIdentityState? Identities);
+
 internal sealed record EffectMechanicalComponent(
     string EffectId,
     string Realm,
@@ -69,11 +73,19 @@ internal sealed record EffectMechanicsSnapshot(
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(input.Carriers);
 
-        var catalog = EffectCarrierCatalog.Build(input.Carriers);
-        var issues = new List<ValidationIssue>(catalog.Issues);
-        EffectIdentityState? identity = null;
+        return Build(EffectCarrierCatalog.Build(input.Carriers), input.IdentityIndex,
+            input.SkillScopeAuthority, out _);
+    }
 
-        if (input.IdentityIndex == null)
+    /// <summary>Shares one parsed carrier catalog and exports its parsed identity DATA without a second scan.</summary>
+    internal static EffectMechanicsSnapshot Build(EffectCarrierCatalog catalog, JsonObject? identityIndex,
+        EffectRollSkillScopeAuthority? skillScopeAuthority, out EffectIdentityState? identity)
+    {
+        ArgumentNullException.ThrowIfNull(catalog);
+        var issues = new List<ValidationIssue>(catalog.Issues);
+        identity = null;
+
+        if (identityIndex == null)
         {
             if (catalog.Occurrences.Count > 0)
             {
@@ -86,7 +98,7 @@ internal sealed record EffectMechanicsSnapshot(
         }
         else
         {
-            using var document = JsonDocument.Parse(input.IdentityIndex.ToJsonString());
+            using var document = JsonDocument.Parse(identityIndex.ToJsonString());
             var parsed = EffectIdentityState.Parse(
                 document.RootElement,
                 EffectIdentityState.StatePath);
@@ -202,7 +214,7 @@ internal sealed record EffectMechanicsSnapshot(
             Effects = ReadOnly(effects),
             FateShieldReactionCandidates =
                 FateShieldReactionArbiter.ProjectEligibleCandidates(catalog.Occurrences),
-            SkillScopeAuthority = input.SkillScopeAuthority ?? EmptySkillScopeAuthority
+            SkillScopeAuthority = skillScopeAuthority ?? EmptySkillScopeAuthority
         };
     }
 
@@ -237,7 +249,12 @@ internal sealed record EffectMechanicsSnapshot(
 
     internal static async Task<EffectMechanicsSnapshot> LoadAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease readLease)
+        FileSystemManager.CanonicalWriteLease readLease) =>
+        (await LoadWithDataAsync(fs, readLease)).Snapshot;
+
+    /// <summary>Exports the same load's parsed catalog/index without reopening or reparsing files.</summary>
+    internal static async Task<EffectMechanicsReadData> LoadWithDataAsync(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease readLease)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(readLease);
@@ -260,11 +277,10 @@ internal sealed record EffectMechanicsSnapshot(
             await ReadObjectAsync(fs, readLease, EffectIdentityState.StatePath, readIssues),
             skillScopeAuthority);
 
-        var built = Build(input);
-        if (readIssues.Count == 0)
-            return built;
-
-        return Rejected(readIssues.Concat(built.Issues));
+        var catalog = EffectCarrierCatalog.Build(input.Carriers);
+        var built = Build(catalog, input.IdentityIndex, skillScopeAuthority, out var identity);
+        return new(readIssues.Count == 0 ? built : Rejected(readIssues.Concat(built.Issues)),
+            catalog, identity);
     }
 
     private static async Task<EffectRollSkillScopeAuthority> ReadCurrentSkillScopeAuthorityAsync(

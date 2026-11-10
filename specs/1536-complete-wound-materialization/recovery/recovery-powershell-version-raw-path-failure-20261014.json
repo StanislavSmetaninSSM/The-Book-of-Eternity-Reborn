@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-14T14:16:45.313810+00:00",
+  "toolChunk": "d9d911",
+  "operation": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-Command",
+    "$PSVersionTable.PSVersion.ToString()"
+  ],
+  "nativeExit": -6,
+  "stderr": "Unhandled exception. System.TypeInitializationException: The type initializer for 'System.Management.Automation.Configuration.PowerShellConfig' threw an exception.\n ---> System.TypeInitializationException: The type initializer for 'System.Management.Automation.Platform' threw an exception.\n ---> System.IO.IOException: Read-only file system : '/home/agent/.cache/powershell'\n   at System.IO.FileSystem.CreateDirectory(String fullPath, UnixFileMode unixCreateMode)\n   at System.IO.Directory.CreateDirectory(String path)\n   at System.Management.Automation.Platform.SelectProductNameForDirectory(XDG_Type dirpath)\n   at System.Management.Automation.Platform..cctor()\n   --- End of inner exception stack trace ---\n   at System.Management.Automation.Configuration.PowerShellConfig..ctor()\n   at System.Management.Automation.Configuration.PowerShellConfig..cctor()\n   --- End of inner exception stack trace ---\n   at System.Management.Automation.Utils.GetPolicySettingFromConfigFile[T](ConfigScope[] preferenceOrder)\n   at Microsoft.PowerShell.CommandLineParameterParser.GetConfigurationNameFromGroupPolicy()\n   at Microsoft.PowerShell.ConsoleHost.ParseCommandLine(String[] args)\n   at Microsoft.PowerShell.UnmanagedPSEntry.Start(String[] args, Int32 argc)\n   at Microsoft.PowerShell.ManagedPSEntry.Main(String[] args)",
+  "stdout": "",
+  "projectExecution": "UNRUN",
+  "classification": "read-only filesystem cache initialization error; no approval/security rejection",
+  "next": "existing tracked environment preparation declares task-specific XDG directories; version diagnosis only"
+}

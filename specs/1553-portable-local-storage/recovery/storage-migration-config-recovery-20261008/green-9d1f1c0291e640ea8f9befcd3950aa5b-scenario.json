@@ -1,0 +1,18 @@
+{
+  "Success": true,
+  "Mode": "refuse-worker",
+  "CompilerAbsentAtPlayerStartup": true,
+  "BeforeFileCount": 1,
+  "Argv": [
+    "dotnet",
+    "/workspace/boe-1553-storage-migration/TestResults/production-main/9d1f1c0291e640ea8f9befcd3950aa5b/ship/BookOfEternityGMBridge/BookOfEternityGMBridge.dll",
+    "--host",
+    "--sessionPath",
+    "/workspace/boe-1553-storage-migration/TestResults/production-main/9d1f1c0291e640ea8f9befcd3950aa5b/root/game_session",
+    "--pipeName",
+    "m1-19a681bc2fdb4fa0b7cf4acb14b8804d"
+  ],
+  "RefusedBeforeCreationAndCanonicalEffects": true,
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 0.3895845459992415
+}

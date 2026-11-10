@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BookOfEternityClient.CommandProtocol;
 using System.Text.Json.Nodes;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,7 +20,6 @@ namespace BookOfEternityClient.UI;
 /// </summary>
 public partial class ExplorerMode
 {
-    private const string ExplorerLocalTurnRollbackRoot = "game_state/control/explorer_local_turn_rollback";
 
     private readonly IExplorerConsole _console;
     private readonly AgentConsoleLiveInputSource? _agentConsoleInputSource;
@@ -80,6 +80,9 @@ public partial class ExplorerMode
 
     internal sealed class PendingLocalTurnRollbackSnapshot
     {
+        public string? EvidenceRoot { get; set; }
+        public HashSet<string> TechnicalArtifacts { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public bool RestoreCompleted { get; set; }
         public Dictionary<string, string> BackupFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> TrackedFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -267,7 +270,7 @@ public partial class ExplorerMode
                 WaitForKey();
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]❌ Ошибка при выполнении команды {Markup.Escape(commandName)}:[/]");
             MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
@@ -278,6 +281,7 @@ public partial class ExplorerMode
 
     private static readonly HashSet<string> LocalUiSessionMutatingCommands = new(StringComparer.OrdinalIgnoreCase)
     {
+        "/лечить", "/treat", "/исцелить", "/heal",
         "/validate",
         "/валидация",
         "/world_setup",
@@ -496,7 +500,7 @@ public partial class ExplorerMode
         {
             await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
             return;
@@ -675,10 +679,12 @@ public partial class ExplorerMode
     internal void ForgetSessionTransientState()
     {
         _pendingGmAction = null;
+        _pendingElyaraVisit = null;
         _pendingInPlaceGmRequest = null;
         _currentCommandInput = string.Empty;
         _currentCommandRemainder = string.Empty;
         _pendingLocalTurnRollbackSnapshot = null;
+        _fs.ForgetConsoleRollbackEvidenceOwnership();
         _agentConsoleWaitKeyScreenIndex = 0;
         _diceRevealed = false;
         _agentConsoleCapture?.ClearCapture();
@@ -687,19 +693,46 @@ public partial class ExplorerMode
     internal Task StagePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles) =>
         EnsurePendingLocalTurnRollbackSnapshotAsync(trackedFiles);
 
+    private static void RequireExactLocalRollbackPaths(IEnumerable<string> trackedFiles,
+        PendingLocalTurnRollbackSnapshot? snapshot)
+    {
+        var paths = trackedFiles;
+        if (snapshot != null)
+            paths = paths.Concat(snapshot.TrackedFiles).Concat(snapshot.BaselineFiles)
+                .Concat(snapshot.ValidationSnapshotFiles).Concat(snapshot.TechnicalArtifacts)
+                .Concat(snapshot.BackupFiles.Keys).Concat(snapshot.BackupFiles.Values)
+                .Concat(snapshot.BackupHashes.Keys);
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(paths);
+    }
+
     internal void MarkExistingPendingLocalTurnValidationSnapshotFiles(params string[] trackedFiles)
     {
         var snapshot = _pendingLocalTurnRollbackSnapshot;
         if (snapshot == null)
             return;
 
-        foreach (var trackedFile in trackedFiles
-                     .Where(path => !string.IsNullOrWhiteSpace(path))
-                     .Select(path => path.Trim())
-                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        RequireExactLocalRollbackPaths(trackedFiles, snapshot);
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? publicationUncertainty = null;
+        try
         {
-            if (_fs.FileExists(trackedFile))
-                snapshot.ValidationSnapshotFiles.Add(trackedFile);
+            RequireExactLocalRollbackPaths(trackedFiles, snapshot);
+            foreach (var trackedFile in trackedFiles.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                if (_fs.FileExists(lease, trackedFile))
+                    snapshot.ValidationSnapshotFiles.Add(trackedFile);
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure: publicationUncertainty)
+                .GetAwaiter().GetResult();
         }
     }
 
@@ -717,6 +750,7 @@ public partial class ExplorerMode
 
     private async Task EnsurePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles)
     {
+        RequireExactLocalRollbackPaths(trackedFiles, _pendingLocalTurnRollbackSnapshot);
         var normalizedTrackedFiles = trackedFiles
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Select(path => path.Trim())
@@ -725,29 +759,69 @@ public partial class ExplorerMode
         if (normalizedTrackedFiles.Count == 0)
             return;
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _pendingLocalTurnRollbackSnapshot ??= new PendingLocalTurnRollbackSnapshot();
-        foreach (var trackedFile in normalizedTrackedFiles)
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
-            if (!_pendingLocalTurnRollbackSnapshot.TrackedFiles.Add(trackedFile))
-                continue;
-
-            if (!_fs.FileExists(writeLease, trackedFile))
-                continue;
-
-            var backupContent = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
-            if (backupContent == null)
-                continue;
-
-            var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
-            await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, backupContent);
-            _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
-            _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
-            _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
+            RequireExactLocalRollbackPaths(trackedFiles, _pendingLocalTurnRollbackSnapshot);
+            if (_pendingLocalTurnRollbackSnapshot is { RestoreCompleted: true } completed)
+            {
+                // This owner can only finish cleanup. A new command must capture a
+                // fresh baseline, including when it tracks exactly the same paths.
+                DiscardPendingLocalTurnRollbackSnapshot(writeLease, completed);
+                ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+            }
+            var snapshot = _pendingLocalTurnRollbackSnapshot ?? new PendingLocalTurnRollbackSnapshot();
+            var added = normalizedTrackedFiles.Where(path => !snapshot.TrackedFiles.Contains(path)).ToArray();
+            if (added.Length == 0) return;
+            var root = snapshot.EvidenceRoot ?? ConsoleLocalTurnRollbackArtifacts.CreateRoot();
+            var evidence = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+            var backups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var marker = root + "/" + ConsoleLocalTurnRollbackArtifacts.MarkerName;
+            if (snapshot.EvidenceRoot == null)
+                evidence.Add(marker, ConsoleLocalTurnRollbackArtifacts.CreateMarker(root,
+                    _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Console generation is missing.")));
+            foreach (var trackedFile in added)
+            {
+                var content = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
+                if (content == null) continue;
+                var backup = CreateExplorerRollbackBackupPath(root, trackedFile);
+                evidence.Add(backup, content);
+                backups.Add(trackedFile, backup);
+            }
+            if (evidence.Count > 0)
+            {
+                _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(writeLease,
+                    evidence.Select(pair => new CanonicalLocalFileChange(pair.Key, null, pair.Value)).ToArray()));
+                _fs.RegisterConsoleRollbackEvidence(writeLease, evidence);
+            }
+            // Publish first. A failed capture must never turn an existing file into
+            // an apparently captured absence on retry.
+            snapshot.EvidenceRoot = root;
+            snapshot.TechnicalArtifacts.Add(marker);
+            snapshot.ValidationSnapshotFiles.Add(marker);
+            snapshot.TrackedFiles.UnionWith(added);
+            foreach (var (trackedFile, backup) in backups)
+            {
+                snapshot.BaselineFiles.Add(trackedFile);
+                snapshot.BackupFiles.Add(trackedFile, backup);
+                snapshot.BackupHashes.Add(trackedFile, ComputeExplorerRollbackHash(evidence[backup]));
+            }
+            _pendingLocalTurnRollbackSnapshot = snapshot;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
     }
 
-    private static string CreateExplorerRollbackBackupPath(string trackedFile)
+    private static string CreateExplorerRollbackBackupPath(string root, string trackedFile)
     {
         var normalizedPath = trackedFile.Replace('\\', '/').Trim('/');
         var safePath = new string(normalizedPath
@@ -756,7 +830,7 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(safePath))
             safePath = "tracked_file";
 
-        return $"{ExplorerLocalTurnRollbackRoot}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}/{safePath}.rollback.{Guid.NewGuid():N}";
+        return $"{root}/{safePath}.rollback.{Guid.NewGuid():N}";
     }
 
     private async Task RestorePendingLocalTurnRollbackSnapshotAsync()
@@ -765,42 +839,59 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
-            var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
-            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+            if (!snapshot.RestoreCompleted)
             {
-                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
-                    ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
-                if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
-                    !string.Equals(
-                        ComputeExplorerRollbackHash(backupContent),
-                        expectedHash,
-                        StringComparison.OrdinalIgnoreCase))
+                var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+                foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
                 {
-                    throw new InvalidDataException(
-                        $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                    var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
+                        ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
+                    if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
+                        !string.Equals(
+                            ComputeExplorerRollbackHash(backupContent),
+                            expectedHash,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new InvalidDataException(
+                            $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                    }
+
+                    validatedBackups[originalPath] = backupContent;
                 }
 
-                validatedBackups[originalPath] = backupContent;
-            }
+                foreach (var trackedFile in snapshot.TrackedFiles)
+                {
+                    if (snapshot.BaselineFiles.Contains(trackedFile))
+                        continue;
 
-            foreach (var trackedFile in snapshot.TrackedFiles)
-            {
-                if (snapshot.BaselineFiles.Contains(trackedFile))
-                    continue;
+                    if (_fs.FileExists(writeLease, trackedFile))
+                        _fs.DeleteFile(writeLease, trackedFile);
+                }
 
-                if (_fs.FileExists(writeLease, trackedFile))
-                    _fs.DeleteFile(writeLease, trackedFile);
-            }
+                foreach (var (originalPath, backupContent) in validatedBackups)
+                {
+                    await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
+                }
 
-            foreach (var (originalPath, backupContent) in validatedBackups)
-            {
-                await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
+                snapshot.RestoreCompleted = true;
             }
 
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
             ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
 
         await _stateManager.RefreshGameStateAsync();
@@ -812,10 +903,22 @@ public partial class ExplorerMode
         if (snapshot == null)
             return;
 
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
             ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
     }
 
@@ -823,12 +926,13 @@ public partial class ExplorerMode
         FileSystemManager.CanonicalWriteLease writeLease,
         PendingLocalTurnRollbackSnapshot snapshot)
     {
-        _pendingLocalTurnRollbackSnapshot = null;
-        foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var backupPath in snapshot.BackupFiles.Values.Concat(snapshot.TechnicalArtifacts)
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             if (_fs.FileExists(writeLease, backupPath))
                 _fs.DeleteFile(writeLease, backupPath);
         }
+        _pendingLocalTurnRollbackSnapshot = null;
     }
 
     private static string ComputeExplorerRollbackHash(byte[] content) =>
@@ -1493,8 +1597,18 @@ public partial class ExplorerMode
         return root;
     }
 
-    private static void AppendWorldTimeLines(List<string> lines, JsonElement root, string indent)
+    /// <summary>Appends the current world-time presentation from parsed DATA, with authoritative numeric precedence.</summary>
+    /// <param name="lines">Destination console lines.</param>
+    /// <param name="root">Parsed supported world-time shape.</param>
+    /// <param name="indent">Existing display indentation.</param>
+    internal static void AppendWorldTimeLines(List<string> lines, JsonElement root, string indent)
     {
+        if (WorldTimeDisplay.TryReadMinutes(root, out var minutes))
+        {
+            lines.Add($"{indent}[bold white]🕐 Время:[/]");
+            lines.Add($"{indent}  {WorldTimeDisplay.Format(minutes)}");
+            return;
+        }
         if (TryFormatAbsoluteWorldTime(root, out var absolute))
         {
             lines.Add($"{indent}[bold white]🕐 Время:[/]");
@@ -1503,10 +1617,10 @@ public partial class ExplorerMode
         }
 
         if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-            TryFormatAbsoluteWorldTime(setWorldTime, out absolute))
+            (WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) || TryFormatAbsoluteWorldTime(setWorldTime, out absolute)))
         {
             lines.Add($"{indent}[bold white]🕐 Время:[/]");
-            lines.Add($"{indent}  {Markup.Escape(absolute)}");
+            lines.Add($"{indent}  {Markup.Escape(WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) ? WorldTimeDisplay.Format(minutes) : absolute)}");
             return;
         }
 
@@ -1578,43 +1692,9 @@ public partial class ExplorerMode
             lines.Add("  [dim]Нет активных эффектов[/]");
     }
 
-    private static void AppendStatusWoundPreview(List<string> lines, JsonElement root)
-    {
-        lines.Add("[bold red]🩸 Раны:[/]");
-        var hasWounds = false;
-        EnumerateJsonItems(root, item =>
-        {
-            if (item.ValueKind != JsonValueKind.Object) return;
-            hasWounds = true;
-            var woundName = GetStr(item, "woundName", "Рана");
-            var severity = GetStr(item, "severity", "?");
-            var description = GetStr(item, "descriptionOfEffects", GetStr(item, "description", ""));
-            var severityColor = severity.ToLowerInvariant() switch
-            {
-                "light" => "yellow",
-                "moderate" => "orange1",
-                "serious" => "red",
-                "critical" => "red bold",
-                _ => "white"
-            };
-
-            lines.Add($"  [{severityColor}]• {Markup.Escape(woundName)} ({Markup.Escape(severity)})[/]");
-            if (!string.IsNullOrEmpty(description))
-                lines.Add($"    [dim]{Markup.Escape(description)}[/]");
-
-            if (item.TryGetProperty("healingState", out var healingState) && healingState.ValueKind == JsonValueKind.Object)
-            {
-                var state = GetStr(healingState, "currentState", "");
-                var progress = GetStr(healingState, "treatmentProgress", "0");
-                var needed = GetStr(healingState, "progressNeeded", "?");
-                if (!string.IsNullOrEmpty(state))
-                    lines.Add($"    [cyan]Лечение:[/] {Markup.Escape(state)} ({Markup.Escape(progress)}/{Markup.Escape(needed)})");
-            }
-        });
-
-        if (!hasWounds)
-            lines.Add("  [dim green]Ран нет[/]");
-    }
+    private void RenderWoundStatus(WoundPlayerProjectionResult projection) =>
+        ExplorerCommandResultConsoleRenderer.Render(_console,
+            new ExplorerCommandResult { Blocks = WoundPlayerStatusBlocks.Build(projection) });
 
     private static void AppendStatusCustomStatePreview(List<string> lines, JsonElement root)
     {

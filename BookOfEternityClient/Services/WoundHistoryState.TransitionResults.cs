@@ -80,6 +80,38 @@ internal sealed partial class WoundHistoryState
     private static WoundTransitionResult? ParseTransitionResult(JsonElement element,
         string kind, string path, ICollection<ValidationIssue> issues)
     {
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var mortalDiagnosisKind) &&
+            mortalDiagnosisKind.ValueKind == JsonValueKind.String && mortalDiagnosisKind.GetString() == "mortal_diagnosis")
+        {
+            var result = MortalWoundDiagnosisPersistedResult.Parse(element, path, issues);
+            if (result is not null && kind != "diagnose")
+            { AddIssue(issues, path, "mortal_wound_diagnosis_history_invalid", "Mortal diagnosis result only on its knowledge row", kind); return null; }
+            return result;
+        }
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var diagnosisKind) &&
+            diagnosisKind.ValueKind == JsonValueKind.String && diagnosisKind.GetString() == "spiritual_diagnosis")
+        {
+            var diagnosis = SpiritualDiagnosisPersistedResult.Parse(element, path, issues);
+            if (diagnosis is not null && kind != "diagnose")
+            { AddIssue(issues, path, "spiritual_diagnosis_history_invalid", "diagnosis result only on its knowledge row", kind); return null; }
+            return diagnosis;
+        }
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var combatKind) &&
+            combatKind.ValueKind == JsonValueKind.String && combatKind.GetString() == "spiritual_combat_healing")
+        {
+            var combat = SpiritualCombatHealingPersistedResult.Parse(element, path, issues);
+            if (combat is not null && kind != "treat")
+            { AddIssue(issues, path, "spiritual_combat_healing_history_invalid", "combat result only on its primary treat row", kind); return null; }
+            return combat;
+        }
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("kind", out var spiritualKind) &&
+            spiritualKind.ValueKind == JsonValueKind.String && spiritualKind.GetString() == "spiritual_healing")
+        {
+            var spiritual = SpiritualHealingPersistedResult.Parse(element, path, issues);
+            if (spiritual is not null && kind != (spiritual.IsNatural ? "recover" : "treat"))
+            { AddIssue(issues, path, "spiritual_healing_history_invalid", "spiritual result only on its primary cycle row", kind); return null; }
+            return spiritual;
+        }
         var required = kind is "diagnose" or "author_alternative_treatment";
         // An explicitly supplied treatment result, including null, must still pass
         // the original strict treatment codec. Only omission keeps its old meaning.
@@ -201,6 +233,24 @@ internal sealed partial class WoundHistoryState
     private static void ValidateTransitionResult(WoundHistoryTransition transition,
         string path, ICollection<ValidationIssue> issues)
     {
+        if (transition.TransitionResult is MortalWoundDiagnosisPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            return;
+        }
+        if (transition.TransitionResult is SpiritualCombatHealingPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            return;
+        }
+        if (transition.TransitionResult is SpiritualHealingPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            return;
+        }
         if (transition.TransitionResult is MortalWoundRecoveryPersistedResult)
         {
             ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),

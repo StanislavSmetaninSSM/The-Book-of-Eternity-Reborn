@@ -1,0 +1,87 @@
+{
+  "kind": "CONNECTED_FIXTURE_DELTA_SOURCE_CHECK_NOT_RUNTIME",
+  "carrier": "bd799b19adc0d0c2591b40ea4be2003d2d4ad4f1",
+  "base": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0",
+  "sourcePins": 98,
+  "pinDigest": "e8f9c60b5cfd1d71a1bb4013faf641cb90407919ca348a2f1617a187c15744a9",
+  "productAndTestSupportDeltaEmpty": true,
+  "wholeSharedHelperInverseExact": true,
+  "caseDeclarationsAndAllTargetAssertionsUnchanged": true,
+  "staticPartition": {
+    "wholeOwners": 16,
+    "methods": 33,
+    "rows": 57,
+    "pendingOwners": 9,
+    "pendingMethods": 17,
+    "pendingRows": 31,
+    "retainedRows": 26
+  },
+  "toolAstSyntaxOnly": true,
+  "tools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-preparation-run.py",
+      "bytes": 10099,
+      "sha256": "f24fcc1960551abba6ef2489decb38e485d51b42a3b08d8ec39ca69cf74b9cfb",
+      "gitBlob": "d68caa805a428b2ddbbd9760b96072bd98d9aa82"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-intake-first-run.py",
+      "bytes": 9377,
+      "sha256": "c147ee76084f275f29c6920e2a81ddb66fbff2a786d04a02a878ac56b6b83b85",
+      "gitBlob": "337263028a28a5f9aa3205ccc49a657a968ab9b7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "bytes": 2342,
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "gitBlob": "34acff73fd7845cced12b8bc75295fada4e2a6eb"
+    }
+  ],
+  "sourcePinsChecked": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "bytes": 26776,
+      "sha256": "e10e9635fc02d528ddbebc6f34effba877565cd2597e89fc6cfe79772319a9e8",
+      "gitBlob": "55ac2652a4cbbf367649c19ee81de35c81dcf831"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 86621,
+      "sha256": "813b4f8a55587ed5d20218fafd8e56fe52fd471e4517c2c14e1fdc817f4b2ad3",
+      "gitBlob": "1e516a17c852041f74a196ec1fbe4e39cbd72903"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "gitBlob": "6900c679f40653c79c859f0620be26d6d215ed19"
+    }
+  ],
+  "recovery": {
+    "receipt": "/tmp/t179pd-ni-iobs-l01-intake-fixture-delta-github-bd799b19-20261018-v2.json",
+    "sha256": "6bd1caedb2d70905dd33829a38931b9e660afecb1781907f272f64631fc66c91",
+    "files": 25,
+    "changedPaths": 21
+  },
+  "finding": {
+    "id": "NI-IOBS-S09",
+    "severity": "MATERIAL_FIXTURE",
+    "status": "OPEN_SOURCE_ONLY_NO_NATIVE",
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+    "line": 191,
+    "cause": "Observed-optional selection requires signed absence for I, but closed OriginalPathPresenceV1 excludes I. Genuine absent original deterministically produces pending_turn_snapshot_reader_absence_unproven before target behavior.",
+    "readerAnchors": [
+      "LogicalPaths closed sets8-50",
+      "ValidateOriginalPathPresenceV1521-566",
+      "TryResolveExactCoverage670-690",
+      "CreateWithObservedOptionalPaths1087-1093"
+    ],
+    "minimalCorrection": "Use existing ordinary optional selection; retain actual original same-tuple/required-soul validation, compare present Warning bytes, and establish Absent through declared/covered omission plus genuine pre-original deletion/current absence. No production schema extension or signed-absence claim."
+  },
+  "retentionAssessment": "Default null shared-helper body inverse is exact; new method returns before any side effect for Changed/Utf8/Bom/Utf16/Error. Other original/corrected branches preserve old behavior outside Warning/Absent. This permits retained26 after the narrow S09 correction is checked.",
+  "verdict": "NOT_READY_FOR_ZERO_WHILE_S09_OPEN",
+  "reviewUtilityCorrection": "Static checker initially counted literal catalog selectors as methods and assumed the ledger includes retained5 methods; corrected to account for the existing unit wildcard and authored28/51 plus retained5/6. No native execution or source change.",
+  "limits": [
+    "No builds/discovery/native execution. No new product EVIDENCE. Existing26PASS and original2FAIL preserved."
+  ]
+}

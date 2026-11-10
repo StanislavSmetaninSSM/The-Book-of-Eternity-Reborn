@@ -1,0 +1,31 @@
+[
+  {
+    "nonzeroProgression": true,
+    "ObserverFailure": null,
+    "Failure": null,
+    "ActualTurn": 42,
+    "Entered": null,
+    "HandledByActualLateCaller": true,
+    "ReportRemovalHistory": [
+      {
+        "role": "original_baseline_restore",
+        "transactionId": "f5c8af5ff1984eebac2ea6f0ed4c0db1",
+        "members": 8
+      },
+      {
+        "role": "progression_consumption",
+        "transactionId": "19146af9ab31480b912862d5feebcb8f",
+        "members": 3
+      }
+    ]
+  },
+  {
+    "nonzeroProgression": false,
+    "ObserverFailure": null,
+    "Failure": null,
+    "ActualTurn": 42,
+    "Entered": null,
+    "HandledByActualLateCaller": true,
+    "ReportRemovalHistory": []
+  }
+]

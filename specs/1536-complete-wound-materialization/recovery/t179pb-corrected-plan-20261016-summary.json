@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "fr063-joint-story-calculation",
+    "fr063-joint-late-completion",
+    "fr063-joint-story-owner",
+    "fr063-joint-retained-story"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-joint-story-calculation",
+      "reason": "T179-Pb/T182 pure row calculation shared by the actual v2 story writer: exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Semantic RED preserved before success logic; post-wiring first Late2/EVIDENCE precedes calculator GREEN.",
+      "contracts": [
+        "#1536 T179/B01 storyPlan calculation prerequisite; T182/B04 existing v2 story owner. Not complete source/history/artifact storyPlan authority."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "First actual gate before all story stage actuals after fresh BOTH preparation and independent SOURCE/FIXTURE/SELECTION. Freeze raw Late2, independent EVIDENCE release before calculator RED/GREEN or other actuals. Existing original/checkpoint fixture is unchanged.",
+      "contracts": [
+        "Actual staged43 Late zero/nonzero full union, charge/history/story/turn/cleanup and inert repeat; exact original/G/source protections."
+      ]
+    },
+    {
+      "category": "fr063-joint-story-owner",
+      "reason": "After calculator is wired: five existing actual signed-prefix/committed-row narrative/G/append/readback failure controls; no new checkpoint/source fixture or owner membership change.",
+      "contracts": [
+        "Current original/output/history/source checks and retained applied union/debt on uncertain story publication."
+      ]
+    },
+    {
+      "category": "fr063-joint-retained-story",
+      "reason": "After calculator is wired: actual appended row/readback failure then fresh PID durable-only recognition, no second append and exact turn/cleanup.",
+      "contracts": [
+        "Same exact row serialization and existing private current proof; durable replay remains owner-derived."
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "4bc24ed10b97dcce2fcbe1842e3132ee0e63b596",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0610305,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0486327,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1343006,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042691,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:07.2240684",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 28,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "fr063-joint-late-completion-integration-001",
+      "fr063-joint-retained-story-integration-002",
+      "fr063-joint-story-calculation-unit-003",
+      "fr063-joint-story-owner-integration-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

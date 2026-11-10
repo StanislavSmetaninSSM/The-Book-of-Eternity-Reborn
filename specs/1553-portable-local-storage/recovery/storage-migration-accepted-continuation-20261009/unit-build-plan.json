@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-owned-preparation-source-contract"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "020ac5e8e281f55d0c5b6164642e9602be13fdbc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 16.3406548,
+  "Descriptors": [
+    {
+      "Name": "worker-owned-preparation-source-contract-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-owned-preparation-source-contract",
+      "Categories": [
+        "worker-owned-preparation-source-contract"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

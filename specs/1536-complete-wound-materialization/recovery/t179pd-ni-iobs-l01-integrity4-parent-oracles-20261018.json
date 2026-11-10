@@ -1,0 +1,79 @@
+{
+  "kind": "PARENT_INTEGRITY4_REACHED_CHILD_ORACLES_NOT_INDEPENDENT_EVIDENCE",
+  "recordSha256": "aba7ad1dc1301329ef926b3616f32e94f88b7af754f03a6dbbb4990f7931fa34",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"Version\")",
+      "originalPid": 29229,
+      "originalBirthTick": 1405018,
+      "resumePid": 30234,
+      "resumeBirthTick": 1411463,
+      "held": true,
+      "newChangingICommits": 0,
+      "nonce": "f30e996bf5714cad9977d2a61c047965",
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-76b367eafd6044b595c8088f85eef791",
+      "cutSha256": "B9A99EB6A9F5E470247AF00703F235CE31399A51018CF38BB10D9F910CD77EBC",
+      "joinAndEofBoth": true,
+      "inertRepeat": true,
+      "freshAuthorityAbsent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"OriginalManifest\")",
+      "originalPid": 29176,
+      "originalBirthTick": 1397256,
+      "resumePid": 29207,
+      "resumeBirthTick": 1403397,
+      "held": true,
+      "newChangingICommits": 0,
+      "nonce": "c4c461a94721458fa2b248ffecb76499",
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-19c94d95a5ee4d7ebcfb52549fefe16e",
+      "cutSha256": "A45E575884A72A6B08A5514DCB09EC6B6A04F4DBF6DC9435915B49A5E8FF5B2B",
+      "joinAndEofBoth": true,
+      "inertRepeat": true,
+      "freshAuthorityAbsent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"CurrentInterface\")",
+      "originalPid": 30352,
+      "originalBirthTick": 1412091,
+      "resumePid": 30996,
+      "resumeBirthTick": 1420685,
+      "held": true,
+      "newChangingICommits": 0,
+      "nonce": "0905abe24942495e9f075a16d390fff5",
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-878edd4e312e430f9eb93c7ba1a05140",
+      "cutSha256": "BF1FE56C0162FB42440B128CFD95602F6B64FAAACEE1D155D1446581A6584843",
+      "joinAndEofBoth": true,
+      "inertRepeat": true,
+      "freshAuthorityAbsent": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"RecordFingerprint\")",
+      "originalPid": 29052,
+      "originalBirthTick": 1386500,
+      "resumePid": 29156,
+      "resumeBirthTick": 1396536,
+      "held": true,
+      "newChangingICommits": 0,
+      "nonce": "cdb3ec3001f943589c183d858c35018a",
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-73d35c3ce2ae4e239f569353f33a11e5",
+      "cutSha256": "DD2BC937EC6D1ED6182D66C1695CB412C1E6E9ED5ACEB5AA2FBB7E8D0B9AE03D",
+      "joinAndEofBoth": true,
+      "inertRepeat": true,
+      "freshAuthorityAbsent": true
+    }
+  ],
+  "distinctNewProcessIdentities": 8,
+  "distinctNoncesAndRoots": 4,
+  "category": [
+    {
+      "Category": "fr063-joint-interface-current-integrity",
+      "Seconds": 388.8808518,
+      "BudgetMinutes": 15,
+      "Completed": true
+    }
+  ],
+  "beforeToLaunchSeconds": 2.538864,
+  "completionToAfterSeconds": 1.077795,
+  "limits": "Native4PASS and unchanged reached assertions; independent full cold-owner/image/capability review pending. Old lost crash5 UNKNOWN unchanged."
+}

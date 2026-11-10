@@ -1,0 +1,412 @@
+{
+  "kind": "A2_TESTS_ONLY_CONCRETE_SOURCE_FIXTURE_SELECTION_PACKET_PENDING_INDEPENDENT_REVIEW",
+  "sourceHead": "40ed288b88a365b072deb81420f6e937565852f8",
+  "compiledSource": "40ed288b88a365b072deb81420f6e937565852f8",
+  "createdUtc": "2026-10-17T02:26:14.536653+00:00",
+  "scope": "No production changes; only 2new award testfiles/4category owners/current selection. Helpers absent. Approved ordinary-only A2 contract; no watermark/arithmetic/HOT/joint source redirection.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "mode": "100644",
+      "git_blob": "cd1f93a124dc1de15ed33cfa0570bf0962dd1522",
+      "bytes": 296784,
+      "sha256": "788c11e250a0f9031c36ae01dd393617ad07a7a4b91608fbdfe93347cc80fbd3"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "mode": "100644",
+      "git_blob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "bytes": 10951,
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "mode": "100644",
+      "git_blob": "df634337ba827c1942a348bc392affbd0b4c99f6",
+      "bytes": 38509,
+      "sha256": "3dd1c53ac0bc7c6a7c801689178a12cc338b89ec01c5a882f9cdc94e8e1234bb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+      "mode": "100644",
+      "git_blob": "a9c26907731515c8e2b00c06fea2b6624a82cc06",
+      "bytes": 793,
+      "sha256": "4efa091f457d47594b6eb6b87992f1f503746dcdd4dbd334618386adcc68928d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "mode": "100644",
+      "git_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+      "mode": "100644",
+      "git_blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+      "bytes": 782,
+      "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "mode": "100644",
+      "git_blob": "da1a0e0fcba71a3cfbcdcce86947dcd019289c52",
+      "bytes": 16393,
+      "sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AwardLevelPolicyTests.cs",
+      "mode": "100644",
+      "git_blob": "8eaa77811be596a35c8b6ed8e37a1e9b055b7974",
+      "bytes": 3413,
+      "sha256": "48770eee6af29d67c9be08c54829ab441dc9068745565f67c63ee8ddb6b3db91"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs",
+      "mode": "100644",
+      "git_blob": "26aad1a0617093f40b4068e195fc5598df737d7c",
+      "bytes": 10113,
+      "sha256": "1068ee1ad07db1bb1ac0f52130d14b6640e5d803515126f1b4d27589746383b8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "mode": "100644",
+      "git_blob": "6be846cbdf5957622bac6fc3d0e721fc3ec6fb23",
+      "bytes": 584594,
+      "sha256": "73bd4db24c1294392f8e5f4ccc074095c2ec8696b1e69aae1066fb393a1608db"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ProgressionOutcome.cs",
+      "mode": "100644",
+      "git_blob": "dcd7a1c6b18ecf0538496c40d46c3c17f383eefb",
+      "bytes": 6084,
+      "sha256": "e136469e678d82b5dc097aff37a4131d7c2ca199ffce2bd7cbc1fdb08d0bbb03"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "mode": "100644",
+      "git_blob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "mode": "100644",
+      "git_blob": "253c2e7f5abd3ec66245d7725a910f8bc280e8bb",
+      "bytes": 35308,
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "mode": "100644",
+      "git_blob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "bytes": 83808,
+      "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "mode": "100644",
+      "git_blob": "96e44d2c4134204b41b815e4051a689a5a720f3a",
+      "bytes": 10421,
+      "sha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "mode": "100644",
+      "git_blob": "9aacb56c60f7bdc9882852dfe96b4d005c106990",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8"
+    },
+    {
+      "path": "tests/categories.json",
+      "mode": "100644",
+      "git_blob": "7d010cc1ccc2d7d0eb1a7180501cd977597dfae2",
+      "bytes": 1978851,
+      "sha256": "9cb935b0ea3a8ffdbb1460ebdf65602e3ae07bb3bab87a65abcc09a07c8e2874"
+    },
+    {
+      "path": "tests/selection.json",
+      "mode": "100644",
+      "git_blob": "cc5401675244e623f7c7b94705c0dcb390c27a1d",
+      "bytes": 3319,
+      "sha256": "ade0ee62b3bb329584b3b2e762d9a1a067b29c7cda668912f08e944d65911bd6"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "mode": "100644",
+      "git_blob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "mode": "100644",
+      "git_blob": "82dead716f8604c10aa17636c313d46a49fa307b",
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    }
+  ],
+  "newNamedDependenciesExactGithub": {
+    "sha": "40ed288b88a365b072deb81420f6e937565852f8",
+    "newEmptyDirectory": "/workspace/a2-red-extra-dependencies-github-40ed288b-20261017",
+    "files": [
+      {
+        "path": "BookOfEternityClient/Core/IConsoleInputSource.cs",
+        "mode": "100644",
+        "git_blob": "9322a6911c9504c773559d9b668c9d47e3bae57d",
+        "bytes": 782,
+        "sha256": "eeb8876078e8612e4c26c5eb03bd4ff2ed9790617334bae29db6f82c916b2969",
+        "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/40ed288b88a365b072deb81420f6e937565852f8/BookOfEternityClient/Core/IConsoleInputSource.cs",
+        "recoveredPath": "/workspace/a2-red-extra-dependencies-github-40ed288b-20261017/BookOfEternityClient/Core/IConsoleInputSource.cs"
+      },
+      {
+        "path": "BookOfEternityClient/Configuration/GameSettings.cs",
+        "mode": "100644",
+        "git_blob": "da1a0e0fcba71a3cfbcdcce86947dcd019289c52",
+        "bytes": 16393,
+        "sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6",
+        "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/40ed288b88a365b072deb81420f6e937565852f8/BookOfEternityClient/Configuration/GameSettings.cs",
+        "recoveredPath": "/workspace/a2-red-extra-dependencies-github-40ed288b-20261017/BookOfEternityClient/Configuration/GameSettings.cs"
+      }
+    ],
+    "runtime": "NOT_RUN; existing base coverage retained, no base rehash"
+  },
+  "realOwner": {
+    "method": "GameEngine.CheckLevelUpAsync",
+    "source": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2552-2625",
+    "construction": "Existing fully constructed CreateGameEngine at integration GameEngineTurnLifecycleTests.cs:10916; real FS/state/char services, no uninitialized/fake engine",
+    "leafSlots": "Experience2559-2569, status2573-2582; default1/<=1source selection and one abort/log catch except coordinateduncertainty remain owning wrapper",
+    "negativeScalarLimit": "lastKnown=max(1,current) cannot expose negative; exact nullable assignment source/pure value assertions supply that contract"
+  },
+  "boundary": {
+    "method": "AwardContextAndStrictBytes_PrecedeMissingParsedPolicy",
+    "cases": 2,
+    "routes": [
+      "Experience exp2/status7 reads exp,points; lastKnown1->2",
+      "Status exp1/status2 reads exp,status,points; lastKnown1->2"
+    ],
+    "order": "Real owner allfive supplied-presence/exactBOMpreimages, read/lastKnown/noUI/no-mutation, physicalpostimages, raw context and strictcleanup all FINISH before reflected missinghelper NotNull",
+    "expectedFirstOutcome": "ONLY boundary2; expected native1/2FAILED at missing named helper after genuine owner context, exact bytes/no-write/strictcleanup. Qualified structural missing-policy RED only, not semantics, if that exact raw outcome is independently accepted."
+  },
+  "finiteSelection": {
+    "A2Cases": 57,
+    "protectedLateCases": 2,
+    "totalPlanned": 59,
+    "descriptors": 5,
+    "methods": 11,
+    "A2Methods": 9,
+    "strictA2Roots": 24,
+    "pureRootCount": 0,
+    "pureCleanup": "NOT_APPLICABLE",
+    "actualCommand": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category fr063-award-level-policy-boundary -NoBuild",
+    "budgets": "5minutes each, no frontend"
+  },
+  "fixtureGuards": {
+    "paths": "Five canonical ResolvePath images: experience/status/points/computed/base characteristics; exact existing UTF8BOM source preimages, no null==null substitute",
+    "faults": "2actual canonical read IOException identities observed in real outer catch/logger; no fabricated coordinated exception",
+    "existing": "Two thin fact entries: original actual restart body with strict wrapper; original level_mark body already owns its single strictcleanup. Real queued input/publicationcut and existing assertions retained.",
+    "callbacks": "Read/mutation observation arms only after setup; physical probes BCL only, no canonical read contamination"
+  },
+  "protectedLateImpact": "Product unchanged for causalRED: do not run Late2 now. Future production changes reach real source42 prelude JointCompletion35->QteStoryAppend361 ProcessPlayerTurn->TurnLifecycle1963->2456/2463 CheckLevelUp; final joint43 earlyreturns952/1040. One new FIRST after productionfreshSOURCE and separate EVIDENCE; old A1/Late2 remain original provenance.",
+  "preparation": {
+    "packet": "t179pd-award-level-red-preparation-20261017.json",
+    "inspection": "t179pd-award-level-red-preparation-writer-inspection-20261017.json",
+    "commands": [
+      {
+        "mode": "catalog",
+        "label": "a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07",
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-ValidateCatalog"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "sourceHead": "40ed288b88a365b072deb81420f6e937565852f8",
+        "startedUtc": "2026-10-17T02:25:06.943829+00:00",
+        "finishedUtc": "2026-10-17T02:25:55.231538+00:00",
+        "wallSeconds": 48.09937325499959,
+        "nativeExit": 0,
+        "stdoutPath": "/tmp/a2-implementation-tools/a2-red-catalog-closure-20261017T0226Z-attempt3-395a8d07/stdout.log",
+        "stdoutSha256": "6aac4e80c22222ec93dcc25b755d13702a3819e4b8217f16a2bcb6321791fc9e",
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022507-502-16483-2ead3d7d10c548c88c440f5fd24125d9-categories"
+        ],
+        "binaryBefore": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+            "bytes": 9500672
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+            "bytes": 29163520
+          }
+        ],
+        "binaryAfter": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+            "bytes": 9503232
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+            "bytes": 29179904
+          }
+        ],
+        "headAfter": "40ed288b88a365b072deb81420f6e937565852f8",
+        "statusAfter": "",
+        "ownedPrefixesBefore": [],
+        "ownedPrefixesAfter": [],
+        "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile,os\nroot=Path('/workspace/The-Book-of-Eternity-Reborn')\nmode,label,expected=sys.argv[1:4]\nassert mode in {'catalog','plan','actual'} and label.startswith('a2-') and '/' not in label\ndef git(*args):return subprocess.check_output(['git',*args],cwd=root)\nassert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\nout=Path('/tmp/a2-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\npaths=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll']\ndef binaries():\n return [dict(path=p,sha256=hashlib.sha256((root/p).read_bytes()).hexdigest(),bytes=(root/p).stat().st_size) for p in paths if (root/p).is_file()]\nbefore=binaries();args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']\nif mode=='catalog':\n assert len(sys.argv)==4;args+=['-ValidateCatalog']\nelse:\n manifest=Path(sys.argv[4]);prep=json.loads(manifest.read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['binaryAfter']==before and len(before)==4\n compiled=prep['sourceHead'];delta=git('diff','--name-only',compiled,expected).decode().splitlines();assert all(p.startswith('specs/1536-complete-wound-materialization/') for p in delta)\n if mode=='plan':\n  assert len(sys.argv)==5;args+=['-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\n else:\n  category=sys.argv[5];assert len(sys.argv)==6 and category in {'fr063-award-level-policy-boundary','fr063-award-level-policy','fr063-award-level-owner','fr063-award-level-existing','fr063-joint-late-completion'}\n  args+=['-Category',category,'-NoBuild']\nresult_root=root/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\nprefixes=['boe-training-level-a1-*','boe-joint-automatic-control-*','boe-gameengine-turnlifecycle-*']\ndef roots():return sorted(str(p) for pattern in prefixes for p in Path(tempfile.gettempdir()).glob(pattern))\nprefix_before=roots();start=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()\nprint('LOCAL_A2_START',mode,expected,'log',out/'stdout.log',flush=True)\nwith (out/'stdout.log').open('wb') as stream:\n done=subprocess.run(args,cwd=root,stdout=stream,stderr=subprocess.STDOUT)\nelapsed=time.monotonic()-clock;new=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\nafter=binaries();head_after=git('rev-parse','HEAD').decode().strip();status=git('status','--porcelain').decode()\nj=dict(mode=mode,label=label,argv=args,cwd=str(root),sourceHead=expected,startedUtc=start,finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),wallSeconds=elapsed,nativeExit=done.returncode,stdoutPath=str(out/'stdout.log'),stdoutSha256=hashlib.sha256((out/'stdout.log').read_bytes()).hexdigest(),resultDirectories=new,binaryBefore=before,binaryAfter=after,headAfter=head_after,statusAfter=status,ownedPrefixesBefore=prefix_before,ownedPrefixesAfter=roots(),helperText=Path(__file__).read_text(),runtimeScope='local fresh preparation ZERO execution' if mode!='actual' else 'ONE explicitly selected bounded category; no CI/Windows/worker',authority='Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release.')\n(out/'record.json').write_text(json.dumps(j,indent=2)+'\\n')\nprint('LOCAL_A2_EXIT',done.returncode,'wall',round(elapsed,3),'results',new,'record',out/'record.json',flush=True)\nassert head_after==expected and not status\nif mode!='catalog':assert before==after\nsys.exit(done.returncode)\n",
+        "runtimeScope": "local fresh preparation ZERO execution",
+        "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release."
+      },
+      {
+        "mode": "plan",
+        "label": "a2-red-plan-20261017T0226Z-attempt1-630de184",
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-SelectionFile",
+          "tests/selection.json",
+          "-PlanOnly",
+          "-NoBuild"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "sourceHead": "40ed288b88a365b072deb81420f6e937565852f8",
+        "startedUtc": "2026-10-17T02:26:00.897477+00:00",
+        "finishedUtc": "2026-10-17T02:26:06.596544+00:00",
+        "wallSeconds": 5.521956960000352,
+        "nativeExit": 0,
+        "stdoutPath": "/tmp/a2-implementation-tools/a2-red-plan-20261017T0226Z-attempt1-630de184/stdout.log",
+        "stdoutSha256": "2748b3d16806794b7561e39aacb755826f171e6d0a2b72004d8322f80aad021f",
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-022601-477-16914-2309ae2d40c3462ea75eece76a836f70-categories"
+        ],
+        "binaryBefore": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+            "bytes": 9503232
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+            "bytes": 29179904
+          }
+        ],
+        "binaryAfter": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+            "bytes": 9503232
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+            "bytes": 29179904
+          }
+        ],
+        "headAfter": "40ed288b88a365b072deb81420f6e937565852f8",
+        "statusAfter": "",
+        "ownedPrefixesBefore": [],
+        "ownedPrefixesAfter": [],
+        "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,time,tempfile,os\nroot=Path('/workspace/The-Book-of-Eternity-Reborn')\nmode,label,expected=sys.argv[1:4]\nassert mode in {'catalog','plan','actual'} and label.startswith('a2-') and '/' not in label\ndef git(*args):return subprocess.check_output(['git',*args],cwd=root)\nassert git('rev-parse','HEAD').decode().strip()==expected and not git('status','--porcelain')\nout=Path('/tmp/a2-implementation-tools')/label;assert not out.exists();out.mkdir(parents=True)\npaths=['BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll','BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll']\ndef binaries():\n return [dict(path=p,sha256=hashlib.sha256((root/p).read_bytes()).hexdigest(),bytes=(root/p).stat().st_size) for p in paths if (root/p).is_file()]\nbefore=binaries();args=['pwsh','-NoLogo','-NoProfile','-File','scripts/test-csharp.ps1']\nif mode=='catalog':\n assert len(sys.argv)==4;args+=['-ValidateCatalog']\nelse:\n manifest=Path(sys.argv[4]);prep=json.loads(manifest.read_text());assert prep['mode']=='catalog' and prep['nativeExit']==0 and prep['binaryAfter']==before and len(before)==4\n compiled=prep['sourceHead'];delta=git('diff','--name-only',compiled,expected).decode().splitlines();assert all(p.startswith('specs/1536-complete-wound-materialization/') for p in delta)\n if mode=='plan':\n  assert len(sys.argv)==5;args+=['-SelectionFile','tests/selection.json','-PlanOnly','-NoBuild']\n else:\n  category=sys.argv[5];assert len(sys.argv)==6 and category in {'fr063-award-level-policy-boundary','fr063-award-level-policy','fr063-award-level-owner','fr063-award-level-existing','fr063-joint-late-completion'}\n  args+=['-Category',category,'-NoBuild']\nresult_root=root/'TestResults/test-categories';old=set(result_root.iterdir()) if result_root.exists() else set()\nprefixes=['boe-training-level-a1-*','boe-joint-automatic-control-*','boe-gameengine-turnlifecycle-*']\ndef roots():return sorted(str(p) for pattern in prefixes for p in Path(tempfile.gettempdir()).glob(pattern))\nprefix_before=roots();start=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()\nprint('LOCAL_A2_START',mode,expected,'log',out/'stdout.log',flush=True)\nwith (out/'stdout.log').open('wb') as stream:\n done=subprocess.run(args,cwd=root,stdout=stream,stderr=subprocess.STDOUT)\nelapsed=time.monotonic()-clock;new=sorted(str(p) for p in set(result_root.iterdir())-old) if result_root.exists() else []\nafter=binaries();head_after=git('rev-parse','HEAD').decode().strip();status=git('status','--porcelain').decode()\nj=dict(mode=mode,label=label,argv=args,cwd=str(root),sourceHead=expected,startedUtc=start,finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),wallSeconds=elapsed,nativeExit=done.returncode,stdoutPath=str(out/'stdout.log'),stdoutSha256=hashlib.sha256((out/'stdout.log').read_bytes()).hexdigest(),resultDirectories=new,binaryBefore=before,binaryAfter=after,headAfter=head_after,statusAfter=status,ownedPrefixesBefore=prefix_before,ownedPrefixesAfter=roots(),helperText=Path(__file__).read_text(),runtimeScope='local fresh preparation ZERO execution' if mode!='actual' else 'ONE explicitly selected bounded category; no CI/Windows/worker',authority='Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release.')\n(out/'record.json').write_text(json.dumps(j,indent=2)+'\\n')\nprint('LOCAL_A2_EXIT',done.returncode,'wall',round(elapsed,3),'results',new,'record',out/'record.json',flush=True)\nassert head_after==expected and not status\nif mode!='catalog':assert before==after\nsys.exit(done.returncode)\n",
+        "runtimeScope": "local fresh preparation ZERO execution",
+        "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release."
+      }
+    ],
+    "rawChainCount": 12,
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+        "bytes": 26178048
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "9dea60fc6653e20890a36ea97d605925615155894e1b161d11db68d1331fb514",
+        "bytes": 9503232
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "23df85fcff74296cc840437514917e302cc61879a87505b0d751a9e4dabde99d",
+        "bytes": 26178048
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "2256d451c34570d5cae517d979cfab0ba385cbf965746460222f69c42659a617",
+        "bytes": 29179904
+      }
+    ],
+    "executed": 0
+  },
+  "priorPreparationDefects": [
+    {
+      "source": "1c85a0923d4d105a6a492b5d4787b9f793661294",
+      "packet": "t179pd-award-level-first-preparation-fail-20261017.json",
+      "native": 1,
+      "tests": 0,
+      "error": "CS0535 missing AssertCompleted; preserved before one-member fix"
+    },
+    {
+      "source": "b7648a2bcb96ba212c14267b88053f38a3e34a7c",
+      "packet": "t179pd-award-level-second-preparation-fail-20261017.json",
+      "native": 1,
+      "tests": 0,
+      "error": "CS0103 missing Configuration using; primary Characteristics in GameSettings.cs233. Preserved before one-using fix; whole9method/interface/logger/factory/type static preflight before new fresh prep"
+    }
+  ],
+  "recovery": "Retained independently verified full7a sourcebase+13complete deltas through accepted65fc plus all A2complete deltas, new current dependencies pinned above. New evidence carrier must be nonforce pushed/readback and everynewchangedpath exactGitHub recovered before actual; no new full clone/base raw rehash.",
+  "release": "Independent concrete SOURCE/FIXTURE/SELECTION+saveddecision/rootrelease before causalRED actual; no production until separate causalRED accepted/preserved. No A1/oldfamily/runtime/CI/ZIP/security/#1557 expansion.",
+  "GM": "No update required for eventual internal behavior-preserving extraction; no GM-authored capability/schema/validation/output changes.",
+  "builderText": "from pathlib import Path\nimport json,hashlib,subprocess,urllib.request,urllib.parse,datetime\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn');rec=repo/'specs/1536-complete-wound-materialization/recovery';source='40ed288b88a365b072deb81420f6e937565852f8'\npaths=['BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs','BookOfEternityClient/Core/GameEngine.cs','BookOfEternityClient/Services/CharacteristicsService.cs','BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs','BookOfEternityClient/Core/FileSystemManager.cs','BookOfEternityClient/Core/IConsoleInputSource.cs','BookOfEternityClient/Configuration/GameSettings.cs','BookOfEternityClient.Tests/AwardLevelPolicyTests.cs','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AwardLevelPolicy.cs','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ProgressionOutcome.cs','BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs','BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs','BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs','BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs','BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs','tests/categories.json','tests/selection.json','scripts/test-csharp.ps1','scripts/testing/TestCategoryCatalog.psm1']\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\npins=[]\nfor path in paths:\n b=(repo/path).read_bytes();original=git('show',source+':'+path);assert b==original\n mode,kind,blob,_=git('ls-tree',source,'--',path).decode().split(None,3);assert kind=='blob'\n pins.append(dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest()))\nextra=Path('/workspace/a2-red-extra-dependencies-github-40ed288b-20261017');assert not extra.exists();extra.mkdir();newdeps=[]\nfor path in ['BookOfEternityClient/Core/IConsoleInputSource.cs','BookOfEternityClient/Configuration/GameSettings.cs']:\n row=next(x for x in pins if x['path']==path);url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+source+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=60) as response:b=response.read()\n assert hashlib.sha256(b).hexdigest()==row['sha256'] and hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest()==row['git_blob'];p=extra/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b);p.chmod(0o755 if row['mode']=='100755' else 0o644);newdeps.append(dict(row,url=url,recoveredPath=str(p)))\nassert not git('diff','65fcce707ce63be31e2a1fb462f89998bc39bfd1',source,'--','BookOfEternityClient','scripts','.github')\nleaves=(repo/'BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs').read_text();assert 'ReadAwardExperienceLevel' not in leaves and 'ReadAwardStatusLevel' not in leaves\nprep=json.loads((rec/'t179pd-award-level-red-preparation-20261017.json').read_text());inspection=json.loads((rec/'t179pd-award-level-red-preparation-writer-inspection-20261017.json').read_text());assert inspection['sourceHead']==source and inspection['executed']==0\nout=dict(kind='A2_TESTS_ONLY_CONCRETE_SOURCE_FIXTURE_SELECTION_PACKET_PENDING_INDEPENDENT_REVIEW',sourceHead=source,compiledSource=source,createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),scope='No production changes; only 2new award testfiles/4category owners/current selection. Helpers absent. Approved ordinary-only A2 contract; no watermark/arithmetic/HOT/joint source redirection.',sourcePins=pins,newNamedDependenciesExactGithub=dict(sha=source,newEmptyDirectory=str(extra),files=newdeps,runtime='NOT_RUN; existing base coverage retained, no base rehash'),realOwner=dict(method='GameEngine.CheckLevelUpAsync',source='BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2552-2625',construction='Existing fully constructed CreateGameEngine at integration GameEngineTurnLifecycleTests.cs:10916; real FS/state/char services, no uninitialized/fake engine',leafSlots='Experience2559-2569, status2573-2582; default1/<=1source selection and one abort/log catch except coordinateduncertainty remain owning wrapper',negativeScalarLimit='lastKnown=max(1,current) cannot expose negative; exact nullable assignment source/pure value assertions supply that contract'),boundary=dict(method='AwardContextAndStrictBytes_PrecedeMissingParsedPolicy',cases=2,routes=['Experience exp2/status7 reads exp,points; lastKnown1->2','Status exp1/status2 reads exp,status,points; lastKnown1->2'],order='Real owner allfive supplied-presence/exactBOMpreimages, read/lastKnown/noUI/no-mutation, physicalpostimages, raw context and strictcleanup all FINISH before reflected missinghelper NotNull',expectedFirstOutcome='ONLY boundary2; expected native1/2FAILED at missing named helper after genuine owner context, exact bytes/no-write/strictcleanup. Qualified structural missing-policy RED only, not semantics, if that exact raw outcome is independently accepted.'),finiteSelection=dict(A2Cases=57,protectedLateCases=2,totalPlanned=59,descriptors=5,methods=11,A2Methods=9,strictA2Roots=24,pureRootCount=0,pureCleanup='NOT_APPLICABLE',actualCommand='pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category fr063-award-level-policy-boundary -NoBuild',budgets='5minutes each, no frontend'),fixtureGuards=dict(paths='Five canonical ResolvePath images: experience/status/points/computed/base characteristics; exact existing UTF8BOM source preimages, no null==null substitute',faults='2actual canonical read IOException identities observed in real outer catch/logger; no fabricated coordinated exception',existing='Two thin fact entries: original actual restart body with strict wrapper; original level_mark body already owns its single strictcleanup. Real queued input/publicationcut and existing assertions retained.',callbacks='Read/mutation observation arms only after setup; physical probes BCL only, no canonical read contamination'),protectedLateImpact='Product unchanged for causalRED: do not run Late2 now. Future production changes reach real source42 prelude JointCompletion35->QteStoryAppend361 ProcessPlayerTurn->TurnLifecycle1963->2456/2463 CheckLevelUp; final joint43 earlyreturns952/1040. One new FIRST after productionfreshSOURCE and separate EVIDENCE; old A1/Late2 remain original provenance.',preparation=dict(packet='t179pd-award-level-red-preparation-20261017.json',inspection='t179pd-award-level-red-preparation-writer-inspection-20261017.json',commands=prep['commands'],rawChainCount=len(prep['files']),binaries=inspection['binaries'],executed=0),priorPreparationDefects=[dict(source='1c85a0923d4d105a6a492b5d4787b9f793661294',packet='t179pd-award-level-first-preparation-fail-20261017.json',native=1,tests=0,error='CS0535 missing AssertCompleted; preserved before one-member fix'),dict(source='b7648a2bcb96ba212c14267b88053f38a3e34a7c',packet='t179pd-award-level-second-preparation-fail-20261017.json',native=1,tests=0,error='CS0103 missing Configuration using; primary Characteristics in GameSettings.cs233. Preserved before one-using fix; whole9method/interface/logger/factory/type static preflight before new fresh prep')],recovery='Retained independently verified full7a sourcebase+13complete deltas through accepted65fc plus all A2complete deltas, new current dependencies pinned above. New evidence carrier must be nonforce pushed/readback and everynewchangedpath exactGitHub recovered before actual; no new full clone/base raw rehash.',release='Independent concrete SOURCE/FIXTURE/SELECTION+saveddecision/rootrelease before causalRED actual; no production until separate causalRED accepted/preserved. No A1/oldfamily/runtime/CI/ZIP/security/#1557 expansion.',GM='No update required for eventual internal behavior-preserving extraction; no GM-authored capability/schema/validation/output changes.',builderText=Path(__file__).read_text())\np=rec/'t179pd-award-level-red-source-20261017.json';assert not p.exists();p.write_text(json.dumps(out,indent=2)+'\\n');print('A2_CONCRETE_SOURCE_PACKET',len(pins),'sourcepins;57+2;fresh0tests;',p)\n"
+}

@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "gm-main-status-early-exit-affected-linux",
+    "gm-load-console-entry",
+    "gm-load-cleanup-debt"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a864ac37ed7535d09415917c499c9919651d661f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 87.417535,
+  "Descriptors": [
+    {
+      "Name": "gm-load-cleanup-debt-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-cleanup-debt",
+      "Categories": [
+        "gm-load-cleanup-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-console-entry-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-console-entry",
+      "Categories": [
+        "gm-load-console-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-status-early-exit-affected-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-status-early-exit-affected-linux",
+      "Categories": [
+        "gm-main-status-early-exit-affected-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusAdmission|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

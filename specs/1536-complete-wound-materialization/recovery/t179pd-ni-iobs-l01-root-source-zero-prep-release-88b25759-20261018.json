@@ -1,0 +1,45 @@
+{
+  "kind": "ROOT_NI_IOBS_L01_ACCEPT_FIRST_SOURCE_AND_CONDITIONAL_ZERO_PREPARATION",
+  "createdUtc": "2026-10-18T05:08:43.615005+00:00",
+  "sourceCarrier": "88b25759d1761566276c94db8064a08abc385c45",
+  "testSource": "80bf2a31cefda292fe7fd2025192a77a640346ed",
+  "productSource": "447bc1210c507742758243e1c254860bea0c4539",
+  "verdict": "ACCEPT_FIRST_ORDERING_SOURCE_FIXTURE_SELECTION_PENDING_PREP",
+  "rootChecks": "Read independent MD/JSON/hash support; actual probe/sharedfixture and prefix/projector actual normalizer read, exactnewsource/selector pins verified; all4tools exactsaved/tmp Python syntax checked; GitHub13files/all9paths/full7a+86deltas/55337tree exact; clean/exactremote/mainunchanged. Exact2supplementalactualhelper current/Git88b/Git80bf hash/bodies bound beforeprep, not cosmetic44\u219246rewriting.",
+  "locatorDisposition": "IndependentJSON firstAssertion line123 is comment locator; actual unchanged Assert.Equal(1,_interfaceAtCapture) is line124. Source/semantic claim unchanged; retain original report plus this exactlocator correction, no product/native failure.",
+  "persistFirst": "Copy exact6artifacts below plus thisRoot and current preciseheads. Normalmetadata-onlyWIP/push/exactremote/immediatedelta recovery. Do not change fixture/test/catalog/selection/tools/source packet or product. Root checks savedhead and then explicitly resolves/names ZERO command activation.",
+  "zeroScope": "Once Root names resolved cleanmetadata-onlyhead: run saved order-preparation-run.py catalog once with labelt179pd-ni-iobs-l01-order-prep-first-catalog; onlyafterverifiednative0 ZERO andunchangedsource runplan with labelt179pd-ni-iobs-l01-order-prep-first-plan andoriginalcatalogrecord. CanonicalBOTHbuild/catalogdiscovery then exact1PlanOnly-NoBuild. No actual, product, CI, oldacceptedpackage replay. Freezeunexpectedoutcome/noautomaticretry; archiveexactrawandpushbeforelongreview.",
+  "nativeHeld": "No native release. AfterfreshZEROrawreview Root mustbind complete ACTUAL managed inventory and ninebinarycontinuity, actual1descriptor/method/case, exactsource/compiled/actualcontexts andcleanup. Onlythen named FIRST singleton. Remainingfinitecases NOT_AUTHORED/UNRUN, no wholecoverage.",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018.md",
+      "bytes": 3556,
+      "sha256": "f7f79f15c05c1464c28a351263457a9049c19cf28b8406838ee5debd8dd666d3"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018.json",
+      "bytes": 5726,
+      "sha256": "73771b88b3b92ec5f7325b37f981913646a03130f4c63f8e9b45611ffdd813a0"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018-check.json",
+      "bytes": 26150,
+      "sha256": "fab40beb2486b2aac64ff2131c9f72e29c7de2d2323797986fc267cf9c8ea5ef"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-root-supplemental-source-pins-88b25759-20261018.json",
+      "bytes": 1032,
+      "sha256": "b2d52d1686bb9f590243db0a84052a7ef71733ea04e9011a904034c55685ff04"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-tools-wip-delta-github-88b25759-20261018.json",
+      "bytes": 11005,
+      "sha256": "bcdc02b8ce65391a918cb921027b752a75fe7d3de2733ef7c4c27bf839b8e7cd"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-88b25759-20261017.json",
+      "bytes": 29856,
+      "sha256": "7ad812b4206e1cf5baa8896a44f7cf4a199b1180eca0371e2f69f63b9db24947"
+    }
+  ]
+}

@@ -49,6 +49,7 @@ public partial class CanonicalStateNormalizer
 
     public static readonly string[] CanonicalAccumulatedFiles =
     {
+        EffectAcceptedTurnInputComposer.WorldTimePath,
         "game_state/meta/soul_state.json",
         "game_state/meta/guardians.json",
         ShiningAbodeState.StatePath,
@@ -132,6 +133,7 @@ public partial class CanonicalStateNormalizer
     private readonly FileSystemManager.CanonicalWriteLease? _writeLease;
     private readonly CanonicalNormalizationWriteAuthority _normalizationWriteAuthority;
     private readonly GuardianPowerJournalNormalizationMode _guardianPowerJournalMode;
+    private readonly AfterlifeWoundHealingPlanner.Continuation? _spiritualLocalityNormalizationOwner;
 
     private enum GuardianPowerJournalNormalizationMode
     {
@@ -206,13 +208,15 @@ public partial class CanonicalStateNormalizer
         ILogger<CanonicalStateNormalizer> logger,
         FileSystemManager.CanonicalWriteLease? writeLease,
         CanonicalNormalizationWriteAuthority normalizationWriteAuthority,
-        GuardianPowerJournalNormalizationMode guardianPowerJournalMode)
+        GuardianPowerJournalNormalizationMode guardianPowerJournalMode,
+        AfterlifeWoundHealingPlanner.Continuation? spiritualLocalityNormalizationOwner = null)
     {
         _fs = fs;
         _logger = logger;
         _writeLease = writeLease;
         _normalizationWriteAuthority = normalizationWriteAuthority;
         _guardianPowerJournalMode = guardianPowerJournalMode;
+        _spiritualLocalityNormalizationOwner = spiritualLocalityNormalizationOwner;
     }
 
     internal CanonicalStateNormalizer BindTo(
@@ -261,9 +265,23 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
-            return;
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                await BindTo(writeLease).NormalizeAccumulatedStateAsync(backups);
+                return;
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority();
@@ -279,9 +297,23 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await BindTo(writeLease)
-                .NormalizeAccumulatedStateWithPlanAsync(backups);
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                return await BindTo(writeLease)
+                    .NormalizeAccumulatedStateWithPlanAsync(backups);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         EnsureHeldTreatmentPublicationUsesCoordinator();
@@ -348,10 +380,24 @@ public partial class CanonicalStateNormalizer
     {
         if (_writeLease == null)
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await BindTo(writeLease)
-                .NormalizeClientOwnedBootstrapAccumulatedStateAsync(backups);
-            return;
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationFailure = null;
+            try
+            {
+                await BindTo(writeLease)
+                    .NormalizeClientOwnedBootstrapAccumulatedStateAsync(backups);
+                return;
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                publicationFailure = uncertain;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, false, publicationFailure);
+            }
         }
 
         await EnsureClientOwnedBootstrapNormalizationBoundaryAsync();
@@ -369,6 +415,17 @@ public partial class CanonicalStateNormalizer
         SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
+        var spiritualOwner = (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan.SpiritualHealingContinuation;
+        if (_spiritualLocalityNormalizationOwner is null && spiritualOwner?.HasLocalityGuards == true)
+        {
+            // One operation-scoped child, with the SAME actual lease and validated
+            // owner. No mutation authority is reconstructed from serialized DATA.
+            return await new CanonicalStateNormalizer(_fs, _logger, _writeLease, _normalizationWriteAuthority,
+                _guardianPowerJournalMode, spiritualOwner).NormalizeAccumulatedStateCoreAsync(backups, mortalItemMode,
+                    acceptedMechanicsPreflight, treatmentPublicationReceipt, spiritualPublicationReceipt);
+        }
+        if (_spiritualLocalityNormalizationOwner is not null && !ReferenceEquals(spiritualOwner, _spiritualLocalityNormalizationOwner))
+            throw new InvalidDataException("Locality normalization lost its actual validated spiritual plan owner.");
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
         var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);
@@ -391,11 +448,18 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
         await NormalizeSoulStateAsync(backups);
-        if (spiritualPublicationReceipt is null ||
-            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))
+        var naturalOwnsConflict = spiritualOwner?.HasNaturalConflictStart == true &&
+            acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated;
+        if (naturalOwnsConflict)
+            spiritualOwner!.RequireNaturalConflictPlan(((AcceptedMechanicsNormalizationPreflight.Validated)acceptedMechanicsPreflight!).Plan);
+        if (!naturalOwnsConflict && (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath)))
             await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
-        if (spiritualPublicationReceipt is null ||
-            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath))
+        var healingOwnsProfiles = spiritualOwner?.HasCompleteProfileProjection == true &&
+            acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated profilePlan &&
+            SpiritualPlanOwnsRoot(profilePlan.Plan, AfterlifeEntityProfileState.StatePath);
+        if (!healingOwnsProfiles && (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath)))
             await NormalizeAfterlifeEntityProfilesAsync(backups);
         await NormalizeAfterlifeActiveThreatsAsync(backups);
         await NormalizeChaosSeaGuardianPoliticsAsync(backups);

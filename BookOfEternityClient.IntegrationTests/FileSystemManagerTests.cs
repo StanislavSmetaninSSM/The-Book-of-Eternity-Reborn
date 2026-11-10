@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -15,10 +16,12 @@ namespace BookOfEternityClient.Tests;
 public sealed class FileSystemManagerTests : IDisposable
 {
     private readonly string _rootPath;
+    private readonly ITestOutputHelper _output;
     private readonly FileSystemManager _fs;
 
-    public FileSystemManagerTests()
+    public FileSystemManagerTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-filesystem-manager-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
@@ -399,6 +402,76 @@ public sealed class FileSystemManagerTests : IDisposable
                 Directory.Delete(raceRoot, recursive: true);
             if (Directory.Exists(outsideRoot))
                 Directory.Delete(outsideRoot, recursive: true);
+        }
+    }
+
+    /// <summary>
+    /// Refuses a parent junction installed after the real stream opens, preserving both file images.
+    /// The setup moves the open leaf into the owned fixture before replacing its now-empty parent.
+    /// </summary>
+    /// <returns>
+    /// Completion after the fresh read-completion check rejects the changed namespace and owned roots are removed.
+    /// </returns>
+    [Fact]
+    public async Task ReadFileBytesAsync_ParentReplacedByJunctionAfterOpenFailsClosed()
+    {
+        Assert.True(OperatingSystem.IsWindows(), "This category requires the actual Windows junction boundary.");
+        const string relativePath = "game_state/meta/read-completion-target.bin";
+        var ownedBase = Path.TrimEndingDirectorySeparator(Path.GetFullPath(_rootPath));
+        var rootName = Path.GetFileName(ownedBase);
+        const string prefix = "boe-filesystem-manager-";
+        Assert.StartsWith(prefix, rootName);
+        Assert.True(Guid.TryParseExact(rootName[prefix.Length..], "N", out _));
+        Assert.Equal(Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.GetTempPath())), Path.GetDirectoryName(ownedBase));
+        var raceRoot = Path.Combine(ownedBase, "construction-after-open");
+        var outsideRoot = Path.Combine(ownedBase, "construction-outside");
+        var canonicalMeta = Path.Combine(raceRoot, "game_session", "game_state", "meta");
+        var displacedTarget = Path.Combine(raceRoot, "read-completion-before-race.bin");
+        var outsideTarget = Path.Combine(outsideRoot, "read-completion-target.bin");
+        foreach (var path in new[] { raceRoot, outsideRoot, canonicalMeta, displacedTarget, outsideTarget })
+            Assert.StartsWith(ownedBase + Path.DirectorySeparatorChar, Path.GetFullPath(path), StringComparison.Ordinal);
+        var armed = false;
+        var swapped = false;
+        var hooks = new FileSystemManagerHooks
+        {
+            AfterCanonicalReadInitialValidationAsync = readPath =>
+            {
+                if (!armed || swapped || readPath != relativePath) return Task.CompletedTask;
+                File.Move(Path.Combine(canonicalMeta, "read-completion-target.bin"), displacedTarget);
+                Directory.Delete(canonicalMeta, recursive: false);
+                CreateDirectoryJunction(canonicalMeta, outsideRoot);
+                swapped = true;
+                return Task.CompletedTask;
+            }
+        };
+        Directory.CreateDirectory(raceRoot);
+        Directory.CreateDirectory(outsideRoot);
+        try
+        {
+            await File.WriteAllBytesAsync(outsideTarget, [0xD4]);
+            var files = new FileSystemManager(raceRoot, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, hooks);
+            files.EnsureDirectoryStructure();
+            await files.WriteFileAtomicBytesAsync(relativePath, [0x44]);
+            armed = true;
+            await Assert.ThrowsAsync<InvalidDataException>(() => files.ReadFileBytesAsync(relativePath));
+            Assert.True(swapped);
+            Assert.Equal(new byte[] { 0xD4 }, await File.ReadAllBytesAsync(outsideTarget));
+            Assert.Equal(new byte[] { 0x44 }, await File.ReadAllBytesAsync(displacedTarget));
+        }
+        finally
+        {
+            if (Directory.Exists(canonicalMeta) && File.GetAttributes(canonicalMeta).HasFlag(FileAttributes.ReparsePoint))
+                Directory.Delete(canonicalMeta, recursive: false);
+            if (File.Exists(displacedTarget))
+            {
+                Directory.CreateDirectory(canonicalMeta);
+                File.Move(displacedTarget, Path.Combine(canonicalMeta, "read-completion-target.bin"));
+            }
+            if (Directory.Exists(raceRoot)) Directory.Delete(raceRoot, recursive: true);
+            if (Directory.Exists(outsideRoot)) Directory.Delete(outsideRoot, recursive: true);
+            Assert.False(Directory.Exists(raceRoot));
+            Assert.False(Directory.Exists(outsideRoot));
         }
     }
 
@@ -2713,11 +2786,34 @@ public sealed class FileSystemManagerTests : IDisposable
         Assert.Equal(originalBytes, await File.ReadAllBytesAsync(canonicalPath));
     }
 
-    [Fact]
-    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination()
+    // These controls qualify the retained physical recorder/recovery handler, not the ordinary writer.
+    private async Task WriteThroughLegacyPublicationAsync(FileSystemManager files, string path, byte[] bytes)
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+        Assert.False(lease.IsLegacyStorageRecovery);
+        var entered = false;
+        try
+        {
+            await files.RunLegacyStorageRecoveryAsync(lease, async () =>
+            {
+                Assert.True(lease.IsLegacyStorageRecovery);
+                entered = true;
+                await files.WriteFileAtomicBytesAsync(lease, path, bytes);
+            });
+        }
+        finally
+        {
+            _output.WriteLine(JsonSerializer.Serialize(new { kind = "native-legacy-publication-route",
+                path, entered, flagRestored = !lease.IsLegacyStorageRecovery }));
+            Assert.False(lease.IsLegacyStorageRecovery);
+        }
+    }
+
+    [Fact]
+    public async Task LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorDestination()
+    {
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-source-link.json";
@@ -2750,7 +2846,7 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 replacementBytes));
 
@@ -2787,10 +2883,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
+    public async Task LegacyAtomicWrite_PostPublicationSourceLinkRestoresExactPriorAbsence()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-source-link-absent.json";
@@ -2799,12 +2895,16 @@ public sealed class FileSystemManagerTests : IDisposable
         var aliasPath = Path.Combine(
             _rootPath,
             "post-publication-absence-alias.json");
+        var hookCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
             path =>
             {
                 if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    hookCount++;
                     WindowsHardLinkTestHelper.Create(aliasPath, path);
+                }
                 return Task.CompletedTask;
             });
         var raceFs = new FileSystemManager(
@@ -2814,10 +2914,11 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 replacementBytes));
 
+        Assert.Equal(1, hookCount);
         Assert.False(File.Exists(destinationPath));
         Assert.Equal(
             replacementBytes,
@@ -2825,10 +2926,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence()
+    public async Task LegacyAtomicWrite_RollbackFinalAbsenceRaceRetainsEvidence()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/rollback-final-absence-race.json";
@@ -2837,16 +2938,16 @@ public sealed class FileSystemManagerTests : IDisposable
             _rootPath,
             "missing-rollback-final-target.json");
         var hookInvoked = false;
+        var publicationCount = 0;
         var hooks = new FileSystemManagerHooks
         {
             AfterPhysicalFilePublishedAsync = path =>
-                path.Equals(
-                    destinationPath,
-                    StringComparison.OrdinalIgnoreCase)
-                    ? Task.FromException(
-                        new IOException(
-                            "Injected post-publication failure."))
-                    : Task.CompletedTask
+            {
+                if (!path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    return Task.CompletedTask;
+                publicationCount++;
+                return Task.FromException(new IOException("Injected post-publication failure."));
+            }
         };
         FileSystemManagerHookTestHelper.SetPathHook(
             hooks,
@@ -2872,10 +2973,11 @@ public sealed class FileSystemManagerTests : IDisposable
         try
         {
             await Assert.ThrowsAsync<InvalidDataException>(
-                () => raceFs.WriteFileAtomicBytesAsync(
+                () => WriteThroughLegacyPublicationAsync(raceFs,
                     relativePath,
                     [0x18, 0x29, 0x3A]));
 
+            Assert.Equal(1, publicationCount);
             Assert.True(hookInvoked);
             Assert.True(
                 File.GetAttributes(destinationPath)
@@ -2896,10 +2998,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing()
+    public async Task LegacyAtomicWrite_DestinationLinkAfterAuthorityValidationFencesWithoutPublishing()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/destination-link-race.json";
@@ -2911,14 +3013,24 @@ public sealed class FileSystemManagerTests : IDisposable
         var aliasPath = Path.Combine(
             _rootPath,
             "destination-link-race-alias.json");
+        var authorityCount = 0;
+        var publicationCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFileAuthorityValidatedAsync",
             path =>
             {
                 if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    authorityCount++;
                     WindowsHardLinkTestHelper.Create(aliasPath, path);
+                }
                 return Task.CompletedTask;
             });
+        FileSystemManagerHookTestHelper.SetPathHook(hooks, "AfterPhysicalFilePublishedAsync", path =>
+        {
+            if (path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase)) publicationCount++;
+            return Task.CompletedTask;
+        });
         var raceFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
@@ -2926,10 +3038,12 @@ public sealed class FileSystemManagerTests : IDisposable
             hooks);
 
         await Assert.ThrowsAsync<InvalidDataException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 [0xD4, 0xE5, 0xF6]));
 
+        Assert.Equal(1, authorityCount);
+        Assert.Equal(0, publicationCount);
         Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
         Assert.Equal(
             priorIdentity with { NumberOfLinks = 2 },
@@ -2938,10 +3052,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal()
+    public async Task LegacyAtomicWrite_PostPublicationFailureRestoresPriorIdentityAndCleansJournal()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/post-publication-failure.json";
@@ -2950,25 +3064,30 @@ public sealed class FileSystemManagerTests : IDisposable
         var destinationPath = _fs.ResolvePath(relativePath);
         var priorIdentity =
             WindowsHardLinkTestHelper.CaptureIdentity(destinationPath);
+        var hookCount = 0;
+        var injected = new IOException("Injected post-publication failure.");
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
-            path => path.Equals(
-                    destinationPath,
-                    StringComparison.OrdinalIgnoreCase)
-                ? Task.FromException(
-                    new IOException("Injected post-publication failure."))
-                : Task.CompletedTask);
+            path =>
+            {
+                if (!path.Equals(destinationPath, StringComparison.OrdinalIgnoreCase))
+                    return Task.CompletedTask;
+                hookCount++;
+                return Task.FromException(injected);
+            });
         var raceFs = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
-        await Assert.ThrowsAsync<IOException>(
-            () => raceFs.WriteFileAtomicBytesAsync(
+        var failure = await Assert.ThrowsAsync<IOException>(
+            () => WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 [0x34, 0x45, 0x56]));
 
+        Assert.Equal(1, hookCount);
+        Assert.Same(injected, failure);
         Assert.Equal(priorBytes, await File.ReadAllBytesAsync(destinationPath));
         Assert.Equal(
             priorIdentity,
@@ -3085,10 +3204,10 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task AtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
+    public async Task LegacyAtomicWrite_CommittedCleanupDebtNeverRollsBackPublishedBytes()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
+        Assert.True(OperatingSystem.IsWindows(), "Native legacy publication requires Windows.");
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
 
         const string relativePath =
             "game_state/world/committed-cleanup-debt.json";
@@ -3097,6 +3216,7 @@ public sealed class FileSystemManagerTests : IDisposable
         await _fs.WriteFileAtomicBytesAsync(relativePath, priorBytes);
         var destinationPath = _fs.ResolvePath(relativePath);
         string? blockedQuarantinePath = null;
+        var hookCount = 0;
         var hooks = FileSystemManagerHookTestHelper.WithPathHook(
             "AfterPhysicalFilePublishedAsync",
             path =>
@@ -3105,6 +3225,7 @@ public sealed class FileSystemManagerTests : IDisposable
                         destinationPath,
                         StringComparison.OrdinalIgnoreCase))
                 {
+                    hookCount++;
                     var quarantinePath = Assert.Single(
                         Directory.GetFiles(
                             Path.GetDirectoryName(destinationPath)!,
@@ -3127,10 +3248,11 @@ public sealed class FileSystemManagerTests : IDisposable
 
         try
         {
-            await raceFs.WriteFileAtomicBytesAsync(
+            await WriteThroughLegacyPublicationAsync(raceFs,
                 relativePath,
                 publishedBytes);
 
+            Assert.Equal(1, hookCount);
             Assert.NotNull(blockedQuarantinePath);
             Assert.Equal(
                 publishedBytes,
@@ -4140,16 +4262,26 @@ public sealed class FileSystemManagerTests : IDisposable
     [Fact]
     public async Task FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _output.WriteLine(line));
         const string destinationRelativePath =
             "saves/manual_saves/pre-journal-save.zip";
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var writerAtBoundary = NewBarrier();
         var allowPublication = NewBarrier();
         var readerContended = NewBarrier();
         var hooks = new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             },
             AfterCanonicalMutationBoundaryValidatedAsync = async path =>
@@ -4161,6 +4293,7 @@ public sealed class FileSystemManagerTests : IDisposable
                     return;
                 }
 
+                Interlocked.Increment(ref paused);
                 writerAtBoundary.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
@@ -4176,51 +4309,92 @@ public sealed class FileSystemManagerTests : IDisposable
             Path.Combine(stagingRoot, "pre-journal-save.zip"));
         await staged.Stream.WriteAsync(
             new byte[] { 0x50, 0x4B, 0x05, 0x06 });
-        Task<bool> readerTask;
-        Task first;
-        await using (var writeLease =
-                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        Task<bool>? readerTask = null;
+        Task? publicationTask = null;
+        try
         {
-            var publicationTask =
-                raceFs.MoveRuntimeFileIntoCanonicalSessionAsync(
-                    writeLease,
-                    staged,
-                    destinationRelativePath);
-            await writerAtBoundary.Task.WaitAsync(
-                TimeSpan.FromSeconds(10));
-
-            using (ExecutionContext.SuppressFlow())
+            await using (var writeLease =
+                         await raceFs.AcquireCanonicalWriteLeaseAsync())
             {
-                readerTask = Task.Run(
-                    () => raceFs.FileExists(
-                        destinationRelativePath));
+                try
+                {
+                    publicationTask =
+                        raceFs.MoveRuntimeFileIntoCanonicalSessionAsync(
+                            writeLease,
+                            staged,
+                            destinationRelativePath);
+                    var reached = await Task.WhenAny(writerAtBoundary.Task, publicationTask)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    if (ReferenceEquals(reached, publicationTask)) await publicationTask;
+                    Assert.Same(writerAtBoundary.Task, reached);
+
+                    using (ExecutionContext.SuppressFlow())
+                    {
+                        readerTask = Task.Run(
+                            () => raceFs.FileExists(
+                                destinationRelativePath));
+                    }
+
+                    var first = await Task.WhenAny(
+                            readerTask,
+                            readerContended.Task)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    Assert.Same(readerContended.Task, first);
+                    Assert.Equal(1, paused);
+                    Assert.True(mainContentions > 0);
+                    Assert.Equal(0, canonicalContentions);
+                    Assert.False(readerTask.IsCompleted);
+                    allowPublication.TrySetResult();
+                    await publicationTask;
+                }
+                finally
+                {
+                    allowPublication.TrySetResult();
+                    if (publicationTask is not null)
+                        await Record.ExceptionAsync(() => publicationTask);
+                }
             }
 
-            first = await Task.WhenAny(
-                    readerTask,
-                    readerContended.Task)
-                .WaitAsync(TimeSpan.FromSeconds(10));
-            allowPublication.TrySetResult();
-            await publicationTask;
+            Assert.True(await readerTask!);
         }
-
-        Assert.Same(readerContended.Task, first);
-        Assert.True(await readerTask);
+        finally
+        {
+            allowPublication.TrySetResult();
+            if (readerTask is not null)
+                await Record.ExceptionAsync(() => readerTask);
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-native-runtime-contention", method = nameof(FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence), root = _rootPath,
+                paused, mainContentions, canonicalContentions,
+                publicationStarted = publicationTask is not null, publicationSettled = publicationTask?.IsCompleted,
+                readerStarted = readerTask is not null, readerSettled = readerTask?.IsCompleted
+            }));
+        }
     }
 
     [Fact]
     public async Task FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _output.WriteLine(line));
         const string destinationRelativePath =
             "game_state/control/pre-journal-proposal";
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var writerAtBoundary = NewBarrier();
         var allowPublication = NewBarrier();
         var readerContended = NewBarrier();
         var hooks = new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             },
             AfterCanonicalMutationBoundaryValidatedAsync = async path =>
@@ -4232,6 +4406,7 @@ public sealed class FileSystemManagerTests : IDisposable
                     return;
                 }
 
+                Interlocked.Increment(ref paused);
                 writerAtBoundary.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
@@ -4250,37 +4425,68 @@ public sealed class FileSystemManagerTests : IDisposable
         await File.WriteAllTextAsync(
             Path.Combine(sourceDirectory, "proposal.json"),
             "{}");
-        Task<Exception?> readerTask;
-        Task first;
-        await using (var writeLease =
-                     await raceFs.AcquireCanonicalWriteLeaseAsync())
+        Task<Exception?>? readerTask = null;
+        Task? publicationTask = null;
+        try
         {
-            var publicationTask =
-                raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
-                    writeLease,
-                    sourceDirectory,
-                    destinationRelativePath);
-            await writerAtBoundary.Task.WaitAsync(
-                TimeSpan.FromSeconds(10));
-
-            using (ExecutionContext.SuppressFlow())
+            await using (var writeLease =
+                         await raceFs.AcquireCanonicalWriteLeaseAsync())
             {
-                readerTask = Task.Run<Exception?>(
-                    () => Record.Exception(
-                        () => raceFs.FileExists(
-                            destinationRelativePath)));
+                try
+                {
+                    publicationTask =
+                        raceFs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                            writeLease,
+                            sourceDirectory,
+                            destinationRelativePath);
+                    var reached = await Task.WhenAny(writerAtBoundary.Task, publicationTask)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    if (ReferenceEquals(reached, publicationTask)) await publicationTask;
+                    Assert.Same(writerAtBoundary.Task, reached);
+
+                    using (ExecutionContext.SuppressFlow())
+                    {
+                        readerTask = Task.Run<Exception?>(
+                            () => Record.Exception(
+                                () => raceFs.FileExists(
+                                    destinationRelativePath)));
+                    }
+
+                    var first = await Task.WhenAny(
+                            readerTask,
+                            readerContended.Task)
+                        .WaitAsync(TimeSpan.FromSeconds(10));
+                    Assert.Same(readerContended.Task, first);
+                    Assert.Equal(1, paused);
+                    Assert.True(mainContentions > 0);
+                    Assert.Equal(0, canonicalContentions);
+                    Assert.False(readerTask.IsCompleted);
+                    allowPublication.TrySetResult();
+                    await publicationTask;
+                }
+                finally
+                {
+                    allowPublication.TrySetResult();
+                    if (publicationTask is not null)
+                        await Record.ExceptionAsync(() => publicationTask);
+                }
             }
 
-            first = await Task.WhenAny(
-                    readerTask,
-                    readerContended.Task)
-                .WaitAsync(TimeSpan.FromSeconds(10));
-            allowPublication.TrySetResult();
-            await publicationTask;
+            Assert.IsType<InvalidDataException>(await readerTask!);
         }
-
-        Assert.Same(readerContended.Task, first);
-        Assert.IsType<InvalidDataException>(await readerTask);
+        finally
+        {
+            allowPublication.TrySetResult();
+            if (readerTask is not null)
+                await Record.ExceptionAsync(() => readerTask);
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-native-runtime-contention", method = nameof(FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination), root = _rootPath,
+                paused, mainContentions, canonicalContentions,
+                publicationStarted = publicationTask is not null, publicationSettled = publicationTask?.IsCompleted,
+                readerStarted = readerTask is not null, readerSettled = readerTask?.IsCompleted
+            }));
+        }
     }
 
     [Fact]
@@ -4422,6 +4628,9 @@ public sealed class FileSystemManagerTests : IDisposable
     [Fact]
     public async Task FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         const string relativePath =
             "game_state/control/exact-registration-race.json";
         var readerAtGap = NewBarrier();
@@ -4445,13 +4654,20 @@ public sealed class FileSystemManagerTests : IDisposable
                 if (!path.Equals(relativePath, StringComparison.OrdinalIgnoreCase))
                     return;
 
+                Interlocked.Increment(ref paused);
                 writerRegistered.TrySetResult();
                 await allowPublication.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
             },
+            MainOwnerLockContendedAsync = () =>
+            {
+                Interlocked.Increment(ref mainContentions);
+                readerContended.TrySetResult();
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
-                readerContended.TrySetResult();
+                Interlocked.Increment(ref canonicalContentions);
                 return Task.CompletedTask;
             }
         };
@@ -4466,22 +4682,45 @@ public sealed class FileSystemManagerTests : IDisposable
             readerTask = Task.Run(() => raceFs.FileExists(relativePath));
         }
 
-        await readerAtGap.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        var writerTask = raceFs.WriteFileAtomicBytesAsync(
-            relativePath,
-            [0x71, 0x82]);
-        await writerRegistered.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        allowFollowUpProbe.TrySetResult();
+        Task? writerTask = null;
+        try
+        {
+            await readerAtGap.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            writerTask = raceFs.WriteFileAtomicBytesAsync(
+                relativePath,
+                [0x71, 0x82]);
+            await writerRegistered.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            allowFollowUpProbe.TrySetResult();
 
-        var first = await Task.WhenAny(
-                readerTask,
-                readerContended.Task)
-            .WaitAsync(TimeSpan.FromSeconds(10));
-        allowPublication.TrySetResult();
-        await writerTask;
+            var first = await Task.WhenAny(
+                    readerTask,
+                    readerContended.Task)
+                .WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
+            Assert.False(readerTask.IsCompleted);
+            allowPublication.TrySetResult();
+            await writerTask;
 
-        Assert.Same(readerContended.Task, first);
-        Assert.True(await readerTask);
+            Assert.Same(readerContended.Task, first);
+            Assert.True(await readerTask);
+        }
+        finally
+        {
+            allowFollowUpProbe.TrySetResult();
+            allowPublication.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(readerTask, writerTask ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication), root = _rootPath, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = writerTask?.IsCompleted ?? false,
+                secondSettled = readerTask?.IsCompleted ?? false
+            }));
+        }
+
     }
 
     [Fact]

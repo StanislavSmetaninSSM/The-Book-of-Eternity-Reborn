@@ -25,7 +25,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
         {
             var signed = owner.Signed;
             var parsed = SpiritualWoundOpportunityReceiptState.Parse(signed.Receipt.Existed
-                ? new UTF8Encoding(false, true).GetString(signed.Receipt.Bytes!) : EmptyReceipt,
+                ? CanonicalJsonUtf8.DecodeOneOptionalBom(signed.Receipt.Bytes!) : EmptyReceipt,
                 SpiritualWoundOpportunityReceiptState.StatePath);
             if (!parsed.IsValid || parsed.State is not { } before)
                 return new(null, parsed.Issues);
@@ -40,6 +40,8 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 root["nextInstanceOrdinal"] = checked(
                     (int)SpiritualWoundStateJson.Integer(root["nextInstanceOrdinal"]) + 1);
             }
+            foreach (var witness in owner.ReadStrainComparisons())
+                AppendZeroStrainComparison(root, resolved.InstanceId, witness);
             if (owner.Terminal is { } terminal)
             {
                 var ordinal = (int)SpiritualWoundStateJson.Integer(root["nextClosureOrdinal"]);
@@ -56,7 +58,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 : Fail("spiritual_c3_source_only_receipt_conflict");
         }
         catch (Exception error) when (error is JsonException or FormatException or
-            InvalidOperationException or OverflowException or ArgumentException or DecoderFallbackException)
+            InvalidOperationException or OverflowException or ArgumentException or DecoderFallbackException or InvalidDataException)
         {
             return Fail("spiritual_c3_source_only_receipt_invalid");
         }

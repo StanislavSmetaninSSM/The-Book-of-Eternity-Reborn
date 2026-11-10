@@ -1,0 +1,44 @@
+{
+  "source": "d2d13d960acde8f0d46113804a23f14184b74659",
+  "run": "20261009-115356-985-337240-0033576488344a1bb3177a35ed1c5d56-categories",
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "wallTime": "00:00:06.7614701",
+  "rows": [
+    {
+      "kind": "f18-dual-contention-settlement",
+      "method": "RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+      "root": "/tmp/boe-state-manager-9e4bc638710245879729372bbaef7e06",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    },
+    {
+      "kind": "f18-dual-contention-settlement",
+      "method": "DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+      "root": "/tmp/boe-state-distributor-lease-57d7d44b790a43f399df2e192cb5c838",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    },
+    {
+      "kind": "f18-dual-contention-settlement",
+      "method": "DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+      "root": "/tmp/boe-state-distributor-lease-10bde127ba4646c9bef7910c2ad980f5",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    }
+  ],
+  "rootAbsence": "Root independently observed3 distinct emitted roots absent; original actor settlement, no injected fixture-failure cleanup execution."
+}

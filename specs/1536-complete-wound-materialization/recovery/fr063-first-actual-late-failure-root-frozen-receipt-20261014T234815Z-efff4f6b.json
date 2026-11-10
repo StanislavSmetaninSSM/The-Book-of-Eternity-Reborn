@@ -1,0 +1,50 @@
+{
+  "source": "cd06ecff0423a70e2f4c3d22576fe2142d8335c1",
+  "compileSource": "c4a7bc1a859bc71a1edc7c6c36b6875b04586390",
+  "checkpoint": {
+    "executed": 5,
+    "passed": 5,
+    "failed": 0,
+    "completeDescriptors": "1/1",
+    "scope": "componentprerequisiteonly",
+    "strictCleanupReceipts": 5,
+    "runtime": "00:00:54.7046398"
+  },
+  "lateCompletion": {
+    "executed": 2,
+    "passed": 0,
+    "failed": 2,
+    "completeDescriptors": "1/1",
+    "processExit": 1,
+    "timedOut": false,
+    "wallTime": "00:00:29.5629813",
+    "source154andBinary11PostMatched": true,
+    "strictCleanupReceipts": 2,
+    "parsedEmittedRootsAbsent": true,
+    "failureClassification": "UNCLASSIFIED actual2fail; no causalREDorproductiondefect claimbeforeEVIDENCE"
+  },
+  "totalAcrossOnlyTwoActualStages": {
+    "uniqueExecutedCases": 7,
+    "passed": 5,
+    "failed": 2,
+    "thisIsNotAggregateGreen": true
+  },
+  "remaining12ActualStages": "ALL_UNRUN; no live/cold/newroot/refusal/fault/docs/C1next",
+  "correctionAndFurtherRun": "HELD firstfailurefreeze/EVIDENCE",
+  "sourceMetadataEditedBeforePostReadback": false,
+  "nativeTrace": [
+    "85531acheckpointlaunch59659",
+    "cb22e3checkpointnative0",
+    "0f626bcheckpointpostreadback",
+    "2833fflateLaunch96940",
+    "8a2ae3lateNative1",
+    "7fbc8flatePostreadback"
+  ],
+  "sourceGates": "staticaccepted; runtimefailurenotretroactivelyerased",
+  "configurationActual": "backendtelemetryunavailable",
+  "frozenPacket": "/workspace/boe-cloud-tools-20261014/fr063-first-actual-late-failure-frozen-cd06ecff-20261014T234815Z-9070d615",
+  "manifestSHA256": "f754c1e95df5354c45aea846708c25dc93cc5f2d12860f84e2205c3367ad7432",
+  "frozenArtifacts": 41,
+  "firstOutcomeNoteSHA256": "995404be7b37847db767cc75311efe2e84769a9fcee62e5db8069952f61f9025",
+  "status": "FROZEN beforediagnosis/metadata/correction; EVIDENCEpending"
+}

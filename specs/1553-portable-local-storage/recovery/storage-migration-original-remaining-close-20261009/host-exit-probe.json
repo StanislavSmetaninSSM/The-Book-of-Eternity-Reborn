@@ -1,0 +1,40 @@
+{
+  "scope": "Shell-wrapper exit-code anomaly, no C# test execution in probes; existing actual GREEN12 is preserved unchanged. No repository runner edit or test replay. Exact root cause outside runner not established.",
+  "actualGreen": {
+    "source": "7aa6be72f5b381d37fb81774356b6881c5776990",
+    "runnerSummaryExitCode": 0,
+    "toolWrapperExitCode": 1,
+    "tests": {
+      "planned": 12,
+      "completed": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "ownedCleanup": true,
+    "runtimeCleanup": true
+  },
+  "probes": [
+    {
+      "cmd": "exit 0",
+      "toolExitCode": 0
+    },
+    {
+      "cmd": "boe_exit_probe_status=0\nexit \"$boe_exit_probe_status\"",
+      "toolExitCode": 0
+    },
+    {
+      "cmd": "set -e\nset +e\nboe_shell_probe_status=0\nset -e\nprintf '{\"observed\":%s}\\n' \"$boe_shell_probe_status\"\nexit \"$boe_shell_probe_status\"",
+      "toolExitCode": 1,
+      "stdout": "{\"observed\":0}"
+    },
+    {
+      "cmd": "set -e\nboe_final_probe_status=0\nexit 0",
+      "toolExitCode": 1
+    },
+    {
+      "cmd": "set -e\nsource /workspace/.boe-1553-migration-session/env.sh\npwsh -NoProfile -Command 'exit 0'\nprintf '{\"flow\":\"after-pwsh\"}\\n'\ntrue",
+      "toolExitCode": 0,
+      "stdout": "{\"flow\":\"after-pwsh\"}"
+    }
+  ]
+}

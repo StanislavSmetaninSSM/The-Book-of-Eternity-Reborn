@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "1396bb237b7d40c01253a79340d769895b9a1b56",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"guardian-musings-actual-repair\", \"guardian-musings-publication\", \"guardian-musings-repair-recheck-close\") -PlanOnly -TimeoutMinutes 8'",
+  "Status": "PREPARATION PASS75.6997306s/3descriptors18cases0runtime",
+  "Scope": "Fresh integration+references; unit source unchanged from fresh12dab; runtime not executed.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "63fe4fa46f01b63a7b5d211b8840dee0a7aaea1ce2c287692e36a670a566a047",
+      "RawBytes": 3993
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "1f34f327c17f11f59e9bb4f3f1a0613d6f12db64b8c28131e1b57a114b08e726",
+      "RawBytes": 1681
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "246147f94ae10c77c730216e83a340e564f0c33679f4f6bdddab3dfb0e9b85fa",
+      "RawBytes": 53545
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "3fd4d2f84e5c33826383dc7a988fa3d483b1b89c25723fa94aff638e62acb728",
+      "RawBytes": 1672678
+    }
+  ]
+}

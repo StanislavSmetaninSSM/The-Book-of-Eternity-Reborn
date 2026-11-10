@@ -1,0 +1,422 @@
+{
+  "kind": "B01_ORIGINAL_STATIC_AND_SAVED_QUERY_CHECKS",
+  "candidate": "5f82a65318a3845418ddb1966d00095c78f511e3",
+  "passed": 100,
+  "checks": [
+    {
+      "check": "original runner exact hash",
+      "passed": true
+    },
+    {
+      "check": "query archive hash",
+      "passed": true
+    },
+    {
+      "check": "two original query members",
+      "passed": true
+    },
+    {
+      "check": "original query query.json",
+      "passed": true
+    },
+    {
+      "check": "query native0 query.json",
+      "passed": true
+    },
+    {
+      "check": "original query build-help.json",
+      "passed": true
+    },
+    {
+      "check": "query native0 build-help.json",
+      "passed": true
+    },
+    {
+      "check": "exact evaluated property/item record",
+      "passed": true
+    },
+    {
+      "check": "source input scripts/test-csharp.ps1",
+      "passed": true
+    },
+    {
+      "check": "source input scripts/testing/TestCategoryExecution.ps1",
+      "passed": true
+    },
+    {
+      "check": "source input BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "passed": true
+    },
+    {
+      "check": "source input BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "passed": true
+    },
+    {
+      "check": "source input BookOfEternityClient/BookOfEternityClient.csproj",
+      "passed": true
+    },
+    {
+      "check": "source input BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "passed": true
+    },
+    {
+      "check": "source input BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "passed": true
+    },
+    {
+      "check": "source input tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+      "passed": true
+    },
+    {
+      "check": "full build graph BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "passed": true
+    },
+    {
+      "check": "full build graph BookOfEternityClient/BookOfEternityClient.csproj",
+      "passed": true
+    },
+    {
+      "check": "full build graph BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "passed": true
+    },
+    {
+      "check": "full build graph BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "passed": true
+    },
+    {
+      "check": "full build graph tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+      "passed": true
+    },
+    {
+      "check": "five build nodes",
+      "passed": true
+    },
+    {
+      "check": "61 cached unit packages",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg coverlet.collector/6.0.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg FluentValidation/11.9.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.CodeCoverage/17.11.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.Binder/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.CommandLine/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.EnvironmentVariables/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.FileExtensions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.Json/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Configuration.UserSecrets/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.DependencyInjection/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.DependencyInjection.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Diagnostics/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Diagnostics.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.FileProviders.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.FileProviders.Physical/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.FileSystemGlobbing/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Hosting/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Hosting.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.Abstractions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.Configuration/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.Console/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.Debug/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.EventLog/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Logging.EventSource/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Options/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Extensions.Primitives/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.NET.Test.Sdk/17.11.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.NETCore.Platforms/3.1.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.TestPlatform.ObjectModel/17.11.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.TestPlatform.TestHost/17.11.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Microsoft.Win32.Registry/4.7.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio.Asio/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio.Core/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio.Midi/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio.Wasapi/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NAudio.WinMM/2.2.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Newtonsoft.Json/13.0.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg NLayer/3.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg SixLabors.ImageSharp/3.1.4",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Spectre.Console/0.49.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg Spectre.Console.ImageSharp/0.49.1",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Diagnostics.DiagnosticSource/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Diagnostics.EventLog/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Reflection.Metadata/1.6.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Security.AccessControl/4.7.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Security.Principal.Windows/4.7.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Text.Encodings.Web/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg System.Text.Json/8.0.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit/2.9.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.abstractions/2.0.3",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.analyzers/1.16.0",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.assert/2.9.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.core/2.9.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.extensibility.core/2.9.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.extensibility.execution/2.9.2",
+      "passed": true
+    },
+    {
+      "check": "cached nupkg xunit.runner.visualstudio/2.8.2",
+      "passed": true
+    },
+    {
+      "check": "149 D01 pins retained",
+      "passed": true
+    },
+    {
+      "check": "six new plan/evidence/script paths only",
+      "passed": true
+    },
+    {
+      "check": "no existing source pins changed",
+      "passed": true
+    },
+    {
+      "check": "binding gap proven outside149",
+      "passed": true
+    },
+    {
+      "check": "original helper currently accepted exact bytes",
+      "passed": true
+    },
+    {
+      "check": "sampling/guard unresolved FNF and resource errors visible in source",
+      "passed": true
+    },
+    {
+      "check": "comm-only initial census",
+      "passed": true
+    },
+    {
+      "check": "raw direct wait not signal-normalized",
+      "passed": true
+    },
+    {
+      "check": "single pure build no test launch",
+      "passed": true
+    },
+    {
+      "check": "original recovery scope",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/design/l01-build-tooling-unit-diagnostic-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/recovery/l01-build-tooling-observations-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/recovery/l01-build-tooling-readonly-query-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/recovery/l01-build-tooling-unit-once-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "recovered original specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    }
+  ],
+  "admission": "HOLD_SOURCE_CORRECTIONS_REQUIRED",
+  "scope": "Read-only Git/XML/JSON/ZIP/cache-file metadata and AST parse only; no helper/runtime/compiler/build/test/timeout invocation. Separate permitted dated proc/resource observations are documented in review.",
+  "receipt": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-5f82a653.json",
+    "bytes": 38654,
+    "sha256": "ffbefd2154a653f95b42083f45465ed0c7de15678d15619fb15d0ef56d8cbcba"
+  },
+  "originalRunner": {
+    "path": "/tmp/1536-cloud-tools/review/b01-original-unit-once-source-5f82a653.py",
+    "bytes": 7794,
+    "sha256": "5ce605559a4cd11e87c0dce92c5284561cd60b0909785c6ed72584019b784ba4"
+  },
+  "utilityHistory": [
+    "Initial rg used absent optional Directory.* globs and exited2, so following query read did not run; query was subsequently read once with Python. No native phase or source mutation resulted."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+  "phase": "Pd-R1/R2 corrected ledger wired fresh BOTH; zero actuals",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "b84e69d4015c24828db13b7832a212c9f366d18136f05bd1452ca5ac3b11cf7b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "8780835ffbf1c8f87986373c659280183885209300028c1b01af11d8d1b9fd8b"
+    }
+  ]
+}

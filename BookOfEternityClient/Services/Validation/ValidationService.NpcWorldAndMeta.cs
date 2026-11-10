@@ -64,6 +64,8 @@ public partial class ValidationService
         public HashSet<string> MirrorGuardianAliases { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    private const string LegacyNpcWoundResponseProperty = "NPCWoundChanges";
+
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
         GuardianPolicyContracts.NpcCoreUpdateSectionName,
@@ -74,7 +76,6 @@ public partial class ValidationService
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
         "NPCRelationshipLockUpdates",
-        "NPCWoundChanges",
         "NPCPersonalityTraitChanges",
         "NPCActivityUpdates",
         "completeNPCActivities",
@@ -4545,6 +4546,15 @@ public partial class ValidationService
                 return;
             }
 
+            if (filePath.Equals(EffectCarrierCatalog.NpcPath, StringComparison.OrdinalIgnoreCase) &&
+                doc.RootElement.TryGetProperty(LegacyNpcWoundResponseProperty, out _))
+            {
+                // Preserve canonical duplicate/root-error priority before generic allowed-key exits.
+                issues.AddRange(EffectMaterializationContract.ValidateCarrier(
+                    doc.RootElement, filePath, EffectCarrierKind.Npc));
+                return;
+            }
+
             RejectLegacyEffectRouteIfPresent(
                 doc.RootElement,
                 filePath,
@@ -4926,9 +4936,12 @@ public partial class ValidationService
     /// <see langword="true"/> when generic GM JSON repair must skip the path;
     /// otherwise, <see langword="false"/>.
     /// </returns>
-    private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
+    internal static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
-        return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+        // Both retained v2 and client-issued v1 commands belong to their wound owner,
+        // never the generic JSON repair author. Raw signed-family validation stays mandatory.
+        return normalizedPath.Equals(AcceptedMechanicsPlan.WoundCommandPath, StringComparison.OrdinalIgnoreCase) || MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(MortalQteDecisionPublication.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundDecisionPendingState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SpiritualWoundOpportunityReceiptState.StatePath, StringComparison.OrdinalIgnoreCase) ||
@@ -4978,6 +4991,31 @@ public partial class ValidationService
                normalizedPath.Equals("lore/current_world/world_directives.json", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Rejects an exact retired wound response property before raw input can be admitted or projected.</summary>
+    /// <param name="root">Already parsed current response object; no additional read or retained state is introduced.</param>
+    /// <param name="contextPrefix">Current response path used for a precise refusal.</param>
+    /// <param name="issues">Current validation operation's findings.</param>
+    /// <param name="propertyName">Client-owned exact retired player or NPC property name.</param>
+    private static void RejectLegacyWoundResponseIfPresent(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out _))
+            return;
+
+        issues.Add(new ValidationIssue(
+            contextPrefix + "." + propertyName,
+            IssueSeverity.Error,
+            "Устаревшая команда ран не поддерживается",
+            code: "wound_materialization_legacy_response_unsupported",
+            section: "WoundMaterialization",
+            expected: "woundDecisions[] bound to current accepted wound opportunities",
+            actual: "legacy wound route present",
+            repairHint: "Удали устаревшую команду. Для ран используй woundDecisions[] с текущей возможностью и общую принятую публикацию; не записывай канонические носители напрямую."));
+    }
+
     private void ValidateNpcContract(
         JsonElement root,
         string contextPrefix,
@@ -5019,7 +5057,7 @@ public partial class ValidationService
             contextPrefix,
             issues,
             "NPCEffectChanges");
-        ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCWoundChanges");
+        RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyNpcWoundResponseProperty);
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
         ValidateCompleteNpcActivities(root, contextPrefix, issues);
@@ -5038,6 +5076,7 @@ public partial class ValidationService
         bool skipManifestedCompanionSourceValidation = false,
         bool validateCurrentMaterializationPersonality = false)
     {
+        ObserveCompletedTreatmentNpcRoot(root, contextPrefix);
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
         var knownPermanentLocationIds = ReadKnownPermanentLocationIdsSync();
@@ -8386,6 +8425,7 @@ public partial class ValidationService
 
     private void ValidateMetaMiscContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        issues.AddRange(SpiritualDiagnosisSceneAuthorityContract.ValidateContainers(root, contextPrefix, shining: false));
         ValidateSoulStateRealmContract(root, contextPrefix, issues);
         ValidateMetaStateUpdates(root, contextPrefix, issues);
         ValidateAfterlifeArchiveData(root, contextPrefix, issues);

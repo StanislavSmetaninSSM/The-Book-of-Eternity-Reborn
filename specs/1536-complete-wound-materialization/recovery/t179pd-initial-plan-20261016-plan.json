@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "fr063-active-prefix-lifecycle-evidence",
+    "fr063-joint-late-completion"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-active-prefix-lifecycle-evidence",
+      "reason": "Initial T179-Pd/T192b test-first source only: three genuine completed planner controls reach missing LifecycleExecutionLedger assertion. No production caller or success implementation changed. Existing fixture default remains identical; optional input configuration is local to new cases. All runtime UNRUN until G5 release.",
+      "contracts": [
+        "#1536 T179/T192 coherent internal pre-seal→P0; foundation only, no activation. Independent SOURCE→firstLate2→separate EVIDENCE→expected unit RED3; stop first unexpected failure."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "G5 requires first actual unchanged Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE gate. Freeze/push/readback plus independent EVIDENCE before expected ledger RED; no aggregate execution.",
+      "contracts": [
+        "#1536 v2 genuine full common union/progression/story/turn/replay and strict roots remain preserved; later active work needs its own affected selection."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.86771,
+  "Descriptors": [
+    {
+      "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-active-prefix-lifecycle-evidence",
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-late-completion-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-late-completion",
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

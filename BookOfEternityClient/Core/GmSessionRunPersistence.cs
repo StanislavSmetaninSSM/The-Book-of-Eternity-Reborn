@@ -4,7 +4,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Core;
 
-internal enum MainRunIoStage { NamespaceCreated, BeforeNamespaceParentFlush, Staged, FileFlushed, Renamed, DirectoryFlushed, Readback }
+internal enum MainRunIoStage { NamespaceCreated, BeforeNamespaceParentFlush, Staged, FileFlushed, Renamed, DirectoryFlushed, Readback, WindowsFileAcknowledged }
 
 // One bounded schema1 metadata CAS, below canonical recovery. The original guard
 // lives outside the initialization namespace and is never released on metadata debt.
@@ -16,28 +16,64 @@ internal sealed class GmSessionRunPersistence
     private bool _created;
     private sealed record Pending(byte[]? Before, byte[] After, string Stage);
     internal bool HasDebt => _pending != null;
-    internal string DirectoryPath => Path.Combine(_guard.Root,".boe_runtime/gm-runs");
+    internal string DirectoryPath => Path.Combine(_guard.Root,".boe_runtime","gm-runs");
     internal string RecordPath => Path.Combine(DirectoryPath,"main.json");
     internal GmSessionRunPersistence(GmMainOwnerGuard guard,Action<MainRunIoStage>? observe=null)
     {
-        if(!OperatingSystem.IsLinux() || RuntimeInformation.ProcessArchitecture!=Architecture.X64)
+        if(!OperatingSystem.IsWindows() && (!OperatingSystem.IsLinux() || RuntimeInformation.ProcessArchitecture!=Architecture.X64))
             throw new PlatformNotSupportedException("Main run durability adapter is not qualified on this platform.");
         _guard=guard;_observe=observe;
     }
-    internal static byte[]? Read(string root,string? ownStage=null)
+    /// <summary>
+    /// Reads bounded main-run metadata after fresh root, namespace and file admission.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute trusted-local root whose parent must exist as an ordinary directory.
+    /// </param>
+    /// <param name="ownStage">
+    /// An optional caller-owned staging path permitted alongside main.json; <see langword="null"/> permits none.
+    /// </param>
+    /// <param name="observations">
+    /// Optional directory DATA context for this synchronous admission; null preserves fresh independent helpers.
+    /// Leaf classification, namespace enumeration and record bytes are never supplied by this context.
+    /// </param>
+    /// <returns>
+    /// The complete bounded record bytes, or <see langword="null"/> when the admitted run namespace is absent.
+    /// Invalid namespace contents and metadata read failures propagate.
+    /// </returns>
+    internal static byte[]? Read(string root,string? ownStage=null,AdmissionDirectoryObservations? observations=null)
     {
-        var scope=new TrustedLocalFileScope([root]);var dir=Path.Combine(root,".boe_runtime/gm-runs");
-        var observed=scope.ObserveNamespace(dir);
+        // Join tolerates null so construction retains the original invalid-root refusal before target admission.
+        var dir=Path.Join(root,".boe_runtime","gm-runs");
+        Func<string,TrustedLocalFileScope.EntryKind>? observeEntry=observations==null?null:observations.Observe;
+        var scope=TrustedLocalFileScope.CreateAndObserveNamespace(root,dir,out var observed,observeEntry);
         if(observed.BlockingFileAncestor!=null)throw Invalid();
         if(observed.Kind==TrustedLocalNamespaceKind.Missing)return null;
-        scope.ValidateDirectory(dir,false);
+        dir=observeEntry==null?scope.ValidateDirectory(dir,false):scope.ValidateDirectory(dir,false,observeEntry);
+        if(ownStage!=null)ownStage=observeEntry==null?scope.ValidateFile(ownStage):scope.ValidateFile(ownStage,true,observeEntry);
         foreach(var p in Directory.EnumerateFileSystemEntries(dir))
             if(p!=Path.Combine(dir,"main.json") && p!=ownStage)throw Invalid();
-        return ReadBounded(scope,Path.Combine(dir,"main.json"));
+        return ReadBounded(scope,Path.Combine(dir,"main.json"),observations);
     }
-    internal static byte[] ReadBounded(TrustedLocalFileScope scope,string path)
+    /// <summary>
+    /// Reads and decodes the original bounded file after ordinary file admission.
+    /// </summary>
+    /// <param name="scope">
+    /// Original grants used to validate the requested file.
+    /// </param>
+    /// <param name="path">
+    /// Fully qualified required main record or owned staging file.
+    /// </param>
+    /// <param name="observations">
+    /// Optional invocation-local directory DATA; null keeps independent fresh checks.
+    /// </param>
+    /// <returns>
+    /// Fresh complete bytes after length, exact EOF and schema validation.
+    /// </returns>
+    internal static byte[] ReadBounded(TrustedLocalFileScope scope,string path,AdmissionDirectoryObservations? observations=null)
     {
-        using var f=new FileStream(scope.ValidateFile(path,false),FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
+        var admitted=observations==null?scope.ValidateFile(path,false):scope.ValidateFile(path,false,observations.Observe);
+        using var f=new FileStream(admitted,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
         var length=f.Length;if(length is <1 or >GmSessionRunRecordCodec.MaximumBytes)throw Invalid();
         var bytes=new byte[(int)length];f.ReadExactly(bytes);if(f.ReadByte()!=-1)throw Invalid();
         _=GmSessionRunRecordCodec.Decode(bytes);return bytes;
@@ -57,10 +93,11 @@ internal sealed class GmSessionRunPersistence
         if(!Directory.Exists(DirectoryPath))
         {
             // Only this live plan that observed the whole namespace absent can initialize.
-            if(p.Before!=null || _created || Mkdir(scope.ValidateDirectory(DirectoryPath),0x1c0)!=0)throw Invalid();
+            if(p.Before!=null || _created)throw Invalid();
+            CreateMetadataDirectory(scope.ValidateDirectory(DirectoryPath));
             _created=true;_observe?.Invoke(MainRunIoStage.NamespaceCreated);
         }
-        if(_created) {
+        if(_created && !OperatingSystem.IsWindows()) {
             Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.BeforeNamespaceParentFlush);
             Sync(Path.GetDirectoryName(DirectoryPath)!);Sync(_guard.Root);
         }
@@ -80,7 +117,7 @@ internal sealed class GmSessionRunPersistence
             if(exists && !ReadBounded(scope,stage).AsSpan().SequenceEqual(p.After))throw Invalid();
             using(var f=new FileStream(stage,exists?FileMode.Open:FileMode.CreateNew,FileAccess.ReadWrite,FileShare.None))
             {if(!exists)f.Write(p.After);_observe?.Invoke(MainRunIoStage.Staged);f.Flush(true);_observe?.Invoke(MainRunIoStage.FileFlushed);}
-            _guard.Validate();File.Move(scope.ValidateFile(stage,false),scope.ValidateFile(RecordPath),p.Before!=null);
+            _guard.Validate();MoveMetadataFile(scope.ValidateFile(stage,false),scope.ValidateFile(RecordPath),p.Before!=null);
             _observe?.Invoke(MainRunIoStage.Renamed);
         }
         else
@@ -88,11 +125,40 @@ internal sealed class GmSessionRunPersistence
             if(File.Exists(p.Stage))throw Invalid();
             using var f=new FileStream(scope.ValidateFile(RecordPath,false),FileMode.Open,FileAccess.ReadWrite,FileShare.None);f.Flush(true);
         }
-        Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.DirectoryFlushed);
+        if(OperatingSystem.IsWindows())
+        {
+            // The native rename requested WRITE_THROUGH. Reopen and flush the
+            // actual destination before readback/ACK; do not claim directory fsync.
+            using(var final=new FileStream(scope.ValidateFile(RecordPath,false),FileMode.Open,FileAccess.ReadWrite,FileShare.None))
+                final.Flush(true);
+            _observe?.Invoke(MainRunIoStage.WindowsFileAcknowledged);
+        }
+        else { Sync(DirectoryPath);_observe?.Invoke(MainRunIoStage.DirectoryFlushed); }
         _guard.Validate();if(!Read(_guard.Root)!.AsSpan().SequenceEqual(p.After))throw Invalid();
         _observe?.Invoke(MainRunIoStage.Readback);_guard.Validate();_pending=null;
     }
     private static bool Equal(byte[]? a,byte[]? b)=>a==null?b==null:b!=null && a.AsSpan().SequenceEqual(b);
+    private static void CreateMetadataDirectory(string path)
+    {
+        if(OperatingSystem.IsWindows())
+        {
+            if(!CreateDirectoryW(PhysicalFileAuthority.ToWindowsExtendedPath(path),IntPtr.Zero))
+                throw new IOException("Could not exclusively create the main metadata namespace.",new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error()));
+        }
+        else if(Mkdir(path,0x1c0)!=0)throw Invalid();
+    }
+    private static void MoveMetadataFile(string source,string destination,bool replace)
+    {
+        if(!OperatingSystem.IsWindows()) { File.Move(source,destination,replace);return; }
+        // Both names were validated in the same directory. Never allow a
+        // copy/delete fallback, delayed reboot move, or destination replacement
+        // when this frozen plan observed prior absence.
+        if(!string.Equals(Path.GetDirectoryName(source),Path.GetDirectoryName(destination),StringComparison.Ordinal))throw Invalid();
+        const uint writeThrough=0x8,replaceExisting=0x1;
+        if(!MoveFileExW(PhysicalFileAuthority.ToWindowsExtendedPath(source),PhysicalFileAuthority.ToWindowsExtendedPath(destination),
+            writeThrough|(replace?replaceExisting:0)))
+            throw new IOException("Main metadata rename was not acknowledged.",new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error()));
+    }
     private static void Sync(string path)
     {
         var fd=Open(path,0x10000|0x80000|0x20000);if(fd<0)throw Invalid();
@@ -109,6 +175,10 @@ internal sealed class GmSessionRunPersistence
     [DllImport("libc",EntryPoint="open",SetLastError=true)]private static extern int Open(string path,int flags);
     [DllImport("libc",EntryPoint="fsync",SetLastError=true)]private static extern int Fsync(SafeFileHandle handle);
     [DllImport("libc",EntryPoint="mkdir",SetLastError=true)]private static extern int Mkdir(string path,uint mode);
+    [DllImport("kernel32.dll",CharSet=CharSet.Unicode,SetLastError=true,ExactSpelling=true)]
+    [return:MarshalAs(UnmanagedType.Bool)]private static extern bool CreateDirectoryW(string path,IntPtr securityAttributes);
+    [DllImport("kernel32.dll",CharSet=CharSet.Unicode,SetLastError=true,ExactSpelling=true)]
+    [return:MarshalAs(UnmanagedType.Bool)]private static extern bool MoveFileExW(string source,string destination,uint flags);
 }
 
 internal sealed class GmMainOwnerGuard : IDisposable
@@ -116,11 +186,24 @@ internal sealed class GmMainOwnerGuard : IDisposable
     private FileStream? _stream;
     private readonly string _path;
     internal string Root {get;}
-    private GmMainOwnerGuard(string root,string path,FileStream stream){Root=root;_path=path;_stream=stream;}
+    /// <summary>
+    /// Wraps a caller-owned stream for validation without acquiring or granting main admission.
+    /// </summary>
+    /// <param name="root">
+    /// The absolute trusted-local root to check on every validation.
+    /// </param>
+    /// <param name="path">
+    /// The expected ordinary guard name; the stream must resolve to this name to pass validation.
+    /// </param>
+    /// <param name="stream">
+    /// Open stream transferred to this wrapper for disposal; construction alone does not authenticate it.
+    /// </param>
+    internal GmMainOwnerGuard(string root,string path,FileStream stream){Root=root;_path=path;_stream=stream;}
     internal static async Task<GmMainOwnerGuard> AcquireAsync(string root,CancellationToken token=default,
         Func<Task>? contended=null,int attempts=40,TimeSpan? retryDelay=null)
     {
-        var scope=new TrustedLocalFileScope([root]);var dir=scope.EnsureDirectory(Path.Combine(root,".boe_runtime/locks"));
+        var scope=new TrustedLocalFileScope([root]);root=scope.ValidateDirectory(root,false);
+        var dir=scope.EnsureDirectory(Path.Combine(root,".boe_runtime","locks"));
         var path=scope.ValidateFile(Path.Combine(dir,"gm-main-owner.lock"));
         for(var i=0;;i++)
         {
@@ -135,10 +218,22 @@ internal sealed class GmMainOwnerGuard : IDisposable
             try{guard.Validate();return guard;}catch{guard.Dispose();throw;}
         }
     }
-    internal void Validate()
+    /// <summary>
+    /// Checks the retained guard's namespace and authenticates its real open handle on every call.
+    /// </summary>
+    internal void Validate() => Validate(null);
+
+    /// <summary>
+    /// Authenticates the retained handle while optionally sharing this invocation's directory DATA.
+    /// </summary>
+    /// <param name="observations">
+    /// Optional DATA for shared ordinary directories in this synchronous admission; null keeps independent checks.
+    /// Required guard-file and native handle/path authentication remain fresh.
+    /// </param>
+    internal void Validate(AdmissionDirectoryObservations? observations)
     {
         var stream=_stream??throw GmSessionRunPersistence.Invalid();
-        new TrustedLocalFileScope([Root]).ValidateFile(_path,false);
+        TrustedLocalFileScope.ValidateRootAndRequiredFile(Root,_path,observations==null?null:observations.Observe);
         PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(stream.SafeFileHandle,_path,"Main original owner guard");
     }
     public void Dispose()=>Interlocked.Exchange(ref _stream,null)?.Dispose();

@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "59.99999320200004s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "exec",
+    "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+    "-noconfig",
+    "@/tmp/g-a91f6d2c7b30/tools/MapFrames.rsp"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 127578,
+    "birthTick": 5391767,
+    "parentPid": 127532,
+    "uid": 1000
+  },
+  "durationSeconds": 2.2851078439998673,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

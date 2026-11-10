@@ -1,0 +1,36 @@
+{
+  "SHA": "eebe1ccb5f212de56bdf8ddb6761690ca13a2e28",
+  "Base": "4cbbabdc5bc01af16d639c33fb676efbac3553af",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+      "Bytes": 7009,
+      "SHA256": "e0d80cff3cceefe9836038c87b343d51ade44157d31160adb9c121970ca3686b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1594138,
+      "SHA256": "24413ea198d40e70772ab22720856acd740a412472449211553d413674eabe61",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1685434,
+      "SHA256": "f6b5685b1ea80b5101b5a1f0f8c25f5778f8b9b02d1b15d2386d6e87a6bdda8a",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "Bytes": 50530,
+      "SHA256": "f7d92e72110a1abce0104136d7a66ec4c2cd8cd1bd2ffe9f72c23eea1110303f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 19367,
+      "SHA256": "7e028d8e1e87c61cc622076a46e511accd5a081998e033b8e46133785647a823",
+      "RemoteExact": true
+    }
+  ]
+}

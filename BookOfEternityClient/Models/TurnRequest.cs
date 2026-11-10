@@ -44,12 +44,33 @@ public class TurnRequest
     [JsonPropertyName("afterlifeSpiritualConflictPreview")]
     public JsonObject? AfterlifeSpiritualConflictPreview { get; set; }
 
+    /// <summary>Client-authored declared Mortal diagnosis selection for GM reference; actual procedure authority remains in the existing held request.</summary>
+    [JsonPropertyName("mortalDiagnosis")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? MortalDiagnosis { get; set; }
+
+    /// <summary>Client-owned projection of the confirmed physical route and exact held-request channel.</summary>
+    /// <summary>
+    /// Carries the client-owned guided physical selection hint; only the actual
+    /// staged original and existing accepted owner may issue an attempt.
+    /// </summary>
+    [JsonPropertyName("mortalTreatment")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? MortalTreatment { get; set; }
+
+    [JsonPropertyName("spiritualHealing")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public JsonObject? SpiritualHealing { get; set; }
+
     [JsonPropertyName("effectSkillScopeCatalog")]
     public JsonObject EffectSkillScopeCatalog { get; set; } = new()
     {
         ["schemaVersion"] = 1,
         ["targets"] = new JsonArray()
     };
+
+    [JsonPropertyName("woundOpportunities")]
+    public JsonArray WoundOpportunities { get; set; } = new();
 
 }
 

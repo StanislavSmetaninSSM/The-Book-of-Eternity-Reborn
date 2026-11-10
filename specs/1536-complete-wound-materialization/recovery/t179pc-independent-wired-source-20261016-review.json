@@ -1,0 +1,2067 @@
+{
+  "review": "T179-Pc affected WIRED SOURCE/FIXTURE/SELECTION and fresh preparation gate",
+  "timestampUtc": "2026-10-16T10:40:42.641948+00:00",
+  "reviewerConfiguration": {
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent supplied actual spawn receipt: task_name=t179pc_independent_review, fork_turns=none, model=gpt-6-astra, reasoning_effort=xhigh; tool returned /root/t179pc_independent_review.",
+    "backendResolutionTelemetry": "unavailable; not inferred"
+  },
+  "base": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+  "productionImplementation": "9258ecbd42ef6c8a48c3d6bbaec37ed1fecf2d92",
+  "compiledAndReviewedSource": "901435333b00ad7e92cef80429ce99ef010c7db9",
+  "evidenceCarrier": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+  "observedHead": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+  "observedWorktreeClean": true,
+  "authorization": "Coordinator-confirmed user staged F1-R2/D9-D11 approval at 07:01:11 UTC, Sentinel_f3e48da025808191bdb46fab2e0b960f, retained in current spec/plan/tasks; supersedes historical design-only wording for independent stages. T197 stays conditional DESIGN.",
+  "verdict": "READY_FOR_FIRST_WIRED_LATE2_ONLY",
+  "blockingFindings": [],
+  "resolvedFindings": [
+    {
+      "id": "Pc-R1",
+      "severity": "medium",
+      "subject": "Selected prefix tests did not exercise changed genuine-context adapters",
+      "originalSource": "ef0a99c8be0d2c314d3e9333afe75feec66e7e40",
+      "originalEvidence": "OriginalPrefix_ClosesOrdinaryWorkWithoutReplay and OriginalPrefix_ExchangeContinuesWithExactOwnerAndNoReplay directly use BeginLiveResourceExecution on AcceptedMechanicsResourceInput; they never call the changed context adapters or registered projection wrapper. The category claim was inaccurate.",
+      "resolution": "Replaced both unrelated rows with existing SpiritualReplay_ActualResourceCreationSitesUseJournal: three actual rows include original_definition through BeginOriginalMortalResourceExecution and both changed context adapters, with retained identity replay. Narrowed qualification; unchanged spiritual routing/prefix projection is explicitly excluded. Fresh BOTH/catalog/PlanOnly is pinned below."
+    }
+  ],
+  "sourceAssessment": {
+    "detachedCalculation": "Real calculation data is separated from AcceptedMechanicsInput, fingerprints and common issuance. Ordinary uses its genuine context; the joint owner privately captures its own official original, guarded before-images, baseline, live roots, clock, typed owners/outcome and private resource identity factory. No fake context or provisional fingerprint exists.",
+    "singleCalculation": "Only the private JointResourcePublicationAuthority calls EnsureCommonCalculationAsync with the private issuer. Interlocked attempt guard precedes capture/calculation; failures or in-flight attempts cannot recompute. Current source is validated before capture and again before private retention. The private wrapper records this exact owner. Common issuance requires existing C; no method accepts caller-supplied C, artifacts/map/factory import or replacement. This is a control-flow proof, not a measured runtime count.",
+    "artifacts": "C clones JSON roots/maps/transitions and exposes detached roots/read-only path sets; retained resource/effect/carrier result APIs preserve their existing detached or immutable contract. It includes completed resources/transcript/effects, exact quartet, typed item/effect/wound/companion assembly, owner transitions and touched/consumed paths, with existing producer collisions and final item publication encoding boundaries retained.",
+    "assemblyAndCache": "Named cache obtains C only through the matching bound actual authority, assembles final AcceptedMechanicsPlan without resource/effect reduction or identity allocation, then retains unchanged ValidatePlannerResult and candidate/reference/cache-fence checks. Generic reduction refuses joint inputs. Resource factory identity is the captured instance; final context/input must match retained data and frame.",
+    "currentSourceAndVersion": "Existing private current continuation/original/mechanical baseline/item slot/reservation checks, progression validation, final resource-owner/bounds and same-candidate admission/seal remain. Common v1 authority fingerprint grammar and v2 publication grammar are unchanged; final quartet/carrier/path assembly is a mechanical extraction. Runtime output preservation remains pending the wired Late2 evidence gate.",
+    "ordinaryPending": "Discovery and completion kernels retain original ordering, default factory behavior, periodic/event expansions, canonical owner checks and registered projections. Ordinary pending fingerprints, complete semantic receipt replay, awaiting branch and justified resolved second resource pass remain in the original orchestration. The shared exact-frame missing-terminal-receipt check is semantically unchanged.",
+    "noPendingScope": "The boundary helper refuses actual active pending, malformed/nonempty submitted receipts, same-frame terminal obligations and actually discovered bounded candidates only for held joint unbounded construction. It does not establish a future F1 gameplay refusal policy.",
+    "spiritualImpact": "Genuine-context helper signatures remain and delegate data overloads. The originalSpiritualPrefix argument and exclusion/guard/projection logic are unchanged. Selected real original-definition consumer covers adapter invocation; full spiritual continuation, closed-prefix and final spiritual ownership are not qualified here.",
+    "fixtureSafety": "Existing optional settled checkpoint observer stays read-only and outside the publisher lease; new retained-C assertions run only after all old actual oracles and root cleanup. Event comparison now applies the existing public plan canonical ordering (turn, execution sequence, ordinal event kind, ordinal operation ID), preserving equality semantics without relying on internal traversal order. The original missing-property RED is immutable.",
+    "continuationFixtureSafety": "Two existing real integration Facts retain their assertions. Only output-helper injection and per-test CleanupOwnedFixture wrapping were added; reverse disposal releases write leases, then the original context, then strict root removal/receipt. Shared context and unrelated tests are unchanged. Actual resource-event final-use completion and bounded receipt second-pass/terminal byte replay are explicitly selected.",
+    "gmNoUpdate": "Client-owned computation extraction only; no GM-authored schema, capability or player/afterlife contract change, so no GM prompt/example change is needed.",
+    "deferredObligations": "Actual source drift after C/before seal, foreign genuine owner/reservation rejection, changed active S/B, after-seal attachment, source/raw-basis planning/prepared seals, and full M3 publisher/take/readback remain mandatory at the actual active interface. Pc introduces no transplantable C so those are not falsely claimed here."
+  },
+  "diffs": {
+    "implementation": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+        "9258ecbd42ef6c8a48c3d6bbaec37ed1fecf2d92",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "sha256": "e24b40709d2114f1f61b448e84d37c87124ddacb8780b32d3879b85aa59b09df",
+      "bytes": 90547,
+      "path": "/tmp/t179pc-wired-implementation.diff"
+    },
+    "reviewedSource": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+        "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "sha256": "202e1cb2e3e60bafcaf5c4201e01772afe8938a23f07180bc53ecd2d2ed2cd07",
+      "bytes": 90870,
+      "path": "/tmp/t179pc-wired-reviewedSource.diff"
+    },
+    "selectionCorrection": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "ef0a99c8be0d2c314d3e9333afe75feec66e7e40",
+        "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "sha256": "adf93577a12f643f75e4ee00b4e21ecc7c07a3b9161d116cf3d7215b6e17d048",
+      "bytes": 4027,
+      "path": "/tmp/t179pc-wired-selectionCorrection.diff"
+    },
+    "compiledToCarrier": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "8d1db195b8082afb59b684029bfb8f394a448f6a",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "tests",
+        "scripts"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "path": "/tmp/t179pc-wired-compiledToCarrier.diff"
+    }
+  },
+  "changedScopedPaths": [
+    "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+    "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+    "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "sourceAndContextPins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeSha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "dcc47d60049b9785b77495c3a24dd11f65a8f9df",
+      "bytes": 26057,
+      "sha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596",
+      "workingTreeSha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "3eb541ca7628ea2b59feb3bc1755a5c53e79122f",
+      "bytes": 71591,
+      "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "workingTreeSha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerPublication.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "e3de88ec737f02546f2c579ccadfe2a2f0786f82",
+      "bytes": 16911,
+      "sha256": "12b075112e69dea09d9dc34b1744a282983e672238149241588034f538a56b41",
+      "workingTreeSha256": "12b075112e69dea09d9dc34b1744a282983e672238149241588034f538a56b41",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+      "bytes": 82535,
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeSha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "4ea12bb6e74c6fdf1271c06e2b2afb1335cb9096",
+      "bytes": 5572,
+      "sha256": "c0019711959a36075cc705835c65851bd12052120b0940046cc4f4336dccde6e",
+      "workingTreeSha256": "c0019711959a36075cc705835c65851bd12052120b0940046cc4f4336dccde6e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "ef1c8afc047b0e79705f842cf37072acfa4731b5",
+      "bytes": 38927,
+      "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "workingTreeSha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.WoundCommonPlan.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "26fc3c575eaf0ab63ca5b53478c0638cef9bbd6a",
+      "bytes": 49100,
+      "sha256": "cbfb98b9e554fcf6a3500450bced866e243d6c375d0a8ad815e4e23bea37976d",
+      "workingTreeSha256": "cbfb98b9e554fcf6a3500450bced866e243d6c375d0a8ad815e4e23bea37976d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.WoundRootAssembly.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "51394f809ccf83143f78310fc02e263f2dba6d93",
+      "bytes": 58851,
+      "sha256": "ee2a55f1f5d1f42a812736a766a645725bdc9af538599fc0637f03934f0ef1b5",
+      "workingTreeSha256": "ee2a55f1f5d1f42a812736a766a645725bdc9af538599fc0637f03934f0ef1b5",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.OriginalPrefix.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "c456c247354f3f8e4ecaee870e804b4fc4934cfa",
+      "bytes": 6116,
+      "sha256": "67837f85842f13b1c35c4e784dc4b1cec4180510f8bb3c2c8797ae584d2f2378",
+      "workingTreeSha256": "67837f85842f13b1c35c4e784dc4b1cec4180510f8bb3c2c8797ae584d2f2378",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "f68ec0986ec05406fe2f3a60b1ffe1260e002b3c",
+      "bytes": 20902,
+      "sha256": "a849f310f85a2a055b413489ffdd49dea4be1eb7d0ca2f992885b4107c67c3fe",
+      "workingTreeSha256": "a849f310f85a2a055b413489ffdd49dea4be1eb7d0ca2f992885b4107c67c3fe",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "83e50713c08da629a8cf4a4619708b1101b4dcff",
+      "bytes": 1200,
+      "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeSha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.SpiritualCreation.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "9e9891060594b0838e00cfd83f345cc9ae2ec2ff",
+      "bytes": 4659,
+      "sha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeSha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourcePendingResolutionTests.CommonBoundary.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "ae96f1f203abd553882ada5c3a999928e6fb5a78",
+      "bytes": 3308,
+      "sha256": "ea71608825f4ab493288125c53072e27c5f79f6f2d53255f173bbcbb2f147047",
+      "workingTreeSha256": "ea71608825f4ab493288125c53072e27c5f79f6f2d53255f173bbcbb2f147047",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "06f9657e054a143625bde190d3b2d5d1d1ce8ef3",
+      "bytes": 49519,
+      "sha256": "c3c4f91f20a57ff9108e28df4e1eeff252fa1aee48c94cbc43d2bb77eb7921b7",
+      "workingTreeSha256": "c3c4f91f20a57ff9108e28df4e1eeff252fa1aee48c94cbc43d2bb77eb7921b7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "bytes": 9437,
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "workingTreeSha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "workingTreeSha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "workingTreeSha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "9953e3e61aef414673ac694fceb36e28e96f12cc",
+      "bytes": 6623,
+      "sha256": "27b3754cb9ff867b3d76e913528fcd32af691daaadda9fc16c56646780cffa42",
+      "workingTreeSha256": "27b3754cb9ff867b3d76e913528fcd32af691daaadda9fc16c56646780cffa42",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "9836e53c9e4d81ffdb8cec668eeb379912fddd30",
+      "bytes": 58332,
+      "sha256": "0bdb41b1f59e8ef6f2058e52941a800490280ef1e6f1a020939f549ae5ab426b",
+      "workingTreeSha256": "0bdb41b1f59e8ef6f2058e52941a800490280ef1e6f1a020939f549ae5ab426b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+      "bytes": 30382,
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeSha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualReduction.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "b7f937bb54a8ae4ee8b54448403e696956fdc540",
+      "bytes": 12135,
+      "sha256": "3ff2777d94afe4d3dcfac3078d96ef921358b965c82bfdc8589590638dd0877a",
+      "workingTreeSha256": "3ff2777d94afe4d3dcfac3078d96ef921358b965c82bfdc8589590638dd0877a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualResources.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "a1df124e592bc02fb1999d54be6059d7e06c695d",
+      "bytes": 8503,
+      "sha256": "f9a365baaaa433ed6a4d4fd6ccde26cbdb5ab2744cc1124b46b29aee5584ea8e",
+      "workingTreeSha256": "f9a365baaaa433ed6a4d4fd6ccde26cbdb5ab2744cc1124b46b29aee5584ea8e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.ResourcePrefixView.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "df7313187f85ee7fd2e785d724bf20be64a239e9",
+      "bytes": 7877,
+      "sha256": "2f142955ccd35fdd1ad06fae0e695b0da253ff7f2c54d7b4a3bc61843d6809d6",
+      "workingTreeSha256": "2f142955ccd35fdd1ad06fae0e695b0da253ff7f2c54d7b4a3bc61843d6809d6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeSha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "cafdf7b047f764926bf13e11f3496a1cf0355591",
+      "bytes": 13079,
+      "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+      "workingTreeSha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "a7ef52b2abc5049a476bcb4491fd72acf26cf007",
+      "bytes": 25860,
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4",
+      "workingTreeSha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceAcceptedTurnInputComposer.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "0ce22b4e8aa7889614773a3429d279f6174b67fa",
+      "bytes": 40066,
+      "sha256": "ab93eb62616d98b19666f1a1c9bdb89ab03a034c229d8b174bd65ca210b61a60",
+      "workingTreeSha256": "ab93eb62616d98b19666f1a1c9bdb89ab03a034c229d8b174bd65ca210b61a60",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommon.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "23fde5446bd0fad0102154d61f4c5e4f749e7126",
+      "bytes": 8196,
+      "sha256": "a6597f0e32d5204cb32ec540e8e0bd0998d3d0311e5453fd7a2950bee7ef546b",
+      "workingTreeSha256": "a6597f0e32d5204cb32ec540e8e0bd0998d3d0311e5453fd7a2950bee7ef546b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+      "bytes": 5254,
+      "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeSha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+      "bytes": 21662,
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "workingTreeSha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "31b5302758e6e6afe388d29e589c22b38388e638",
+      "bytes": 20977,
+      "sha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+      "workingTreeSha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/testing.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeSha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "57bb60ca693330e1ca189d746f118f15618a3c78",
+      "bytes": 99387,
+      "sha256": "fd8eb911f02361a868d706ae4dff17bf51f677bb06b4f851f88697c13d3e6e1c",
+      "workingTreeSha256": "fd8eb911f02361a868d706ae4dff17bf51f677bb06b4f851f88697c13d3e6e1c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "d9ef9406d6f9556a675a62744ef24106d555fe10",
+      "bytes": 1943792,
+      "sha256": "d9e284ab3cb02878bd27d6e5a3728172305231aab2fe4bd48b4d35c0ac999e32",
+      "workingTreeSha256": "1121f039bceab85b4471261d52464f694672890ee868d948a68cfd3d8e7bb8d5",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+      "bytes": 229597,
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeSha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "f12bad4d9dc61daa4e8edba2b9b7d50f43081eed",
+      "bytes": 1405279,
+      "sha256": "31991c5d343ac9b3197d32a4ef69d8892132c31d08de83140e7038c71382c040",
+      "workingTreeSha256": "31991c5d343ac9b3197d32a4ef69d8892132c31d08de83140e7038c71382c040",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "2ebb774afe506d1f09f0f9d7f0dbf38ab3b9d8f3",
+      "bytes": 1946218,
+      "sha256": "693385ec742d102922473fee743ec1afcb71db94cdeaa983eb6eb4bed98e615f",
+      "workingTreeSha256": "693385ec742d102922473fee743ec1afcb71db94cdeaa983eb6eb4bed98e615f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "901435333b00ad7e92cef80429ce99ef010c7db9",
+      "gitBlob": "5487cecd10a77aed2817194e13b6f1495063b506",
+      "bytes": 4433,
+      "sha256": "bdeca1d95d323754354ae3dfc3bd505ed65829130230b8e79f31f4428041dadd",
+      "workingTreeSha256": "bdeca1d95d323754354ae3dfc3bd505ed65829130230b8e79f31f4428041dadd",
+      "workingTreeMatches": true
+    }
+  ],
+  "carrierContextPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "df1f586b1db3690c5a1278bfc94fd70846e4927c",
+      "bytes": 1944953,
+      "sha256": "1121f039bceab85b4471261d52464f694672890ee868d948a68cfd3d8e7bb8d5",
+      "workingTreeSha256": "1121f039bceab85b4471261d52464f694672890ee868d948a68cfd3d8e7bb8d5",
+      "workingTreeMatches": true
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "c60f5d538840aab8a4e8074a51b481824d4b55db",
+      "bytes": 9206,
+      "sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+      "workingTreeSha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "d99ecec3a05f0abd0d81c5fcd6cf599754e93a0d",
+      "bytes": 1717,
+      "sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+      "workingTreeSha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "ad3e00ce744acce500261ba258eadecd84eacb09",
+      "bytes": 103,
+      "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+      "workingTreeSha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "15e8743c07f27ed8f2d4c0bc9b362003c1794b97",
+      "bytes": 385436,
+      "sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+      "workingTreeSha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-summary.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "b4f415561480c590e0535f3f0144502063b9d963",
+      "bytes": 1598,
+      "sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+      "workingTreeSha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-artifact-index.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "df612f03eefdadbe206dfa670c7432c3200ab8d7",
+      "bytes": 4166,
+      "sha256": "fe6e0aa38f4273f1b341af7d957a04be3098407b849935cb3511db6ce6b95da2",
+      "workingTreeSha256": "fe6e0aa38f4273f1b341af7d957a04be3098407b849935cb3511db6ce6b95da2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "7468267bf2cfeadcbe2851daea872557c2937011",
+      "bytes": 374440,
+      "sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+      "workingTreeSha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-plan.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "fc6197cf1ba1b3951cacbcf165afa8f001d41215",
+      "bytes": 17857,
+      "sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+      "workingTreeSha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-summary.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "05624a2c43c4ab094f668dbc4513a1005ba55405",
+      "bytes": 6428,
+      "sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+      "workingTreeSha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-artifact-index.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "369ee32c01144469e9cdba63b9fba63861e71a79",
+      "bytes": 8218,
+      "sha256": "7da743b8b781c06f037e1b1e8850b399ac57b84b724d299ebc2eade346d02da8",
+      "workingTreeSha256": "7da743b8b781c06f037e1b1e8850b399ac57b84b724d299ebc2eade346d02da8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-binaries-20261016.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "a599e0c9c48944d43b8fc76381eefb10f1397f1f",
+      "bytes": 928,
+      "sha256": "e37e4fa6f9aa7eea27556f3adb4c4a85cad41032f891a45b052aa314f5ecb11a",
+      "workingTreeSha256": "e37e4fa6f9aa7eea27556f3adb4c4a85cad41032f891a45b052aa314f5ecb11a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-artifact-index.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "1af336850a81b751db9ca824bb34968b13d63abd",
+      "bytes": 3534,
+      "sha256": "f934d101f515c4df864bfd27015d957fa58159e7a88a602e4b80e5f4a5a02874",
+      "workingTreeSha256": "f934d101f515c4df864bfd27015d957fa58159e7a88a602e4b80e5f4a5a02874",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-dotnet-test.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "cd9626c930ce8f146fc5f8325188d4d513c06ecd",
+      "bytes": 2718816,
+      "sha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+      "workingTreeSha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "935ae09a2f7b052b04be5242079151664d035400",
+      "bytes": 5065030,
+      "sha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+      "workingTreeSha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-plan.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "928c45304e8c47060fd727be1434e4f9542343bd",
+      "bytes": 1231,
+      "sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+      "workingTreeSha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-summary.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "dcfebe0904de87b3f25affefcfb3b55b2657ae29",
+      "bytes": 1391,
+      "sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+      "workingTreeSha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-artifact-index.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "809012d1a0c669fcd5a42c0cb95d2a6c9f3466fb",
+      "bytes": 3468,
+      "sha256": "05933c76094219a8b0e01a3225aa481a6737dea382d28d47dd8ffa88f6398479",
+      "workingTreeSha256": "05933c76094219a8b0e01a3225aa481a6737dea382d28d47dd8ffa88f6398479",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-dotnet-test.log.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "6ff8388877a85ce4545733a9ca4e7e7b60d4843b",
+      "bytes": 189723,
+      "sha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9",
+      "workingTreeSha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "350ed48c30c91be9ab73d97ee8ab1b23f365917e",
+      "bytes": 3763,
+      "sha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b",
+      "workingTreeSha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-plan.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "970af2cd0cdf046ae5fdc4a3bfa4b3dadcef3b7d",
+      "bytes": 2433,
+      "sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+      "workingTreeSha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-summary.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "cf902d14177fff6786c7788ddb9e10e5985f0e06",
+      "bytes": 1382,
+      "sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+      "workingTreeSha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.md",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "8b9f2032950975dfbdb7398a807a128c2b041a65",
+      "bytes": 8999,
+      "sha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692",
+      "workingTreeSha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "e23a8ab41c29fc4ca62c96fde64b7b04b6914d64",
+      "bytes": 9173,
+      "sha256": "0ca8ee93dfb74313c63d151a37ec6591dc9540ca4b633255e02f199fba3f6ab5",
+      "workingTreeSha256": "0ca8ee93dfb74313c63d151a37ec6591dc9540ca4b633255e02f199fba3f6ab5",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.md",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "0927eda290ab34c3152405f0bd8913ac86b43e6c",
+      "bytes": 6924,
+      "sha256": "ec6892bc91555fda01b531f8b73f167ec27d6d6239771af94c0e169b587de37d",
+      "workingTreeSha256": "ec6892bc91555fda01b531f8b73f167ec27d6d6239771af94c0e169b587de37d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "0c536408d1010f81d49abfaedca6128ece489e16",
+      "bytes": 83457,
+      "sha256": "0476401c3008838de06cb0e77bdde988d590fcc681ec6718dc17cdb6415b4656",
+      "workingTreeSha256": "0476401c3008838de06cb0e77bdde988d590fcc681ec6718dc17cdb6415b4656",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.md",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "f6751dab0f245944a203ceca1277e8b7d848ae0d",
+      "bytes": 6067,
+      "sha256": "204f01978f5279cbbd20b8380eac8d9418024015d97eaabd0912f0f0af93beb5",
+      "workingTreeSha256": "204f01978f5279cbbd20b8380eac8d9418024015d97eaabd0912f0f0af93beb5",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.json",
+      "commit": "8d1db195b8082afb59b684029bfb8f394a448f6a",
+      "gitBlob": "5089e1c3d43c3d19d16afc8a7534da63e7447c02",
+      "bytes": 50838,
+      "sha256": "952bc768d218abb52adf11f7160ad408f3ab8acb84571f4c6cc8290a045761fc",
+      "workingTreeSha256": "952bc768d218abb52adf11f7160ad408f3ab8acb84571f4c6cc8290a045761fc",
+      "workingTreeMatches": true
+    }
+  ],
+  "preservedRedAssessment": {
+    "unit": {
+      "summary": {
+        "Categories": [
+          "fr063-common-boundary-calculation"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "a40a9b9d4c0b9d83831207e6ad3c3e90263279bb",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-common-boundary-calculation",
+            "Seconds": 3.0517524,
+            "BudgetMinutes": 5,
+            "Completed": false
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0631162,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0523364,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1304207,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:07.0604409",
+        "ExitCode": 1,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 10,
+          "CompletedCases": 10,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 10,
+          "Executed": 10,
+          "Passed": 0,
+          "Failed": 10
+        },
+        "DuplicateTests": []
+      },
+      "allTenExpectedScaffoldFailure": true,
+      "verifiedChains": [
+        {
+          "path": "t179pc-unit-red-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-101516-940-41592-124702eca45b4c4aa8d714935b819e40-categories/dotnet-test.log",
+          "raw_bytes": 1710979,
+          "raw_sha256": "55d3dd24896aa404b525b052c5a0c3b9adadad4fd0f1703f8b2c9f76f670531d",
+          "stored_sha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9"
+        },
+        {
+          "path": "t179pc-unit-red-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+          "raw_path": "TestResults/test-categories/20261016-101516-940-41592-124702eca45b4c4aa8d714935b819e40-categories/fr063-common-boundary-calculation-unit-001.trx",
+          "raw_bytes": 46673,
+          "raw_sha256": "bca55a7ebf7817a2e8b9ce50f8b96c54c022cde781625e40b5c4573e886ccee3",
+          "stored_sha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b"
+        },
+        {
+          "path": "t179pc-unit-red-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-101516-940-41592-124702eca45b4c4aa8d714935b819e40-categories/plan.json",
+          "raw_bytes": 2433,
+          "raw_sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+          "stored_sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491"
+        },
+        {
+          "path": "t179pc-unit-red-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-101516-940-41592-124702eca45b4c4aa8d714935b819e40-categories/summary.json",
+          "raw_bytes": 1382,
+          "raw_sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+          "stored_sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6"
+        }
+      ]
+    },
+    "integration": {
+      "summary": {
+        "Categories": [
+          "fr063-joint-retained-common-calculation"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "9b397ccb137995949b18c1d329f1f40ae0059908",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-joint-retained-common-calculation",
+            "Seconds": 106.9227447,
+            "BudgetMinutes": 5,
+            "Completed": false
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0651124,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0559353,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1325277,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:01:51.1569188",
+        "ExitCode": 1,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 1,
+          "CompletedCases": 1,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 0,
+          "Failed": 1
+        },
+        "DuplicateTests": []
+      },
+      "onlyFailure": "Assert.NotNull(calculationProperty), JointRetainedCommon.cs line 23",
+      "verifiedCompleteOldFlowBeforeFailure": true,
+      "cases": [
+        {
+          "case": {
+            "executionId": "e34b751e-4f17-47d0-bc93-e97ee953b8d7",
+            "testId": "7e1e36b3-bcd9-5543-3164-99e8b58d29e7",
+            "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+            "computerName": "9f054acd892b",
+            "duration": "00:01:41.6509065",
+            "startTime": "2026-10-16T10:17:44.1550997+00:00",
+            "endTime": "2026-10-16T10:17:44.1551136+00:00",
+            "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+            "outcome": "Failed",
+            "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+            "relativeResultsDirectory": "e34b751e-4f17-47d0-bc93-e97ee953b8d7"
+          },
+          "source": {
+            "SessionId": "session_qte_story_append",
+            "RequestId": "803bc11c3516454a90b87f94687c1faf",
+            "SnapshotToken": "69F05E45502CC7CB69DC36EEDC67209513B8A7526208883E07108493E7911C02",
+            "TurnNumber": 42
+          },
+          "original": {
+            "SessionId": "session_qte_story_append",
+            "RequestId": "c438de286afd4e36ab537cad26263401",
+            "SnapshotToken": "D80EC3E44A8651D601070B5752ECF623B0EF3F6E853409F52067D8363A5FC21B",
+            "TurnNumber": 43,
+            "Realm": "mortal_world"
+          },
+          "generation": "156a0b16b869475eb6ba5b5d6aa64f4e",
+          "nonzeroProgression": true,
+          "actualTurn": 43,
+          "handled": false,
+          "create": {
+            "ordinal": 2,
+            "transitionId": "wound_transition_f84c53dedc6877c37e492d28ea4be5932f15f5be120b1fd4bec548bf1ec50271",
+            "woundId": "wound_ef6f740a98919ebfe994530d1af475939b3b80431a11d36ca0babdef6afcc85f"
+          },
+          "treat": {
+            "ordinal": 3,
+            "transitionId": "wound_transition_e3701c2c0c56a5907accf3d85c66942fab087c41d41661a936038aa0bc740215",
+            "woundId": "wound_test_torn_side"
+          },
+          "charge": {
+            "amount": 2,
+            "before": 2,
+            "after": 0
+          },
+          "damage": {
+            "amount": 3,
+            "before": 5,
+            "after": 2
+          },
+          "publishedFootprintCount": 42,
+          "rawMilestoneImageCounts": [
+            221,
+            221,
+            221
+          ],
+          "manifestSnapshotHashesVerified": 66,
+          "cleanupPathsVerified": 142,
+          "inertRepeatImages": 84,
+          "storyReconstructedBytes": 691,
+          "storySha256": "d46fa528b9805c11b73eb3b850f595b849251a56a9a0596fdf472189622e07ef",
+          "namedTransactions": [
+            {
+              "role": "original_baseline_restore",
+              "id": "586e91e382e44f40af88819c49a53836",
+              "memberCount": 8
+            },
+            {
+              "role": "progression_consumption",
+              "id": "46ae2c3e97ad4b48b1a8efa2d30d8277",
+              "memberCount": 3
+            }
+          ],
+          "cleanup": {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f194c4756bb9439b86d04211ba53fcce",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "stdoutSha256": "70a9c62226f3e00bbf540f5ce5396c9cedd8d351a128cc629bf3070d04b1ab73",
+          "progressionControl": {
+            "currentRealm": "Mortal World",
+            "currentWorldTimeInMinutes": 1500,
+            "lastWorldSimulationTimeInMinutes": 1260,
+            "lastFactionSimulationTimeInMinutes": 1260,
+            "worldCycleMinutes": 240,
+            "factionCycleMinutes": 1440,
+            "worldCyclesAlreadyPendingBeforeTurn": 1,
+            "factionCyclesAlreadyPendingBeforeTurn": 0,
+            "mustEvaluateWorldProgression": true,
+            "mustEvaluateFactionProgression": false,
+            "currentChaosSeaTurnOrdinal": 0,
+            "nextChaosSeaTurnOrdinal": 0,
+            "lastChaosSeaSimulationOrdinal": 0,
+            "lastGuardianProjectCycleOrdinal": 0,
+            "nextGuardianProjectCycleOrdinal": 0,
+            "lastResidentAgencyCycleOrdinal": 0,
+            "lastShiningAbodeCycleOrdinal": 0,
+            "lastShiningFactionCycleOrdinal": 0,
+            "lastShiningTradeCycleOrdinal": 0,
+            "chaosSeaCycleEquivalentHours": 24,
+            "nextResidentAgencyCycleOrdinal": 0,
+            "nextShiningAbodeCycleOrdinal": 0,
+            "nextShiningFactionCycleOrdinal": 0,
+            "nextShiningTradeCycleOrdinal": 0,
+            "chaosSeaCyclesExpectedThisTurn": 0,
+            "guardianProjectCyclesExpectedThisTurn": 0,
+            "residentAgencyCyclesExpectedThisTurn": 0,
+            "shiningAbodeCyclesExpectedThisTurn": 0,
+            "shiningFactionCyclesExpectedThisTurn": 0,
+            "shiningTradeCyclesExpectedThisTurn": 0,
+            "mustEvaluateChaosSeaProgression": false,
+            "mustEvaluateGuardianProjectProgression": false,
+            "mustEvaluateResidentAgencyProgression": false,
+            "mustEvaluateShiningAbodeProgression": false,
+            "mustEvaluateShiningFactionProgression": false,
+            "mustEvaluateShiningTradeProgression": false,
+            "afterlifeCatchupRequired": false,
+            "afterlifeCatchupElapsedCycles": 0,
+            "afterlifeCatchupPressureTier": "none",
+            "afterlifeCatchupSummaryEventsRequired": 0,
+            "afterlifeCatchupContours": []
+          },
+          "phaseFingerprint": "sha256:54fd25d405e8bb504321af5793800dd892b2647b157ac091d00be4e7541e07c4"
+        }
+      ],
+      "verifiedChains": [
+        {
+          "path": "t179pc-integration-red-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-101553-898-41882-23a378ab98af4eb88dfc31b454ef555a-categories/dotnet-test.log",
+          "raw_bytes": 9002945,
+          "raw_sha256": "88be889a4f12a3ae7040704690caa2d0ee4f8554f5c1ea9da708aecb4beb1241",
+          "stored_sha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+          "matchesRawLocalAndCarrier": true
+        },
+        {
+          "path": "t179pc-integration-red-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+          "raw_path": "TestResults/test-categories/20261016-101553-898-41882-23a378ab98af4eb88dfc31b454ef555a-categories/fr063-joint-retained-common-calculation-integration-001.trx",
+          "raw_bytes": 14647633,
+          "raw_sha256": "a6f083767366c12e8fa78884669d992e9a394dbc401622ef103c08b086bf0b70",
+          "stored_sha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+          "matchesRawLocalAndCarrier": true
+        },
+        {
+          "path": "t179pc-integration-red-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-101553-898-41882-23a378ab98af4eb88dfc31b454ef555a-categories/plan.json",
+          "raw_bytes": 1231,
+          "raw_sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+          "stored_sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+          "matchesRawLocalAndCarrier": true
+        },
+        {
+          "path": "t179pc-integration-red-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-101553-898-41882-23a378ab98af4eb88dfc31b454ef555a-categories/summary.json",
+          "raw_bytes": 1391,
+          "raw_sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+          "stored_sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+          "matchesRawLocalAndCarrier": true
+        }
+      ]
+    },
+    "scope": "These expected runtime REDs prove causal test-first failure; neither qualifies the stage."
+  },
+  "preparation": {
+    "catalog": {
+      "index": {
+        "source_sha": "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-integration.log",
+            "raw_bytes": 119991,
+            "raw_sha256": "d3496efd2fbe316570bbf4347d7f615f074f784017a365d8ae5636ed2788ebb4",
+            "stored_sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f"
+          },
+          {
+            "path": "t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-unit.log",
+            "raw_bytes": 26198,
+            "raw_sha256": "aefdefc5f94d9392aca7d2f8a52c1c6eac0af28b0284d031800ff4182e35f7ce",
+            "stored_sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b"
+          },
+          {
+            "path": "t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+            "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/catalog-audit.json",
+            "raw_bytes": 103,
+            "raw_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+            "stored_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6"
+          },
+          {
+            "path": "t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/dotnet-test.log",
+            "raw_bytes": 3521566,
+            "raw_sha256": "b254ea3bbcd523b45f2d47525a42fe373a90a7d65aa2c082c8bf384cc8652f72",
+            "stored_sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f"
+          },
+          {
+            "path": "t179pc-wired-corrected-catalog-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/summary.json",
+            "raw_bytes": 1598,
+            "raw_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+            "stored_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            null
+          ],
+          "Reasons": [],
+          "DiscoveryOnly": true,
+          "PlanOnly": false,
+          "Revision": {
+            "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11698,
+            "Categories": 766,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0651966,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.051958,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1337064,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 46.6930261,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 12.5690336,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.004357,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 10,
+          "WallTime": "00:01:07.7108666",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "checkedArtifactChains": [
+        {
+          "path": "t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-integration.log",
+          "raw_bytes": 119991,
+          "raw_sha256": "d3496efd2fbe316570bbf4347d7f615f074f784017a365d8ae5636ed2788ebb4",
+          "stored_sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/Build-unit.log",
+          "raw_bytes": 26198,
+          "raw_sha256": "aefdefc5f94d9392aca7d2f8a52c1c6eac0af28b0284d031800ff4182e35f7ce",
+          "stored_sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+          "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/catalog-audit.json",
+          "raw_bytes": 103,
+          "raw_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+          "stored_sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/dotnet-test.log",
+          "raw_bytes": 3521566,
+          "raw_sha256": "b254ea3bbcd523b45f2d47525a42fe373a90a7d65aa2c082c8bf384cc8652f72",
+          "stored_sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-catalog-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-103812-973-47769-2538f54fa17b45ae8b2637f5f2003a61-categories/summary.json",
+          "raw_bytes": 1598,
+          "raw_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+          "stored_sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+          "verifiedRawStoredLocalCarrier": true
+        }
+      ],
+      "summary": {
+        "Categories": [
+          null
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": true,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": {
+          "Valid": true,
+          "Methods": 11698,
+          "Categories": 766,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0651966,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.051958,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1337064,
+            "Completed": true
+          },
+          {
+            "Name": "Build-integration",
+            "Seconds": 46.6930261,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 12.5690336,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.004357,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:01:07.7108666",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    },
+    "plan": {
+      "index": {
+        "source_sha": "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/dotnet-test.log",
+            "raw_bytes": 3375084,
+            "raw_sha256": "0f8b332076ccd96390af53f3145ecdb08a349d3d72192a8d346d6678627f0b8f",
+            "stored_sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960"
+          },
+          {
+            "path": "t179pc-wired-corrected-plan-20261016-plan.json",
+            "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/plan.json",
+            "raw_bytes": 17857,
+            "raw_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+            "stored_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e"
+          },
+          {
+            "path": "t179pc-wired-corrected-plan-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/summary.json",
+            "raw_bytes": 6428,
+            "raw_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+            "stored_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            "fr063-common-boundary-calculation",
+            "fr063-joint-retained-common-calculation",
+            "fr063-common-calculation-regression",
+            "fr063-common-qte-consumers",
+            "fr063-joint-late-completion",
+            "fr063-joint-active-tail",
+            "fr063-joint-c1-common-mixed-guard",
+            "fr063-common-resource-continuation"
+          ],
+          "Reasons": [
+            {
+              "category": "fr063-common-boundary-calculation",
+              "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-joint-retained-common-calculation",
+              "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-common-calculation-regression",
+              "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the actual original-context capacity/mutation adapters and exact identity replay. Ordinary tests cover the detached projection overload; unchanged original-spiritual routing/projection wrapper is statically reviewed and excluded from runtime qualification.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-common-qte-consumers",
+              "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-joint-late-completion",
+              "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-joint-active-tail",
+              "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-joint-c1-common-mixed-guard",
+              "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
+              "contracts": [
+                "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+              ]
+            },
+            {
+              "category": "fr063-common-resource-continuation",
+              "reason": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
+              "contracts": [
+                "#1536 T179-Pc shared ordinary pending/reaction behavior; finite exact actuals after fresh BOTH/source/firstLate2/EVIDENCE."
+              ]
+            }
+          ],
+          "DiscoveryOnly": false,
+          "PlanOnly": true,
+          "Revision": {
+            "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": null,
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0661265,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0569394,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1324956,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.004195,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 30,
+          "WallTime": "00:00:07.1717913",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 8,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 37,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "fr063-common-boundary-calculation-unit-001",
+              "fr063-common-calculation-regression-unit-002",
+              "fr063-common-qte-consumers-integration-003",
+              "fr063-common-resource-continuation-integration-004",
+              "fr063-joint-active-tail-integration-005",
+              "fr063-joint-c1-common-mixed-guard-unit-006",
+              "fr063-joint-late-completion-integration-007",
+              "fr063-joint-retained-common-calculation-integration-008"
+            ],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "checkedArtifactChains": [
+        {
+          "path": "t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/dotnet-test.log",
+          "raw_bytes": 3375084,
+          "raw_sha256": "0f8b332076ccd96390af53f3145ecdb08a349d3d72192a8d346d6678627f0b8f",
+          "stored_sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-plan-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/plan.json",
+          "raw_bytes": 17857,
+          "raw_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+          "stored_sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+          "verifiedRawStoredLocalCarrier": true
+        },
+        {
+          "path": "t179pc-wired-corrected-plan-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-103935-418-48533-316fb499111744c492c29569993ab801-categories/summary.json",
+          "raw_bytes": 6428,
+          "raw_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+          "stored_sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+          "verifiedRawStoredLocalCarrier": true
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-common-boundary-calculation",
+          "fr063-joint-retained-common-calculation",
+          "fr063-common-calculation-regression",
+          "fr063-common-qte-consumers",
+          "fr063-joint-late-completion",
+          "fr063-joint-active-tail",
+          "fr063-joint-c1-common-mixed-guard",
+          "fr063-common-resource-continuation"
+        ],
+        "Reasons": [
+          {
+            "category": "fr063-common-boundary-calculation",
+            "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-joint-retained-common-calculation",
+            "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-common-calculation-regression",
+            "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the actual original-context capacity/mutation adapters and exact identity replay. Ordinary tests cover the detached projection overload; unchanged original-spiritual routing/projection wrapper is statically reviewed and excluded from runtime qualification.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-common-qte-consumers",
+            "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-joint-late-completion",
+            "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-joint-active-tail",
+            "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-joint-c1-common-mixed-guard",
+            "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
+            "contracts": [
+              "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+            ]
+          },
+          {
+            "category": "fr063-common-resource-continuation",
+            "reason": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
+            "contracts": [
+              "#1536 T179-Pc shared ordinary pending/reaction behavior; finite exact actuals after fresh BOTH/source/firstLate2/EVIDENCE."
+            ]
+          }
+        ],
+        "DiscoveryOnly": false,
+        "PlanOnly": true,
+        "Revision": {
+          "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0661265,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0569394,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1324956,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.004195,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 30,
+        "WallTime": "00:00:07.1717913",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 8,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 37,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-common-boundary-calculation-unit-001",
+            "fr063-common-calculation-regression-unit-002",
+            "fr063-common-qte-consumers-integration-003",
+            "fr063-common-resource-continuation-integration-004",
+            "fr063-joint-active-tail-integration-005",
+            "fr063-joint-c1-common-mixed-guard-unit-006",
+            "fr063-joint-late-completion-integration-007",
+            "fr063-joint-retained-common-calculation-integration-008"
+          ],
+          "Complete": false
+        },
+        "Tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    }
+  },
+  "binaryManifest": {
+    "source_sha": "901435333b00ad7e92cef80429ce99ef010c7db9",
+    "phase": "wired-corrected fresh BOTH preparation; zero actual tests",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "2fd8692478398ce1cfff79daab7f2267236e5f6373020d1ef5b31603595de314"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "5d39fb75deb9298f795dd35bd51dc33c41cd21aa8ede0984b55e92342a5e9496"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "2fd8692478398ce1cfff79daab7f2267236e5f6373020d1ef5b31603595de314"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "88b7a400d599da6b54ed9fa8b90cd386fbf07e3305c09b7ff0f1c69db4761f2d"
+      }
+    ]
+  },
+  "currentDllPinsVerified": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2fd8692478398ce1cfff79daab7f2267236e5f6373020d1ef5b31603595de314",
+      "bytes": 26115072
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "5d39fb75deb9298f795dd35bd51dc33c41cd21aa8ede0984b55e92342a5e9496",
+      "bytes": 9386496
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2fd8692478398ce1cfff79daab7f2267236e5f6373020d1ef5b31603595de314",
+      "bytes": 26115072
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "88b7a400d599da6b54ed9fa8b90cd386fbf07e3305c09b7ff0f1c69db4761f2d",
+      "bytes": 29050368
+    }
+  ],
+  "selection": {
+    "plan": {
+      "Categories": [
+        "fr063-common-boundary-calculation",
+        "fr063-joint-retained-common-calculation",
+        "fr063-common-calculation-regression",
+        "fr063-common-qte-consumers",
+        "fr063-joint-late-completion",
+        "fr063-joint-active-tail",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-common-resource-continuation"
+      ],
+      "Reasons": [
+        {
+          "category": "fr063-common-boundary-calculation",
+          "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-joint-retained-common-calculation",
+          "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-common-calculation-regression",
+          "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls. Existing three-row SpiritualReplay_ActualResourceCreationSitesUseJournal reaches the actual original-context capacity/mutation adapters and exact identity replay. Ordinary tests cover the detached projection overload; unchanged original-spiritual routing/projection wrapper is statically reviewed and excluded from runtime qualification.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-common-qte-consumers",
+          "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-joint-late-completion",
+          "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-joint-active-tail",
+          "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-joint-c1-common-mixed-guard",
+          "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
+          "contracts": [
+            "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+          ]
+        },
+        {
+          "category": "fr063-common-resource-continuation",
+          "reason": "T179-Pc two exact actual common consumers: resource-event depleted reaction/final use and full bounded receipt discovery/resolved second pass/terminal semantic replay. Selected tests retain all existing mechanics oracles and add strict per-test cleanup after the original context disposes.",
+          "contracts": [
+            "#1536 T179-Pc shared ordinary pending/reaction behavior; finite exact actuals after fresh BOTH/source/firstLate2/EVIDENCE."
+          ]
+        }
+      ],
+      "Revision": {
+        "Head": "901435333b00ad7e92cef80429ce99ef010c7db9",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 6.8153126,
+      "Descriptors": [
+        {
+          "Name": "fr063-common-boundary-calculation-unit-001",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-common-boundary-calculation",
+          "Categories": [
+            "fr063-common-boundary-calculation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.CommonBoundary_RealDiscoveredBoundedResultCannotBecomeCompletedEmpty|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualActivePendingRefusesUnboundedCalculation|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualTerminalRequiresReceiptsOnlyForExactFrame|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_EmptyHasNoPendingReceiptOrCandidateObligation|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_SubmittedReceiptsCannotBecomeUnboundedEmpty",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 10,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.CommonBoundary_RealDiscoveredBoundedResultCannotBecomeCompletedEmpty",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualActivePendingRefusesUnboundedCalculation",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_ActualTerminalRequiresReceiptsOnlyForExactFrame",
+              "Cases": 4
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_EmptyHasNoPendingReceiptOrCandidateObligation",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.CommonBoundary_SubmittedReceiptsCannotBecomeUnboundedEmpty",
+              "Cases": 3
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-calculation-regression-unit-002",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-common-calculation-regression",
+          "Categories": [
+            "fr063-common-calculation-regression"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+              "Cases": 2
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-qte-consumers-integration-003",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-qte-consumers",
+          "Categories": [
+            "fr063-common-qte-consumers"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+              "Cases": 2
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-resource-continuation-integration-004",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-resource-continuation",
+          "Categories": [
+            "fr063-common-resource-continuation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-active-tail-integration-005",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-active-tail",
+          "Categories": [
+            "fr063-joint-active-tail"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+              "Cases": 3
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-c1-common-mixed-guard-unit-006",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-joint-c1-common-mixed-guard",
+          "Categories": [
+            "fr063-joint-c1-common-mixed-guard"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+          "Adapter": "unit",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-late-completion-integration-007",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-retained-common-calculation-integration-008",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-retained-common-calculation",
+          "Categories": [
+            "fr063-joint-retained-common-calculation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "pairwiseDisjointSelectedMethods": true,
+    "expectedCases": {
+      "fr063-common-boundary-calculation": 10,
+      "fr063-joint-retained-common-calculation": 1,
+      "fr063-common-calculation-regression": 15,
+      "fr063-common-qte-consumers": 3,
+      "fr063-joint-late-completion": 2,
+      "fr063-joint-active-tail": 3,
+      "fr063-joint-c1-common-mixed-guard": 1,
+      "fr063-common-resource-continuation": 2
+    },
+    "totalDescriptors": 8,
+    "totalCases": 37,
+    "executionReleasedForAllSelection": false,
+    "overlaps": "Intentional exact subsets of existing effects-planning/accepted-mechanics-planning/resources-materialization/effects-materialization and QTE owners. Broad owners are not selected. Existing initial Pc-O2 metadata precision observation is nonblocking; selected membership is disjoint."
+  },
+  "releasedNextAction": {
+    "category": "fr063-joint-late-completion",
+    "expectedDescriptors": 1,
+    "expectedCases": 2,
+    "sourceMustRemain": "901435333b00ad7e92cef80429ce99ef010c7db9",
+    "conditions": [
+      "Use only fresh pinned BOTH binaries and exact existing Late2 selector; no source/fixture/catalog/selection drift.",
+      "First actual only Late2, then freeze full raw log/TRX/plan/summary/native exit/binary/current-root evidence, checkpoint/push/readback.",
+      "Stop for separate independent EVIDENCE review before boundary10 GREEN, actual retained-C1 or any selected regressions.",
+      "Any failure, timeout, skip, duplicate, underfill, missing cleanup or evidence uncertainty stops the stage."
+    ]
+  },
+  "notReleased": [
+    "Boundary10 GREEN",
+    "Actual retained-C integration1",
+    "Ordinary regression15",
+    "Continuation2",
+    "QTE3",
+    "Active-refusal3",
+    "Mixed guard1",
+    "Any aggregate/full suite or unchanged unrelated PASS rerun",
+    "Active S/B/M3/F1 implementation/publication or QTE/T197 activation"
+  ],
+  "reviewerExecution": "Read-only repository/Git/source inspection and independent raw artifact parsing/hash arithmetic only; wrote /tmp inspection/report files. No build/discovery/test/runtime, source edits, commit/push or subagent.",
+  "finalStop": true,
+  "markdownReportSha256": "575e525521006301bbefdf2d16c6b7f9bea4295ee2afccd50dc13690c81cb1ce"
+}

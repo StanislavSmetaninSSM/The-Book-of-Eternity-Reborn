@@ -1,0 +1,87 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "base": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "checkedUtc": "2026-10-18T14:08:46.987727+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 10,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2415186,
+      "sha256": "90d21bf9a47857f1f782c571f3130c6dd413de9aad5de2b7605e9a253c07bd37",
+      "gitBlob": "b7d1e45fbe68cefd602c5205d79a4c83afa497a1",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source.py",
+      "bytes": 23070,
+      "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112",
+      "gitBlob": "406b029f2c3dda913576e1eaa53b0eb3aeb4a79e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_borrowed_lease_source_final.py",
+      "bytes": 8885,
+      "sha256": "e276c9debeca56c7ad5502634aaa44c75163ac6a7537cd743a43beac08991de4",
+      "gitBlob": "02e16dc0072da5f1a7f344597a7f7eb0f78f64db",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+      "bytes": 3747,
+      "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e",
+      "gitBlob": "2c0add8572b20e51757c04bc665c75ddfe9b4c85",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-9fdecef3-20261018.json",
+      "bytes": 9008,
+      "sha256": "9eb47bbab72aa3582b761ac46e8655aa456c1fb13e819bf5e2d928359c035422",
+      "gitBlob": "75eb90b00fbaaedb151cee8940f8dd572462d96b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+      "bytes": 18224,
+      "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a",
+      "gitBlob": "63abb9343ed2d3475ce2cb68e53bbd9537e93a72",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.json",
+      "bytes": 23516,
+      "sha256": "c3ce0a2de8a1065ad407885af1db9c0120caeb30470f8f6c30f26e57a2e2639c",
+      "gitBlob": "22149cad9153e19e14f4f570f6e1d4b22dd04f44",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.md",
+      "bytes": 3102,
+      "sha256": "53cded5f686627c4d9f1e60221e49e170012732904e2392b9872e5b5c741bf6b",
+      "gitBlob": "6bae0649bddbc5b0937d18dc60c30cd67d9ade2d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 146221,
+      "sha256": "bf5854ce1316ccd580fb553bc8ff17343bdbf2848494a2f46d23e7de6a3e1b45",
+      "gitBlob": "a836f048d2b94a6fec5356bf19c9536afc31dd4b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 51387,
+      "sha256": "86ed264fe99ad540fabd606ce5b687272b85d36df8cd035ab181fcb1af111dc6",
+      "gitBlob": "d6f7633ad15a015e1d36e548f02be3bef2b361b8",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

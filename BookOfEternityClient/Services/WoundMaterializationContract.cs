@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Buffers;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -387,6 +388,8 @@ internal static class WoundMaterializationContract
             var recovery = ParseRecovery(
                 ReadRequiredObject(root, "recovery", path, issues),
                 path + ".recovery",
+                classification.Domain,
+                severity.Rank,
                 issues);
             var treatment = ParseTreatment(
                 ReadRequiredObject(root, "treatment", path, issues),
@@ -446,10 +449,21 @@ internal static class WoundMaterializationContract
         }
     }
 
+    /// <summary>
+    /// Writes the wound envelope using the existing fixed JSON field order and writer options.
+    /// </summary>
+    /// <param name="wound">
+    /// The wound envelope to serialize; <see langword="null"/> is rejected.
+    /// </param>
+    /// <returns>
+    /// The original compact canonical JSON string.
+    /// </returns>
     internal static string SerializeCanonical(WoundMaterializationEnvelope wound)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("WoundCanonical.Serialize");
         ArgumentNullException.ThrowIfNull(wound);
         var buffer = new ArrayBufferWriter<byte>();
+        using var jsonTiming = FileSystemManager.MeasureCurrentOperation("WoundCanonical.WriteJson");
         using (var writer = new Utf8JsonWriter(
                    buffer,
                    new JsonWriterOptions
@@ -477,7 +491,9 @@ internal static class WoundMaterializationContract
             writer.WriteEndObject();
         }
 
-        return Encoding.UTF8.GetString(buffer.WrittenSpan);
+        jsonTiming?.Dispose();
+        using (FileSystemManager.MeasureCurrentOperation("WoundCanonical.DecodeUtf8"))
+            return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
     private static WoundOwnerCoordinate ParseOwner(
@@ -1870,7 +1886,8 @@ internal static class WoundMaterializationContract
         AddLimitIssue(graph.Entries.Length, path + ".consequences.entries", MaxConsequences, "consequences", issues);
         ParseSeverity(JsonSerializer.SerializeToElement(context.Severity, WorkingScalarJsonOptions), path + ".severity", issues);
         ParseCare(JsonSerializer.SerializeToElement(context.Care, WorkingScalarJsonOptions), path + ".care", issues);
-        ParseRecovery(JsonSerializer.SerializeToElement(context.Recovery, WorkingScalarJsonOptions), path + ".recovery", issues);
+        ParseRecovery(JsonSerializer.SerializeToElement(context.Recovery, WorkingScalarJsonOptions), path + ".recovery",
+            context.Classification.Domain, context.Severity.Rank, issues);
         ReadInt32(JsonSerializer.SerializeToElement(new { slotBudget = context.SlotBudget }),
             "slotBudget", path + ".consequences", 0, MaxConsequences, issues);
         if (issues.Count != 0)
@@ -2185,6 +2202,8 @@ internal static class WoundMaterializationContract
     private static WoundRecovery ParseRecovery(
         JsonElement value,
         string path,
+        string domain,
+        int severityRank,
         List<ValidationIssue> issues)
     {
         ValidateObjectShape(
@@ -2193,12 +2212,19 @@ internal static class WoundMaterializationContract
             RecoveryFields,
             RecoveryRequiredFields,
             issues);
+        var threshold = ReadInt64(value, "currentStepThreshold", path, 1, long.MaxValue, issues);
+        // Admission must already match the current spiritual rank; a future tick is not normalization.
+        // Invalid numbers/ranks retain their existing field diagnostics without an extra mismatch.
+        if (string.Equals(domain, "spiritual", StringComparison.Ordinal) && severityRank is >= 1 and <= 4 &&
+            threshold > 0 && threshold != 2L * severityRank)
+            AddIssue(issues, path + ".currentStepThreshold", "wound_spiritual_recovery_threshold_mismatch",
+                (2L * severityRank).ToString(CultureInfo.InvariantCulture), threshold.ToString(CultureInfo.InvariantCulture));
         return new WoundRecovery(
             ReadClosedString(value, "mode", path, RecoveryModes, issues),
             ReadExactIdentifier(value, "clockKind", path, issues),
             ReadInt64(value, "cadence", path, 1, long.MaxValue, issues),
             ReadInt64(value, "currentStepProgress", path, 0, long.MaxValue, issues),
-            ReadInt64(value, "currentStepThreshold", path, 1, long.MaxValue, issues),
+            threshold,
             ReadNullableExactIdentifier(value, "lastTickKey", path, issues),
             ReadIdentifierArray(value, "blockers", path, unique: true, issues),
             ReadBoolean(value, "carryOverflow", path, issues),

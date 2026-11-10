@@ -1,0 +1,778 @@
+{
+  "kind": "T179PD_CUT01_BOUNDED_PRODUCT_SOURCE_AND_SEPARATE_EVIDENCE_PACKET",
+  "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "status": "BOUNDED_CUT01_SOURCE_AND_SEPARATE_EVIDENCE_ACCEPTED_FINAL_REMOTE_READBACK_CONDITIONAL",
+  "sourcePins": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "mode": "100644",
+      "baselineGitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "mode": "100644",
+      "baselineGitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "mode": "100644",
+      "baselineGitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1992094,
+      "sha256": "500f464ba3088c60a6e96d32eeb6677ac1a26ff9b57d68db669d34382274ff88",
+      "gitBlob": "e020820b33fb53effcb33c571c51b4d8d133c6c6",
+      "mode": "100644",
+      "baselineGitBlob": "d8f2b177707f5d609857ac0bc9c9046d602af66d",
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "bytes": 11008,
+      "sha256": "10f1967888b7eca0890a1a6c3ff32af0d9f26f7b7a0523af3bb211d3553f7be3",
+      "gitBlob": "0e45af94051de93058a054e180a6ec86176184ea",
+      "mode": "100644",
+      "baselineGitBlob": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca",
+      "disposition": "CURRENT_MINIMAL_PRODUCT_SOURCE"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 10494,
+      "sha256": "1732b324c1990265858eaf7a09bd093c05b3f861af6d87f11ba95f03d334dbda",
+      "gitBlob": "3dd6a69d473ed3b8eb969b9c5bee5fa0aaef7af0",
+      "mode": "100644",
+      "baselineGitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+      "disposition": "CURRENT_MINIMAL_PRODUCT_SOURCE"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "bytes": 10987,
+      "sha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996",
+      "gitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+      "mode": "100644",
+      "baselineGitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed",
+      "gitBlob": "2667120919343a1040863b25efc9e5bfec219269",
+      "mode": "100644",
+      "baselineGitBlob": "2667120919343a1040863b25efc9e5bfec219269",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
+      "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "mode": "100644",
+      "baselineGitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "mode": "100644",
+      "baselineGitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "bytes": 296492,
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "gitBlob": "078269837c9f5bf049824d5e3ddf89b667f7f537",
+      "mode": "100644",
+      "baselineGitBlob": "078269837c9f5bf049824d5e3ddf89b667f7f537",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 30865,
+      "sha256": "36cf6b2817774250daba5d79ea73e769de929b33ba30bf1bfc9eb0f6d93c35c4",
+      "gitBlob": "6d10b3a30efdf62b0d2de026dca2a6b58d9354de",
+      "mode": "100644",
+      "baselineGitBlob": "6d10b3a30efdf62b0d2de026dca2a6b58d9354de",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepair.cs",
+      "bytes": 20258,
+      "sha256": "725b30189a9b2d886c05bcc8b790c18ee189d279c22ddca31c3727e025c94489",
+      "gitBlob": "682f61e874e449d35fa311f380da038cbc95c876",
+      "mode": "100644",
+      "baselineGitBlob": "682f61e874e449d35fa311f380da038cbc95c876",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "bytes": 12842,
+      "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe",
+      "gitBlob": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
+      "mode": "100644",
+      "baselineGitBlob": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointUnattemptedClose.cs",
+      "bytes": 4782,
+      "sha256": "f446fe5d2b041acccc5e95f70b56e07ad565ed6635a48077a86b2f5889f030df",
+      "gitBlob": "83b22f57e11e351393ffa51b2b3984b43acd2714",
+      "mode": "100644",
+      "baselineGitBlob": "83b22f57e11e351393ffa51b2b3984b43acd2714",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 263167,
+      "sha256": "5b0326ca86c9dcff1152d28c6b1abe250d8df0104d8299d8ff51095afd63d099",
+      "gitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
+      "mode": "100644",
+      "baselineGitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584594,
+      "sha256": "73bd4db24c1294392f8e5f4ccc074095c2ec8696b1e69aae1066fb393a1608db",
+      "gitBlob": "6be846cbdf5957622bac6fc3d0e721fc3ec6fb23",
+      "mode": "100644",
+      "baselineGitBlob": "6be846cbdf5957622bac6fc3d0e721fc3ec6fb23",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotJointOwnerRefusals.cs",
+      "bytes": 7626,
+      "sha256": "515ac3e7f7716aa4217cbaf98eaffa6ee9799ad853de5f4cd19c1b90301e2f10",
+      "gitBlob": "c32c7d05c861413326aa7f141f7c8253ae633741",
+      "mode": "100644",
+      "baselineGitBlob": "c32c7d05c861413326aa7f141f7c8253ae633741",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 84330,
+      "sha256": "e30ae16d4ff72e314aefe450013375120ffe4fd6527885dae9b0f1ded6ce1007",
+      "gitBlob": "a5a8bab910bc7279f2d13c04fd709aacd3f966e5",
+      "mode": "100644",
+      "baselineGitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
+      "bytes": 31785,
+      "sha256": "e9bdb0d7ee9f09df6581c773485f51baed9908fc85fedacd0bb33bc302e00c96",
+      "gitBlob": "2fe9051270a8c02eb147c1c268a82e2263010dbb",
+      "mode": "100644",
+      "baselineGitBlob": "2fe9051270a8c02eb147c1c268a82e2263010dbb",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "mode": "100644",
+      "baselineGitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "bytes": 3337,
+      "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "gitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "mode": "100644",
+      "baselineGitBlob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "mode": "100644",
+      "baselineGitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 27942,
+      "sha256": "cf6a351f61729898e03481bd2dd25252bfcc634ea9c5444382728b0037730d96",
+      "gitBlob": "05abc48e2622ba1871eb08b8ba75749cece16ac4",
+      "mode": "100644",
+      "baselineGitBlob": "05abc48e2622ba1871eb08b8ba75749cece16ac4",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+      "bytes": 15482,
+      "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+      "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+      "mode": "100644",
+      "baselineGitBlob": null,
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 2063,
+      "sha256": "ba57a9e8c7e1003c4d4f07d49356ba20c2cba18b434f1b0f4adab1c8d6b79ae6",
+      "gitBlob": "9a25278b5c829d1ec2e4ff6607170a747ed94694",
+      "mode": "100644",
+      "baselineGitBlob": "636e4a29f122a6cfbf37a802140576a365a8c0e5",
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "tests/selections/1536-current-capture-cut.json",
+      "bytes": 2063,
+      "sha256": "ba57a9e8c7e1003c4d4f07d49356ba20c2cba18b434f1b0f4adab1c8d6b79ae6",
+      "gitBlob": "9a25278b5c829d1ec2e4ff6607170a747ed94694",
+      "mode": "100644",
+      "baselineGitBlob": null,
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "tests/selections/1536-current-capture-cut-stop.json",
+      "bytes": 770,
+      "sha256": "ecdcbf8941069e089667b408a51179fe91230ef87be9137d3392e90ebe5b7cab",
+      "gitBlob": "7eb2820554c054e14d7f3a93bf21df35c3203c56",
+      "mode": "100644",
+      "baselineGitBlob": null,
+      "disposition": "CURRENT_AUTHORED_SOURCE"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs",
+      "bytes": 15848,
+      "sha256": "08f95e4ed639789ff60cef19dd1c3927ded5b28fa230a475cab92f03ea42e935",
+      "gitBlob": "4d4671bfe466bdb12ebdecdee2c26f7fb36eaf9d",
+      "mode": "100644",
+      "baselineGitBlob": "4d4671bfe466bdb12ebdecdee2c26f7fb36eaf9d",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "bytes": 27567,
+      "sha256": "e397cf86000c51503d3bd6b74cd90871769ead651d6d66b71f658c147a13a9c8",
+      "gitBlob": "b5905b3bc32042ef6007197be5b2638bae1b94f4",
+      "mode": "100644",
+      "baselineGitBlob": "b5905b3bc32042ef6007197be5b2638bae1b94f4",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1991,
+      "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+      "gitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+      "mode": "100644",
+      "baselineGitBlob": "69c5d7293afbd6430944c5d339bd3f221aa5d2e4",
+      "disposition": "UNCHANGED_RETAINED_08119F36"
+    }
+  ],
+  "sourcePinDigest": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
+  "currentLedger": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
+    "sha256": "4865d71fc0d53571caccbde12e8c8bc898cd956f28807f453ef7af38e17dda7a"
+  },
+  "productDelta": [
+    "BookOfEternityClient/Core/GameEngine.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+  ],
+  "fixture": "Initial fixture/source audit retained full7a+69 as historical provenance; current saved raw29b2 has verified full7a+79/55,286 composition. Current31 pins and actual source/fixture bytes remain exact; final publication adds metadata only. No clone or old native evidence replay.",
+  "firstEligibleActual": "HISTORICAL first eligible stop1 executed once558c and accepted causalRED. Current product separately named Late2+new3 executed and independently qualified; no remaining named actual or auto-advance.",
+  "planCorrections": "Preserve v1 initial absent-file proposed probe and exact v2 source correction, not native failure. Literal guaranteed present read at Reconstruct88/preparation146–147.",
+  "precommonDesign": "t179pd-cut01-method-row-ledger-20261018.json precommon: accepted DESIGN only, NI-IOBS-L01 and origin bridge open",
+  "preparation": {
+    "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+    "productSource": "08119f36c66464913e94d4bd5d23221073e0d48d",
+    "archivePath": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-preparation-files-20261018/archive.json",
+    "archiveSha256": "778898f096128a582102e738f2684e4968d5cc0102df5a9252f5288807592f31",
+    "rawChains": 19,
+    "catalogNative": 0,
+    "catalogMethods": 11772,
+    "catalogCategories": 795,
+    "catalogSeconds": 89.49147019498923,
+    "stagePlanNative": 0,
+    "stagePlanSeconds": 3.400628739007516,
+    "stagePlannedOwners": 3,
+    "stagePlannedDescriptors": 3,
+    "stagePlannedMethods": 4,
+    "stagePlannedCases": 5,
+    "actualCasesExecuted": 0,
+    "bothBuilds": true,
+    "binaryPins": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "b6086fcd2c83bfac368b48a0490414b9b1a2bf1d53367cb9143e97b7a5600a0a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29208576,
+        "sha256": "2452dd9db86ee33ff542daaf0d94126584b8eb74c91c0880a4a726ad0a576464"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "ef42fb5967df95dae90ab44b95081d97132a457c2a72134536e6fedfe179621e"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "ba249c1ff84a3e6bdcfe62bfc5ece077496215c6afb830a633d5970a1b9069af"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "9252a27248143e88499fe6759b17c99035b394fc06288dc5f0d2062c22f70590"
+      }
+    ],
+    "managedOutputCount": 335,
+    "namespace": {
+      "ownedRoots": []
+    },
+    "compiledContext": "Original source-binding/ledger bytes inside FIRST raw remain immutable uncompiled-phase snapshots; current derived metadata updated without replay.",
+    "phase": "HISTORICAL_TESTS_ONLY_COMPILED3579_ZERO; original19chains preserved, superseded for current product by product.preparation"
+  },
+  "controllers": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-preparation-run.py",
+      "sha256": "a1d9d5496afc876bcc97aa97a91f8eeb6b5dc2e103a2b6ded5e293b4d69b5bab",
+      "status": "USED_FOR_CATALOG_AND_PLAN_ZERO"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-preparation.py",
+      "sha256": "4eddaa0fdb4a61e0498da44072ff0f5e2630bea54af7f5175c03c167d573e8e0",
+      "status": "READ_ONLY_FROZE_TWO_PREP_RECORDS"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-stop-first-run.py",
+      "sha256": "2946a501dc52d593c5d3c0bde417b07e0ff8487f324433c13bdec8136e073950",
+      "status": "HISTORICAL_USED_ONCE_ORIGINAL_STOP1_NATIVE1_INDEPENDENT_CAUSAL_RED_ACCEPTED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop.py",
+      "sha256": "31c494516c04f2a4c9a0b56727a032ccd00a9cd0530f9ea34b7e66f12a9e78ee",
+      "status": "SUPERSEDED_UNRUN_ARCHIVE_KIND_LABEL_ONLY_NO_RUNTIME_FAILURE"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-stop-v2.py",
+      "sha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
+      "status": "READ_ONLY_FROZE_FIRST_STOP1_EXACT9_RAW_CHAINS"
+    }
+  ],
+  "toolAuthoringCorrection": {
+    "oldSha256": "31c494516c04f2a4c9a0b56727a032ccd00a9cd0530f9ea34b7e66f12a9e78ee",
+    "newSha256": "4e23bf8570402faf74245118a1e022fee1e843141916d16ccaf8ebfd15d11c38",
+    "fact": "Root source review corrected leftover prior-task output archive kind only before any actual/archive invocation; preserve original UNRUN tool, use explicit v2. No runtime or preparation replay."
+  },
+  "sourceReview": {
+    "md": "recovery/t179pd-cut01-tests-source-independent-review-20261018.md",
+    "json": "recovery/t179pd-cut01-tests-source-independent-review-20261018.json",
+    "support": "recovery/t179pd-cut01-tests-source-independent-check-20261018.json",
+    "root": "recovery/t179pd-cut01-root-source-prep-acceptance-172455c2-20261018.json",
+    "scope": "HISTORICAL tests-only3579/172455 FIRST stop1 eligibility, followed by named558c and accepted genuine missing-cut RED. Not changed-product SOURCE acceptance.",
+    "counterPrecision": "JointMarkerCommonPublications is marker-containing committed cohort observations (possibly progression), not exact firstcommon invocation count.",
+    "phase": "HISTORICAL_PREPRODUCT_FIRST_STOP1_ELIGIBILITY"
+  },
+  "firstStopActual": {
+    "kind": "HISTORICAL_FIRST_STOP1_ORIGINAL_RAW_WITH_ACCEPTED_CAUSAL_MISSING_CUT_RED",
+    "actualSource": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+    "compiledSource": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+    "nativeExit": 1,
+    "wallSeconds": 65.74984875301016,
+    "descriptorsPlanned": 1,
+    "descriptorsCompleted": 1,
+    "casesPlanned": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "underfill": [],
+    "timedOut": false,
+    "failure": "Assert.Equal at JointCaptureCut.cs175: expected callback1/actual0, after genuine shared prerequisites",
+    "observed": {
+      "callbacks": 0,
+      "preparationPresentWaveReads": 4,
+      "retainedPreparation": 1,
+      "retainedPrepared": 1,
+      "retainedEffects": 1,
+      "retainedFinal": 1,
+      "retainedCommon": 1,
+      "retainedPreflight": 1,
+      "reservationObjectsObserved": 1,
+      "openTakeObjectsObserved": 1,
+      "committedMarkerContainingCohorts": 2,
+      "turn": 43,
+      "actualDisposition": null
+    },
+    "limits": [
+      "ActualDisposition is literally null; no nonnull Committed claim from that field.",
+      "PostCut counters0 were unarmed because callback missing; they are NOT no-work evidence.",
+      "Marker-containing cohorts may include progression; not exactly2 common invocations.",
+      "Source/publication/physical state and genuine old work were independently qualified as missing-cut RED only; original raw is unchanged.",
+      "No GREEN, NI, new held behavior or remaining4 actuals claimed."
+    ],
+    "runnerOwnedCleanup": true,
+    "runnerRuntimeCleanup": true,
+    "namespaceBefore": [],
+    "namespaceAfter": [],
+    "binaryBeforeAfterSame9": true,
+    "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-stop-files-20261018/archive.json",
+    "archiveSha256": "3a362efd062ed37c3b02f30a912f93ce1b4ef70f77d26f6cd408f86bbff1dcbb",
+    "rawChains": 9,
+    "authorization": "Root named exact558c FIRST stop1 after saved Source/PREP decision and complete72-delta readback; recorded original helper/actual context carries exact invocation.",
+    "independentCausalVerdict": "ACCEPTED_CAUSAL_MISSING_CUT_RED_ONLY"
+  },
+  "product": {
+    "files": [
+      "BookOfEternityClient/Core/GameEngine.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+    ],
+    "scope": "Only append enum + await existing nullable dispatcher after current capture/before preparation; no NI semantics",
+    "inverse": "Both exact08119 whole source restored by removing exact2edits",
+    "freshProductPrep": "COMPLETED_FIRST_ZERO_3D195F2F; new9copies/335managed, not actual acceptance",
+    "actuals": "COMPLETE_BOUNDED: new3 qualified3PASS plus separately accepted affectedLate2 qualified2PASS. Two named native invocations; no further test/build authorized.",
+    "preparationControllers": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-preparation-run.py",
+        "sha256": "11e1348602f4198d002a9ffb121c870ee66a3d379f36d229b27c63dd2766e5cf",
+        "status": "USED_FOR_FRESH_CATALOG_BOTH_AND_STAGE_PLAN_ZERO"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product-preparation.py",
+        "sha256": "a0a54d44ff94c1ba581a5d1af6d3af2fc5ad31bded9727e58a908cb78e44a834",
+        "status": "READ_ONLY_FROZE_TWO_PREP_RECORDS_EXACT19CHAINS"
+      }
+    ],
+    "preparation": {
+      "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "productSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "archivePath": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-preparation-files-20261018/archive.json",
+      "archiveSha256": "8439477d57e78692068c54d693c73dad0af626db5cb2cae8a1db8c66911b5a69",
+      "rawChains": 19,
+      "catalogNative": 0,
+      "catalogMethods": 11772,
+      "catalogCategories": 795,
+      "catalogSeconds": 89.87840779199905,
+      "stagePlanNative": 0,
+      "stagePlanSeconds": 3.263149282996892,
+      "stagePlannedOwners": 3,
+      "stagePlannedDescriptors": 3,
+      "stagePlannedMethods": 4,
+      "stagePlannedCases": 5,
+      "actualCasesExecuted": 0,
+      "bothBuilds": true,
+      "binaryPins": [
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+          "bytes": 9601024,
+          "sha256": "94d6011e86cc63ab1a7d7430d0ad135d95171257875fb65a7d9fcb1a33c1d05d"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+          "bytes": 29208576,
+          "sha256": "092ff16f66c86413898d42f65c651fa9e2ef1f69aa2315281b13ae3534544943"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "bytes": 1830912,
+          "sha256": "a195e3b67434fddd7af55526b76eb783a8e6a1a55916d66dacec75ae9c22d71b"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+          "bytes": 1830912,
+          "sha256": "a195e3b67434fddd7af55526b76eb783a8e6a1a55916d66dacec75ae9c22d71b"
+        },
+        {
+          "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        },
+        {
+          "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+          "bytes": 248832,
+          "sha256": "2cffebb809f30a0746d7a82c10039810e196bf6a489cd0c72993451b4b433ad2"
+        },
+        {
+          "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+          "bytes": 26178560,
+          "sha256": "2d808a2b25b14a3263376751e9abd875187e4cb431400528abc7080fbada24ff"
+        }
+      ],
+      "managedOutputCount": 335,
+      "namespace": {
+        "ownedRoots": []
+      },
+      "compiledContext": "Exact source/ledger snapshots inside both original FIRST records remain immutable. Current derived metadata is a metadata-only descendant; no raw rewrite or replay.",
+      "phase": "FIRST_CHANGED_PRODUCT_COMPILED_3D195F2F_PREPARATION_ZERO_ONLY; current runtime qualification is in product.currentQualified",
+      "cleanup": {
+        "catalogOwned": true,
+        "catalogRuntime": true,
+        "planOwned": true,
+        "planRuntime": true
+      }
+    },
+    "actualControllers": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-product-first-run.py",
+        "sha256": "a4eaa9ac8618ea251e61bedef572a79b628726243279d283d440b8485230f0a1",
+        "status": "USED_NAMED_PROTECTED_LATE2_ONCE_AND_SEPARATE_NEW3_ONCE"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/tools/t179pd-cut01-archive-product.py",
+        "sha256": "65cdda7af386a200f3f675572d72702f9b853e58962ac6fdc95387535f1b5fef",
+        "status": "READ_ONLY_FROZE_SEPARATE_PROTECTED_LATE2_AND_NEW3_ORIGINAL_RAW"
+      }
+    ],
+    "sourceReview": {
+      "md": "recovery/t179pd-cut01-product-source-independent-review-20261018.md",
+      "json": "recovery/t179pd-cut01-product-source-independent-review-20261018.json",
+      "support": "recovery/t179pd-cut01-product-source-independent-check-20261018.json",
+      "root": "recovery/t179pd-cut01-root-product-source-prep-acceptance-072dc47b-20261018.json",
+      "status": "ACCEPTED_AFFECTED_PRODUCT_SOURCE_FIXTURE_SELECTION_PREP_ONLY",
+      "scope": "Historical source/preparation verdict before product actuals: exact2inverse/current31/unchangedtests/new9/new19raw/fixed then-UNRUN actualtools accepted. Later named Late2 and new3 have separate EVIDENCE below; no new SOURCE replay."
+    },
+    "late2Actual": {
+      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_WITH_ACCEPTED_SEPARATE_INDEPENDENT_EVIDENCE",
+      "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+      "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "nativeExit": 0,
+      "wallSeconds": 120.28117616300005,
+      "categories": [
+        "fr063-joint-late-completion"
+      ],
+      "expectedCases": 2,
+      "tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "duplicateTests": [],
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true,
+      "namespaceBefore": {
+        "ownedRoots": []
+      },
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "binaryBeforeAfterSame9": true,
+      "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-late2-files-20261018/archive.json",
+      "archiveSha256": "bc077e8b71f2ea25b0d0aa9d43bb4fd19387cbf12097f5e78827a92846b0c45a",
+      "rawChains": 9,
+      "independentEvidence": {
+        "md": "recovery/t179pd-cut01-product-late2-evidence-independent-review-20261018.md",
+        "json": "recovery/t179pd-cut01-product-late2-evidence-independent-review-20261018.json",
+        "support": "recovery/t179pd-cut01-product-late2-evidence-independent-check-20261018.json",
+        "root": "recovery/t179pd-cut01-root-product-late2-evidence-acceptance-f7988570-20261018.json",
+        "verdict": "ACCEPT_AFFECTED_LEGACY_LATE2_EXACT_2PASS_ONLY"
+      },
+      "scope": "Exact named affected legacyLate2 current-product outcome:2PASS independently qualified by the linked separate EVIDENCE. No seam/new3/NI or broader family qualification follows from those2 alone.",
+      "namedAuthorization": {
+        "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation file existed",
+        "text": "NAMED PRODUCT ACTUAL RELEASE: ONLYprotectedLate2 onclean127d3cf73f99f676af8b7cb46df0f8930b5682f6 /compiled3d195f2f52f1f5dd4b71c248921f9609d4b9738e. Rootindepdelta15/all11/full7a+76deltas55,254+exactremote/main confirmed. InvokeONCE /tmp/t179pd-cut01-product-first-run.py SHAa4eaa9 modeprotected-late2 labelt179pd-cut01-product-late2-first-127d3cf7-20261018 actualfull127dSHA prep/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exactfr063-joint-late-completion2cases/NoBuild; descriptorordinal003→001 allowedsemanticmethods/categories2counts. Preserveoriginaloutcome/FIRST/source/process/runner/TRX/cleanup+beforeafter9/ns, readonlyarchive65cddaNEWdir thenWIPpush/exactremote/recover BEFOREindepEVIDENCE. No sourceedit/build/retry/new3/autoadvance. Unexpectedrawheld. Proceed.",
+        "actualRecord": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/record.json"
+      }
+    },
+    "new3Actual": {
+      "kind": "FIRST_CURRENT_PRODUCT_ORIGINAL_RAW_WITH_ACCEPTED_SEPARATE_INDEPENDENT_EVIDENCE",
+      "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+      "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "nativeExit": 0,
+      "wallSeconds": 139.88709520299744,
+      "categories": [
+        "fr063-joint-capture-cut-stop",
+        "fr063-joint-capture-cut-transparency"
+      ],
+      "expectedCases": 3,
+      "tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "duplicateTests": [],
+      "runnerOwnedCleanup": true,
+      "runnerRuntimeCleanup": true,
+      "namespaceBefore": {
+        "ownedRoots": []
+      },
+      "namespaceAfter": {
+        "ownedRoots": []
+      },
+      "binaryBeforeAfterSame9": true,
+      "archive": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-first-product-new3-files-20261018/archive.json",
+      "archiveSha256": "eb3ecb4445c1a931ffe4145cdea2cef12cb3dc113cfe9c4a01fc941589850687",
+      "rawChains": 11,
+      "independentEvidence": {
+        "md": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+        "json": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.json",
+        "support": "recovery/t179pd-cut01-product-new3-evidence-independent-check-20261018.json",
+        "root": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+        "verdict": "ACCEPT_BOUNDED_CURRENT_CAPTURE_CUT01_NEW3_EXACT_3PASS_ONLY"
+      },
+      "scope": "Exact named new3 current-product outcome:3PASS independently qualified by the linked separate EVIDENCE. Transparency false retains the essential setup hook and adds no capture observer; not global-hooks-null native coverage. Bounded CUT01 only, no NI or broader family qualification.",
+      "namedAuthorization": {
+        "source": "Root named activation message, copied as derived metadata AFTER terminal; no separate pre-run activation artifact claimed",
+        "text": "Root independently VERIFIED physical GitHub0745 delta: full7a+78/55,272 exacttree; clean/exactremote074575d37bf28bb0121bf5bb7c69984afcfb604e/main d024. Name exactly ONE FIRST new3 now: fixed /tmp/t179pd-cut01-product-first-run.py (SHAa4eaa9) mode new3, label t179pd-cut01-product-new3-first-074575d3-20261018, actual 074575d37bf28bb0121bf5bb7c69984afcfb604e, prep /tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-prep-first-plan-3d195f2f-20261018/record.json. Exact temp subset two new categories/3cases NoBuild; no protectedLate2 replay/build/retry/advance. Preserve original native/raw/sentinel/source/process/runner/TRX/cleanup then readonlyarchive65cdda new directory, save WIP raw+0745receipt/78composition metadata-only/nonforcepush/GitHubdelta. Return native exactcounts immediately; Root sends new independent EVIDENCE after raw carrier recovered. No automatic fixes if fail.",
+        "actualRecord": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-new3-first-074575d3-20261018/record.json"
+      }
+    },
+    "currentQualified": {
+      "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "new3": {
+        "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+        "nativeExit": 0,
+        "passed": 3,
+        "methods": 2,
+        "descriptors": 2,
+        "seconds": 139.88709520299744
+      },
+      "separateProtectedLate2": {
+        "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+        "nativeExit": 0,
+        "passed": 2,
+        "methods": 2,
+        "descriptors": 1,
+        "seconds": 120.28117616300005
+      },
+      "qualifiedDistinctProductCases": 5,
+      "qualifiedMethods": 4,
+      "singleFiveCaseNativeInvocation": false,
+      "historicalBaseline": "Original558c/compiled3579 missing-cut native1/1FAIL remains accepted causal RED, not a sixth unique product case or current failure.",
+      "scope": "Only nullable current-custody observation seam. Typed IOException stop after actual completed capture/before preparation; no additional observer and passive observer preserve ordinary completion. No NI or global-hooks-null or exact-common-invocation claim."
+    }
+  },
+  "causalEvidence": {
+    "md": "recovery/t179pd-cut01-first-stop-evidence-independent-review-20261018.md",
+    "root": "recovery/t179pd-cut01-root-causal-red-acceptance-7f0b11c6-20261018.json",
+    "originalFailImmutable": true
+  },
+  "completion": {
+    "qualifiedBoundedStage": "T179-Pd-CUT01",
+    "sourceAndEvidence": "ACCEPTED_BOUNDED_ONLY",
+    "rootEvidence": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+    "sourceInvariant": "recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+    "new3Inspection": "recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+    "finalRemoteReadback": "Conditional on exact final nonforce publication/clean remote and complete changed-path GitHub recovery + external Root verification. External receipt fulfils this condition; no self-receipt commit.",
+    "remaining": "NI-IOBS-L01 v2 implementation and genuine NI/common/cold/late origin qualification OPEN; fullNI/HOT/M3/F1/T197/Windows/A3 and declared broader holds unchanged.",
+    "metadataReview": {
+      "md": "recovery/t179pd-cut01-final-metadata-independent-review-20261018.md",
+      "json": "recovery/t179pd-cut01-final-metadata-independent-review-20261018.json",
+      "support": "recovery/t179pd-cut01-final-metadata-independent-check-20261018.json",
+      "root": "recovery/t179pd-cut01-root-final-metadata-acceptance-46451715-20261018.json",
+      "verdict": "ACCEPT_METADATA_HANDOFF_NO_MATERIAL_FINDINGS",
+      "scope": "Only final5derived paths/copied-artifact provenance since29b2; no source/raw/native review replay. Exact review/Root provenance persisted once; final external Root exactremote/tree receipt closes persistence without a self-save loop."
+    }
+  },
+  "historicalTestsOnlyRuntimeLabel": {
+    "phase": "HISTORICAL558C_PRIOR_PRODUCT",
+    "text": "Exactly1 actual stop case executed:1FAIL/raw only. Preparation0/0 remains historical; other4 actuals UNRUN."
+  },
+  "runtimeChronology": {
+    "historicalTestsOnlyRed": {
+      "actual": "558c7ec0a683dad0586a1dd599676fd291193ef2",
+      "compiled": "3579d8e21db039dbabc6050a175024cf6c08f79b",
+      "nativeExit": 1,
+      "executed": 1,
+      "failed": 1,
+      "qualification": "ACCEPTED_CAUSAL_MISSING_CUT_RED_ONLY"
+    },
+    "currentProduct": {
+      "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+      "new3": {
+        "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+        "nativeExit": 0,
+        "passed": 3,
+        "methods": 2,
+        "descriptors": 2,
+        "seconds": 139.88709520299744
+      },
+      "separateProtectedLate2": {
+        "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+        "nativeExit": 0,
+        "passed": 2,
+        "methods": 2,
+        "descriptors": 1,
+        "seconds": 120.28117616300005
+      },
+      "qualifiedDistinctProductCases": 5,
+      "qualifiedMethods": 4,
+      "singleFiveCaseNativeInvocation": false,
+      "historicalBaseline": "Original558c/compiled3579 missing-cut native1/1FAIL remains accepted causal RED, not a sixth unique product case or current failure.",
+      "scope": "Only nullable current-custody observation seam. Typed IOException stop after actual completed capture/before preparation; no additional observer and passive observer preserve ordinary completion. No NI or global-hooks-null or exact-common-invocation claim."
+    },
+    "noAdditionalRuntime": true
+  },
+  "recovery": {
+    "priorCarrier": "464517150f0db61f27ff3c68b20299565abb62ad",
+    "receipt": "recovery/t179pd-cut01-final-labels-delta-github-46451715-20261018.json",
+    "composition": "recovery/t179pd3d-root-recovery-composition-46451715-20261017.json",
+    "priorVerifiedDeltaCount": 81,
+    "priorVerifiedTrackedPaths": 55296,
+    "finalCheckpoint": "Final exact HEAD/changed-path recovery/external Root check pending publication; no extra self-receipt commit."
+  }
+}

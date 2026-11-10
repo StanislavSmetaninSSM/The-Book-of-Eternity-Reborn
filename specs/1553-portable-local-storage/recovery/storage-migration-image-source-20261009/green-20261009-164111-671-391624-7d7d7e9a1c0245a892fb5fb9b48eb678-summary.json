@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-image-export-known",
+    "portable-image-source-admission-linux",
+    "portable-image-scene-prompt-spelling"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "570ce89eacf82ff8ca6e5797ba3f83232964f2fc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-image-export-known",
+      "Seconds": 3.0406063,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-image-scene-prompt-spelling",
+      "Seconds": 2.4227353,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-image-source-admission-linux",
+      "Seconds": 3.217121,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0567903,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0431918,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0936864,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041428,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:15.9284684",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 28,
+    "CompletedCases": 28,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 28,
+    "Executed": 28,
+    "Passed": 28,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

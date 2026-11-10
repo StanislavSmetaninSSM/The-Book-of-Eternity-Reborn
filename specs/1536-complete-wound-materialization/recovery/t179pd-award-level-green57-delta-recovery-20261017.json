@@ -1,0 +1,383 @@
+{
+  "kind": "COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY",
+  "sha": "d43f3a71453378be7b32b68e883522f8164f37cb",
+  "base": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+  "directory": "/workspace/a2-green57-github-d43f3a71-20261017",
+  "completedUtc": "2026-10-17T03:04:58.326498+00:00",
+  "newEmptyDirectory": true,
+  "nameStatus": [
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/record.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/dotnet-test.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/fr063-award-level-policy-boundary-integration-001.trx.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/plan.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/summary.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/stdout.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-writer-inspection.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/record.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/dotnet-test.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/fr063-award-level-existing-integration-001.trx.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/plan.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/summary.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/stdout.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-writer-inspection.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/record.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/dotnet-test.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/fr063-award-level-owner-integration-001.trx.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/plan.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/summary.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/stdout.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-writer-inspection.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/record.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/dotnet-test.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/fr063-award-level-policy-unit-001.trx.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/plan.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/summary.json.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/stdout.log.gz",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-writer-inspection.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-late2-evidence-accepted-delta-recovery-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-award-level-qualified57-writer-inspection-20261017.json",
+    "M\tspecs/1536-complete-wound-materialization/spec.md",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "deletedPaths": [],
+  "fileCount": 41,
+  "files": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/.specify/memory/constitution.md"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/AGENTS.md"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/docs/development-workflow.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/docs/testing.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "mode": "100644",
+      "git_blob": "1522b64e4186d817f71001c6ff075c955ca50ddd",
+      "bytes": 2321634,
+      "sha256": "e9d8da5c7dde68b0ec6f0cbc3d373a3191ac3e2a4f349d6c49352f15c008dcda",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/plan.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/record.json.gz",
+      "mode": "100644",
+      "git_blob": "cb9c2c8ad616b5365c384d67c95b2f50d5219795",
+      "bytes": 2382,
+      "sha256": "baed989e8d7d3dc61052366452e698506c047367acb859e5cef5f8541ad076d3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/record.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "d177b404b2df440b9b80c8a610a0e35942bb3632",
+      "bytes": 187851,
+      "sha256": "23074b6d187b3b7d39dab10e3d0cbece87a031fc9693b5b221624a1e289935fe",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/fr063-award-level-policy-boundary-integration-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "6091009bf260fec0d1562251caed270483da0fae",
+      "bytes": 2354,
+      "sha256": "4dc2d5415f5158335aa352629e58579725fc4e3f4d3e7f0b20918403b7fe3d3d",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/fr063-award-level-policy-boundary-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "aec81f88547218cb982e24e44de9aebde3d664e8",
+      "bytes": 533,
+      "sha256": "37d9f3f0dd1e3351c7e92a2ca7956457645760ba90d4dc613c22f7c74c1b8fd6",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "c5525129d6f86b6bfe33643cb9ef34692e14b619",
+      "bytes": 610,
+      "sha256": "1e32a579e7addfda1bc7a8a692fbe320c0de30b5cb310f6d1ce9e9d278e84b0f",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "9daf11923a9c6f05e0ded7d3617a32d6212c3fa0",
+      "bytes": 770,
+      "sha256": "691ef5bed75e6ac61454fab783ea39316443f4ea0b04026d521af29239c23556",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-files/0-a2-green-boundary2-20261017T0250Z-attempt1-84b7fc2e/stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-writer-inspection.json",
+      "mode": "100644",
+      "git_blob": "e2c704e4eac819556c473bb71e5b54e6ba8b5a79",
+      "bytes": 26932,
+      "sha256": "33989b397fc142bf6955a1a8f4663cc1da00804d9213984153505556551e670a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-writer-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017.json",
+      "mode": "100644",
+      "git_blob": "adbb09e11875b9e49643466c49e6061aa51d6d85",
+      "bytes": 13068,
+      "sha256": "f77ae10f14f4ec2814acc0bea7cef9a2de621a1cac78a0b2d5846b77ac29f687",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/record.json.gz",
+      "mode": "100644",
+      "git_blob": "d93ee0eb6a4504d6e81ec53d114eaad976700c87",
+      "bytes": 2382,
+      "sha256": "3d7c2b5bc994f7721710e0ce87677634e086e2cc2454c5f510bee9434076e3b8",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/record.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "60d300160a1d7fc58ba0d8b6e93db291d35800ae",
+      "bytes": 187841,
+      "sha256": "37eb0220f850f501172feb840337f0c8bd0f3eba096380ac60954ac1f5256509",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/fr063-award-level-existing-integration-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "6adbb9e693236d3a4355605ffbfb73035cffe66f",
+      "bytes": 4755,
+      "sha256": "7e8e1f5820c8b3df573a58eb98ac5489e0f690c10a0ec21a6c1618db2b78ba9a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/fr063-award-level-existing-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "832ce9a5d8d8281fc9753444d152b2f5178199cf",
+      "bytes": 564,
+      "sha256": "773c6577509fd8b6d2c556dbbd2ebec9cdd5f99f3c5b4c74690ca7db3a726dfa",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "95875c11169573b1ba1ebd13562d34ff2b3a2d51",
+      "bytes": 604,
+      "sha256": "6c70531930439f0080ade55608ba06b3d0f5dbef276a4a0d5f43cdd19613d770",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "9d8027983c265f076b0728b18f8e721dbdd3d671",
+      "bytes": 796,
+      "sha256": "df57aef1cc9724420f0b4a89d8dbe764e47f23bf0af03184eef5a5adbb3cffd4",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-files/0-a2-green-existing2-20261017T030315Z-attempt1-9f28c651/stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-writer-inspection.json",
+      "mode": "100644",
+      "git_blob": "a43413669d542a299a1f50e08ef1f8b69b9ff2fd",
+      "bytes": 49740,
+      "sha256": "84b07310a17494a25379b8ce504a13de7cd9384af9ac21707140f84834df9168",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-writer-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017.json",
+      "mode": "100644",
+      "git_blob": "9b85d29ce0391913e8cc8f8b0ebc9039fcda59be",
+      "bytes": 13068,
+      "sha256": "c1d87c3e5baa65976b683c3b807367ad17715679d6ff8a112f2ca1748f99a185",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/record.json.gz",
+      "mode": "100644",
+      "git_blob": "ac3d86958a645dc1c2eb28961ca1394d7b77faba",
+      "bytes": 2379,
+      "sha256": "110d7bb1f02f4b96996c7f6f22d5883fca5b9f221152ddacacd272505e9b8799",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/record.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "998e4fce4bb8e5d2d801ba358a80381316b26607",
+      "bytes": 187843,
+      "sha256": "e02726e11f647ef0b5b689bda53a1e5367ffb668eb3318c541ca4cc64a9c2589",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/fr063-award-level-owner-integration-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "15ac27b1ce68c949efe93b0e86034a58d6277afb",
+      "bytes": 6860,
+      "sha256": "cb203e8613422ffd7f0640678be778619a2be7de18f95e4367e4283cceeeee2a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/fr063-award-level-owner-integration-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "29242816512e8538f94190179ac4d394a0a267c5",
+      "bytes": 565,
+      "sha256": "4674e32d5a53a9145da41cb16f51ef5f4b22f43b5b81e06fd1a96c1f62e23cf0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "7d72ec6d01b2cc549857a4ea2477d2c8775ff7ce",
+      "bytes": 604,
+      "sha256": "9b21a668bfe1f03c9ae466f56f060a948b915c147841f10dcb2b7caf43172ce1",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "2f9f98bb5bde88393d32cfee47b7f7f6801a9b9e",
+      "bytes": 799,
+      "sha256": "15174fe12a873302a9978250124459656baed541709a6c1cc29db0462f8c555b",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-files/0-a2-green-owner20-20261017T030101Z-attempt1-2f4b976c/stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-writer-inspection.json",
+      "mode": "100644",
+      "git_blob": "6f072ae76b5e209e0f1fa4b07e9b4ee3a599f869",
+      "bytes": 122697,
+      "sha256": "5d053f573670e7ff89b85c3bbe8167d89bc150401259f30be44e06aa3bbe221a",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-writer-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017.json",
+      "mode": "100644",
+      "git_blob": "8f494816becc9c0429d231a958fc00ada9a173a6",
+      "bytes": 13026,
+      "sha256": "285386f5f973647d053cfb39ae3d1dfcb4711f3f165369698434b01c88f20a66",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/record.json.gz",
+      "mode": "100644",
+      "git_blob": "060042514238ff4131757b6dd35e45aea6e07d71",
+      "bytes": 2380,
+      "sha256": "9061f290fb6d5b4f3828bb0058e6f65ea5da91f6bcdd82f172cc40475a408c72",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/record.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/dotnet-test.log.gz",
+      "mode": "100644",
+      "git_blob": "d28ccd8ee75a333c36bbb6d996b9873f57e30fc2",
+      "bytes": 190577,
+      "sha256": "e898d10741cef74ae790af392e63a414860b53db3482c953ec6f6fe0985a9572",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/dotnet-test.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/fr063-award-level-policy-unit-001.trx.gz",
+      "mode": "100644",
+      "git_blob": "f6224c516196a8abcae0ebbc0be5317631eeb749",
+      "bytes": 5163,
+      "sha256": "01c2f49251cb743bb285d6b6b4e67dd9310271201b744b97dd96732b09e8613c",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/fr063-award-level-policy-unit-001.trx.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/plan.json.gz",
+      "mode": "100644",
+      "git_blob": "d07728fa0eb48805773efebe4b1bd4ee2de75363",
+      "bytes": 596,
+      "sha256": "bdf7a8b7141fcf6a3527362137daba3827cbb6971c84755caca6ee1aac808046",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/plan.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/summary.json.gz",
+      "mode": "100644",
+      "git_blob": "abb52dab7a649e6319845796984c1acd028c3cf4",
+      "bytes": 604,
+      "sha256": "369ca2ab6f20c3af20ebac35056d287789643aac1d9cf0bf4078487474bcf5d5",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/runner0/summary.json.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/stdout.log.gz",
+      "mode": "100644",
+      "git_blob": "a84a67ffd5872ca6f1f7e8ff1b2fdc65ea05fb70",
+      "bytes": 832,
+      "sha256": "d85bc2c5176933626f85f732e30ea4eac15c9c6130447890e74445059cf9a005",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-files/0-a2-green-pure33-20261017T030025Z-attempt1-c0745a21/stdout.log.gz"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-writer-inspection.json",
+      "mode": "100644",
+      "git_blob": "f251f9c0c7be71ede5be0c16b3246b0d7c31077f",
+      "bytes": 29631,
+      "sha256": "b660f93420abab8e4035bef45faafe5cf2bde7ffd8dff4cdee5ca27ff69502d0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-writer-inspection.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017.json",
+      "mode": "100644",
+      "git_blob": "9d3e1fd0dc7e571a0e3eb916374f00ce1557c270",
+      "bytes": 12999,
+      "sha256": "7ec4fc8f8e860f7de16fac691cdcbedff7f4abc262f362adaa05740b3d7afc87",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-late2-evidence-accepted-delta-recovery-20261017.json",
+      "mode": "100644",
+      "git_blob": "0e8d336e19cdc18e6ba7670c8d34021dc67ebf9c",
+      "bytes": 8243,
+      "sha256": "56522aefa99cd82706d64103ac25f9d0ec1aa46f6fd620a393d8bfa78159b007",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-late2-evidence-accepted-delta-recovery-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-qualified57-writer-inspection-20261017.json",
+      "mode": "100644",
+      "git_blob": "3be924dbed49dc6bd7aa4a3cf2f9ccb0db5be555",
+      "bytes": 13128,
+      "sha256": "e4c643289afdf1d577906ec4e394878604268855ff06af1e0e5dc0ba6742d0f3",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/recovery/t179pd-award-level-qualified57-writer-inspection-20261017.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "mode": "100644",
+      "git_blob": "7d4fd0439ee97d8f74e38b9a5dc5f7464b354a40",
+      "bytes": 237053,
+      "sha256": "a9ba8d1bd365d1e86719cc663aba915f400017bd1b343965c0dd85340936d271",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/spec.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "mode": "100644",
+      "git_blob": "469b24791825e0bfeb638495bffa0d9cdb600498",
+      "bytes": 1572124,
+      "sha256": "4edf0f04644124a31355521968820963d5a1bc6d9486a8ec3c53a253b0f9f1a9",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/d43f3a71453378be7b32b68e883522f8164f37cb/specs/1536-complete-wound-materialization/tasks.md"
+    }
+  ],
+  "sourceTransport": "NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport",
+  "remoteReadback": "d43f3a71453378be7b32b68e883522f8164f37cb\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+  "runtime": "NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery",
+  "helperText": "from pathlib import Path\nimport sys,subprocess,hashlib,json,datetime,urllib.request,urllib.parse,concurrent.futures,os\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn')\nsha,base,directory,receipt=sys.argv[1:]\ndest=Path(directory);assert not dest.exists();dest.mkdir(parents=True)\ndef git(*args):return subprocess.check_output(['git',*args],cwd=repo)\nchanged=git('diff','--name-status',base,sha).decode().splitlines()\nassert all(row.split('\\t')[0] in {'A','M','D'} for row in changed),changed\npaths=[row.split('\\t')[1] for row in changed if not row.startswith('D\\t')]\nmandatory=['AGENTS.md','docs/development-workflow.md','docs/testing.md','.specify/memory/constitution.md']\npaths=sorted(set(paths+mandatory))\nmeta={}\nfor row in git('ls-tree','-rz','--full-tree',sha).split(b'\\0'):\n if row:\n  m,p=row.split(b'\\t',1);mode,kind,blob=m.decode().split();meta[os.fsdecode(p)]=(mode,kind,blob)\ndef one(path):\n mode,kind,blob=meta[path];assert kind=='blob' and mode in {'100644','100755'}\n url='https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/'+sha+'/'+urllib.parse.quote(path)\n with urllib.request.urlopen(url,timeout=90) as response:b=response.read()\n actual=hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest();assert actual==blob,(path,actual,blob)\n target=dest/path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(b);target.chmod(0o755 if mode=='100755' else 0o644)\n assert target.read_bytes()==b\n return dict(path=path,mode=mode,git_blob=blob,bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),url=url)\nwith concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:files=list(pool.map(one,paths))\nj=dict(kind='COMPLETE_CHANGED_PATH_DELTA_EXACT_GITHUB_RECOVERY',sha=sha,base=base,directory=str(dest),completedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),newEmptyDirectory=True,nameStatus=changed,deletedPaths=[row.split('\\t')[1] for row in changed if row.startswith('D\\t')],fileCount=len(files),files=files,sourceTransport='NEW exact GitHub raw bytes; local Git metadata only for validation, no local content/object transport',remoteReadback=git('ls-remote','origin','refs/heads/1536-wound-b2-cloud-20261012','refs/heads/main').decode(),runtime='NOT_RUN; scoped delta only, with verified retained full sourcebase required for complete recovery',helperText=Path(__file__).read_text())\nPath(receipt).write_text(json.dumps(j,indent=2)+'\\n');print('EXACT_DELTA_RECOVERY_VERIFIED',sha,len(files),'files',len(changed),'changedpaths',receipt)\n"
+}

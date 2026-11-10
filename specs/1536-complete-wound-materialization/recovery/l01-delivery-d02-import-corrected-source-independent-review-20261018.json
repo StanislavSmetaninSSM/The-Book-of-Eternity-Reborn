@@ -1,0 +1,139 @@
+{
+  "kind": "D02_IMPORT_BINDING_AFFECTED_SOURCE_INDEPENDENT_REVIEW",
+  "candidate": "5e2a3c5a612a96080f39302314aa6f3c60528976",
+  "originalFrozenCandidate": "77dabfb227209c625158193aa7dd370c62c8861b",
+  "verdict": "ACCEPT_D02_COMPOSITE_SOURCE_ZERO_ONLY",
+  "controllerSha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6",
+  "bindingsSha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff",
+  "findings": [],
+  "resolution": "Exact16 already-installed WorkloadManifest.targets hashes are appended after the unchanged360inputs. The only controller byte change is ROOT to a fresh unused namespace. All functions/accounting/main/staging and original149pins remain unchanged.",
+  "checks": {
+    "passed": 18,
+    "failed": [],
+    "rows": [
+      {
+        "name": "exact ROOT-only controller inverse",
+        "passed": true
+      },
+      {
+        "name": "all function ASTs unchanged",
+        "passed": true
+      },
+      {
+        "name": "reviewed controller hash",
+        "passed": true
+      },
+      {
+        "name": "reviewed bindings hash",
+        "passed": true
+      },
+      {
+        "name": "exact16 additions after unchanged360",
+        "passed": true
+      },
+      {
+        "name": "all other binding fields identical",
+        "passed": true
+      },
+      {
+        "name": "new unused root and old root retained",
+        "passed": true
+      },
+      {
+        "name": "all16 already-installed files still exact",
+        "passed": true
+      },
+      {
+        "name": "observed129 integration imports now have external coverage",
+        "passed": true
+      },
+      {
+        "name": "strict unknown import refusal unchanged",
+        "passed": true
+      },
+      {
+        "name": "149pins unchanged",
+        "passed": true
+      },
+      {
+        "name": "original failure index/archive unchanged",
+        "passed": true
+      },
+      {
+        "name": "diagnosis preserved l01-delivery-d02-binding-failure-independent-review-20261018.json",
+        "passed": true
+      },
+      {
+        "name": "diagnosis preserved l01-delivery-d02-binding-failure-independent-review-20261018.md",
+        "passed": true
+      },
+      {
+        "name": "current gates closed until new acceptance",
+        "passed": true
+      },
+      {
+        "name": "exact remote/clean GitHub recovery",
+        "passed": true
+      },
+      {
+        "name": "seven changed paths exact Git/clone",
+        "passed": true
+      },
+      {
+        "name": "both HEADs exact clean",
+        "passed": true
+      }
+    ],
+    "nativeActions": 0
+  },
+  "coverage": "The saved first integration preprocessed document has129import paths; after these16additions there are no unbound external paths in that observed set. This is read-only coverage of existing evidence, not a successful corrected execution. Unit property/import evaluation and catalog discovery remain UNRUN.",
+  "zeroAdmission": {
+    "root": "/tmp/l01d02-b796a0e4bf514a62",
+    "status": "ELIGIBLE_AFTER_NEW_SOURCE_ACCEPTANCE_SAVED_AND_RECOVERED",
+    "controlStatus": "SOURCE_ACCEPTED_COMPOSITE_ZERO_ONLY",
+    "allowedOnceModes": [
+      "catalog",
+      "plan",
+      "prepare"
+    ],
+    "catalog": "One fresh corrected catalog phase: exact retained closures/metadata, property and preprocessed-import validation, new ValidateCatalog NoBuild ZERO; one aggregate600s with unchanged cleanup semantics.",
+    "plan": "Separately invoked exact1descriptor/1method/1case PlanOnly/NoBuild after successful catalog and unchanged hashes.",
+    "prepare": "Separately invoked original direct Live/helper compile60s after successful catalog/plan; ZERO fixture targets."
+  },
+  "acceptanceSaveConditions": [
+    "Preserve the current first-failure index/archive and old cd3d root. Do not relabel property/preprocess0/0 as catalog success; original controller2/nativeNone/catalogUNREACHED remains immutable.",
+    "Preserve the former source-review pointer as historical and bind active source candidate/reviewPath/reviewSha256 to this affected acceptance and exact controller/bindings. Save/push/readback/recover before first corrected ZERO.",
+    "New b796 root/phase identities are consumed once; no root reuse, ignored imports, workload resolver disable, installation, restore, rebuild, budget increase or fallback. Any unbound import or native/observer failure still freezes.",
+    "Obtain independent PREP for the fresh original catalog, singleton plan and direct compiled outputs before any synthetic gate. Synthetic0/7 and later EVIDENCE remain separate; STOP before gameplay/crash5."
+  ],
+  "syntheticRelease": "HOLD_PREP_REQUIRED",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "scopeLimits": [
+    "No full manifest/helper/native12/copy4 replay was performed; the affected checks are exact diff/new16 hashes/observed import coverage/recovery only.",
+    "Separate retained integration d53 and unit d3 compilation provenance is unchanged; no fresh build or private binary restoration is claimed.",
+    "L0152/57, original124/137, old66529UNKNOWN and all broader/platform holds remain unchanged."
+  ],
+  "bindings": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+      "bytes": 18311,
+      "sha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/bindings.json",
+      "bytes": 325699,
+      "sha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-binding-failure-independent-review-20261018.json",
+      "bytes": 15110,
+      "sha256": "651f8338d2256a347ad29a370f2448bf1b522eb6c2bc17bc71f982a46fd453ab"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-5e2a3c5a.json",
+      "bytes": 50469,
+      "sha256": "0935ace312d2fa6d425b9e3aaa707ef3339f9c267193bcd5fa84798e938f4a22"
+    }
+  ]
+}

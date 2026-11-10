@@ -1,0 +1,22 @@
+{
+  "source_sha": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "phase": "Pd.3b HS01 corrected TEST-ONLY ordinary-optional/uncovered post-original custody fixture; fresh BOTH/catalog/PlanOnly; ZERO actual, missing-owner causal RED not yet run",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "9d15ef1899974319732d6008ff46b7cacd8c3e9b6ba23dde25bd2c50a0322488"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "431f3fbf148a69b833c8a1c76a232519ce05f0353d5d4677fc126d1556047b87"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "02da7a3ebd79dafa1b9ce15417d6770ea7a0024a18a49d8aeeb4bafc69f0f399"
+    }
+  ]
+}

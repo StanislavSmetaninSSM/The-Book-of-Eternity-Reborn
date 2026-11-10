@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "243.90101927799697s",
+    "/tmp/1536-cloud-tools/dotnet/dotnet",
+    "msbuild",
+    "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+    "-nologo",
+    "-nodeReuse:false",
+    "-getProperty:TargetPath,ProjectAssetsFile,MSBuildProjectExtensionsPath,IsTestProject,TargetFramework,Configuration,AssemblyName"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 128716,
+    "birthTick": 5434427,
+    "parentPid": 128169,
+    "uid": 1000
+  },
+  "durationSeconds": 1.071392965000996,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

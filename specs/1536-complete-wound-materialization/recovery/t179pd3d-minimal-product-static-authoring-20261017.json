@@ -1,0 +1,22 @@
+{
+  "kind": "STATIC_AUTHORING_INVERSE_NOT_NATIVE_TEST",
+  "base": "e9823e84722e903176818ffcea8d39af1f7da394",
+  "wholeAInverseExact": true,
+  "baselineSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+  "adapterSegmentCount": 4,
+  "newPartialCanonicalExact": true,
+  "productionFiles": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 447528,
+      "sha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409"
+    }
+  ],
+  "protectedLateFixtureProvenance": "Root c164 dependency and73d unchanged accepted a4 source continuity; future actual required",
+  "buildTests": "UNRUN"
+}

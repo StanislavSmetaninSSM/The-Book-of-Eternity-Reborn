@@ -1,0 +1,120 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_BUILD_FAILURE_CAUSAL_CHECK",
+  "carrier": "c66d33592622c59261e08c2cb739a61fbf1955a9",
+  "attemptSource": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic1-prep-catalog-frozen-f57baaa8-files-20261018/archive.json",
+    "bytes": 6568,
+    "sha256": "e50b8656e8b82bdf0c7125e63541a803bf6ee8c3d6cf230164dab32a94f7edbf",
+    "rawChains": 8
+  },
+  "recordSha256": "123724fa7b7e934ddb09882a8f511035abfb3216eb0e030117cd14991ca62963",
+  "nativeExit": 1,
+  "actualTestsExecuted": 0,
+  "wallSeconds": 333.9087935660027,
+  "compilerErrors": [
+    "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs(240,9): error CS0246: The type or namespace name 'ILogger<>' could not be found (are you missing a using directive or an assembly reference?) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9b1124a4706b47bdb198afb2444408d6cba2f0b0",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.2032758,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.2096624,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 1.0552159,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 323.4105183,
+        "Completed": false
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:05:25.8205127",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePinsVerified": 101,
+  "productDelta": 23,
+  "sourceFault": "Unqualified ILogger<GameEngine> in Crash.cs lacks using Microsoft.Extensions.Logging; another partial file imports it, but normal using directives do not extend to sibling source files.",
+  "oneLineImportInverseRestoresExactSource": true,
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-c66d3359.json",
+    "bytes": 7670,
+    "sha256": "7e85a752bf5e49fa2d1db971cb7e41047e33af1ff3c33642260546f05a2cca54"
+  },
+  "recoveredPathsVerified": 19,
+  "remoteScope": "Saved parent exact-remote/full GitHub recovery receipt; frozen Git bytes independently compared in both repositories.",
+  "boundaries": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-before-f57baaa8.json",
+      "sha256": "f693a40457a8ecc8745397e36c8bc6aa50ba33cbaf3f6471e4fd4a0498f51de5",
+      "phase": "crash-diagnostic1-catalog-before",
+      "startedUtc": "2026-10-18T16:24:32.063207+00:00",
+      "finishedUtc": "2026-10-18T16:24:32.112581+00:00",
+      "entries": 145,
+      "clean": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-census-crash-diagnostic1-catalog-after-f57baaa8.json",
+      "sha256": "b93cea1e88b8fb75786a49f0b9922f513ca2c22489601bf61d5f0e37e2f3a4d5",
+      "phase": "crash-diagnostic1-catalog-after",
+      "startedUtc": "2026-10-18T16:30:10.927347+00:00",
+      "finishedUtc": "2026-10-18T16:30:10.965777+00:00",
+      "entries": 147,
+      "clean": true
+    }
+  ],
+  "frozenRootsBeforePhase": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-build-failure-diagnostic1-catalog-frozen-separation-f57baaa8.json",
+    "sha256": "5eb20e74269381cff8d7e1fb33db0e1144e74825f342d6113e849d190fe33215",
+    "verifiedFiles": 237,
+    "checkedUtc": "2026-10-18T16:24:31.958059+00:00"
+  },
+  "qualified": 52,
+  "old66529": "UNKNOWN/unavailable unchanged",
+  "findings": [],
+  "scope": "No tests/build/discovery/observer/process or live frozen-root action, no repo writes. Build attempt source is not a successful compiled baseline."
+}

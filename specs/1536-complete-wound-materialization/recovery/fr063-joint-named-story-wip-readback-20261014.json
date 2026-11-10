@@ -1,0 +1,43 @@
+{
+  "owningBase": "95356dc9a1e301d9573783e6df200032be8c9212",
+  "checkpoint": "Unpublished named-story API WIP",
+  "authorTextChecks": {
+    "fresh_applied_physical_proof_before_source": true,
+    "official_original_tuple_complete": true,
+    "original_realm_incarnation_action": true,
+    "actual_current_narrative_location_refs": true,
+    "actual_request_generation_time_row": true,
+    "original_authenticated_text_hash": true,
+    "raw_prefix_preserved": true,
+    "one_exact_suffix_only": true,
+    "duplicate_current_turn_refused": true,
+    "history_inventory_and_unlisted_refused": true,
+    "existing_row_never_append": true,
+    "existing_explicit_trusted_writer_only": true,
+    "exact_readback_before_proof": true,
+    "private_joint_issuer_only": true,
+    "cold_proof_reconstructs_source": true,
+    "no_old_proof_impersonation": true,
+    "no_other_publication_or_claim_reduction": true,
+    "typed_uncertainty_retains_evidence": true,
+    "old_docs_tail_checkbox_exact": true
+  },
+  "authoredPins": {
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "7d43c4cbe084a80779d1fccaeaad68134dd5e458c602f64ca1fc8c14893f6fbe",
+    "specs/1536-complete-wound-materialization/plan.md": "a3901ab9530746fc2ffe9915b13233acc488d3f398e2cc5436bfbb8e7150a391",
+    "specs/1536-complete-wound-materialization/tasks.md": "7b9d73f1ebf73c30e7b289534e9b3f9c7ea2d7448e8b9f10f0bf70175afe2ab5"
+  },
+  "protectedBaseByteEqualPins": {
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Services/StoryService.AcceptedStoryAppend.cs": "6b0769b8d3c1186c973ad112c78f8c28810222533b0b287706644e5251505bf4",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "79017c9ca9dc93247956088510b5f167e470b00746c7084be79df81116a911e1",
+    "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs": "fcb34f05e60d353458ac5485e75d4f62f6d2cd3b5eb5929ed65e81dfd083fb35",
+    "BookOfEternityClient/Core/FileSystemManager.cs": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+    "BookOfEternityClient/Services/CharacteristicsService.cs": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+    "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+    "tests/categories.json": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+  },
+  "projectChecks": "UNRUN",
+  "open": "Actual callers/Bootstrap history suffix/lifecycle/cold/J7/normative/GM synchronization; whole SOURCE and compilation UNRUN."
+}

@@ -1,0 +1,215 @@
+{
+  "source": "8d2689753166d174b95878c13506602ad6e727a7",
+  "actual": "20261009-062459",
+  "result": "12 executed:3 known PASS;9 genuine reached Unknown failures;not PASS",
+  "rows": [
+    {
+      "mode": "initial_generation",
+      "cuts": 1,
+      "journalSha256": "21CA9CBD6C150B92A325CEA7490879AA01B86EB3F1A72A4D127048E8C16EC1FE",
+      "memberCount": 1,
+      "laterLeases": 1,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": null
+    },
+    {
+      "mode": "ready_publication",
+      "cuts": 1,
+      "journalSha256": "A031E68EB2BF6D3E6CE79D3CAB7572E1DCD390887126CBD8B1D42FBB30F8C057",
+      "memberCount": 1,
+      "laterLeases": 1,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": {
+        "SchemaVersion": 1,
+        "DecisionId": "apply_decision_20261009062505786",
+        "ProposalId": "worker_proposal_20260620_0001",
+        "Result": 0,
+        "ScopeCheck": {
+          "Passed": true,
+          "CheckedPaths": [
+            "game_state/world/weather.json"
+          ],
+          "Violations": []
+        },
+        "ValidationCheck": {
+          "Required": true,
+          "Passed": true,
+          "Command": "ValidateGameStateAsync",
+          "IssueCount": 0
+        },
+        "AppliedFiles": [
+          "game_state/world/weather.json"
+        ],
+        "RejectionReasons": [],
+        "DecidedAtUtc": "2026-10-09T06:25:05.7865327+00:00"
+      }
+    },
+    {
+      "mode": "build_diagnostic",
+      "cuts": 1,
+      "journalSha256": "58702BAD28EF34E9F78176EF908BB3D141DAE16D694F47526373100C59FEDD21",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": null
+    },
+    {
+      "mode": "ready_known",
+      "cuts": 0
+    },
+    {
+      "mode": "engine_router_audit",
+      "cuts": 1,
+      "journalSha256": "5C72CD64DF7A6852E550D33151892BD379ADD414E189AA41D772A4D5E749D288",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": null
+    },
+    {
+      "mode": "audit_known",
+      "cuts": 0
+    },
+    {
+      "mode": "ready_diagnostic",
+      "cuts": 1,
+      "journalSha256": "35A5E5303ACFFCD9594C3C8F23EE7CD931A07B36236F6FFCF1AA4EE2534E7154",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": {
+        "SchemaVersion": 1,
+        "DecisionId": "apply_decision_20261009062505860",
+        "ProposalId": "worker_proposal_20260620_0001",
+        "Result": 0,
+        "ScopeCheck": {
+          "Passed": true,
+          "CheckedPaths": [
+            "game_state/world/weather.json"
+          ],
+          "Violations": []
+        },
+        "ValidationCheck": {
+          "Required": true,
+          "Passed": true,
+          "Command": "ValidateGameStateAsync",
+          "IssueCount": 0
+        },
+        "AppliedFiles": [
+          "game_state/world/weather.json"
+        ],
+        "RejectionReasons": [],
+        "DecidedAtUtc": "2026-10-09T06:25:05.8608071+00:00"
+      }
+    },
+    {
+      "mode": "ready_audit",
+      "cuts": 1,
+      "journalSha256": "66DA2CC73E40EAF0EDF583DAAC1EB528982D1A420C38D03E87DF98C9DA82D3CD",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": {
+        "SchemaVersion": 1,
+        "DecisionId": "apply_decision_20261009062505691",
+        "ProposalId": "worker_proposal_20260620_0001",
+        "Result": 0,
+        "ScopeCheck": {
+          "Passed": true,
+          "CheckedPaths": [
+            "game_state/world/weather.json"
+          ],
+          "Violations": []
+        },
+        "ValidationCheck": {
+          "Required": true,
+          "Passed": true,
+          "Command": "ValidateGameStateAsync",
+          "IssueCount": 0
+        },
+        "AppliedFiles": [
+          "game_state/world/weather.json"
+        ],
+        "RejectionReasons": [],
+        "DecidedAtUtc": "2026-10-09T06:25:05.6918248+00:00"
+      }
+    },
+    {
+      "mode": "router_audit",
+      "cuts": 1,
+      "journalSha256": "C084728A7DACA826BD3BDD2C1E74E92664879AF1432C3294811F46D187FFADA8",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": null
+    },
+    {
+      "mode": "apply_audit",
+      "cuts": 1,
+      "journalSha256": "60B1EB5E97C6251212F38141A7FDA115F7408AE1DE0AF815F3274692426409E1",
+      "memberCount": 1,
+      "laterLeases": 0,
+      "outwardFailure": null,
+      "returnedDecision": {
+        "SchemaVersion": 1,
+        "DecisionId": "apply_decision_20261009062505920",
+        "ProposalId": "worker_proposal_20260620_0001",
+        "Result": 0,
+        "ScopeCheck": {
+          "Passed": true,
+          "CheckedPaths": [
+            "game_state/world/weather.json"
+          ],
+          "Violations": []
+        },
+        "ValidationCheck": {
+          "Required": true,
+          "Passed": true,
+          "Command": "ValidateGameStateAsync",
+          "IssueCount": 0
+        },
+        "AppliedFiles": [
+          "game_state/world/weather.json"
+        ],
+        "RejectionReasons": [],
+        "DecidedAtUtc": "2026-10-09T06:25:05.9207471+00:00"
+      },
+      "acceptedBefore": null
+    },
+    {
+      "mode": "ready_success",
+      "cuts": 0
+    },
+    {
+      "mode": "latest_task",
+      "cuts": 1,
+      "journalSha256": "823A64E7944CB7E162B0D7CF172E198D1E88A8638EF2D3D79975D1D54C272E18",
+      "memberCount": 1,
+      "laterLeases": 1,
+      "outwardFailure": null,
+      "returnedDecision": null,
+      "acceptedBefore": null
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-worker-storage-ec10c4a13a4c4caf906f2c00bc3e17db",
+    "/tmp/boe-worker-storage-519ca6180a6544c5bbc7208bba8f2ee4",
+    "/tmp/boe-worker-storage-62020b582c2b4037818b8b77ab611a8f",
+    "/tmp/boe-worker-storage-86ff07bb44df43569df4da97261bbf91",
+    "/tmp/boe-gameengine-turnlifecycle-4e018328313f4e709bb3cc17006c78cc",
+    "/tmp/boe-worker-storage-a858163ad577493fa37f45f45c2545dd",
+    "/tmp/boe-worker-storage-626a7c6ac6634da68522c75392b79db1",
+    "/tmp/boe-worker-storage-e4ecb6c7734740e3a84830e9e67a9d5e",
+    "/tmp/boe-worker-storage-d9806a0688e14db2adf2023bfce467eb",
+    "/tmp/boe-worker-storage-6f543659c4d94813867b5861741f1872",
+    "/tmp/boe-worker-storage-faf9f4f067ae4bb9a3d462e4ff64da92",
+    "/tmp/boe-worker-storage-7277ed1288484701913c79f33b073d55"
+  ]
+}

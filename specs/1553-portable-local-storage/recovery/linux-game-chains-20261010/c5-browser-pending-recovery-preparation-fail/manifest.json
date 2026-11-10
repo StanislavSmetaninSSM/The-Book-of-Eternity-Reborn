@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "426c74b2c8b0cb7e47afc8d655001b89db313c31",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-original-browser-pending-recovery",
+  "Status": "2 preparation FAIL49.1293870s, complete; not recovery/refusal behavioral witness",
+  "Scope": "Actual interrupted publisher created trusted-local-publication-v1 journal, test prerequisite incorrectly expected older file-publication-transactions path",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "1ed297d443dc63294893d8406d6c7f8735d029a83cdc70f80db76561aebf8f09",
+      "RawBytes": 1210
+    },
+    {
+      "Path": "runner/c5-original-browser-pending-recovery-integration-001.trx.gz",
+      "RawSHA256": "b44fa1721f0d5dc0faa006663173282cbaf5b3b4f7d71ecc857b1cdf5b68f964",
+      "RawBytes": 15574
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f0ed3fa9324d3422be4f64e3398fe74e4dec5e6512a3ffd09836c9c41ab3faf7",
+      "RawBytes": 1483
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "7e5164838eb2f9b5e699bd965f1ab0dbeef29dd2dff5633747db5a729bdd0781",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "dd56d00edbf87c91045179073ca4d95ab42513988b41bb8f225f3e60d557270a",
+      "RawBytes": 1667898
+    }
+  ]
+}

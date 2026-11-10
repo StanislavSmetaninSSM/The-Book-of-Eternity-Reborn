@@ -1,0 +1,87 @@
+{
+  "base": "4e44e2e641e47a24523d19a92ad38cc34eeca032",
+  "scope": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkboxes_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:tail_exact": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkboxes_exact": true,
+    "exact_twelve_rows": true,
+    "previous_eight_rows_exact_order": true,
+    "one_theory_no_fact_calls": true,
+    "missing_and_malformed_fixed_manifest": true,
+    "missing_and_malformed_fixed_input": true,
+    "actual_unparseable_json": true,
+    "after_tamper_absence_or_bytes_expected": true,
+    "actual_absence_or_bytes_lookup": true,
+    "source_classification_explicitly_unmeasured": true,
+    "no_after_tamper_classifier": true,
+    "positive_strict_body_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs:base_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:base_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:base_exact": true,
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs:base_exact": true,
+    "tests/categories.json:base_exact": true,
+    "readonly_whitespace": true
+  },
+  "checkCount": 22,
+  "allReportedObservationsPassed": true,
+  "pins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+      "bytes": 7553
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "00270c057e5b35099a254061d3d41b5f09761e1350ead89473c41e68f645b830",
+      "bytes": 27796
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "ef60267edb63cba31536b8c6f929ee7550724afc60fdf3d2c5b85393ed723469",
+      "bytes": 1541260
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "288d78bacc0521f4e77ede23d904f7f5149ec365ffebd72908810cad91fa2d7e",
+      "bytes": 1041876
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs": {
+      "sha256": "a42694a2c2428af2f067f476dea6018389f0a9a8ea76dc9dac513287c28d1e9b",
+      "bytes": 5039
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": {
+      "sha256": "29c6498b6b96e105c9afaf65fe2adb779c9b351cb8793cb0f9ad18f5e313462e",
+      "bytes": 294837
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": {
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "5642dc3aaab639961e12ca35e716eec1e28a40272610efd63010ade676f9c784",
+      "bytes": 48341
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "sourceInventory": {
+    "methods": 6,
+    "cases": 17,
+    "theoryRows": 12,
+    "officialDiscovery": "UNRUN"
+  },
+  "sourceFrameExpectation": "source trace only; actual caller classification not measured",
+  "compilerApiFixtureValidity": "UNCHECKED",
+  "projectExecution": "UNRUN",
+  "whitespaceOutput": ""
+}

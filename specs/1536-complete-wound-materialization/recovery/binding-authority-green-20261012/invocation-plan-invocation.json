@@ -1,0 +1,31 @@
+{
+  "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "compileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "runtimeSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-authority-green.json",
+    "-PlanOnly"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T04:45:16.769997+00:00",
+  "scope": "fresh selected integration+unit build and exact plan; zero actual tests",
+  "expected": {
+    "methods": 7,
+    "cases": 23,
+    "descriptors": 3,
+    "actualTests": 0
+  },
+  "budgetsMinutes": {
+    "authority": 5,
+    "documentation": 2,
+    "overallDefault": 10
+  },
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T04:47:26.129420+00:00"
+}

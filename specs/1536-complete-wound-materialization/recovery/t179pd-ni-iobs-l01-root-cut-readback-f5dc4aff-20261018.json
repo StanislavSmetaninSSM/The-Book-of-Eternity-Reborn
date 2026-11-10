@@ -1,0 +1,64 @@
+{
+  "kind": "ROOT_NAMED_ORIGINAL_ACTUAL_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T07:30:29.637112+00:00",
+  "mode": "cut3",
+  "actualSource": "f5dc4aff3b2847d1d3a4e4e76d9edc4b9f7d9f91",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 0,
+  "seconds": 139.49407715800044,
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 3,
+    "CompletedCases": 3,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "95da00a9-d688-ff19-78cb-573ade75e3cc",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion(observe: True)",
+      "outcome": "Passed",
+      "duration": "00:00:56.5785611"
+    },
+    {
+      "testId": "79f4f64e-72c1-fdf3-7a46-94a2c49917b8",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion(observe: False)",
+      "outcome": "Passed",
+      "duration": "00:01:01.0018246"
+    },
+    {
+      "testId": "f214df6a-007f-899d-8352-78acec41fa7f",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner",
+      "outcome": "Passed",
+      "duration": "00:00:13.5597775"
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-cut-current/record.json",
+    "sha256": "a91a001d652ab3f6a72d3b9eefbbcc07e3364763b384c28b21eb8d8f509eafcd"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-cut-archive-first-f5dc4aff-20261018/archive.json",
+    "sha256": "f2fc02278a6c6181980464dd805722ae4a86c79029dd2656b3b504c6aaeedb2a",
+    "rawChains": 12
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [
+    "/tmp/boe-gameengine-turnlifecycle-0e2a6f30e15743a7b09a2d4b48c51bc2",
+    "/tmp/boe-gameengine-turnlifecycle-d2c2aa232e344d72964be6b2ba72c7b7",
+    "/tmp/boe-gameengine-turnlifecycle-f788bceed44d47a3b86502b7615b239b"
+  ],
+  "uniqueStdoutPayloads": 5,
+  "sourceHeadClean": true,
+  "limits": "Exact original observed native0/raw cases only. Independent connected EVIDENCE still required; no product/fullNI/HOT qualification or automatic next run."
+}

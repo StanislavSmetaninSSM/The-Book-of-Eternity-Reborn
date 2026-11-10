@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "portable-progression-outcome-causal-linux",
+    "portable-progression-outcome-neighbor"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "2a372661d3da473d5d7231ef3ebe42d52a35bb52",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-progression-outcome-causal-linux",
+      "Seconds": 3.4387939,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-progression-outcome-neighbor",
+      "Seconds": 3.2147088,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.061745,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0355264,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0825501,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0030342,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:00:10.5218797",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 5,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 5,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

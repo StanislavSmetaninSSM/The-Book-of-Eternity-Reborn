@@ -1,0 +1,260 @@
+{
+  "kind": "G02_C0_AFFECTED_SOURCE_READONLY_CHECKS",
+  "reviewedSource": "c0a05c8eef5f4de73fb03272bb1855090eaf60ab",
+  "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
+  "sourcePinDigest": "47ae17bb8015235f3120aaf456d2004734c65589f7b972641625949651e1402c",
+  "controllerSha256": "5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43",
+  "bindingsSha256": "6400851f2d25b0437d9219a64942f5600924a8a25cdd7f08cb62bb9ee997821a",
+  "checks": [
+    {
+      "name": "exact_saved_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_digest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "170_exact_git_pins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "170_exact_restore_pins",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "15_changed_feature_only_paths",
+      "passed": true,
+      "detail": [
+        "specs/1536-complete-wound-materialization/design/l01-corrective-g02-plan-20261019.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/check_role.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/control.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/recover.py",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/role-green.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/role-red.json",
+        "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/source-packet.json",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ]
+    },
+    {
+      "name": "changed_path_restore_matches",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "only_three_shared_g01_deltas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "three_g01_deltas_exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "old_g01_packet_control_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no_production_csharp_catalog_selection_changes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_current_gates_HOLD",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "historical_outcome_scope_retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "395_inputs_exact_two_declared_script_deltas_and_metadata_unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained_g01_record_bindings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained_record_bytes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained_s01_oracle_images",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "distinct_named_roles",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_role_inert_seven_cases",
+      "passed": true,
+      "detail": [
+        {
+          "name": "real",
+          "passed": true
+        },
+        {
+          "name": "synthetic",
+          "passed": true
+        },
+        {
+          "name": "missing",
+          "passed": true
+        },
+        {
+          "name": "string",
+          "passed": true
+        },
+        {
+          "name": "wrong-contract",
+          "passed": true
+        },
+        {
+          "name": "synthetic-real-argv",
+          "passed": true
+        },
+        {
+          "name": "real-synthetic-argv",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "common_guard_before_synthetic_branch",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "real_controller_explicit_false",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "synthetic_positive_ready_not_exit_only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "existing_case_and_budgets_retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "reuse_separate_closure_and_graph_guards",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fresh_properties_imports_catalog_plan_guards",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "finding_S01_identity_can_precede_tick_and_fallback_refuses",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "finding_S02_native_record_after_fallible_observers",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "finding_S03_no_positive_synthetic_evidence_in_actual",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 27,
+  "failed": 0,
+  "sourceReadSet": {
+    "specs/1536-complete-wound-materialization/design/l01-corrective-g02-plan-20261019.md": {
+      "bytes": 7210,
+      "sha256": "b37996f0d3f9c2c3edbdb11ef72a6c32480cfda2d84817cb92b377fa27d0d5b7"
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "bytes": 2539002,
+      "sha256": "c4a34dc62832843c3feb31dee0cf40b40a5393317df3c0087fcea91dbb0c8493"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1": {
+      "bytes": 10338,
+      "sha256": "bafc8cc754f81a54f67e495d7b21d4c6db29ea1f213372b44424e4c9b7e3b406"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/phase.py": {
+      "bytes": 25624,
+      "sha256": "5ef95a9c293a4d598880968881902f8f310d1a9ff1388e36e3d0982e0d6f8a43"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py": {
+      "bytes": 17343,
+      "sha256": "fb3e123becd6535b0e96fe23af982e6f30af07e0bec99bb78e2290e2a07fd240"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs": {
+      "bytes": 11738,
+      "sha256": "f0e8142f824c52ec81432d2eafe4fde1d6b407d4b95a4844773a10e943f483ee"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/bindings.json": {
+      "bytes": 216029,
+      "sha256": "6400851f2d25b0437d9219a64942f5600924a8a25cdd7f08cb62bb9ee997821a"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/check_role.py": {
+      "bytes": 2004,
+      "sha256": "72576e333fb7ef6d4b5ca8ddbfb409fd9f7a4c6b879a193d1cc12df236b836eb"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/control.json": {
+      "bytes": 757,
+      "sha256": "4998170fe58e3f1a5bfad83efa52cfa706e8aad82e2d7d60bc9fd11cb39ac452"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/recover.py": {
+      "bytes": 4451,
+      "sha256": "7da42329466d5d4fa3afbfc2a637834478cf87a0d4d8fa84ff2ab6cf8b78a65a"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/role-green.json": {
+      "bytes": 558,
+      "sha256": "e80e9b661d8141ddad45388666ba3a943ad4899771c2f1a0c418c53dc96d44df"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/role-red.json": {
+      "bytes": 266,
+      "sha256": "7e5cbf51d8235e192a1feb64bbf307a55c37608e9812d768eaf231820bedc475"
+    },
+    "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/source-packet.json": {
+      "bytes": 40205,
+      "sha256": "421fa42d352fae536939c28c3fdee2295195175230df34c383670dda66c46720"
+    },
+    "specs/1536-complete-wound-materialization/spec.md": {
+      "bytes": 248264,
+      "sha256": "4ba1eebb9fb8a406b4f642535b865e0cb38086e13ea39c47e3a3fc8be17656fe"
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "bytes": 1619100,
+      "sha256": "0785b1919ef8957edcd3f3367ad5fb2321b353cbc9c3ca0b18a47817adf3ab03"
+    }
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-c0a05c8e.json",
+    "sha256": "bb9cc5520877a71c7c4472ed5ad02f5484e139ca20b998ad5088dedf052ea87b"
+  },
+  "executionScope": "Read-only Git/files/hash and exact request_role AST with inert dictionaries only. No C#/SDK/native child/API/procfs/runtime actions. Finding checks confirm presence of defects, not acceptance.",
+  "scopeUpdate": "Later parent/user steering requires actual synthetic WriteDump plus readable/decodeable S01 frames; reviewed API0 proposal is superseded and cannot admit execution."
+}

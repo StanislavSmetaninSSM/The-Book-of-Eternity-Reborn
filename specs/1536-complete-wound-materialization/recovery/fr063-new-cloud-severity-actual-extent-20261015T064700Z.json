@@ -1,0 +1,27 @@
+[
+  {
+    "nonzeroProgression": false,
+    "Failure": null,
+    "ObserverFailure": null,
+    "ActualTurn": 42,
+    "reportRemovals": []
+  },
+  {
+    "nonzeroProgression": true,
+    "Failure": null,
+    "ObserverFailure": null,
+    "ActualTurn": 42,
+    "reportRemovals": [
+      {
+        "role": "original_baseline_restore",
+        "transactionId": "edc4b787fa9049e2844d16a60e3e7b63",
+        "members": 8
+      },
+      {
+        "role": "progression_consumption",
+        "transactionId": "17b239d80e5144af9f3d5d81531436ed",
+        "members": 3
+      }
+    ]
+  }
+]

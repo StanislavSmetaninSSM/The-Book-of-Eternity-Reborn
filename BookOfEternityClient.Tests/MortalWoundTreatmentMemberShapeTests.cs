@@ -669,7 +669,7 @@ public sealed class MortalWoundTreatmentMemberShapeTests
     {
         ["diagnosisPathId"] = "examine_setting_specific", ["displayName"] = "Сопоставить необычные признаки.",
         ["visibility"] = "hidden", ["requiresKnownFacts"] = new JsonArray("route:external_z", "complication:external_a"),
-        ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+        ["requirements"] = new JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray("complication:revealed_z", "route:revealed_a"), ["failurePolicy"] = "no_reveal"
     };
 

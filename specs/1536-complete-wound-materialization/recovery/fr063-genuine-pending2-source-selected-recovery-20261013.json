@@ -1,0 +1,11 @@
+{
+  "checkpoint": "3ef3c2777f140818c08013d7c623051b847b7524",
+  "remoteSha": "3ef3c2777f140818c08013d7c623051b847b7524",
+  "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+  "selectedRecoveryExecution": "UNRUN",
+  "materializedTrackedFiles": 2008,
+  "allMaterializedBytesAndGitBlobsMatch": true,
+  "fullConnectedChangedPathsRecovered": 1469,
+  "consumerProduction": "pending2 source WIP published, SOURCE pending; all new checks UNRUN; ordinary13/APInegative5 retainedaccepted; liveowner/newroot/UI OPEN",
+  "verifiedUtc": "2026-10-13T22:05:06.330755+00:00"
+}

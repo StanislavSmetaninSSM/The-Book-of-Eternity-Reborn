@@ -1,0 +1,121 @@
+{
+  "runtimeSource": "700757bb76e2f9f1215864f9171d102eb472ddf5",
+  "acceptedStaticSourceGate": "SOURCE_FIXTURE_SELECTION_ACCEPTED actual retained AstraXHigh700757bb",
+  "compileSource": "700757bb76e2f9f1215864f9171d102eb472ddf5",
+  "run": "20261012-190724-535-347129-3e5b568796d141a7a2eaf1179c31f4e1-categories",
+  "classification": "FIRST_FRESH_PREPARATION_COMPILE_BLOCKER_NOT_RUNTIME_NOT_CONSUMER_RED",
+  "exitCode": 1,
+  "wallTime": "00:00:50.3886469",
+  "buildIntegrationSeconds": 50.1246094,
+  "buildIntegrationComplete": false,
+  "compilerWarnings": 3,
+  "compilerErrors": 1,
+  "exactCompilerDiagnosticRepeatedInNativePresentation": [
+    "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs(1616,25): error CS8752: The type 'CoordinatedStateWriteHelper.PlannedWrite[]' may not be used as the target type of new() [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]",
+    "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs(1616,25): error CS8752: The type 'CoordinatedStateWriteHelper.PlannedWrite[]' may not be used as the target type of new() [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/BookOfEternityClient.csproj]"
+  ],
+  "actualNativeFiles": [
+    "dotnet-test.log",
+    "summary.json"
+  ],
+  "nativePlanExists": false,
+  "separateNativeBuildLogExists": false,
+  "nativeTRXCount": 0,
+  "expectedMethods": 18,
+  "expectedCases": 26,
+  "expectedDescriptors": 8,
+  "actualPlannedDescriptors": 0,
+  "actualPlannedCases": 0,
+  "completedDescriptors": 0,
+  "executed": 0,
+  "passed": 0,
+  "failed": 0,
+  "complete": false,
+  "timedOut": false,
+  "duplicateTestIDs": 0,
+  "allSourcePinsPreAndPostMatched": 93,
+  "metadataEditedBeforePostReadback": false,
+  "freshSelectedBinaryProof": "UNREACHED_NOT_FRESH",
+  "unitBuildDiscoveryCatalogActual": "UNRUN",
+  "runnerOwnedTreeCleanupSucceeded": true,
+  "runnerRuntimeCleanupSucceeded": true,
+  "strictFixtureCleanupReceipts": 0,
+  "noApplicationTestRootClaims": true,
+  "currentConsumerActualInvocations": 2,
+  "currentConsumerExecuted": 2,
+  "currentConsumerPassed": 0,
+  "currentConsumerFailed": 2,
+  "producerQualification": "unchanged1b23executed22PASS1FAIL/22uniquePASS",
+  "verifiedUtc": "2026-10-12T19:11:07.034700+00:00",
+  "scope": "First accepted7007 fresh selected preparation failed compilation before discovery or any tests; no retry yet. Native missing plan/build log/TRX preserved honestly.",
+  "staticSourceReview": "ACCEPTED actual retained AstraXHigh700757bb",
+  "evidenceReview": "PENDING",
+  "actual": "UNRUN",
+  "catalog": "UNRUN700/11532 staticonly",
+  "originalCausalFactSHA256": "ce955dcb177fd609c240cfe0705a45b5cb792cf4887ba6b6832494d72d543e6f",
+  "artifacts": [
+    {
+      "path": "preparation-dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-190724-535-347129-3e5b568796d141a7a2eaf1179c31f4e1-categories/dotnet-test.log",
+      "originalBytes": 5664,
+      "originalSHA256": "d1637979e98c728d7c537ae34a0f849b0d9e1e19c562fe0aea85f0cf00d0e7ee",
+      "storedBytes": 1424,
+      "storedSHA256": "5f0d2f0f4122e4df0ca88d660244c3e6c0dd62ea8fe0f83c81f87fa8b6c1b8a3",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-190724-535-347129-3e5b568796d141a7a2eaf1179c31f4e1-categories/summary.json",
+      "originalBytes": 6613,
+      "originalSHA256": "e13e7471fbe922c27a185180d47d8688835f6c3f0ef1b2ef4a76f7f1a9926733",
+      "storedBytes": 2390,
+      "storedSHA256": "a9a2e7200998c5fa1b04f20761b98923281a3d6c334037fa4a330b8c0a132611",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-opportunity-projection-20261012/preparation-invocation-prewritten.json",
+      "originalBytes": 682,
+      "originalSHA256": "0159532d9f5ded49ccfca7399e908f3cd78b931979ffcd465a88792289ae0ba4",
+      "storedBytes": 452,
+      "storedSHA256": "c6585d86fb190bf6ae1a4ba09959f85f59a71b1d50fa56e79bde033dc4104519",
+      "compression": "gzip"
+    },
+    {
+      "path": "candidate-7007-source-pins.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-opportunity-projection-20261012/candidate-7007-source-pins.json",
+      "originalBytes": 19032,
+      "originalSHA256": "571d0aefd268c778cb6ef1829778585feabe3a1512312a6c91184b7de332cb6c",
+      "storedBytes": 5970,
+      "storedSHA256": "63459f9022970d255f54b96f7ec0a63b721a4b269a93a112d3958d3321e6a58d",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-opportunity-projection-20261012/preparation-console.log",
+      "originalBytes": 1002,
+      "originalSHA256": "350cbfab9894ac8cbfa7eb489d44343ffdb53057239fdf6e927840268f4b7001",
+      "storedBytes": 483,
+      "storedSHA256": "d5469d310a442a58cbf272b173ca49f105e46ce1dfe252dd5fa7c0052fe910c1",
+      "compression": "gzip"
+    },
+    {
+      "path": "compile-diagnostic-full.txt.gz",
+      "originalPath": "/tmp/1536-qte-physical-opportunity-projection-20261012/compile-diagnostic-full.txt",
+      "originalBytes": 3522,
+      "originalSHA256": "f2d4eb3383dc6756d1cd9b1bc0195a8368d847636791fb1933ee7bf7cc8e4a50",
+      "storedBytes": 782,
+      "storedSHA256": "3e7492f2b7a20044809dc91cec2485ed418ae6a21d93123990bc598401ba9b9e",
+      "compression": "gzip"
+    },
+    {
+      "path": "preparation-first-blocker-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-opportunity-projection-20261012/preparation-first-blocker-readback.json",
+      "originalBytes": 2450,
+      "originalSHA256": "cffdfc529e4019870cb805c248391e4f5666b9bed4deccd18250f18b9feaa4f1",
+      "storedBytes": 1072,
+      "storedSHA256": "bf548b2be78989ed30d6c8ba47450ab7d844b7b808da845689e4e2d304305ad9",
+      "compression": "gzip"
+    }
+  ]
+}

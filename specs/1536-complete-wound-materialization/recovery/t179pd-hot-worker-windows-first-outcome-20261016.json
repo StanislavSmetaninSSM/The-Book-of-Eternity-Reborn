@@ -1,0 +1,85 @@
+{
+  "source": "53a38ff8d6e18e441e4d6f53a0738bc6bccc64b6",
+  "runId": 38978917195,
+  "observations": [
+    {
+      "label": "run",
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/38978917195"
+      ],
+      "startedUtc": "2026-10-16T23:09:09.951398+00:00",
+      "endedUtc": "2026-10-16T23:09:10.482447+00:00",
+      "nativeExit": 0,
+      "stdoutSha256": "ccfc66e12dc561ec6eca4aac4a97384332324dca92580ecb851a106f24f3a69b",
+      "stdoutBytes": 15450,
+      "stderrRedacted": ""
+    },
+    {
+      "label": "jobs",
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/38978917195/jobs"
+      ],
+      "startedUtc": "2026-10-16T23:09:09.951839+00:00",
+      "endedUtc": "2026-10-16T23:09:10.572686+00:00",
+      "nativeExit": 0,
+      "stdoutSha256": "8d0d82571aab9a42411e6f93b1d6c74da698bc99fd1b60b0c93e94a9e8cc8278",
+      "stdoutBytes": 2523,
+      "stderrRedacted": ""
+    },
+    {
+      "label": "artifacts",
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/38978917195/artifacts"
+      ],
+      "startedUtc": "2026-10-16T23:09:09.952222+00:00",
+      "endedUtc": "2026-10-16T23:09:10.417239+00:00",
+      "nativeExit": 0,
+      "stdoutSha256": "de822f372e9145075d41501e24d24b847fa7630fa60e7ddac27591698bd9e0f5",
+      "stdoutBytes": 847,
+      "stderrRedacted": ""
+    },
+    {
+      "label": "artifact-zip",
+      "argv": [
+        "gh",
+        "api",
+        "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/artifacts/12080975497/zip"
+      ],
+      "startedUtc": "2026-10-16T23:09:10.573727+00:00",
+      "endedUtc": "2026-10-16T23:09:11.065068+00:00",
+      "nativeExit": 1,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutBytes": 0,
+      "stderrRedacted": "Get \"https://productionresultssa4.blob.core.windows.net/actions-results/98b12d1e-92f1-8fb3-b455-effc81f35498/workflow-job-run-b5ac3893-6ede-59fa-8bc8-ed1241b0e126/artifacts/19b6f57e070ca7b02254a5051661c0a229afa4fa309497405eba784edbbd9615.zip?[REDACTED] Forbidden\n"
+    }
+  ],
+  "scope": "Official read-only GitHub metadata and first artifact retrieval only; no workflow/settings mutation, dispatch, retry, runtime, or denied-route workaround.",
+  "workflowConclusion": "success",
+  "matchingArtifactCount": 1,
+  "artifact": {
+    "id": 12080975497,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MDk3NTQ5Nw==",
+    "name": "fr063-hot-worker-windows-53a38ff8d6e18e441e4d6f53a0738bc6bccc64b6-1",
+    "size_in_bytes": 811881,
+    "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/artifacts/12080975497",
+    "archive_download_url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/artifacts/12080975497/zip",
+    "expired": false,
+    "digest": "sha256:fa0992a149fc0cc3dc8af767b9ca54e6e26658ca67813aca81e5c87dac82f292",
+    "created_at": "2026-10-16T23:08:24Z",
+    "updated_at": "2026-10-16T23:08:24Z",
+    "expires_at": "2026-11-15T23:08:12Z",
+    "workflow_run": {
+      "id": 38978917195,
+      "repository_id": 1183140277,
+      "head_repository_id": 1183140277,
+      "head_branch": "1536-wound-b2-cloud-20261012",
+      "head_sha": "53a38ff8d6e18e441e4d6f53a0738bc6bccc64b6"
+    }
+  }
+}

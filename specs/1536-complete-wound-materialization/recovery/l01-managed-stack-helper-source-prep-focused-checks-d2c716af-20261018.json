@@ -1,0 +1,406 @@
+{
+  "kind": "L01_S01_AFFECTED_SOURCE_PREP_FOCUSED_STATIC_READBACK",
+  "candidate": "d2c716af0946484e1440783d2ad0425b8e469b07",
+  "checks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn clean",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore HEAD",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore clean",
+      "passed": true
+    },
+    {
+      "check": "recovery exact/remote/independent",
+      "passed": true
+    },
+    {
+      "check": "11 source pins",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "pin specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "explicit exact two exceptions",
+      "passed": true
+    },
+    {
+      "check": "binding path/hash",
+      "passed": true
+    },
+    {
+      "check": "same originalrecord",
+      "passed": true
+    },
+    {
+      "check": "original bytes specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "original bytes specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "prepared output L01Synthetic.dll",
+      "passed": true
+    },
+    {
+      "check": "prepared output L01Synthetic.pdb",
+      "passed": true
+    },
+    {
+      "check": "prepared output L01Synthetic.runtimeconfig.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output compile.rsp",
+      "passed": true
+    },
+    {
+      "check": "prepared output compile.stderr",
+      "passed": true
+    },
+    {
+      "check": "prepared output compile.stdout",
+      "passed": true
+    },
+    {
+      "check": "prepared output compiler-record.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output decoder-proof.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output metadata-manifest.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output metadata-record.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output metadata.stderr",
+      "passed": true
+    },
+    {
+      "check": "prepared output metadata.stdout",
+      "passed": true
+    },
+    {
+      "check": "no native reprepare",
+      "passed": true
+    },
+    {
+      "check": "one-shot unrun gate",
+      "passed": true
+    },
+    {
+      "check": "unchanged compiled Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "PS unchanged after8a",
+      "passed": true
+    },
+    {
+      "check": "proof actualsource bindings",
+      "passed": true
+    },
+    {
+      "check": "fakeproof counts8/16/10/8",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'stdin', 'nativeExit': 0, 'closeFails': False, 'controllerExit': 0, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'stdin', 'nativeExit': 0, 'closeFails': True, 'controllerExit': 2, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'stdin', 'nativeExit': 7, 'closeFails': False, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'stdin', 'nativeExit': 7, 'closeFails': True, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'target_fd', 'nativeExit': 0, 'closeFails': False, 'controllerExit': 0, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'target_fd', 'nativeExit': 0, 'closeFails': True, 'controllerExit': 2, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'target_fd', 'nativeExit': 7, 'closeFails': False, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'target_fd', 'nativeExit': 7, 'closeFails': True, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'drain', 'nativeExit': 0, 'closeFails': False, 'controllerExit': 0, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'drain', 'nativeExit': 0, 'closeFails': True, 'controllerExit': 2, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'drain', 'nativeExit': 7, 'closeFails': False, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'drain', 'nativeExit': 7, 'closeFails': True, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'subprocess_fd', 'nativeExit': 0, 'closeFails': False, 'controllerExit': 0, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'subprocess_fd', 'nativeExit': 0, 'closeFails': True, 'controllerExit': 2, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'subprocess_fd', 'nativeExit': 7, 'closeFails': False, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "close {'site': 'subprocess_fd', 'nativeExit': 7, 'closeFails': True, 'controllerExit': 7, 'recordPersisted': True}",
+      "passed": true
+    },
+    {
+      "check": "parser truncated_after_entry0",
+      "passed": true
+    },
+    {
+      "check": "parser empty0",
+      "passed": true
+    },
+    {
+      "check": "parser missing0",
+      "passed": true
+    },
+    {
+      "check": "parser unreached0",
+      "passed": true
+    },
+    {
+      "check": "parser returned0",
+      "passed": true
+    },
+    {
+      "check": "parser truncated_after_entry7",
+      "passed": true
+    },
+    {
+      "check": "parser empty7",
+      "passed": true
+    },
+    {
+      "check": "parser missing7",
+      "passed": true
+    },
+    {
+      "check": "parser unreached7",
+      "passed": true
+    },
+    {
+      "check": "parser returned7",
+      "passed": true
+    },
+    {
+      "check": "hold preserved json",
+      "passed": true
+    },
+    {
+      "check": "hold preserved md",
+      "passed": true
+    },
+    {
+      "check": "all code/catalog/prod/history unchanged from39",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function decode",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function decoder_proof",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function environment",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function identity",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function open_owned",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function terminate",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function children",
+      "passed": true
+    },
+    {
+      "check": "unchanged semantic function collector_metadata",
+      "passed": true
+    }
+  ],
+  "findings": [],
+  "receiptSha256": "669da4d41d099fad2ee8db739abe7c27041808307a2a71ae810b969b131b9633",
+  "originalArchiveSha256": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c",
+  "sourcePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "bytes": 4357,
+      "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "bytes": 2534,
+      "sha256": "40a43554dc4872cf55d750b91704e7d773301ef911c038753749d57cbc4c9a6b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "bytes": 6695,
+      "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "bytes": 3028,
+      "sha256": "034d7e56ee5fa48a6c128dd01970aaa016906051a367ec2fad031385b364c0d9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "bytes": 4971,
+      "sha256": "4484ad592dff8924f303b91ca21b5b0156a275ad80138bc22274f28adc0c075f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 24445,
+      "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "bytes": 5967,
+      "sha256": "93feceddb97740bb9b896fa28d0119d6f0f70420e16dbba260e1bb8356101b34"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+    }
+  ],
+  "acceptedAffectedPreparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+    "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec",
+    "sourcePinExceptions": [
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 4816,
+          "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 6695,
+          "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+        }
+      },
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 21437,
+          "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 24445,
+          "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+        }
+      }
+    ]
+  },
+  "originalPreparationReviewedAt": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "reviewMode": "Read-only files/Git/AST; did not execute helpers or fake proof scripts."
+}

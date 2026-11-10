@@ -1,0 +1,22 @@
+{
+  "base": "456fd0e853a981e1c30485669f0c14ebafd0bda0",
+  "authority": "existing user-approved FR063 progression implementation; independently confirmed Important capture-contract defect; ROOT bounded source-only release",
+  "evidenceReport": "fr063-corrected-map-common-independent-evidence-causal-review-456fd0e8-20261015T022931Z-f29e791a.md",
+  "reportSHA256": "e23e69ee5918c71fda82cdbf5b43ab662936ae2e852252dea3b62b376ed8fd99",
+  "readbackSHA256": "d7010ec4b625386e81e4c32e69d337f64783693bd0703277930ae3a1c671e497",
+  "confirmedDefect": "CaptureAssemblyInput removes required sole outcome while retaining joint authority",
+  "sourceOnlyScope": "joint-only retention of SAME prevalidated outcome reference; preserve nonjoint empty branch and both discarded identity factories",
+  "preserve": [
+    "strict full union/context agreement",
+    "original/private fingerprints and source/G/frame/beforeimages/claim/reservation",
+    "single Reduce and existing Lazy assembly of computed results",
+    "single Take/readback/settlement and all strict Late2 oracles",
+    "existing joint pending rejection; no new replay or issuer support"
+  ],
+  "nativeUnknown": "Completed versus Awaiting capture callsite",
+  "author": "same retained sole /root/t070_sol_implementation",
+  "reviewer": "same retained /root/t070_exact_design_review",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "execution": "HELD corrected SOURCE/FIXTURE/SELECTION, saved recovery and fresh prerequisites/pins; only Late2 first corrected outcome after gates; no checkpoint5 repeat/later12 release",
+  "configurationActual": "UNAVAILABLE telemetry; no new agent/override/environment"
+}

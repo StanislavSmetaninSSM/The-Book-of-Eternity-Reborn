@@ -1,0 +1,22 @@
+{
+  "source_sha": "3d262e0303169f2cefb17384e898967e85290e26",
+  "phase": "Actual NPC initial carrier baseline correction fresh BOTH; zero actuals",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "47f080d6b258723dd3101a3dc5e85e8afcd3c6922e155ce6a02162b9bd4a4e2b"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "e8e8982136d00e639f2465c0025e2e8a703b441cd647960f83629e0efe56680a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "47f080d6b258723dd3101a3dc5e85e8afcd3c6922e155ce6a02162b9bd4a4e2b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "401b74debf5885c7d2b31e41623e183853374f5db3de892aeac3d094a52db58d"
+    }
+  ]
+}

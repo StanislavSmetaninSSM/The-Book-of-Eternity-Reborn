@@ -1,0 +1,66 @@
+{
+  "publication": {
+    "base": "9f4bbff5c4746eabf8329ac2ee2b1989556b9828",
+    "checkpoint": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+    "actualRemoteSHA": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+    "primaryClean": true,
+    "publishedPaths": [
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-correction-source-report-9f4bbff5-20261014.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-9f4bbff5-20261014-focused-readback.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-whole-independent-source-fixture-selection-review-9f4bbff5-20261014T222456Z-a2b9dac3.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-whole-independent-source-readback-9f4bbff5-20261014T222456Z-a2b9dac3.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-whole-source-fixture-selection-bundle-9f4bbff5-20261014T220649Z-b5830f33.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-whole-gate-root-readonly-diagnostic-20261014T221836Z-7fcbaf2c.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v2-20261014T222648Z-6e4e8db6.py.txt",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v2-source-readback-20261014T222648Z-6e4e8db6.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v3-20261014T223239Z-4c8f3782.py.txt",
+      "specs/1536-complete-wound-materialization/recovery/fr063-bounded-root-runner-v3-source-readback-20261014T223239Z-4c8f3782.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fixture-f1-f3-coherent-correction-root-wip-20261014.json"
+    ],
+    "publishedBytesMatch": true,
+    "protectedPathsExact": 506,
+    "source": "Coherent F1-F3 fixture-only correction SOURCE WIP; whole9f SOURCE staticACCEPTED/SELECTIONdefinitionsACCEPTED/FIXTUREBLOCKED; correctedfixture and ROOTadapter focusedreviewPENDING; allprojectUNRUN",
+    "allProjectChecks": "UNRUN",
+    "utc": "2026-10-14T22:33:22.886928+00:00"
+  },
+  "recovery": {
+    "checkpoint": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+    "remoteSha": "ff749ba1e55adbc2ee2b625d2f45ba7153457913",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2421,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1892,
+    "consumerProduction": "F1-F3 fixture-only correction WIP saved; whole9f SOURCE staticallyACCEPTED/SELECTIONdefinitionsACCEPTED; focusedfixture/adapterclosurePENDING; allprojectUNRUN",
+    "verifiedUtc": "2026-10-14T22:36:32.470715+00:00"
+  },
+  "publicationTrace": [
+    "6666edmanifestexit0",
+    "9819c8launchsession43880",
+    "f45636nativeexit0",
+    "4174bfactualreadback/clean"
+  ],
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-fixture-f1-f3-publication-20261014T223315Z-e1195ad6.log",
+  "recoveryTrace": [
+    "65af30launchsession56489",
+    "1b8ba8nativeexit0",
+    "e2f655actualreadback"
+  ],
+  "recoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-fixture-f1-f3-selected-recovery-20261014T223335Z-fa8eb513.log",
+  "authorSTOP": "FINAL STOPPED READY; no pending tools/writes",
+  "focusedReview": "PENDING; allprojectUNRUN",
+  "sourceReadback": [
+    "8b3056authorreport",
+    "156fccactual3fixturediff+MD2",
+    "9379a1readbacksha/actualF3prefix",
+    "49d2cc166observations/126protected",
+    "6666ed5authored/126protectedactualbasebytepins;506aggregateprotectedmanifest"
+  ],
+  "bundle": "/workspace/boe-cloud-tools-20261014/fr063-fixture-f1-f3-focused-closure-bundle-ff749ba1-20261014T223430Z-21af671d.json",
+  "bundleSHA256": "69a08e2e5f4c037fd82e10d5a93eb03c9f680bc57f33c7f016d992762492d43d"
+}

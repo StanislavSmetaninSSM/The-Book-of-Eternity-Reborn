@@ -58,7 +58,8 @@ internal static partial class AcceptedMechanicsPlanner
                 var known = _knownWoundInstanceIds ??
                     new HashSet<string>(_routing.ReadOriginalInstanceIds(), StringComparer.Ordinal);
                 var ids = insertion.Applications.Select(application => application.EffectId).ToArray();
-                if (ids.Length == 0 || ids.Distinct(StringComparer.Ordinal).Count() != ids.Length ||
+                if (ids.Length == 0 && (!insertion.IsCombatHealing || insertion.ApplicationResults.Count != 0) ||
+                    ids.Distinct(StringComparer.Ordinal).Count() != ids.Length ||
                     ids.Any(known.Contains))
                     return RejectWoundRegistration(issues);
                 var newIds = ids.ToHashSet(StringComparer.Ordinal);

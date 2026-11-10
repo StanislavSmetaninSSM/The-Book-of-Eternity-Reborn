@@ -1,0 +1,125 @@
+{
+  "source": "141c69617fcb731eb219605d4acbded28cf45983",
+  "files": [
+    {
+      "path": "BookOfEternityClient/Services/QtePhysicalInjuryContract.cs",
+      "sha256": "adad7785f4aa239913d36375533f8626823fdb43dd163c566a63678e3ccece76",
+      "bytes": 10819
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "7d4154294045a2ef31debf2a2ea54cf8c069bad6c5af58e56b591714a1beea98",
+      "bytes": 261015
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "bytes": 379285
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "b5dc43ee382ab683e5a5553bfb084688645c291ba148cdc74a9f6dd4954a45e7",
+      "bytes": 282282
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "660ee721a0b60d6eee3bcc478f52c625c75d427967bd31725683c6d31d0e60fd",
+      "bytes": 111583
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteDeferredEffectContinuation.cs",
+      "sha256": "c9bd53f0ad72d1135cbe630b44150793a29c4dabe8a2e3cda41b90174a2e4894",
+      "bytes": 46958
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "sha256": "919a48436baea51d707c9be776fb3ae5ea19fed48ef382315eadd5bd7f8ccb6d",
+      "bytes": 42609
+    },
+    {
+      "path": "BookOfEternityClient/Services/ResourceBootstrapStateBuilder.cs",
+      "sha256": "67e824df0d6f0e0ec890d52a969e9291d433bab7c01ab51c2afd3c6c207eb433",
+      "bytes": 9350
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "sha256": "d5fc891f57028828b17a391085cd2bb76b89c15de1a06058782d3ac29f65f805",
+      "bytes": 26546
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+      "bytes": 584183
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "bytes": 7722
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ValidationServiceQteTests.cs",
+      "sha256": "6843cd3de555b60f7065e46d4c14c5e8f90ed1e9f7434e91a0fbbe2813cb26a5",
+      "bytes": 81989
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+      "sha256": "b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed",
+      "bytes": 104927
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs",
+      "sha256": "86b98e6b713e44178cce07c9b7b8e975875565f931472b8c2dae9fced2093398",
+      "bytes": 207610
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs",
+      "sha256": "6543b358750c292551545e27d55ea5ed95dbdb566a88c92f9ff87a74eef02f9f",
+      "bytes": 84418
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "sha256": "ff3ddaabeb901e405d98b53ada4f9a1379e19e3092cb9e825707001f4c44b884",
+      "bytes": 244678
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "sha256": "d261c87d7c17f76a8875565cfd050a606821d2040e139f5a746578c5e58827ee",
+      "bytes": 157296
+    },
+    {
+      "path": "Rules/Block_CLI_QTE.txt",
+      "sha256": "d401801486bc04279131e653b5b39e49ff10eef4d56da800516694a593767ea8",
+      "bytes": 26993
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "sha256": "88d2193e73505267e50e06c9c728ecc734c3c3f7e003d015070cd1d5fa4d90f6",
+      "bytes": 185328
+    },
+    {
+      "path": "Examples/E_CLI_QTE_Offer.txt",
+      "sha256": "b29bcde11e5bd835466cb711abb1718f6aa91b2ad5b70d546e584db8c0500ac6",
+      "bytes": 61679
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "sha256": "0b9c59c8f1007f21deb44c4c940e42dfadb222b22dcf92206be4e43d06de32f1",
+      "bytes": 180447
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "5fd2b3674db661cbe52578298c30e8eafdd19fd625e0ddcc80bdffbb038a3937",
+      "bytes": 1763863
+    },
+    {
+      "path": "tests/selections/1536-qte-physical-injury-admission.json",
+      "sha256": "39627b922f0e53a07d001b4e071692b702deba6424aac830de63e9ea04e36d81",
+      "bytes": 2235
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "bytes": 81688
+    }
+  ]
+}

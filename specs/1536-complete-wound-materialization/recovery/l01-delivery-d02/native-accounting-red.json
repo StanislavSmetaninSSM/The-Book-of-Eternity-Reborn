@@ -1,0 +1,147 @@
+{
+  "kind": "D02_S01_PURE_PINNED_FINALIZE_REGRESSION",
+  "controllerSha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388",
+  "finalizerSourceSha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5",
+  "cases": [
+    {
+      "native": 0,
+      "fault": "none",
+      "passed": true,
+      "returnedNative": 0,
+      "raw": 0,
+      "signal": null,
+      "observerErrors": [],
+      "finalizerExit": 0
+    },
+    {
+      "native": 0,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": 0,
+      "fault": "output-close",
+      "passed": true,
+      "returnedNative": 0,
+      "raw": 0,
+      "signal": null,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ],
+      "finalizerExit": 2
+    },
+    {
+      "native": 7,
+      "fault": "none",
+      "passed": true,
+      "returnedNative": 7,
+      "raw": 7,
+      "signal": null,
+      "observerErrors": [],
+      "finalizerExit": 7
+    },
+    {
+      "native": 7,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": 7,
+      "fault": "output-close",
+      "passed": true,
+      "returnedNative": 7,
+      "raw": 7,
+      "signal": null,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ],
+      "finalizerExit": 7
+    },
+    {
+      "native": 124,
+      "fault": "none",
+      "passed": true,
+      "returnedNative": 124,
+      "raw": 124,
+      "signal": null,
+      "observerErrors": [],
+      "finalizerExit": 124
+    },
+    {
+      "native": 124,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": 124,
+      "fault": "output-close",
+      "passed": true,
+      "returnedNative": 124,
+      "raw": 124,
+      "signal": null,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ],
+      "finalizerExit": 124
+    },
+    {
+      "native": -9,
+      "fault": "none",
+      "passed": true,
+      "returnedNative": -9,
+      "raw": -9,
+      "signal": 9,
+      "observerErrors": [],
+      "finalizerExit": -9
+    },
+    {
+      "native": -9,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": -9,
+      "fault": "output-close",
+      "passed": true,
+      "returnedNative": -9,
+      "raw": -9,
+      "signal": 9,
+      "observerErrors": [
+        "OSError('fake output close fault')"
+      ],
+      "finalizerExit": -9
+    }
+  ],
+  "passed": 8,
+  "failed": [
+    {
+      "native": 0,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": 7,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": 124,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    },
+    {
+      "native": -9,
+      "fault": "record-persist",
+      "passed": false,
+      "escaped": "OSError('fake final command record persistence failure')"
+    }
+  ],
+  "nativeActions": 0
+}

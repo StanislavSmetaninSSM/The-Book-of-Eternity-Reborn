@@ -480,7 +480,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var originalBindingFingerprint =
             AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding);
         await context.ReleaseLeaseAsync();
-        var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context);
+        var logger = new SpiritualLifecycleTestLogger();
+        var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context, logger);
 
         fault.Arm(context);
         AcceptedTurnValidationDisposition? firstDisposition = null;
@@ -544,6 +545,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
         await context.ReleaseLeaseAsync();
 
+        fault.CompleteVerifiedFailureAttempt();
+
         var retryDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
@@ -553,7 +556,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             HeldTreatmentPipelineContext.Turn,
             null);
 
-        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, retryDisposition);
+        Assert.True(
+            retryDisposition == AcceptedTurnValidationDisposition.Accepted,
+            $"Retry disposition: {retryDisposition}\n{logger.Describe()}");
         Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
         Assert.Equal(itemTransitionsBefore + 1,
             await CountSelectedItemConsumeTransitionsAsync(context));
@@ -1182,22 +1187,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Empty(carrierType.GetConstructors(BindingFlags.Public | BindingFlags.Instance));
         Assert.Contains(typeof(IAsyncDisposable), carrierType.GetInterfaces());
 
-        var completion = carrierType
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            .Where(method => method.DeclaringType == carrierType)
-            .Where(static method => IsCompletionMethodName(method.Name))
-            .ToArray();
+        var analysis = ReadMethodAnalysis(
+            "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
+        var scope = RequireCanonicalRefreshTransactionScope(analysis);
+        _ = RequireDirectAwaitedTypedCompletion(analysis, scope);
         var compensation = carrierType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             .Where(method => method.DeclaringType == carrierType)
             .Where(static method => IsCompensationMethodName(method.Name))
             .ToArray();
 
-        var complete = Assert.Single(completion);
         var compensate = Assert.Single(compensation);
-        Assert.False(complete.IsPublic);
         Assert.False(compensate.IsPublic);
-        Assert.True(IsAwaitableReturn(complete.ReturnType));
         Assert.True(IsAwaitableReturn(compensate.ReturnType));
         Assert.Equal(carrierType, gameEngineProperty.PropertyType);
     }
@@ -1207,9 +1209,17 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var analysis = ReadMethodAnalysis(
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         _ = RequireControlFlowGraph(analysis);
         _ = RequireOpenTreatmentTransactionCarrier();
+        var outer = Assert.Single(analysis.Model.Compilation.SyntaxTrees
+            .SelectMany(tree => tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()),
+            method => method.Identifier.ValueText == "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+        var forward = RequireInvocation(outer.DescendantNodes().OfType<InvocationExpressionSyntax>(),
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
+        Assert.Equal(new[] { "source", "activeSnapshotContext", "rollbackSnapshot", "expectedTurn",
+                "progressionControl", "BeforeDestructiveRefusalAsync" },
+            forward.ArgumentList.Arguments.Select(argument => argument.Expression.ToString()));
         var method = analysis.Method;
         var invocations = method.DescendantNodes()
             .OfType<InvocationExpressionSyntax>()
@@ -1348,22 +1358,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "ValidateCriticalCanonicalStateAsync",
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "ValidateCurrentGameStateOrShowErrorsAsync",
         false)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "CleanupAcceptedTurnCommandSurfacesAsync",
         true)]
     [InlineData(
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
-        "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+        "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
         "RefreshRuntimeStateAsync",
         true)]
     public void GuaranteedResourceQuantity_PostHelperFailureBoundaryRemainsInsideCompensationFence(
@@ -1386,7 +1396,7 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         if (!string.Equals(
                 methodName,
-                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync",
                 StringComparison.Ordinal))
         {
             var upstreamInvocationName = string.Equals(
@@ -1414,13 +1424,21 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("wound_post_seal", 1)]
     [InlineData("wound_output", 1)]
     [InlineData("critical_validation", 1)]
+    [InlineData("runtime_refresh", 2)]
+    public Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    [Theory]
     [InlineData("full_state_validation", 1)]
     [InlineData("cleanup", 1)]
-    [InlineData("runtime_refresh", 2)]
-    [InlineData("transaction_commit_conflict", 1)]
-    public async Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
-        string boundary,
-        int occurrence)
+    public Task GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    [Fact]
+    public Task GuaranteedResourceQuantity_ForeignPlanRetainedWhileOriginalPublicationBlocked() =>
+        RunKnownTreatmentBoundaryAsync("transaction_commit_conflict", 1);
+
+    private async Task RunKnownTreatmentBoundaryAsync(string boundary, int occurrence)
     {
         var fault = new AcceptedTreatmentPipelineFault(boundary, occurrence);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(fault);
@@ -1454,6 +1472,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, boundary, exception, accepted, commandBefore);
         Assert.True(
             fault.Fired,
             $"The existing filesystem hook did not reach '{boundary}' occurrence {occurrence}. " +
@@ -1492,6 +1511,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedTurnValidationDisposition.RetryablePublicationRearmed,
                 accepted);
         }
+        if (boundary == "full_state_validation")
+        {
+            Assert.Equal(3, fault.MatchedHealthRefreshes);
+            Assert.Equal(3, fault.HealthVisits.Count);
+            Assert.True(fault.PublishedTreatmentMembers > 0);
+            Assert.NotNull(fault.OriginalReceipt);
+        }
         await AssertExactTreatmentTransactionBytesAsync(context, before);
         Assert.Equal(
             commandBefore,
@@ -1505,9 +1531,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 "transaction_commit_conflict",
                 StringComparison.Ordinal))
         {
-            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
-                context.FileSystem,
-                context.Lease));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(context.FileSystem, context.Lease,
+                out var retainedForeignBinding, out var retainedForeign));
+            Assert.True(retainedForeign.Success);
+            Assert.Same(fault.ForeignPlan, retainedForeign.Plan);
+            Assert.Equal(fault.ForeignBindingFingerprint, AcceptedMechanicsPlanFingerprints.ComputeInput(retainedForeignBinding));
             AssertTreatmentPublicationRestartBlocked(context);
         }
         else
@@ -1556,6 +1584,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.FileSystem.ReadFileBytesAsync(
                 AcceptedMechanicsPlan.WoundCommandPath));
 
+        var before = await CaptureExactTreatmentTransactionBytesAsync(context);
         fault.Arm(context);
         AcceptedTurnValidationDisposition? disposition = null;
         var exception = await Record.ExceptionAsync(async () =>
@@ -1570,6 +1599,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "unsafe", exception, disposition, commandBefore);
         Assert.True(
             fault.Fired,
             "The post-publication failure and its compensation-restoration failure must both fire.");
@@ -1578,14 +1608,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             UnsafeTreatmentPublicationSettlementExceptionName,
             aggregate.GetType().Name);
         Assert.Null(disposition);
-        Assert.Equal(
-            commandBefore,
-            await context.FileSystem.ReadFileBytesAsync(
-                AcceptedMechanicsPlan.WoundCommandPath));
+        Assert.NotNull(commandBefore);
+        Assert.Null(await context.FileSystem.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+        await AssertExactTreatmentTransactionBytesAsync(context,
+            before.Where(pair => pair.Key != AcceptedMechanicsPlan.WoundCommandPath)
+                .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal));
+        Assert.Contains("wound_output", aggregate.ToString(), StringComparison.Ordinal);
+        Assert.Contains("restoration failure", aggregate.ToString(), StringComparison.Ordinal);
 
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Fact]
@@ -1634,6 +1668,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.FileSystem.ReadFileBytesAsync(
                 AcceptedMechanicsPlan.WoundCommandPath));
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_restore_precondition", null, null, commandBefore, rollbackSnapshot);
+        Assert.NotNull(rollbackSnapshot);
+        Assert.True(ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles") > 0 ||
+                    ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles") > 0);
         fault.Arm(context);
         AcceptedTurnValidationDisposition? disposition = null;
         var exception = await Record.ExceptionAsync(async () =>
@@ -1645,6 +1683,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 "validation_failed");
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_restore", exception, disposition, commandBefore);
         Assert.True(
             fault.Fired,
             "The command quarantine, pending quarantine failure, and command restoration failure must all be observed. " +
@@ -1658,7 +1697,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Fact]
@@ -1685,6 +1725,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             "GetValidatedRollbackSnapshotAsync",
             manifest);
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_safe_precondition", null, null, commandBefore, rollbackSnapshot);
+        Assert.NotNull(rollbackSnapshot);
+        Assert.True(ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles") > 0 ||
+                    ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles") > 0);
         fault.Arm(context);
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
@@ -1692,6 +1736,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             "validation_failed");
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_safe", null, disposition, commandBefore);
         Assert.True(fault.Fired);
         Assert.Equal(
             AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked,
@@ -1702,7 +1747,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedMechanicsPlan.WoundCommandPath));
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Theory]
@@ -1766,7 +1812,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs";
         var validation = ReadMethodAnalysis(
             relativePath,
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync");
+            "ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync");
         var refreshTry = Assert.Single(
             validation.Method.DescendantNodes().OfType<TryStatementSyntax>(),
             statement => statement.Block.DescendantNodes()
@@ -1795,9 +1841,60 @@ public sealed partial class GameEngineTurnLifecycleTests
         var preCanonicalSettlement = ReadMethodAnalysis(
             relativePath,
             "SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync");
-        Assert.Empty(
-            preCanonicalSettlement.Method.DescendantNodes()
-                .OfType<CatchClauseSyntax>());
+        var settlementInvocations = preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<InvocationExpressionSyntax>().ToArray();
+        foreach (var name in new[] { "ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync",
+                     "EnsureExactTreatmentResourcePublicationSettlement" })
+        {
+            var settlement = RequireInvocation(settlementInvocations, name);
+            Assert.Empty(settlement.Ancestors().OfType<TryStatementSyntax>());
+        }
+        var projectionTry = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<TryStatementSyntax>());
+        Assert.Null(projectionTry.Finally);
+        var projection = Assert.IsType<ExpressionStatementSyntax>(Assert.Single(projectionTry.Block.Statements));
+        var projectionAwait = Assert.IsType<AwaitExpressionSyntax>(projection.Expression);
+        var projectionCall = Assert.IsType<InvocationExpressionSyntax>(projectionAwait.Expression);
+        Assert.Equal("RefreshRuntimeStateAfterExactRollbackAsync",
+            Assert.IsType<IdentifierNameSyntax>(projectionCall.Expression).Identifier.ValueText);
+        Assert.Empty(projectionCall.ArgumentList.Arguments);
+
+        var jointBranch = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<IfStatementSyntax>(), statement =>
+                statement.Condition.ToString() == "_mortalJointRepairCheckpoint is { } jointCheckpoint");
+        var jointBlock = Assert.IsType<BlockSyntax>(jointBranch.Statement);
+        Assert.Same(jointBlock, projectionTry.Parent);
+        var releasedGuard = Assert.Single(jointBlock.Statements.OfType<IfStatementSyntax>(), statement =>
+            statement.Condition.ToString() == "joint.Disposition != MortalJointRepairPublicationDisposition.TerminalReleased");
+        Assert.Equal("AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked",
+            Assert.IsType<ReturnStatementSyntax>(releasedGuard.Statement).Expression!.ToString());
+        Assert.Equal(jointBlock.Statements.IndexOf(releasedGuard) + 1,
+            jointBlock.Statements.IndexOf(projectionTry));
+        var release = RequireInvocation(settlementInvocations, "TerminateMortalJointRepairAsync");
+        Assert.Empty(release.Ancestors().OfType<TryStatementSyntax>());
+        Assert.True(release.SpanStart < releasedGuard.SpanStart);
+
+        var projectionCatch = Assert.Single(preCanonicalSettlement.Method.DescendantNodes()
+            .OfType<CatchClauseSyntax>());
+        Assert.Same(projectionCatch, Assert.Single(projectionTry.Catches));
+        Assert.False(IsUnfilteredCatchAll(preCanonicalSettlement, projectionCatch));
+        Assert.Equal("Exception", projectionCatch.Declaration!.Type.ToString());
+        Assert.Equal("error", projectionCatch.Declaration.Identifier.ValueText);
+        Assert.Equal("error is InvalidDataException or IOException or InvalidOperationException",
+            projectionCatch.Filter!.FilterExpression.ToString());
+        Assert.Collection(projectionCatch.Block.Statements,
+            statement =>
+            {
+                var log = Assert.IsType<InvocationExpressionSyntax>(
+                    Assert.IsType<ExpressionStatementSyntax>(statement).Expression);
+                Assert.Equal("_logger.LogError", log.Expression.ToString());
+                Assert.Equal(2, log.ArgumentList.Arguments.Count);
+                Assert.Equal("error", log.ArgumentList.Arguments[0].Expression.ToString());
+                Assert.True(Assert.IsType<LiteralExpressionSyntax>(
+                    log.ArgumentList.Arguments[1].Expression).IsKind(SyntaxKind.StringLiteralExpression));
+            },
+            statement => Assert.Equal("AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked",
+                Assert.IsType<ReturnStatementSyntax>(statement).Expression!.ToString()));
     }
 
     [Fact]
@@ -2979,7 +3076,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool composePublication = true,
         FileSystemManagerHooks? hooks = null,
         MortalItemPublicationBaselineFixture baselineFixture =
-            MortalItemPublicationBaselineFixture.None)
+            MortalItemPublicationBaselineFixture.None,
+        Func<FileSystemManager, Task>? configureBeforePreparation = null)
     {
         Assert.True(
             fault is null || hooks is null,
@@ -3006,6 +3104,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await SeedMortalItemPublicationBaselineFixtureAsync(
                 fileSystem,
                 baselineFixture);
+            if (configureBeforePreparation is not null)
+                await configureBeforePreparation(fileSystem);
             var prepared = await new LiveTurnPreparationService(fileSystem)
                 .PrepareAsync(new LiveTurnPreparationOptions
                 {
@@ -3133,6 +3233,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.AcquireLeaseAsync();
             if (composePublication)
                 await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
+            fault?.CaptureOriginalAuthority(context);
             return context;
         }
         catch
@@ -3580,11 +3681,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private async Task<(GameEngine Engine, object SnapshotContext)>
-        CreateHeldTreatmentValidationEngineAsync(HeldTreatmentPipelineContext context)
+        CreateHeldTreatmentValidationEngineAsync(HeldTreatmentPipelineContext context,
+            Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null)
     {
         var engine = CreateGameEngine(
             new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }),
-            fileSystem: context.FileSystem);
+            fileSystem: context.FileSystem, logger: logger);
         var manifest = await InvokePrivateTaskResultAsync(
             engine,
             "LoadPendingTurnSnapshotManifestAsync");
@@ -5311,6 +5413,30 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
     }
 
+    private static int ReadTreatmentRollbackCount(object? snapshot, string property) =>
+        snapshot?.GetType().GetProperty(property)?.GetValue(snapshot) is System.Collections.ICollection collection
+            ? collection.Count : (snapshot?.GetType().GetProperty(property)?.GetValue(snapshot) is IEnumerable<string> items ? items.Count() : 0);
+
+    private void WriteTreatmentNeighborDiagnostic(HeldTreatmentPipelineContext context,
+        AcceptedTreatmentPipelineFault fault, string stage, Exception? exception, object? disposition,
+        byte[] commandBefore, object? rollbackSnapshot = null)
+    {
+        var commandPath = context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath);
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+        {
+            TreatmentNeighbor = stage, fault.Fired, fault.ObservedPhases, fault.MatchedHealthRefreshes,
+            fault.MutationPaths, fault.LeaseStacks, fault.FaultMutationImages, fault.HealthVisits,
+            fault.PublishedTreatmentMembers, OriginalReceiptCaptured = fault.OriginalReceipt is not null,
+            Failure = exception?.ToString(), Disposition = disposition?.ToString(),
+            CommandBefore = Convert.ToBase64String(commandBefore),
+            CommandAfter = File.Exists(commandPath) ? Convert.ToBase64String(File.ReadAllBytes(commandPath)) : null,
+            RollbackPresent = rollbackSnapshot is not null,
+            RollbackBackups = ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles"),
+            RollbackBaseline = ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles"),
+            ForeignPlanCaptured = fault.ForeignPlan is not null, fault.ForeignBindingFingerprint
+        }));
+    }
+
     private sealed class AcceptedTreatmentPipelineFault
     {
         private readonly string _boundary;
@@ -5321,6 +5447,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _compoundFailureStage;
         private bool _armed;
         private HeldTreatmentPipelineContext? _context;
+        private object? _registryState;
+        private byte[]? _originalCommand;
+        private byte[]? _originalPending;
 
         internal AcceptedTreatmentPipelineFault(
             string boundary,
@@ -5333,7 +5462,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 BeforeCanonicalWriteLockOpenAsync =
                     OnBeforeCanonicalWriteLockOpenAsync,
                 AfterCanonicalReadInitialValidationAsync = OnCanonicalReadAsync,
-                BeforeCanonicalMutationAsync = OnCanonicalMutationAsync
+                BeforeCanonicalMutationAsync = OnCanonicalMutationAsync,
+                LocalPublicationObserver = OnPublished
             };
         }
 
@@ -5342,11 +5472,66 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal AcceptedMechanicsPlan? ForeignPlan { get; private set; }
         internal string? ForeignBindingFingerprint { get; private set; }
         internal IReadOnlyCollection<string> ObservedPhases => _observedPhases;
+        internal List<string> MutationPaths { get; } = new();
+        internal List<string> LeaseStacks { get; } = new();
+        internal List<object> FaultMutationImages { get; } = new();
+        internal int MatchedHealthRefreshes => _acceptedPipelineHealthRefreshes;
+        internal int PublishedTreatmentMembers { get; private set; }
+        internal MortalWoundTreatmentPublicationTakeReceipt? OriginalReceipt { get; private set; }
+        internal List<object> HealthVisits { get; } = new();
+
+        internal void CaptureOriginalAuthority(HeldTreatmentPipelineContext context)
+        {
+            _context = context;
+            _registryState = typeof(AcceptedTurnAuthorityRegistry).GetMethod("GetState",
+                BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [context.FileSystem, context.Lease]);
+        }
+        private MortalWoundTreatmentPublicationTakeReceipt? OpenReceipt =>
+            _registryState?.GetType().GetField("_openTreatmentPublicationReceipt",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_registryState)
+                as MortalWoundTreatmentPublicationTakeReceipt;
+        private static bool BytesEqual(byte[]? left, byte[]? right) =>
+            left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
+        private bool ObserveOriginalReceipt()
+        {
+            var receipt = OpenReceipt;
+            if (receipt is null) return false;
+            OriginalReceipt ??= receipt;
+            Assert.Same(OriginalReceipt, receipt);
+            Assert.Same(_context!.Plan, receipt.Plan);
+            return true;
+        }
+        private void OnPublished(TrustedLocalPublicationPhase phase, int index)
+        {
+            if (!_armed || _boundary is not ("full_state_validation" or "cleanup" or "wound_output_compensation_restore_failure") ||
+                phase != TrustedLocalPublicationPhase.MemberPublished || !ObserveOriginalReceipt()) return;
+            var journal = Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            using var document = ReadJournalMetadata(File.ReadAllBytes(journal));
+            var path = document.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
+            if (new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath }.Any(relative =>
+                    _context.FileSystem.ResolvePath(relative) == path)) PublishedTreatmentMembers++;
+        }
 
         internal void Arm(HeldTreatmentPipelineContext? context = null)
         {
             _context = context;
+            if (context is not null)
+            {
+                _originalCommand = ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath));
+                _originalPending = ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+            }
             _armed = true;
+        }
+
+        /// <summary>
+        /// Retires this one-shot probe after the caller has verified rollback and rearmed
+        /// authority, before a retry legitimately obtains its own publication receipt.
+        /// </summary>
+        internal void CompleteVerifiedFailureAttempt()
+        {
+            Assert.True(Fired);
+            _armed = false;
         }
 
         private Task OnCanonicalReadAsync(string path)
@@ -5398,6 +5583,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!_armed || Fired)
                 return Task.CompletedTask;
+            if (LeaseStacks.Count < 8) LeaseStacks.Add(new StackTrace().ToString());
 
             if (string.Equals(
                     _boundary,
@@ -5413,12 +5599,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                     _boundary,
                     "full_state_validation",
                     StringComparison.Ordinal) &&
-                StackContains("EnsureClientOwnedSystemFilesHealthyAsync") &&
+                StackContains("EnsureClientOwnedSystemFilesHealthyCoreAsync") &&
                 StackContains("RefreshGameStateAsync"))
             {
                 _acceptedPipelineHealthRefreshes++;
+                HealthVisits.Add(new { Visit = _acceptedPipelineHealthRefreshes,
+                    ReceiptOpen = OpenReceipt is not null, PublishedTreatmentMembers,
+                    Stack = new StackTrace().ToString() });
                 if (_acceptedPipelineHealthRefreshes == 3)
+                {
+                    Assert.True(PublishedTreatmentMembers > 0);
+                    Assert.True(ObserveOriginalReceipt());
                     return FireCanonicalWriteLockFailure("full_state_validation");
+                }
                 return Task.CompletedTask;
             }
 
@@ -5455,6 +5648,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!_armed)
                 return Task.CompletedTask;
+            MutationPaths.Add(path);
+            if (_context is not null && path is AcceptedMechanicsPlan.WoundCommandPath or
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath or ResourceMaterializationContract.StatePath)
+            {
+                var absolute = _context!.FileSystem.ResolvePath(path);
+                FaultMutationImages.Add(new { path, stage = _compoundFailureStage,
+                    Before = File.Exists(absolute) ? Convert.ToBase64String(File.ReadAllBytes(absolute)) : null });
+            }
             if (string.Equals(
                     _boundary,
                     "wound_output_compensation_restore_failure",
@@ -5478,7 +5679,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     "pre_canonical_terminal_quarantine_cancellation" or
                     "pre_canonical_terminal_quarantine_session_replaced" &&
                 _compoundFailureStage == 0 &&
-                StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                (_boundary == "pre_canonical_terminal_quarantine_safe_failure"
+                    ? ObserveOriginalReceipt() && BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path)))
+                    : StackContains("WriteQuarantinedDurableSurfacesAsync")) &&
                 string.Equals(
                     path,
                     AcceptedMechanicsPlan.WoundCommandPath,
@@ -5507,7 +5710,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     StringComparison.Ordinal))
             {
                 if (_compoundFailureStage == 0 &&
-                    StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
                     string.Equals(
                         path,
                         AcceptedMechanicsPlan.WoundCommandPath,
@@ -5518,7 +5722,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return Task.CompletedTask;
                 }
                 if (_compoundFailureStage == 1 &&
-                    StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    BytesEqual(_originalPending, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
+                    !BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) &&
                     string.Equals(
                         path,
                         WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
@@ -5530,7 +5736,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                         "Injected pre-canonical pending quarantine failure."));
                 }
                 if (_compoundFailureStage == 2 &&
-                    StackContains("RestoreExactBeforeImagesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    !BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
                     string.Equals(
                         path,
                         AcceptedMechanicsPlan.WoundCommandPath,
@@ -5672,7 +5879,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 PlanningContext: context);
         }
 
-        private static string? ClassifyCurrentPhase(string path, bool isMutation)
+        private string? ClassifyCurrentPhase(string path, bool isMutation)
         {
             if (isMutation)
             {
@@ -5680,8 +5887,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                            path,
                            "game_state/meta/guardians.json",
                            StringComparison.Ordinal) &&
-                       StackContains(
-                           "RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync")
+                       _observedPhases.Contains("critical_validation") && PublishedTreatmentMembers > 0 &&
+                       ObserveOriginalReceipt() &&
+                       ParseJsonObjectBytes(File.ReadAllBytes(_context!.FileSystem.ResolvePath(path))) is { } guardian &&
+                       guardian.ContainsKey(GuardianProjectState.QuestProgressUpdatesProperty)
                     ? "cleanup"
                     : null;
             }
@@ -6033,16 +6242,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             analysis.Model.GetSymbolInfo(assignment!.Left).Symbol);
     }
 
+    /// <summary>Resolves the actual one-argument settlement on the owned carrier through Roslyn.</summary>
+    /// <param name="analysis">The existing coordinator source and semantic model.</param>
+    /// <param name="scope">The exact await-using carrier ownership scope.</param>
+    /// <returns>The directly awaited typed settlement invocation whose identity and result are verified.</returns>
     private static InvocationExpressionSyntax RequireDirectAwaitedTypedCompletion(
         SourceMethodAnalysis analysis,
         CarrierOwnershipScope scope)
     {
-        var carrierType = RequireOpenTreatmentTransactionCarrier().PropertyType;
+        var carrierType = Assert.IsAssignableFrom<INamedTypeSymbol>(scope.CarrierSymbol.Type);
+        var fileSystemType = analysis.Model.Compilation.GetTypeByMetadataName(typeof(FileSystemManager).FullName!);
+        Assert.NotNull(fileSystemType);
         var complete = Assert.Single(
-            carrierType.GetMethods(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-            method => method.DeclaringType == carrierType &&
-                      IsCompletionMethodName(method.Name));
+            carrierType.GetMembers(nameof(MortalWoundTreatmentResourcePublicationTransaction.CompleteAsync))
+                .OfType<IMethodSymbol>(),
+            method => !method.IsStatic && method.Parameters.Length == 1 &&
+                SymbolEqualityComparer.Default.Equals(method.Parameters[0].Type, fileSystemType));
+        Assert.Equal(Accessibility.Internal, complete.DeclaredAccessibility);
         var aliases = BuildImmutableLocalAliases(
             analysis,
             scope.Lifetime,
@@ -6070,39 +6286,29 @@ public sealed partial class GameEngineTurnLifecycleTests
             "a fire-and-forget or unrelated wrapper invocation.");
         _ = RequireAssignedLocalSymbol(analysis, completion);
 
-        var resultType = RequireAwaitedResultType(complete.ReturnType);
-        Assert.Equal(typeof(bool), RequireResultProperty(resultType, "IsValid").PropertyType);
-        Assert.True(typeof(IEnumerable<ValidationIssue>).IsAssignableFrom(
-            RequireResultProperty(resultType, "Issues").PropertyType));
-        Assert.Equal(typeof(int), RequireResultProperty(
-            resultType,
-            "ChangedCount").PropertyType);
-        var outcomeType = RequireResultProperty(resultType, "Outcome").PropertyType;
+        var resolvedCompletion = Assert.IsAssignableFrom<IMethodSymbol>(analysis.Model.GetSymbolInfo(completion).Symbol);
+        Assert.True(SymbolEqualityComparer.Default.Equals(complete, resolvedCompletion));
+        Assert.True(SymbolEqualityComparer.Default.Equals(carrierType, resolvedCompletion.ContainingType));
+        var awaitable = Assert.IsAssignableFrom<INamedTypeSymbol>(resolvedCompletion.ReturnType);
+        Assert.True(awaitable.Name is "Task" or "ValueTask");
+        Assert.Equal("System.Threading.Tasks", awaitable.ContainingNamespace.ToDisplayString());
+        var resultType = Assert.IsAssignableFrom<INamedTypeSymbol>(Assert.Single(awaitable.TypeArguments));
+        Assert.Equal(typeof(MortalWoundTreatmentPublicationOperationResult).FullName, resultType.ToDisplayString());
+        IPropertySymbol Property(string name) => Assert.Single(resultType.GetMembers(name).OfType<IPropertySymbol>());
+        Assert.Equal(SpecialType.System_Boolean, Property("IsValid").Type.SpecialType);
+        Assert.Equal(SpecialType.System_Int32, Property("ChangedCount").Type.SpecialType);
+        var issuesType = analysis.Model.Compilation.GetTypeByMetadataName(typeof(ValidationIssue).FullName!);
+        var enumerable = analysis.Model.Compilation.GetTypeByMetadataName(typeof(IEnumerable<>).FullName!);
+        Assert.NotNull(issuesType);
+        Assert.NotNull(enumerable);
+        Assert.True(analysis.Model.Compilation.ClassifyConversion(
+            Property("Issues").Type, enumerable!.Construct(issuesType!)).IsImplicit);
+        var outcomeType = Property("Outcome").Type;
         Assert.True(
-            outcomeType == typeof(string) || outcomeType.IsEnum,
+            outcomeType.SpecialType == SpecialType.System_String || outcomeType.TypeKind == TypeKind.Enum,
             "Typed completion Outcome may be a string or closed enum, but it must " +
             "represent Finalized explicitly.");
         return completion;
-    }
-
-    private static Type RequireAwaitedResultType(Type awaitableType)
-    {
-        Assert.True(
-            awaitableType.IsGenericType &&
-            (awaitableType.GetGenericTypeDefinition() == typeof(Task<>) ||
-             awaitableType.GetGenericTypeDefinition() == typeof(ValueTask<>)),
-            "Transaction completion must return an awaited typed result; Task/ValueTask " +
-            "without IsValid/Issues/ChangedCount/Outcome cannot gate accepted success.");
-        return awaitableType.GetGenericArguments()[0];
-    }
-
-    private static PropertyInfo RequireResultProperty(Type resultType, string name)
-    {
-        var property = resultType.GetProperty(
-            name,
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        Assert.NotNull(property);
-        return property!;
     }
 
     private static void RequireTypedCompletionSuccessDominatesAcceptedExit(

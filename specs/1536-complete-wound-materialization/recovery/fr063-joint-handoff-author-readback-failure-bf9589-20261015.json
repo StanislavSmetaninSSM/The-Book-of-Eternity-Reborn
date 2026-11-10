@@ -1,0 +1,14 @@
+{
+  "chunkId": "bf9589",
+  "exitCode": 1,
+  "sessionId": null,
+  "scope": "External pure-text/byte author report/readback generation only",
+  "operation": "Compare protected frozen source pin membership before generating author report; the source inverse and MD2 tail checks had completed; supporting declaration is not necessarily in frozen selected source cohort.",
+  "failingStatement": "assert r in source_map",
+  "returnedOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 27, in <module>\nAssertionError\n",
+  "reportProducedByFailedOperation": false,
+  "readbackProducedByFailedOperation": false,
+  "sourceOrMd2WritesByFailedOperation": false,
+  "projectExecution": false,
+  "classification": "External pin-cohort assumption failure; not compilation, fixture, production, security or transport failure."
+}

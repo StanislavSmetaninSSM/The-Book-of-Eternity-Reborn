@@ -327,6 +327,8 @@ internal static class AfterlifeEntityProfileState
         NormalizeRelationshipLocks(result);
         RefreshCommandAuthoredMentorShowcaseHashes(result, commandAuthoredMentorShowcaseKeys);
         TrainingService.NormalizeAfterlifeMentorShowcaseCosts(result);
+        foreach (var profile in result[ProfilesProperty]!.AsArray().OfType<JsonObject>())
+            AfterlifeHealingServiceContract.RequireElyaraInvariant(profile);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
@@ -345,6 +347,14 @@ internal static class AfterlifeEntityProfileState
         result.Remove(ActiveMaskChangesProperty);
         result.Remove(ProgressionOverridesProperty);
         result.Remove(SpecialArtLearningReceiptsProperty);
+        return result;
+    }
+
+    internal static JsonObject ProjectAcceptedRoot(JsonObject? currentRoot, JsonObject? previousRoot,
+        JsonObject? progressionReportRoot, JsonObject? soulRoot, JsonObject? shiningRoot)
+    {
+        var result = ProjectCanonicalRoot(currentRoot, previousRoot, progressionReportRoot);
+        ApplyPlayerSoulProfileClientAuthority(result, soulRoot, shiningRoot);
         return result;
     }
 
@@ -623,16 +633,22 @@ internal static class AfterlifeEntityProfileState
                 continue;
 
             var replacement = CloneObject(profile);
+            AfterlifeHealingServiceContract.RequireElyaraTransition(existing, replacement);
             PreserveProgressionSettlement(existing, replacement);
             PreserveHistoricalMaterialization(existing, replacement);
             PreserveResourceOwnerBindings(existing, replacement);
             PreserveActiveEffects(existing, replacement);
             PreserveActiveWounds(existing, replacement);
+            if (HasExactActorIdentity(existing, replacement))
+                foreach (var field in new[] { SpiritualTreatmentParticipation.RecordProperty, SpiritualTreatmentParticipation.ChangeProperty })
+                    if (!replacement.ContainsKey(field) && existing[field] is { } participation)
+                        replacement[field] = participation.DeepClone();
             profiles[index] = replacement;
             return;
         }
 
         var addition = CloneObject(profile);
+        AfterlifeHealingServiceContract.RequireElyaraInvariant(addition);
         if (addition["activeEffects"] is not JsonArray)
             addition["activeEffects"] = new JsonArray();
         if (addition["activeWounds"] is not JsonArray)
@@ -2472,6 +2488,7 @@ internal static class AfterlifeEntityProfileState
         if (string.Equals(GetNodeString(strategy["lastAutoProgressionCycleKey"]), cycle.CycleKey, StringComparison.OrdinalIgnoreCase))
             return false;
 
+        // Creation materialization evidence remains immutable while gameplay history grows.
         var currencies = EnsureObject(profile, "currencies");
         var income = ResolveIncome(cycle);
         AddCurrency(currencies, "inkFeathers", income.InkFeathers);
@@ -2858,7 +2875,8 @@ internal static class AfterlifeEntityProfileState
         AfterlifeSpiritualConflictState.RequiredWoundArtIds.FirstOrDefault(requiredArtId =>
             string.Equals(requiredArtId, artId, StringComparison.OrdinalIgnoreCase));
 
-    private static bool TryReadRequiredWoundArtTier(
+    /// <summary>Reads an explicitly materialized wound art tier without defaulting missing or invalid data to zero.</summary>
+    internal static bool TryReadRequiredWoundArtTier(
         JsonObject profile,
         string artId,
         out JsonObject arts,

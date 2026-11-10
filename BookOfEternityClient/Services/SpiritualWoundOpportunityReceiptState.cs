@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 /// <summary>
 /// Validates immutable spiritual opportunity history without granting source or publication authority.
 /// </summary>
-internal sealed class SpiritualWoundOpportunityReceiptState
+internal sealed partial class SpiritualWoundOpportunityReceiptState
 {
     /// <summary>
     /// Identifies the private client-owned accepted spiritual opportunity ledger.
@@ -16,6 +16,7 @@ internal sealed class SpiritualWoundOpportunityReceiptState
 
     private const int MaximumRows = 20_000;
     private readonly JsonObject _root;
+    private readonly IReadOnlyList<RetainedStrainComparison> _strainComparisons;
 
     /// <summary>
     /// Retains a detached private copy of a validated complete ledger.
@@ -23,7 +24,13 @@ internal sealed class SpiritualWoundOpportunityReceiptState
     /// <param name="root">
     /// Validated receipt root.
     /// </param>
-    private SpiritualWoundOpportunityReceiptState(JsonObject root) => _root = root.DeepClone().AsObject();
+    /// <param name="strainComparisons">Already validated immutable parent comparisons belonging to this exact root.</param>
+    private SpiritualWoundOpportunityReceiptState(JsonObject root,
+        IReadOnlyList<RetainedStrainComparison>? strainComparisons = null)
+    {
+        _root = root.DeepClone().AsObject();
+        _strainComparisons = strainComparisons?.ToArray() ?? [];
+    }
 
     /// <summary>
     /// Checks closed shapes, lifecycle references and the source-to-decision bijection.
@@ -44,10 +51,13 @@ internal sealed class SpiritualWoundOpportunityReceiptState
         try
         {
             var root = SpiritualWoundStateJson.Parse(json);
-            Closed(root, "schemaVersion nextInstanceOrdinal nextClosureOrdinal nextSourceOrdinal nextDecisionOrdinal instances closures sources decisions");
+            var version = (int)Integer(root["schemaVersion"], 1, 3);
+            Closed(root, "schemaVersion nextInstanceOrdinal nextClosureOrdinal nextSourceOrdinal nextDecisionOrdinal instances closures sources decisions" +
+                (version >= 2 ? " nextHealingSourceOrdinal nextHealingDecisionOrdinal healingSources healingDecisions" : "") +
+                (version == 3 ? " nextStrainComparisonOrdinal strainComparisons" : ""));
             var lifecycle = new JsonObject();
             foreach (var field in new[] { "schemaVersion", "nextInstanceOrdinal", "nextClosureOrdinal", "instances", "closures" })
-                lifecycle[field] = root[field]?.DeepClone();
+                lifecycle[field] = field == "schemaVersion" ? JsonValue.Create(1) : root[field]?.DeepClone();
             Require(SpiritualWoundConflictInstanceState.Parse(lifecycle.ToJsonString(), path).IsValid,
                 "Invalid receipt lifecycle projection.");
             var sources = Rows(root, "sources", "nextSourceOrdinal");
@@ -57,6 +67,7 @@ internal sealed class SpiritualWoundOpportunityReceiptState
             var closures = root["closures"]!.AsArray().ToDictionary(
                 row => Text(row!["instanceId"]), row => Integer(row!["terminalTurn"]), StringComparer.Ordinal);
             var sourceById = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var strainRows = new List<(JsonObject Row, SpiritualStrainPreimageData Data)>();
             var coordinates = new HashSet<(string Instance, string Exchange, string Side)>();
             var exchanges = new Dictionary<(string Instance, string Exchange), (string Session, string Request, long Ordinal)>();
             var instanceCounts = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -66,9 +77,10 @@ internal sealed class SpiritualWoundOpportunityReceiptState
                 var instanceId = Text(row["instanceId"]);
                 Require(instances.TryGetValue(instanceId, out var instance), "Unknown source instance.");
                 var witness = Object(row["witness"]);
-                Require(SpiritualWoundSourceWitness.Validate(witness).MaximumSeverityRank > 0 ||
+                Require(SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain).MaximumSeverityRank > 0 ||
                     witness["guaranteedSeverityRank"] is not null,
                     "Only positive or guaranteed sources have accepted decisions.");
+                if (strain is not null) strainRows.Add((row, strain));
                 var evidence = Object(witness["turnEvidence"]);
                 Require(Text(witness["conflictId"]) == Text(instance!["displayConflictId"]) &&
                     Text(evidence["realm"]) == Text(instance["realm"]), "Source belongs to another conflict.");
@@ -89,7 +101,9 @@ internal sealed class SpiritualWoundOpportunityReceiptState
                 exchanges[exchangeKey] = exchangeIdentity;
             }
             Require(sources.Length == decisions.Length, "Every source requires one accepted decision.");
-            ValidateTurnCoherence(sources);
+            var comparisons = ValidateStrainComparisons(root, version, instances, closures, sourceById,
+                coordinates, exchanges, strainRows);
+            ValidateTurnCoherence(MergeComparisonTurnRows(sources, comparisons));
             var decided = new HashSet<string>(StringComparer.Ordinal);
             var decisionIds = new HashSet<string>(StringComparer.Ordinal);
             var opportunityIds = new HashSet<string>(StringComparer.Ordinal);
@@ -97,9 +111,15 @@ internal sealed class SpiritualWoundOpportunityReceiptState
             foreach (var row in decisions)
                 ValidateDecision(row, sourceById, decided, decisionIds, opportunityIds, transitionIds);
             ValidateDecisionWaves(decisions);
-            return new(true, new(root), Array.Empty<ValidationIssue>());
+            var strainComparisons = ValidateStrainParentRelations(strainRows, sourceById, decisions);
+            var comparisonData = root["healingSources"] is JsonArray { Count: > 0 }
+                ? strainRows.Where(row => row.Row.ContainsKey("instanceComparisonOrdinal"))
+                    .ToDictionary(row => Text(row.Row["witness"]!["sourceId"]), row => row.Data, StringComparer.Ordinal)
+                : null;
+            ValidateHealingLedger(root, version, instances, closures, sources.Concat(comparisons).ToArray(), decisions, comparisonData);
+            return new(true, new(root, strainComparisons), Array.Empty<ValidationIssue>());
         }
-        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException)
+        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException or InvalidDataException or ArgumentException or NullReferenceException or KeyNotFoundException)
         {
             return new(false, null, Array.AsReadOnly(new[]
             {
@@ -248,6 +268,7 @@ internal sealed class SpiritualWoundOpportunityReceiptState
     {
         ArgumentNullException.ThrowIfNull(before);
         ArgumentNullException.ThrowIfNull(candidate);
+        if (!HealingAppendAgrees(before._root, candidate._root) || !ComparisonAppendAgrees(before._root, candidate._root)) return new("conflict", null);
         foreach (var field in new[] { "instances", "closures", "sources", "decisions" })
         {
             var prior = before._root[field]!.AsArray();
@@ -258,13 +279,14 @@ internal sealed class SpiritualWoundOpportunityReceiptState
         var closed = before._root["closures"]!.AsArray()
             .Select(row => Text(row!["instanceId"])).ToHashSet(StringComparer.Ordinal);
         var acceptedTurns = before._root["sources"]!.AsArray()
-            .Select(row => OriginalRequest(Object(row!["witness"]))).ToHashSet();
+            .Select(row => OriginalRequest(Object(row!["witness"])))
+            .Concat(HealingRequests(before._root)).Concat(ComparisonRequests(before._root)).ToHashSet();
         if (candidate._root["sources"]!.AsArray().Skip(before._root["sources"]!.AsArray().Count)
             .Any(row => closed.Contains(Text(row!["instanceId"])) ||
                 acceptedTurns.Contains(OriginalRequest(Object(row["witness"])))))
             return new("conflict", null);
         return new(JsonNode.DeepEquals(before._root, candidate._root) ? "exact_replay" : "appended",
-            new(candidate._root));
+            new(candidate._root, candidate._strainComparisons));
     }
 
     /// <summary>
@@ -392,6 +414,14 @@ internal sealed class SpiritualWoundOpportunityReceiptState
     internal static void ValidateTurnCoherence(IEnumerable<JsonObject> sources)
     {
         var ordered = sources.ToArray();
+        ValidateRequestTableOrder(ordered);
+        var turns = ordered.GroupBy(row => OriginalRequest(Object(row["witness"])));
+        ValidateTurnSourceGroups(turns);
+    }
+
+    /// <summary>Preserves each retained table's request and turn order before cross-family merging.</summary>
+    private static void ValidateRequestTableOrder(IEnumerable<JsonObject> ordered)
+    {
         var completed = new HashSet<(string Session, string Request)>();
         (string Session, string Request)? lastRequest = null;
         var lastTurns = new Dictionary<(string Instance, string Session), long>();
@@ -410,7 +440,11 @@ internal sealed class SpiritualWoundOpportunityReceiptState
                 "Instance history cannot move backward within a session.");
             lastTurns[key] = number;
         }
-        var turns = ordered.GroupBy(row => OriginalRequest(Object(row["witness"])));
+    }
+
+    /// <summary>Checks the shared context, causal slots and actual dice once for each merged original request.</summary>
+    private static void ValidateTurnSourceGroups(IEnumerable<IGrouping<(string Session, string Request), JsonObject>> turns)
+    {
         foreach (var turn in turns)
         {
             JsonObject? original = null;

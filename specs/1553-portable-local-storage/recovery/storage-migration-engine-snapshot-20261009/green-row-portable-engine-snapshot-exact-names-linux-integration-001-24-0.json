@@ -1,0 +1,33 @@
+{
+  "route": "backup",
+  "mode": "story_alias",
+  "root": "/tmp/boe-gameengine-turnlifecycle-c4dd60ba6b2d4765835e1f93d218c763",
+  "names": [
+    "stories/Chapter.jsonl",
+    "stories/chapter.jsonl"
+  ],
+  "failure": "System.IO.InvalidDataException: Signed snapshot paths have distinct case aliases: 'stories/chapter.jsonl' and 'stories/Chapter.jsonl'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 124\n   at BookOfEternityClient.Core.GameEngine.RequireExactEngineSnapshotInventory(CanonicalWriteLease writeLease, RollbackSnapshot rollbackSnapshot) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1845\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(CanonicalWriteLease writeLease, String backupId) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1923\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1914\n   at BookOfEternityClient.Core.GameEngine.CreatePreTurnBackup(String backupId) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1916\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11383\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass329_2.<<OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence>b__2>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs:line 58\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "before": {
+    "stories/chapter.jsonl": "//57AH0AIAA=",
+    "stories/Chapter.jsonl": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "after": {
+    "stories/chapter.jsonl": "//57AH0AIAA=",
+    "stories/Chapter.jsonl": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3ZTVhYmRhYWU2YWU0NGQwYmZjMWM3NWVkZWNlMzQ4YiJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3ZTVhYmRhYWU2YWU0NGQwYmZjMWM3NWVkZWNlMzQ4YiJ9",
+  "resultReturned": false
+}

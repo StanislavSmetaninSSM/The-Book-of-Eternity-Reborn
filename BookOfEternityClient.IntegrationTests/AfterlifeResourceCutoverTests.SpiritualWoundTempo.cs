@@ -235,6 +235,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             var severeDecision = JsonNode.Parse(decision.GetRawText())!;
             var proposal = severeDecision["proposal"]!;
             proposal["severity"] = "IV";
+            proposal["recovery"]!["currentStepThreshold"] = 8;
             var definitions = proposal["consequenceDefinitions"]!.AsArray();
             foreach (var art in new[] { "binding", "break_binding", "maneuver" })
             {

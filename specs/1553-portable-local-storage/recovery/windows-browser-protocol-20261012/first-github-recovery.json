@@ -1,0 +1,57 @@
+{
+  "State": "Complete",
+  "StartedUtc": "2026-10-12T00:49:07.387866+00:00",
+  "Target": "C:\\Temp\\boe-win-8c2ecdfa-20261011T234246Z\\browser-github-restore-first",
+  "ExpectedHead": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+  "TestsStarted": false,
+  "CompletedUtc": "2026-10-12T00:49:24.823231+00:00",
+  "Head": "fbb13797e8992fed577f9f101359e6bb3e1a97f1",
+  "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "ChangedFilesVerified": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 2230433,
+      "SHA256": "53687934d78bdca15ac6ad82357065127d20907bf99ed5c785c9347f24ecca02"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/README.md",
+      "Bytes": 3243,
+      "SHA256": "6f6bf52a19a42ead6ad044a75c89926f40c7108d997c887d05c8c5363363c48b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/actual-original.zip",
+      "Bytes": 200627,
+      "SHA256": "35ab5b3235c8c9ad0b33badcfec9b722b2ed13d4b576c5bdb3347d0be1e914ca"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/diagnosis-proposal.json",
+      "Bytes": 2414,
+      "SHA256": "d8067a5cbc49a4923251ac90bb97ef4c89aa68f48770f135bdc53508ba4bebcf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/execution-provenance.zip",
+      "Bytes": 419701,
+      "SHA256": "27c86bdff21db1726cca994b77db39416fec03d85b7fa260ca4700e5c8b26339"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/manifest.json",
+      "Bytes": 25588,
+      "SHA256": "c53a901581c0f4bfecdc7fa4267d9b4a5313771bc78bbf286fea62d3e054d474"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-browser-protocol-20261012/prepare-original.zip",
+      "Bytes": 190803,
+      "SHA256": "dc08f243daab7fc051baa95d83006ae3448c305e3d9363e3b2c1a29a857155de"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/tasks.md",
+      "Bytes": 151150,
+      "SHA256": "2a028c1f6e2b8c16d3086b771a7ecfe4312caa107dfedef0385914ac0aa05405"
+    }
+  ],
+  "ArchiveEntriesVerified": 34,
+  "Clean": true,
+  "AlternatesPresent": false,
+  "BuildFromRestore": false,
+  "TestFromRestore": false
+}

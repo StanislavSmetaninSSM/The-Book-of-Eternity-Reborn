@@ -1,0 +1,566 @@
+{
+  "task": "T197 DEP-C supplemental independent DESIGN review",
+  "date": "2026-10-16",
+  "verdict": "NO_CONFIRMED_MATERIAL_DEFECTS_IN_CONDITIONAL_DISCUSSION_PROPOSAL",
+  "discussion_ready": true,
+  "proposed_grant_accepted": false,
+  "dep_c_complete": false,
+  "t197_design_complete": false,
+  "transition_qualified": false,
+  "implementation_authorized_by_review": false,
+  "h2_h3_qualified": false,
+  "new_joint_qte_activation_allowed": false,
+  "reviewer": {
+    "agent": "/root/t197_independent_review",
+    "independent_of_author": true,
+    "retained_actual_configuration": {
+      "fork_turns": "none",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh"
+    },
+    "configuration_evidence": "parent explicit confirmation",
+    "backend_telemetry": "unknown/unobservable",
+    "subagents": 0
+  },
+  "revisions": {
+    "reviewed": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+    "base": "0b6e68e99a83ec9e9b0e1b2341901f54b0ef6dbd",
+    "author_source": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+    "prior_design_review": "7a6b410c0902ada215bfe742ed8ae66ccdb8d529",
+    "observed_head_during_final_metadata": "2d9c7abd9d3182e4a5e80138e28014a50df963f5"
+  },
+  "head_scope": {
+    "moving_head_not_reviewed": true,
+    "proposal_and_canonical_design_equal_at_observed_head": {
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md": true,
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json": true,
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md": true
+    },
+    "changed_pinned_executable_sources_at_observed_head": [],
+    "later_unrelated_work_excluded": true
+  },
+  "remote_verification": "parent reported pushed/confirmed; reviewer used pinned local Git objects only",
+  "diff": {
+    "paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "file_count": 5,
+    "documentation_only": true,
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--full-index",
+      "0b6e68e99a83ec9e9b0e1b2341901f54b0ef6dbd",
+      "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "bytes": 44351,
+    "sha256": "714bb6045965a6fecb34cb8bd2e9a62b8710d92e3a3a72e9dd1f25169e69e646",
+    "git_diff_check_exit": 0
+  },
+  "document_pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "e8b49f2dc949b4c936aea87f6f2df16198123e9a",
+      "sha256": "5bcddce718f3304bc40ea415a91f468f25f768b38f7ee1c960702c8541c47656",
+      "bytes": 63664
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "c83a5f215768c12f73fc81aca8958f168053041c",
+      "sha256": "348140df44f084db49d2f9898be7aa77ed17c60a95e58352553d137d17f170c4",
+      "bytes": 1921963
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "20890dce1ea02d6e7e264829ea6ed3a828e9aba2",
+      "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+      "bytes": 14010
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "de9e7d1337fda8b6e38f070f07a3855205ef6928",
+      "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+      "bytes": 22799
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "803cf7e5bc2e3553067e5c0f65ce70653c26f0ed",
+      "sha256": "ed5c55cdca46850db68acd2a9bc3b358ebd8e1f604a7e45f04a2434656016512",
+      "bytes": 1402392
+    }
+  ],
+  "author_evidence_validation": {
+    "pin_count": 23,
+    "all_source_blobs_sha256_lengths_match": true,
+    "markdown_hash_matches": true,
+    "local_author_md_json_copy_identical": true,
+    "historical_worktree_fields_not_current_claims": true,
+    "changed_since_author_source": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    ]
+  },
+  "source_context_pins": [
+    {
+      "path": "AGENTS.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "equals_author_source": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "equals_author_source": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "equals_author_source": true
+    },
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "16413b95c8889f0440d040ed1dd214c81b2e3f8f",
+      "sha256": "865e6e30fc365225a0e26aa42f4bf48d645d7ac216fd8da037af9e6a9b40511c",
+      "bytes": 2252104,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "865e6e30fc365225a0e26aa42f4bf48d645d7ac216fd8da037af9e6a9b40511c",
+      "equals_author_source": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "c83a5f215768c12f73fc81aca8958f168053041c",
+      "sha256": "348140df44f084db49d2f9898be7aa77ed17c60a95e58352553d137d17f170c4",
+      "bytes": 1921963,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "85190f485fa9dc72797bca705a8b62306dcbcc6185a72ecaf548174fe57d9205",
+      "equals_author_source": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "e8b49f2dc949b4c936aea87f6f2df16198123e9a",
+      "sha256": "5bcddce718f3304bc40ea415a91f468f25f768b38f7ee1c960702c8541c47656",
+      "bytes": 63664,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "dfdb84d14c64d150b0bcace2c03fbcf38def96e7ae7d03d861726a3c2b294ae8",
+      "equals_author_source": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+      "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "bytes": 15874,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "equals_author_source": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.json",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "97bdd0aeae08a3a12900dd1703698870d0d90f30",
+      "sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "bytes": 40309,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "3f6d32096396ef7841074660f5774cabfb45ad59",
+      "sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
+      "bytes": 6978,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "b3e58253d7e7b285fa8dad42775ee230a17cd3875c34891da6f52bfd3aded2c3",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "bytes": 2993,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "4797cd481bffc8b9f46d31af9f30e6b0ffdab017",
+      "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14",
+      "bytes": 8221,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "4e0a4ed2348738b309be07482038fb923bf9ee64",
+      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "bytes": 901,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "5a46c4fe05f2392ee34f93ce392e36819c6aacd3",
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "bytes": 4102,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "6d5dd244d1d480390e4be57c92f2f52d33eef255",
+      "sha256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e",
+      "bytes": 3485,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "768513bf3d4b119f02b06d03fe4f20cfa51f67bd",
+      "sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "bytes": 23738,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "a3f8602314cf5fb4ee2f1713dbc98712fcc987bb",
+      "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "bytes": 10516,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "34350bd4e07c6a8f69cddcad1730458964009415",
+      "sha256": "5092cd0dd68436d7f5338ffdd15cf54bba223696aa94625f519e8dc8e033949c",
+      "bytes": 2263,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "5092cd0dd68436d7f5338ffdd15cf54bba223696aa94625f519e8dc8e033949c",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "c490bf47a8635cc6eb9d33ae54399ce4091553ed",
+      "sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+      "bytes": 91410,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "a8b964bb7841fb83a61a48da4e1535b3fc7c3f939b12b82d880cf5fb86623272",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "4487a6cf60b4892145410e5da1b5751d67f245f0",
+      "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "bytes": 16505,
+      "author_pin_verified": true,
+      "author_source_revision": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "author_source_sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90",
+      "equals_author_source": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "b186c1c96c8c46937b47950809ec6b25a0151593",
+      "sha256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c",
+      "bytes": 5104,
+      "review_role": "additional actual original systemd scope/custody source",
+      "equals_author_source": true
+    }
+  ],
+  "source_pin_count": 24,
+  "prior_review_integrity": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "53e13fa361d3237f9f5f407cc6ab35ab15f59233",
+      "sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+      "bytes": 16372,
+      "local_original": "/tmp/t197-independent-initial-review.md",
+      "byte_identical": true,
+      "unchanged_in_reviewed_delta": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-initial-20261016-review.json",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "0044a45b35fcaa7c1bd313dea4ab5f587036efb6",
+      "sha256": "ace62320ebee6cb7d8e2dff112f9814b4d329b27668a6b93a65a5a7557fab31f",
+      "bytes": 29876,
+      "local_original": "/tmp/t197-independent-initial-review.json",
+      "byte_identical": true,
+      "unchanged_in_reviewed_delta": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.md",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "f82dbd09088f87fbb7dc84f013689dfc891852f1",
+      "sha256": "152057a453a2c4e342332edc739d5ec634fe507c8e6cbb769d409a2b1fafd2ad",
+      "bytes": 15874,
+      "local_original": "/tmp/t197-independent-corrected-review.md",
+      "byte_identical": true,
+      "unchanged_in_reviewed_delta": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-independent-design-corrected-20261016-review.json",
+      "revision": "fdd5cb8b6bc1180027551489f8d4d700c0613e6e",
+      "git_blob": "97bdd0aeae08a3a12900dd1703698870d0d90f30",
+      "sha256": "f9b21f7cf914558ed64f6ad82f58af9f2fb74e6f6e842b33ade5e1ce007f3700",
+      "bytes": 40309,
+      "local_original": "/tmp/t197-independent-corrected-review.json",
+      "byte_identical": true,
+      "unchanged_in_reviewed_delta": true
+    }
+  ],
+  "confirmed_material_defects": [],
+  "source_confirmed_facts": [
+    {
+      "id": "S1",
+      "fact": "Lost retains original counted pin/uncertainty; current stop cannot complete retirement",
+      "paths": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs"
+      ],
+      "lines": [
+        "29-50",
+        "292-359"
+      ]
+    },
+    {
+      "id": "S2",
+      "fact": "Terminal stop can still be attempted after BeginStop failure; native cleanup is not lifecycle retirement",
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "lines": "612-620,716-735"
+    },
+    {
+      "id": "S3",
+      "fact": "External participant managed/borrowed work is not authenticated/owned by pipe-lifetime or terminal scope",
+      "paths": [
+        "BookOfEternityGMBridge/BridgeHost.MainOperations.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ]
+    },
+    {
+      "id": "S4",
+      "fact": "Close registry is bounded volatile state; existing metadata has live pending CAS and no proposed cold operation issuer",
+      "paths": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs"
+      ]
+    },
+    {
+      "id": "S5",
+      "fact": "Original native scope owners and live task/disposal proof do not implement the proposed durable same-boot cold custody contract",
+      "paths": [
+        "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+        "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+        "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+        "BookOfEternityGMBridge/ConPtySession.cs"
+      ]
+    }
+  ],
+  "grant_assessment": {
+    "selected_g_c_is_concrete_new_unaccepted_lifecycle_authority": true,
+    "reason": "Adds recoverable lifecycle issuer, durable operation metadata/namespace and recovery-only admission beyond current live-original authority; not merely missing D11 API",
+    "does_not_assert_only_possible_dep_c_architecture": true,
+    "routine_d11_specializations_not_reopened": true,
+    "all_a1_through_a5_unaccepted": true
+  },
+  "optional_notes": [
+    {
+      "id": "O1",
+      "proposal_line": 60,
+      "material_defect": false,
+      "summary": "Clarify unavailable publication capabilities means new ordinary/target authority; exact recorded original-owner debt settlement must remain available to complete D",
+      "suggested_wording": "Until D is complete, no new ordinary-operation or target-publication authority is issued. The recovery owner may exercise only the exact recorded original-owner recovery authority needed to settle D; every such publication remains bound to that owner's frozen plan, current G, guards and debt outcome.",
+      "parent_acknowledged_future_canonical_clarification": true,
+      "future_amendment_in_reviewed_revision": false
+    }
+  ],
+  "required_remaining_design": [
+    "A1 authentic platform participant identity/lifetime and exhaustive borrowed/native work coverage",
+    "A2 exact bounded durable schema/namespace/registration-terminal-cold protocol and retained-consumer release",
+    "A3 recovery-only finite original-owner D issuers and exact lock/admission graph",
+    "A4 genuine Linux and Windows original-native custody after bridge death and durable stop proof",
+    "A5 exact same-G HC/H3/HQ private admission and evidence lifetime",
+    "DEP-I and DEP-L accepted contracts",
+    "full lawful-target concrete owner catalog and qualification"
+  ],
+  "future_matrix": {
+    "ids": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12"
+    ],
+    "unique_count": 12,
+    "all_status": "UNRUN",
+    "adequate_for_discussion_agenda": true,
+    "final_source_fixture_selection": false,
+    "runtime_authorized": false
+  },
+  "verification": {
+    "type": "read-only pinned source and document-integrity checks",
+    "builds": "UNRUN",
+    "test_discovery": "UNRUN",
+    "tests": "UNRUN",
+    "native_runtime_experiments": "UNRUN",
+    "all_t197_checks": "UNRUN",
+    "unrelated_runtime": "outside scope and not T197 evidence"
+  },
+  "authorization": {
+    "parent_reported_user_time_utc": "07:01:11",
+    "parent_reported_user_text": "хорошо",
+    "parent_reported_message": "Sentinel_f3e48da025808191bdb46fab2e0b960f",
+    "original_message_independently_verified": false,
+    "scope": "independent staged F1-R2/D9-D11 implementation and parallel T197 DESIGN; this task T197 DESIGN only",
+    "g_c_grant_or_transition_implementation_inferred": false
+  },
+  "preserved_limits": [
+    "DEP-C/I/L globally block H2/H3/newQTE",
+    "source n/k and one death marker Turn=-1",
+    "genuine LifeEvaluation n+1",
+    "same physical G",
+    "no F2/no extra source tick or replay",
+    "no added realm/load/incarnation/allocator authority",
+    "D4/guided/visual/native-platform/D8/full-ordinary gates"
+  ],
+  "report_markdown_path": "/tmp/t197-depc-independent-review-20261016.md",
+  "report_markdown_sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+  "json_self_hash": "reported externally",
+  "finalstop": {
+    "only_written_paths": [
+      "/tmp/t197-depc-independent-review-20261016.md",
+      "/tmp/t197-depc-independent-review-20261016.json"
+    ],
+    "repository_writes": false,
+    "builds_discovery_tests_runtime": false,
+    "commits_pushes": false,
+    "subagents": 0,
+    "pending_writes": false,
+    "background_activity": false
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-canonical-listings-linux",
+    "portable-canonical-listings-known"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "92382b4a9728897deffb3c19c20e9d3b60f23e83",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 54.4415866,
+  "Descriptors": [
+    {
+      "Name": "portable-canonical-listings-known-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-canonical-listings-known",
+      "Categories": [
+        "portable-canonical-listings-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-canonical-listings-known-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-canonical-listings-known",
+      "Categories": [
+        "portable-canonical-listings-known"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ConsoleSettingsSessionTests.ModListingUsesDraftSelectionAndPortableInputValidationWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt|FullyQualifiedName=BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged|FullyQualifiedName=BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest|FullyQualifiedName=BookOfEternityClient.Tests.WorldDirectiveServiceTests.GetAvailableProfilesAsync_TextProfile_MapsFullBodyToDetailedWorldDescription",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.ModListingUsesDraftSelectionAndPortableInputValidationWithoutPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_DoesNotRewrite_WhenSemanticsUnchanged",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SystemModServiceTests.WriteManifestForGmAsync_RebuildsInvalidManifest",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WorldDirectiveServiceTests.GetAvailableProfilesAsync_TextProfile_MapsFullBodyToDetailedWorldDescription",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-canonical-listings-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-canonical-listings-linux",
+      "Categories": [
+        "portable-canonical-listings-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.CanonicalListingAdmissionTests.OriginalListsAdmitRecoveryAndPreserveExactInputs",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.CanonicalListingAdmissionTests.OriginalListsAdmitRecoveryAndPreserveExactInputs",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

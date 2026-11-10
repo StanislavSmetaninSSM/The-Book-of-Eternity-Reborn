@@ -1,0 +1,289 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_UNCERTAIN1_ORIGINAL_FAILURE_AND_CAUSAL_CHECK",
+  "checkedUtc": "2026-10-18T14:52:13.680445+00:00",
+  "carrier": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+  "actualSource": "74da374af40e0017fef9a8d736394a7e7949cd3a",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "recordSha256": "5432cc4abead5fb6d94d9de9f64f87b94bec4be9c88a96733d4eaa160b89a43f",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-uncertain1-813f1057-files-20261018/archive.json",
+    "sha256": "02f489fc84b2bc742eed5ff00fdf6ffab9167d26165bdce9e40f8f0ff42febcd",
+    "rawChains": 11,
+    "rawBytes": 25855579,
+    "completeOriginalCoverage": true,
+    "storedRawRestoredExact": true
+  },
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "nativeExit": 1,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "categoryResult": {
+    "Category": "fr063-joint-interface-uncertain-current",
+    "Seconds": 105.6960277,
+    "BudgetMinutes": 10,
+    "Completed": false
+  },
+  "wallSeconds": 134.49943128499945,
+  "nineAndFull1575OutputsExact": true,
+  "sourceReadback": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "sha256": "680813fd5769128cfc9ce11d0adf3065f41ca2419f94febe30ea8f5c2ed4179f",
+      "bytes": 40433
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "sha256": "aab939b29c80b947784adf8e8ed759ca8e17654c1013ed77a1da8d7e1d2deb88",
+      "bytes": 27309
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "bytes": 61445
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e",
+      "bytes": 16023
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+      "bytes": 11186
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "fc60121279af569d0c2e32b6429e96326bc262bc6ba584afe57156432b024483",
+      "bytes": 509720
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "sha256": "70f4e54f5e36f3fbeeb10b418183fcbc4a7a66f61dea79db298ffb88633dac96",
+      "bytes": 57379
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
+      "bytes": 20647
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+      "sha256": "6dd6124f66cad4857ce09356aa529d975afabb528ab38fe87c32bdd8da5f2c0a",
+      "bytes": 39315
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "sha256": "deadc153a51e5ddd0d001904737ee74e287f970553bee0c8fd698a225cba780e",
+      "bytes": 9682
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "sha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350",
+      "bytes": 10421,
+      "pinned": false
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "bytes": 296492,
+      "pinned": false
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "bytes": 23806,
+      "pinned": true
+    }
+  ],
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "duration": "00:01:27.6102657",
+      "outcome": "Failed",
+      "error": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertUncertainCurrentResumeAsync(GameEngine engine, String firstDiagnostics, Func`1 describeCurrentDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 94\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertHeldAsync(GameEngine engine, String owningDiagnostics, Func`1 describeCurrentDiagnostics) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 364\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow, Boolean normalizeNarrativeBeforeCheckpoint, Action`1 observeSettledCommonPlan, Boolean postOriginalAutomaticSubmission, Action`1 attachActualOwnerProbe, JointCaptureCutProbe currentCaptureProbe, JointInterfaceLifecycleProbe interfaceLifecycleProbe) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 439\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs:line 15\n--- End of stack trace from previous location ---",
+      "currentPostCall": {
+        "Handled": true,
+        "CurrentDiagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after обработки хода: 1 errors\nJoint canonical publication retained PublicationUncertain after an exception.\nSystem.IO.IOException: L01 one-shot existing completed capture checkpoint; preparation not entered.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.<>c__DisplayClass85_0.<<Attach>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 127\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.GameEngine.PublishCurrentMortalJointRepairAsync(ValidatedPendingTurnSnapshotContext frame, Int32 expectedTurn, IReadOnlyDictionary`2 backups) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs:line 49\nJoint story/turn completion held: The joint completion marker is missing.; original, ready, outputs, backups and committed union retained.",
+        "Turn": 42,
+        "CurrentProof": null,
+        "CaptureCallbacks": 1,
+        "Disposition": "PublicationUncertain",
+        "Issues": [
+          {
+            "FilePath": "acceptedTurn.wounds",
+            "Severity": 2,
+            "Message": "L01 one-shot existing completed capture checkpoint; preparation not entered.",
+            "Category": 1,
+            "Code": "mortal_joint_repair_admission_refused",
+            "Actor": "Client",
+            "Section": "mortal_qte_private_source",
+            "Expected": "one actual same-original source-bound joint repair wave and held request",
+            "Actual": "blocked",
+            "RepairHint": "Recompose the accepted wound turn from its sealed authority inputs."
+          }
+        ],
+        "OldAttempt": {
+          "Live": false,
+          "Delegated": false,
+          "ContinuationAbsent": true,
+          "ReservationAbsent": true
+        },
+        "Trace": [
+          {
+            "Sequence": 1,
+            "TransactionId": "b8dec083c05a413eb27c7acbba4ec322",
+            "InterfaceChanged": true,
+            "MarkerCommitted": false,
+            "Before": {
+              "Bytes": "ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0KfQ==",
+              "Length": 142,
+              "Sha256": "3EC7AFF43FF10F02429E2BD89EBF4ED5BA1BD19800ED6B9778DAC6938308E674"
+            },
+            "After": {
+              "Bytes": "77u/ewogICJkaWFsb2d1ZU9wdGlvbnMiOiBbCiAgICB7CiAgICAgICJ0ZXh0IjogIltOSV9DT05UUk9MOnNlY29uZF3Qn9GA0L7QtNC+0LvQttC40YLRjCDQvtCx0YvRh9C90YvQuSDQvtGC0LLQtdGCLiIsCiAgICAgICJpbnB1dFZhbHVlIjogIltOSV9BQ1RJT046Zmlyc3RdW05JX0NPTlRST0w6c2Vjb25kXdCf0YDQvtC00L7Qu9C20LjRgtGMINC+0LHRi9GH0L3Ri9C5INC+0YLQstC10YIuIgogICAgfQogIF0sCiAgInRpbWVzdGFtcCI6ICIyMDI2LTEwLTE4VDE0OjQzOjE3Ljk3MDY1NzArMDA6MDAiCn0=",
+              "Length": 287,
+              "Sha256": "743C9470B742CCE4F980FE7E9AF976FE9276F67857D02D5551D527419862E5C7"
+            }
+          }
+        ],
+        "Meaning": "New runtime observation only; original failed run had no post-call log"
+      },
+      "postCallImages": {
+        "pendingSha256": "1d0365e18bb79071d362a6d4f36868df5380a328ffb531957a4f6451e80b90df",
+        "interfaceSha256": "743c9470b742cce4f980fe7e9af976fe9276f67857d02d5551d527419862e5c7",
+        "mechanicalPaths": 15,
+        "allEqualToInitialRetainedImages": true,
+        "readErrors": 0
+      },
+      "correlatedReady": {
+        "sessionId": "session_qte_story_append",
+        "requestId": "c45ec9ae01c6456e88bb39c1de4d8ff4",
+        "turnNumber": 43,
+        "status": "success",
+        "timestamp": "2026-10-18T14:43:02.9375255Z",
+        "filesModified": [
+          "output/narrative_response.json",
+          "output/interface_updates.json",
+          "output/debug_logs.json",
+          "output/mortal_wound_decisions.json"
+        ]
+      },
+      "assertionScope": {
+        "reached": [
+          "initial exact PublicationUncertain issue after one genuine completed capture and Published I",
+          "expired old attempt with no live/delegated/continuation/reservation",
+          "held turn42, exact pending Published I, all15 initial mechanical images",
+          "direct actual restore refusal and exact222 before/after images",
+          "new real late call returned handled=true",
+          "new post-call logger, typed diagnostic/scalar and pending/I/15mechanical snapshots emitted without read error",
+          "post-call turn42, proofnull, captureCallbacks1, old diagnostic retained, pending/I/15mechanical bytes unchanged",
+          "native and owned-root cleanup"
+        ],
+        "unreached": [
+          "selected current resume dispatch after the early story hold",
+          "second actual capture and new common plan/take/publication",
+          "non-null current full DATA proof and turn43 positive assertions",
+          "post-resume mechanical effect assertions",
+          "seven terminal cleanup assertions",
+          "positive after-state and inert repeat",
+          "newcrash5"
+        ]
+      }
+    }
+  ],
+  "jsonDiagnosticParseErrors": 0,
+  "rawImageShaChecks": 963,
+  "journalImageShaChecks": 0,
+  "embeddedImageShaChecks": 4,
+  "plainBase64Decodes": 16,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-before-census-20261018.json",
+      "sha256": "781acb06a1ff78333867f942e2015919ddc912eae336fd0db830676f057e9a03",
+      "entries": 112,
+      "startedUtc": "2026-10-18T14:41:14.212876+00:00",
+      "finishedUtc": "2026-10-18T14:41:14.234249+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 44006,
+          "expectedStartTick": 1908213,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-after-census-20261018.json",
+      "sha256": "4e4349f473ea9db220b07ff7b3886e2258fe04630c325266a979e3093b735bcb",
+      "entries": 112,
+      "startedUtc": "2026-10-18T14:43:31.612666+00:00",
+      "finishedUtc": "2026-10-18T14:43:31.629278+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 44282,
+          "expectedStartTick": 1921952,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "beforeGapSeconds": 2.016489,
+  "afterGapSeconds": 0.862726,
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-f390eb06.json",
+    "receiptSha256": "58f4bac283b39b2d429ae209b064f0ad8c27c8d4765c001719dfdbfe176d56b2",
+    "changedPaths": 20,
+    "bytesHashesBlobsModesVerified": true,
+    "completeSavedGitTreeMatchesIndependentClone": true
+  },
+  "qualifiedCases": 51,
+  "additionalQualifiedTargets": 0,
+  "findings": [
+    {
+      "id": "L01-UNCERTAIN-STORY-PREEMPT-001",
+      "severity": "blocking",
+      "classification": "PRODUCT_DISPATCH_PREEMPTS_SELECTED_CURRENT_OWNER",
+      "fact": "Same-frame retained PublicationUncertain marks story completion claimed before common exists. Absent marker causes an early HeldBlocked result, preventing the selected current-resume route from executing.",
+      "directEvidence": "New post-call logger adds exactly the missing-completion-marker hold; turn42/proofnull/capture1 and unchanged pending/I/mechanics agree with that path.",
+      "oldRunLimit": "No old missing post-call diagnostics are reconstructed or uniquely attributed by this new observation."
+    }
+  ],
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE",
+  "newCrash5": "UNRUN_HELD",
+  "execution": "Read-only original/source/Git/archive/build-output/saved-census inspection only; no native/build/discovery/controller/observer execution, current fixture-root or process inspection/control, repo writes or retry."
+}

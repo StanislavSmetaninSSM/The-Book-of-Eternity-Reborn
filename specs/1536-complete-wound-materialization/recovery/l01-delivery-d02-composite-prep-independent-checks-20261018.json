@@ -1,0 +1,555 @@
+{
+  "kind": "D02_COMPOSITE_PREP_INDEPENDENT_READ_ONLY_CHECKS",
+  "candidate": "74105ae6165259051810898e00a6466d4c2bc53e",
+  "source": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+  "controllerSha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6",
+  "bindingsSha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff",
+  "prepRecords": {
+    "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+    "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+    "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+  },
+  "passed": 122,
+  "findings": [],
+  "checks": [
+    {
+      "name": "current and independent restored HEAD exact/clean",
+      "passed": true
+    },
+    {
+      "name": "GitHub recovery receipt exact remote, full clone,149pins,153paths, no production change",
+      "passed": true
+    },
+    {
+      "name": "only four new PREP evidence/control/handoff paths",
+      "passed": true
+    },
+    {
+      "name": "new carrier bytes exact Git and independent clone",
+      "passed": true
+    },
+    {
+      "name": "accepted controller and bindings unchanged",
+      "passed": true
+    },
+    {
+      "name": "149 source pins current/restored exact",
+      "passed": true
+    },
+    {
+      "name": "pin packet unchanged from admitted source",
+      "passed": true
+    },
+    {
+      "name": "SOURCE acceptance exact and gate consumed; synthetic held",
+      "passed": true
+    },
+    {
+      "name": "gameplay and crash5 NONE",
+      "passed": true
+    },
+    {
+      "name": "all376 bound SDK/package/helper inputs exact",
+      "passed": true
+    },
+    {
+      "name": "existing172 tool/reference inputs exact",
+      "passed": true
+    },
+    {
+      "name": "archive exact hash/size/Git/restored",
+      "passed": true
+    },
+    {
+      "name": "exact50 unique archived names, no TRX",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-integration.project.xml",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-integration.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-integration.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-integration.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-integration.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-unit.project.xml",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-unit.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-unit.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-unit.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/bind-unit.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-integration.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-integration.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-integration.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-integration.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-unit.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-unit.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-unit.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/imports-unit.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/runner.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/runner.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/runner.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/runner.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/phase/started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/runner/catalog-audit.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/runner/dotnet-test.log",
+      "passed": true
+    },
+    {
+      "name": "raw chain catalog/runner/summary.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/runner.record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/runner.started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/runner.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/runner.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/phase/started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/runner/dotnet-test.log",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/runner/plan.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain plan/runner/summary.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/D01Live.dll",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/D01Live.pdb",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/D01Live.runtimeconfig.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/compile.rsp",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/compile.stderr",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/compile.stdout",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/record.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain prepare/phase/started.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj.nuget.g.props",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj.nuget.g.targets",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.IntegrationTests/project.assets.json",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj.nuget.g.props",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj.nuget.g.targets",
+      "passed": true
+    },
+    {
+      "name": "raw chain staged-metadata/BookOfEternityClient.Tests/project.assets.json",
+      "passed": true
+    },
+    {
+      "name": "catalog exact original record hash",
+      "passed": true
+    },
+    {
+      "name": "catalog source/native/observer/ZERO/provenance",
+      "passed": true
+    },
+    {
+      "name": "catalog installed inputs and unchanged normal snapshots",
+      "passed": true
+    },
+    {
+      "name": "catalog original dated process observations clean",
+      "passed": true
+    },
+    {
+      "name": "catalog exact private artifact routing and phase environment",
+      "passed": true
+    },
+    {
+      "name": "catalog old outcomes unmodified",
+      "passed": true
+    },
+    {
+      "name": "catalog expected exact command count",
+      "passed": true
+    },
+    {
+      "name": "catalog owned command 0",
+      "passed": true
+    },
+    {
+      "name": "catalog owned command 1",
+      "passed": true
+    },
+    {
+      "name": "catalog owned command 2",
+      "passed": true
+    },
+    {
+      "name": "catalog owned command 3",
+      "passed": true
+    },
+    {
+      "name": "catalog owned command 4",
+      "passed": true
+    },
+    {
+      "name": "catalog summary exact/native0/cleanup/ZERO/no build",
+      "passed": true
+    },
+    {
+      "name": "catalog actual discovery assembly routing",
+      "passed": true,
+      "detail": [
+        "/tmp/l01d02-b796a0e4bf514a62/artifacts/bin/BookOfEternityClient.IntegrationTests/debug/BookOfEternityClient.IntegrationTests.dll",
+        "/tmp/l01d02-b796a0e4bf514a62/artifacts/bin/BookOfEternityClient.Tests/debug/BookOfEternityClient.Tests.dll"
+      ]
+    },
+    {
+      "name": "catalog explicit NoBuild command and no warning/error output",
+      "passed": true
+    },
+    {
+      "name": "plan exact original record hash",
+      "passed": true
+    },
+    {
+      "name": "plan source/native/observer/ZERO/provenance",
+      "passed": true
+    },
+    {
+      "name": "plan installed inputs and unchanged normal snapshots",
+      "passed": true
+    },
+    {
+      "name": "plan original dated process observations clean",
+      "passed": true
+    },
+    {
+      "name": "plan exact private artifact routing and phase environment",
+      "passed": true
+    },
+    {
+      "name": "plan old outcomes unmodified",
+      "passed": true
+    },
+    {
+      "name": "plan expected exact command count",
+      "passed": true
+    },
+    {
+      "name": "plan owned command 0",
+      "passed": true
+    },
+    {
+      "name": "plan summary exact/native0/cleanup/ZERO/no build",
+      "passed": true
+    },
+    {
+      "name": "plan actual discovery assembly routing",
+      "passed": true,
+      "detail": [
+        "/tmp/l01d02-b796a0e4bf514a62/artifacts/bin/BookOfEternityClient.IntegrationTests/debug/BookOfEternityClient.IntegrationTests.dll"
+      ]
+    },
+    {
+      "name": "plan explicit NoBuild command and no warning/error output",
+      "passed": true
+    },
+    {
+      "name": "prepare exact original record hash",
+      "passed": true
+    },
+    {
+      "name": "prepare source/native/observer/ZERO/provenance",
+      "passed": true
+    },
+    {
+      "name": "prepare installed inputs and unchanged normal snapshots",
+      "passed": true
+    },
+    {
+      "name": "prepare original dated process observations clean",
+      "passed": true
+    },
+    {
+      "name": "prepare exact private artifact routing and phase environment",
+      "passed": true
+    },
+    {
+      "name": "prepare old outcomes unmodified",
+      "passed": true
+    },
+    {
+      "name": "prepare expected exact command count",
+      "passed": true
+    },
+    {
+      "name": "prepare owned command 0",
+      "passed": true
+    },
+    {
+      "name": "seven fresh distinct PID/birth identities",
+      "passed": true,
+      "detail": [
+        [
+          109747,
+          4824025
+        ],
+        [
+          109759,
+          4824185
+        ],
+        [
+          109778,
+          4824320
+        ],
+        [
+          109790,
+          4824436
+        ],
+        [
+          109803,
+          4824561
+        ],
+        [
+          110014,
+          4830171
+        ],
+        [
+          110161,
+          4835092
+        ]
+      ]
+    },
+    {
+      "name": "complete810/11802 catalog inventory audit",
+      "passed": true
+    },
+    {
+      "name": "integration exact evaluated property record",
+      "passed": true
+    },
+    {
+      "name": "integration full actual preprocessed imports recorded",
+      "passed": true
+    },
+    {
+      "name": "integration own staged metadata imports/no original obj",
+      "passed": true
+    },
+    {
+      "name": "integration all actual imports current/exact authorized closure",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "integration retained and staged complete bins equal manifest",
+      "passed": true
+    },
+    {
+      "name": "integration six total metadata exact original/staged/archive",
+      "passed": true
+    },
+    {
+      "name": "integration declared runtime assets present in own bin closure",
+      "passed": true,
+      "detail": {
+        "runtimeEntries": 32
+      }
+    },
+    {
+      "name": "unit exact evaluated property record",
+      "passed": true
+    },
+    {
+      "name": "unit full actual preprocessed imports recorded",
+      "passed": true
+    },
+    {
+      "name": "unit own staged metadata imports/no original obj",
+      "passed": true
+    },
+    {
+      "name": "unit all actual imports current/exact authorized closure",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "unit retained and staged complete bins equal manifest",
+      "passed": true
+    },
+    {
+      "name": "unit six total metadata exact original/staged/archive",
+      "passed": true
+    },
+    {
+      "name": "unit declared runtime assets present in own bin closure",
+      "passed": true,
+      "detail": {
+        "runtimeEntries": 29
+      }
+    },
+    {
+      "name": "original normal899 files exact frozen hashes",
+      "passed": true
+    },
+    {
+      "name": "exact singleton PlanOnly1descriptor1method1case; no completion claim",
+      "passed": true
+    },
+    {
+      "name": "PlanOnly binds exact new catalog record",
+      "passed": true
+    },
+    {
+      "name": "directcompile exact163refs and unchanged helper/Live sources",
+      "passed": true
+    },
+    {
+      "name": "runtime exact net8.0/8.0.32 Disable",
+      "passed": true
+    },
+    {
+      "name": "four directcompile outputs exact current/archived",
+      "passed": true
+    },
+    {
+      "name": "new LiveDLL hash and compiler no diagnostics",
+      "passed": true
+    },
+    {
+      "name": "old failure and immutable histories unmodified in candidate delta",
+      "passed": true
+    },
+    {
+      "name": "synthetic phase still unused",
+      "passed": true
+    }
+  ],
+  "nativeActions": 0,
+  "procfsReads": 0,
+  "repositoryWrites": 0,
+  "recoveryReceiptSha256": "2955a9326ee560c388fb4c4414a26a229a7f5a665beee9342cf096eb48ff660b",
+  "indexSha256": "eae39bd6b7e4844de3c00844c1e357979d43182118f199248a4a8edadd266c90",
+  "checkerSha256": "87ac757c0eb71a1e0dce040e05e8158d65f8f8ccc17105a7c2bfc384c36ecc9b"
+}

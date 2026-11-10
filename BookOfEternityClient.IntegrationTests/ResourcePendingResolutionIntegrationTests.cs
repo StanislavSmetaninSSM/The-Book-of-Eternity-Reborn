@@ -6,6 +6,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ResourcePendingResolutionIntegrationTests
 {
+    private readonly Xunit.Abstractions.ITestOutputHelper _commonCalculationOutput;
+    public ResourcePendingResolutionIntegrationTests(Xunit.Abstractions.ITestOutputHelper output) => _commonCalculationOutput = output;
+
     private static readonly string[] MechanicalPaths =
     {
         ResourceMaterializationContract.StatePath,
@@ -52,7 +55,7 @@ public sealed class ResourcePendingResolutionIntegrationTests
         var method = typeof(ValidationService).GetMethod("ValidateAcceptedTurnRawResourceMaterializationCoreAsync",
             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
         var issues = await Assert.IsAssignableFrom<Task<IReadOnlyList<ValidationIssue>>>(
-            method.Invoke(context.Validator, new object?[] { lease, null, sink }));
+            method.Invoke(context.Validator, new object?[] { lease, null, sink, null, null, null, null }));
         Assert.Contains(issues, issue => issue.Code == "mortal_original_pending_replay_unsupported");
         Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
@@ -103,7 +106,9 @@ public sealed class ResourcePendingResolutionIntegrationTests
     [Fact]
     public async Task FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce()
     {
-        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var context = await EffectMaterializationTestContext.CreateAsync();
+        using var owned = new CleanupOwnedFixture(context.RootPath, _commonCalculationOutput.WriteLine);
+        await using var ownedContext = context;
         await SeedBoundedTurnEndAsync(context);
         await PublishPendingAsync(context);
         var pending = ParsePending(

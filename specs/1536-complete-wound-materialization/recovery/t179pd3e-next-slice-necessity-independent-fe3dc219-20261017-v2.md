@@ -1,0 +1,19 @@
+Independent necessity review — T179-Pd.3e, 2026-10-17
+
+Verdict: SELECT ordinary debug document/scope prefix for tests-only authoring. No material implementation precondition blocks this ZIP-independent slice. This is necessity/scope assessment, not SOURCE acceptance or runtime authorization. Exact clean source: `fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26`.
+
+The accepted 3e contract explicitly permits ordinary extraction as a separate prerequisite. Current public Full enters `ValidationService.cs:61–66`; actual ordinary and joint consumers are `GameEngine.ValidationAndRepair.cs:247` and `GameEngine.MortalJointRepairCompletion.cs:99`. The useful missing seam is the document/scope policy in `AcceptedTurnAndInkFeathers.cs:7411–7624`, ending before `ResolveGuardianPolicyContextAsync` at 7625. Existing scope parser/Actor Brain helpers are already separate; moving them for file layout adds no required behavior.
+
+Keep freshness/original lookup and both reachable current-read occurrences, Parse/using/disposal/JsonException catch, ambient timestamp at 7459, and all downstream dependency reads/six Full audits in their existing owner/order. Extract only value computations around those slots. Exact-case thoughts lookup, case-insensitive allowed names, duplicate/underscore/enumeration rules, ordered diagnostics, CRLF-only normalization, terminal missing scope and continuation after parsed-scope errors must remain. Stale equality is a Warning. Invalid tracked original/policy-null, malformed domain JSON and actual IO faults must not be conflated or upgraded into new ordinary rejection/authority.
+
+Finite TDD frontier: genuine public Full prerequisites before structural missing-kernel RED; bounded full-diagnostic document/scope cases; real LiveTurnPreparation original and read-order/fault controls; no-write raw bytes; valid and erroneous parsed scope reaching the unchanged dependency tail. Core-profile controls alone do not prove public Full. Concrete test owners/counts/budgets and fresh native preparation are later gates, not observations in this review.
+
+The existing `fr063-ordinary-output-policy-source` Fact is genuinely affected: first invert exact new 3e substitutions to accepted 3d A `8bde0129…`, then apply the retained four 3d inverses to original A `6a9ffcb5…`. Keep whole-partial comparison, single-match checks, and the old World33 fence; no current-hash blessing. Select this one changed source Fact, not all unchanged ordinary52. After product, the exact existing `fr063-joint-late-completion` two methods require separate fresh qualification because their real caller reaches Full reasoning at line99. They need no pre-product repeat.
+
+The 3d HOT remainder is not blocked by ZIP as a data input. Its actual larger work is owner/source/history/transition joining: current `CaptureCurrentHotCustodyAsync` closes capture at line177. Full observed 3e also needs completed-musings provided-lease and volatile projection ownership. These are real later dependencies, but none is required to extract the ordinary prefix while leaving its tail and authority untouched. This avoids claiming that all implementation is blocked or that this prerequisite completes HOT/Full.
+
+Retain fe3 ordinary52 + separately accepted protected2 and all prior findings/history. No old raw, native test, build, discovery, infrastructure, CI, ZIP, Windows, A3 or other branch work was performed. Runtime remains held for concrete SOURCE/FIXTURE/SELECTION/PREP review.
+
+Detailed conditions and exact current source projections: `/tmp/t179pd3e-next-slice-necessity-independent-fe3dc219-20261017-v2.json`; support `/tmp/t179pd3e-next-slice-necessity-independent-fe3dc219-20261017-check-v2.json` (SHA-256 `ad9dccfd6cc0edc8bb0b486187029d68e903f7ba2d80154c9dbc6aaa337c395f`).
+
+Revision 2 corrects draft line coordinates; exact source anchor and necessity verdict are unchanged.

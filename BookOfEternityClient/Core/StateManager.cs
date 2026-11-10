@@ -51,14 +51,27 @@ public partial class StateManager
     public Task<string> BootstrapLocalStorageAsync()=>SessionOperationContext.RunParticipatingBootstrapAsync(_fs,BootstrapLocalStorageCoreAsync);
     private async Task<string> BootstrapLocalStorageCoreAsync()
     {
-        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _fs.EnsureDirectoryStructure(lease);
-        var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
-        var loaded = before == null ? null : DecodeLocalSettings(before);
-        var desired = before ?? EncodeLocalSettings(Settings);
-        var generation = _fs.BootstrapLocalStorage(lease, before, desired);
-        if (loaded != null) Settings.ApplyLoadedValues(loaded);
-        return generation;
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            _fs.EnsureDirectoryStructure(lease);
+            var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
+            var loaded = before == null ? null : DecodeLocalSettings(before);
+            var desired = before ?? EncodeLocalSettings(Settings);
+            var generation = _fs.BootstrapLocalStorage(lease, before, desired);
+            if (loaded != null) Settings.ApplyLoadedValues(loaded);
+            return generation;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, uncertainty);
+        }
     }
 
     public async Task LoadSettingsAsync()
@@ -120,16 +133,29 @@ public partial class StateManager
     /// </returns>
     public async Task RefreshGameStateAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
         try
         {
-            await RepairClientOwnedProfileMirrorsAsync(writeLease);
+            try
+            {
+                await RepairClientOwnedProfileMirrorsAsync(writeLease);
+            }
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
+            {
+                _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+            }
+            await RefreshGameStateCoreAsync(writeLease);
         }
-        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            _logger.LogDebug(ex, "Не удалось синхронизировать клиентские зеркала профилей перед refresh.");
+            uncertainty = failure;
+            throw;
         }
-        await RefreshGameStateCoreAsync(writeLease);
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
     }
 
     /// <summary>
@@ -152,6 +178,12 @@ public partial class StateManager
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
         await RefreshGameStateCoreAsync(writeLease);
+    }
+
+    internal Task RefreshGameStateReadOnlyAsync(FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        _fs.VerifyCurrentSessionOperation(writeLease);
+        return RefreshGameStateCoreAsync(writeLease);
     }
 
     private async Task RefreshGameStateCoreAsync(
@@ -626,14 +658,18 @@ public partial class StateManager
         return Array.Empty<string>();
     }
 
-    private static string FormatWorldTime(JsonElement root)
+    /// <summary>Formats current world-time DATA without inferring a calendar epoch from its cumulative counter.</summary>
+    /// <param name="root">Already parsed canonical or supported command-shaped time DATA.</param>
+    /// <returns>Current readable time, elapsed-time fallback, or an empty string.</returns>
+    internal static string FormatWorldTime(JsonElement root)
     {
+        if (WorldTimeDisplay.TryReadMinutes(root, out var minutes)) return WorldTimeDisplay.Format(minutes);
         if (TryFormatAbsoluteWorldTime(root, out var absolute))
             return absolute;
 
         if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-            TryFormatAbsoluteWorldTime(setWorldTime, out absolute))
-            return absolute;
+            (WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) || TryFormatAbsoluteWorldTime(setWorldTime, out absolute)))
+            return WorldTimeDisplay.TryReadMinutes(setWorldTime, out minutes) ? WorldTimeDisplay.Format(minutes) : absolute;
 
         if (TryGetIntLike(root, "timeChange", out var deltaMinutes) && deltaMinutes != 0)
             return $"Прошло {deltaMinutes} мин. за ход";

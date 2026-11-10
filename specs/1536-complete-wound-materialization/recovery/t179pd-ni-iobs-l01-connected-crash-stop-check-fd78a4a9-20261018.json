@@ -1,0 +1,347 @@
+{
+  "record": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-first-crash-current/record.json",
+  "recordSha256": "858e214ce50a000d5b9606e0450ef5e6caa512e3058dea5f6a13d477e2f5199f",
+  "archive": "/tmp/t179pd-ni-iobs-l01-intake-crash-archive-first-fd78a4a9-20261018/archive.json",
+  "archiveSha256": "debe6ab711fc559a97c888078328a3f98db16f245f5726e7cf43033b1da2cda8",
+  "rawChains": 11,
+  "actualSource": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "nativeExit": 1,
+  "wallSeconds": 83.02463500200247,
+  "expectedMethodCounts": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+  },
+  "actualMethodCounts": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+  },
+  "source98AndContextExact": true,
+  "freshNineAndAll1575Exact": true,
+  "nativeCompleteAndClean": true,
+  "kind": "CONNECTED_CRASH5_FIRST_STOP_CAUSAL_CHECK",
+  "carrier": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "mode": "crash5",
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-crash-current"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-crash-current",
+        "reason": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup.",
+        "contracts": [
+          "NI-IOBS-L01 bounded real FIRST2/Prepared→I+Published/common/current-resume/late-cold DATA obligations; discovery and actual evidence are recorded separately."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-crash-current",
+        "Seconds": 79.3352155,
+        "BudgetMinutes": 15,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0320999,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0336999,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.105968,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 20,
+    "WallTime": "00:01:22.0826196",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 5,
+      "CompletedCases": 5,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 5,
+      "Executed": 5,
+      "Passed": 0,
+      "Failed": 5
+    },
+    "DuplicateTests": []
+  },
+  "cases": [
+    {
+      "identity": {
+        "executionId": "af8bd446-e9d5-49c5-8332-d6224a879094",
+        "testId": "d3375844-8bb0-87cf-a98b-f3cfdcee3e49",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 0)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:15.2951199",
+        "startTime": "2026-10-18T08:34:32.2785202+00:00",
+        "endTime": "2026-10-18T08:34:32.2785204+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "af8bd446-e9d5-49c5-8332-d6224a879094"
+      },
+      "cut": 0,
+      "parentBirthUtc": "2026-10-18T08:34:16.9770399Z",
+      "childSelfBirthUtc": "2026-10-18T08:34:16.9798787Z",
+      "difference100nsTicks": 28388,
+      "differenceMilliseconds": 2.8388,
+      "originalPid": 228603,
+      "originalExitCode": 73,
+      "naturalExitJoinEof": true,
+      "source42Original43HeldTreatmentPrerequisitesInChildRaw": true,
+      "parentPidAndNonceAssertionsBeforeFailurePassed": true,
+      "resumeProcessLaunched": false,
+      "failureMessage": "Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:16.9770399Z\nActual:   2026-10-18T08:34:16.9798787Z",
+      "failureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---",
+      "originalChildStdoutSha256": "3472b1d6558378f93c9f934a4a1dcd274ea598a62fc15b548f616ffc3e244eba",
+      "sourceBoundAbruptCut": "The compiled role calls Environment.Exit(73) only after the chosen cut predicate and cut.json write; exact cut.json body is not retained in this FIRST archive."
+    },
+    {
+      "identity": {
+        "executionId": "a20654ab-f42b-4c53-ada7-120f64872f93",
+        "testId": "9b6eddcd-c186-edf6-d0da-91a3b2827108",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 1)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:16.1973235",
+        "startTime": "2026-10-18T08:33:44.3887968+00:00",
+        "endTime": "2026-10-18T08:33:44.3888077+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "a20654ab-f42b-4c53-ada7-120f64872f93"
+      },
+      "cut": 1,
+      "parentBirthUtc": "2026-10-18T08:33:28.2270399Z",
+      "childSelfBirthUtc": "2026-10-18T08:33:28.2269671Z",
+      "difference100nsTicks": -728,
+      "differenceMilliseconds": -0.0728,
+      "originalPid": 228504,
+      "originalExitCode": 73,
+      "naturalExitJoinEof": true,
+      "source42Original43HeldTreatmentPrerequisitesInChildRaw": true,
+      "parentPidAndNonceAssertionsBeforeFailurePassed": true,
+      "resumeProcessLaunched": false,
+      "failureMessage": "Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:33:28.2270399Z\nActual:   2026-10-18T08:33:28.2269671Z",
+      "failureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---",
+      "originalChildStdoutSha256": "2e4eaa0a2a98ab76ef15c6b676a66e05633c4347077c0311a2cb6b2d8938b30c",
+      "sourceBoundAbruptCut": "The compiled role calls Environment.Exit(73) only after the chosen cut predicate and cut.json write; exact cut.json body is not retained in this FIRST archive."
+    },
+    {
+      "identity": {
+        "executionId": "5d0c151f-c704-4336-9bc9-6b3cc78dce2d",
+        "testId": "01a4e250-3ce8-04df-baac-84d51ced01ba",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 2)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:16.4721599",
+        "startTime": "2026-10-18T08:34:16.9868375+00:00",
+        "endTime": "2026-10-18T08:34:16.9868377+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5d0c151f-c704-4336-9bc9-6b3cc78dce2d"
+      },
+      "cut": 2,
+      "parentBirthUtc": "2026-10-18T08:34:00.4970399Z",
+      "childSelfBirthUtc": "2026-10-18T08:34:00.4985478Z",
+      "difference100nsTicks": 15079,
+      "differenceMilliseconds": 1.5079,
+      "originalPid": 228571,
+      "originalExitCode": 73,
+      "naturalExitJoinEof": true,
+      "source42Original43HeldTreatmentPrerequisitesInChildRaw": true,
+      "parentPidAndNonceAssertionsBeforeFailurePassed": true,
+      "resumeProcessLaunched": false,
+      "failureMessage": "Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:00.4970399Z\nActual:   2026-10-18T08:34:00.4985478Z",
+      "failureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---",
+      "originalChildStdoutSha256": "3516b96d592df559064b955e502d70d2e844057fe3297194c011d45f5c9cdcc4",
+      "sourceBoundAbruptCut": "The compiled role calls Environment.Exit(73) only after the chosen cut predicate and cut.json write; exact cut.json body is not retained in this FIRST archive."
+    },
+    {
+      "identity": {
+        "executionId": "bb3935da-b24e-4765-8220-1088dc7f4f00",
+        "testId": "7940aeb2-456a-a92e-c0f7-bee2b97e6c6e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 3)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:13.1579168",
+        "startTime": "2026-10-18T08:34:45.4400504+00:00",
+        "endTime": "2026-10-18T08:34:45.4400506+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "bb3935da-b24e-4765-8220-1088dc7f4f00"
+      },
+      "cut": 3,
+      "parentBirthUtc": "2026-10-18T08:34:32.2670399Z",
+      "childSelfBirthUtc": "2026-10-18T08:34:32.2690111Z",
+      "difference100nsTicks": 19712,
+      "differenceMilliseconds": 1.9712,
+      "originalPid": 228632,
+      "originalExitCode": 73,
+      "naturalExitJoinEof": true,
+      "source42Original43HeldTreatmentPrerequisitesInChildRaw": true,
+      "parentPidAndNonceAssertionsBeforeFailurePassed": true,
+      "resumeProcessLaunched": false,
+      "failureMessage": "Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:34:32.2670399Z\nActual:   2026-10-18T08:34:32.2690111Z",
+      "failureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---",
+      "originalChildStdoutSha256": "9390b6316525413bfda31e3fcc773701113fa9f6d5264a3942819ec41ce27f63",
+      "sourceBoundAbruptCut": "The compiled role calls Environment.Exit(73) only after the chosen cut predicate and cut.json write; exact cut.json body is not retained in this FIRST archive."
+    },
+    {
+      "identity": {
+        "executionId": "2b6f3c5e-8636-441b-a379-6c1c2b6aa2e8",
+        "testId": "afe936a6-177b-5bb9-9a66-12a329faa301",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 4)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:16.1167273",
+        "startTime": "2026-10-18T08:34:00.5073276+00:00",
+        "endTime": "2026-10-18T08:34:00.5073278+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2b6f3c5e-8636-441b-a379-6c1c2b6aa2e8"
+      },
+      "cut": 4,
+      "parentBirthUtc": "2026-10-18T08:33:44.3770399Z",
+      "childSelfBirthUtc": "2026-10-18T08:33:44.3775197Z",
+      "difference100nsTicks": 4798,
+      "differenceMilliseconds": 0.4798,
+      "originalPid": 228540,
+      "originalExitCode": 73,
+      "naturalExitJoinEof": true,
+      "source42Original43HeldTreatmentPrerequisitesInChildRaw": true,
+      "parentPidAndNonceAssertionsBeforeFailurePassed": true,
+      "resumeProcessLaunched": false,
+      "failureMessage": "Assert.Equal() Failure: Values differ\nExpected: 2026-10-18T08:33:44.3770399Z\nActual:   2026-10-18T08:33:44.3775197Z",
+      "failureStack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 53\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---",
+      "originalChildStdoutSha256": "ef122e483d1ac94779d96ae3cb5cfdd11d3110635a264ed99ffb72b93f57de9a",
+      "sourceBoundAbruptCut": "The compiled role calls Environment.Exit(73) only after the chosen cut predicate and cut.json write; exact cut.json body is not retained in this FIRST archive."
+    }
+  ],
+  "strictAbsentRoots": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-joint-interface-crash-05b333612f0249558c5b68d74d6aff97",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1941f07396ed48f88acfab5e33d58f56",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-joint-interface-crash-1a2e9cd8a62b45cb90b768f45e0dd54c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-50493ef1a3204e8ebdb3a80d920f66f5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-joint-interface-crash-84f7988cb8ab4ed29c691193b0fb553f",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-0bd7490e67e4463286e2c2f88d5ac487",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-joint-interface-crash-f1ffbe9c702b462cb4e1a3febc2046dc",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-08d9183616924b568a3fcd621edc3750",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-joint-interface-crash-541b400314454c6bb6d847ec6a52ecc7",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-f938f607c9804c4fa92ebd33a7dabd74",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "source": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "bytes": 37483,
+      "sha256": "c1699aee07ffd1576e60ca567aef4fa1bba022557ae7669dec0b1df95ecdd5b2"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "source": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "bytes": 16023,
+      "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+      "source": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+      "bytes": 5837,
+      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29"
+    }
+  ],
+  "receipt": "/tmp/t179pd-ni-iobs-l01-intake-crash-stop-delta-github-b31c0d78-20261018.json",
+  "receiptSha256": "0ff7836d00be70f18cd8c5114db9f7d8c7a20da61616ab0f19fac9bc9ffdefd4",
+  "physicalRecoveryFilesVerified": 21,
+  "changedPathsVerified": 17,
+  "composition": "/tmp/t179pd3d-root-recovery-composition-b31c0d78-20261017.json",
+  "compositionSha256": "b1f42ff50f2149f77fc0d37827da0ef85347f7b6c29225d6eb59aed4c45b790f",
+  "committedOriginalArchiveExact": true,
+  "allCommittedChainsExact": true,
+  "classification": "FIVE_FIXTURE_PROCESS_IDENTITY_PREREQUISITE_FAILURES_NOT_PRODUCT_RED",
+  "targetQualifiedCases": 0,
+  "cutJsonBodyNotArchived": true,
+  "causalFinding": "A parent-created Process.StartTime and the child independently created self Process.StartTime are separately materialized UTC values. Exact 100ns DateTime equality fails for all five otherwise joined actual original children. This proves the equality premise invalid here; the precise runtime clock-conversion mechanism is not established by this packet.",
+  "minimalCorrection": {
+    "scope": "Tests-only shared crash/integrity fixture identity and pre-assertion raw diagnostic",
+    "identity": "Compare exact PID plus kernel /proc/<pid>/stat field22 start tick, sampled by parent while its owned child is live and by child for itself; retain nonce/owned Process/UTC diagnostics/exit/join/EOF and containment. No arbitrary tolerance or DateTime rounding.",
+    "raw": "Emit full read cut.json into raw before identity assertions so another prerequisite failure cannot delete the only cut body.",
+    "affectedTargets": [
+      "crash5",
+      "integrity4"
+    ],
+    "retention": "37 already qualified identities retain their original provenance if correction remains inside the shared native crash/identity path; prove exact changed dependency/default inverse in next SOURCE. No product change or replay of37 warranted."
+  },
+  "limits": [
+    "No resume child launched, no journal recovery/current resume/once-only/culture-contrast target qualified.",
+    "Real original source42/original43/held TREAT and exit73/join/EOF are observed prerequisites, not five passing crash controls.",
+    "The exact deleted cut.json body was read by the fixture but not frozen; chosen cut predicates are source-bound inference from the sole exit73 site, not raw state qualification.",
+    "Earlier accepted SOURCE missed this fixture equality assumption; preserve original source reports and all five first failures.",
+    "Current finite frontier:37 qualified,5 unqualified failed targets,15 never run; full EVIDENCE stopped."
+  ]
+}

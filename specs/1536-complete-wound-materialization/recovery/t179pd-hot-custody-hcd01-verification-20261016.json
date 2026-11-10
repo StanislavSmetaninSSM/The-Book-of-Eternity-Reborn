@@ -1,0 +1,294 @@
+{
+  "task": "HC-D01 narrow affected verification",
+  "verdict": "ACCEPTED_HC_D01_CLOSED",
+  "base": "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+  "candidate": "d149d37577a3367ae6ca249640353a194934300e",
+  "observed_live_head": "d149d37577a3367ae6ca249640353a194934300e",
+  "live_worktree_required_unchanged": false,
+  "configuration": {
+    "requested_and_retained_configured_model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "backend_telemetry": "unavailable"
+  },
+  "findings": [],
+  "closed_findings": [
+    "HC-D01"
+  ],
+  "pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 120869,
+      "sha256": "7e973ef48353699298656fdb00e19e939bc2f722d70e16fa643c942098a31ec9",
+      "git_blob": "a080fbba46bc0f7edaeda42cbbd5d6a9f545d5d4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 2114668,
+      "sha256": "cc8e732287034969e4c1263c23638b49999906bef4626af592928c339fa341c5",
+      "git_blob": "deb0765d3e5d2392b4576dd61b1f30c5a5afad5c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-design-recovery-20261016.json",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 244611,
+      "sha256": "11a8bafeb451d3ef3c1960e2603a6c279b1918fb0b3d596b68cf2242342fbfca",
+      "git_blob": "4cacf597d98f10505e5b46bdd458ccf8ae0b3cda"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-design-full-20261016.diff.gz",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 98714,
+      "sha256": "824d3f4eb6d1e6bfce0628ff3bbd9aa6798091648c8489a524776df0abb63ec8",
+      "git_blob": "792d48f91949dbd8a80ebbd0fc2dd785c5383895"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-design-scoped-20261016.diff.gz",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-finalize-20261016.py",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 19478,
+      "sha256": "5a4f081ce268849cf77b4b3d8de6cd25417cb6e3cd0d66f3d1dfadbf4dc9f4a1",
+      "git_blob": "027b0679c8866d37057100c95497db0ca3b8ff0a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-inspect-20261016.py",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 5926,
+      "sha256": "2d955b092d03211def27b7aa20f60a2b60d987ce6955e49d2418a04db4eff643",
+      "git_blob": "b12da1116d24510b85bf08e5be2722652f06b78b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-inspection-20261016.json",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 443481,
+      "sha256": "9c644f99467af3ab61a5f0397996f214c80c1ba1c0a2cca06fb1ce34a1af4df9",
+      "git_blob": "68693038c91abb3b281bd07eb3fe940c784a049e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016-diff-index.json",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 2472,
+      "sha256": "8b0c7d8e1387f646f5362d4e55706433b432553d6470e9fcd99219fab3f1fcdf",
+      "git_blob": "92fe8200557fe71f58f5777164f6eaf2c2f0137b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.json",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 54149,
+      "sha256": "0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2",
+      "git_blob": "97825837550da5fd73c0ab423892a89dccacc378"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.md",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 10915,
+      "sha256": "dd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829",
+      "git_blob": "7770061e0464aed52e7dc770bcdf45f0b761f025"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-source-continuity-20261016.diff.gz",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-source-projections-20261016.json",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 151791,
+      "sha256": "8e719f48f29ad7d7a21b70e6960d547fa7a7102e74ad8f396c9d5a04de643627",
+      "git_blob": "12d2de217e2f7956c66c76eed5b3baef203e353d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-working-20261016.diff.gz",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "git_blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "d149d37577a3367ae6ca249640353a194934300e",
+      "bytes": 1493131,
+      "sha256": "6a07940c3caae9114f3b64419b0043c518447190611b1f76c098409ae187e07d",
+      "git_blob": "8af658c668f15a803d72d5eeb79dd9a15f31b010"
+    }
+  ],
+  "projections": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "start": 1,
+      "end": 21,
+      "sha256": "208c86942d3a8ea09b9566a67d2baedec9d36a92a263e4fe84b6308db1d27b37",
+      "text": "## T179-Pd.3b bounded engineering DESIGN accepted; causal TDD next (2026-10-16)\n\n- [Separate Astra/XHigh review](recovery/t179pd-hot-custody-engineering-independent-review-20261016.md) accepts the complete bounded hot custody/attempt/observed-reader integration contract, with zero material findings. MDdd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829; JSON0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2. Root independently verified120 Git-pin entries/four exact diffs/14temporary artifact references and24 reviewer source projections, plus990 exact restored file bytes. Author105pins/65projections/73leafrows cover116listed IO lines; these remain static source evidence.\n- HC-D01 corrected here in both current-status bullets: capture and irreversible Capturing consumption precede continuation construction, then the existing reservation. No source contract change; reviewed detailed design already required this order. Browser Stage record-copy is lineage data only; actual later MainAdmission/lease is required. Lr/Lc/Ld historical evidence never revives on Lp; consumption is issued only after deletion and successful release.\n- Fresh GitHub-only [990-file selected restore receipt](recovery/t179pd-hot-custody-engineering-design-recovery-20261016.json) preserves reviewed132ffd72c in a new clean directory with no alternates/main unchanged/no restoredruntime. Product/test/catalog/scripts remain unchanged; new actuals/build/discovery are UNRUN. This acceptance releases test-first source engineering only, not runtime execution. Next author genuine post-original changed-submission causal fixtures and finite selection; publish WIP, fresh BOTH/catalog/PlanOnly, independent SOURCE/FIXTURE/SELECTION, FIRST protected Late2 and separate immutable EVIDENCE before released causal RED. Implement only after preserved causal RED, then fresh gates/GREEN/final bounded review. Continue full source/policy closure afterward; no routine permission stop.\n- Full semantic S/B, automatic/output acceptance, history/P-A, M3/coldP0/ordinaryF1/T197 and activation remain OPEN. Same action/turn/time and no repeated consequence, D4/guidedUS5/actualDOMvisual/Windows/D8 limits and all remote/main/security prohibitions remain unchanged.\n\n## T179-Pd.3b engineering DESIGN frozen for independent review (2026-10-16)\n\n- Author packet [engineering contract](recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md) / [source evidence](recovery/t179pd-hot-submitted-admission-engineering-design-20261016.json) closes the bounded actual Stage \u2192 Ready Lr/Lc/trajectory/Ld \u2192 canonical Lp custody/attempt/observed-reader consumer contract. MD90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f; JSON5429971dec24f96a022c3820c478a23884bf85a1982fde89408216d46e470d08. Root verified105 Git/blob pins,65 exact projections,73 output IO rows and zero production/tests/catalog/scripts diff from3fdc16e8a to d99e45102e; [static audit](recovery/t179pd-hot-submitted-admission-engineering-design-root-static-audit-20261016.json).\n- Scope is real hot source custody and current reservation/attempt ownership only. Full semantic S/B, automatic/output acceptance, P/A history, M3/coldP0/fullF1 remain unavailable; native-unattempted closure cannot reopen Capturing after preparation/cache/common seals. Optional custody faults preserve existing v2 behavior; actual replacement/uncertainty owners are not suppressed. Worker/helper/cold paths do not acquire retroactive lineage.\n- HS01\u2013HS16 and finite category responsibilities are FUTURE/UNRUN. Exact selectors/counts and source-reviewed fixtures precede new causal TDD. Existing131PASS acceptance is retained without rerun; no new build/discovery/test/application/runtime. Separate actualAstra/XHigh independent engineering review next, followed by corrections, then accepted bounded test-first implementation under fresh G5 and first unchanged Late2/EVIDENCE gates. Do not stop for routine technical approval; no public/newQTE activation or T197 bypass.\n\n## T179-Pd.3b selected engineering subcontract \u2014 genuine HOT source custody (2026-10-16)\n\n- [ ] T179-Pd.3b: close and implement actual original-producer lineage \u2192 accepted Ready read/consumption witness \u2192 exclusive prepublication attempt with the accepted observed-original reader. This is the first concrete dependency of submitted-current admission; it does not claim automatic/output semantic admission, S, durable P/A/history, M3 or F1. Continue the full source/policy work after qualification, without an ordinary technical permission stop.\n- Root and separate architecture author traced the real source: StagePlayerTurn1561 creates the actual ordinary original and final request; WaitForContractRepair reads Ready at3460 and consumes it at3566, with separate real read/delete leases. Existing FS text reads already derive from physical snapshots; preserve one final read's bytes/text/dispatch/hook/decoding rather than substitute a second read. Accepted read and known deletion+release are different outcomes; absence, loss of return or uncertainty cannot prove consumption. Historical origin/Ready facts never reuse an ended lease capability; observed original evidence is issued under the actual current publication lease.\n- Actual custody capture completes and consumes Capturing before CreateJointRepairPreparationAsync; the genuine continuation is then built and its existing reservation acquired. CreateJointRepairPreparation134\u2013208 reconstructs the held graph and current guards without the automatic INACTIVE gate, so no mechanical equality cycle requires a different order. The INACTIVE/original-equality guard is later in MechanicalAdmission115\u2013145. Therefore no new reservation family is currently justified for this contour. Generic validation199 is not already full source acceptance: canonical joint dispatch809/849 returns through its dedicated postpublication route. All upstream raw/player/level/time checks and seven-output-root/73-leaf closure still need shared source-aware policy integration.\n- Required contract boundaries: actual Stage issuer (no source-label/parsed-frame mint), actual accepted Ready producer before deletion, same owner/lease/G/original/continuation/reservation, no earlier native attempt/uncertainty, closure faults/abort/pending-debt/reentry and exact cleanup. Distinguish native-unattempted status from the private CAPTURING gate: no new S/B may attach after any existing prepared/cache/common seal. Missing hot lineage on old/helper/cold routes does not break or upgrade existing v2. Browser historical issuance never revives a disposed scope; current main/browser admission remains real. Worker-direct v2 policy remains unchanged; missing new proof cannot become a blanket worker rejection. The exact bounded engineering contract is independently accepted; it grants no full source/cold authority.\n- Fresh autonomous-start f0441081b was independently cloned from GitHub into a new empty directory:986exactselectedfiles/clean/noalternates/mainunchanged/no restoredruntime; receipt retained here. New product code/tests/runtime remainUNRUN. Existing131PASS accepted packets are not repeated without an actual changed dependency. Independent Astra/XHigh engineering review, causalTDD and freshG5/SOURCE/FIRSTLate2/EVIDENCE gates are required before this stage's actuals. Same action/turn/time/no replay and all F1/T197/D4/guided/visual/Windows/D8 restrictions remain.\n\n"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "start": 1,
+      "end": 21,
+      "sha256": "208c86942d3a8ea09b9566a67d2baedec9d36a92a263e4fe84b6308db1d27b37",
+      "text": "## T179-Pd.3b bounded engineering DESIGN accepted; causal TDD next (2026-10-16)\n\n- [Separate Astra/XHigh review](recovery/t179pd-hot-custody-engineering-independent-review-20261016.md) accepts the complete bounded hot custody/attempt/observed-reader integration contract, with zero material findings. MDdd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829; JSON0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2. Root independently verified120 Git-pin entries/four exact diffs/14temporary artifact references and24 reviewer source projections, plus990 exact restored file bytes. Author105pins/65projections/73leafrows cover116listed IO lines; these remain static source evidence.\n- HC-D01 corrected here in both current-status bullets: capture and irreversible Capturing consumption precede continuation construction, then the existing reservation. No source contract change; reviewed detailed design already required this order. Browser Stage record-copy is lineage data only; actual later MainAdmission/lease is required. Lr/Lc/Ld historical evidence never revives on Lp; consumption is issued only after deletion and successful release.\n- Fresh GitHub-only [990-file selected restore receipt](recovery/t179pd-hot-custody-engineering-design-recovery-20261016.json) preserves reviewed132ffd72c in a new clean directory with no alternates/main unchanged/no restoredruntime. Product/test/catalog/scripts remain unchanged; new actuals/build/discovery are UNRUN. This acceptance releases test-first source engineering only, not runtime execution. Next author genuine post-original changed-submission causal fixtures and finite selection; publish WIP, fresh BOTH/catalog/PlanOnly, independent SOURCE/FIXTURE/SELECTION, FIRST protected Late2 and separate immutable EVIDENCE before released causal RED. Implement only after preserved causal RED, then fresh gates/GREEN/final bounded review. Continue full source/policy closure afterward; no routine permission stop.\n- Full semantic S/B, automatic/output acceptance, history/P-A, M3/coldP0/ordinaryF1/T197 and activation remain OPEN. Same action/turn/time and no repeated consequence, D4/guidedUS5/actualDOMvisual/Windows/D8 limits and all remote/main/security prohibitions remain unchanged.\n\n## T179-Pd.3b engineering DESIGN frozen for independent review (2026-10-16)\n\n- Author packet [engineering contract](recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md) / [source evidence](recovery/t179pd-hot-submitted-admission-engineering-design-20261016.json) closes the bounded actual Stage \u2192 Ready Lr/Lc/trajectory/Ld \u2192 canonical Lp custody/attempt/observed-reader consumer contract. MD90f0ddc0c1fa3516231e62fcf9a8433e2f21b10b6a05219d6e24e105e5fb329f; JSON5429971dec24f96a022c3820c478a23884bf85a1982fde89408216d46e470d08. Root verified105 Git/blob pins,65 exact projections,73 output IO rows and zero production/tests/catalog/scripts diff from3fdc16e8a to d99e45102e; [static audit](recovery/t179pd-hot-submitted-admission-engineering-design-root-static-audit-20261016.json).\n- Scope is real hot source custody and current reservation/attempt ownership only. Full semantic S/B, automatic/output acceptance, P/A history, M3/coldP0/fullF1 remain unavailable; native-unattempted closure cannot reopen Capturing after preparation/cache/common seals. Optional custody faults preserve existing v2 behavior; actual replacement/uncertainty owners are not suppressed. Worker/helper/cold paths do not acquire retroactive lineage.\n- HS01\u2013HS16 and finite category responsibilities are FUTURE/UNRUN. Exact selectors/counts and source-reviewed fixtures precede new causal TDD. Existing131PASS acceptance is retained without rerun; no new build/discovery/test/application/runtime. Separate actualAstra/XHigh independent engineering review next, followed by corrections, then accepted bounded test-first implementation under fresh G5 and first unchanged Late2/EVIDENCE gates. Do not stop for routine technical approval; no public/newQTE activation or T197 bypass.\n\n## T179-Pd.3b selected engineering subcontract \u2014 genuine HOT source custody (2026-10-16)\n\n- [ ] T179-Pd.3b: close and implement actual original-producer lineage \u2192 accepted Ready read/consumption witness \u2192 exclusive prepublication attempt with the accepted observed-original reader. This is the first concrete dependency of submitted-current admission; it does not claim automatic/output semantic admission, S, durable P/A/history, M3 or F1. Continue the full source/policy work after qualification, without an ordinary technical permission stop.\n- Root and separate architecture author traced the real source: StagePlayerTurn1561 creates the actual ordinary original and final request; WaitForContractRepair reads Ready at3460 and consumes it at3566, with separate real read/delete leases. Existing FS text reads already derive from physical snapshots; preserve one final read's bytes/text/dispatch/hook/decoding rather than substitute a second read. Accepted read and known deletion+release are different outcomes; absence, loss of return or uncertainty cannot prove consumption. Historical origin/Ready facts never reuse an ended lease capability; observed original evidence is issued under the actual current publication lease.\n- Actual custody capture completes and consumes Capturing before CreateJointRepairPreparationAsync; the genuine continuation is then built and its existing reservation acquired. CreateJointRepairPreparation134\u2013208 reconstructs the held graph and current guards without the automatic INACTIVE gate, so no mechanical equality cycle requires a different order. The INACTIVE/original-equality guard is later in MechanicalAdmission115\u2013145. Therefore no new reservation family is currently justified for this contour. Generic validation199 is not already full source acceptance: canonical joint dispatch809/849 returns through its dedicated postpublication route. All upstream raw/player/level/time checks and seven-output-root/73-leaf closure still need shared source-aware policy integration.\n- Required contract boundaries: actual Stage issuer (no source-label/parsed-frame mint), actual accepted Ready producer before deletion, same owner/lease/G/original/continuation/reservation, no earlier native attempt/uncertainty, closure faults/abort/pending-debt/reentry and exact cleanup. Distinguish native-unattempted status from the private CAPTURING gate: no new S/B may attach after any existing prepared/cache/common seal. Missing hot lineage on old/helper/cold routes does not break or upgrade existing v2. Browser historical issuance never revives a disposed scope; current main/browser admission remains real. Worker-direct v2 policy remains unchanged; missing new proof cannot become a blanket worker rejection. The exact bounded engineering contract is independently accepted; it grants no full source/cold authority.\n- Fresh autonomous-start f0441081b was independently cloned from GitHub into a new empty directory:986exactselectedfiles/clean/noalternates/mainunchanged/no restoredruntime; receipt retained here. New product code/tests/runtime remainUNRUN. Existing131PASS accepted packets are not repeated without an actual changed dependency. Independent Astra/XHigh engineering review, causalTDD and freshG5/SOURCE/FIRSTLate2/EVIDENCE gates are required before this stage's actuals. Same action/turn/time/no replay and all F1/T197/D4/guided/visual/Windows/D8 restrictions remain.\n\n"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "start": 313,
+      "end": 320,
+      "sha256": "36aa89a2abf79fafb99a8597f3e1449655419ffa8a7a648d527050cc14471f60",
+      "text": "#### T179-Pd.3b genuine HOT original/submission/attempt custody \u2014 bounded engineering DESIGN accepted\n\nThe next source-backed dependency is actual original-producer-issued hot lineage, an actual accepted Ready read/consumption witness before deletion, and a same-lease owner of the exclusive prepublication attempt. It must consume the accepted observed reader under the current lease and bind actual G/original/continuation/reservation. It supplies custody only; automatic/output semantics and S are not inferred. No native-unattempted diagnostic may grant S/B after a prepared/cache/common seal. Existing old/helper/cold/worker v2 behavior stays unchanged without newly retained lineage. Exact author contract and independent engineering review precede causal TDD; after this bounded owner vertical, continue the complete upstream/automatic and seven-root output policy/source extraction. R01\u2013R08/cold/M3/F1/T197 gates remain open; no new QTE/public activation.\n\nThe [bounded engineering contract](../recovery/t179pd-hot-submitted-admission-engineering-design-20261016.md) and [source evidence](../recovery/t179pd-hot-submitted-admission-engineering-design-20261016.json) now specify private actual Stage lineage, same-read Ready Lr \u2192 accepted capture Lc \u2192 unchanged trajectory \u2192 delete-and-successful-release Ld \u2192 fresh publication Lp, a pre-seal Capturing gate, the actual observed-original consumer, and registry-owned close of only the current unattempted reservation. Optional custody failure closes the new proof while preserving existing v2 ownership/diagnostics; session replacement and publication uncertainty retain their actual owning paths. Worker/direct/helper/cold origins cannot mint this new proof. Full semantic S is unavailable by type, and NoNativePublicationAttempted cannot reopen capture after seals.\n\nRoot statically verified 105 Git/blob pins, 65 exact projections, 73 historical output IO rows and the empty production/tests/catalog/scripts diff from frozen3fdc16e8a to d99e45102e. HS01\u2013HS16 are future coverage obligations, not PASS or 16 expensive joint tests. Final finite selectors/counts, fresh BOTH/catalog/PlanOnly, independent SOURCE/FIXTURE/SELECTION, first unchanged Late2, separate EVIDENCE and causal RED remain required. The protected Late2 bodies stay byte-unchanged. [Separate Astra/XHigh engineering review](../recovery/t179pd-hot-custody-engineering-independent-review-20261016.md) accepts this bounded contract with zero material findings; HC-D01 stale ordering text is corrected in current plan/tasks. Root verified120Git-pin entries/four exact diffs/14temporary references/24reviewer projections and990restoredfiles. No product code/test/runtime is changed or run by this design checkpoint. Test-first source engineering is released; actual execution still requires the stated G5/SOURCE/FIRSTLate2/EVIDENCE gates. Continue approved staged implementation only after the bounded contract is independently accepted, then continue full source/policy closure autonomously.\n\n"
+    }
+  ],
+  "preserved_artifacts": [
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-review-20261016.md",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.md",
+      "raw_sha256": "dd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829",
+      "raw_bytes": 10915,
+      "stored_sha256": "dd0f5e4cf1370026d1ea8137f7db630c59271539c15f4c35166d50977a9e7829",
+      "stored_bytes": 10915,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-review-20261016.json",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-review-20261016.json",
+      "raw_sha256": "0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2",
+      "raw_bytes": 54149,
+      "stored_sha256": "0cfd75f40ec106a1b2d19bf6ec26d62cb305efc1b8ec54c383b5513832786fd2",
+      "stored_bytes": 54149,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-inspection-20261016.json",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-inspection-20261016.json",
+      "raw_sha256": "9c644f99467af3ab61a5f0397996f214c80c1ba1c0a2cca06fb1ce34a1af4df9",
+      "raw_bytes": 443481,
+      "stored_sha256": "9c644f99467af3ab61a5f0397996f214c80c1ba1c0a2cca06fb1ce34a1af4df9",
+      "stored_bytes": 443481,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-source-projections-20261016.json",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-source-projections-20261016.json",
+      "raw_sha256": "8e719f48f29ad7d7a21b70e6960d547fa7a7102e74ad8f396c9d5a04de643627",
+      "raw_bytes": 151791,
+      "stored_sha256": "8e719f48f29ad7d7a21b70e6960d547fa7a7102e74ad8f396c9d5a04de643627",
+      "stored_bytes": 151791,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-inspect-20261016.py",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-inspect-20261016.py",
+      "raw_sha256": "2d955b092d03211def27b7aa20f60a2b60d987ce6955e49d2418a04db4eff643",
+      "raw_bytes": 5926,
+      "stored_sha256": "2d955b092d03211def27b7aa20f60a2b60d987ce6955e49d2418a04db4eff643",
+      "stored_bytes": 5926,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-finalize-20261016.py",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-finalize-20261016.py",
+      "raw_sha256": "5a4f081ce268849cf77b4b3d8de6cd25417cb6e3cd0d66f3d1dfadbf4dc9f4a1",
+      "raw_bytes": 19478,
+      "stored_sha256": "5a4f081ce268849cf77b4b3d8de6cd25417cb6e3cd0d66f3d1dfadbf4dc9f4a1",
+      "stored_bytes": 19478,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-design-full-20261016.diff",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-design-full-20261016.diff.gz",
+      "raw_sha256": "c4ae542916de52a7474fac3f895fa32566b4c3bfde635ab7bb3170011ce2a9c8",
+      "raw_bytes": 480010,
+      "stored_sha256": "824d3f4eb6d1e6bfce0628ff3bbd9aa6798091648c8489a524776df0abb63ec8",
+      "stored_bytes": 98714,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-source-continuity-20261016.diff",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-source-continuity-20261016.diff.gz",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stored_bytes": 20,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-design-scoped-20261016.diff",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-design-scoped-20261016.diff.gz",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stored_bytes": 20,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-independent-working-20261016.diff",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-independent-working-20261016.diff.gz",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "stored_bytes": 20,
+      "equal": true
+    },
+    {
+      "local": "/tmp/t179pd-hot-custody-engineering-design-recovery-20261016.json",
+      "committed_path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-engineering-design-recovery-20261016.json",
+      "raw_sha256": "11a8bafeb451d3ef3c1960e2603a6c279b1918fb0b3d596b68cf2242342fbfca",
+      "raw_bytes": 244611,
+      "stored_sha256": "11a8bafeb451d3ef3c1960e2603a6c279b1918fb0b3d596b68cf2242342fbfca",
+      "stored_bytes": 244611,
+      "equal": true
+    }
+  ],
+  "preserved_artifact_count": 11,
+  "scoped_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "d149d37577a3367ae6ca249640353a194934300e",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ],
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "full_diff": {
+    "path": "/tmp/t179pd-hot-custody-hcd01-verification-20261016.diff",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "132ffd72c67daeccd1c6639472ecca4b585e92ab",
+      "d149d37577a3367ae6ca249640353a194934300e"
+    ],
+    "bytes": 1102576,
+    "sha256": "5adf364c7c45b25f2c40eae65b211836af11ab1889a4698db943e677278a017e"
+  },
+  "diff_check": "PASS",
+  "review_script": {
+    "path": "/tmp/t179pd-hot-custody-hcd01-verify-20261016.py",
+    "sha256": "263e2291ff4f73b98b63808b3acc51b237851ce8ab3d6e4c6e70378c5489d2e6"
+  },
+  "report_markdown": {
+    "path": "/tmp/t179pd-hot-custody-hcd01-verification-20261016.md",
+    "sha256": "a146d88db4a468a20a232a1abd2122e35ff0e81cbeb5f361dc62dfcf4b5958ab"
+  },
+  "implementation_design_changed": false,
+  "runtime_release": false,
+  "prior_engineering_acceptance_scope_unchanged": true,
+  "runtime_build_discovery_network_delegation_counts": 0,
+  "repo_writes": 0,
+  "prior_reports_modified": false,
+  "finalstop": true
+}

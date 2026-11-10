@@ -8,6 +8,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class EffectResourceMaterializationTests
 {
+    private readonly Xunit.Abstractions.ITestOutputHelper _commonCalculationOutput;
+    public EffectResourceMaterializationTests(Xunit.Abstractions.ITestOutputHelper output) => _commonCalculationOutput = output;
+
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string SnapshotManifestPath =
         "game_state/control/pending_turn_snapshot.json";
@@ -573,7 +576,9 @@ public sealed class EffectResourceMaterializationTests
     [Fact]
     public async Task ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically()
     {
-        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var context = await EffectMaterializationTestContext.CreateAsync();
+        using var owned = new CleanupOwnedFixture(context.RootPath, _commonCalculationOutput.WriteLine);
+        await using var ownedContext = context;
         var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(
             incarnationNumber: 1,
             turn: 42,

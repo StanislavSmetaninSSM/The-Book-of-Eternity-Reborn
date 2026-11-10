@@ -1,0 +1,83 @@
+--- t179pd-prep0-admission-history-recovery-design-20261016.md
++++ t179pd-prep0-admission-history-recovery-phd01-corrected-design-20261016.md
+@@ -1,6 +1,8 @@
+-# T179-Pd pre-P0 admission-history recovery — 2026-10-16
++# T179-Pd pre-P0 admission-history recovery — PH-D01 corrected — 2026-10-16
+ 
+ DESIGN PROPOSAL, NOT ACCEPTED IMPLEMENTATION. Assigned Astra/High; backend unknown. Historical source baseline 8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3; exact source/blob/SHA pins in JSON. Source claims use that historical baseline; JSON records each current-file comparison separately so parent metadata/source advancement is not mistaken for a new audit. Read-only repository; no build/discovery/tests/app/runtime/network/OS investigation/delegation. Only this new /tmp pair is written. Earlier reports remain immutable. All future checks are UNRUN.
++
++PH-D01 correction only. This version supersedes the earlier proposal only where protocol selection was allowed before authenticating the original contract. It does not close R01–R08, revise their engineering scope or grant implementation. The earlier pair and independent review remain immutable. Exact correction diff and original/candidate source pins are in the companion JSON.
+ 
+ ## Recommendation and exact limit
+ 
+@@ -76,7 +78,7 @@
+ 
+ Proposed new discriminator:
+ {schemaVersion:1, kind:"admission_repair_control", ...}
+-Existing unversioned request objects remain the OLD path. This is version-first dispatch, not permissive extra-field acceptance. Do not modify the old emitted contract until this complete new lifecycle is accepted and selected by an actually newly issued original.
++Existing unversioned request objects remain on the OLD path only when the authenticated original/context is genuinely eligible for that old protocol. The request discriminator selects a parser; the authenticated original selects protocol obligations. Mixed or unknown modes retain conflict rather than falling back or upgrading. Do not modify the old emitted contract until this complete new lifecycle is accepted and selected by an actually newly issued original.
+ 
+ Proposed closed root:
+ {schemaVersion,kind,policyVersion,binding,revision,phase,origin,route,sources,
+@@ -140,7 +142,7 @@
+ All source/control guards and nested evidence must enter before common input/prepared/cache seals. No after-take evidence attachment. If a design instead mutates this control in the common batch, that exact member/grant must be accepted and included before preparation/seals; existing pathname alone does not authorize expansion.
+ 
+ 9. Terminal/cleanup:
+-generic DeleteValidationRepairFiles must dispatch by version. Old behavior stays old; new history survives while any repair/native/common/worker obligation needs it. Only actual terminal rollback/closure or verified common/cleanup ownership may delete it. Cancellation/protected refusal must settle their real restore/publication first; no unconditional cleanup as proof. Existing inactive-retention blocker remains conservative; final retirement must update it coherently rather than bypass it.
++generic DeleteValidationRepairFiles must apply the original-selected protocol matrix before version-specific cleanup. Old behavior remains available only for a genuinely legacy-eligible original/context; new history survives while any repair/native/common/worker obligation needs it. Missing or incompatible controls cannot downgrade a versioned original or authorize deletion. Only actual terminal rollback/closure or verified common/cleanup ownership may delete it. Cancellation/protected refusal must settle their real restore/publication first; no unconditional cleanup as proof. Existing inactive-retention blocker remains conservative; final retirement must update it coherently rather than bypass it.
+ 
+ ## Worker: required real companion, not post-return bookkeeping
+ 
+@@ -166,19 +168,35 @@
+ 
+ This is an OPEN worker-owner contract, not a reason to add another history filename. Any fallback must preserve the same player action/turn, error/packet semantics and already committed effects; it cannot silently discard a lawful accepted repair or deliver duplicate work.
+ 
+-## Version-first cold reader
++## Original-selected protocol and version-first cold reader
+ 
+ ReadRecoverableAdmissionRepairStateAsync(files, actual lease):
+ 1. Let genuine native/main/worker recovery owners settle known debt; do not run canonical/source validation while a pending decision is unresolved.
+-2. Read actual existing G, original pair and current request/control bytes. Old unversioned request -> existing old route, no history authority. New discriminator -> strict closed parser; unknown/missing required fields -> retained conflict, no fallback upgrade.
+-3. Verify actual new original-issued seed, tuple/G/original hashes, source label and exact control origin. No seed mint from absence/current Ready and no rewriting originals.
+-4. Verify exact ordered transition grammar, current phase and source roles. Compare actual physical controls, Ready or worker task/proposal/outcome artifacts as applicable. Derive retries/merged canonical error applicability from actual rows and shared policy, never a serialized validated/no-previous-repair flag.
+-5. Recompute all PURE classification/freshness/comparison consequences from independently bound sources and recorded actual owner observations. Historical clocks/read failures are trusted named-owner observations within the existing trusted-local model; they are not claimed current metadata and hashes do not replace semantic verification.
+-6. Verify specialized restore/pending/worker/common owner relations. A parsed receipt with plausible fields is not a live reserve/take/release capability.
+-7. If full verified M3 exists, select its retained P0 path; do not repeat pre-P0 work. If control is admission_frozen and no attempted common debt exists, issue a distinct cold source-history capability only after complete source proof and actual no-publication determination. It is not a deserialized C candidate.
+-8. Recheck G/original/control/required cohort before returning the typed disposition. No new UTC, scheduler, source reduction or identity allocation in proof.
++2. Bind and validate the actual existing G and authenticated original pair using the genuine original owner contract, including supported original version, tuple, hashes, source label and any admissionHistoryOrigin seed. Derive protocol obligations from THAT verified original/context before selecting a request/control route. A genuinely supported old/no-seed original may be LegacyEligible; a supported new seeded original requires its exact versioned history lifecycle. Missing, malformed, unsupported, foreign or unauthenticated original evidence cannot establish LegacyEligible. Missing seed is not itself proof of an old original if that original's version/owner contract requires one.
++3. Read the actual request/control under the same source/lease closure. Its discriminator selects its parser ONLY; it cannot select, remove or upgrade the original's protocol obligations. For a LegacyEligible original, use unchanged legacy behavior only with a compatible old request/context (including absence only where the actual old owner allows it). A versioned control cannot upgrade that original or mint history authority. For a seeded original, require the supported matching versioned control and verify its exact seed/origin/G/tuple/original-hash binding before any dispatch, correlation, validation, cleanup or typed success.
++4. Missing, unversioned, unknown-version, wrong-kind, malformed or foreign control with a seeded original is retained MissingOwnerProof or SourceConflict, never Legacy. Mixed modes in either direction and unknown modes retain evidence; same tuple does not repair the mismatch. Retirement is an exception only when the actual original/terminal/common owner independently proves the exact permitted settled disposition and evidence retirement. A missing file, terminal field, self-hash, Ready or apparent M3 alone is insufficient. Return the genuinely proved terminal/common disposition, not a legacy downgrade. Exact diagnostic choice remains part of R02; neither failure variant authorizes dispatch or deletion.
++5. For a compatible versioned original/control pair, verify exact ordered transition grammar, current phase and source roles. Compare actual physical controls, Ready or worker task/proposal/outcome artifacts as applicable. Derive retries/merged canonical error applicability from actual rows and shared policy, never a serialized validated/no-previous-repair flag.
++6. Recompute all PURE classification/freshness/comparison consequences from independently bound sources and recorded actual owner observations. Historical clocks/read failures are trusted named-owner observations within the existing trusted-local model; they are not claimed current metadata and hashes do not replace semantic verification.
++7. Verify specialized restore/pending/worker/common owner relations. A parsed receipt with plausible fields is not a live reserve/take/release capability.
++8. If full verified M3 exists, select its retained P0 path; do not repeat pre-P0 work. If control is admission_frozen and no attempted common debt exists, issue a distinct cold source-history capability only after complete source proof and actual no-publication determination. It is not a deserialized C candidate.
++9. Recheck G/original/control/required cohort before returning ANY successful typed disposition, including Legacy. No new UTC, scheduler, source reduction or identity allocation in proof.
++
++The same original-selected matrix governs dispatch, correlation, validation, retention and cleanup in every consumer. It is not limited to this reader. A history-only control still never dispatches a GM request.
++
++| Authenticated original contract | Actual control | Permitted classification |
++|---|---|---|
++| Supported old/no-seed, genuinely legacy eligible | Compatible old request/context | Unchanged old route after actual old-owner checks |
++| Supported old/no-seed | Absent | Only the actual old owner's allowed absence behavior; no synthesized repair/history |
++| Supported old/no-seed | Versioned or unknown/malformed control | Retained conflict; no upgrade |
++| Supported seeded new original | Matching supported versioned control | New lifecycle after complete owner/source/semantic checks |
++| Supported seeded new original | Missing control | MissingOwnerProof; no dispatch/cleanup or downgrade |
++| Supported seeded new original | Same-tuple unversioned, unknown-version, wrong-kind, malformed or foreign control | SourceConflict/MissingOwnerProof; no downgrade |
++| Missing/invalid/unsupported/foreign original evidence | Any control | MissingOwnerProof/SourceConflict; control cannot confer original mode |
++| Any potentially retired phase | Missing or incompatible evidence | Only actual original/terminal/common settlement can establish its precise permitted retirement disposition; otherwise retain conflict |
+ 
+ Expected result variants are phase-specific: Legacy, OriginalReady, RepairDispatchReady, WaitingForGm, WorkerRecoveryRequired, SubmittedSourceReady, FrozenAdmissionReady, CommonP0Verified, TerminalSettlementRequired, NativeDebt, SourceConflict, MissingOwnerProof. These are proposed names, not proof that every resume path exists.
++
++PH-D01 future cases, ALL UNRUN: genuine old original plus old request; new original plus valid new control; new original plus same-tuple old request; new original plus missing/unknown/wrong-kind/malformed/foreign control; old original plus versioned control; missing or invalid original with apparently valid control; exact terminal retirement versus missing evidence. Each refusal must occur before dispatch, cleanup or issuance of a success capability. These refine R02 and the existing future matrix, without releasing R01–R08.
+ 
+ ## Which crash cuts are recoverable
+ 
+@@ -237,7 +255,7 @@
+ 
+ ## Consumer and documentation impact
+ 
+-All uses of validation_repair_request must be assigned one explicit purpose: GM dispatch, actual current repair correlation, original retention, cleanup, archive exclusion, or frozen source. Update those consumers to version-first parsing; a history-only record is never an ordinary repair request.
++All uses of validation_repair_request must be assigned one explicit purpose: GM dispatch, actual current repair correlation, original retention, cleanup, archive exclusion, or frozen source. Update those consumers to original-selected protocol obligations and version-first parsing; a control discriminator chooses only its parser. Apply the same mixed/missing/unknown-mode refusal to dispatch, correlation, validation and cleanup. A history-only record is never an ordinary repair request.
+ 
+ Source families found:
+ - daemon Read-CorrelatedValidationRepairRequest/Process-RepairRequestCore/watch correlation/stall watchers;

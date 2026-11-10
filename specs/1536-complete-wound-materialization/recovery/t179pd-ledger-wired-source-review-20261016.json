@@ -1,0 +1,3642 @@
+{
+  "review": "T179-Pd / T192b ledger WIRED SOURCE/FIXTURE/SELECTION and corrected fresh preparation gate",
+  "timestampUtc": "2026-10-16T11:58:07.467535+00:00",
+  "reviewerConfiguration": {
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent supplied actual spawn receipt: task_name=t179pc_independent_review, fork_turns=none, model=gpt-6-astra, reasoning_effort=xhigh; tool returned /root/t179pc_independent_review.",
+    "backendResolutionTelemetry": "unavailable; not inferred"
+  },
+  "authorization": "Coordinator-confirmed user staged F1-R2/D9-D11 approval at 07:01:11 UTC, Sentinel_f3e48da025808191bdb46fab2e0b960f, retained in current spec/plan/tasks; supersedes historical design-only wording for independent stages. T197 stays conditional DESIGN. Current top-level journal also preserves autonomous continuation at 11:46:54/11:48 UTC; this does not waive TDD, independent gates or still-unaccepted design prerequisites.",
+  "baseInitialTestFirstSource": "cf95c60916542ab422fad5ac836dca74add72f89",
+  "initialImplementation": "6402b61b6f6176a64de3630bc2044f1fd941185b",
+  "supersededCompiledSource": "91e28fd746a61a150d589f4a73ca08fa55a14654",
+  "rosterCorrection": "6e43c136492fc15154b6c0466d30beed8563e756",
+  "correctedCompiledReviewedSource": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+  "evidenceCarrier": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+  "observedHead": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+  "observedWorkingTreeClean": true,
+  "verdict": "READY_FOR_FIRST_UNCHANGED_LATE2_ONLY",
+  "blockingFindings": [],
+  "resolvedFindings": [
+    {
+      "id": "Pd-R1",
+      "severity": "medium",
+      "source": "91e28fd746a61a150d589f4a73ca08fa55a14654",
+      "finding": "Every event retained a full carrier catalog with complete effect images; across per-target events this retained O(events × all-effects) data, then cloned the entire ledger during binding/completion. Old catalog snapshots were temporary.",
+      "origin": "Coordinator raised the static cost concern; independent reviewer confirmed it and specified the bounded correction.",
+      "resolution": "One full starting roster per pass at first valid event; null roster/ref explicitly means not observed. Every event retains only actual target/effect-filter matches before causal/mode exclusions, with original ordinals and real outcomes. Multi-target test checks full initial player+NPC roster, each event isolated to its target, two actual advances and exact allocation count. No performance timing claim or cold verifier qualification."
+    },
+    {
+      "id": "Pd-R2",
+      "severity": "medium",
+      "source": "6e43c136492fc15154b6c0466d30beed8563e756",
+      "finding": "New multi_target used CreateIdentityIndex(effect,npc), whose fixed helper emits duplicate first transition IDs and replay event refs. NPC chronology changes alone left the generated identity rows invalid before cache success.",
+      "origin": "Independent reviewer traced global EffectIdentityState registries and flagged the fixture precondition defect before any actual run.",
+      "resolution": "At corrected source, the local NPC identity entry first transitionId and eventRef explicitly match its distinct chronology. Shared fixture helper is unchanged. No actual run occurred on the invalid fixture; corrected preparation replaces the old one."
+    }
+  ],
+  "sourceAssessment": {
+    "capture": "The existing two ApplyDueLifecycleEvents calls now return observations. They preserve raw input order/ordinal, parsed authority, actual per-pass starting catalog and each pre-exclusion matched roster. Causal-created, uses-mode and other-pass exclusions retain the old eligible ordering and behavior. Effective source-bound satisfaction, scheduler event/outcome/updated image and allocated transition reference are copied from the one existing reduction.",
+    "mechanics": "ApplyLifecycleReduction returns its already obtained result and existing transition ID; no extra AdvanceLifetime, effect/resource reduction, identity allocation or processed-history insertion is introduced. Failed execution still prevents a returned completed plan/ledger. Other consuming-use callers ignore the new observation and preserve their original behavior.",
+    "ownership": "Only the private planner issuer creates/extends the ledger. Each initial execution owns a private reference token, retained through final completion. MatchesInitialPlan checks that token as well as exact initial payload, so a separately executed identical plan cannot match. This is warm execution evidence, not publication/source authority or cold authentication.",
+    "immutability": "JSON is deeply detached on construction/export/extension; bound ledger state has no mutator. DetachedCopyOf preserves the same immutable evidence only when its legacy payload is unchanged. Appending final evidence requires the private issuer and an initial one-pass ledger. A missing initial ledger stays null on common completion instead of being synthesized.",
+    "payloadAndRecovery": "Ledger fingerprint has a separate domain/version and references the existing acyclic legacy payload. WoundAcceptedTurnPlan fingerprint grammar is byte-unchanged and does not read the ledger. New constructor-time recovery fingerprint read is safe: GetMortalRecoveryExecutionFingerprint reads only immutable Fingerprint initialized by the proof constructor; Seal later sets a separate payload binding. No new recovery seal/permission is issued by the read.",
+    "retainedC": "Production Pc calculation/retention/cache code is unchanged; completed Effects naturally retains the ledger. The changed genuine integration assertion runs only after all old actual flow/union/charge/progression/story/turn/replay/strict cleanup, checks exact same C/effect result, complete ledger and private initial execution against the actual retained calculation inputs; exports diagnostic JSON and fingerprint.",
+    "fixtures": "Initial three causal cases retain all success preconditions. Ten additional independent actual-common scenarios cover turns expiry, causal-created/uses exclusions, active/expired source-bound, until_time/null, NPC advance, source order plus within-pass state change, no source events, and two distinct targets. Passive characteristic modifiers avoid resource side effects; source definitions/targets/carriers/identity rows match actual validation contracts. Uses case deliberately has no matching consuming event, so it proves the lifetime skip only; selected actual continuation covers true consuming-use expiry.",
+    "negativeFixtures": "Foreign issuer/identical foreign execution and missing-first-pass cases first construct genuine successful planner results. The missing-ledger negative then makes an exact nonauthoritative plan copy without evidence and demonstrates ordinary completion cannot manufacture it. Optional configureEffectPlan defaults null; all old shared callers are unchanged.",
+    "gmNoUpdate": "Unactivated internal client-owned evidence only; no saved v2 schema, GM-authored field, player command/capability or afterlife contract changes. No prompt/example update at this gate; synchronize guidance when a reachable contract is introduced."
+  },
+  "selectionAssessment": {
+    "expectedCases": {
+      "fr063-active-prefix-lifecycle-evidence": 15,
+      "fr063-joint-late-completion": 2,
+      "fr063-joint-retained-common-calculation": 1,
+      "fr063-common-calculation-regression": 15,
+      "fr063-common-resource-continuation": 2,
+      "fr063-common-qte-consumers": 3,
+      "fr063-joint-active-tail": 3,
+      "fr063-joint-c1-common-mixed-guard": 1
+    },
+    "totalDescriptors": 8,
+    "totalCases": 42,
+    "pairwiseDisjointSelectedMethods": true,
+    "plan": {
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence",
+        "fr063-joint-late-completion",
+        "fr063-joint-retained-common-calculation",
+        "fr063-common-calculation-regression",
+        "fr063-common-resource-continuation",
+        "fr063-common-qte-consumers",
+        "fr063-joint-active-tail",
+        "fr063-joint-c1-common-mixed-guard"
+      ],
+      "Reasons": [
+        {
+          "category": "fr063-active-prefix-lifecycle-evidence",
+          "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-joint-late-completion",
+          "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-joint-retained-common-calculation",
+          "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-common-calculation-regression",
+          "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-common-resource-continuation",
+          "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-common-qte-consumers",
+          "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-joint-active-tail",
+          "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        },
+        {
+          "category": "fr063-joint-c1-common-mixed-guard",
+          "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
+          "contracts": [
+            "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+          ]
+        }
+      ],
+      "Revision": {
+        "Head": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 6.6674298,
+      "Descriptors": [
+        {
+          "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+              "Cases": 10
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-calculation-regression-unit-002",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-common-calculation-regression",
+          "Categories": [
+            "fr063-common-calculation-regression"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+              "Cases": 2
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-qte-consumers-integration-003",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-qte-consumers",
+          "Categories": [
+            "fr063-common-qte-consumers"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+              "Cases": 2
+            }
+          ]
+        },
+        {
+          "Name": "fr063-common-resource-continuation-integration-004",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-resource-continuation",
+          "Categories": [
+            "fr063-common-resource-continuation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-active-tail-integration-005",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-active-tail",
+          "Categories": [
+            "fr063-joint-active-tail"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+              "Cases": 3
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-c1-common-mixed-guard-unit-006",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-joint-c1-common-mixed-guard",
+          "Categories": [
+            "fr063-joint-c1-common-mixed-guard"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+          "Adapter": "unit",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-late-completion-integration-007",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        },
+        {
+          "Name": "fr063-joint-retained-common-calculation-integration-008",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-retained-common-calculation",
+          "Categories": [
+            "fr063-joint-retained-common-calculation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "sufficiency": "Finite ledger15 plus genuine retained-C1; ordinary15 covers shared plan construction/completion/projection/pending/replay and identity adapters; actual continuation2 covers resource-trigger final-use expiry and resolved receipt second pass/terminal byte replay; QTE3 covers CREATE-owned periodic work/replay and compensation; unchanged firstLate2 preserves full common union/phase/story/turn/cleanup; active3/mixed1 retain authority refusals. This is an affected ledger cycle, not whole Pd/P0 qualification.",
+    "omittedPcBoundary10": "The unbounded calculation admission API and pending/refusal grammar are unchanged; ledger ownership is exercised through actual ordinary pending/completion and retained-C consumers. No reason to repeat the old independent boundary10 solely because it passed in Pc.",
+    "overlap": "Intentional finite subsets of broader ordinary/effects/resource/QTE owners; broad owners are not selected. Selected descriptors have no duplicated methods. New four ledger methods have exact ownership.",
+    "rerunReason": "Existing selected passes are rerun because their effect plan construction or final lifetime completion receives the new ledger plumbing; firstLate2 is also the explicit G5 prerequisite. No unchanged all-suite or historical Pc37 sequence is released."
+  },
+  "preservedCausalRed": {
+    "source": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "actual": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+    "carrier": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+    "index": {
+      "source_sha": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+      "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories",
+      "native_exit_code": 1,
+      "artifacts": [
+        {
+          "path": "t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/dotnet-test.log",
+          "raw_bytes": 1699244,
+          "raw_sha256": "4777abcffcee39f47d3a171832aa27a7bd9a8082a45891c054c45ac4ecfa7873",
+          "stored_sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8"
+        },
+        {
+          "path": "t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+          "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/fr063-active-prefix-lifecycle-evidence-unit-001.trx",
+          "raw_bytes": 11992,
+          "raw_sha256": "adc43706449b1a8e7b52172be23eb7245d0d57df0e4917d109a547a01113fd7e",
+          "stored_sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb"
+        },
+        {
+          "path": "t179pd-lifecycle-red-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/plan.json",
+          "raw_bytes": 1187,
+          "raw_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+          "stored_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7"
+        },
+        {
+          "path": "t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/runner-stdout.log",
+          "raw_bytes": 5066,
+          "raw_sha256": "98600b697923120543514e30e69d979c42f4f871c5bf758c91665691e8cf68fa",
+          "stored_sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616"
+        },
+        {
+          "path": "t179pd-lifecycle-red-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/summary.json",
+          "raw_bytes": 1387,
+          "raw_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+          "stored_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8"
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-active-prefix-lifecycle-evidence"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-active-prefix-lifecycle-evidence",
+            "Seconds": 3.0620934,
+            "BudgetMinutes": 5,
+            "Completed": false
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0561552,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0538966,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1321316,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:06.9870210",
+        "ExitCode": 1,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 3,
+          "CompletedCases": 3,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 3,
+          "Executed": 3,
+          "Passed": 0,
+          "Failed": 3
+        },
+        "DuplicateTests": []
+      }
+    },
+    "verifiedChains": [
+      {
+        "path": "t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/dotnet-test.log",
+        "raw_bytes": 1699244,
+        "raw_sha256": "4777abcffcee39f47d3a171832aa27a7bd9a8082a45891c054c45ac4ecfa7873",
+        "stored_sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8",
+        "gitBlob": "8128d2e08eabf017c08544ba0ef6aa4b6f896b86",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+        "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/fr063-active-prefix-lifecycle-evidence-unit-001.trx",
+        "raw_bytes": 11992,
+        "raw_sha256": "adc43706449b1a8e7b52172be23eb7245d0d57df0e4917d109a547a01113fd7e",
+        "stored_sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb",
+        "gitBlob": "c1a9e86a0e971856dd0aaafc7464324958a9afd1",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-lifecycle-red-20261016-plan.json",
+        "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/plan.json",
+        "raw_bytes": 1187,
+        "raw_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+        "stored_sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+        "gitBlob": "250d87eca5f0f83f705c6e8dfdafe28dc452cf81",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/runner-stdout.log",
+        "raw_bytes": 5066,
+        "raw_sha256": "98600b697923120543514e30e69d979c42f4f871c5bf758c91665691e8cf68fa",
+        "stored_sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616",
+        "gitBlob": "d9a992b771d77c7b0886570a97407b527cbca76e",
+        "rawStoredLocalCommittedMatch": true
+      },
+      {
+        "path": "t179pd-lifecycle-red-20261016-summary.json",
+        "raw_path": "TestResults/test-categories/20261016-114025-644-67098-11e806e31dfb43429615f594193e6a69-categories/summary.json",
+        "raw_bytes": 1387,
+        "raw_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+        "stored_sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+        "gitBlob": "1eeff2d1498ab499741f60d75e50461b76279042",
+        "rawStoredLocalCommittedMatch": true
+      }
+    ],
+    "cases": [
+      {
+        "case": {
+          "executionId": "dfbda3ce-61ac-4cf9-92ec-45a4c44de37e",
+          "testId": "60eafea4-cdbb-2226-0462-52d792377ab7",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"advance\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.1485607",
+          "startTime": "2026-10-16T11:40:32.3889011+00:00",
+          "endTime": "2026-10-16T11:40:32.3889012+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "dfbda3ce-61ac-4cf9-92ec-45a4c44de37e"
+        },
+        "message": "Assert.NotNull() Failure: Value is null",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 59\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "62c27dd6-604d-4686-95c9-560e30836a1f",
+          "testId": "f955c7e7-9dac-d490-0abe-d9909c2198d7",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"no_change\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.4327972",
+          "startTime": "2026-10-16T11:40:32.2377154+00:00",
+          "endTime": "2026-10-16T11:40:32.2377304+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "62c27dd6-604d-4686-95c9-560e30836a1f"
+        },
+        "message": "Assert.NotNull() Failure: Value is null",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 59\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)"
+      },
+      {
+        "case": {
+          "executionId": "4ed8cf66-c962-4f82-9eea-27ece4e2499d",
+          "testId": "79b84e13-0423-1400-4adb-170fb8bf512c",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"no_eligible\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0064127",
+          "startTime": "2026-10-16T11:40:32.2404761+00:00",
+          "endTime": "2026-10-16T11:40:32.2404761+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "4ed8cf66-c962-4f82-9eea-27ece4e2499d"
+        },
+        "message": "Assert.NotNull() Failure: Value is null",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 59\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      }
+    ],
+    "sourceHash": "62555de7d7d302a53f8c00fa49b999afa3b667d3718308dfd5df8ba3e50342d2",
+    "onlyIntendedMissingPropertyFailure": true,
+    "scope": "Causal RED only, not qualified behavior"
+  },
+  "diffs": {
+    "implementation": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "6402b61b6f6176a64de3630bc2044f1fd941185b",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-implementation.diff",
+      "sha256": "7ae7e3b3d0358ba9ed76300380f8214fc86639a9d444adee56687aea0dcf7396",
+      "bytes": 52044
+    },
+    "corrected-source": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-corrected-source.diff",
+      "sha256": "e9811a0351aeba54172254419d34e16cb60dfb8574ea7765cb5f9856999195b4",
+      "bytes": 56835
+    },
+    "roster-correction": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "91e28fd746a61a150d589f4a73ca08fa55a14654",
+        "6e43c136492fc15154b6c0466d30beed8563e756",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-roster-correction.diff",
+      "sha256": "905c36100c782d4c3bb3bbd625cd3ce2d5bcb271f87cd0b3ed252f4c69be6a96",
+      "bytes": 13571
+    },
+    "fixture-correction": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "6e43c136492fc15154b6c0466d30beed8563e756",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-fixture-correction.diff",
+      "sha256": "ac64d3805960e6f24be2a259dcf4c846e725409323debfe09720d0e12b237567",
+      "bytes": 1709
+    },
+    "compiled-to-carrier": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-compiled-to-carrier.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "unchanged-kernels-and-grammar": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "cf95c60916542ab422fad5ac836dca74add72f89",
+        "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "--",
+        "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+        "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+        "BookOfEternityClient.TestSupport",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-wired-unchanged-kernels-and-grammar.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "sourceAndContextPins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeSha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "dcc47d60049b9785b77495c3a24dd11f65a8f9df",
+      "bytes": 26057,
+      "sha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596",
+      "workingTreeSha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "3eb541ca7628ea2b59feb3bc1755a5c53e79122f",
+      "bytes": 71591,
+      "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "workingTreeSha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+      "bytes": 82535,
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeSha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "ed2b8aecb3a343f14b7ecf857d75e30cafefd57c",
+      "bytes": 6155,
+      "sha256": "3f4f5bbd5175eba7ffada440f871fd0aab169c552510ddda658fbc6fd23eb7f2",
+      "workingTreeSha256": "3f4f5bbd5175eba7ffada440f871fd0aab169c552510ddda658fbc6fd23eb7f2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "ef1c8afc047b0e79705f842cf37072acfa4731b5",
+      "bytes": 38927,
+      "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "workingTreeSha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "fe8ba88bd9b18b858e3ce6bc1fe597f33c0d7a47",
+      "bytes": 34466,
+      "sha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeSha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "7dbf061000e15c3d8d304a744bbaf53293351090",
+      "bytes": 21214,
+      "sha256": "050dcf4d58cf5934c182577ebe169be22e1ba963d0ff60b5acf3ace3afc8e6fd",
+      "workingTreeSha256": "050dcf4d58cf5934c182577ebe169be22e1ba963d0ff60b5acf3ace3afc8e6fd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "83e50713c08da629a8cf4a4619708b1101b4dcff",
+      "bytes": 1200,
+      "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeSha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "4d2e36a4dfcf4b147052f0a70ad843aaa37cf651",
+      "bytes": 25101,
+      "sha256": "35e3a981ddefe9d023eb92168cfb1ea36114001eda0be6f6d3ab9e1bc0a8d108",
+      "workingTreeSha256": "35e3a981ddefe9d023eb92168cfb1ea36114001eda0be6f6d3ab9e1bc0a8d108",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.SpiritualCreation.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "9e9891060594b0838e00cfd83f345cc9ae2ec2ff",
+      "bytes": 4659,
+      "sha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeSha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c66356b746087687f1134b2a56b974fc65ded2fd",
+      "bytes": 127127,
+      "sha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeSha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "8993bc4026381a35856ef9fc5def0230596ab031",
+      "bytes": 128856,
+      "sha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749",
+      "workingTreeSha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+      "bytes": 30382,
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeSha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeSha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "workingTreeSha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "f8fbf37a4617bf0479dc15aeb2e23e62c563c721",
+      "bytes": 26564,
+      "sha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+      "workingTreeSha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "592d8fee9d18bdbe87bdcd898800d20c46138c76",
+      "bytes": 14420,
+      "sha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d",
+      "workingTreeSha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "b12907952e3059f5c1389cf52a61e67a9dae41e1",
+      "bytes": 45717,
+      "sha256": "c74e646e773df11a9a2c67f9629d1b816197e3ebf2131ab34f9c174323569cc7",
+      "workingTreeSha256": "c74e646e773df11a9a2c67f9629d1b816197e3ebf2131ab34f9c174323569cc7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "84b13c1a4e202c15538aaae74d7ed71a5faefc3f",
+      "bytes": 49290,
+      "sha256": "3bcfcb69b1c0a22e91d3e286a12dd812669927fe6c1fa6218dcefa9e63fbb73d",
+      "workingTreeSha256": "3bcfcb69b1c0a22e91d3e286a12dd812669927fe6c1fa6218dcefa9e63fbb73d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundTriggerJournal.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "9b9fecf8ff2fa3c1161afbb5a55b7585a6b6f738",
+      "bytes": 33179,
+      "sha256": "3f1e7f07b958dd07c2585451b9795ed0458be7c7b0ba6b6218e05284999761fd",
+      "workingTreeSha256": "3f1e7f07b958dd07c2585451b9795ed0458be7c7b0ba6b6218e05284999761fd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "a060b8861f06addf61b0c2e8a1658350914af079",
+      "bytes": 398519,
+      "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+      "workingTreeSha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "15ab43b9455efd05f76ffaf564de1aabd55ee0c9",
+      "bytes": 28369,
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "workingTreeSha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectIdentityState.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c9405acd0b0d6b87d21e79e0446c650bfe7d1856",
+      "bytes": 32027,
+      "sha256": "416284cfd30da1e76f731f5f45e4e56ca4bc0e7347a0c4c9045ae3c8433b644f",
+      "workingTreeSha256": "416284cfd30da1e76f731f5f45e4e56ca4bc0e7347a0c4c9045ae3c8433b644f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "646a77f78657c8a115a524d46650b549a497acd9",
+      "bytes": 6256,
+      "sha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6",
+      "workingTreeSha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeSha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "b1896580a7b48d103bb37c11d81dcbd33d069e5d",
+      "bytes": 38257,
+      "sha256": "5b2a9c8d26a6e5372661d622d66d6efb44d8f12d1096e8ed42fc45ef201fd4e3",
+      "workingTreeSha256": "5b2a9c8d26a6e5372661d622d66d6efb44d8f12d1096e8ed42fc45ef201fd4e3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceDefinitionContract.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "88cd45ca44d48c23f18b389429ba76d9230bb3eb",
+      "bytes": 49369,
+      "sha256": "e41de08f76a25df1c27474dc7d725a40a5985665679d31b5bd10116d5c34919f",
+      "workingTreeSha256": "e41de08f76a25df1c27474dc7d725a40a5985665679d31b5bd10116d5c34919f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "workingTreeSha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+      "bytes": 5254,
+      "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeSha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/testing.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeSha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "workingTreeSha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "b5b85f9318f2b6b1951dd8d2a0439075050b4660",
+      "bytes": 109777,
+      "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "workingTreeSha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "2d8734676a8382f1b5cc43e84610d49ec8030421",
+      "bytes": 1981340,
+      "sha256": "1a6a992dd31f09e32c217877febf69813f85656a07bc5bbfe0c57839a010e077",
+      "workingTreeSha256": "42641e4fb7874197014f07027b503af0a94a02e8abeab194401b42994bad4ab7",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+      "bytes": 229597,
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeSha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "acab56d0c5b40e4c9c4a905e3731a7ea62da9df4",
+      "bytes": 1409370,
+      "sha256": "128f716f779dbd7b8c68365f40600adba0eab4ff17afb1a677369abf6bdbdf44",
+      "workingTreeSha256": "128f716f779dbd7b8c68365f40600adba0eab4ff17afb1a677369abf6bdbdf44",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "6ea55ad597ee138d7ef2999d0cf49acf240c5b4e",
+      "bytes": 1948474,
+      "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "workingTreeSha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "gitBlob": "8b0b5c8f2ff8372d5c056140b525ebfa2c91b710",
+      "bytes": 4686,
+      "sha256": "785765632947277a0e4e62188d5bc5b4f84a256216bed77093cd3347a37bc42c",
+      "workingTreeSha256": "785765632947277a0e4e62188d5bc5b4f84a256216bed77093cd3347a37bc42c",
+      "workingTreeMatches": true
+    }
+  ],
+  "carrierContextPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "86d6559b9934f27577bcbcd5f112ae666b36f2b8",
+      "bytes": 1982556,
+      "sha256": "42641e4fb7874197014f07027b503af0a94a02e8abeab194401b42994bad4ab7",
+      "workingTreeSha256": "42641e4fb7874197014f07027b503af0a94a02e8abeab194401b42994bad4ab7",
+      "workingTreeMatches": true
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-Build-integration.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "66dc04bac87fa518899bca4a01d738fb2c9c22cd",
+      "bytes": 9214,
+      "sha256": "e448e58a6ca86256cbe651d5932fdfadb79ecd158515af66a11d8c5050395d85",
+      "workingTreeSha256": "e448e58a6ca86256cbe651d5932fdfadb79ecd158515af66a11d8c5050395d85",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-Build-unit.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "4d93cd2fe9970bd58990ca41614e10fea7b3a2fa",
+      "bytes": 1709,
+      "sha256": "152ff798f17e4f6948869661e18dfc2505e1c1e7ed8037a0690088d9bc1c84cc",
+      "workingTreeSha256": "152ff798f17e4f6948869661e18dfc2505e1c1e7ed8037a0690088d9bc1c84cc",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-catalog-audit.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeSha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-dotnet-test.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "a2c49e0f4063a3e05b75ccd964541aa0904fe78c",
+      "bytes": 385662,
+      "sha256": "989cb2281e0eac0bf35d653dd300d463e350140dfcab04c4fe9fd2b9c293c582",
+      "workingTreeSha256": "989cb2281e0eac0bf35d653dd300d463e350140dfcab04c4fe9fd2b9c293c582",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-runner-stdout.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "da339f1e102c6d52afb27e43e4659eac0e632722",
+      "bytes": 394,
+      "sha256": "40b3a83ed305270405210870a8af32d72f8ddb4006d177b4fe0509c69801236c",
+      "workingTreeSha256": "40b3a83ed305270405210870a8af32d72f8ddb4006d177b4fe0509c69801236c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-summary.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "20fc64a7eeba7182a9bd3fc5ce2850d4fa743daf",
+      "bytes": 1600,
+      "sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+      "workingTreeSha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-artifact-index.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "fac0e1bd9fdb83c62894e5fdd181b9f3911246d6",
+      "bytes": 4604,
+      "sha256": "94ee02c43d0fe480805c12399aa55511e587093c502d45b85d151b351f89771e",
+      "workingTreeSha256": "94ee02c43d0fe480805c12399aa55511e587093c502d45b85d151b351f89771e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-dotnet-test.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "e02af180979b66cec1f15d557b9fc855bef19b6e",
+      "bytes": 374693,
+      "sha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed",
+      "workingTreeSha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-plan.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "3a7ff4ec912048d254a6b3025dee8e0dcc34f364",
+      "bytes": 17849,
+      "sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+      "workingTreeSha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-runner-stdout.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "a1a009f54165eb2763a9bd4229b71557a7c0c278",
+      "bytes": 1958,
+      "sha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3",
+      "workingTreeSha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-summary.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "4b79ddb0f7ea1b2c3309d7e7d07d95b5a41bf330",
+      "bytes": 6692,
+      "sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+      "workingTreeSha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-artifact-index.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "f849572bd457308953641bd8a83e534db60d6daa",
+      "bytes": 8915,
+      "sha256": "1ec9cae877af73015ce0e4cbcad2da5a4c3d1a52fbca161d7f96f6f4b7efb048",
+      "workingTreeSha256": "1ec9cae877af73015ce0e4cbcad2da5a4c3d1a52fbca161d7f96f6f4b7efb048",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-binaries-20261016.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "056167247013d997258ea4a30ca5ff4383b29820",
+      "bytes": 927,
+      "sha256": "7ba5e16011b878eb0ceb2a1199b1c8fbb85dfb14487ef8abf335c32db2d862fa",
+      "workingTreeSha256": "7ba5e16011b878eb0ceb2a1199b1c8fbb85dfb14487ef8abf335c32db2d862fa",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-artifact-index.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "fd2e6a2882b24b239e883a46f219acbc04b16b93",
+      "bytes": 3924,
+      "sha256": "7537ee5d1b8e38efc53b30a2692c840676b6caa21e90f0a25bdef7fbc04a4de1",
+      "workingTreeSha256": "7537ee5d1b8e38efc53b30a2692c840676b6caa21e90f0a25bdef7fbc04a4de1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "8128d2e08eabf017c08544ba0ef6aa4b6f896b86",
+      "bytes": 189258,
+      "sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8",
+      "workingTreeSha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "c1a9e86a0e971856dd0aaafc7464324958a9afd1",
+      "bytes": 2086,
+      "sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb",
+      "workingTreeSha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-plan.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "250d87eca5f0f83f705c6e8dfdafe28dc452cf81",
+      "bytes": 1187,
+      "sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+      "workingTreeSha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "d9a992b771d77c7b0886570a97407b527cbca76e",
+      "bytes": 1213,
+      "sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616",
+      "workingTreeSha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-summary.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "1eeff2d1498ab499741f60d75e50461b76279042",
+      "bytes": 1387,
+      "sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+      "workingTreeSha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.md",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "39e3950a04cfeb2cf98ee0c2a61760de4b4c0462",
+      "bytes": 4628,
+      "sha256": "91ecae98d585ace8fa96624cabe5d40c01f246964242a7c11ad29587a5874914",
+      "workingTreeSha256": "91ecae98d585ace8fa96624cabe5d40c01f246964242a7c11ad29587a5874914",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "04acb95b605b2b15dba6056342cdbce1da0b9c22",
+      "bytes": 159184,
+      "sha256": "e5928e0661701bc5ee98f3d1916c66cba6ccc80ebd4a2fb7284adc4ea0d7b633",
+      "workingTreeSha256": "e5928e0661701bc5ee98f3d1916c66cba6ccc80ebd4a2fb7284adc4ea0d7b633",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.md",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "e6e492afd7fae5e1f83de202e29f6463cea2b3c9",
+      "bytes": 3539,
+      "sha256": "77c483fe8f28c0e0fc12457097dba4c9c58d2ce3e6c205878c00758851f446d3",
+      "workingTreeSha256": "77c483fe8f28c0e0fc12457097dba4c9c58d2ce3e6c205878c00758851f446d3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "8c3e37ed639c800066faab7f1b597d1da2e3e424",
+      "bytes": 67214,
+      "sha256": "5a189ec0bf617cc815917d931ed40d4a9fd3e397b7050c04509e1645078bc12f",
+      "workingTreeSha256": "5a189ec0bf617cc815917d931ed40d4a9fd3e397b7050c04509e1645078bc12f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-integration.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "04d3077eba8cbe3b8ea7814497236a8c1de26e4e",
+      "bytes": 9211,
+      "sha256": "3a95ec60a62c672ea46ba2da00c283600c6aab0620506b1bd63e129e84b1bedd",
+      "workingTreeSha256": "3a95ec60a62c672ea46ba2da00c283600c6aab0620506b1bd63e129e84b1bedd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-unit.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "92c49cbefd47135dcbebd33fb0a3c6f7ecac823d",
+      "bytes": 1707,
+      "sha256": "b0c7fbb4128a3b1bbdaf11ca9aa73049c9e7c97d411f86b17ab7161db62c76ab",
+      "workingTreeSha256": "b0c7fbb4128a3b1bbdaf11ca9aa73049c9e7c97d411f86b17ab7161db62c76ab",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-artifact-index.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "e747d791eb06cbf0b6086198e265e1124d5cafbd",
+      "bytes": 4647,
+      "sha256": "511de844a2d92ac2716f674308835c8cef2fd45594ea3db8fed798fcc02c7364",
+      "workingTreeSha256": "511de844a2d92ac2716f674308835c8cef2fd45594ea3db8fed798fcc02c7364",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-catalog-audit.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeSha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-dotnet-test.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "fb1d9f21164769ee1dc1ea8ba92382ef6a974b39",
+      "bytes": 385648,
+      "sha256": "e4dba4bdf2e60b26a2c69381e8a87739e41a938d0390197b4a9adb1fd6113466",
+      "workingTreeSha256": "e4dba4bdf2e60b26a2c69381e8a87739e41a938d0390197b4a9adb1fd6113466",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-runner-stdout.log.gz",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "be642d72e59c6976b44643b8dfc43d376bbf5b46",
+      "bytes": 394,
+      "sha256": "df7c70c654236198b550a5f3957be98bc049965b1409101438099992a0bef0f8",
+      "workingTreeSha256": "df7c70c654236198b550a5f3957be98bc049965b1409101438099992a0bef0f8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-summary.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "10f3d42a4f70b368101abb61c2c79cab35910de2",
+      "bytes": 1601,
+      "sha256": "4871c5408bf552bca7ece3ffd151b2c2cdb33b735b2281af7d6bf4397432b885",
+      "workingTreeSha256": "4871c5408bf552bca7ece3ffd151b2c2cdb33b735b2281af7d6bf4397432b885",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "a2e3efbeb5c50118cd9b285cf385d06deffc1dc3",
+      "bytes": 13385,
+      "sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+      "workingTreeSha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "f23cd7efe9f22e252aa4853e0768c3b7c00f26bb",
+      "bytes": 5091,
+      "sha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+      "workingTreeSha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "615123f86dacc2f23eafd8d4d297ee8dac28f086",
+      "bytes": 23359,
+      "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+      "workingTreeSha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+      "commit": "f5f208c591fb1780f475a08b3d5c79bdaec5cd1a",
+      "gitBlob": "ce8efedcd2d09b5ff027768171751810d12a3180",
+      "bytes": 17161,
+      "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+      "workingTreeSha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+      "workingTreeMatches": true
+    }
+  ],
+  "freshPreparation": {
+    "catalog": {
+      "index": {
+        "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-Build-integration.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/Build-integration.log",
+            "raw_bytes": 119991,
+            "raw_sha256": "cf41004fed9cb874cfe2126912cd52196b3b2e40d8b69184aceeb7895ce808c7",
+            "stored_sha256": "e448e58a6ca86256cbe651d5932fdfadb79ecd158515af66a11d8c5050395d85"
+          },
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-Build-unit.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/Build-unit.log",
+            "raw_bytes": 26198,
+            "raw_sha256": "6ea5e12369eaa0868eb6f5480959c6c9ff9103f50d05fbeeff96f435de6e8e25",
+            "stored_sha256": "152ff798f17e4f6948869661e18dfc2505e1c1e7ed8037a0690088d9bc1c84cc"
+          },
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-catalog-audit.json",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/catalog-audit.json",
+            "raw_bytes": 103,
+            "raw_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+            "stored_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a"
+          },
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/dotnet-test.log",
+            "raw_bytes": 3523795,
+            "raw_sha256": "4f936f2b3cf0d9b26d8968e278e5fac0839d0cdad664c01d0f7e07326a434ff6",
+            "stored_sha256": "989cb2281e0eac0bf35d653dd300d463e350140dfcab04c4fe9fd2b9c293c582"
+          },
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-runner-stdout.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/runner-stdout.log",
+            "raw_bytes": 712,
+            "raw_sha256": "2284289786ef694a9cd651d0a5d921432110f9d72ba6248dff71bb11b3920d78",
+            "stored_sha256": "40b3a83ed305270405210870a8af32d72f8ddb4006d177b4fe0509c69801236c"
+          },
+          {
+            "path": "t179pd-ledger-corrected-catalog-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/summary.json",
+            "raw_bytes": 1600,
+            "raw_sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+            "stored_sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            null
+          ],
+          "Reasons": [],
+          "DiscoveryOnly": true,
+          "PlanOnly": false,
+          "Revision": {
+            "Head": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11702,
+            "Categories": 767,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0661622,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0486428,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1348187,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 44.5800327,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 12.6143193,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0041016,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 10,
+          "WallTime": "00:01:05.3840733",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedChains": [
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-Build-integration.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/Build-integration.log",
+          "raw_bytes": 119991,
+          "raw_sha256": "cf41004fed9cb874cfe2126912cd52196b3b2e40d8b69184aceeb7895ce808c7",
+          "stored_sha256": "e448e58a6ca86256cbe651d5932fdfadb79ecd158515af66a11d8c5050395d85",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-Build-unit.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/Build-unit.log",
+          "raw_bytes": 26198,
+          "raw_sha256": "6ea5e12369eaa0868eb6f5480959c6c9ff9103f50d05fbeeff96f435de6e8e25",
+          "stored_sha256": "152ff798f17e4f6948869661e18dfc2505e1c1e7ed8037a0690088d9bc1c84cc",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-catalog-audit.json",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/catalog-audit.json",
+          "raw_bytes": 103,
+          "raw_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+          "stored_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/dotnet-test.log",
+          "raw_bytes": 3523795,
+          "raw_sha256": "4f936f2b3cf0d9b26d8968e278e5fac0839d0cdad664c01d0f7e07326a434ff6",
+          "stored_sha256": "989cb2281e0eac0bf35d653dd300d463e350140dfcab04c4fe9fd2b9c293c582",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/runner-stdout.log",
+          "raw_bytes": 712,
+          "raw_sha256": "2284289786ef694a9cd651d0a5d921432110f9d72ba6248dff71bb11b3920d78",
+          "stored_sha256": "40b3a83ed305270405210870a8af32d72f8ddb4006d177b4fe0509c69801236c",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-catalog-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-115425-783-70346-c72491d8572d414db3abb8caa495ed35-categories/summary.json",
+          "raw_bytes": 1600,
+          "raw_sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+          "stored_sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+          "rawStoredLocalCommittedVerified": true
+        }
+      ]
+    },
+    "plan": {
+      "index": {
+        "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-ledger-corrected-plan-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/dotnet-test.log",
+            "raw_bytes": 3377318,
+            "raw_sha256": "4b3ad916aee73694e04155f4fc6fa6e451b905e9e48c30d50d172f646ae27605",
+            "stored_sha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed"
+          },
+          {
+            "path": "t179pd-ledger-corrected-plan-20261016-plan.json",
+            "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/plan.json",
+            "raw_bytes": 17849,
+            "raw_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+            "stored_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640"
+          },
+          {
+            "path": "t179pd-ledger-corrected-plan-20261016-runner-stdout.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/runner-stdout.log",
+            "raw_bytes": 11527,
+            "raw_sha256": "4b939b8d72d247f614921d3c71b552adf174f9aa77b721c4411095abba530b43",
+            "stored_sha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3"
+          },
+          {
+            "path": "t179pd-ledger-corrected-plan-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/summary.json",
+            "raw_bytes": 6692,
+            "raw_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+            "stored_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence",
+            "fr063-joint-late-completion",
+            "fr063-joint-retained-common-calculation",
+            "fr063-common-calculation-regression",
+            "fr063-common-resource-continuation",
+            "fr063-common-qte-consumers",
+            "fr063-joint-active-tail",
+            "fr063-joint-c1-common-mixed-guard"
+          ],
+          "Reasons": [
+            {
+              "category": "fr063-active-prefix-lifecycle-evidence",
+              "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-late-completion",
+              "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-retained-common-calculation",
+              "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-calculation-regression",
+              "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-resource-continuation",
+              "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-qte-consumers",
+              "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-active-tail",
+              "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-c1-common-mixed-guard",
+              "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            }
+          ],
+          "DiscoveryOnly": false,
+          "PlanOnly": true,
+          "Revision": {
+            "Head": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": null,
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0512487,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0512775,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1305672,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0056198,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 30,
+          "WallTime": "00:00:07.0037385",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 8,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 42,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "fr063-active-prefix-lifecycle-evidence-unit-001",
+              "fr063-common-calculation-regression-unit-002",
+              "fr063-common-qte-consumers-integration-003",
+              "fr063-common-resource-continuation-integration-004",
+              "fr063-joint-active-tail-integration-005",
+              "fr063-joint-c1-common-mixed-guard-unit-006",
+              "fr063-joint-late-completion-integration-007",
+              "fr063-joint-retained-common-calculation-integration-008"
+            ],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedChains": [
+        {
+          "path": "t179pd-ledger-corrected-plan-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/dotnet-test.log",
+          "raw_bytes": 3377318,
+          "raw_sha256": "4b3ad916aee73694e04155f4fc6fa6e451b905e9e48c30d50d172f646ae27605",
+          "stored_sha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-plan-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/plan.json",
+          "raw_bytes": 17849,
+          "raw_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+          "stored_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-plan-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/runner-stdout.log",
+          "raw_bytes": 11527,
+          "raw_sha256": "4b939b8d72d247f614921d3c71b552adf174f9aa77b721c4411095abba530b43",
+          "stored_sha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-corrected-plan-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/summary.json",
+          "raw_bytes": 6692,
+          "raw_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+          "stored_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+          "rawStoredLocalCommittedVerified": true
+        }
+      ]
+    }
+  },
+  "supersededPreparation": {
+    "source": "91e28fd746a61a150d589f4a73ca08fa55a14654",
+    "summary": {
+      "Categories": [
+        null
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": true,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "91e28fd746a61a150d589f4a73ca08fa55a14654",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 11702,
+        "Categories": 767,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "CategoryResults": [],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0647142,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0507797,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1309107,
+          "Completed": true
+        },
+        {
+          "Name": "Build-integration",
+          "Seconds": 102.8293644,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 17.1244102,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0041514,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:02:09.5440253",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "usableForCurrentExecution": false
+  },
+  "binaryManifest": {
+    "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "phase": "Pd-R1/R2 corrected ledger wired fresh BOTH; zero actuals",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "b84e69d4015c24828db13b7832a212c9f366d18136f05bd1452ca5ac3b11cf7b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "3c25f6ee46de084525b4ebaf06ca34b1d01cfe280ba29be5b50e587059706a7e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "8780835ffbf1c8f87986373c659280183885209300028c1b01af11d8d1b9fd8b"
+      }
+    ]
+  },
+  "fourCurrentDllHashesVerified": true,
+  "selectedRecovery": {
+    "receipt": "/tmp/t179pd-ledger-corrected-selected-recovery-20261016.json",
+    "receiptSha256": "a66c5698659816eecb066c5606510b358823bed27fa44d2d175d138a30b0113c",
+    "source": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "filesVerifiedAgainstCompiledGitBlobs": 340,
+    "clean": true,
+    "noAlternates": true,
+    "restoredBuildOrRuntime": "NOT_RUN",
+    "provenance": "Coordinator reports GitHub-only filtered sparse fetch/readback; independent reviewer verified local exact HEAD/files/blob hashes/cleanliness without fetch.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "bytes": 11662
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "785765632947277a0e4e62188d5bc5b4f84a256216bed77093cd3347a37bc42c",
+        "bytes": 4686
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+        "bytes": 1948474
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+        "bytes": 81688
+      },
+      {
+        "path": "docs/testing.md",
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+        "bytes": 18979
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "bytes": 66432
+      },
+      {
+        "path": "BookOfEternityClient/BookOfEternityClient.csproj",
+        "sha256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+        "bytes": 5795
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+        "sha256": "35e3a981ddefe9d023eb92168cfb1ea36114001eda0be6f6d3ab9e1bc0a8d108",
+        "bytes": 25101
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+        "sha256": "050dcf4d58cf5934c182577ebe169be22e1ba963d0ff60b5acf3ace3afc8e6fd",
+        "bytes": 21214
+      },
+      {
+        "path": "BookOfEternityClient.Tests/ResourcePendingResolutionTests.CommonBoundary.cs",
+        "sha256": "ea71608825f4ab493288125c53072e27c5f79f6f2d53255f173bbcbb2f147047",
+        "bytes": 3308
+      },
+      {
+        "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+        "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+        "bytes": 1200
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs",
+        "sha256": "c8229c88d9c8eef71ebc0d83108405b6b5b7e7e1878f1a9dc329af36cae88874",
+        "bytes": 8619
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4",
+        "bytes": 12668
+      },
+      {
+        "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+        "bytes": 1682
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+        "sha256": "3f4f5bbd5175eba7ffada440f871fd0aab169c552510ddda658fbc6fd23eb7f2",
+        "bytes": 6155
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+        "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+        "bytes": 38927
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+        "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+        "bytes": 71591
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+        "bytes": 82535
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "sha256": "cdda61b515137ff8c75cc6b6eab8a58a66af2446a0f339538603fd81500a51f6",
+        "bytes": 1991
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "sha256": "128f716f779dbd7b8c68365f40600adba0eab4ff17afb1a677369abf6bdbdf44",
+        "bytes": 1409370
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "sha256": "1a6a992dd31f09e32c217877febf69813f85656a07bc5bbfe0c57839a010e077",
+        "bytes": 1981340
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+        "bytes": 229597
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-summary.json",
+        "sha256": "4871c5408bf552bca7ece3ffd151b2c2cdb33b735b2281af7d6bf4397432b885",
+        "bytes": 1601
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-runner-stdout.log.gz",
+        "sha256": "df7c70c654236198b550a5f3957be98bc049965b1409101438099992a0bef0f8",
+        "bytes": 394
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "e4dba4bdf2e60b26a2c69381e8a87739e41a938d0390197b4a9adb1fd6113466",
+        "bytes": 385648
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-catalog-audit.json",
+        "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-artifact-index.json",
+        "sha256": "511de844a2d92ac2716f674308835c8cef2fd45594ea3db8fed798fcc02c7364",
+        "bytes": 4647
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-unit.log.gz",
+        "sha256": "b0c7fbb4128a3b1bbdaf11ca9aa73049c9e7c97d411f86b17ab7161db62c76ab",
+        "bytes": 1707
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-integration.log.gz",
+        "sha256": "3a95ec60a62c672ea46ba2da00c283600c6aab0620506b1bd63e129e84b1bedd",
+        "bytes": 9211
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-submitted-admission-consult-20261016.md",
+        "sha256": "b6387f4983518a3b949132b2101e2a03105970687788c5f1455235348874a46b",
+        "bytes": 21551
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-submitted-admission-consult-20261016.json",
+        "sha256": "4338d3a859d358b9fda1c10922efa48392f80907096b12ef15eee8772c341ea8",
+        "bytes": 16440
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-summary.json",
+        "sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+        "bytes": 1387
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+        "sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616",
+        "bytes": 1213
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-plan.json",
+        "sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+        "bytes": 1187
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+        "sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb",
+        "bytes": 2086
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+        "sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8",
+        "bytes": 189258
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-artifact-index.json",
+        "sha256": "7537ee5d1b8e38efc53b30a2692c840676b6caa21e90f0a25bdef7fbc04a4de1",
+        "bytes": 3924
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.md",
+        "sha256": "91ecae98d585ace8fa96624cabe5d40c01f246964242a7c11ad29587a5874914",
+        "bytes": 4628
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.json",
+        "sha256": "e5928e0661701bc5ee98f3d1916c66cba6ccc80ebd4a2fb7284adc4ea0d7b633",
+        "bytes": 159184
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-summary.json",
+        "sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+        "bytes": 2599
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-plan.json",
+        "sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+        "bytes": 3541
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-dotnet-test.log.gz",
+        "sha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33",
+        "bytes": 374440
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-plan-20261016-artifact-index.json",
+        "sha256": "7654fe1872b4f9aef8c72f31ae69d68cdf5bdcb51f99d113eecc1b8a1527820c",
+        "bytes": 4256
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.md",
+        "sha256": "77c483fe8f28c0e0fc12457097dba4c9c58d2ce3e6c205878c00758851f446d3",
+        "bytes": 3539
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.json",
+        "sha256": "5a189ec0bf617cc815917d931ed40d4a9fd3e397b7050c04509e1645078bc12f",
+        "bytes": 67214
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-summary.json",
+        "sha256": "a5b183eb1bb833efbaecdf15f73aa7274c76d67702b69b32f5ab207ce678d238",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-runner-stdout.log.gz",
+        "sha256": "bd685c877d367ff00f75a2a170df1b300d6f58a8986b76a2013b60178024b210",
+        "bytes": 823
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-plan.json",
+        "sha256": "2749b8093c241e8ba12af98e9ff0b305bf634d2026beb43b24abda1d85012172",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "1ed98118e0e55ecf9656545aa01f43c58309d5588e32237634ad9f0316fb9375",
+        "bytes": 4830323
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-dotnet-test.log.gz",
+        "sha256": "1e2cf526aa3cbaec394b646fd31b74d2c2780baa486566100f459725bc0574bb",
+        "bytes": 187088
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-20261016-artifact-index.json",
+        "sha256": "b61269c99b3906d5d5bcb67a6740dad35cca12d444f1dd0d39a2981699a628aa",
+        "bytes": 4001
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-summary.json",
+        "sha256": "a1415d98a892e82eede54f2eec228e8d9c3eb13f0ba46457d1f1fa11c3a2e4e7",
+        "bytes": 1600
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "0669bec057daef8aa04d0180a5a85ecab9834673e7c882eaebddc82f147c0b80",
+        "bytes": 385468
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-catalog-audit.json",
+        "sha256": "d7f9fdc66c80e923e51348311ebc6e491b31e3d58c61ec979e6ca65eb734bd4c",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-artifact-index.json",
+        "sha256": "d340ddac90fc492643feef1101b6933cda6a5ebf22978bcb7284589fe4b6a126",
+        "bytes": 4128
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-Build-unit.log.gz",
+        "sha256": "0359cb8a4be2ef69ce0f779ae66741c655140d496af3c1a3bc31ff8b6dd45b99",
+        "bytes": 1716
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-catalog-20261016-Build-integration.log.gz",
+        "sha256": "85a962ec1c1df0756c0e63536e087c7a0932c18ef88ef9b467f26915632c597b",
+        "bytes": 9195
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-binaries-20261016.json",
+        "sha256": "1ab09306d122a2d8be11dee49c67ba3644baaef0bc61c7cfe7aad6b59942cd32",
+        "bytes": 933
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.md",
+        "sha256": "387f12a8e59cc752ba96632b93325df91ca5547543dc379b721574a742879b3d",
+        "bytes": 12766
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-independent-review-20261016.json",
+        "sha256": "679da2a38700bf66e63915090c1743acb2fd5995ce206ee58a8eea26997ae513",
+        "bytes": 85678
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.md",
+        "sha256": "67ec54759912504d0b6ac668a1d57bee2fc315238545ba63cc4d450ad16dcfe7",
+        "bytes": 10984
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-corrected-independent-review-20261016.json",
+        "sha256": "63a65041c5d575f3cdc175577d1bd00cbd7c70838a78c9baf01eac9bc1a7f018",
+        "bytes": 111045
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.md",
+        "sha256": "6ccd0ae16751c68a0e5276fb35f1bc8b41d45a7ec07e358e73eee8d826d40fbd",
+        "bytes": 93910
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.json",
+        "sha256": "6962060bc352ba0f119864af453f5aa92f7f749a38a802cb2d31492b50f9c27a",
+        "bytes": 583663
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016.diff.gz",
+        "sha256": "28bb083bc83dafe8c8d7631a4174743a23faa19827019437be60ab7dbf7c7af3",
+        "bytes": 65480
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-corrected-20261016-diff-artifact-index.json",
+        "sha256": "15056d373cc0e16d52de29960f86a7f7344ab4102aab336e7a271b6c3ac7e83a",
+        "bytes": 466
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+        "sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+        "bytes": 13385
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+        "sha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+        "bytes": 5091
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-selected-recovery-20261016.json",
+        "sha256": "eb7b509fce3acacbec3a8d2b9f506583bb13222972f9c2373ee36cff6512e6b8",
+        "bytes": 66712
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md",
+        "sha256": "84a03ea674da9138eeffb0430043e49927974df47429bf8215dd772af7d4d514",
+        "bytes": 5325
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.json",
+        "sha256": "ffc9600a7c07a0b14ba4349d8c779e601965cc5c3d38eba242952c099632e42d",
+        "bytes": 253014
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.md",
+        "sha256": "859b2f2e3088cf241a5a0577d5b4428ee57b8fb2349e7cb9740b796370289b15",
+        "bytes": 37866
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-evaluation-target-catalog-20261016.json",
+        "sha256": "433594bd787f343fb532898893209bc39c0b9f7c42e05ed0fd3e24216bfc16b5",
+        "bytes": 259726
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-summary.json",
+        "sha256": "fc15000c3aaed52060b5ecd7d37ad69c62817f90dea46d8ac04a2d50527435ba",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-plan.json",
+        "sha256": "a2703d16789e18ceddee6a13872579d85f6fcd033efadac4979eac9c79094538",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "b4888f6bdea1b2cac22580492a9b39f5ec457b220d2ca933824d94e15e908eb6",
+        "bytes": 4832234
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-dotnet-test.log.gz",
+        "sha256": "25cfd92e760240cf011b6f95fd6bf9ea7689f5dee988dbeb6eeb5feb0a49df4b",
+        "bytes": 187084
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-late-20261016-artifact-index.json",
+        "sha256": "1e9a9106450a4592e3fb3d43f93adeb0e5be9febb7156887c72065db505c99e8",
+        "bytes": 3573
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-summary.json",
+        "sha256": "b66b302cd0c4dcaba4d6f5e328735711d002188bd5cae6e757930b29d832ba44",
+        "bytes": 6428
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-plan.json",
+        "sha256": "62ed48d15500bfb3e613db4208566530ec64d2492e4a1b0b37c1584bb9faf77e",
+        "bytes": 17857
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-dotnet-test.log.gz",
+        "sha256": "4b4587bfd954d3265c3da6ed60ee835c3c3d1ba480fbb89c680416c226476960",
+        "bytes": 374440
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-plan-20261016-artifact-index.json",
+        "sha256": "7da743b8b781c06f037e1b1e8850b399ac57b84b724d299ebc2eade346d02da8",
+        "bytes": 8218
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-summary.json",
+        "sha256": "ce2b58d9e5ef07d4585d5ae0faa01cdcd08b21f5e1ded0a5dfa091f06034f8be",
+        "bytes": 1598
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "be023e71612b2c3df168944c975aa0b748488656dcf6b2f0a353235d4168160f",
+        "bytes": 385436
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-catalog-audit.json",
+        "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-artifact-index.json",
+        "sha256": "fe6e0aa38f4273f1b341af7d957a04be3098407b849935cb3511db6ce6b95da2",
+        "bytes": 4166
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-unit.log.gz",
+        "sha256": "7ce2557450790c8ce1557361c59c6b6da9d221350447013b1cc95ea2aa49919b",
+        "bytes": 1717
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-catalog-20261016-Build-integration.log.gz",
+        "sha256": "acb8ae5a8981af068770b1a88336823fd66a0df861872766776ea6272116e20f",
+        "bytes": 9206
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-corrected-binaries-20261016.json",
+        "sha256": "e37e4fa6f9aa7eea27556f3adb4c4a85cad41032f891a45b052aa314f5ecb11a",
+        "bytes": 928
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-summary.json",
+        "sha256": "299efccdcb82c7543388ce965473ee6fbc37676a41b59cf4806e727beef96bf7",
+        "bytes": 1487
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-plan.json",
+        "sha256": "8e7563278584c309e7539fcf49ed9f3fc7e757f76df641dd704f4678aefea2b6",
+        "bytes": 1231
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+        "sha256": "26e50e4ecbcb3cd3877be9709fc567141037095c5a0ca9a6112cda65dd6b7b33",
+        "bytes": 2532380
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-dotnet-test.log.gz",
+        "sha256": "08c93f18b9c2dd32f619b67ccccfca06906ebeb5a2fdf86fc392ef3ab93bfe3e",
+        "bytes": 187090
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-retained-green-20261016-artifact-index.json",
+        "sha256": "b57cfb0e01b3abeaa26582fb5abd44c002f5570ef196a684f3d8985ba7324270",
+        "bytes": 3635
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-summary.json",
+        "sha256": "0e5d58e76917dc22c5a7ab4d6ad925f4970d4720133fa2a528897d5cfa6982f2",
+        "bytes": 1475
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-plan.json",
+        "sha256": "315afed133e7f42c3440f56558b3cf610bacedbe7aade0d2cd4f5357ba98a3ce",
+        "bytes": 1582
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-fr063-common-resource-continuation-integration-001.trx.gz",
+        "sha256": "03315bbbf665e7c52b2f6ebc0863b0972e49e82cd166074709772264080e419e",
+        "bytes": 1581
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-dotnet-test.log.gz",
+        "sha256": "d3af98dea4d7a40c08d6d1ef139c147f18e47d6862f6bd63d41700a5e959c9f0",
+        "bytes": 187086
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-resource-continuation-20261016-artifact-index.json",
+        "sha256": "5542e45d8f37a2a54c178997a17ca1cf5b71a1aa5942c19cf6bf917a1900c811",
+        "bytes": 3638
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-summary.json",
+        "sha256": "20342f2af6142cbf8c4fd1cf1184a93478cd9580de75928e6960a3b082af7ba5",
+        "bytes": 1458
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-plan.json",
+        "sha256": "76035b591f727a2d8ca19f9d65395495d417e7a0e52fb888a8977721a72e74f3",
+        "bytes": 1559
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-fr063-common-qte-consumers-integration-001.trx.gz",
+        "sha256": "4d16290c5a7b624acfec61c53311d89f6a13f95bbb086fc8dfb23bda0c358ec6",
+        "bytes": 9966
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-dotnet-test.log.gz",
+        "sha256": "0f0b5bd5e0c1e26e38b2b68c341a702085d245c70adb9839cf6315b3c7149304",
+        "bytes": 187077
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-qte-consumers-20261016-artifact-index.json",
+        "sha256": "5cdaf12ed2549a50bd56e2b5f1b97ad9ae9d3734438ba17176210db228aadead",
+        "bytes": 3574
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-summary.json",
+        "sha256": "b733c2c4a43fc659fc527e17cd23eafadbaba0930ed70eb2926896e680df5a56",
+        "bytes": 1481
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-plan.json",
+        "sha256": "f8c04c0995a0d88825280fc72428797228c8969956a7319ee07f853779c6994c",
+        "bytes": 4917
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-fr063-common-calculation-regression-unit-001.trx.gz",
+        "sha256": "aa9a594360b856d7ae83bfe768d9185aabd2fa8f1b2f113c31e6110bb2a11e52",
+        "bytes": 3331
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-dotnet-test.log.gz",
+        "sha256": "0fda3faad0052effd2917c574c8c5337711ffe6147a2d0501cb59f4a0c2f6b29",
+        "bytes": 188728
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-ordinary-regression-20261016-artifact-index.json",
+        "sha256": "5d3750afaf1c58452c5aa8a71b2786999bc3b803b5429481cfedcd3320621e94",
+        "bytes": 3625
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-summary.json",
+        "sha256": "82de37d65a9a1f167b622b6088a696742c2f09001b78540cb37517995f5ea831",
+        "bytes": 1473
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-plan.json",
+        "sha256": "4bd076a8d4012e0fd6e7d66a93c23db249592ae92007b311dc5549f4441d172e",
+        "bytes": 1133
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-fr063-joint-c1-common-mixed-guard-unit-001.trx.gz",
+        "sha256": "dee21c9da13ad74bc74bf48d1b005c2de93f0265a9f109a5bd4a1edd1f50a635",
+        "bytes": 1343
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-dotnet-test.log.gz",
+        "sha256": "069cc8ad5401e086af21a4f8d0df880b67975b47a81f1af085de6ac637f1cd99",
+        "bytes": 188722
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-mixed-guard-20261016-artifact-index.json",
+        "sha256": "e6cc73ed0053e181bc8ba2be0913c933cde8efffff221d1dd9d7093074ac9deb",
+        "bytes": 3580
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.md",
+        "sha256": "575e525521006301bbefdf2d16c6b7f9bea4295ee2afccd50dc13690c81cb1ce",
+        "bytes": 5241
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-source-20261016-review.json",
+        "sha256": "5bb960ca59b7a4c5294b4a33b36ccb88ecf34359e8252aaf1be73042fb2184f6",
+        "bytes": 107736
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.md",
+        "sha256": "fbab152a2f273834960347b0120e5daa3eea8cf52380e8ac6412d8d658063f30",
+        "bytes": 3711
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-wired-late-evidence-20261016-review.json",
+        "sha256": "33afc9680dcde6f100403f8a565223f5488cf5a9304f358037f864ccdc25aeec",
+        "bytes": 75892
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-summary.json",
+        "sha256": "cc294318a4eac7daf49775bdc1c2bfb8de133a619d80dee7b62d9de718e9945a",
+        "bytes": 1478
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-plan.json",
+        "sha256": "5e8ad9b4f3aafaa3d6823c139e2d340777258f72dcadf75e85a3c410106dc71c",
+        "bytes": 2433
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+        "sha256": "d82c31ae4cdb48b214dce95f5850280ff51a0ad0a72476553d0b23ed98b5570b",
+        "bytes": 2501
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-dotnet-test.log.gz",
+        "sha256": "9a276a2a034cc2ef17d291938f7e9afc2cd8a6a13e3fec5f1d2168564f04eb4e",
+        "bytes": 188716
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-boundary-green-20261016-artifact-index.json",
+        "sha256": "49c88095b4e8a9c3b6abf090aa3b492286b5fec8f7c680d82e5f1d337d541f82",
+        "bytes": 3598
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-summary.json",
+        "sha256": "4222f93fc86f443ea244208bc16789b6e9b0056ce04de1d15c467cfabec51dcc",
+        "bytes": 1455
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-plan.json",
+        "sha256": "c20b273e865a1fb62dac1b7116bcbc98cc5d89b32eda229daae796ce97096573",
+        "bytes": 1159
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-fr063-joint-active-tail-integration-001.trx.gz",
+        "sha256": "386c79acebfec0a83f3e5e38ef203bed70a2b14312560030a00eeee2ad20e44d",
+        "bytes": 8209323
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-dotnet-test.log.gz",
+        "sha256": "ec8c92d4ab4ef734caf628ab648dd7bc661305fc8925d68cea80bf098cd4d906",
+        "bytes": 187074
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-active-refusal-20261016-artifact-index.json",
+        "sha256": "bf791bcc40d9760fa8d35e8a9d32be415da8248c7f52420cf93cb1136eff9b7d",
+        "bytes": 3572
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+        "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+        "bytes": 23359
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+        "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+        "bytes": 17161
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.md",
+        "sha256": "3b60c3f36928aa77c5dc77e7c48c1af70f57739444b133967564bec4260b4afe",
+        "bytes": 14477
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-independent-review-20261016.json",
+        "sha256": "1324f4ae3ad4dac3ddebe4f89c9a867bf894e066ee5b0276bd7788e64b345338",
+        "bytes": 130555
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.md",
+        "sha256": "55f46433f8069dd91173ad82c72c0ef9b62e7952492f92e8e9547f0d4ccafe5d",
+        "bytes": 9371
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-corrected-independent-review-20261016.json",
+        "sha256": "8482bb778dc576c0c4d9b1db62676ef56d58e4bdc3394d740284607fbf176aac",
+        "bytes": 54630
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.md",
+        "sha256": "42aa4c29c028feb0212e3fbe62b91a692efe1b14a72fba92d291e10aa153861c",
+        "bytes": 33884
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.json",
+        "sha256": "0b754c394dd64371a1d36045139162ab74eab3ddb029e09b18c70156206d4f60",
+        "bytes": 234797
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016.diff.gz",
+        "sha256": "c62f333eed9cfb0f2e2a57478f90be38a283c64a066068ac96b5aadd8058c555",
+        "bytes": 6656
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-corrected-20261016-diff-artifact-index.json",
+        "sha256": "53acbd3f75898e402b1acb7296f5a1fdbd77e137a2c575e0203a87769bfc7bf7",
+        "bytes": 428
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.md",
+        "sha256": "088e4bac5c708eb6a487893416658945c972a5859034608f31baf61c1eb7fbd2",
+        "bytes": 31325
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-leaf-catalog-20261016.json",
+        "sha256": "693bfe316f320322ef598cdd2ae8493bfd00b49c7d98e7f9264b12a00fa5711d",
+        "bytes": 227345
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-summary.json",
+        "sha256": "24011a04ef80e3e036b5a5b5a6008baf714de633d6d83277af45127e26426672",
+        "bytes": 6214
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-plan.json",
+        "sha256": "8fcedbe9659bf1736c493ef5ecd691b7e9a391af38324ca4785131646097d2f5",
+        "bytes": 17939
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-dotnet-test.log.gz",
+        "sha256": "9e60554210ff8820f4addb9a355bce13a502a62c75f5bf2d8f9d82e2218f06af",
+        "bytes": 374433
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-plan-20261016-artifact-index.json",
+        "sha256": "263775a244b78ea3076dabe43f99801aa5ff15e087aa1d3b35b0f3356b708158",
+        "bytes": 7974
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-summary.json",
+        "sha256": "55958dadaf04d66a0cbb6679d60c28733807b634efe087b7c7b7166e0fd734ec",
+        "bytes": 1600
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "a84f6ee1942fb9936013f172f483c7516c90d53f57780a5ee061ff3af9cf7dc2",
+        "bytes": 385416
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-catalog-audit.json",
+        "sha256": "775fec03acb2113c5564a864750f5bb19d322853e1bc177d0fa2ecbb38344fe6",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-artifact-index.json",
+        "sha256": "a3fea5b23d24d191f691797061b720334fa29b7758aacb56802d40fb64a2dd51",
+        "bytes": 4118
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-unit.log.gz",
+        "sha256": "74d72027eff41c4baea362699c0b98dd95e6ebbea997c79a5176ddeff3f110fd",
+        "bytes": 1711
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ad2ce8d8ab0ba352195459497314c906f4815411ca51e440436fb0c43c1136c0",
+        "bytes": 9196
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-wired-binaries-20261016.json",
+        "sha256": "e5441a0a410998fee294b41db7e2a866227e0ee5e3c0ad7d64ea6a54de2a234c",
+        "bytes": 946
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-summary.json",
+        "sha256": "f1ad741e4fe0424da6d5ddd88f8d6fd905fc298a58c8d945fcc8ccdd061716b6",
+        "bytes": 1382
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-plan.json",
+        "sha256": "4233214310a1ce4b5dc1ec837d24e513e5924fc4c0acda90f37b205e1c534491",
+        "bytes": 2433
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-fr063-common-boundary-calculation-unit-001.trx.gz",
+        "sha256": "77279eef622fbead135425ed34ff381d71eff3f2078b8b462287c5527be9be2b",
+        "bytes": 3763
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-dotnet-test.log.gz",
+        "sha256": "97dbd80ebb38e3fd0b3232dcdfa08799db5f280e09c76eb6df907b6f549a53b9",
+        "bytes": 189723
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-unit-red-20261016-artifact-index.json",
+        "sha256": "05933c76094219a8b0e01a3225aa481a6737dea382d28d47dd8ffa88f6398479",
+        "bytes": 3468
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-summary.json",
+        "sha256": "b84bcb947cd9443d3dd931295c7c8fb413c6bd9a61e75766a47d04692509e00c",
+        "bytes": 1391
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-plan.json",
+        "sha256": "59f4e5d046ef68312fd3211ef3a07b34c101967e4cb1d8606bd88e6f3b753c3f",
+        "bytes": 1231
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-fr063-joint-retained-common-calculation-integration-001.trx.gz",
+        "sha256": "48e1fa76eb267ad995d5f2eaf8cad15b654a66f78a6f385c84416e52aab76778",
+        "bytes": 5065030
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-dotnet-test.log.gz",
+        "sha256": "93ecb30359e8e8fc6528dcdb869a90039b84760ae6923d7fb8bbd460637abc47",
+        "bytes": 2718816
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-integration-red-20261016-artifact-index.json",
+        "sha256": "f934d101f515c4df864bfd27015d957fa58159e7a88a602e4b80e5f4a5a02874",
+        "bytes": 3534
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-summary.json",
+        "sha256": "809856ea3aa3e384fda2712f9df84779281029d8b01fd8f56d9a513914f82e46",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-plan.json",
+        "sha256": "fd06c930cab065f56789a69bf3e35833f9fc5eeef76bf7ca4415016876bbacaf",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "91aa2ffaa1379196a6b1857cd2ba608f813dbf382bf85773b60123f4ea11e541",
+        "bytes": 4829924
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-dotnet-test.log.gz",
+        "sha256": "54a02d398e887ca0202400c710b7df60e6b83338c2bca22616857736a49f6302",
+        "bytes": 187087
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-late-20261016-artifact-index.json",
+        "sha256": "6cd6b6e9e7cdc1b80ea65eebad890614b5d253691517c7aa938a8f3cb0a60d63",
+        "bytes": 3581
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.md",
+        "sha256": "204f01978f5279cbbd20b8380eac8d9418024015d97eaabd0912f0f0af93beb5",
+        "bytes": 6067
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-late-evidence-20261016-review.json",
+        "sha256": "952bc768d218abb52adf11f7160ad408f3ab8acb84571f4c6cc8290a045761fc",
+        "bytes": 50838
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.md",
+        "sha256": "ec6892bc91555fda01b531f8b73f167ec27d6d6239771af94c0e169b587de37d",
+        "bytes": 6924
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-independent-initial-20261016-review.json",
+        "sha256": "0476401c3008838de06cb0e77bdde988d590fcc681ec6718dc17cdb6415b4656",
+        "bytes": 83457
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.md",
+        "sha256": "582bc4489d17e20cefa9a7e7b73218ccc3e97dc63ecf050ea58bb654bf4e4ccb",
+        "bytes": 14590
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-independent-review-20261016.json",
+        "sha256": "1a9090816120836b560e541f6ceba5981c08fb1d84246d277c49f1970a36a88e",
+        "bytes": 36545
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-summary.json",
+        "sha256": "b81ec9eab08cb9281804c612762ddd27dedb78000c36dc9635dc3698025e135b",
+        "bytes": 5449
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-plan.json",
+        "sha256": "a270afd81b7d245af665f2fb2cf697cb69b8ce67756028bc2bdf6ce664f8802c",
+        "bytes": 15387
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-dotnet-test.log.gz",
+        "sha256": "0751df4c4c42fc9da55c12a4f240f977e38a8f47889befdacc3dbe90dd92d44a",
+        "bytes": 374426
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-plan-20261016-artifact-index.json",
+        "sha256": "956a994fa4a14709a7647fadb2120feb816dcb958bd25e6113cb5a5fa0573527",
+        "bytes": 7197
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-summary.json",
+        "sha256": "b0f6660299c29f92c425d06eb034bbfcf7f2f5f5a0d0f2e71717eb6cafec1715",
+        "bytes": 1600
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "0691963acdae5b0545553c0d63ca05592ca81820157d247fabf03c3d3e133d94",
+        "bytes": 385128
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-catalog-audit.json",
+        "sha256": "7bb1aab5de01bbba7274b7348a987d02559463f815daeadded77031516cf55be",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-artifact-index.json",
+        "sha256": "5ba204837554bbaf11817e2f40ec617a15b9df69d37581f96e3813779c2c4eb2",
+        "bytes": 4128
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-unit.log.gz",
+        "sha256": "58ce8df35b97c027e2f2a5ec1b8a93ee5ed180d9cd6afa5724e931a340a4daec",
+        "bytes": 1721
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-catalog-20261016-Build-integration.log.gz",
+        "sha256": "666d26d15861b11f0eccc974af8ee1f786cfa1ca4a082e742299f442c8be0174",
+        "bytes": 8909
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pc-initial-binaries-20261016.json",
+        "sha256": "9266db74e8c2bc1ff05dd74ae5392b983ef72bb3e9330b1446b6948150bd8763",
+        "bytes": 934
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.md",
+        "sha256": "a2f2076f09cc9913df3101fe00029209b3cf4aae2ab5568335a2322191e8697c",
+        "bytes": 29810
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depl-distinct-root-proposal-20261016.json",
+        "sha256": "6272be6527da1dfb069307f31044f72ddaf604450c1e566692dfbdc5b39e68c7",
+        "bytes": 19024
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.md",
+        "sha256": "5f7cc9c46927ea89e662769c4281a3aefaae27bda36b4869e071bdb346ac49b2",
+        "bytes": 31524
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-target-acceptance-proposal-20261016.json",
+        "sha256": "ad9f520c58fda6e5783399801f9d501e2e5bd2754bb8db2a9eb793796c29cd8a",
+        "bytes": 29446
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.md",
+        "sha256": "0acf79729e6f65398a7b7d77139b5070433dc141077382da91bb1ae9caca2043",
+        "bytes": 17223
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depi-independent-review-20261016.json",
+        "sha256": "2d3b80106195e235298cf8dc68ee8139030c911a7918892e8bbf8ec3ae5d1721",
+        "bytes": 36042
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.md",
+        "sha256": "2dc55d211e1cef3ebdea8eed2cafd55f513eac1f73bca6de584d6f8d3f406443",
+        "bytes": 2729
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-o1-readback-20261016.json",
+        "sha256": "99e00758c8271b444bb589dd22d19a07b71318499362011f48a955b1c08a5f22",
+        "bytes": 9830
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.md",
+        "sha256": "ef73f2c89bb920863951dd8f45d8641a97d1522977cc9da16885facb6c52542f",
+        "bytes": 15301
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-independent-review-20261016.json",
+        "sha256": "3c200eb294d6a33e99e69a1afb4f2f46c78eed68e9841e9da7663d1622fb37b6",
+        "bytes": 26634
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-summary.json",
+        "sha256": "048046e04979807207fc8eaf7cae4b4c8a0e5d34551eb6be278063ad68cddce8",
+        "bytes": 1457
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-plan.json",
+        "sha256": "5c407bee32285a6d544e28cba06ea75ef053b7a2de196ee369671aa256f7e72f",
+        "bytes": 1139
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-fr063-joint-story-owner-integration-001.trx.gz",
+        "sha256": "b812f14986afd710c5a1bfe77c0d2a3d303110d2dfa247c146d0b3a7e6d55365",
+        "bytes": 27023338
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-dotnet-test.log.gz",
+        "sha256": "79522eceb0424ab223d80e43564bd23297a2981cf88c0b915656f68c19e9eb1d",
+        "bytes": 187054
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-story-owner-20261016-artifact-index.json",
+        "sha256": "fe886d267601153da666fd4597c08d42f3b433176b9364b259afd6e06b439f9d",
+        "bytes": 3562
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-summary.json",
+        "sha256": "1f456862e01946fdd83a91e3ce0cd9953b655bac160037a359b577179c78e000",
+        "bytes": 1461
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-plan.json",
+        "sha256": "95fd4d59de95fcf1b47e0f34c6c6d1fe089c6a9581ffcb9bd74e0e62850aa354",
+        "bytes": 1195
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-fr063-joint-retained-story-integration-001.trx.gz",
+        "sha256": "2e7def12453cd53d977e39a68bea0d64c64c014b9722be9691048d39a16f3d2a",
+        "bytes": 10459200
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-dotnet-test.log.gz",
+        "sha256": "88817fc9dbb097782053b68569f038885914fa76b3099f87d5901cbaeb4366ab",
+        "bytes": 187052
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-retained-story-20261016-artifact-index.json",
+        "sha256": "a4796060d7bba4be3f4495145f4bdbc0951a1dbcd78da00aa227b4ca4c6c7b9f",
+        "bytes": 3584
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.md",
+        "sha256": "cd2f118a4680be3b8ff08712a8a5d12b8c0896c52966988f7f5d847378c10547",
+        "bytes": 7607
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-final-stage-20261016-review.json",
+        "sha256": "86645af676dddeb1808155e9e6c66c3d845902aa2b069ffe2092bcb20691c817",
+        "bytes": 114413
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.md",
+        "sha256": "9dca2681c7bc63a909c23b3245d8db3357a9e31e0b21133ee2fc0c8134a366ba",
+        "bytes": 3074
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-source-20261016-review.json",
+        "sha256": "b27f8025c8c475941e4c9c182b3f4c287446766e201ac3cff7fd5e1be9266be2",
+        "bytes": 25450
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.md",
+        "sha256": "6e4cf1ab6bacc4cac85c7786c91efeae53d6275ff871a6e30d0bd289dca5e76a",
+        "bytes": 4111
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-corrected-late-evidence-20261016-review.json",
+        "sha256": "5871dd9dc78dc7306b06638cead1a80d7c5ff8bcefd44003113e4792e669003f",
+        "bytes": 17518
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-summary.json",
+        "sha256": "2f95ee98ab511e9d9a195325dcff9f3cf46251c6f6e35ca098e78a40f8a36d87",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-plan.json",
+        "sha256": "d0a631d9311e04f774b3e57b7087ec369834540c06210fe36eaeb09c178129eb",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "d12a6af436570578f5f05da2ca29495100cd1b45542c0405c822128a7b1cc3dc",
+        "bytes": 4833093
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-dotnet-test.log.gz",
+        "sha256": "d3f5f5e7e7cb83b90c1e9aeba2624c964e059c965860984686daac94eb392754",
+        "bytes": 187052
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-late-20261016-artifact-index.json",
+        "sha256": "6f242aa42d616ae57b71ed193856dff276eb4f1834b712d3bd587b2b9804894f",
+        "bytes": 3589
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-summary.json",
+        "sha256": "65ba4698f82f67525181058fa209eeb975f18611ea10d1ccbb9dee8337b86562",
+        "bytes": 1470
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-plan.json",
+        "sha256": "beb1bbc061afaa8a481d0be0a0cd386bf490cba09230415d4d2a973a17d0fbd2",
+        "bytes": 4103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "fb9803596847865b498d7e4af47520929e2113edff72afb08c67da7115fb4369",
+        "bytes": 4107
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-dotnet-test.log.gz",
+        "sha256": "629bc87768ef062d0fb9b66d5734483902177dace3d7d3c6358f2a428e4f0e15",
+        "bytes": 188519
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-calculator-green-20261016-artifact-index.json",
+        "sha256": "012bbf1a82c20f3eb6c7ad97345062cd12adc588f36839bb6247f483de833101",
+        "bytes": 3630
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.md",
+        "sha256": "3de992da43937e8a1c49a85471b078cab4ed36da416944b3aeb6f0b1dd60e087",
+        "bytes": 22799
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-depc-lifecycle-proposal-20261016.json",
+        "sha256": "207ff51ba8a4e8db5886e8e635d8bba4b38bddb36e49e1a47bee49b4afcbab7a",
+        "bytes": 14010
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-summary.json",
+        "sha256": "64fece84d5381fc10f6410c9f282074f5ea5c759b1dde8a91dcc396555ba9836",
+        "bytes": 3527
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-plan.json",
+        "sha256": "efb789b7cb2b169a748e8207cdc9bcaf6712baab1651ac5c71f6004be0cff94c",
+        "bytes": 8978
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-dotnet-test.log.gz",
+        "sha256": "886880bde159db5a85edced7a6753b25a9d58ad66c8ad025382ed8dd273c8c5b",
+        "bytes": 374145
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-plan-20261016-artifact-index.json",
+        "sha256": "756af9320a759b0ae55626e25cbce01f8fcc00c3ad133032d48364f4bf23898b",
+        "bytes": 5214
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-summary.json",
+        "sha256": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-plan.json",
+        "sha256": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "5b0b5b637dff7856b99078b67da5a164fbed996697d2843459a9f3f409e8b7b2",
+        "bytes": 4831168
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-dotnet-test.log.gz",
+        "sha256": "ec9bc730e2e58981a04c775866bfb9ad2132809fa218fe32c4f1bd63c89201d0",
+        "bytes": 187059
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-artifact-index.json",
+        "sha256": "98596a05ce014333f69eff7e77f7fc98a874cc6f403d296e9e795c5a9971a728",
+        "bytes": 3573
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-summary.json",
+        "sha256": "5ffdf837adf851d6299b59b5932869c1430625a74bd75b656112949b0f8a0a85",
+        "bytes": 1600
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "8b99df58348678ddeb2c2289b00f54347d07380c8abecbdfc32e3ae4ff515c81",
+        "bytes": 384915
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-artifact-index.json",
+        "sha256": "fe4c37cff4d237ba0925fd51453bc01bb0625d6777cb01e44805e284f503e920",
+        "bytes": 4118
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-unit.log.gz",
+        "sha256": "23a8f09999e2abaed85976cc4046bcea1a8ad19e8861db2f1f5980ec4be7de89",
+        "bytes": 1710
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ba97d8120009c817d234bb6a28057924aaa97898ff174b41d8dc1e5b3b4d2514",
+        "bytes": 8930
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-wired-binaries-20261016.json",
+        "sha256": "888a99f06367ce7430f40dfe8658e9e75f5c15c2ef2c515c399e99db946371e3",
+        "bytes": 916
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-summary.json",
+        "sha256": "747e4f34c46c2249df204adb27f5cf1c8d2feb2d0deaace1458d0bb424404e03",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-plan.json",
+        "sha256": "d749c0b8c869214dfe8fc88d52f819ae51158195db6ed614e3096e399d9fefc3",
+        "bytes": 1533
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "sha256": "d6d3fd14706a901cbbfbcc7670c182425f11cd1d4c00df4f79256b83d831e852",
+        "bytes": 4831008
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-dotnet-test.log.gz",
+        "sha256": "9d1bc07e9eae52857b467e063818840b65359940ad38e0e715c57bfb6ec62602",
+        "bytes": 187056
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-late-20261016-artifact-index.json",
+        "sha256": "71c9103b6e0644432d1675d992edc8cc0d548383ae95d6966b25730a0d0bb891",
+        "bytes": 3581
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.md",
+        "sha256": "af7bd1bc2a220580691f67e7d4caa75b7ac67464cfcacca822d73aed28b6114b",
+        "bytes": 5708
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-source-20261016-review.json",
+        "sha256": "458d4f56c43c2e9e58bdf14f95440fe0da2a1eb170bdac1030cb4863cc1e887b",
+        "bytes": 38200
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.md",
+        "sha256": "a5e71f4144b317207a028df78796662dca5b0c97b2b527fc5cb57afbecb52333",
+        "bytes": 4768
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-wired-late-evidence-20261016-review.json",
+        "sha256": "02c78967947b45b1daf7f0c0949dd21829365e4945c7bc5681422b0c3dc3e019",
+        "bytes": 16807
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.md",
+        "sha256": "1c04ce1d90d4dde7d8875ae2f3d472c8f25f5c13e30d735b3729aaf087d349ba",
+        "bytes": 5052
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-late-evidence-20261016-review.json",
+        "sha256": "164bc8ca460681417fefddf83ca2b69c3837ec95d92129259a8fd0458518b8ab",
+        "bytes": 15531
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.md",
+        "sha256": "5f0d4372c9f5854bae6f60cf0d55d23594dabd65b8d3a04a43ad3d14950e68a1",
+        "bytes": 5618
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-initial-20261016-review.json",
+        "sha256": "f4b9f4b266357472d071759c10a76e6f0353b5d95fd71eeed36e5dd3c32daa4f",
+        "bytes": 11681
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.md",
+        "sha256": "aa0956be2fb4ff60648f0664e83ee9e5ca342677b88aa95605d99bc5ed076d14",
+        "bytes": 5111
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-independent-calculator-failure-20261016-review.json",
+        "sha256": "ea340f07d7867e66aa8db6fafb56001f9bef951b63d9af6dd85b6ec084c888c1",
+        "bytes": 20558
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-summary.json",
+        "sha256": "09cb94777b2a7daf57ef048bf5f407688002cebf60b23a69dc35f80483076e14",
+        "bytes": 1374
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-plan.json",
+        "sha256": "0aa23e7bdf7d479cb905eb7b8025aaa09e3011ff2267bc2284b703ad91b1e2ff",
+        "bytes": 4102
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "de9980ef310d7fa8f46f546665b2e539dab7ec1b703a02749211688e8de95bda",
+        "bytes": 5534
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-dotnet-test.log.gz",
+        "sha256": "354498825ddb86c1edfba1d5a5cef5a98030347e6ae2b8cb500ee167c7c9f3f9",
+        "bytes": 189624
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-first-green-failure-20261016-artifact-index.json",
+        "sha256": "75887ed63ae0da8aa714a70fbd81348f79c0768ec5ffbf6c0c6970af67739a44",
+        "bytes": 3496
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-summary.json",
+        "sha256": "cec01d5def31df45a6217cf3461ac30ffae9eb1faaf0be3563cd34ad350f60c8",
+        "bytes": 3527
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-plan.json",
+        "sha256": "8e5ed211837dc938bb6ce035e2e71a939670a2edb4310ba56bf923e68ae16684",
+        "bytes": 8978
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-dotnet-test.log.gz",
+        "sha256": "814671c00938ff60f5efe9408852defb36441e1fccda2e5e9f6f12bd027496ee",
+        "bytes": 374141
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-plan-20261016-artifact-index.json",
+        "sha256": "332b580de494534b0f1c9930c46b454c28fb2f772935591f27eb78271b121144",
+        "bytes": 5226
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-summary.json",
+        "sha256": "369d1ba3d26327a566a37268213d9ce69dd8696eb520959d63824e792388aae2",
+        "bytes": 1601
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "34be7e4d7a3806471b2aa22f5f934c85aa262f394ac25a6f74b5e790f5628d23",
+        "bytes": 384943
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-artifact-index.json",
+        "sha256": "cb4fe11208014243c86ba4c238f21909e6bea3e3e049c71a02927de12d6b98d2",
+        "bytes": 4139
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-unit.log.gz",
+        "sha256": "1c2f35e18db1f487b428d9a374e75f42a16ceff31c3d619a66755c2fcc863fec",
+        "bytes": 1714
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-catalog-20261016-Build-integration.log.gz",
+        "sha256": "9fbaccf98f600abc3f7f3397d85c97d82f649bc8cd5b3765307ce20d60782d17",
+        "bytes": 8955
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-corrected-binaries-20261016.json",
+        "sha256": "c7a9d027e34b22065c42bac86dd128575f6f61042781508343a9faaaa9a28d38",
+        "bytes": 928
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-summary.json",
+        "sha256": "9f2a211d43706ae6eb5c69f42e35f46c854f15e1542476fb544bdfcc222c1b04",
+        "bytes": 1374
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-plan.json",
+        "sha256": "88325b651e48103bbe80895e3e131cc5d96065b7df614e54ca94c9b673375f4b",
+        "bytes": 4103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-fr063-joint-story-calculation-unit-001.trx.gz",
+        "sha256": "8c37ac1077366d767e0597e5a7eae35f0e954e5565749d78e11ee0162a1c732a",
+        "bytes": 6770
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-dotnet-test.log.gz",
+        "sha256": "8a5588b909516a1f9b5fa46bb0abf53dda64efdb32b4b0a8c43dce1e5d1efbc4",
+        "bytes": 190324
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-calculator-red-20261016-artifact-index.json",
+        "sha256": "6c5a0583db9c73deb449162c8f2803677c901a83dcc358764a872cfe7122587e",
+        "bytes": 3476
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.md",
+        "sha256": "5958b4022a5883a0bf097446999829f50de88d8d3fa54a115b810d4947b1d692",
+        "bytes": 8999
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-common-kernel-20261016.json",
+        "sha256": "0ca8ee93dfb74313c63d151a37ec6591dc9540ca4b633255e02f199fba3f6ab5",
+        "bytes": 9173
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-summary.json",
+        "sha256": "4a74a4563dc286e73fe469d9e835883a40b62921599acc6ee32ee1b1a238e3f1",
+        "bytes": 3465
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-plan.json",
+        "sha256": "52e3d28c22d196f582f6e6dd9e3735241b18f637e8fe34432fcc1863fb550186",
+        "bytes": 8917
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-dotnet-test.log.gz",
+        "sha256": "bce617846165062e3c84bf656a4da8398679d686f5e5119c5cebe18d24e525f9",
+        "bytes": 374139
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-plan-20261016-artifact-index.json",
+        "sha256": "04cf1a5656b4b21b98fc08b3ec75cdba5f1eb94f1f028db1468ed596feee31e3",
+        "bytes": 5158
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-summary.json",
+        "sha256": "43d8c6a3d7e3ca0b0266cb05009027815e18beb949a888428d9158e6646393ea",
+        "bytes": 1600
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-dotnet-test.log.gz",
+        "sha256": "6ec66aa2379b02adbda2b8ce84a3e59984cba0bb06896b8284d589b0563fb002",
+        "bytes": 384863
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-catalog-audit.json",
+        "sha256": "3cd97d461cfce2447437fee1cc6669a83af132b05ceb4f890d370cb1bf38ecd4",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-artifact-index.json",
+        "sha256": "6206e3019e5d71467acd15be2c7b0b173729c63b5df23b66d2635d422e5c28b1",
+        "bytes": 4128
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-unit.log.gz",
+        "sha256": "b9ea8bf6d1c47d0cc1e8cf894e68d7c726864d6e39c55b6c96e6fa908e844d4d",
+        "bytes": 1707
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-catalog-20261016-Build-integration.log.gz",
+        "sha256": "ace288aa21b7742e4c47085b0019eb481e7658ce03e00304097de1ec1792e01f",
+        "bytes": 8885
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pb-initial-binaries-20261016.json",
+        "sha256": "3408c80be46c9a69456612c8bdcd7deedd8b89339a6e656b44b93d71b781f4d9",
+        "bytes": 922
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-summary.json",
+        "sha256": "7f5277278f1e3085366e8bbf1dd7de9f6bca8d2f38b733886b5c026d219a9c60",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-plan.json",
+        "sha256": "f62d67fde923c771287dfaa1d595f349e81ec0d0a33e46b024b332dff4bbe329",
+        "bytes": 4545
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "3eeed08ffb6390f1bc0a9844eaf061fcd417e8469ba9410c7dcc3f3700275979",
+        "bytes": 150789
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-dotnet-test.log.gz",
+        "sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821",
+        "bytes": 197063
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-artifact-index.json",
+        "sha256": "3358874268775724301d39ebbe623e64925e8edb5b293e6f18f7540e9fa06155",
+        "bytes": 537
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-summary.json",
+        "sha256": "7b5604bfbdbd8a4c71efe8f24956e89de17d1f81ec5baa006cb1e268acc05c5f",
+        "bytes": 1464
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-plan.json",
+        "sha256": "2bcf819b0b0b8eb1698554a85a9430e795b2d2d80ebe487ef3ad6c6d782831f6",
+        "bytes": 5216
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "be23a75752dcffa7a650e75bbaaf8191448030f2a73ede8228c5281a74c64b27",
+        "bytes": 76824
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-dotnet-test.log.gz",
+        "sha256": "5782863a48dd15c4ca15980fa802961e0781c543072a721e3917e8435b59b2ba",
+        "bytes": 195757
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-review-red-20261016-artifact-index.json",
+        "sha256": "1551506b17a4022774a8e9abb382b86d3cecc049c6a741f5e6705956e0d547ea",
+        "bytes": 2540
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.md",
+        "sha256": "b89bdff92a5e1e91b34862eecd9a648e6b2bf85a7dff311297939d2f300834c5",
+        "bytes": 6101
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-initial-20261016-review.json",
+        "sha256": "8bab7e26b8d4ca4b8d9779549edc25c04157f965f259bcbfa5a2b89850a26f2b",
+        "bytes": 25503
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.md",
+        "sha256": "9c21ef1b46732bdb29b892edd0a23d12507ff5e7a9ded18eee77dc7b93e1a709",
+        "bytes": 5252
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-independent-stage-corrected-20261016-review.json",
+        "sha256": "700c9a70de475f424d6be937a6e2beb2efd62bc2953227bd5cdf9c108c83fa0f",
+        "bytes": 37162
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-summary.json",
+        "sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+        "bytes": 1560
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-plan.json",
+        "sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+        "bytes": 4544
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+        "bytes": 53680
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-dotnet-test.log.gz",
+        "sha256": "797b3f4bba8924878f7735f8f1a4cfac05068c62e4a4cb5649ec0f9f13f193d1",
+        "bytes": 194716
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-artifact-index.json",
+        "sha256": "3a74daa30c707341f6268429873cf226a3aeecf22cc9e3a1ae0cd0330b5b8421",
+        "bytes": 1619
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-summary.json",
+        "sha256": "d1b64d26efc20104ad72bbeca124ea09908ead3cc51e4d9d306d0f4df4e4359d",
+        "bytes": 1559
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-plan.json",
+        "sha256": "58d3581def61f5982dad25ddcad5c4d7f2fd2e30044f18e39cb8a8768f8b563a",
+        "bytes": 5216
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-fr063-automatic-calculation-unit-001.trx",
+        "sha256": "be8bcc0036ee5d90021cd186a5c896b65b33c3c11be84302f1146a8464715fed",
+        "bytes": 63307
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-dotnet-test.log.gz",
+        "sha256": "79bfefc8046c567346621aff4f83d578c225645100e2c12fd6bb56275d70caf5",
+        "bytes": 194861
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-green-20261016-artifact-index.json",
+        "sha256": "8c556065cc0236b9e3e11ea9d093c97983551667b0eadd70ca02582311e1038f",
+        "bytes": 1674
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-summary.json",
+        "sha256": "e61a275091d44e10a0a0e616279a2fdcf33346f879da62d42d06335e913f5b06",
+        "bytes": 1598
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-dotnet-test.log.gz",
+        "sha256": "d3b46b969762badbb9d3042073419b65d1c0c94a7a377cfa2bc9e49bb1d0026c",
+        "bytes": 377669
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-catalog-audit.json",
+        "sha256": "a0fc61801b09e592ab42e244578562f246f4b87b7e106ea346807ebd413d0e0b",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-corrected-catalog-discovery-20261016-artifact-index.json",
+        "sha256": "e93cd11fc4d7d8b5d489f7b8fbbcdf8a87d8bfd24635ca57ce7817207c772549",
+        "bytes": 1407
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-summary.json",
+        "sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+        "bytes": 1599
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-dotnet-test.log.gz",
+        "sha256": "35a147758c781fbbddc2aa12dc089c7495b4a07c5a8fde2f23417062cd5b8378",
+        "bytes": 377540
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-catalog-audit.json",
+        "sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+        "bytes": 103
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-artifact-index.json",
+        "sha256": "eaad4529691ca3fbf75cb6f6766536b192d7da24c0106d7dc6f8b3f88b4a3e2a",
+        "bytes": 1338
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-architecture-preflight-20261016.md",
+        "sha256": "b2a894f13c9c1a1f213b33441282c777cbc00d75b5d3c106c5abca3bbacff56e",
+        "bytes": 11144
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+        "bytes": 109777
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+        "sha256": "6e0aafb3f6a57dbdf5ece5d16f11777f43a7cefd00bbf44fba41928736832ab2",
+        "bytes": 69121
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+        "bytes": 104607
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+        "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+        "bytes": 63665
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/contracts/mortal-wound-treatment.md",
+        "sha256": "f5a516bb82e17b24c5a72f1e3157fe8f51841315680ce2fd8749927405f85628",
+        "bytes": 123449
+      },
+      {
+        "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+        "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+        "bytes": 398519
+      },
+      {
+        "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+        "sha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6",
+        "bytes": 6256
+      },
+      {
+        "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+        "sha256": "c74e646e773df11a9a2c67f9629d1b816197e3ebf2131ab34f9c174323569cc7",
+        "bytes": 45717
+      },
+      {
+        "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+        "sha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+        "bytes": 26564
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairResources.cs",
+        "sha256": "8ac02ccb0c8acf95575b6964b902c5f23fb386c2203a73788849d523c132bec7",
+        "bytes": 20977
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+        "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+        "bytes": 21662
+      },
+      {
+        "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+        "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+        "bytes": 5254
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+        "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+        "bytes": 13079
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+        "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+        "bytes": 405766
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+        "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+        "bytes": 30382
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.MortalJointRepair.cs",
+        "sha256": "27b3754cb9ff867b3d76e913528fcd32af691daaadda9fc16c56646780cffa42",
+        "bytes": 6623
+      },
+      {
+        "path": "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs",
+        "sha256": "bdeb4200ac73f113359ba81a2b2db8a56af21d886fe2954236793ec31bb7b0cf",
+        "bytes": 4811
+      },
+      {
+        "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+        "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+        "bytes": 22909
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+        "sha256": "64c3d989c4f20fc01c9a07e09b2254da010bf9ddb6aef043004e0815ecd49e90",
+        "bytes": 5022
+      },
+      {
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+        "sha256": "e628d6d382eef03a8535a3db192a27944d6a545fd797566e09c96ca8ea74ee6e",
+        "bytes": 7480
+      },
+      {
+        "path": ".specify/memory/constitution.md",
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "bytes": 14081
+      }
+    ]
+  },
+  "releasedNextAction": {
+    "category": "fr063-joint-late-completion",
+    "descriptors": 1,
+    "cases": 2,
+    "sourceMustRemain": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "conditions": [
+      "Use only corrected fresh BOTH DLLs and exact unchanged Late2 singleton; source/test/fixture/catalog/selection must stay unchanged.",
+      "Freeze full raw native/stdout/log/TRX/plan/summary, exact methods/counts, owner/source/union/arithmetic/story/turn/inert-repeat and strict cleanup evidence; checkpoint/push/readback.",
+      "Obtain separate independent EVIDENCE review before ledger15 GREEN, retained-C1 or any regression category.",
+      "Stop and freeze first unexpected failure, timeout, skip, duplicate, underfill, fixture/precondition problem, cleanup or evidence uncertainty."
+    ]
+  },
+  "notReleased": [
+    "Ledger15 GREEN or other selected categories before separate Late2 EVIDENCE",
+    "Aggregate/full suite or broad category runs",
+    "Full lifecycle/D9/Pd/T192 acceptance",
+    "Genuine submitted-current admission/S/C/B/same-candidate/M3/coldP0 acceptance",
+    "F1/T197/D4/guided/visual/Windows/D8 or new QTE/player activation"
+  ],
+  "limits": [
+    "Runtime wiring remains UNRUN until the released firstLate2 and subsequent gates. Static source review and zero-execution preparation do not prove GREEN.",
+    "Ledger15 is bounded coverage, not exhaustive event/owner/state-space qualification. Serialized self-consistent ledger hashes cannot substitute for authenticated cold source/common ownership.",
+    "Exact v2 grammar is statically unchanged; no cross-version performance or complete golden-output equivalence is claimed. Actual unchanged full-union oracles and selected regressions remain pending.",
+    "The coherent Pd/T192b plan must continue through real submitted-output admission, genuine pre-seal ownership and complete M3/cold P0 proof; this report does not accept the ledger helper as the whole stage."
+  ],
+  "reviewerExecution": "Read-only repository/source/Git plus raw evidence/hash parsing and /tmp scripts/reports only. No build/discovery/test/application runtime, repository writes, commit/push/fetch or delegation.",
+  "finalStop": true,
+  "markdownReportSha256": "e5b354dd5faab26d3fc88008103984f184fd0a6e92a2674ce44f0d1cc30919c1"
+}

@@ -1,0 +1,26 @@
+{
+  "currentStatus": "SPECIFICATION_V1_USER_APPROVED; ONE_ISSUE_CREATED_VERIFIED; PLANNING_DRAFTS_NOT_APPROVED; IMPLEMENTATION_UNRUN",
+  "historicalDraftCarrier": "3d7309751b1ab9f4cfdbc2b50df4f5de8ca2a113",
+  "historicalDraftFilesPreserved": "spec/checklist/issue-draft/preflight/manifest bytes and oldpendingstatuses remain immutable as ofpreapproval; this record supersedes activeapproval/trackerpending",
+  "approvedSpecSHA256": "27735ec49aeb39eec51e1764ebff15ffe2e9c2c3cc150138659564587116bace",
+  "specificSpecAndOneIssueApproval": "Sentinel_17b7eb9dc8b08191affb9fe4a5c76723 2026-10-13 16:17UTC yes; shownproposalSentinel_6973ed2627c08191897e10376022eb7b 15:19UTC",
+  "issueVerification": {
+    "number": 1557,
+    "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1557",
+    "state": "OPEN",
+    "createdAt": "2026-10-13T16:22:14Z",
+    "title": "[GM Docs] Modularize afterlife rules/examples, then Block_5, with conditional navigation",
+    "bodyMatchesApprovedMainBody": true,
+    "bodyTrailingNewlineOnlyNormalization": true,
+    "sourceDraftSHA256": "819bdb601fae94248a569d4ae7101a7ee23239d4ef254a499fa7c986b6860d24",
+    "postedBodySHA256": "a172acdb75fc332425bc365e6a91c3c371027faf729c89467eff326cc99c309a",
+    "onlyCreationAttempt": 1,
+    "preCreateChecks": "all-state exact-title search [] and primary newest100 exact-title match none; both successful",
+    "userApproval": "Sentinel_17b7eb9dc8b08191affb9fe4a5c76723 2026-10-13 16:17UTC; displayedproposalSentinel_6973ed2627c08191897e10376022eb7b",
+    "verifiedUtc": "2026-10-13T16:23:40.545229+00:00"
+  },
+  "newPlanningDraftPackage": "../gm-doc-modularization-planning-draft-20261013/manifest.json",
+  "newPlanTasksApproval": "NOT_INFERRED; coordinatorreviewrequired; D01onlyaffectedread-directiontask",
+  "implementation": "UNRUN; noGMcontentmoves/feature/hook/worktree/main/PR/CI/otherissuesmutation",
+  "preservedUtc": "2026-10-13T17:12:05.091517+00:00"
+}

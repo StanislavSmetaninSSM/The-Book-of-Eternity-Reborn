@@ -1,0 +1,453 @@
+{
+  "review": "Independent SOURCE/FIXTURE/SELECTION/EVIDENCE initial review for #1536 T179-Pa/T180a",
+  "verdict": "CHANGES REQUIRED",
+  "final_stop": true,
+  "configuration": {
+    "requested_model": "gpt-6-astra",
+    "requested_reasoning_effort": "xhigh",
+    "configured_model": "gpt-6-astra",
+    "configured_reasoning_effort": "xhigh",
+    "configuration_provenance": "Parent reports explicit fork:none spawn arguments; backend resolution telemetry unavailable.",
+    "backend": "unknown"
+  },
+  "pins": {
+    "base_sha": "9baccdfb5c618950eaa5c6795e137f20164724e2",
+    "source_sha": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+    "runtime_red_sha": "af473803a5fe60eab87837f9c7381a73a18f2188",
+    "evidence_carrier_sha": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+    "base_to_source_git_diff_binary_sha256": "e21d18c360eb900f724ecc437ccf933bc39f75ceaf1c0d47ce411483fddd9410",
+    "source_to_carrier_git_diff_binary_sha256": "bac35eca301789e7e3cc1777dbd28a17015320de970b968f39f4cd32edfe0147",
+    "source_tests_catalog_selection_unchanged_in_carrier": true
+  },
+  "authorization": "Current direct delegated approval07:01:11UTC Sentinel_f3e48da025808191bdb46fab2e0b960f is accepted; historical DESIGN-only text does not reopen permission. T197/DEP-C/I/L/newQTE activation remain blocked.",
+  "scope": "Pure automatic calculation and detached immutable fixed-root inputs/results only. No review claim for B01/B02 completion, source/C/B/M3 integration, runtime publication, full F1, allocator, request schema, v2 changes or platform qualification.",
+  "findings": [
+    {
+      "id": "T179PA-F01",
+      "severity": "P2",
+      "status": "confirmed",
+      "title": "Changed automatic after-images omit the actual owner UTF-8 preamble",
+      "location": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs:110",
+      "scenario": "Any applied training, consumed nonempty stats array, or positive level award calls EncodeAutomaticRoot, which uses Encoding.UTF8.GetBytes. Actual SaveBaseStats, SaveStatPointsRootAsync and ProcessStatsIncreasedAsync publish through FileSystemManager.WriteFileAtomicAsync, whose encoder adds EF BB BF. Thus every changed image differs from its owner encoding although parsed values can match.",
+      "requirement": "P2 fixed owner serializer and exact three after-images; exact calculation prerequisite for the pre-seal automaticPlan.",
+      "evidence": [
+        "BookOfEternityClient/Services/CharacteristicsService.cs:275",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:381",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2493",
+        "BookOfEternityClient/Core/FileSystemManager.cs:764",
+        "BookOfEternityClient/Core/FileSystemManager.cs:4322",
+        "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs:170"
+      ],
+      "requested_correction": "Use the existing pure owner byte encoder for changed images, preserve exact untouched images, and add independent raw-byte assertions for the real owner control plus all three changed images. The test JSON reader must decode the permitted preamble.",
+      "validation_status": "Confirmed by pinned source comparison; reviewer executed no reproducer. Existing 33-case GREEN misses the mismatch because the control compares parsed stat values."
+    },
+    {
+      "id": "T179PA-F02",
+      "severity": "P2",
+      "status": "confirmed",
+      "title": "Case-insensitive JsonNode access accepts lone noncanonical field aliases",
+      "location": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs:94",
+      "scenario": "PropertyNameCaseInsensitive=true is passed through JsonNode deserialization into JsonObject node options. A lone experience field Level is read as level; lone UnspentStatPoints/LevelUpStatPointsAwardedThroughLevel supply initializer evidence; lone StatsIncreased is processed and consumed. StrictJsonAuthority rejects duplicate case pairs, but a single alias has no duplicate and is accepted.",
+      "requirement": "Strict canonical field/alias policy and unchanged actual owner source selection. The ordinary owners use exact field spellings; malformed sources must refuse rather than acquire canonical meaning.",
+      "evidence": [
+        "BookOfEternityClient/Core/StrictJsonAuthority.cs:14",
+        "BookOfEternityClient/Services/CharacteristicsService.cs:283",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2432",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2516"
+      ],
+      "requested_correction": "Keep duplicate and case-collision detection while parsing/reading canonical fields case-sensitively; explicitly reject lone case aliases of consumed fields so they cannot silently fall back or be ignored. Add negative examples covering the independent optional and required roots.",
+      "validation_status": "Confirmed by candidate and dependency source, with .NET 8 primary-source confirmation of option propagation; reviewer executed no reproducer."
+    }
+  ],
+  "positive_assessments": [
+    "Training and award preserve their distinct valid-source priorities, including experience level1 vs player-status fallback for award and no soul fallback for award.",
+    "Ordered duplicates, trim/lower, training cap and100 ceiling use the existing algorithm; checked cap/award/balance, strict present integer inputs, required full base stats, existing watermark>=1 and nonnegative balance intentionally supersede old permissive defaults and initializer heuristics.",
+    "Ignored names and whitespace normalization are detached calculation data only. The existing validator rejects unknown/whitespace stat names; these examples do not establish genuine admission.",
+    "Covered/lower award levels preserve watermark and balance bytes; no initial8, XP compensation, allocator or in-memory lastKnownLevel authority is introduced.",
+    "Changed base stats use canonical owner order; base metadata is retained on no-work and dropped when the actual owner would save the canonical12 keys. Status/points siblings are retained semantically; optional absence and unchanged root bytes are preserved.",
+    "CanonicalBeforeImage clones incoming and outgoing bytes, lists are copied/read-only, dictionaries are read-only, and fixed six input paths/three output paths cannot be caller-extended.",
+    "Input and mutation fingerprints bind exact images and ordered data but issue no capability. Source search finds no production caller of the new calculation.",
+    "CanonicalJsonUtf8 enforces valid UTF8 and at most one leading BOM; StrictJsonAuthority rejects exact and case-colliding duplicate properties recursively. Lone alias handling is the separate F02 defect.",
+    "Existing training owner control is genuine, creates its own unique fresh root, asserts literal applied/blocked/stat values and deletes only its root in finally; cleanup receipt and absent root confirmed."
+  ],
+  "selection": {
+    "category": "fr063-automatic-calculation",
+    "breadth": "Appropriate finite category for this pure prerequisite; one class,33 cases, unit project.",
+    "coverage": "Insufficient for acceptance because no changed-image raw-byte oracle or lone-alias negative caught F01/F02. Add these inside the same category, with a separate high-level100 ceiling scenario useful to isolate ceiling from level2 cap.",
+    "late2_prerequisite_applies": false,
+    "late2_reason": "No existing protected original/header/generation/output/common owner is modified or selected; the new calculation does not invoke FileSystemManager. The old training-owner control is not common/source admission. Real source/C/B/M3 integration must later apply its actual impact and first-Late2 gates.",
+    "catalog": {
+      "Valid": true,
+      "Methods": 11680,
+      "Categories": 760,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "catalog_tests_executed": 0
+  },
+  "evidence": {
+    "origin": "Parent-executed, preserved artifacts; independently parsed and hashed by reviewer. No reviewer build/discovery/test/runtime.",
+    "red": {
+      "source_sha": "af473803a5fe60eab87837f9c7381a73a18f2188",
+      "tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 0,
+        "Failed": 33
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 33,
+        "CompletedCases": 33,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "exit_code": 1,
+      "timed_out": false,
+      "wall_time": "00:01:47.4134152",
+      "all33_failed_from_NotImplementedException": true,
+      "classification": "Runtime behavioral RED after successful unit build, not compile RED."
+    },
+    "green": {
+      "source_sha": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 33,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 33,
+        "CompletedCases": 33,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "exit_code": 0,
+      "timed_out": false,
+      "wall_time": "00:00:50.5691773",
+      "duplicates": [],
+      "owned_cleanup": true,
+      "runtime_cleanup": true,
+      "control_cleanup": {
+        "Boundary": "automatic_calculation_control",
+        "Root": "/tmp/boe-joint-automatic-control-c13f45a9dfc84639a321102087214adc",
+        "Removed": true
+      },
+      "control_root_currently_absent": true,
+      "classification": "33-case semantic GREEN only; does not close the two source defects."
+    },
+    "catalog": {
+      "source_sha": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "discovery_only": true,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "exit_code": 0,
+      "wall_time": "00:00:31.6486649",
+      "builds": [
+        {
+          "Name": "Build-integration",
+          "Seconds": 21.6459608,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 1.7144496,
+          "Completed": true
+        }
+      ],
+      "classification": "Valid inventory with fresh unit/integration builds; zero executed tests, not additional runtime GREEN."
+    },
+    "limitations": "No separate binary-hash attestation, fresh-process joint publication, Windows/native storage or gameplay qualification claimed."
+  },
+  "artifact_hashes": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-dotnet-test.log.gz",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "797b3f4bba8924878f7735f8f1a4cfac05068c62e4a4cb5649ec0f9f13f193d1",
+      "raw_sha256": "06fce0fbac0178609a62128858ab2b1cf0b299f98f6194fbcaee45182556ef75",
+      "raw_bytes": 1764207,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-fr063-automatic-calculation-unit-001.trx",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+      "raw_sha256": "9ac2b8e7ef22d0eb530e7e05352b6add25b0898392e7f6b2014999cf19a2edb8",
+      "raw_bytes": 53680,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-plan.json",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+      "raw_sha256": "f2d1b2f90bd5fef6eb783d2c6f6db0a74f5a451bb4099098d1ac9af38a9fc27e",
+      "raw_bytes": 4544,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-first-green-20261016-summary.json",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+      "raw_sha256": "9e0a25237976b26586b15018372d9285a2a6f20bc152a666ac6464c042af6727",
+      "raw_bytes": 1560,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-catalog-audit.json",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+      "raw_sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+      "raw_bytes": 103,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-dotnet-test.log.gz",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "35a147758c781fbbddc2aa12dc089c7495b4a07c5a8fde2f23417062cd5b8378",
+      "raw_sha256": "dcc4f22dab52669c1e23a66b071f7b99f8fb56791e904ffc9189303037c21cc5",
+      "raw_bytes": 3439335,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-catalog-discovery-20261016-summary.json",
+      "revision": "1a36b2e6e04351ab3a6b8bc134f06eb42f0458a7",
+      "stored_sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+      "raw_sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+      "raw_bytes": 1599,
+      "index_verified": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-artifact-index.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "stored_sha256": "3358874268775724301d39ebbe623e64925e8edb5b293e6f18f7540e9fa06155"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-dotnet-test.log.gz",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "stored_sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-fr063-automatic-calculation-unit-001.trx",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "stored_sha256": "3eeed08ffb6390f1bc0a9844eaf061fcd417e8469ba9410c7dcc3f3700275979"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-plan.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "stored_sha256": "f62d67fde923c771287dfaa1d595f349e81ec0d0a33e46b024b332dff4bbe329"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-summary.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "stored_sha256": "7f5277278f1e3085366e8bbf1dd7de9f6bca8d2f38b733886b5c026d219a9c60"
+    }
+  ],
+  "source_file_pins": [
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "d3c354c97632ac80eb739f3676cd53318d0eb63c275cc8e5bbe9caa5ec6ee7c1",
+      "blob_sha1": "a779a07cf2eb17988a43a79fbd1edbd3fec76977"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "865114b08c033053aeb6f4e96d079d12d8ab3c05c72649c9675d8867c10c4ca7",
+      "blob_sha1": "50e7ef2fde74d32741d0e4f557f8a76f70354c0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "64c3d989c4f20fc01c9a07e09b2254da010bf9ddb6aef043004e0815ecd49e90",
+      "blob_sha1": "f91b5619173ebdb261ba585ac705fa69dcdeeeea"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+      "blob_sha1": "0061557eb7096199570d9654fba027fb4a038217"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "4bd73a310a9b6cc415edf31ca04d9e994d3b66a4c0b737adf327fe9f59cb8226",
+      "blob_sha1": "cd88ef086b772c4cdbb2b696cf0b398badcc7dd9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-preseal-architecture-preflight-20261016.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "b2a894f13c9c1a1f213b33441282c777cbc00d75b5d3c106c5abca3bbacff56e",
+      "blob_sha1": "a18a68e18328a8befeb3297020ed3eb9a0d5273c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-artifact-index.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "3358874268775724301d39ebbe623e64925e8edb5b293e6f18f7540e9fa06155",
+      "blob_sha1": "ad47137193b03160f9bc60ef8cd6803c29060a9f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-dotnet-test.log.gz",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "8c47b073a3e53136af80d3c49983ef9fb83fc903098e319696f18ef4751a1821",
+      "blob_sha1": "789f87ceec84a2d73369c4aa4fcf0f0c6f0cd36f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-fr063-automatic-calculation-unit-001.trx",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "3eeed08ffb6390f1bc0a9844eaf061fcd417e8469ba9410c7dcc3f3700275979",
+      "blob_sha1": "9f8ef22d7ec7dc3dc763b46a27cc937ee96bd82a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-plan.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "f62d67fde923c771287dfaa1d595f349e81ec0d0a33e46b024b332dff4bbe329",
+      "blob_sha1": "cd405fca520ffcf31976a86298cf0d86c09d924f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pa-runtime-red-20261016-summary.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "7f5277278f1e3085366e8bbf1dd7de9f6bca8d2f38b733886b5c026d219a9c60",
+      "blob_sha1": "61e084baf6b845a02ff0facc07db3b4d81a3c5fe"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "blob_sha1": "136712e97b591ceebc487540db9bc13010ae3018"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "b064df45b2d9f6ab49ed0b328ee62948481ff8b99f1f4002320246b0d5c227e1",
+      "blob_sha1": "0a3f301a64a4ba803ee93627626a805ec2c65c7f"
+    },
+    {
+      "path": "tests/categories.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "175ab918f82319b21c486eaab764a2f386d8a0b8c8db047b58ca7782a3fbde46",
+      "blob_sha1": "039b656703bc2ca8a1309098177bcb6d550dab1b"
+    },
+    {
+      "path": "tests/selection.json",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "1b28ce49fa0480d8cd1b03d95ee001206b353a4e3d5d9f155b61931fd7eda5fc",
+      "blob_sha1": "e56c08fb3700185f79b4526dbc289b13483fca8a"
+    },
+    {
+      "path": "AGENTS.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "blob_sha1": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "blob_sha1": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "path": "docs/testing.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "blob_sha1": "e7b7994a5cadca57b1d34985cc62d3acb394ac09"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "blob_sha1": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "c07ccf260faa35fffc0c8eddac92eb71a78c74905676b69952471d3e75acac8c",
+      "blob_sha1": "2a24975b00c08dde57c7ae98ea02e9d57b8712c8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "blob_sha1": "3c88d046f21ed7829dd063a67ecbca67cc97ba46"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "blob_sha1": "2c017c657d4d3d36be146d052c8a158e42d163c0"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "blob_sha1": "bfb2fa7d29bdf42e794930fc5ae26e0cc384c3ca"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8",
+      "blob_sha1": "9aacb56c60f7bdc9882852dfe96b4d005c106990"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "blob_sha1": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+      "blob_sha1": "354773962d3470637847d7bd9687c5b3a9551c9a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8",
+      "blob_sha1": "5f2ed429fc307bf184eb8e8721c7b44c585f341f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "blob_sha1": "1b197626960388f0eb47b2d096297bbf6eb8998b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "blob_sha1": "c280741554e8a244990534d7f3a16f1cdce8ddc6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+      "blob_sha1": "c316ecd962c135ac553c2a62a6e1154abb5f5d95"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "blob_sha1": "abe523ae63d23e238060f27b4a6fac2062b6c6ba"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "revision": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "blob_sha1": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266"
+    }
+  ],
+  "external_primary_sources": [
+    "https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Text.Json/src/System/Text/Json/Serialization/Converters/Node/JsonObjectConverter.cs",
+    "https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Text.Json/src/System/Text/Json/Serialization/JsonSerializerOptions.cs",
+    "https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Text.Json/src/System/Text/Json/Nodes/JsonObject.cs"
+  ],
+  "actions": "Read-only repository review; report pair written under /tmp only. No repository edits, build, discovery, tests, runtime, commit, push or subagents.",
+  "required_next_step": "Parent preserves this initial review and original evidence, reproduces the two defects before fixing, then obtains affected correction review. Continue genuine source/C/B integration only within its own gates; no full B01/B02/F1 claim."
+}

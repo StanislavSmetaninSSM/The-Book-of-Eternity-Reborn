@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-cleanup-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "52ec83357fc5145c429fd4f50d2a78703515f61a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 88.6879216,
+  "Descriptors": [
+    {
+      "Name": "portable-cleanup-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-outcome-causal-linux",
+      "Categories": [
+        "portable-cleanup-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserBoundaryStopsContinuation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalRollbackAndUndispatchedPrepStopNextConsumer",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupUnknown_OriginalTurnStagingDoesNotCompensateUncertainRequest",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.CleanupUnknown_OriginalQteActionStopsNestedAndFinalContinuation",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

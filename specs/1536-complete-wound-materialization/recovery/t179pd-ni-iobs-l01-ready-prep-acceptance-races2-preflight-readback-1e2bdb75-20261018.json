@@ -1,0 +1,85 @@
+{
+  "kind": "INDEPENDENT_READY_PREP_ACCEPTANCE_RACES2_PREFLIGHT_READBACK",
+  "checkedUtc": "2026-10-18T12:06:35.346330+00:00",
+  "carrier": "1e2bdb75d51bd7ee549ed399d5a744b366beceff",
+  "base": "a391aef048a411665dc0defe8c278576c4c81a83",
+  "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+  "recoveredMetadataPaths": 9,
+  "allBytesSha256GitBlobsModesMatch": true,
+  "sourcePinsUnchanged": 98,
+  "sourcePinDigest": "f5c13d343de221bc86aaf3ec100869ea6e1cafdaae59b3006baa5642de328e8e",
+  "receiptSha256": "41680b08295996f863dc170a36e9cdd464fd1c216118523354b18c190315c5a3",
+  "bothCheckoutsClean": true,
+  "remoteExact": true,
+  "acceptedPrepVerdict": "ACCEPT_READY_DIAGNOSTIC_ZERO4_PREPARATION_RACES2_ELIGIBLE_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_CENSUS",
+  "release": {
+    "status": "NAMED_CORRECTIVE_RACES2_ONLY_AFTER_SAVED_ACCEPTANCE_AND_IMMEDIATE_CLEAN_V2_PREFLIGHT",
+    "mode": "races2",
+    "label": "t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057",
+    "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-ready-diag-cloud-813f1057/record.json",
+    "observerPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "observerSourceSha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "conditions": "Push/exactremote/clean recovery, then immediate clean v2 before-census; exact two unchanged methods/NoBuild/FIRST and nine/full-output continuity. Continuously monitor native session and read-only after-census on observed exit. Preserve original outcome/archive before utility acceptance or next release. Any unexpected failure freezes. No simultaneous actual or repo mutation during native. Distinct post-source-change regression, not a retry of frozen original.",
+    "otherModes": "HELD_SEPARATE_NAMED_RELEASE_REQUIRED",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED"
+  },
+  "correctivePrepRecordSha256": "24d642d31bc8bcb8debb366ae353b3c6c51bb7588f2b03a4e401f451ff85bd8c",
+  "correctiveMethods": [
+    {
+      "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "Cases": 1
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "Cases": 1
+    }
+  ],
+  "beforeCensus": {
+    "path": "/tmp/1536-cloud-tools/census-races2-ready-before-813f1057.json",
+    "sha256": "3e8dcc87432cf1f3db61b00d3bae6f7440ca7bc831123ece0fcd81a2677a9c4c",
+    "entries": 62,
+    "startedUtc": "2026-10-18T12:03:26.925190+00:00",
+    "finishedUtc": "2026-10-18T12:03:26.940295+00:00",
+    "cleanBoundary": true,
+    "pidStartTickAndArgvHashesReconciled": true,
+    "knownVisibility": [
+      {
+        "pid": 10433,
+        "expectedStartTick": 477854,
+        "status": "MATCH",
+        "classification": "exited-nonexecuting"
+      },
+      {
+        "pid": 20413,
+        "expectedStartTick": 961484,
+        "status": "MATCH",
+        "classification": "observer-self"
+      }
+    ],
+    "classes": {
+      "other-readable": 8,
+      "exited-nonexecuting": 53,
+      "observer-self": 1
+    }
+  },
+  "launch": {
+    "label": "t179pd-ni-iobs-l01-process-first-races2-ready-diag-cloud-813f1057",
+    "actualSource": "1e2bdb75d51bd7ee549ed399d5a744b366beceff",
+    "compiledSource": "e2d0a10f6b12cc1947ef9c9f71fd600146fcec2d",
+    "startedUtc": "2026-10-18T12:04:14.601892+00:00",
+    "pid": 20448,
+    "startTick": 966261,
+    "cmdlineCaptured": false,
+    "originalPopenArgvAndSentinelMatch": true,
+    "originalSourceBindingExact": true,
+    "singleCorrectiveCategory": true,
+    "noBuild": true,
+    "beforeFinishToLaunchSeconds": 47.661597,
+    "timingLimit": "Dated before snapshot precedes native launch by47.661597s. Controller performs source/Git/binary/full-output preflight before startedUtc/Popen. No continuous or instantaneous absence claim; parent asked to retain invocation/no-intervening-mutation chronology. No arbitrary elapsed-time threshold imposed."
+  },
+  "findings": [],
+  "outcome": "Original races2 native outcome not reviewed or inferred by this preflight readback.",
+  "conditionalLaterSettlementGate": "No current SOURCE/PREP or established workflow rule prevents read-only evidence-review overlap. After corrected races2 native0/all unchanged assertions and strict cleanup/inventories, authoritative after-census, saved/recovered immutable originals, and no known semantic/source concern, parent may separately release FIRST settlement3 using accepted remaining-plan plus its own immediate clean v2 preflight. Serial actuals only. Any material finding freezes later progression; preserve an already running original without intervention. No automatic release or EVIDENCE acceptance.",
+  "limits": "Saved evidence reads only; no live global census, observer execution, build/test/discovery, process intervention or repo edits."
+}

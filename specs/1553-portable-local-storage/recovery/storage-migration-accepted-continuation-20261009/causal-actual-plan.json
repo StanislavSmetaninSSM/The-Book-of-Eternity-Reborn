@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-accepted-continuation-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e80004ceb3a6bac8a47ffa70901ce6b1b00a3797",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.5011698,
+  "Descriptors": [
+    {
+      "Name": "portable-accepted-continuation-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-accepted-continuation-outcome-causal-linux",
+      "Categories": [
+        "portable-accepted-continuation-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BookkeepingDeleteUnknown_OriginalDiagnosticCallerStopsBeforeNextControls|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MemoryLegacyUnknown_OriginalConsumerRetainsPriorEffect|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackUnknown_OriginalCallerStopsBeforeFurtherBookkeeping|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ShiningEffectUnknown_OriginalEngineWrapperPreservesExpiredDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BookkeepingDeleteUnknown_OriginalDiagnosticCallerStopsBeforeNextControls",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MemoryLegacyUnknown_OriginalConsumerRetainsPriorEffect",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RejectedRollbackUnknown_OriginalCallerStopsBeforeFurtherBookkeeping",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ShiningEffectUnknown_OriginalEngineWrapperPreservesExpiredDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+﻿{
+  "sessionId": "ebed72e9-e019-4be5-a620-d58d32489349",
+  "requestId": "93bb718377c04aeabc8d8f2620fcff6e",
+  "turnNumber": 1,
+  "metadataDiagnosticOnly": false,
+  "source": "оценки жизни",
+  "detectedAtUtc": "2026-10-09T12:26:18.7140754Z",
+  "revalidationAttempt": 1,
+  "fullTurnResubmissionRequired": false,
+  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+  "summaryGroups": [
+    "State / AfterlifeEntityProfiles: 2",
+    "State / wound_materialization: 2",
+    "State / AfterlifeSpiritualConflict: 1"
+  ],
+  "harnessRepairPackets": [
+    {
+      "kind": "afterlife_entity_profile_scaffold_repair",
+      "priority": "high",
+      "title": "Afterlife entity profile scaffold and special-art learning repair",
+      "targetFiles": [
+        "game_state/meta/afterlife_entity_profiles.json.profiles[0].standardArts.spiritual_healing",
+        "game_state/meta/afterlife_entity_profiles.json.profiles[0].standardArts.spiritual_resilience",
+        "game_state/meta/afterlife_entity_profiles.json"
+      ],
+      "templateRefs": [
+        "OtherGuides/Afterlife_Contract_Matrix.md",
+        "Examples/E_CLI_Afterlife_Turns.txt"
+      ],
+      "canonicalActorNames": [
+        "afterlife entity profile from validation_repair_request.json"
+      ],
+      "exactFieldCorrections": [],
+      "expectedShape": [
+        "Every significant afterlife entity profile must keep goals as an object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, and updatedAtTurn.",
+        "progressionStrategy is a required object with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and optional lastUpdatedAtTurn.",
+        "ledger is a required array; use [] when no visible profile events exist yet. progressionLedger is optional but must be an array of complete entries if present.",
+        "profileCommands.specialArtLearningReceipts[] entries require receiptId, artId, teacherActorType, teacherActorId, playerActorId, trainingConditionSatisfied=true, learnedAtTurn, roleplayEvidence, summary, and initialTier absent or 0.",
+        "A special-art learning receipt must not grant a higher tier; make sure the source teacher art canTeachPlayer=true.",
+        "Every afterlife name kept in relevant actors as an independent decision-maker resolves to a canonical Guardian, resident, afterlife entity profile, or Shining faction with its own memory surface."
+      ],
+      "safeCorrectionRules": [
+        "Use validation_repair_request.json.errors as the immediate checklist; patch only the listed profile/receipt fields unless adjacent minimal scaffold is required to validate.",
+        "Repair missing profile scaffold in place; do not delete the profile, teacher, learned art, or relationship evidence to silence shape errors.",
+        "For a missing memory owner, either materialize the genuine independent actor with a stable id and complete afterlife profile, or remove a non-actor/invented label from relevant actors and its standalone Actor Brain block.",
+        "Use player-facing Russian prose in summaries/goals while keeping canonical JSON keys and enum-like values valid.",
+        "If special-art learning happened, preserve the learning proof and complete the receipt shape instead of converting it into unrelated narrative only."
+      ],
+      "steps": [
+        "Open game_state/control/validation_repair_request.json and game_state/meta/afterlife_entity_profiles.json first.",
+        "Keep every already resolved canonical actor owner unchanged while repairing the listed profile fields.",
+        "Patch this minimum profile scaffold and receipt checklist: profiles[0].standardArts.spiritual_healing: expected integer 0..5, actual missing (afterlife_entity_profile_missing_standard_art_tier); profiles[0].standardArts.spiritual_resilience: expected integer 0..5, actual missing (afterlife_entity_profile_missing_standard_art_tier).",
+        "For every listed profile, make goals an object with goalId, shortTermGoal, longTermGoal, plan, gmThoughtsSummary, and updatedAtTurn; do not use an array for goals.",
+        "Add or repair progressionStrategy with strategyId, summary, priorityOrder[], resourceReserve, allowedSpends[], forbiddenSpends[], and lastUpdatedAtTurn when known.",
+        "Add ledger: [] when missing, or repair each ledger[] entry to an object with entryId, summary, and optional valid turnNumber.",
+        "For profileCommands.specialArtLearningReceipts[], complete receiptId/artId/teacherActorType/teacherActorId/playerActorId/trainingConditionSatisfied/learnedAtTurn/roleplayEvidence/summary and keep initialTier absent or 0.",
+        "After file repairs are complete, call Complete-BoeValidationRepair as the last action, or create game_state/control/validation_repair_ready.json with exact sessionId/requestId/turnNumber from the current validation_repair_request.json."
+      ],
+      "debugLogTemplate": "",
+      "doNotDo": [
+        "Do not move afterlife profile state into Mortal World NPC/player files.",
+        "Do not delete learned special art data, teacher proof, goals, or relationship hooks just to avoid completing the scaffold.",
+        "Do not grant initialTier > 0 through specialArtLearningReceipts; upgrades must happen through the documented progression/upgrade path.",
+        "Do not collapse arrays such as priorityOrder, allowedSpends, forbiddenSpends, ledger, or progressionLedger into scalar strings.",
+        "Do not read implementation code such as BookOfEternityClient/**/*.cs to infer profile scaffold rules; use this packet, validation_repair_request.json, afterlife docs/examples, and session state."
+      ]
+    }
+  ],
+  "resubmissionObligations": [],
+  "requiredResubmissionPaths": [],
+  "errors": [
+    {
+      "code": "wound_history_invalid_root",
+      "filePath": "game_state/wounds/wound_history.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound history violates immutable client-owned chronology authority.",
+      "actor": "Client",
+      "section": "wound_materialization",
+      "expected": "non-empty strict JSON object",
+      "actual": "missing",
+      "repairHint": "Restore one closed append-only wound history chain; never infer, rewrite, truncate, reopen, case-fold, or duplicate accepted transition evidence."
+    },
+    {
+      "code": "wound_identity_invalid_root",
+      "filePath": "game_state/wounds/wound_identity_index.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound identity index violates client-owned identity authority.",
+      "actor": "Client",
+      "section": "wound_materialization",
+      "expected": "non-empty strict JSON object",
+      "actual": "missing",
+      "repairHint": "Restore one strict client-owned wound identity entry; do not author aliases, carrier discovery, or terminal history evidence here."
+    },
+    {
+      "code": "afterlife_entity_profile_missing_standard_art_tier",
+      "filePath": "game_state/meta/afterlife_entity_profiles.json.profiles[0].standardArts.spiritual_healing",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+      "section": "AfterlifeEntityProfiles",
+      "expected": "integer 0..5",
+      "actual": "missing",
+      "repairHint": "Исправь состояние/структуру так, чтобы оно соответствовало Rules/API contract."
+    },
+    {
+      "code": "afterlife_entity_profile_missing_standard_art_tier",
+      "filePath": "game_state/meta/afterlife_entity_profiles.json.profiles[0].standardArts.spiritual_resilience",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+      "section": "AfterlifeEntityProfiles",
+      "expected": "integer 0..5",
+      "actual": "missing",
+      "repairHint": "Исправь состояние/структуру так, чтобы оно соответствовало Rules/API contract."
+    },
+    {
+      "code": "afterlife_combat_profile_missing_art_tiers",
+      "filePath": "game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "afterlifeCombatProfile.artTiers должен быть object с явными обязательными искусствами духовных ран.",
+      "section": "AfterlifeSpiritualConflict",
+      "expected": "object with explicit spiritual_resilience and spiritual_healing tiers",
+      "actual": "missing",
+      "repairHint": "Исправь состояние/структуру так, чтобы оно соответствовало Rules/API contract."
+    }
+  ]
+}

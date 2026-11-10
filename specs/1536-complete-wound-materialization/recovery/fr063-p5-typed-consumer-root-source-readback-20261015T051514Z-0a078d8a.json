@@ -1,0 +1,34 @@
+{
+  "base": "8be39c6fd298248d224fee3414d341575e51653b",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalJointRepair.cs",
+      "baseBytes": 10667,
+      "baseSha256": "5ee5fff3cd801ba63e435b1548b47f98658ce22689cd9ea55f0253f9a309b14c",
+      "currentBytes": 10937,
+      "currentSha256": "a121aebacc17b814f17ada92d528c04c09492be0383e680b2b7f4b36cdfc8762"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "baseBytes": 1621776,
+      "baseSha256": "5b19fabbb048cf2bbc1a007fa9d025ef3838eb0ca693c34c61c9eb1d6e1613ee",
+      "currentBytes": 1623925,
+      "currentSha256": "99689dde89e4cab6340ce7e58550025b7d7d88428f2f229a38d701cee2cc6fea"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "baseBytes": 1122392,
+      "baseSha256": "69c3993abf8f2d92a8944720e3b2dbf580a377fd9fbd20cd74d2d224f6186577",
+      "currentBytes": 1124541,
+      "currentSha256": "787cb3fb7eb8e0999bf30f87135553f8231ff34ab4b0bbc80ddcd84ddc889a5f"
+    }
+  ],
+  "protectedPinsExact": 158,
+  "wholeFileInverse": "one P5 condition reverse restores full base exact",
+  "metadata": "identical additive fronts; historical tails/checkmarks exact",
+  "rootSourceRead": "b29f62 full report and source diff;6c7fee schema/pins; actual fullfile inverse/pinchecks",
+  "diffCheckExit": 0,
+  "projectExecution": "UNRUN source WIP",
+  "runtime": "HELD corrected gates"
+}

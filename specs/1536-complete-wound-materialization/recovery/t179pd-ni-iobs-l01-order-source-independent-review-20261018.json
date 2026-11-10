@@ -1,0 +1,99 @@
+{
+  "kind": "INDEPENDENT_SOURCE_FIXTURE_SELECTION_REVIEW",
+  "createdUtc": "2026-10-18T05:08:03.893672+00:00",
+  "candidate": "88b25759d1761566276c94db8064a08abc385c45",
+  "testSource": "80bf2a31cefda292fe7fd2025192a77a640346ed",
+  "unchangedProduct": "447bc1210c507742758243e1c254860bea0c4539",
+  "verdict": "ACCEPT_FIRST_ORDERING_SOURCE_FIXTURE_SELECTION_PENDING_PREP",
+  "source": "ACCEPT_BOUNDED_FIRST_ORDERING_FIXTURE",
+  "fixture": "ACCEPT_SOURCE_NOT_RUNTIME",
+  "selection": "SUFFICIENT_FOR_ONE_EARLIEST_CAUSAL_ORDERING_CASE_ONLY",
+  "preparation": "NOT_REVIEWED_NOT_EXECUTED",
+  "evidence": "NONE_NEW",
+  "materialFindings": [],
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-order-source-independent-review-20261018-check.json",
+    "bytes": 26150,
+    "sha256": "fab40beb2486b2aac64ff2131c9f72e29c7de2d2323797986fc267cf9c8ea5ef"
+  },
+  "sourcePacket": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+    "bytes": 19964,
+    "sha256": "7c15e294c2a327ef1e694dda94f783e2e47b25582ff22301e60e530089215d10",
+    "gitBlob": "4144e85e99a9c5e51684dc2827b7e396722b5e73",
+    "mode": "100644"
+  },
+  "sourcePinDigest": "c17d44bb5540bc379a29b8c393510b84a3e9a65108d17cfe2149153071293ce4",
+  "supplementalPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryAdmission.cs",
+      "bytes": 27567,
+      "sha256": "e397cf86000c51503d3bd6b74cd90871769ead651d6d66b71f658c147a13a9c8",
+      "gitBlob": "b5905b3bc32042ef6007197be5b2638bae1b94f4",
+      "mode": "100644"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+      "bytes": 311741,
+      "sha256": "06a3377ad0f0574e6d6bb501c446719b03998fda628082a54a90526534f6cee7",
+      "gitBlob": "1dd62b4338cc19a5c8732b1ddc13432ca00a9cb5",
+      "mode": "100644"
+    }
+  ],
+  "controllers": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-preparation-run.py",
+      "bytes": 7555,
+      "sha256": "4ba772646550747fceeeac9f1c9a5f1375560960afb47b71954f502a5385f9be",
+      "gitBlob": "15c5ca9ff68a32808e4b3b339c4cc2bedd0c1c4d",
+      "mode": "100644",
+      "status": "UNRUN_SOURCE_REVIEWED_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-first-run.py",
+      "bytes": 5837,
+      "sha256": "ed5c32e44ea5256ed1ca8090160cc9aaf6c298fd020b5154ef58e930e8ff0b29",
+      "gitBlob": "413773073b5a66179ac572e0da295935940f3576",
+      "mode": "100644",
+      "status": "UNRUN_SOURCE_REVIEWED_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-first.py",
+      "bytes": 1788,
+      "sha256": "cc3d9a14a0fc5f0f46b2a9b79b005be47dc7b91c65ab827c1fe4a9b15a4180d2",
+      "gitBlob": "c34ce0e97af4273aed8a9a3e64c811ec9945cbf7",
+      "mode": "100644",
+      "status": "UNRUN_SOURCE_REVIEWED_ONLY"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-order-preparation.py",
+      "bytes": 2092,
+      "sha256": "5e00c6e7c7496f044aa8dbc1068681601ab41882ae3888eb5d9dbcf2a5de8fde",
+      "gitBlob": "9a2613f4e56275278ef358cd4ef9ca8402b78ba0",
+      "mode": "100644",
+      "status": "UNRUN_SOURCE_REVIEWED_ONLY"
+    }
+  ],
+  "requiredNextGates": [
+    "Persist decision and exact supplemental helper source pins/readback.",
+    "Separately named fresh canonical catalog/BOTH and singleton PlanOnly; inspect complete zero-test raw, discovered one descriptor/one method/one case, fresh binaries and actual managed inventory.",
+    "Before FIRST, exact nine binary continuity plus separate complete fresh inventory readback; preserve literal actual/compiled/source contexts.",
+    "Root named singleton activation only after accepted fresh PREP; no execution authority from this report.",
+    "Qualify causal RED only after genuine Stage43/original/TREAT/rejected-wave/restore/corrected Ready/common completion/inert repeat, actual capture callback and committed I trace, and strict successful cleanup."
+  ],
+  "causalPrediction": "Unchanged product is expected to reach real capture with I-changing count0, later actual I-changing cohort1 and common completion, then fail the first Equal1. This remains a prediction until raw proves all prerequisites.",
+  "firstAssertion": "GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:123 Assert.Equal(1, _interfaceAtCapture)",
+  "observations": [
+    "Two recognized leading tags distinguish one projection from replay; missing useful timestamp uses genuine ordinary fallback.",
+    "Publication observations read real Committed journal members. Marker-containing cohorts are not exact common method call counts.",
+    "Final I bytes are retained before root disposal. Final assertion reads retained bytes and in-memory turn only.",
+    "Existing publication observer is removed before inert repeat; final I equality detects changes but is not an independent count of replayed no-write policy/clock work.",
+    "Default-null fixture inverse preserves previous helper body and all assertions.",
+    "Child3/version/origin and remaining later assertions are unreachable if first intended baseline assertion fails; they are not substituted baseline evidence."
+  ],
+  "scopeHolds": [
+    "Remaining crash/resume/integrity/retention/legacy/error/timestamp-policy controls not authored or admitted by this report.",
+    "No whole NI lifecycle, HOT, full F1/M3, Windows/platform, A3, issue completion or production acceptance.",
+    "No old accepted raw/runtime replay; prior CUT01 and protected controls retained separately."
+  ]
+}

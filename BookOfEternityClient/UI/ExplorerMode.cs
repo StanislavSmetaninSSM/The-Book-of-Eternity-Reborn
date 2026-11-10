@@ -75,6 +75,9 @@ public partial class ExplorerMode
         _universalCommands = BuildCommandMap(
             ("help", ShowHelpDto),
             ("math", ShowMathAssistantAsync),
+            ("wounds", ShowWoundsAsync),
+            ("wound_treatment", ShowWoundTreatmentAsync),
+            ("elyara_visit", ShowElyaraVisitAsync),
             ("soul", ShowSoulInfo),
             ("soul_relics", ShowSoulRelics),
             ("afterlife_archive", ShowAfterlifeArchive),
@@ -223,7 +226,8 @@ public partial class ExplorerMode
         var parsedCommand = ExplorerCommandParser.Parse(trimmedInput);
         if (!parsedCommand.Success)
         {
-            if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase) ||
+                ExplorerCommandCatalog.FindByAlias(ExplorerCommandCatalog.ExtractCommandToken(trimmedInput))?.Id == "wounds")
             {
                 MarkupLine($"[yellow]⚠️ {GameInterface.EscapeMarkup(parsedCommand.ErrorTitle)}: {GameInterface.EscapeMarkup(parsedCommand.ErrorMessage)}[/]");
                 WaitForKey();
@@ -242,6 +246,8 @@ public partial class ExplorerMode
         var isAfterlife = RealmSemantics.IsAfterlifeRealm(currentRealm);
         var isMortal = RealmSemantics.IsMortalRealm(currentRealm);
         _pendingGmAction = null;
+        _pendingSpiritualSelfTreatment = null;
+        _pendingElyaraVisit = null;
 
         if (_universalCommands.TryGetValue(cmd, out var handler))
         {

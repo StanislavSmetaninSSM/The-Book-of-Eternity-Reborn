@@ -1,0 +1,24 @@
+{
+  "base": "ac9bc9cf9a70fabb9ee31cb3087a346395480fbc",
+  "locatorFailure": {
+    "chunkId": "f7d241",
+    "exitCode": 1,
+    "operation": "read-only Python read_text of assumed readback basename",
+    "exactFailedPath": "/workspace/boe-cloud-tools-20261014/fr063-j8-normative-guidance-source-readback-20261014.json",
+    "exactDiagnostic": "FileNotFoundError: [Errno 2] No such file or directory: '/workspace/boe-cloud-tools-20261014/fr063-j8-normative-guidance-source-readback-20261014.json'",
+    "resolution": "ae0811 rg--files located exact report-provided focused-readback;456c82 actual schema readexit0",
+    "qualification": "ordinary ROOT filename locator failure before source/Git mutation, no project/security claim"
+  },
+  "cancelledReadOnlyDiff": {
+    "launchChunkId": "0785ff",
+    "sessionId": 94230,
+    "cancelChunkId": "83ef53",
+    "exitCode": 130,
+    "operation": "read-only Python difflib.SequenceMatcher(autojunk=False) on full large guide/daemon source strings",
+    "cancelAction": "write_stdin Ctrl-C",
+    "output": "",
+    "reason": "unnecessary costly whole-string diff, replaced by exact actual paragraph/pins and bounded reads1ef59a; no source/project mutation",
+    "classification": "intentional ROOT tooling interruption, not a project failure or security denial"
+  },
+  "projectChecks": "UNRUN"
+}

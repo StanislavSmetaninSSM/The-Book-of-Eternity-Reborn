@@ -1,0 +1,117 @@
+{
+  "Categories": [
+    "portable-save-load-literal-names-linux",
+    "portable-save-native-names",
+    "portable-load-native-names",
+    "portable-save-load-name-boundary-neighbors-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a3c5954560fe751171d10e394a4a6e11a055b77f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.3425858,
+  "Descriptors": [
+    {
+      "Name": "portable-load-native-names-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-native-names",
+      "Categories": [
+        "portable-load-native-names"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-load-literal-names-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-load-literal-names-linux",
+      "Categories": [
+        "portable-save-load-literal-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.HeldEnumerationPreservesLiteralAndHierarchicalNativeNames|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.IndependentlyManifestedLiteralNamesKeepExactLoadDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.LiteralNativeNamesSurviveCurrentSaveTypedLoadSave",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.HeldEnumerationPreservesLiteralAndHierarchicalNativeNames",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.IndependentlyManifestedLiteralNamesKeepExactLoadDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.LiteralNativeNamesSurviveCurrentSaveTypedLoadSave",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-load-name-boundary-neighbors-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-load-name-boundary-neighbors-linux",
+      "Categories": [
+        "portable-save-load-name-boundary-neighbors-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-native-names-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-native-names",
+      "Categories": [
+        "portable-save-native-names"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

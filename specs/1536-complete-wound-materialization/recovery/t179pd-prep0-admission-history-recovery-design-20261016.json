@@ -1,0 +1,455 @@
+{
+  "task": "T179-Pd full pre-P0 admission-history recovery design",
+  "status": "PROPOSAL_WITH_OPEN_BLOCKERS_NOT_IMPLEMENTATION_RELEASE",
+  "configured_model": "Astra",
+  "configured_effort": "High",
+  "backend": "unknown",
+  "source_baseline": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+  "completion_head": "e312c78b3f1a95766f535ef8372b049ee550138c",
+  "completion_status_porcelain": "",
+  "completion_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "network_remote_verification": "NOT_PERFORMED_SCOPE_PROHIBITED",
+  "repo_mutations": false,
+  "runtime_build_discovery_tests": "NOT_RUN_SCOPE_PROHIBITED",
+  "future_checks": "ALL_UNRUN",
+  "recommendation": "Proposed versioned non-dispatch lifecycle at existing validation_repair_request.json; new-original seed, same-native worker companion; final frozen evidence in existing M3. No extra path. Exact design acceptance required.",
+  "blockers": [
+    "new-original atomic completion and browser owner",
+    "closed versioned schema/all consumer dispatch",
+    "restore and pending checkpoint settlement",
+    "worker cold disposition/live authority/reservation and atomic companion",
+    "complete semantic cold checkers",
+    "lost observations/C/results/identities and no replay policy",
+    "no-publication/attempt debt/common cleanup proof",
+    "same-change Mortal/afterlife GM docs/examples/guards and independent acceptance"
+  ],
+  "artifact": {
+    "markdown_path": "/tmp/t179pd-prep0-admission-history-recovery-design-20261016.md",
+    "sha256": "635049fddf83f0a7986fe4ddb0b99eaf331b89081ce87dc25893f930ed9f7fff",
+    "byte_count": 38107
+  },
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "byte_count": 11662,
+      "current_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "byte_count": 66432,
+      "current_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "current_matches_pinned": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "byte_count": 14081,
+      "current_sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "142ce6682b88ab2760a39f78471c18be6c9ddb97",
+      "sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "byte_count": 107389,
+      "current_sha256": "688de28f5492234ae56fe2ddbb92cb2494684a5e07a3254c2ddce655249fac24",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "348f60324a6480b53bf5f2edfc20a70f4321a29e",
+      "sha256": "3a35e5244e2a417b243a50a9c8bd87ce5e4c1942c2610ca7b998885548c18e2e",
+      "byte_count": 116993,
+      "current_sha256": "3a35e5244e2a417b243a50a9c8bd87ce5e4c1942c2610ca7b998885548c18e2e",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "byte_count": 112701,
+      "current_sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "byte_count": 28648,
+      "current_sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "byte_count": 503876,
+      "current_sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "byte_count": 11986,
+      "current_sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "e7d3744e0b6bc614c0e5c1101955327b7242b490",
+      "sha256": "2e101960e4a6c9fda2d10f7f20ea7d35ddeb6ea371cf1fff9237f92139d2d794",
+      "byte_count": 14910,
+      "current_sha256": "2e101960e4a6c9fda2d10f7f20ea7d35ddeb6ea371cf1fff9237f92139d2d794",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "byte_count": 17372,
+      "current_sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "7831be8e58492e161f8b982d634666a7bcf6f5d4",
+      "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+      "byte_count": 56992,
+      "current_sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "byte_count": 20289,
+      "current_sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "byte_count": 43996,
+      "current_sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "byte_count": 41585,
+      "current_sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "16b91defd789624b70382974d689a29d0203e223",
+      "sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
+      "byte_count": 29080,
+      "current_sha256": "9ed381417d126c6ad89a076863cb4898b2f2a8ec7d42f97a8afb8084d2e7f17a",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerApplyGate.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "e479cba88f1e817150baebbb942cf83f6845e7e9",
+      "sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20",
+      "byte_count": 27552,
+      "current_sha256": "da5c325211cd932a5cf6aa1663271410e343c80cb1ab24c909c6e5b736859c20",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "e4b395e7e2c64ba93719fdb442ae86a56a1e7f89",
+      "sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+      "byte_count": 18522,
+      "current_sha256": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "33c28be8d479f9c1b4fac55c0db5510a825e0dd4",
+      "sha256": "f98dff889c7ef1c63aa74ffe4838f10a66075623402f4cb5e2112eeefa0f5cb2",
+      "byte_count": 10960,
+      "current_sha256": "f98dff889c7ef1c63aa74ffe4838f10a66075623402f4cb5e2112eeefa0f5cb2",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDurableExecution.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "59cda771f7a0ae4b5009fceedeed0c98ce6ac856",
+      "sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
+      "byte_count": 23367,
+      "current_sha256": "ae6af3a0854ba562a10c5efc4c056a6ff809976b7f458782fe9b1472c8d9d7cb",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "1f46709ec9e682d8451eb7c678c34e5c8cf80ed4",
+      "sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
+      "byte_count": 68955,
+      "current_sha256": "9bd7db2044c2e23c76a24e76ce52950ee4e331597f0ca87ec82ac80fba0366b2",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "7b93c4d733c681057eae0e5df33be88991022740",
+      "sha256": "d802d7e01092b3fdfa8995f569d97268e02933167d3b303760821ef7cc74db0e",
+      "byte_count": 15231,
+      "current_sha256": "d802d7e01092b3fdfa8995f569d97268e02933167d3b303760821ef7cc74db0e",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "203b3961c10a05a0798427d4100c234f4c16cad6",
+      "sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
+      "byte_count": 3330,
+      "current_sha256": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "37056261a566bc46f963bdb92aef7b98ac29f4f3",
+      "sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc",
+      "byte_count": 3431,
+      "current_sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "byte_count": 19220,
+      "current_sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "byte_count": 241343,
+      "current_sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "byte_count": 33582,
+      "current_sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0",
+      "sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "byte_count": 401224,
+      "current_sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "1d935b485cc252904be6ce23b197c65d1b56cd72",
+      "sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+      "byte_count": 121313,
+      "current_sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "e0ed469706453205397b5665b049b83db9431e6b",
+      "sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "byte_count": 90294,
+      "current_sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "byte_count": 93122,
+      "current_sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianPowerEventState.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "7633ea207afb6236ac46e73a044a489235123f59",
+      "sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
+      "byte_count": 37410,
+      "current_sha256": "3309dd90ab08acf8c1b5d352f5100c1fb382f3f2c5f27c643dcef3735712f613",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "8b920d6026268123d80cc65e1e178eb558b7b075",
+      "sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+      "byte_count": 67034,
+      "current_sha256": "ae4331fd7cdfa1bdb5fbdf212c8fe19d6402a62bc888b05c40e5c9e1a3f324e8",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "58f30ca196c88d2b0ef279993de7c058de135e99",
+      "sha256": "8864b4e44b0d4e104585d92f299e72c97f9f685e1279c4458cb6cbbc84758f49",
+      "byte_count": 17577,
+      "current_sha256": "8864b4e44b0d4e104585d92f299e72c97f9f685e1279c4458cb6cbbc84758f49",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "90363c67192cac05f8aedcbeddf459b29fb1bc08",
+      "sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
+      "byte_count": 189671,
+      "current_sha256": "aa5f32bbd2acf0e0f63ca3969e97d03dd15a8756c9f447bce10f6435b569603b",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "7dbe71d7402481de99ffa6f79172ed6eccea7bde",
+      "sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3",
+      "byte_count": 108929,
+      "current_sha256": "cf7850ba56bd9b2737baba025172bdb6a1e9ded60326d04ed1f8691f133e46d3",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "OtherGuides/GM_Worker_Bridges.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "940a0e86269d47e5c0a82b59a7a46c21363ba562",
+      "sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
+      "byte_count": 45067,
+      "current_sha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "a55cc67dd7ca7f13965ba5a449d9fa38c257ab4f",
+      "sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572",
+      "byte_count": 186273,
+      "current_sha256": "16c28648b7b78b249a91ce2b2f46d7248248eb4cd123bee84f2701749af78572",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "1ffef998be387f0f4f7f8aaafa22968049f9d3c6",
+      "sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
+      "byte_count": 255057,
+      "current_sha256": "3e85d05ae513b2fa8215ef54b153347a0408ff7459a364cfd840a0c459d7993b",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "3d3866fe22ad0700e7078078fa2409d71c6e4aad",
+      "sha256": "70de1d2f89bca3a3d95d4c633145064a6f30dc220910ea97ce6026bc872253f1",
+      "byte_count": 52786,
+      "current_sha256": "70de1d2f89bca3a3d95d4c633145064a6f30dc220910ea97ce6026bc872253f1",
+      "current_matches_pinned": true
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "source_commit": "8b3acffd4a75d58b7b86bc6baade1e994d3ae5e3",
+      "git_blob": "b5fffd3589de0a20413f8c10f8ab4d9db210aa68",
+      "sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+      "byte_count": 699288,
+      "current_sha256": "2865180ed71387a21b30763c00f9fd26c97a1c3937ad4addcbbb572d69c9ed49",
+      "current_matches_pinned": true
+    }
+  ],
+  "preserved_previous_artifacts": [
+    {
+      "path": "/tmp/t179pd-admission-cold-proof-design-20261016.md",
+      "sha256": "38d4d925026748391dc3b7b99aa8bbd5656516b479f0f6781f7ecec2c9316fb7",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-admission-cold-proof-design-20261016.json",
+      "sha256": "8129b2d77dfb2de95c06abcf97fd95bfb2d055c2da19089fd9e26aa44061e8c2",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-admission-history-location-design-20261016.md",
+      "sha256": "f5c91f653a79b651748d3b53128dd16126c6366efbf0cc94ab7da541d5dc3f60",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-admission-history-location-design-20261016.json",
+      "sha256": "2b2e852738154193cd5aee9d59eebdc637b641e6ee217b1181874475c34f27dd",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-original-observed-reader-design-20261016.md",
+      "sha256": "8666b7551e91adbee3a9776f42ee4115e841df03dd848d4ac9409ffa8b3ee435",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-original-observed-reader-design-20261016.json",
+      "sha256": "3d515af86d7059dc4402b331616acbb5be26c9038e23f9439a1b7c5c78354856",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-observed-reader-barrier-tdd-design-20261016.md",
+      "sha256": "dd0882ce46598099a9e6b3489087824c1742da2df5b63a47f7dc39514f0a504f",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-observed-reader-barrier-tdd-design-20261016.json",
+      "sha256": "9beaf926e73f903ed6bbfe24e81fed75078164c6991f2f74e3a26e0149c8e38d",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-output-read-closure-consult-20261016.md",
+      "sha256": "8e3b2c088ee84c7aade1be5b9209e2a5656133d67bc1957b9d5401d822bdddd8",
+      "preserved": true
+    },
+    {
+      "path": "/tmp/t179pd-output-read-closure-consult-20261016.json",
+      "sha256": "9b2e3f75d1e7f831ed623632a21219417082b19adbaabf946c635cf5143c9f2e",
+      "preserved": true
+    }
+  ],
+  "full_public_activation_gates": "OPEN; no F1/T179/T192/P0/T197/QTE/D4/guided/visual/Windows/D8 release"
+}

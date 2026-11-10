@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-main-stop-first-failure-diagnostics-linux",
+      "reason": "Coordinator/Astra approve bounded test-first Stop failure preservation. Four exact methods yield six cases: pin-timeout and non-primary refusal require new diagnostics (expected causal RED2 missing-report failures); unchanged positive original Stop plus RPC shell/host/io controls must pass4. Original state/reply/stderr is frozen before diagnostic assertions. No lifecycle or C5 runtime; global CI selection unchanged.",
+      "contracts": [
+        "#1553 T069-T071 remain open",
+        "first observed original Stop failure and exact first failed predicate",
+        "unchanged exception/RPC/retained-uncertain authority and positive Stop boundary"
+      ]
+    }
+  ]
+}

@@ -4141,6 +4141,7 @@ public sealed class WoundTransitionReducerTests
         wound["severity"]!["rank"] = rank;
         wound["severity"]!["maximumAtCreation"] = maximumAtCreation;
         wound["severity"]!["lastChangeEventRef"] = lastChangeEventRef;
+        wound["recovery"]!["currentStepThreshold"] = 2 * rank;
         var consequences = wound["consequences"]!.AsObject();
         consequences["slotBudget"] = rank;
         consequences["slotsUsed"] = rank;
@@ -4216,6 +4217,9 @@ public sealed class WoundTransitionReducerTests
                     ? wound.Severity.LastChangeEventRef
                     : "turn_43:wound_transition"
             },
+            Recovery = wound.Classification.Domain == "spiritual"
+                ? wound.Recovery with { CurrentStepThreshold = 2L * rank }
+                : wound.Recovery,
             Consequences = wound.Consequences with
             {
                 SlotBudget = rank,

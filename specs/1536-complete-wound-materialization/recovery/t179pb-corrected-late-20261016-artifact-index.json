@@ -1,0 +1,103 @@
+{
+  "source_sha": "2d9c7abd9d3182e4a5e80138e28014a50df963f5",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-091829-121-30812-9f69179387fd4456af6308dea47817c8-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pb-corrected-late-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-091829-121-30812-9f69179387fd4456af6308dea47817c8-categories/dotnet-test.log",
+      "raw_bytes": 1682674,
+      "raw_sha256": "6e83e9cdbbe34e281ab1939ee4b09ee3bed95c33176bb03ba90f1cdd5101e457",
+      "stored_sha256": "d3f5f5e7e7cb83b90c1e9aeba2624c964e059c965860984686daac94eb392754"
+    },
+    {
+      "path": "t179pb-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-091829-121-30812-9f69179387fd4456af6308dea47817c8-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976760,
+      "raw_sha256": "5b47a488ff0ca942a796fa5bbb74cf49d0602533d89e680bae2939c117d2d525",
+      "stored_sha256": "d12a6af436570578f5f05da2ca29495100cd1b45542c0405c822128a7b1cc3dc"
+    },
+    {
+      "path": "t179pb-corrected-late-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-091829-121-30812-9f69179387fd4456af6308dea47817c8-categories/plan.json",
+      "raw_bytes": 1533,
+      "raw_sha256": "d0a631d9311e04f774b3e57b7087ec369834540c06210fe36eaeb09c178129eb",
+      "stored_sha256": "d0a631d9311e04f774b3e57b7087ec369834540c06210fe36eaeb09c178129eb"
+    },
+    {
+      "path": "t179pb-corrected-late-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-091829-121-30812-9f69179387fd4456af6308dea47817c8-categories/summary.json",
+      "raw_bytes": 1464,
+      "raw_sha256": "2f95ee98ab511e9d9a195325dcff9f3cf46251c6f6e35ca098e78a40f8a36d87",
+      "stored_sha256": "2f95ee98ab511e9d9a195325dcff9f3cf46251c6f6e35ca098e78a40f8a36d87"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "2d9c7abd9d3182e4a5e80138e28014a50df963f5",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 185.9648154,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0635863,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0506619,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1374049,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0039542,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:03:10.5469391",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "Categories": [
+    "portable-spiritual-dependent-file-recovery",
+    "portable-spiritual-interruption-finalization",
+    "portable-spiritual-automatic-cold-recovery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d8799cfde6c8401d4ab93e8399f6aa428387bdc0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.7367842,
+  "Descriptors": [
+    {
+      "Name": "portable-spiritual-automatic-cold-recovery-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-automatic-cold-recovery",
+      "Categories": [
+        "portable-spiritual-automatic-cold-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_AutomaticGuaranteeColdResumePublishesOnceWithoutNewDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_AutomaticGuaranteeColdResumePublishesOnceWithoutNewDecision",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-dependent-file-recovery-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-dependent-file-recovery",
+      "Categories": [
+        "portable-spiritual-dependent-file-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FileDependentDraftResumesSavedChoiceAfterInterruption|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FilePositionDependentDraftResumesSavedChoiceAfterInterruption",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FileDependentDraftResumesSavedChoiceAfterInterruption",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnSpiritualContinuation_FilePositionDependentDraftResumesSavedChoiceAfterInterruption",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-interruption-finalization-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-interruption-finalization",
+      "Categories": [
+        "portable-spiritual-interruption-finalization"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostPublicationBeforeStoryRecoversAtomically|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostStoryBeforeTerminalCleanupRecoversAtomically",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostPublicationBeforeStoryRecoversAtomically",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualInterruption_PostStoryBeforeTerminalCleanupRecoversAtomically",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -29,7 +29,7 @@ internal static partial class AcceptedMechanicsPlanner
         /// <summary>
         /// Retains source-validation contributions from an exact resource routing epoch and exchange ordinal.
         /// </summary>
-        internal sealed class SpiritualMechanicsContext
+        internal sealed partial class SpiritualMechanicsContext
         {
             private readonly ResourceExecutionSession _owner;
             private readonly ValidationService.SpiritualOriginalTurnCapture _capture;
@@ -39,6 +39,7 @@ internal static partial class AcceptedMechanicsPlanner
             private readonly long _woundVersion;
             private readonly long _dependencyCutVersion;
             private WoundOperationBeforeData? _woundView;
+            private readonly IReadOnlyList<SpiritualWoundConflictContribution> _acceptedContributions;
             private readonly AfterlifeConflictActionPointProjection? _actionPointBefore;
 
             /// <summary>
@@ -72,7 +73,8 @@ internal static partial class AcceptedMechanicsPlanner
                 Ordinal = owner._nextOrdinal;
                 if (source.ReadMechanicsConflict(capture)["activeConflict"] is JsonObject conflict)
                     _actionPointBefore = owner._state.ReadSpiritualActionPointBefore(conflict);
-                Contributions = Array.AsReadOnly(projection.Contributions
+                _acceptedContributions = projection.Contributions;
+                Contributions = Array.AsReadOnly(_acceptedContributions
                     .Where(row => owner._state.IsMechanicallyAvailable(row.EffectId)).ToArray());
             }
 
@@ -84,6 +86,12 @@ internal static partial class AcceptedMechanicsPlanner
             /// Gets immutable contributions after filtering accepted use exhaustion.
             /// </summary>
             internal IReadOnlyList<SpiritualWoundConflictContribution> Contributions { get; }
+
+            /// <summary>Reads only a rederived comparison owned by this exact current source/resource epoch.</summary>
+            internal ValidationService.SpiritualStrainDraftCorrection? ReadOwnedStrainCorrection(
+                JsonObject conflict, JsonObject exchange) => IsCurrent
+                ? _capture.ReadOwnedStrainCorrection(this, conflict, exchange) ??
+                    ReadSignedExistingStrainCorrection(conflict, exchange) : null;
             /// <summary>
             /// Gets whether the original owners, exchange ordinal and routing epoch remain current.
             /// </summary>

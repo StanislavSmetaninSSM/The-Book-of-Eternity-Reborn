@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-output-draft-refusal",
+      "reason": "Four initially bad fresh-PID admissions: changed severity, malformed or foreign present public draft, and signed original authority payload digest damaged before process launch. Raw whole-tree retention without child preflight.",
+      "contracts": [
+        "#1536 FR063 output binding A"
+      ]
+    }
+  ]
+}

@@ -17,7 +17,7 @@ namespace BookOfEternityClient.Services;
 ///   stories/mortal_life_2.jsonl      — second mortal incarnation
 ///   stories/mortal_life_N.jsonl      — Nth mortal incarnation
 /// </summary>
-public class StoryService
+public partial class StoryService
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<StoryService> _logger;
@@ -61,10 +61,50 @@ public class StoryService
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to append story entry for turn {Turn}", turnNumber);
         }
+    }
+
+    internal async Task<PendingPlayerActionService.StoryProof> AppendOriginalBrowserTurnAsync(
+        FileSystemManager.CanonicalWriteLease lease, PendingPlayerActionService.Binding binding,
+        int turnNumber, string realm, int incarnation, string? narrative, string? location,
+        IReadOnlyCollection<StoryEntityRef>? entityRefs)
+    {
+        _fs.VerifyCurrentSessionOperation(lease);
+        if (_fs.GetOrCreateSessionGeneration(lease) != binding.Generation)
+            throw new SessionReplacedException("Сессия браузерного хода изменилась.", binding.Generation,
+                _fs.GetOrCreateSessionGeneration(lease));
+        var path = GetStoryPath(realm, incarnation);
+        var rawBefore = await _fs.ReadFileBytesAsync(lease, path);
+        var qteSource = await CaptureAcceptedQteStorySourceAsync(lease, turnNumber, realm, incarnation, binding.Action, path, rawBefore);
+        var before = rawBefore ?? Encoding.UTF8.GetPreamble();
+        var previousText = Encoding.UTF8.GetString(before).TrimStart('\uFEFF');
+        foreach (var line in previousText.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var previous = StrictJsonAuthority.Deserialize<StoryEntry>(line, JsonOpts, "story entry")!;
+            if (previous.RequestId == binding.ActionId && previous.SessionGeneration == binding.Generation)
+                throw new InvalidDataException("Исходный браузерный ход уже записан; повтор остановлен.");
+        }
+        var row = JsonSerializer.Serialize(new StoryEntry
+        {
+            Turn = turnNumber, Timestamp = DateTime.UtcNow.ToString("o"), Realm = realm,
+            Player = binding.Action, Narrative = narrative ?? "", Location = location,
+            EntityRefs = entityRefs?.ToList(), RequestId = binding.ActionId,
+            SessionGeneration = binding.Generation
+        }, JsonOpts);
+        await _fs.AppendFileAtomicAsync(lease, path, row + "\n");
+        var actual = await _fs.ReadFileBytesAsync(lease, path)
+            ?? throw new IOException("Accepted story readback is absent.");
+        var expected = before.Concat(Encoding.UTF8.GetBytes(row + "\n")).ToArray();
+        if (!actual.AsSpan().SequenceEqual(expected))
+            throw new IOException("Accepted story readback did not preserve the original prefix and exact row.");
+        return new(path, actual.Length, PendingPlayerActionService.Hash(actual), row)
+        {
+            QteStoryAppend = qteSource == null ? null : AcceptedStoryAppend.FromSuccessfulWriter(
+                qteSource.Value.Source, qteSource.Value.Histories, "browser_turn", path, rawBefore, row, actual, AcceptedStoryWriterCapability)
+        };
     }
 
     /// <summary>
@@ -92,7 +132,7 @@ public class StoryService
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to append story marker: {Type}", markerType);
         }
@@ -123,21 +163,28 @@ public class StoryService
     /// <summary>
     /// Lists all available story files with basic info.
     /// </summary>
-    public List<StoryFileInfo> GetAvailableStories()
+    public List<StoryFileInfo> GetAvailableStories() => GetAvailableStoriesAsync().GetAwaiter().GetResult();
+
+    private async Task<List<StoryFileInfo>> GetAvailableStoriesAsync()
     {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync().ConfigureAwait(false);
+        _fs.VerifyCurrentSessionOperation(lease);
         var result = new List<StoryFileInfo>();
         var storiesDir = _fs.ResolvePath("stories");
+        var scope = new TrustedLocalFileScope([storiesDir]);
         if (!Directory.Exists(storiesDir)) return result;
 
         foreach (var file in Directory.GetFiles(storiesDir, "*.jsonl").OrderBy(f => f))
         {
+            scope.ValidateFile(file, allowMissing: false);
+            var relativePath = $"stories/{Path.GetFileName(file)}";
             var name = Path.GetFileNameWithoutExtension(file);
             var lineCount = 0;
             try
             {
-                lineCount = File.ReadLines(file, Encoding.UTF8).Count();
+                lineCount = (await ReadStoryLinesAsync(lease, relativePath).ConfigureAwait(false)).Count;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (IsOrdinaryReadFailure(ex))
             {
                 _logger.LogDebug(ex, "Не удалось подсчитать количество записей story file {StoryFile}.", file);
             }
@@ -154,12 +201,13 @@ public class StoryService
             result.Add(new StoryFileInfo
             {
                 FileName = Path.GetFileName(file),
-                RelativePath = $"stories/{Path.GetFileName(file)}",
+                RelativePath = relativePath,
                 DisplayName = displayName,
                 EntryCount = lineCount
             });
         }
 
+        _fs.VerifyCurrentSessionOperation(lease);
         return result;
     }
 
@@ -168,16 +216,23 @@ public class StoryService
     /// </summary>
     public async Task<List<StoryEntry>> ReadStoryAsync(string relativePath, int? lastN = null)
     {
-        var entries = new List<StoryEntry>();
-        var fullPath = _fs.ResolvePath(relativePath);
-        if (!File.Exists(fullPath)) return entries;
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync().ConfigureAwait(false);
+        return await ReadStoryAsync(lease, relativePath, lastN).ConfigureAwait(false);
+    }
 
+    internal async Task<List<StoryEntry>> ReadStoryAsync(
+        FileSystemManager.CanonicalWriteLease lease, string relativePath, int? lastN = null)
+    {
+        _fs.VerifyCurrentSessionOperation(lease);
+        var fullPath = _fs.ResolvePath(relativePath);
+        new TrustedLocalFileScope([_fs.GameSessionPath]).ValidateFile(fullPath);
+        var entries = new List<StoryEntry>();
         try
         {
-            var lines = await File.ReadAllLinesAsync(fullPath, Encoding.UTF8);
-            var startIdx = lastN.HasValue ? Math.Max(0, lines.Length - lastN.Value) : 0;
+            var lines = await ReadStoryLinesAsync(lease, relativePath).ConfigureAwait(false);
+            var startIdx = lastN.HasValue ? Math.Max(0, lines.Count - lastN.Value) : 0;
 
-            for (var i = startIdx; i < lines.Length; i++)
+            for (var i = startIdx; i < lines.Count; i++)
             {
                 if (string.IsNullOrWhiteSpace(lines[i])) continue;
                 try
@@ -194,13 +249,29 @@ public class StoryService
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (IsOrdinaryReadFailure(ex))
         {
             _logger.LogWarning(ex, "Failed to read story: {Path}", relativePath);
         }
 
+        _fs.VerifyCurrentSessionOperation(lease);
         return entries;
     }
+
+    private async Task<List<string>> ReadStoryLinesAsync(
+        FileSystemManager.CanonicalWriteLease lease, string relativePath)
+    {
+        var bytes = await _fs.ReadLocalFileBytesAsync(lease, relativePath).ConfigureAwait(false);
+        if (bytes == null) return [];
+        using var reader = new StringReader(LocalSettingsPreparation.DecodeText(bytes));
+        var lines = new List<string>();
+        while (reader.ReadLine() is { } line) lines.Add(line);
+        return lines;
+    }
+
+    private static bool IsOrdinaryReadFailure(Exception failure) =>
+        failure is (IOException or UnauthorizedAccessException) &&
+        failure is not (InvalidDataException or CoordinatedStatePublicationUncertainException or SessionReplacedException);
 
     /// <summary>
     /// Returns a summary of recent story for the GM system reminder.
@@ -226,6 +297,12 @@ public class StoryService
 
 public class StoryEntry
 {
+    [JsonPropertyName("requestId")]
+    public string? RequestId { get; set; }
+
+    [JsonPropertyName("sessionGeneration")]
+    public string? SessionGeneration { get; set; }
+
     [JsonPropertyName("turn")]
     public int Turn { get; set; }
 

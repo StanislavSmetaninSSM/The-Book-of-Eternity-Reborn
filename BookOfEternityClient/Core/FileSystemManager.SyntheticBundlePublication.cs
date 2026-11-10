@@ -4,9 +4,28 @@ public partial class FileSystemManager
 {
     // Explicit fixture-only trusted-local operation. The default descriptor-bound
     // method and its Windows capability check remain separate and unchanged.
+    /// <summary>
+    /// Moves the admitted synthetic fixture bundle through its existing namespace checks and publication protocol.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="admittedFixtureRoot">
+    /// Explicit synthetic fixture root admitted by the existing fixture-only protocol.
+    /// </param>
+    /// <param name="sourceDirectory">
+    /// Runtime staging directory containing the admitted synthetic bundle.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync(CanonicalWriteLease lease,
         string admittedFixtureRoot, string sourceDirectory, string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         ValidateSyntheticFixtureRoot(admittedFixtureRoot);
         ValidateLease();

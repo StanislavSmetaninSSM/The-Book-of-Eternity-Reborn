@@ -1,0 +1,47 @@
+{
+  "kind": "ROOT_FRESH_ZERO_PREPARATION_ACCEPTANCE_NAMED_FIRST_AFFECTED_ACTUAL_RELEASE",
+  "createdUtc": "2026-10-18T07:10:37.487933+00:00",
+  "carrier": "8d00ba291d16af98b56a8932630d87cab3bade2f",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "sourceAccepted": "520e66e418a428223afa4ef2364ec96b28eeac54",
+  "verdict": "ACCEPT_FRESH_ZERO_PREPARATION_ONLY",
+  "independentReview": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.md",
+      "sha256": "4c0e5b525a3ba1b1fdc6c2a948624f3786a3c1ef171bab424c0c480aefb89253"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-prep-independent-review-8d00ba29-20261018.json",
+      "sha256": "66087a312bf3d3b8db545c848ce2ccc0329daba0c94d849ab5519d8dbbb5f4f3"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-whole-prep-independent-check-8d00ba29-20261018.json",
+      "sha256": "840ebdce085ac56494d59eb29b4b2709ffb55982cec9516996571af18fc8d360"
+    }
+  ],
+  "RootReadback": {
+    "path": "/tmp/t179pd-ni-iobs-l01-root-whole-prep-readback-45cc99ab-20261018.json",
+    "sha256": "4aad74ce3f7ff7db43963157e93bcb2e4f174625d299d75ea1ca5c687e2e6958"
+  },
+  "recoveryComposition": "/tmp/t179pd3d-root-recovery-composition-8d00ba29-20261017.json",
+  "sourcePinCount": 97,
+  "sourcePinDigest": "3e2bf2b2e6e890222ae8cbf7ceaeb4d203b41a6aab68ec879e6e88723f70bb57",
+  "freshCases": 0,
+  "actual": "ALL_CURRENT_PRODUCT_MODES_UNRUN",
+  "release": {
+    "mode": "protected-late2",
+    "label": "t179pd-ni-iobs-l01-whole-first-protected-late2-current",
+    "cases": 2,
+    "tool": "/tmp/t179pd-ni-iobs-l01-whole-first-run.py",
+    "toolSha256": "411b9d1ca4585c6ee66d3bbd9992a95b734cd5eb4da059f25faaa3b8762c5fd0",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-prep-first-plan-current/record.json",
+    "activation": "Only after acceptance metadata carrier commit/push/exact Root recovery and separate named HEAD message.",
+    "bounds": "FIRST affected protected Late2 only, NoBuild exact current compiled output chain. Preserve original native/utility/stdout/process/TRX/cleanup before qualification. No rerun, next mode, source edit or automatic advance."
+  },
+  "next": "Root reads first protected outcome then names ordering1 only if appropriate; independent connected final EVIDENCE remains required.",
+  "limits": [
+    "No current product PASS from preparation.",
+    "All original RED/FAIL history preserved.",
+    "No fullNI/HOT, broaderF1/M3/T197/platform/Windows/CI/A3 authority."
+  ]
+}

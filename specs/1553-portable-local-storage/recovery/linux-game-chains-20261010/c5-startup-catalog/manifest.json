@@ -1,0 +1,28 @@
+{
+  "SourceSHA": "0f1167bc6b9fa7457e96cef476e2054a4dd3aeb1",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 6'",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "b5a0ca5d419f4f577e9bb161c58b7ffab2bc3391c5e981a6e92f68e425493a0d",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/command.log.gz",
+      "RawSHA256": "2b96fb70ace60ec686aae5023c38c423f2c655d692d0c4bb17c09f70b02e2df2",
+      "RawBytes": 711
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "7913cda13f6b0ba815253ae008c260787a4393927af2dc2a02cd63b7c7d1caf6",
+      "RawBytes": 3282944
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "40b1d962aa10647c25e5779f267f50539f552a4d3624b64d2383fbbec7700f71",
+      "RawBytes": 1404
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-guardian-known-rollback-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "764818a9abb60c6e3915e453ad26309040a94a41",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.9450563,
+  "Descriptors": [
+    {
+      "Name": "portable-guardian-known-rollback-publication-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-guardian-known-rollback-publication",
+      "Categories": [
+        "portable-guardian-known-rollback-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_FailureAfterEachChangedPublicationRestoresExactTransaction|FullyQualifiedName=BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_LateFailureRestoresInitiallyAbsentReceiptAndJournal",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_FailureAfterEachChangedPublicationRestoresExactTransaction",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.ApplyForNewLifeAsync_LateFailureRestoresInitiallyAbsentReceiptAndJournal",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

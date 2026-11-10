@@ -19,9 +19,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     [Fact]
     public async Task OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold()
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync(
+        var context = await CreateCompleteConflictFrameContextAsync(
             seedOriginalInputs: SeedOriginalIntakeTierTwoBaselinesAsync,
             signedDice: [5, 15, 20, 18, 9, 8]);
+        using var ownedFixture = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), _storageOutput.WriteLine);
         await WritePositionBurdenExchangesAsync(context, playerWound: true, modifier: "missing");
         var original = await WriteCriticalPositionContinuationDraftAsync(context);
         const string scene = "Чужое давление надломило волю души.";
@@ -81,6 +83,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         string firstContinuationId;
         var coldOpened = await cold.OpenC2PrivateSessionAsync(coldLease);
         Assert.Equal("dependent_continuation", coldOpened.Disposition);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath,
+            phase = "critical_position_reopened", coldOpened.Disposition, coldOpened.Issues }));
         using (var owner = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(coldOpened.Session))
         {
             Assert.Null(owner.Offer);
@@ -125,12 +129,16 @@ public sealed partial class AfterlifeResourceCutoverTests
             await coldFs.WriteFileAtomicBytesAsync(coldLease, AfterlifeSpiritualConflictState.StatePath,
                 Encoding.UTF8.GetBytes(damaged.ToJsonString()));
             var invalidOpened = await cold.OpenC2PrivateSessionAsync(coldLease);
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { mutation, phase = "mutated_critical_open",
+                invalidOpened.Disposition, invalidOpened.Issues }));
             using (var invalid = invalidOpened.Session)
             {
                 if (invalid is not null)
                 {
                     var denied = await invalid.ResumeDependentContinuationAsync(coldLease);
                     using var deniedOwner = denied.Session;
+                    _storageOutput.WriteLine(JsonSerializer.Serialize(new { mutation, phase = "forbidden_critical_resume",
+                        denied.Disposition, denied.Issues }));
                     Assert.True(denied.Disposition == "blocked", mutation + ": " + FormatC2SubmissionIssues(denied));
                     Assert.DoesNotContain(denied.Issues, issue => issue.FilePath.StartsWith("activeConflict.exchangeLog[2].", StringComparison.Ordinal));
                 }
@@ -159,6 +167,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(progress.Disposition == "committed", string.Join("\n", progress.Issues));
         var issuedB = Assert.IsType<SpiritualWoundContinuationRequest>(progress.NextRequest);
         Assert.NotEqual(issuedA.ContinuationId, issuedB.ContinuationId);
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "critical_a_committed_b_issued",
+            a = issuedA.ContinuationId, b = issuedB.ContinuationId, progress.Disposition, progress.Issues }));
         var progressedCheckpoint = JsonNode.Parse((await coldFs.ReadFileBytesAsync(coldLease, SpiritualWoundCaptureCheckpointState.StatePath))!)!;
         Assert.Single(progressedCheckpoint["checkpoint"]!["pendingSubmission"]!["dependentDraftProgress"]!.AsArray());
         Assert.True(JsonNode.DeepEquals(savedDecision, progressedCheckpoint["checkpoint"]!["pendingSubmission"]!["stagedDecision"]));
@@ -217,6 +227,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         Assert.True(JsonNode.DeepEquals(corrected, JsonNode.Parse(await coldFs.ReadFileBytesAsync(coldLease, AfterlifeSpiritualConflictState.StatePath) ?? [])));
         foreach (var pair in immutable) Assert.Equal(pair.Value, await coldFs.ReadFileBytesAsync(coldLease, pair.Key));
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { root = context.RootPath,
+            phase = "critical_position_compatibility_complete", opportunityRef,
+            a = issuedA.ContinuationId, b = issuedB.ContinuationId,
+            completed.Disposition, reduction.Success, reduction.Issues,
+            decisionId = receipt["decisionId"]!.GetValue<string>(),
+            spends = spends.Select(row => new { row.AppliedAmount,
+                before = row.BeforeState!.Current, after = row.AfterState!.Current }),
+            SavedChoiceAndImmutableBytesPreserved = true, CanonicalPublication = false }));
     }
 
     /// <summary>

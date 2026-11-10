@@ -1,0 +1,36 @@
+{
+  "kind": "G01_SOURCE_BOUND_ENV_PARENT_FILESYSTEM_ONLY_PROOF",
+  "sourcePath": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+  "sourceSha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+  "functionAstSha256": "5bdb213902f3edd2509cec228e7f96855a37632a88c8b6c15df3932131853f35",
+  "checks": [
+    {
+      "check": "original absent caller-owned parent reproduces first child mkdir ENOENT",
+      "passed": true,
+      "observation": {
+        "type": "FileNotFoundError",
+        "errno": 2,
+        "failedRelativePath": "collector-env/tmp"
+      }
+    },
+    {
+      "check": "one strict caller mkdir0700 makes unchanged function create six private children",
+      "passed": true
+    },
+    {
+      "check": "same caller prefix refuses existing root; no exist_ok or reuse",
+      "passed": true
+    },
+    {
+      "check": "original sanitized allowlist unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 4,
+  "nativeChildren": 0,
+  "gameCalls": 0,
+  "diagnosticRequests": 0,
+  "sourceEdited": false,
+  "originalRootsReadOrChanged": false,
+  "limit": "Candidate caller-prefix witness only, not runtime/SOURCE/PREP acceptance for edited code."
+}

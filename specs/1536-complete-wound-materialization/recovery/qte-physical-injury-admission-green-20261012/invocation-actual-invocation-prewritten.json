@@ -1,0 +1,27 @@
+{
+  "source": "141c69617fcb731eb219605d4acbded28cf45983",
+  "startedUtc": "2026-10-12T10:11:40.040331+00:00",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-admission.json",
+    "-NoBuild"
+  ],
+  "preparationPlanRun": "20261012-100721-537-279401-8675c37c684040d09b15cdd3384fdfaa-categories",
+  "plannedCases": 51,
+  "plannedMethods": 9,
+  "plannedDescriptors": 4,
+  "defaultOverallMinutes": 15,
+  "categoryMinutes": {
+    "admission": 5,
+    "compatibility": 3,
+    "documentation": 2
+  },
+  "timeoutOverride": false,
+  "actualInvocationsAtThisSource": 1,
+  "scope": "minimumadmission/freeze only; finalizedhealthharm/occurrencechain UNRUN"
+}

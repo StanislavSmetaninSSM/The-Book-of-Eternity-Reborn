@@ -1,0 +1,96 @@
+{
+  "Categories": [
+    "gm-main-worker-dispatch-consumer-linux",
+    "gm-load-started-not-ready-receipts-linux",
+    "gm-main-status-early-exit-affected-linux",
+    "gm-load-console-entry",
+    "gm-load-cleanup-debt"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5f1502b8247d6b7a9493a00dd287572a068bff18",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-cleanup-debt",
+      "Seconds": 18.1050106,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-console-entry",
+      "Seconds": 18.7154332,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-started-not-ready-receipts-linux",
+      "Seconds": 132.5388027,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-status-early-exit-affected-linux",
+      "Seconds": 7.2299848,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-worker-dispatch-consumer-linux",
+      "Seconds": 6.6355904,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0561417,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0349981,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0894033,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039323,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 23,
+  "WallTime": "00:03:07.5047825",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 16,
+    "CompletedCases": 16,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 16,
+    "Executed": 16,
+    "Passed": 16,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

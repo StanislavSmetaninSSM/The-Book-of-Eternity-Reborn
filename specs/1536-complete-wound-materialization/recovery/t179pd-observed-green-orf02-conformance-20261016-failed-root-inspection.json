@@ -1,0 +1,446 @@
+{
+  "classification": "FIRST_UNEXPECTED_RUNTIME_OUTCOME_FROZEN_BEFORE_DIAGNOSIS",
+  "actual_head": "0bbc8524713ea6ce70231fc8185a91d6708d2d0e",
+  "compiled_source": "e522102735317eedc04e42ea1e0b892f73983871",
+  "native_exit": 1,
+  "raw_chain_count": 6,
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-conformance"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "0bbc8524713ea6ce70231fc8185a91d6708d2d0e",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-conformance",
+        "Seconds": 11.3061662,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0653138,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.110546,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1399156,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:21.3880465",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 35,
+      "CompletedCases": 35,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 35,
+      "Executed": 35,
+      "Passed": 34,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"request\")",
+      "id": "739158e3-3b2b-5bdd-64f2-3912e07b71c3",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-c84303cb027d4b358913effb8330ed9a",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"generation\")",
+      "id": "f2a85235-a3f0-c7f5-f9b7-4910b232688d",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-d81c8c3a87c0486b953755a1bc17d5fc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_UsesTheExplicitLeaseWithoutAmbientExecutionContext",
+      "id": "37ba392d-599a-3ab7-0e8e-cdc9cfbdec46",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-6587974f89114ddeb31eb79fea33b2d7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"ready_presence\")",
+      "id": "25205fde-003d-2330-2b29-ac3e248f27ea",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-0a8919d037884087afc05b3a4143b408",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"request\")",
+      "id": "a0242cbb-48d2-bc38-d539-ff5ea77ebb92",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-c69f98e207494d548c920ec8d358a8d7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RequiresExactOwnerLeaseSnapshotAndRetainsOnlyDetachedDiagnostics",
+      "id": "50380b4c-49c1-b292-26c8-2bfbbed97ce0",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-755dcb480c3b46aaa4fb9d846283817a",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"ready_missing\")",
+      "id": "04ce9e3a-e7e3-fa40-5638-e31076b68b79",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-a3216bb4805e41558a574279ec1cfc26",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"ready_text\")",
+      "id": "026f69f8-9322-7036-7fd0-e0256580be8f",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-14eedc17508f4196a5986fc6687045d2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(failure: \"manifest\")",
+      "id": "b397424c-65cd-1637-04e5-4745eff958d9",
+      "outcome": "Failed",
+      "error": {
+        "Message": "System.Text.Json.JsonReaderException : Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.",
+        "StackTrace": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3782\n   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(String failure) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs:line 273\n   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(String failure) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs:line 288\n--- End of stack trace from previous location ---"
+      },
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-66b3aaffffe04a219a19d56595d84b47",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(failure: \"stale_request\")",
+      "id": "3b98520b-e5bd-ce52-39f9-3f7e581c2455",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-b31083c30cfb444aa6eba87159d4ade0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PropagatesTheActualPhysicalReadFailure(role: \"manifest\")",
+      "id": "ba20a04c-db8c-ac31-c95b-fcf4ed4c865f",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-4e87b18d5e2943ef995c2b2b9855d01e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"ready_presence\")",
+      "id": "9447c674-73ed-171a-7276-53900fbd0b09",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-55ee3a33a02b4548b1d4417e95ea9671",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(failure: \"authority\")",
+      "id": "0f50a1fb-242e-d004-7c6f-298273f9e8fb",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-cfb083b1cd504b859b4476d5db3ee256",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.GenuinePendingDecision_RefusesObservedEntryAndEvidenceWithoutReadingOrSettlingIt",
+      "id": "5668528d-2acb-a0be-28e7-a8625fc47275",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-dd80c2b78297434ba4bb22e5104e336b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ActualOpen_RevalidatesTheExplicitByteLeafAndObservedAdmission(directLeaf: False)",
+      "id": "cfddfa2a-1859-3471-f347-8df0ce78ea07",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-47bfbf357add44f89bcdfed7d3b8bd96",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_SelectionFailurePrecedesMissingGenerationWithoutCreatingIt",
+      "id": "6fcd8bb7-a559-00f8-9576-fffdb88ced87",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-ac0475d4db154c62b59d9fc826f1320b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_KeepsSignedOptionalAbsenceSeparateFromCurrentFiles",
+      "id": "b3f41c2f-95f4-86a3-1767-de4b1837a94c",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-3333fc97bddd4a2c8b2139f41e8f4856",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"manifest\")",
+      "id": "b60c68ab-851c-f3d9-7520-b307769e3c2b",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-1764c9857adf463aa414acbdf713925e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"generation\")",
+      "id": "addee482-086f-2a64-7ae7-d6069b0096fb",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-0e94bbe243e64c539933a79f5f8ab9f3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"authority\")",
+      "id": "c95112c9-ddad-aaa2-0f1b-19fcfbd7109f",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-f0e9f8d2911b454290d6827bbe59f2ec",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"repair_presence\")",
+      "id": "a1946d8a-77d9-b3c0-1ddb-2797625b3bed",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-a395c835e8944aff809bcc03b33404ea",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"repair_missing\")",
+      "id": "7fa723c6-929e-3349-300c-52c3e9399ea3",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-b65e7e71e2a045d3a24a1a9e282658df",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ActualOpen_RevalidatesTheExplicitByteLeafAndObservedAdmission(directLeaf: True)",
+      "id": "12b5e6d9-45ec-4070-a9e5-e8fd043d3ae1",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-22e737592a8346339f0f38bc8f899cb7",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(failure: \"contexts\")",
+      "id": "600433e2-7e9e-830e-8616-30f6c922ed3b",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-6c3fc8a65de94d57819d4d76667187ef",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"generation_replaced\")",
+      "id": "87e11041-863f-1ac2-4be9-dcaf2d0fe804",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-64b7caecbf4d4f1689f63b9152118704",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"request_missing\")",
+      "id": "f4d3e1e9-d468-9bc3-76de-aaca0518899e",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-ba8064e0865c4d148a5d91466bc40ad3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"selected\")",
+      "id": "7247180f-ebe5-b5d5-6bc7-6d89164affe0",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-bb2facaf485947be8f9a2fb0bc9fd2ba",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesBomDecodingAndDistinctRawDigest(utf16: False)",
+      "id": "a8fa7f3e-c135-3136-2d26-633d48f364df",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-7545d892418a4b14892d284bda3fe4e3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"repair_presence\")",
+      "id": "ca3ded32-4c45-1f3e-3cff-ac040d7a6e51",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-7677b586cbee462f972e3a233f5dd97d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PropagatesTheActualPhysicalReadFailure(role: \"selected\")",
+      "id": "f672ff97-f61f-c0d6-ba17-1c59f5147616",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-9aae689a041a4bfb90a1a4b5caddbecc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding(role: \"authority\")",
+      "id": "59edcd57-8065-1c0d-0612-e5bd67711beb",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-c7548f1760cb490dbc591420a730b1ea",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"manifest\")",
+      "id": "99a336c3-c34f-fc9d-ab13-92ca101cc99d",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-b0375b51f0364cda9aa84abc4afd6d8f",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesBomDecodingAndDistinctRawDigest(utf16: True)",
+      "id": "743c6c81-3821-d309-2088-c6f5ca2e8476",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-b8064b1664414bee8bb105609c3d1b12",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport(role: \"repair_text\")",
+      "id": "7132591d-4bc7-34fa-48c0-fde02c1b9d5e",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-29c9e939301047d7887f2dc5b14cb74e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PropagatesTheActualPhysicalReadFailure(role: \"recheck_manifest\")",
+      "id": "62e9d64b-b1be-c8fc-2cb0-5f0185ade7a5",
+      "outcome": "Passed",
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-443383772b1a46da83e58c3d84ef6448",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "failed": [
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(failure: \"manifest\")",
+      "id": "b397424c-65cd-1637-04e5-4745eff958d9",
+      "outcome": "Failed",
+      "error": {
+        "Message": "System.Text.Json.JsonReaderException : Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.",
+        "StackTrace": "   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3782\n   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(String failure) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs:line 273\n   at BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts(String failure) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnObservedOriginalReaderConformanceTests.cs:line 288\n--- End of stack trace from previous location ---"
+      },
+      "strict_cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-observed-guards-66b3aaffffe04a219a19d56595d84b47",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    }
+  ],
+  "strict_cleanup_count": 35,
+  "binaries_unchanged": true,
+  "further_actuals": "HELD; source/correction and fresh preparation/review gates required before release",
+  "diagnosis": "PENDING"
+}

@@ -1232,7 +1232,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure"));
-        using var fixture = AcceptedStateFixture.Create(scenario);
+        var fixture = AcceptedStateFixture.Create(scenario);
+        using var ownedCleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         SeedPassiveNpcEffectForLifecycle(fixture);
         var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
@@ -1559,7 +1560,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             SeedCanonicalWoundEffects = true
         };
 
-        using var fixture = AcceptedStateFixture.Create(scenario);
+        var fixture = AcceptedStateFixture.Create(scenario);
+        using var ownedCleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(

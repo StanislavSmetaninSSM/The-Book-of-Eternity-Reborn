@@ -1,0 +1,243 @@
+{
+  "scope": "#1536 B2 reviewed force_binding-only admission correction: fresh selected PlanOnly, one NoBuild catalog audit and immutable first GREEN actual23PASS. Zero cold attempts; no applied ledger/publication claim from cheap authority intents or example fragments.",
+  "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "compileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "runtimeSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "runs": {
+    "plan": "20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories",
+    "catalog": "20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories",
+    "green": "20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories"
+  },
+  "artifacts": [
+    {
+      "path": "plan-Build-integration.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories/Build-integration.log",
+      "sha256": "a0cb2d411bf84f70f44604e749ac38cc0b3e62c1a7dce26fb2fe2c8115a75af2",
+      "originalSha256": "b4dfea22519861d93333e0500c7bd4739bce846911dce7bfb0f104339f981c21"
+    },
+    {
+      "path": "plan-Build-unit.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories/Build-unit.log",
+      "sha256": "51cec980e6c34ce813c305fb0bb781b1c302a3db9b6ae0d2547be9331d906bd3",
+      "originalSha256": "42fd1f0dbad0e08ae37c2d70b6c85e15f9533d7075807f69e6a947c0c5e90249"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories/dotnet-test.log",
+      "sha256": "7d6db7b7a808a74b6962ff7b6ff81e828f5997d37178cd2d428eea28c0f93ce2",
+      "originalSha256": "a5aca483abf688e9857c71aefb22761724d76b7d39eff4f39dee258815d2f3bb"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories/plan.json",
+      "sha256": "b793e9e4455ac61db651b808522f5bac3a07d6a04bcfd07cbdd9c5fecd3d53a8",
+      "originalSha256": "b793e9e4455ac61db651b808522f5bac3a07d6a04bcfd07cbdd9c5fecd3d53a8"
+    },
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories/summary.json",
+      "sha256": "7c6ed2d3bccd8bc3dbaff0d4aca259bcc256e029b2bc42d528ebeab45e5836a2",
+      "originalSha256": "7c6ed2d3bccd8bc3dbaff0d4aca259bcc256e029b2bc42d528ebeab45e5836a2"
+    },
+    {
+      "path": "catalog-catalog-audit.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories/catalog-audit.json",
+      "sha256": "b642a7ed4aa8b1173785173acabd1024a29ffc5f6e3d88b27c9be7116813d04d",
+      "originalSha256": "b642a7ed4aa8b1173785173acabd1024a29ffc5f6e3d88b27c9be7116813d04d"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories/dotnet-test.log",
+      "sha256": "230a6137bd15612cb3c08699a515aa9cad98420afbc413477f4d25b0dc55463d",
+      "originalSha256": "449fac6f79ebb3585e01e00dc3ab71f53864ccec075ae9ef18a9b2840f71643f"
+    },
+    {
+      "path": "catalog-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories/summary.json",
+      "sha256": "a9b1e6a548a719ebf036253a5f0ba91b489d9b65a6d674ea0a8edc289cfcafa2",
+      "originalSha256": "a9b1e6a548a719ebf036253a5f0ba91b489d9b65a6d674ea0a8edc289cfcafa2"
+    },
+    {
+      "path": "green-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/dotnet-test.log",
+      "sha256": "13f9d9dc3fbbcc21cfb69eec08917908f1e550b9114f34f93160f5bb478c3cf2",
+      "originalSha256": "2b5d7b805094951ccfd529e82fdd67eb34902b2a17d6474718e349ccb3a041fb"
+    },
+    {
+      "path": "green-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/plan.json",
+      "sha256": "49b1167efc1f7bb8c04aa65bbef8ced459aec2c06ff7991a71df7fb24b774e23",
+      "originalSha256": "49b1167efc1f7bb8c04aa65bbef8ced459aec2c06ff7991a71df7fb24b774e23"
+    },
+    {
+      "path": "green-spiritual-binding-authority-documentation-integration-001.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/spiritual-binding-authority-documentation-integration-001.trx",
+      "sha256": "f7f83bed63e95d37eb7ccf1a1fc0cc34b59617df607733e8c55b83e28cc98744",
+      "originalSha256": "d9385796cbeb0b91777a23b85b2138a04b194d401693a582e08fac82c6016a05"
+    },
+    {
+      "path": "green-spiritual-binding-authority-documentation-unit-002.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/spiritual-binding-authority-documentation-unit-002.trx",
+      "sha256": "4b7ebb6287c5e680eb4b80c5862697005a686c04604332ce9bbc5b30891350a9",
+      "originalSha256": "4a59ae8af2e3245e4bf61aa66ee7dd492064eb464e086ad6bb715f86e0790112"
+    },
+    {
+      "path": "green-spiritual-binding-authority-preflight-integration-003.trx.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/spiritual-binding-authority-preflight-integration-003.trx",
+      "sha256": "c7055778961ef4558d334d2be603ce48c9c5bc73d663c04c6a6292b86d140675",
+      "originalSha256": "35dae16e8277a0740b7f0e34012cca01d10ac77300941386706a6e4b52b19e02"
+    },
+    {
+      "path": "green-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-044915-506-248066-6e195e87ab12402f9ff788e74cd3a094-categories/summary.json",
+      "sha256": "3e9a7452800891fe38895789cc28cabc22739e68e3836856e38e8645f9f44855",
+      "originalSha256": "3e9a7452800891fe38895789cc28cabc22739e68e3836856e38e8645f9f44855"
+    },
+    {
+      "path": "invocation-actual-console.log.gz",
+      "source": "/tmp/1536-binding-green-20261012/actual-console.log",
+      "sha256": "45df45f3f9b296b400abab2898600d1f662007f04e8589f64b5723dc6a348e7e",
+      "originalSha256": "631ec450e2eed806edfa339fbe7c7d78e5e831daca7704a5440a7e8a2dd4b0c1"
+    },
+    {
+      "path": "invocation-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-binding-green-20261012/actual-invocation-prewritten.json",
+      "sha256": "90572469e65f9ce60cb32a92c0e719dccb8e28da1584e0ccd752bda2f157443d",
+      "originalSha256": "90572469e65f9ce60cb32a92c0e719dccb8e28da1584e0ccd752bda2f157443d"
+    },
+    {
+      "path": "invocation-actual-invocation.json",
+      "source": "/tmp/1536-binding-green-20261012/actual-invocation.json",
+      "sha256": "c27d6bb024b44e83651d97e9c074a2c8f9a436f991948d6c3775e2d178d4bfde",
+      "originalSha256": "c27d6bb024b44e83651d97e9c074a2c8f9a436f991948d6c3775e2d178d4bfde"
+    },
+    {
+      "path": "invocation-before-preparation-binaries.json",
+      "source": "/tmp/1536-binding-green-20261012/before-preparation-binaries.json",
+      "sha256": "b0a7c570e621c2e742091c583a5df6814d8ac02642dc45fd7cf3d63337d7beaa",
+      "originalSha256": "b0a7c570e621c2e742091c583a5df6814d8ac02642dc45fd7cf3d63337d7beaa"
+    },
+    {
+      "path": "invocation-catalog-console.log.gz",
+      "source": "/tmp/1536-binding-green-20261012/catalog-console.log",
+      "sha256": "eeff2b0cd772e23b3ad8e39431e227567c6982208cf386a86f5ffdcc9f14186c",
+      "originalSha256": "15038dc456906558c0787c71d3335486886700dbe04e24920a57f4ba9122ca44"
+    },
+    {
+      "path": "invocation-catalog-invocation.json",
+      "source": "/tmp/1536-binding-green-20261012/catalog-invocation.json",
+      "sha256": "254a01c0f8be60e4ce9f0cefb730729741fa2843aa86033dba388a9365a09b13",
+      "originalSha256": "254a01c0f8be60e4ce9f0cefb730729741fa2843aa86033dba388a9365a09b13"
+    },
+    {
+      "path": "invocation-first-green-readback.json",
+      "source": "/tmp/1536-binding-green-20261012/first-green-readback.json",
+      "sha256": "19a11bf6dfc1aaef4ac14531a1aa412e6051b3855c3afd341e55c51d07954d78",
+      "originalSha256": "19a11bf6dfc1aaef4ac14531a1aa412e6051b3855c3afd341e55c51d07954d78"
+    },
+    {
+      "path": "invocation-fresh-build-binaries.json",
+      "source": "/tmp/1536-binding-green-20261012/fresh-build-binaries.json",
+      "sha256": "46d11313af8aa18f6bea6b62b161f8d677883427282d60b68da838628fb218e1",
+      "originalSha256": "46d11313af8aa18f6bea6b62b161f8d677883427282d60b68da838628fb218e1"
+    },
+    {
+      "path": "invocation-plan-console.log.gz",
+      "source": "/tmp/1536-binding-green-20261012/plan-console.log",
+      "sha256": "17397d9b78288d1f8ef49e4176d4df3fb026f2c90d7ae597f77513a8e2382e41",
+      "originalSha256": "cfbb88b9c43f674566255ff8b3649a378ae386b32284752e387c8b20578be1d8"
+    },
+    {
+      "path": "invocation-plan-invocation.json",
+      "source": "/tmp/1536-binding-green-20261012/plan-invocation.json",
+      "sha256": "76cba52013f7da2486c3beb64649c88f77cd8c2452f197ea0de767eef3bc4aeb",
+      "originalSha256": "76cba52013f7da2486c3beb64649c88f77cd8c2452f197ea0de767eef3bc4aeb"
+    },
+    {
+      "path": "invocation-preparation-readback.json",
+      "source": "/tmp/1536-binding-green-20261012/preparation-readback.json",
+      "sha256": "9be9a4a555978e46da5770b873b5369aa2a6eaf82f8c3458ff8b78aab462fe3a",
+      "originalSha256": "9be9a4a555978e46da5770b873b5369aa2a6eaf82f8c3458ff8b78aab462fe3a"
+    },
+    {
+      "path": "invocation-source-pins.json",
+      "source": "/tmp/1536-binding-green-20261012/source-pins.json",
+      "sha256": "b93138f522bd3db3d09b311ef05eff82345e423c62bdc6f6487448847d9c7b28",
+      "originalSha256": "b93138f522bd3db3d09b311ef05eff82345e423c62bdc6f6487448847d9c7b28"
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingAuthority.cs",
+      "sha256": "c88b57a4c08be1c30f8a9d1fa53ea3a546799bbd1dd3e90ca329578550bf6930"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs",
+      "sha256": "5eb7c6b3e08dd6e3c8893ff848703be497dc976aafb1251328b3646694b7a0c1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrame.cs",
+      "sha256": "0b8d6a57e013566e6ae4782821d161a6f101dd7c53916af88d472a662f1904fa"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSourceTransaction.cs",
+      "sha256": "ce2ad1cd2270ebc3912e1d327dcbdb7f6d303f279d95e1f81d45128e47d1a828"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "sha256": "505af738c5acc825d450d922151379c31f6077662d2654309eb17b340a652b91"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceAdmission.cs",
+      "sha256": "9c05faa1fe96fa41a119a9938802d273bf31b717333904d52826c7c4aa299baf"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentCostProjection.cs",
+      "sha256": "0345d8a44b3e87dd196a78fc1b56fbb7ce0249f88ad71cbf81efb9a8c9ef5e3b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualWoundSourceMissingAudit.cs",
+      "sha256": "c4efa1cbb09d481f701c7ffdcddbc633c5884f90c00587597618af6e65b8cbff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs",
+      "sha256": "5d6b770bdf7a4bde1429addbb89cd8354fee99303716dc4ef8106e128eec5ebc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "1e36e9cf157c55f080d647988c40c553206dbc3f5d97776185c09c64f6f04282"
+    },
+    {
+      "path": "tests/selections/1536-binding-authority-preflight.json",
+      "sha256": "992e6744aa3b70743659617f6b6a787ad71157a9f1504cf503b4f0bb52215cc5"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualBinding.cs",
+      "sha256": "fffe0a7114c131a76171e53a0f4cc2e478055562e6703e66fbf7396f7a6f5256"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualBinding.cs",
+      "sha256": "4d99672557805ee633d8c841cac25038a7aca887ad3d348ec8d2117e8986847a"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "sha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "sha256": "483d1d5dc6d781101e6810025caabc6cfc3537cef478d2d85e418db9b91aec03"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "sha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5"
+    },
+    {
+      "path": "tests/selections/1536-binding-authority-green.json",
+      "sha256": "8c34fddb7807138119f06345cb7e6f395feabeaaa18c50443dab4c6b1df22afb"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "kind": "INDEPENDENT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_REVIEW",
+  "createdUtc": "2026-10-17T16:58:28.988810+00:00",
+  "verdict": "ACCEPT_AFFECTED_SOURCE_FIXTURE_SELECTION_PREP_FOR_SEPARATELY_GATED_PROTECTED_LATE2",
+  "source": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+  "carrier": "a06ac89ad5f832dce7ba56750e327bd8d70408ec",
+  "baseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "materialFindings": [],
+  "sourceVerdict": "ACCEPT: exact four frozen adapter replacements plus canonical four value-only stages; inverse whole A equals accepted baseline.",
+  "fixtureVerdict": "ACCEPT_AFFECTED: unchanged tests, exact frozen segment source gate and previously corrected NI-S01 retained; unchanged protected Late2 fixture/source reused by exact provenance.",
+  "selectionVerdict": "ACCEPT_BOUNDED: actual native6 descriptors/31 unique methods/54 planned cases = ordinary29/52 plus protected2/2; no old World33 fence or broad family selection.",
+  "preparationVerdict": "ACCEPT_CURRENT_ZERO_EXECUTION: one selected BOTH build+PlanOnly, native0/91.20251828000619s;10 committed raw chains;9 fresh current DLL copies;335 managed files exact.",
+  "sourceProof": {
+    "fourAdapters": 4,
+    "wholeAInverseSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+    "newPartialBytes": 7617,
+    "newPartialSha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
+    "timestampReadWriteCatchParity": true,
+    "compiledSourcePins": 67,
+    "currentSourcePins": 67,
+    "sourcePinDigestCompiled": "eed36584a3e7da897e78434f2d792a3e8b832836fd2f6598c4880b2c0cdfa975",
+    "sourcePinDigestCarrier": "7eb06aa0d923cf6c25518772980caebfea0285a966ab730799863dffca43f00d"
+  },
+  "nativePreparation": {
+    "exitCode": 0,
+    "wallSeconds": 91.20251828000619,
+    "categories": 6,
+    "descriptors": 6,
+    "methods": 31,
+    "plannedCases": 54,
+    "executedCases": 0,
+    "planSha256": "fd902167faa226dcd019719e93de9f05355362248542eb3ae1eddb3db187e747",
+    "recordSha256": "e1450640b5f10479e5aac527321d67bfcd30fdf6450929e7e804938979c735c2",
+    "archiveSha256": "93e116951cb105093246c496965d64bd2a3e12020b3cbbf7f086e99b25d3300a",
+    "bothBuildsCompleted": true,
+    "ownedNamespaceEmpty": true,
+    "runnerCleanupComplete": true
+  },
+  "recordingTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-product-first-run.py",
+      "bytes": 7269,
+      "sha256": "0da9cbbb4845ce3efc6971a2e52a4aeb1c44eeb7b54a1f14c8fb9cac44e39846",
+      "usage": "UNRUN_REQUIRES_ACCEPTED_PRODUCT_SOURCE_AND_SEPARATE_NAMED_ROOT_ACTIVATIONS"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-ordinary-tools/t179pd3d-archive-product-first.py",
+      "bytes": 1793,
+      "sha256": "136d707d1ac5284935b3758adf9ad788ba93f0c680628a0dd4f7e01fc3b66ee3",
+      "usage": "UNRUN_READ_ONLY_FUTURE_ORIGINAL_RAW_ARCHIVE"
+    }
+  ],
+  "nextGate": {
+    "eligibleAfterRootDecisionPersistenceAndReadback": "Only separately named FIRST protected-late2 mode on metadata successor of compiled0f with current67 pins/new9 DLLs. This report does not activate it.",
+    "afterProtectedLate2": "Freeze original raw and obtain separate independent EVIDENCE acceptance before separately named ordinary52 mode. Unexpected native/fixture/cleanup/underfill result stops progression; no automatic retry.",
+    "ordinary52Includes": "Runtime source-inverse Fact, actual delegation/tail checks and NI-S01 close-failure oracle remain unexecuted after this PREP."
+  },
+  "limits": [
+    "This is SOURCE/FIXTURE/SELECTION/PREP acceptance, not GREEN, end-to-end turn acceptance or runtime permission.",
+    "Prior FIRST boundary2 remains 0PASS/2structuralFAIL with tail/delegation assertions unreached; no rewriting that history.",
+    "Ordinary-A shared extraction only; no HOT-B/history/ProcessPlayerTurn/full F1/Windows/ZIP/CI qualification or completion of all T179-Pd.3d.",
+    "Protected Late2 coverage is the actual committed-joint caller edge, not a new HOT adapter family.",
+    "Old World33 hash fence remains intact, unselected and HELD for its nine pre-existing stale pins.",
+    "SP original fixture disposal remains best-effort; external prefix absence is namespace evidence, not invented strict per-case cleanup.",
+    "No repository edit or native/build/test/producer execution by reviewer; unchanged accepted source/fixture/raw families were reused by provenance."
+  ],
+  "support": {
+    "path": "/tmp/t179pd3d-minimal-product-source-independent-check-20261017.json",
+    "bytes": 67675,
+    "sha256": "a168a571180f502f917b55c313f7e4d2319e53744ad4d6f5d2d59d1191d4178d"
+  },
+  "recovery": [
+    {
+      "path": "/tmp/t179pd3d-minimal-product-delta-github-0f00ee25-20261017.json",
+      "bytes": 13248,
+      "sha256": "39d34e942c9e2b284a49bca228426b384d8c3369d7039152eeaa2e95ad0cad9a",
+      "source": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "base": "e9823e84722e903176818ffcea8d39af1f7da394",
+      "files": 17,
+      "changedPaths": 13,
+      "exactReadback": true
+    },
+    {
+      "path": "/tmp/t179pd3d-product-prepared-delta-github-a06ac89a-20261017.json",
+      "bytes": 20726,
+      "sha256": "4af5663407684a58b76901fae6a91926065db7c467a4ddf9d98f56938d8a0974",
+      "source": "a06ac89ad5f832dce7ba56750e327bd8d70408ec",
+      "base": "0f00ee256797a4e21b6f314a2a0053ec6084f972",
+      "files": 26,
+      "changedPaths": 22,
+      "exactReadback": true
+    }
+  ]
+}
