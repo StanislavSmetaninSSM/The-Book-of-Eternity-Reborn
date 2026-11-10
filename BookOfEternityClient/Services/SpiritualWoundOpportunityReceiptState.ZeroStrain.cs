@@ -30,8 +30,8 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             var witness = Object(row["witness"]);
             var calculation = SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var parent);
             Require(calculation.MaximumSeverityRank == 0 && calculation.HasIncreasingStrain &&
-                witness["guaranteedSeverityRank"] is null && parent is { Version: 2 or 3 or 4 or 5 or 6 },
-                "Only increasing non-guaranteed zero-ceiling v2/v3/v4/v5/v6 comparisons belong in this table.");
+                witness["guaranteedSeverityRank"] is null && parent is { Version: 2 or 3 or 4 or 5 or 6 or 7 },
+                "Only increasing non-guaranteed zero-ceiling v2/v3/v4/v5/v6/v7 comparisons belong in this table.");
             var evidence = Object(witness["turnEvidence"]);
             Require(Text(witness["conflictId"]) == Text(instance!["displayConflictId"]) &&
                 Text(evidence["realm"]) == Text(instance["realm"]), "Comparison belongs to another conflict.");

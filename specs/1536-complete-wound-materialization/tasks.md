@@ -1,3 +1,24 @@
+<!-- RECON20-GUARDIAN-GROUP-TASK5-ELIGIBILITY-SOURCE-BEGIN -->
+## RECON20 Task5 next reducer RED accepted; eligibility SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-05 remains unchecked. Independent OUTCOME
+999e85e6f1aa1a5d11fbf24b6fe0c3d793b3e4099a48d2efc94d0b5718564b51
+accepts the SAME owner's newly reached spiritual_c3_source_only_receipt_invalid
+after the composer-only change and all genuine prerequisites. One actual FAIL,
+complete unchanged source/output and successful cleanup. Previous first failures
+remain preserved. Only reducer/table eligibility now includes7, with accurate
+diagnostic text. All other production and all tests/fixtures/metadata stay fixed.
+See guardian-group-pressure-plan.md for source/output, preparation/costs/limits.
+Clarification: Task5 DATA1 used full-witness validation; separate direct-intrinsic
+coverage is earlier Task3 carry, not another Task5 execution. Fresh reviewed
+preparation and SAME separate DATA1/owner1 desired GREEN remain UNRUN. No extra
+cache, authority or speedup claim. CS1587 comment correction remains due before
+final source completion. Later scopes stay open. Recovered WIP is remotely saved
+at f6130bf22f4569fd501f3ba39eef94792e9fa2b4; this new SOURCE remains unverified
+and requires a new WIP checkpoint. No merge, deployment, closure or hosted CI.
+Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK5-ELIGIBILITY-SOURCE-END -->
+
 <!-- RECON20-GUARDIAN-GROUP-TASK5-COMPOSER-SOURCE-BEGIN -->
 ## RECON20 Task5 initial RED accepted; composer-only SOURCE, 2026-11-10
 

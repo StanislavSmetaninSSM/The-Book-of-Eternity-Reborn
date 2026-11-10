@@ -1,3 +1,60 @@
+<!-- RECON20-GUARDIAN-GROUP-TASK5-ELIGIBILITY-SOURCE-BEGIN -->
+## RECON20 Task5 composer-only reducer RED accepted; remaining eligibility SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-05 remains unchecked. Independent new OUTCOME:
+999e85e6f1aa1a5d11fbf24b6fe0c3d793b3e4099a48d2efc94d0b5718564b51.
+The unchanged genuine cold owner1 was executed once on composer-only source
+a8d3feb2add3b79a777bd5035c72db15d9690ca8a8018a2cc1bce0098471b7ee
+and output 0bdf17ea45fc7fd69299d089976316b80fe9729ad82dd3d3351b8ac391216702.
+Actual result: 1 executed, 0 PASS / 1 FAIL, now at
+spiritual_c3_source_only_receipt_invalid, not the prior outer reduction_invalid.
+The fixed warm/cold no-offer, completed receipt-required owner, independent full
+effects/identity/root, AP and current-input prerequisites passed again. Preparation
+returned no authority or registration. The old reducer refuses the newly included
+v7 comparison; the inner private exception/count is a static route explanation,
+not directly exposed instrumentation. The desired success tail remains UNREACHED.
+Raw first failures from all three initial/staged executions remain preserved.
+
+Fresh normal owning builds took 98.641/4.064 seconds. Only Client Csc ran with
+normal analyzers/XML; test assemblies were incremental carry. Twelve Client DLL/PDB
+files changed across the runtime copies; six current modules / 3,177 PDB documents, 1,322 copies,
+36 inputs and six XML files joined. Catalog 1,660/13,826 carried through unchanged
+tests/metadata. The separate exact owner PlanOnly executed no tests. Native row/
+runner/wrapper costs were 8.416/23.245/28.418 seconds within the unchanged three-
+minute budget. Exact postrun source/output, EOF, selection completeness, no duplicate
+or timeout, empty/equal temporary inventories and all owned cleanup were verified.
+The original assertion survived with zero secondary errors.
+
+This SOURCE adds 7 only to IsZeroStrainComparison and the schema3 comparison-table
+parent predicate, and updates the latter's diagnostic version list. Increasing
+strain, maximum0, no guarantee, complete source/parent validation, coordinates,
+request/order/dice joins, identity and immutable prefixes remain mandatory.
+The already reviewed composer, all other production, tests/fixtures/catalog and
+selectors remain byte-exact. Independent SOURCE review, fresh owning preparation,
+separate exact DATA1/owner1 plans and the SAME two desired-success leaves are UNRUN.
+No Task5 GREEN, authority, receipt append/replay or final common copy is claimed.
+
+Clarification of the previous historical checkpoint: Task5 DATA1 executed the
+full-witness reader, not a separate direct ReadIntrinsic invocation. Direct-reader
+qualification is carried earlier Task3 evidence. It adds no Task5 native case.
+The independent table RED is carried until this table edit, not rerun for the
+composer-only stage. All test inputs and desired assertions remain fixed.
+
+Optimization: two constant-size eligibility extensions over existing checked
+DATA; no new reads, reconstruction, cache, lifetime or capability path. Fresh
+ownership/current-input/effect fences remain unchanged. Later receipt work is
+necessary new behavior, not measured faster behavior. Repeated completion still
+has observed ActualEvaluations6-to-8, no speedup claim. The CS1587 comment-placement
+warning remains explicitly due before final source completion, without suppression.
+No C2 Open/none, registration, normalizer, C4 write, signed-next or rollback is
+qualified. Later complete-set controls and atomic GM synchronization stay open.
+HEAD/index/default stay fixed. Recovered WIP was published and remotely verified
+at f6130bf22f4569fd501f3ba39eef94792e9fa2b4 before this source edit.
+This new bounded WIP requires its own source checkpoint publication; no merge,
+deployment, issue closure or hosted CI is authorized by this step.
+Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK5-ELIGIBILITY-SOURCE-END -->
+
 <!-- RECON20-GUARDIAN-GROUP-TASK5-COMPOSER-SOURCE-BEGIN -->
 ## RECON20 Task5 initial causal RED accepted; composer-only SOURCE, 2026-11-10
 
