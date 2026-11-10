@@ -77,6 +77,18 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 
 Dependencies: T101-A -> T101-B -> T101-C -> T101-D -> T101-E. Parent owns integration and catalog edits.
 
+## Part 4 — T102-A exact current-state duplicates (branch `1533-exact-skill-state-duplicates`)
+
+Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+
+- [X] T102-A Record FR-109..111 and bounded plan before implementation; preserve ordinal siblings and explicitly defer blanket confusable/ownership/mirror rules.
+- [ ] T102-B [RED] Minimal direct typed tests and real state-phase regressions for all seven collections, repeated same-owner groups and independent malformed-field diagnostics; add category ownership/selection.
+- [ ] T102-C [GREEN] Add exact duplicate diagnostics in existing collection validators, preserving names/owners/fields and avoiding new reads or mutation.
+- [ ] T102-D Compact GM rule, worked duplicate example and semantic documentation guard; existing repair flow, no automatic ambiguous deletion.
+- [ ] T102-E Frozen-source bounded verification, independent review, optimization assessment and remote checkpoint verification (coordinator owns publication).
+
+Dependencies: T102-A -> T102-B -> T102-C -> T102-D -> T102-E. This does not complete all T102 or close #1533.
+
 ## Later parts (issue #1533 contours, not in this branch)
 
 - [ ] T102 Duplicate and confusable detection inside historical skill state files themselves (composition layer covers accepted-turn input only)

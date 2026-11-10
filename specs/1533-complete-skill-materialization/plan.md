@@ -235,3 +235,41 @@ actor expectation was corrected to existing `mortal_npc:npc_a`. None counts as
 final acceptance evidence; the final frozen selections were not rerun. Full suite,
 manual hosted CI and Windows runtime checks were not run. No PR merge into main
 or issue closure was performed.
+
+## Part 4 plan — T102-A exact current-state duplicates (2026-11-10)
+
+Issue [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+Branch `1533-exact-skill-state-duplicates` was created remotely and verified at
+merged main `efa28884833cecd72a1a33872350dbd14178d5bb` before editing.
+
+Implement FR-109..111 in the existing stateless collection validators, with one
+small shared operation-local first-occurrence tracker. Reuse each already parsed
+JsonElement and existing BuildNpcIdentityKey semantics. The tracker owns only
+first indexed paths for the current owner/collection call, is discarded on return,
+and compares exact skill names ordinally (player Trim, existing NPC byte names).
+It is not an authority cache. No new reads, JSON parses, persistent cache, or
+cross-operation success reuse are needed for this cheap linear scan; all existing
+field, reference, initialization and publication checks stay fresh and unchanged.
+
+TDD: make existing stateless collection methods internal for direct typed tests
+without changing behavior; prove duplicate RED before production logic edits.
+Cover all seven collections, identical/conflicting rows, repeated NPC groups,
+owner casing/ID precedence, single rows, collection isolation, ordinal siblings,
+malformed rows and non-mutation. Add real PlayerStateFiles/NpcStateFiles tests
+without snapshots, including independent invalid-field errors. Synchronize compact
+GM rule + worked duplicate example + semantic guard. Reuse the existing feature
+artifacts; no new plan framework or schema. No product-policy choice is needed.
+
+Impact selection: new `mortal-skill-state-duplicates` owns typed/phase/doc tests;
+`mortal-skill-reference-identity` protects exact/confusable/initialization behavior
+of the same callers. No composer or npc_core contract behavior changes, so those
+broader categories are unnecessary unless review finds a changed consumer.
+Fresh frozen-source builds, PlanOnly, these bounded categories and discovery-only
+ValidateCatalog precede final acceptance. Independent fresh-context whole-block
+review is coordinator-owned. Raw diagnostics remain outside Git under
+`/tmp/issue1533-state-duplicates-20261110`. No full suite/manual hosted CI.
+
+Consistency pass: FR-109 maps to T102-B/C, FR-110 to T102-B/C/E, FR-111 to
+T102-D/E; no constitutional conflict or unresolved clarification. Optional Spec Kit
+commit/context hooks are not needed; existing feature artifacts are updated in
+place, and the unrelated `.specify/feature.json` selection is left unchanged.

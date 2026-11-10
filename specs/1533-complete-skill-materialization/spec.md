@@ -219,3 +219,42 @@ FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPCs writes and
 NPCCoreChanges Fate Card reward additions as well as player writes. Unchanged
 profiles are identified only within the exact same NPC owner, including a move
 between canonical carriers. The gate preserves the exact offending field path.
+
+## Part 4 Slice — Exact duplicate rows in current skill state (T102-A)
+
+**Source**: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533)
+**Branch**: `1533-exact-skill-state-duplicates` | **Date**: 2026-11-10
+
+This bugfix continues the issue's fail-closed duplicate-state goal. Current raw
+validators accept repeated exact names and later name sets silently collapse
+identical or conflicting progression rows. This is supported current state, not
+old-save compatibility. T102 as a whole and issue #1533 remain open.
+
+- **FR-109**: Current player `activeSkillChanges`, `passiveSkillChanges` and
+  `skillMasteryChanges`, and NPC `NPCActiveSkillChanges[].skillChanges`,
+  `NPCPassiveSkillChanges[].skillChanges`, `NPCSkillMasteryChanges` and
+  `NPCPassiveSkillMasteryChanges` MUST reject repeated exact skill identities
+  within one owner and collection, whether rows are identical or conflicting.
+  Repeated same-owner NPC groups share the same collection identity. Validation
+  runs through ordinary state-file phases without a pending snapshot or a changed
+  composition input. Diagnostics identify the owner, offending indexed skillName
+  path and first occurrence. Other invalid-field diagnostics remain independent.
+- **FR-110**: Preserve the existing actor-key rule (ID preferred, name fallback;
+  owner keys compared case-insensitively), separate owners and active/passive
+  collections, and ordinal skill names. Preserve current name-reader semantics:
+  player names trim surrounding whitespace, NPC names retain their existing bytes.
+  Exact canonical siblings such as `Fireball` / `FIREBALL` remain accepted, as
+  required by FR-101 and Part 2 scenario 8. T102's old blanket "confusable"
+  wording does not authorize a new global canonical-name prohibition here.
+- **FR-111**: Never choose a winning row, auto-deduplicate, discard progression,
+  or offer automatic ambiguous deletion. Retain the existing repair flow with
+  explicit diagnostics and synchronized GM guidance plus a worked example.
+
+Acceptance: identical and conflicting duplicates fail for every listed collection;
+NPC duplicates across same-owner groups fail; different owners, active versus
+passive collections, single rows and exact ordinal siblings pass. Malformed rows
+still get their existing shape/field errors. Validation does not mutate inputs.
+
+Non-goals: global confusable canonical-name rejection, reference-matching changes,
+`npc_core` mirror uniqueness, cross-owner reference ownership (T104), schema or
+provenance changes, migration, new repair architecture or other T102-T106 contours.
