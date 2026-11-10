@@ -8,14 +8,16 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Independent typed regressions for exact current-state duplicates (#1533 T102-A).</summary>
 public sealed class MortalSkillStateDuplicateTests
 {
-    public static TheoryData<string> Collections => new()
+    private static readonly string[] Sections =
     {
         "activeSkillChanges", "passiveSkillChanges", "skillMasteryChanges",
         "NPCActiveSkillChanges", "NPCPassiveSkillChanges",
         "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges"
     };
 
-    public static IEnumerable<object[]> DuplicateRows => Collections.SelectMany(row =>
+    public static IEnumerable<object[]> Collections => Sections.Select(section => new object[] { section });
+
+    public static IEnumerable<object[]> DuplicateRows => Sections.SelectMany(row =>
         new[] { new object[] { row, false }, new object[] { row, true } });
 
     [Theory]
@@ -143,7 +145,7 @@ public sealed class MortalSkillStateDuplicateTests
     [Fact]
     public void ActivePassiveAndMasteryCollections_StayIndependentAcrossCalls()
     {
-        foreach (var row in Collections)
+        foreach (var row in Sections)
         {
             var section = row;
             var root = Root(section, Row(section, "Fireball"));
