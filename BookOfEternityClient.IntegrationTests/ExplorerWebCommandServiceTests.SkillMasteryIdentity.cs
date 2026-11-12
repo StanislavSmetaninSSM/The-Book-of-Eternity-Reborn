@@ -24,9 +24,9 @@ public sealed partial class ExplorerWebCommandServiceTests
         var mastery = Assert.Single(dossier.Sections.SelectMany(section => section.Facts),
             item => item.Label == "Мастерство");
         Assert.Equal(expectedLevel, mastery.Value);
-        var progress = Assert.Single(dossier.Sections.SelectMany(section => section.Facts),
+        var progress = Assert.Single(dossier.Sections.SelectMany(section => section.Metrics),
             item => item.Label == "Прогресс мастерства");
-        Assert.Equal(expectedProgress, progress.Value);
+        Assert.Equal(expectedProgress, progress.Note);
     }
 
     [Fact]
