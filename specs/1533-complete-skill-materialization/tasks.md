@@ -93,15 +93,15 @@ Dependencies: T102-A -> T102-B -> T102-C -> T102-D -> T102-E. This does not comp
 
 Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
 
-- [X] T104-A Record FR-112..114, current core/skillChanges authority evidence and bounded design in specs/1533-complete-skill-materialization/spec.md and plan.md; coordinator owns publication; latest explicit continuation direction permits local implementation while publication remains blocked.
+- [X] T104-A Record FR-112..114, current core/skillChanges authority evidence and bounded design in specs/1533-complete-skill-materialization/spec.md and plan.md; coordinator owns publication; the earlier local-only publication restriction is historical and is superseded by the 2026-11-12 publication checkpoint in plan.md.
 - [X] T104-B [RED] Add direct typed ownership and real NpcStateFiles regressions in BookOfEternityClient.Tests/MortalNpcSkillMasteryOwnershipTests.cs and BookOfEternityClient.IntegrationTests/MortalNpcSkillMasteryOwnershipPhaseTests.cs, including current core-only/new-turn positives and owner/kind/snapshot negatives; register tests/categories.json and tests/selection.json.
 - [X] T104-C [GREEN] Add operation-local current-root ownership validation in BookOfEternityClient/Services/Validation/ValidationService.NpcSkillMasteryOwnership.cs and reuse existing parsed roots from ValidationService.LifecycleControlAndStateFiles.cs / ValidationService.NpcWorldAndMeta.cs without changing initialization or duplicate validators.
 - [X] T104-D Synchronize Rules/Block_7.txt, TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt with a worked ownership example and executable PromptDocumentationCoverageTests guard; preserve existing repair flow.
-- [ ] T104-E Local implementation/review verified: 159/159 selected cases, 41/41 after name-only correction, valid 1668-category inventory, no remaining independent review findings. Only authorized publication and clean remote recovery remain; evidence is in plan.md.
+- [X] T104-E Bounded implementation/review evidence remains 159/159 selected cases, 41/41 after name-only correction, valid 1668-category inventory and no remaining review findings. Source was published in `2cc3f4bab10cb97be73698821a31e255fc29b2db`; the 2026-11-12 checkpoint in plan.md records the exact tree and current limited API recovery verification. This does not complete broad T104.
 
 Dependencies: T104-A -> T104-B -> T104-C -> T104-D -> T104-E. No parallel mutation; this bounded slice does not close issue #1533.
 
-## Later parts (issue #1533 contours, not in this branch)
+## Broader issue #1533 contours (bounded implemented slices are recorded below; whole contours remain unqualified)
 
 - [ ] T102 Duplicate and confusable detection inside historical skill state files themselves (composition layer covers accepted-turn input only)
 - [ ] T103 Stale skill reference detection across save/load boundaries and `removeActiveSkills` selector authority
@@ -123,22 +123,22 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T105-A Record the existing display-only contract and concrete reproduced fallback defect.
 - [X] T105-B Add causal ComputeAsync regressions; remove only the legacy prose-derived characteristic fallback.
 - [X] T105-C Correct contradictory GM fallback guidance and add executable worked example/guard.
-- [X] T105-D Bounded verification, independent review and local checkpoint; remote publication remains blocked.
+- [X] T105-D Bounded verification, independent review and local checkpoint; source published in `2cc3f4b` (see the 2026-11-12 checkpoint in plan.md).
 
 ## Part 7 — T103 current canonical mastery closure
 - [X] T103-A Record reproduced snapshot/save-load gaps and existing stage-boundary design.
 - [X] T103-B Add causal accepted-refresh/save/load and closure regressions.
 - [X] T103-C Add current-only closure at leased canonical validation and save/archive admission, preserving raw-delta behavior and existing repair diagnostics.
-- [X] T103-D Bounded verification, independent review and local checkpoint; publication remains blocked.
+- [X] T103-D Bounded verification, independent review and local checkpoint; source published in `2cc3f4b` (see the 2026-11-12 checkpoint in plan.md).
 
 ## Part 8 — T106 generated skill template guidance
 - [X] T106-A Record the bounded generated-template gap and exact identity/repair contract; preserve existing worked examples and launcher guidance.
 - [X] T106-B Extend the existing full-daemon render test with real bootstrap, opt-in OS shell, manifest/guidance assertions and deterministic owned cleanup; obtain causal Linux PowerShell 7 RED.
 - [X] T106-C Add the missing paragraph while preserving the daemon BOM; obtain isolated actual-render GREEN and register the narrow category/selection.
-- [X] T106-D Coordinator verifies fresh selected-project builds, official bounded category/catalog results, independent review and local checkpoint. Windows PowerShell 5.1 and remote publication/recovery remain unverified.
+- [X] T106-D Coordinator verifies fresh selected-project builds, official bounded category/catalog results, independent review and local checkpoint. Source published in `2cc3f4b`; current limited API recovery is recorded in plan.md. Windows PowerShell 5.1 remains unrun.
 
 ## Part 9 — T103 QTE terminal closure
 - [X] T103-Q1 Confirm original issue scope and real typed QTE stale-reference acceptance.
 - [X] T103-Q2 Add terminal removal/replacement, waiver, exact retention/acquisition and restoration regressions.
 - [X] T103-Q3 Reuse current-only closure at the existing final QTE gate without changing ordinary waiver or publication machinery.
-- [X] T103-Q4 Focused verification/review and local checkpoint; objective original-criteria status, no publication retry.
+- [X] T103-Q4 Focused verification/review and local checkpoint; objective original-criteria status; subsequently published in `2cc3f4b`, not a new test run.

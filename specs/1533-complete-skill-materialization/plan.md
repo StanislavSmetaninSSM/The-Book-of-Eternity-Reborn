@@ -4,6 +4,49 @@
 **Issue**: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533
 **Spec**: [spec.md](spec.md), correction revision 1 approved by user on 2026-11-01.
 
+## Current publication reconciliation (2026-11-12)
+
+Issue #1533; branch `1533-exact-skill-state-duplicates`. Read-only GitHub
+branch verification confirms **`2cc3f4bab10cb97be73698821a31e255fc29b2db`**,
+parent `baeb3e6fd11f5f61481eccf850fa5a812dc0c590`, tree
+`d1150b5c33a0e417193aaa070d0409b796cb8283`.
+[Published checkpoint](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/2cc3f4bab10cb97be73698821a31e255fc29b2db)
+records the authorized preservation of local source checkpoint `47979f0`.
+The local source commit IDs in the dated entries below were not reproduced in
+remote history; use this published commit for source recovery.
+
+This supersedes the historical publication-blocked/local-only statements in
+Parts 5–9 and research.md. Those statements describe their original dates, not
+an outstanding authorization or publication requirement. Their recorded Linux
+220/220 and later QTE 16/16 results remain separate historical runs at their
+stated revisions; no tests, build, hosted CI or Windows verification ran during
+this reconciliation. Publication is not whole-issue acceptance.
+
+Current recovery check: the prior checkout is absent in the selected workspace.
+A new single-branch clone through the configured Git mirror failed because it
+requested an unavailable username. The GitHub connector successfully read the
+exact-commit task documents into a fresh directory; their Git blob hashes were
+checked against GitHub. This proves recovery of plan.md, tasks.md, research.md,
+ValidationService.NpcSkillMasteryOwnership.cs, MortalNpcSkillMasteryOwnershipTests.cs
+and MortalNpcSkillMasteryOwnershipPhaseTests.cs only, not a complete checkout or
+new executable environment.
+
+Scope of this correction: publication status only, with broader T102–T106
+headings still unchecked. Original-criteria reconciliation in research.md stays
+in force: no new concrete runtime defect is established. Remaining evidence
+questions are route-to-common-gate coverage, non-mastery reference closure and
+console/browser mechanics/privacy parity. They are not new-system requests.
+Legacy-save migration is excluded by the current spec/guardrail; Windows
+PowerShell 5.1 remains unrun. Next step: inspect existing route and consumer
+coverage against those three questions before adding any code or tests.
+
+Verification for this documentation-only block: exact-commit API reads, Git
+blob SHA verification and whitespace/diff review; independent review is recorded
+in the delivery report. No production/test/GM contract or category selection
+changes, therefore no C# rerun. Optimization: reuse already fetched immutable
+source text; no runtime/cache work or performance claim. No merge or issue
+closure.
+
 ## Scope and engineering method
 
 Correct the five findings against `673c531710ec3acf5132369f42a43f1a7ce8c13c` without extending part 1. One primary developer owns identity validation, repair, tests and integration; a bounded independent implementation task updates source-file guards. A separate Astra High reviewer examines the complete final diff, contracts and test selection. Use Superpowers writing-plans / executing-plans, systematic debugging, TDD, independent review and verification. This file and tasks.md are the canonical execution ledger.
