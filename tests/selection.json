@@ -2,11 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-quest-skill-reference",
-      "reason": "Exact quest skill-reference correction only; preserve existing item/relationship and historical-reason controls. Prior mastery/QTE results are historical, not rerun.",
+      "category": "mortal-skill-ui-exact-mastery",
+      "reason": "Bounded exact identity/canonical mastery UI regressions only; prior quest/QTE results remain historical.",
       "contracts": [
-        "#1533 skill removal/replacement reference closure",
-        "Current quest reward authority and player projection"
+        "#1533 exact skill reference and existing UI projection"
       ]
     }
   ]

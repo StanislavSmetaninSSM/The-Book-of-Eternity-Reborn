@@ -1145,7 +1145,7 @@ private async Task ShowNPCs()
     }
 
 
-    private sealed class NpcSkillDisplay
+    internal sealed class NpcSkillDisplay
     {
         public List<NpcSkillDisplayEntry> Active { get; } = new();
         public List<NpcSkillDisplayEntry> Passive { get; } = new();
@@ -1153,7 +1153,7 @@ private async Task ShowNPCs()
     }
 
 
-    private sealed class NpcSkillDisplayEntry
+    internal sealed class NpcSkillDisplayEntry
     {
         public JsonObject Data { get; init; } = new();
         public int? MasteryLevel { get; set; }
@@ -1392,7 +1392,7 @@ private async Task ShowNPCs()
     }
 
 
-    private NpcSkillDisplay BuildNpcSkillDisplay(JsonDocument doc, string npcId, string npcName)
+    internal static NpcSkillDisplay BuildNpcSkillDisplay(JsonDocument doc, string npcId, string npcName)
     {
         var display = new NpcSkillDisplay();
         if (doc.RootElement.ValueKind != JsonValueKind.Object) return display;
@@ -1414,7 +1414,7 @@ private async Task ShowNPCs()
     }
 
 
-    private void PopulateNpcSkillChanges(JsonElement root, string propertyName,
+    private static void PopulateNpcSkillChanges(JsonElement root, string propertyName,
         Dictionary<string, NpcSkillDisplayEntry> target, string npcId, string npcName)
     {
         if (!root.TryGetProperty(propertyName, out var arr) || arr.ValueKind != JsonValueKind.Array)
@@ -1454,7 +1454,7 @@ private async Task ShowNPCs()
     }
 
 
-    private void ApplyNpcSkillMastery(JsonElement root, string propertyName,
+    private static void ApplyNpcSkillMastery(JsonElement root, string propertyName,
         Dictionary<string, NpcSkillDisplayEntry> target, string npcId, string npcName)
     {
         if (!root.TryGetProperty(propertyName, out var arr) || arr.ValueKind != JsonValueKind.Array)

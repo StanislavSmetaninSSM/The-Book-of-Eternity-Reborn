@@ -53989,6 +53989,42 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mortal-skill-ui-exact-mastery",
+      "responsibility": "#1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery.",
+      "excludes": "No new systems, spiritual combat, general selector redesign or whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcSkillDisplayIdentityTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_KeepsExactCaseSiblingMastery",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Skills_UsesCanonicalMasteryAndLocalizesStableValues",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_SkillIdentity_*",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_ActiveSkillDetail_LocalizesScalingCharacteristic",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_PassiveSkillDetail_RendersStructuredBonusesWithLocalizedFields"
+          ]
+        }
+      ]
     }
   ]
 }

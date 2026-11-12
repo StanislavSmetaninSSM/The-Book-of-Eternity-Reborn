@@ -788,3 +788,15 @@ and fix remain unrun until results below; full suite/hosted CI are not authorize
   integration. Console mastery lookup and NPC case-folding plus browser mastery
   parity remain source-level hypotheses requiring a causal check, not completed
   work or proof that all of T103/#1533 is done.
+
+## Part 11 — existing UI exact mastery audit (2026-11-12, WIP)
+
+Follow the original exact-name contract through existing console/NPC/browser
+projections only. Source candidates: console and NPC case-insensitive maps;
+browser missing canonical mastery read and case-folded entry lookup/dedup.
+Add causal typed/public-command regressions before any behavior correction.
+A narrow internal static NPC projection seam exposes the existing pure operation;
+no reflection or duplicate algorithm. Preserve actor matching, sorting, other
+reference commands and all spiritual combat behavior. Reuse existing fixture
+and parsed roots; no new system/cache. Results are pending, not claimed defects
+until RED. Test selection is limited to these projections and their old controls.
