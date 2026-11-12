@@ -1,4 +1,5 @@
 using Xunit;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Tests;
 
@@ -28,7 +29,8 @@ public sealed partial class ExplorerModeCommandTests
                 new { skillName = "fireball", newMasteryLevel = 7 }
             }
         });
-        _console.QueueSelection("Навыки", "⚡ " + selectedName, "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueSelection("Навыки", ConsoleLayout.PlainChoiceLabel("⚡ " + selectedName), "← Назад");
 
         await _explorer.TryProcessCommand("/навыки");
 

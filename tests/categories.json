@@ -53991,7 +53991,7 @@
       ]
     },
     {
-      "id": "mortal-skill-ui-exact-mastery",
+      "id": "mortal-skill-ui-exact-mastery-unit",
       "responsibility": "#1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery.",
       "excludes": "No new systems, spiritual combat, general selector redesign or whole issue acceptance.",
       "changeHints": [
@@ -54013,7 +54013,27 @@
           "tests": [
             "BookOfEternityClient.Tests.NpcSkillDisplayIdentityTests.*"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-ui-exact-mastery-integration",
+      "responsibility": "#1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery.",
+      "excludes": "No new systems, spiritual combat, general selector redesign or whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
         {
           "project": "integration",
           "tests": [

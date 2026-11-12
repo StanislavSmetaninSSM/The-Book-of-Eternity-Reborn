@@ -3429,6 +3429,23 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
         {
+            if (IsSkillReference(definition) && request.Kind == ReferenceDetailKind.Detail &&
+                FindExactSkillEntry(entries, request.Selector) is { Section: "Активных" } selectedSkill)
+            {
+                const string masteryPath = "game_state/player/skill_mastery.json";
+                var masteryRead = await ReadJson(fs, masteryPath);
+                reads[masteryPath] = masteryRead;
+                if (masteryRead.Node is JsonObject masteryRoot &&
+                    masteryRoot["skillMasteryChanges"] is JsonArray masteryRows)
+                {
+                    var name = FirstReferenceNodeString(selectedSkill.Node, "skillName", "name");
+                    var matching = masteryRows.OfType<JsonObject>().Where(row =>
+                        string.Equals(FirstReferenceNodeString(row, "skillName"), name,
+                            StringComparison.Ordinal)).Take(2).ToArray();
+                    if (matching.Length == 1)
+                        entries[entries.IndexOf(selectedSkill)] = selectedSkill with { SkillMastery = matching[0] };
+                }
+            }
             var questRewardProjection = string.Equals(
                 definition.DetailTitlePrefix,
                 "Квест",
@@ -3606,7 +3623,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var blocks = new List<UiBlock>();
         ReferenceEntrySnapshot? Resolve(string selector) => exactSelector
             ? FindExactLocationEntry(entries, selector)
-            : FindReferenceEntry(entries, selector);
+            : IsSkillReference(definition)
+                ? FindExactSkillEntry(entries, selector)
+                : FindReferenceEntry(entries, selector);
         if (request.Kind == ReferenceDetailKind.Unknown)
         {
             blocks.Add(Message(
@@ -4009,7 +4028,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
         AddReferenceDetailItem(detailItems, "Тип", skillType);
         AddReferenceDetailItem(detailItems, "Группа", FirstReferenceNodeString(entry.Node, "group", "skillGroup", "school"));
         AddReferenceDetailItem(detailItems, "Уровень", FirstReferenceNodeString(entry.Node, "level", "skillLevel"));
-        AddReferenceDetailItem(detailItems, "Мастерство", FirstReferenceNodeString(entry.Node, "masteryLevel", "mastery"));
+        AddReferenceDetailItem(detailItems, "Мастерство", FirstNonEmpty(
+            FirstReferenceNodeString(entry.SkillMastery, "newMasteryLevel", "currentMasteryLevel", "currentMastery", "level"),
+            FirstReferenceNodeString(entry.Node, "currentMasteryLevel", "masteryLevel", "mastery")));
+        var masteryProgress = FirstNonEmpty(
+            FirstReferenceNodeString(entry.SkillMastery, "newCurrentMasteryProgress", "currentMasteryProgress", "masteryProgress", "progress"),
+            FirstReferenceNodeString(entry.Node, "currentMasteryProgress", "masteryProgress"));
+        var masteryNeeded = FirstNonEmpty(
+            FirstReferenceNodeString(entry.SkillMastery, "newMasteryProgressNeeded", "masteryProgressNeeded", "progressNeeded"),
+            FirstReferenceNodeString(entry.Node, "masteryProgressNeeded", "progressNeeded"));
+        if (!string.IsNullOrWhiteSpace(masteryProgress) && !string.IsNullOrWhiteSpace(masteryNeeded))
+            AddReferenceDetailItem(detailItems, "Прогресс мастерства", masteryProgress + "/" + masteryNeeded);
         AddReferenceDetailItem(detailItems, "Контекст мастерства", FirstReferenceNodeString(entry.Node, "masteryContext", "context"));
         AddReferenceDetailItem(detailItems, "Масштабирование", FormatReferenceCharacteristic(FirstReferenceNodeString(entry.Node, "scalingCharacteristic")));
         AddReferenceDetailItem(detailItems, "Кратко", FirstNonEmpty(entry.Summary, FirstReferenceNodeString(entry.Node, "playerStatBonus", "summary")));
@@ -4832,7 +4861,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyDictionary<string, JsonReadResult> reads)
     {
         var index = 0;
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var exactSkills = IsSkillReference(definition);
+        var seen = new HashSet<string>(exactSkills ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
         foreach (var spec in definition.Specs)
         {
             var read = reads[spec.Path];
@@ -4863,7 +4893,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                         "id",
                         "key"),
                     FirstReferenceNodeString(obj["rivalSoul"], "rivalSoulId", "id"),
-                    NormalizeReferenceSelector(title),
+                    exactSkills ? title : NormalizeReferenceSelector(title),
                     index.ToString()));
                 var seenKey = string.Equals(definition.DetailTitlePrefix, "Фракция", StringComparison.OrdinalIgnoreCase)
                     ? spec.Label + ":" + selector + ":" + NormalizeReferenceSelector(title)
@@ -4901,11 +4931,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         IReadOnlyList<ReferenceEntrySnapshot> entries)
     {
         var actions = new List<UiAction>();
+        var actionIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var entry in entries)
         {
+            var actionId = definition.ActionIdPrefix + "-detail-" + ToActionIdPart(entry.Selector);
+            if (IsSkillReference(definition))
+            {
+                while (!actionIds.Add(actionId))
+                    actionId += "-" + entry.Index.ToString(CultureInfo.InvariantCulture);
+            }
             actions.Add(new UiAction
             {
-                Id = definition.ActionIdPrefix + "-detail-" + ToActionIdPart(entry.Selector),
+                Id = actionId,
                 Label = $"Открыть: {entry.Title}",
                 Command = BuildReferenceDetailCommand(commandToken, definition, entry.Selector),
                 Style = UiActionStyle.Secondary,
@@ -4932,6 +4969,24 @@ public static class ExplorerMortalWorldCommandResultBuilder
             string.Equals(entry.Selector, normalized, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(entry.Index.ToString(), normalized, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(NormalizeReferenceSelector(entry.Title), NormalizeReferenceSelector(normalized), StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsSkillReference(ReferenceCommandDefinition definition) =>
+        string.Equals(definition.EnglishDetailToken, "skill", StringComparison.Ordinal);
+
+    private static ReferenceEntrySnapshot? FindExactSkillEntry(
+        IReadOnlyList<ReferenceEntrySnapshot> entries,
+        string selector)
+    {
+        var normalized = NormalizeCombatSelector(selector);
+        var exact = entries.Where(entry =>
+            string.Equals(entry.Selector, normalized, StringComparison.Ordinal) ||
+            string.Equals(FirstReferenceNodeString(entry.Node, "skillName", "name"), normalized,
+                StringComparison.Ordinal)).Take(2).ToArray();
+        if (exact.Length != 0)
+            return exact.Length == 1 ? exact[0] : null;
+        return entries.FirstOrDefault(entry =>
+            string.Equals(entry.Index.ToString(CultureInfo.InvariantCulture), normalized, StringComparison.Ordinal));
     }
 
     private static ReferenceEntrySnapshot? FindExactLocationEntry(
@@ -11474,7 +11529,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Section,
         string Summary,
         JsonObject Node,
-        IReadOnlyList<ResourceProjectionRow>? Resources = null);
+        IReadOnlyList<ResourceProjectionRow>? Resources = null,
+        JsonObject? SkillMastery = null);
 
     private sealed record ReferenceDetailRequest(
         ReferenceDetailKind Kind,

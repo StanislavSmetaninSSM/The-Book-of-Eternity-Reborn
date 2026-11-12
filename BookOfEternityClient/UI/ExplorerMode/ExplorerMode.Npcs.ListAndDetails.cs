@@ -1397,8 +1397,8 @@ private async Task ShowNPCs()
         var display = new NpcSkillDisplay();
         if (doc.RootElement.ValueKind != JsonValueKind.Object) return display;
 
-        var active = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.OrdinalIgnoreCase);
-        var passive = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.OrdinalIgnoreCase);
+        var active = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.Ordinal);
+        var passive = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.Ordinal);
 
         PopulateNpcSkillChanges(doc.RootElement, "NPCActiveSkillChanges", active, npcId, npcName);
         PopulateNpcSkillChanges(doc.RootElement, "NPCPassiveSkillChanges", passive, npcId, npcName);
