@@ -88,7 +88,11 @@ Shared rules
   `game_state/player/experience.json.currentExperience` values.
 - In afterlife showcase/self-training purchases, GM does not raise player tiers directly. The client applies standard spiritual-art, spirit_focus, and known special-art upgrades.
 - In Mortal World training, the client locally applies a normal new skill from
-  a fresh showcase at mastery level 1, and may apply simple active-skill mastery
+  a fresh showcase at mastery level 1 only when the prospective active/passive
+  object passes the shared complete Mortal skill profile contract. Target IDs
+  and names must match exactly and consistently; ambiguous/conflicting targets
+  are rejected before payment. Invalid profiles use the existing GM evolution
+  path, never incomplete local publication. The client may apply simple active-skill mastery
   progress that does not cross a threshold. If a paid lesson crosses a mastery
   threshold or requires new/changed mechanical effects, the client writes
   requestKind `mortal_training_skill_evolution` and immediately sends a

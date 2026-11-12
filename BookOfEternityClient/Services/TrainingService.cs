@@ -234,6 +234,12 @@ public sealed class TrainingService
         var masteryRoot = await ReadObjectAsync(SkillMasteryPath);
         var masteryRootBaseline = masteryRoot?.ToJsonString(JsonOpts);
         masteryRoot ??= new JsonObject { ["skillMasteryChanges"] = new JsonArray() };
+        if (HasConflictingMortalTrainingTarget(activeRoot, "activeSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName) ||
+            HasConflictingMortalTrainingTarget(passiveRoot, "passiveSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName) ||
+            HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName))
+            return new TrainingOperationResult(false, false,
+                "Идентификатор и точное имя навыка противоречат текущему состоянию. Ресурсы не списаны.");
+
         var applicationPlan = BuildMortalTrainingApplicationPlan(evaluatedOffer, activeRoot, passiveRoot, masteryRoot);
         var sourceActorIdForPlan = ResolveMortalTeacherActorId(teacher);
 
@@ -1252,7 +1258,7 @@ public sealed class TrainingService
         string? targetName,
         int targetValue)
     {
-        if (skill == null)
+        if (skill == null || HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", targetId, targetName))
             return false;
 
         var mastery = FindMortalSkillObject(masteryRoot, "skillMasteryChanges", targetId, targetName);
@@ -1630,22 +1636,7 @@ public sealed class TrainingService
                     MasteryProgressGain: progressGain);
             }
 
-            if (!isPassive && !CanApplyMortalActiveSkillUnlockLocally(offer))
-            {
-                return new MortalTrainingApplicationPlan(
-                    RequiresGmEvolution: true,
-                    Reason: "skill_effect_authoring_required",
-                    DedupeKey: dedupeKey,
-                    IsPassive: false,
-                    ExistingSkill: null,
-                    ExistingMastery: existingMastery,
-                    CurrentMasteryLevel: currentMasteryLevel,
-                    CurrentMasteryProgress: currentProgress,
-                    MasteryProgressNeeded: progressNeeded,
-                    MasteryProgressGain: progressGain);
-            }
-
-            return new MortalTrainingApplicationPlan(
+            var localPlan = new MortalTrainingApplicationPlan(
                 RequiresGmEvolution: false,
                 Reason: "local_skill_unlock",
                 DedupeKey: dedupeKey,
@@ -1656,6 +1647,17 @@ public sealed class TrainingService
                 CurrentMasteryProgress: currentProgress,
                 MasteryProgressNeeded: progressNeeded,
                 MasteryProgressGain: progressGain);
+            var skill = BuildMortalUnlockedSkillObject(offer, localPlan);
+            var profile = JsonSerializer.SerializeToElement(skill);
+            var issues = new List<ValidationIssue>();
+            if (isPassive)
+                MortalSkillProfileContract.ValidatePassiveSkillObject(profile, "trainingSkill", issues);
+            else
+                MortalSkillProfileContract.ValidateActiveSkillObject(profile, "trainingSkill", issues);
+            return issues.Any(issue => issue.Severity == IssueSeverity.Error)
+                ? localPlan with { RequiresGmEvolution = true, Reason = "skill_effect_authoring_required" }
+                : localPlan;
+
         }
 
         if (!isPassive && IsMortalPracticeOffer(offer) && progressGain > 0)
@@ -1866,19 +1868,6 @@ public sealed class TrainingService
             skill["playerStatBonus"] = null;
 
         return skill;
-    }
-
-    private static bool CanApplyMortalActiveSkillUnlockLocally(TrainingOffer offer)
-    {
-        if (offer.Details["combatEffect"] is not JsonObject combatEffect ||
-            combatEffect["isActivatedEffect"] is not JsonValue activationValue ||
-            !activationValue.TryGetValue<bool>(out var isActivatedEffect) ||
-            !isActivatedEffect)
-        {
-            return false;
-        }
-
-        return !string.IsNullOrWhiteSpace(GetNodeString(offer.Details["actionCost"]));
     }
 
     private static void CopyIfPresent(JsonObject source, JsonObject target, string propertyName)
@@ -2938,39 +2927,55 @@ public sealed class TrainingService
     }
 
     private static JsonObject? FindMortalSkillObject(JsonObject root, string arrayName, TrainingOffer offer)
-    {
-        if (root[arrayName] is not JsonArray array)
-            return null;
-
-        return array.OfType<JsonObject>().FirstOrDefault(skill => MatchesMortalTrainingTarget(skill, offer));
-    }
+        => FindMortalSkillObject(root, arrayName, offer.TargetId, offer.TargetName);
 
     private static JsonObject? FindMortalSkillObject(JsonObject root, string arrayName, string? targetId, string? targetName)
     {
-        if (root[arrayName] is not JsonArray array)
-            return null;
-
-        return array.OfType<JsonObject>().FirstOrDefault(skill => MatchesMortalTrainingTarget(skill, targetId, targetName));
+        return ResolveMortalTrainingTarget(root[arrayName] as JsonArray, targetId, targetName, out var conflict) is { } skill && !conflict
+            ? skill : null;
     }
+
+    private static bool HasConflictingMortalTrainingTarget(JsonObject root, string arrayName, string? targetId, string? targetName)
+    {
+        ResolveMortalTrainingTarget(root[arrayName] as JsonArray, targetId, targetName, out var conflict);
+        return conflict;
+    }
+
+    private static JsonObject? ResolveMortalTrainingTarget(JsonArray? array, string? targetId, string? targetName, out bool conflict)
+    {
+        conflict = false;
+        JsonObject? found = null;
+        if (array == null)
+            return null;
+        foreach (var skill in array.OfType<JsonObject>())
+        {
+            var (id, name) = GetMortalTrainingTargetIdentity(skill);
+            var idMatch = !string.IsNullOrWhiteSpace(targetId) && string.Equals(id, targetId, StringComparison.Ordinal);
+            var nameMatch = !string.IsNullOrWhiteSpace(targetName) && string.Equals(name, targetName, StringComparison.Ordinal);
+            if (!idMatch && !nameMatch)
+                continue;
+            if (found != null || !MatchesMortalTrainingTarget(skill, targetId, targetName))
+                conflict = true;
+            found = skill;
+        }
+        return found;
+    }
+
+    private static (string? Id, string? Name) GetMortalTrainingTargetIdentity(JsonObject node)
+        => (GetNodeString(node["skillId"]) ?? GetNodeString(node["id"]),
+            GetNodeString(node["skillName"]) ?? GetNodeString(node["displayName"]) ?? GetNodeString(node["name"]));
 
     private static bool MatchesMortalTrainingTarget(JsonObject node, TrainingOffer offer)
-    {
-        return MatchesMortalTrainingTarget(node, offer.TargetId, offer.TargetName);
-    }
+        => MatchesMortalTrainingTarget(node, offer.TargetId, offer.TargetName);
 
     private static bool MatchesMortalTrainingTarget(JsonObject node, string? targetId, string? targetName)
     {
-        var skillId = GetNodeString(node["skillId"]) ?? GetNodeString(node["id"]);
-        var skillName =
-            GetNodeString(node["skillName"]) ??
-            GetNodeString(node["displayName"]) ??
-            GetNodeString(node["name"]);
-        return (!string.IsNullOrWhiteSpace(skillId) &&
-                !string.IsNullOrWhiteSpace(targetId) &&
-                string.Equals(skillId, targetId, StringComparison.OrdinalIgnoreCase)) ||
-               (!string.IsNullOrWhiteSpace(skillName) &&
-                !string.IsNullOrWhiteSpace(targetName) &&
-                string.Equals(skillName, targetName, StringComparison.OrdinalIgnoreCase));
+        var (id, name) = GetMortalTrainingTargetIdentity(node);
+        var compareId = !string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(targetId);
+        var compareName = !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(targetName);
+        return (compareId || compareName) &&
+               (!compareId || string.Equals(id, targetId, StringComparison.Ordinal)) &&
+               (!compareName || string.Equals(name, targetName, StringComparison.Ordinal));
     }
 
     private static int ResolveMortalMasteryProgressGain(JsonObject offer)

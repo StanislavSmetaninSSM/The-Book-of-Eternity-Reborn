@@ -54066,6 +54066,7 @@
         {
           "project": "integration",
           "tests": [
+            "BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalSkillEvolutionRequestSatisfiedByGmUpdate_ClearsPendingRequest",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPractice_UpdatesOnlyExactCaseSibling",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPractice_ConflictingExactIdentityDoesNotMutateSkills",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPassiveUnlock_DoesNotPublishInvalidProfile",
