@@ -147,3 +147,8 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T103-R1 Permanent RED for case-only stale quest reward retargeting and exact controls.
 - [X] T103-R2 Correct the existing resolver without changing item/relationship behavior or explicit historical-reason support.
 - [X] T103-R3 GM example/guard synchronization, bounded verification, independent review and published checkpoint.
+
+## Part 11 — Existing UI exact mastery closure
+- [X] T103-U1 Reproduce NPC/console/browser exact identity and canonical mastery defects through typed/public existing projections.
+- [X] T103-U2 Correct only existing maps, skill selector/dedup and active browser mastery display; preserve other consumers.
+- [X] T103-U3 Bounded 19-case verification, discovery, independent review and remote source recovery. See Part11 ledger for test-oracle corrections and limits.

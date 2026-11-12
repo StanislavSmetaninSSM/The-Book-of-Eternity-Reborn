@@ -800,3 +800,61 @@ no reflection or duplicate algorithm. Preserve actor matching, sorting, other
 reference commands and all spiritual combat behavior. Reuse existing fixture
 and parsed roots; no new system/cache. Results are pending, not claimed defects
 until RED. Test selection is limited to these projections and their old controls.
+
+### Part 11 verified existing UI checkpoint (2026-11-12)
+
+- Final tested source: e94b14f3f7b13a8b3ae15a7e68e246702b439c17.
+  Earlier WIP db682a8c (tests/seam), 17e81cbd (NPC/browser fix), 34fab1a5
+  (console fix/oracle) preserve progress. Full separate HTTPS clone at
+  34fab1a5, then fast-forward to e94b14f3, verified clean and exact remote SHA.
+- Reproduced defects: NPC active/passive case siblings collapsed and case-only
+  removal deleted the other skill; console bound Fireball to fireball mastery;
+  browser omitted canonical mastery, selected the wrong exact-name sibling,
+  and deduplicated distinct names without IDs. Only existing projections changed.
+- Official NPC causal RED: 4 FAIL / 2 PASS, 8.687s. Final corrected-oracle
+  integration causal RED against original browser and console behavior:
+  6 FAIL / 7 PASS, 11.365s (console one; browser five). Complete cleanup,
+  no skips/duplicates. Source was restored after this deliberate causal run.
+- Test preparation mistakes are not product failures: initial console test
+  omitted state refresh; its first compile asserted a string as bool.
+  Browser public output normalizes grids into section Facts and fractional
+  progress into Metrics, so early grid/Fact-progress assertions were incorrect.
+  Both oracles were corrected without relaxing expected values. The old console
+  localization assertion requires a Russian numeric culture; final commands
+  used LANG=ru_RU.UTF-8 and LC_ALL=ru_RU.UTF-8, not a weakened assertion.
+  Intermediate 11/13 pass was not represented as complete.
+- Final serial builds: unit 0 errors / 80 warnings, 63.56s; final integration
+  0 errors / 153 warnings, 78.08s. Commands: dotnet build <selected project>
+  --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false.
+- Official scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+  -PlanOnly -NoBuild: 2 descriptors / 19 cases, 9.620s, zero execution.
+  Same selection without PlanOnly: 19/19 PASS, 19.550s, 2/2 descriptors,
+  no skipped/duplicate cases, complete owned-tree cleanup.
+  Run: 20261112-073041-958-201-03365ef7ed1c4ab6a952e16d5038d3d9-categories.
+- scripts/test-csharp.ps1 -ValidateCatalog -NoBuild: CATALOG-VALID,
+  1675 categories / 13916 methods-files, 10.664s, complete cleanup.
+  Discovery only. No broad suite, hosted CI, spiritual combat or new systems.
+- Independent source review/re-review found no Critical/Important findings.
+  Final Facts/Metric oracle reviewed against the real normalizer; outcome
+  review is recorded separately. Raw logs/TRX stay outside Git.
+- Optimization: console/NPC reuse their existing operation-local maps; only
+  comparers change. Browser reads current mastery once for the selected active
+  detail, scans once with Ordinal identity and rejects ambiguous duplicate
+  matches. No read for passive/overview and no persistent cache or mutation.
+  Fresh next-detail regression proves changed mastery is observed. Actor matching,
+  NPC sort order and non-skill reference behavior remain unchanged.
+- This resolves the specific UI hypotheses recorded in Part10. No further
+  concrete defect is established by this bounded audit. Earlier broad checklist
+  headings are not grounds for inventing additional systems or spiritual-combat
+  integration; this checkpoint does not assert whole-issue acceptance or merge.
+- Final independent outcome review verified all 19 unique TRX passes, cleanup,
+  catalog, build logs and clean recovery. Production DLL hashes differed because
+  unit and integration builds embedded revisions 17e81cbd and 34fab1a5.
+  A read-only portable-PDB check matched each DLL CodeView GUID to its own PDB:
+  1227 documents in each, only generated AssemblyInfo.cs differs; all 1223
+  non-generated production source checksums match the current source exactly.
+  Thus existing unit results use the same runtime source, not a stale NPC fix;
+  no redundant rerun was needed. The probe/log remain outside Git.
+- GM-authored skill schema and commands are unchanged; existing exact-name
+  guidance already states the contract. This consumer-only fix needs no new
+  GM prompt/example or new gameplay rule.
