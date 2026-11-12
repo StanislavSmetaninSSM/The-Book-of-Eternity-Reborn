@@ -858,3 +858,22 @@ until RED. Test selection is limited to these projections and their old controls
 - GM-authored skill schema and commands are unchanged; existing exact-name
   guidance already states the contract. This consumer-only fix needs no new
   GM prompt/example or new gameplay rule.
+
+## Part 12 — Mortal training residual audit (2026-11-12, WIP)
+
+Owner clarified that no real old saves exist, only test/system saves: no legacy
+migration is required. Current test templates/fixtures may follow current schema.
+All remaining audit work is Mortal; spiritual combat does not explain or defer
+Mortal criteria. "Governed companions" in the source issue means linked skill
+mechanics, not an automatically required new companion-entity subsystem.
+
+Bounded causal candidates in the existing local TrainingService purchase route:
+case-insensitive target binding may select another exact skill; local unlock
+checks only activation/actionCost and may bypass the shared complete profile.
+Use existing public purchase fixtures to prove them before fixing. Preserve
+teacher/location/resource guards, paid GM-evolution fallback, actor semantics and
+all afterlife routes. No broad training rewrite or new output protocol.
+If confirmed, reuse the already parsed prospective skill and common validator,
+not a new cache or additional file reads. NPC prose remains a separate contract
+assessment: FR-104 intentionally scoped it out; free-text name co-occurrence is
+not reliable actor ownership and must not be silently made authority.

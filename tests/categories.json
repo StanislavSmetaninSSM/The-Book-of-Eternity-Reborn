@@ -54045,6 +54045,39 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mortal-training-skill-profile-identity",
+      "responsibility": "#1533 local Mortal training binds exact skill targets and publishes only shared-contract complete profiles; preserve existing paid GM fallback and resource control.",
+      "excludes": "No afterlife training, new NPC prose protocol, general actor identity redesign or legacy save migration.",
+      "changeHints": [
+        "BookOfEternityClient/Services/TrainingService.cs",
+        "BookOfEternityClient.IntegrationTests/TrainingServiceTests.ExactSkillIdentity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPractice_UpdatesOnlyExactCaseSibling",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnlock_*",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownPassiveOffer_AddsSkillLocallyWithoutPendingGmUnlock",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalGenericPassiveOffer_UsesTeacherSkillKindForLocalUnlock",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownPassiveOfferAboveFirstLevel_CreatesPendingGmEvolution",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownActiveOfferWithoutCombatEffect_CreatesPendingGmEvolution",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownActiveOfferWithCombatEffect_AddsSkillLocally",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPracticeOfferBelowThreshold_AddsOnlyActiveMasteryProgressLocally",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalOffer_BlocksWhenCurrentLevelExperienceWouldGoNegative"
+          ]
+        }
+      ]
     }
   ]
 }

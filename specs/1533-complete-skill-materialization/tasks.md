@@ -152,3 +152,8 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T103-U1 Reproduce NPC/console/browser exact identity and canonical mastery defects through typed/public existing projections.
 - [X] T103-U2 Correct only existing maps, skill selector/dedup and active browser mastery display; preserve other consumers.
 - [X] T103-U3 Bounded 19-case verification, discovery, independent review and remote source recovery. See Part11 ledger for test-oracle corrections and limits.
+
+## Part 12 — Mortal training residual checks
+- [ ] T103-T1 Public-route causal tests for exact training target and local profile completeness.
+- [ ] T103-T2 Fix confirmed local training defects using existing identity/profile contracts, preserving other routes.
+- [ ] T103-T3 Focused RED/GREEN, documentation alignment, independent review and durable checkpoint.

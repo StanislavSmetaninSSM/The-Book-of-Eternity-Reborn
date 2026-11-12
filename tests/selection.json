@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-skill-ui-exact-mastery-unit",
-      "reason": "Bounded exact identity/canonical mastery UI regressions and old controls only.",
+      "category": "mortal-training-skill-profile-identity",
+      "reason": "Bounded existing Mortal training target/profile audit only.",
       "contracts": [
-        "#1533 exact skill identity UI projection"
-      ]
-    },
-    {
-      "category": "mortal-skill-ui-exact-mastery-integration",
-      "reason": "Bounded exact identity/canonical mastery UI regressions and old controls only.",
-      "contracts": [
-        "#1533 exact skill identity UI projection"
+        "#1533 same composed skill profile and exact identity"
       ]
     }
   ]
