@@ -21,11 +21,11 @@ public sealed partial class ExplorerWebCommandServiceTests
         var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers),
             block => block.EntityType == "skill");
         Assert.Equal($"Навык: {name}", dossier.Title);
-        var mastery = Assert.Single(EnumerateKeyValueGrids(dossier).SelectMany(grid => grid.Items),
-            item => item.Key == "Мастерство");
+        var mastery = Assert.Single(dossier.Sections.SelectMany(section => section.Facts),
+            item => item.Label == "Мастерство");
         Assert.Equal(expectedLevel, mastery.Value);
-        var progress = Assert.Single(EnumerateKeyValueGrids(dossier).SelectMany(grid => grid.Items),
-            item => item.Key == "Прогресс мастерства");
+        var progress = Assert.Single(dossier.Sections.SelectMany(section => section.Facts),
+            item => item.Label == "Прогресс мастерства");
         Assert.Equal(expectedProgress, progress.Value);
     }
 
@@ -79,8 +79,8 @@ public sealed partial class ExplorerWebCommandServiceTests
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers),
             block => block.EntityType == "skill");
-        Assert.DoesNotContain(EnumerateKeyValueGrids(dossier).SelectMany(grid => grid.Items),
-            item => item.Key == "Мастерство");
+        Assert.DoesNotContain(dossier.Sections.SelectMany(section => section.Facts),
+            item => item.Label == "Мастерство");
     }
 
     [Fact]
@@ -99,8 +99,8 @@ public sealed partial class ExplorerWebCommandServiceTests
         Assert.Equal(CommandExecutionState.Completed, result.State);
         var dossier = Assert.Single(result.Blocks.SelectMany(EnumerateEntityDossiers),
             block => block.EntityType == "skill");
-        var mastery = Assert.Single(EnumerateKeyValueGrids(dossier).SelectMany(grid => grid.Items),
-            item => item.Key == "Мастерство");
+        var mastery = Assert.Single(dossier.Sections.SelectMany(section => section.Facts),
+            item => item.Label == "Мастерство");
         Assert.Equal("5", mastery.Value);
     }
 
@@ -109,8 +109,8 @@ public sealed partial class ExplorerWebCommandServiceTests
     {
         await WriteExactSkillSiblingsAsync(includeIds: true);
         var before = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/skills skill skill_upper"));
-        Assert.Contains(before.Blocks.SelectMany(EnumerateKeyValueGrids).SelectMany(grid => grid.Items),
-            item => item.Key == "Мастерство" && item.Value == "3");
+        Assert.Contains(before.Blocks.SelectMany(EnumerateEntityDossiers).SelectMany(dossier => dossier.Sections).SelectMany(section => section.Facts),
+            item => item.Label == "Мастерство" && item.Value == "3");
         await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
         { "skillMasteryChanges": [{ "skillName": "Fireball", "newMasteryLevel": 9 }] }
         """);
@@ -118,8 +118,8 @@ public sealed partial class ExplorerWebCommandServiceTests
         var after = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/skills skill skill_upper"));
 
         Assert.Equal(CommandExecutionState.Completed, after.State);
-        var mastery = Assert.Single(after.Blocks.SelectMany(EnumerateKeyValueGrids).SelectMany(grid => grid.Items),
-            item => item.Key == "Мастерство");
+        var mastery = Assert.Single(after.Blocks.SelectMany(EnumerateEntityDossiers).SelectMany(dossier => dossier.Sections).SelectMany(section => section.Facts),
+            item => item.Label == "Мастерство");
         Assert.Equal("9", mastery.Value);
     }
 

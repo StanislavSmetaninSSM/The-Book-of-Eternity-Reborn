@@ -1373,7 +1373,7 @@ public partial class ExplorerMode
         var masteryDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/skill_mastery.json");
 
         // Build mastery lookup: skillName -> element
-        var masteryLookup = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        var masteryLookup = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
         if (masteryDoc != null)
         {
             if (masteryDoc.RootElement.TryGetProperty("skillMasteryChanges", out var masteryArr) &&
