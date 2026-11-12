@@ -53958,6 +53958,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mortal-quest-skill-reference",
+      "responsibility": "#1533 exact quest skill references after removal/replacement; validation/projection, historical reasons and unchanged item/relationship behavior.",
+      "excludes": "New acquisition systems, spiritual combat, full UI parity and unrelated progression.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QuestRewardAuthority.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.QuestSkillReferenceAuthorityTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.QuestRewardAuthorityContract_IsDocumentedForGm"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QuestRewardAuthorityValidationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

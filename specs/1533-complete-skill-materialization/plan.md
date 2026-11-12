@@ -731,3 +731,28 @@ Part 9 RED: six permanent typed QTE terminal cases ran against the pre-fix produ
 - Optimization: reuse of the existing current-only closure and the existing typed fixture; no GameEngine, reflection, new cache, persisted flag or publication system. Two fresh current dependency reads/parses are necessary after raw/snapshot validation. Real terminal validation/restoration coverage is retained despite its measured cost; no runtime-speedup claim.
 - Original acceptance-criteria status is recorded in research.md. The concrete QTE hypothesis is now resolved; no other concrete defect was reproduced. Broader route/parity/privacy criteria remain unproven by this bounded audit rather than declared implemented or broken.
 - **Local only:** prior publication denial not retried; no push, upload, merge, remote-recovery claim, hosted CI or issue closure. Prior 220-case evidence belongs to its earlier frozen source; it is not represented as rerun here.
+
+## Part 10 — exact quest reward skill references (2026-11-12, WIP)
+
+Base `20fbd5651467b01092a05f2a24d45a74102b4b3e`, same task branch.
+Direct GitHub HTTPS clone subsequently succeeded and its clean HEAD matched;
+the earlier mirror-only failure no longer blocks full source recovery.
+
+A typed exploratory probe linked the unchanged QuestRewardAuthority.cs and
+confirmed that a quest reward for absent `Fireball` resolves to current
+`fireball` with a different skillId: zero validation issues and the replacement
+label displayed. Only unrelated item dependencies were throwing compile stubs;
+this is not an integration test. Root cause is the case-insensitive skill map.
+
+Bounded plan: add permanent direct contract and existing real QuestReward phase
+regressions; capture causal RED; preserve ordinal skill identities in the existing
+map/registration deduplication; keep item/relationship matching unchanged; retain
+HistoricalOnly/Unavailable plus reason. Synchronize existing GM guidance/example
+and guard, select only affected quest-reference tests and documentation. No new
+system, spiritual combat work or broader UI redesign. Separate UI case-folding
+and browser mastery findings remain hypotheses, not included in this fix.
+
+Optimization: reuse existing per-operation parsed roots and map, no new file reads
+or persistent cache. Cheap independent JSON fixtures test actual production
+resolver; limited real validation tests prove wiring. No speedup claim. New tests
+and fix remain unrun until results below; full suite/hosted CI are not authorized.

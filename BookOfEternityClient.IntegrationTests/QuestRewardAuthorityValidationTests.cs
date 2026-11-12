@@ -139,6 +139,22 @@ public sealed class QuestRewardAuthorityValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => IsIssue(issue, MissingSkillAuthorityCode));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateGameStateAsync_RemovedQuestSkillDoesNotBindCaseOnlyReplacement(bool structured)
+    {
+        await WriteQuestRewardAsync(structured
+            ? "\"skillsUnlocked\": [{\"skillName\":\"Fireball\"}]"
+            : "\"skillsUnlocked\": [\"Fireball\"]");
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {"activeSkillChanges":[{"skillName":"fireball","skillId":"replacement_skill"}]}
+        """);
+        var issues = await _validator.ValidateGameStateAsync(IntegrationValidationProfiles.QuestReward);
+        Assert.Contains(issues, issue => IsIssue(issue, MissingSkillAuthorityCode) &&
+            issue.FilePath.EndsWith("skillsUnlocked[0]", StringComparison.Ordinal));
+    }
+
     [Fact]
     public async Task ValidateGameStateAsync_QuestRewardSkillMissingSkillAuthority_ReportsSkillAuthorityIssue()
     {

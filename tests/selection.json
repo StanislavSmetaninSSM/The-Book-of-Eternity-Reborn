@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-skill-qte-closure",
-      "reason": "Only the final QTE closure callsite changed. Cover new stale/waived mastery refusal and existing ordinary closure, borrowed-proof and restoration consumers; prior 220-case branch evidence remains recorded.",
+      "category": "mortal-quest-skill-reference",
+      "reason": "Exact quest skill-reference correction only; preserve existing item/relationship and historical-reason controls. Prior mastery/QTE results are historical, not rerun.",
       "contracts": [
-        "#1533 fully composed-result and stale-reference acceptance",
-        "QTE terminal validation, original lease and restoration"
+        "#1533 skill removal/replacement reference closure",
+        "Current quest reward authority and player projection"
       ]
     }
   ]
