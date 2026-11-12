@@ -883,3 +883,38 @@ Part 12 causal preparation update: original 13-case run was 5 FAIL / 8 PASS; two
 Part 12 implementation checkpoint (UNVERIFIED): expanded RED completed 15 cases: 6 FAIL / 9 PASS, 11.6734240 seconds, cleanup complete. Passive invalid profile and conflicting ID/name failed causally. Training now validates prospective active/passive local unlock with the shared profile contract; invalid profiles retain existing GM evolution. Exact consistent unique target resolution protects purchase and pending cleanup; conflicts refuse before payment. Added existing name-only pending completion control (16 planned cases). No new cache: already-loaded roots reused; small candidate scans/profile construction are operation-local, no filesystem reads added. Current authority/location/payment/coordinated publication checks remain fresh. Build/GREEN/review pending.
 
 Part 12 source review correction: first GREEN was 16/16, 12.9445904 seconds, integration build 0 errors/153 warnings/80.97 seconds. Reviewer found the new conflict guard crossed explicit active/passive domains; restrict it to existing target-kind boundaries and do not apply the new active-mastery conflict gate to passive pending completion. Added two regression controls (same-name opposite-profile passive unlock and conflicting pending request retention). These post-review changes are UNVERIFIED; planned total18. First GREEN does not certify this revised source.
+
+### Part 12 verified outcome — 2026-11-12
+
+Tested source: `e6880045fe944ae4491ae5dd05a85cbac0b340e9` (working branch
+`1533-exact-skill-state-duplicates`). Final integration build: 0 errors,
+153 existing warnings, 84.57 seconds. Official PlanOnly selected exactly one
+category descriptor / 18 cases in 6.4179479 seconds. The final official run
+passed 18/18, no skips or duplicate IDs, complete owned-tree cleanup,
+12.6926424 seconds. Run identity:
+`20261112-082928-850-329-aebf56dec0964e78807d5e817fce87ed-categories`.
+Discovery-only catalog validation passed 1,676 categories / 13,923 methods/files
+in 10.8007256 seconds. Prior RED and source-review corrections above remain
+historical evidence, not hidden failures or a claim that every new control had
+its own RED. Recovery checkout was clean at the exact tested remote SHA.
+
+This closes the demonstrated local Mortal training gaps: complete prospective
+active/passive profile validation, exact consistent skill target binding,
+conflicting target refusal before payment, and preservation of pending requests
+with contradictory identity. Valid local unlock/practice, name-only pending
+completion, insufficient resources, existing GM evolution and separate
+active/passive identity domains retain their focused controls. No new system,
+spiritual-combat change, save migration, cache or diagnostic upload was added.
+The example clarifies the existing full-profile authoring contract rather than
+introducing a new GM payload. Shared roots are reused; trivial per-operation
+candidate scans and prospective profile validation add no source reads and do
+not replace the existing fresh scope/payment/publication checks.
+
+NPC prose detection remains the explicit FR-104 scope boundary, not a claim of
+implemented owner-aware prose parsing. Real legacy-save migration is unnecessary
+by the owner's 2026-11-12 clarification; test-only templates follow the current
+schema. This checkpoint does not merge main or close #1533. No additional
+reproducible defect remains in the inspected bounded training/UI/quest consumers;
+this is not blanket execution of every acquisition route or every future system.
+
+Independent final source and outcome review: READY, no blocking findings. Reviewer confirmed 18 unique PASS, 1/1 descriptor, both cleanup flags, build/catalog counts and exact source/recovery identity; no additional runs. Part12 tasks complete within the stated boundary.
