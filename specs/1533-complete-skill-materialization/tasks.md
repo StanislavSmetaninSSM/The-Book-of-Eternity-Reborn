@@ -144,6 +144,6 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T103-Q4 Focused verification/review and local checkpoint; objective original-criteria status; subsequently published in `2cc3f4b`, not a new test run.
 
 ## Part 10 — T103 quest reward exact reference closure
-- [ ] T103-R1 Permanent RED for case-only stale quest reward retargeting and exact controls.
-- [ ] T103-R2 Correct the existing resolver without changing item/relationship behavior or explicit historical-reason support.
-- [ ] T103-R3 GM example/guard synchronization, bounded verification, independent review and published checkpoint.
+- [X] T103-R1 Permanent RED for case-only stale quest reward retargeting and exact controls.
+- [X] T103-R2 Correct the existing resolver without changing item/relationship behavior or explicit historical-reason support.
+- [X] T103-R3 GM example/guard synchronization, bounded verification, independent review and published checkpoint.

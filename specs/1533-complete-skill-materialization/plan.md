@@ -756,3 +756,35 @@ Optimization: reuse existing per-operation parsed roots and map, no new file rea
 or persistent cache. Cheap independent JSON fixtures test actual production
 resolver; limited real validation tests prove wiring. No speedup claim. New tests
 and fix remain unrun until results below; full suite/hosted CI are not authorized.
+
+### Part 10 verified bounded checkpoint (2026-11-12)
+
+- Tests saved at 83cbff1cded86d268c9fe441a3227e3aed565d05; minimal resolver/docs
+  fix saved at 66c01049668f2cb759cb9725482d385dccf59785, tree
+  3c35dd55e2dbe022dda11e90dd5e2028e458f010. Remote fetched and exact clean
+  worktree verified. Main and issue state are unchanged.
+- Causal official RED: 3 FAIL / 4 PASS unit cases, no skips/duplicates, 12.985s,
+  cleanup complete. Fail-fast stopped integration before a completed result:
+  no integration RED claim. Permanent tests also reproduced the same three
+  failures against the real production DLL without item stubs.
+- Fresh serial selected builds using dotnet build --no-restore -m:1
+  -nodeReuse:false -p:UseSharedCompilation=false: unit 0 errors / 43 warnings,
+  55.15s (including changed production); integration 0 errors / 0 warnings,
+  1.42s incremental, copying the new production output. Its unchanged test
+  source was freshly compiled before RED: 0 errors / 141 warnings, 47.47s.
+- Official scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly
+  -NoBuild: 2 descriptors / 19 cases, 10.889s, zero execution. Same command
+  without PlanOnly: 19/19 PASS (7 unit, 12 integration), 20.997s, both descriptors
+  complete, zero skips/duplicates and complete owned-tree cleanup.
+  Run identity: 20261112-071049-326-152-52426853895e4b1fbba5347c3a246dc3-categories.
+- scripts/test-csharp.ps1 -ValidateCatalog -NoBuild: CATALOG-VALID,
+  1673 categories / 13906 methods-files, 10.697s, complete cleanup; discovery only.
+  Raw logs/TRX remain outside Git. No hosted CI or broad-suite execution.
+- Independent source review: READY, no Critical/Important findings. It checked
+  ordinal map and both deduplication stages, unchanged other reward kinds/history,
+  real phase wiring, documentation and existing map reuse. No new cache/read.
+- This closes the reproduced quest reward retargeting defect only. The original
+  case-sensitive skill contract is unchanged; no new system or spiritual combat
+  integration. Console mastery lookup and NPC case-folding plus browser mastery
+  parity remain source-level hypotheses requiring a causal check, not completed
+  work or proof that all of T103/#1533 is done.
