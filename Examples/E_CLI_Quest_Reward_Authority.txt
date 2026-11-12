@@ -57,3 +57,17 @@ For `game_state/quests/quest_history.json`, `questRewards` entries keep complete
   "questChains": []
 }
 ```
+
+## Removed skill reference
+
+Skill reward references are case-sensitive: a removed Fireball must not resolve to fireball; retain history with HistoricalOnly and a player-facing reason instead. A current skill named `fireball` is a distinct identity, not a replacement authority for `Fireball`. Preserve the old reward as this entry in `questRewards[].skillsUnlocked`:
+
+```json
+{
+  "skillName": "Fireball",
+  "authorityStatus": "HistoricalOnly",
+  "reason": "Навык Fireball удалён; награда сохранена только в истории."
+}
+```
+
+This historical entry does not recreate the skill or grant current mastery.

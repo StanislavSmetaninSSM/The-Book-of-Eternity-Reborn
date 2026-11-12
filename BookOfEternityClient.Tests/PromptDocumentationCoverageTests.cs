@@ -596,7 +596,8 @@ public sealed partial class PromptDocumentationCoverageTests
             "Unavailable",
             "reason",
             "current inventory/skills/NPC relationship authority",
-            "bare strings are allowed only when they resolve"
+            "bare strings are allowed only when they resolve",
+            "Skill reward references are case-sensitive: a removed Fireball must not resolve to fireball; retain history with HistoricalOnly and a player-facing reason instead."
         })
         {
             Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
@@ -606,6 +607,9 @@ public sealed partial class PromptDocumentationCoverageTests
         foreach (var requiredText in new[]
         {
             "QuestRewardAuthority_Example",
+            "a removed Fireball must not resolve to fireball",
+            "\"skillName\": \"Fireball\"",
+            "Навык Fireball удалён; награда сохранена только в истории.",
             "\"questRewards\"",
             "\"itemId\": \"item_merchant_seal\"",
             "\"skillName\": \"Продвинутая торговля\"",

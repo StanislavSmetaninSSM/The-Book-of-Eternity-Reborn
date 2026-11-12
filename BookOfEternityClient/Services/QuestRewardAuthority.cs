@@ -697,7 +697,7 @@ internal sealed class QuestRewardAuthorityContext
 {
     private readonly bool _exactItemAuthority;
     private readonly Dictionary<string, string> _itemLabels;
-    private readonly Dictionary<string, string> _skillLabels = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _skillLabels = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _relationshipLabels = new(StringComparer.OrdinalIgnoreCase);
 
     private QuestRewardAuthorityContext(bool exactItemAuthority = false)
@@ -753,10 +753,13 @@ internal sealed class QuestRewardAuthorityContext
 
     public void Register(QuestRewardKind kind, IEnumerable<string> identities, string? label)
     {
+        var identityComparer = kind == QuestRewardKind.Skill
+            ? StringComparer.Ordinal
+            : StringComparer.OrdinalIgnoreCase;
         var keys = identities
             .Where(static value => !string.IsNullOrWhiteSpace(value))
             .Select(static value => value.Trim())
-            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Distinct(identityComparer)
             .ToList();
 
         if (!string.IsNullOrWhiteSpace(label))
@@ -766,7 +769,7 @@ internal sealed class QuestRewardAuthorityContext
             return;
 
         var displayLabel = !string.IsNullOrWhiteSpace(label) ? label.Trim() : keys[0];
-        foreach (var key in keys.Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var key in keys.Distinct(identityComparer))
         {
             if (string.IsNullOrWhiteSpace(key))
                 continue;
