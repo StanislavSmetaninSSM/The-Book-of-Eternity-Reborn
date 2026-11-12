@@ -13,6 +13,128 @@ public sealed partial class TrainingServiceTests
     public async Task BuyTrainingAsync_MortalPractice_UpdatesOnlyExactCaseSibling(
         string targetId, string targetName)
     {
+        await SeedExactCaseSiblingPracticeAsync(targetId, targetName);
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+
+        var result = await CreateService().BuyTrainingAsync("npc_hunter_001", "offer_knife_practice", currentTurn: 15);
+
+        Assert.True(result.Success);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(activeBefore!),
+            JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}")));
+        var after = JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}")!["skillMasteryChanges"]!.AsArray();
+        Assert.Equal(2, after.Count);
+        foreach (var row in after.OfType<JsonObject>())
+        {
+            var selected = row["skillId"]!.GetValue<string>() == targetId;
+            Assert.Equal(selected ? 3 : 1, row["newCurrentMasteryProgress"]!.GetValue<int>());
+            Assert.Equal(1, row["newMasteryLevel"]!.GetValue<int>());
+            Assert.Equal(5, row["newMasteryProgressNeeded"]!.GetValue<int>());
+        }
+    }
+
+    [Theory]
+    [InlineData("rarity", "ImpossibleRarity")]
+    [InlineData("actionCost", "ImpossibleActionCost")]
+    [InlineData("scalingCharacteristic", "ImaginaryCharacteristic")]
+    public async Task BuyTrainingAsync_MortalUnlock_DoesNotPublishInvalidProfile(string field, string value)
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+        var npcRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+        var teacher = npcRoot["UpdateNPCs"]![0]!.AsObject();
+        teacher["trainingShowcase"]!["offers"]![0]![field] = value;
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
+
+        _ = await CreateService().BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
+
+        // Rejection or existing pending-GM evolution is acceptable; invalid local publication is not.
+        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
+        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnlock_ValidProfileStillPublishes()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+
+        var result = await CreateService().BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        using var doc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}");
+        var skill = Assert.Single(doc.RootElement.GetProperty("activeSkillChanges").EnumerateArray());
+        var issues = new List<ValidationIssue>();
+        MortalSkillProfileContract.ValidateActiveSkillObject(skill, "skill", issues);
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal("quick_lunge", skill.GetProperty("skillId").GetString());
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalPractice_ConflictingExactIdentityDoesNotMutateSkills()
+    {
+        await SeedExactCaseSiblingPracticeAsync("skill_upper", "Fireball");
+        var npcRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+        npcRoot["UpdateNPCs"]![0]!["trainingShowcase"]!["offers"]![0]!["targetName"] = "fireball";
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
+        var paths = new[]
+        {
+            "game_state/player/skills_active.json", "game_state/player/skills_passive.json",
+            "game_state/player/skill_mastery.json"
+        };
+        var before = new Dictionary<string, string?>();
+        foreach (var path in paths)
+            before[path] = await _fs.ReadFileAsync(path);
+        var statusBefore = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var experienceBefore = await _fs.ReadFileAsync("game_state/player/experience.json");
+
+        var result = await CreateService().BuyTrainingAsync("npc_hunter_001", "offer_knife_practice", currentTurn: 15);
+
+        foreach (var path in paths)
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(before[path] ?? "{}"),
+                JsonNode.Parse(await _fs.ReadFileAsync(path) ?? "{}")), path);
+        // Either reject before spending, or use the existing pending-GM path without local progression.
+        if (result.Success)
+            Assert.True(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        else
+        {
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(statusBefore ?? "{}"),
+                JsonNode.Parse(await _fs.ReadFileAsync("game_state/core/player_status.json") ?? "{}")));
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(experienceBefore ?? "{}"),
+                JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/experience.json") ?? "{}")));
+        }
+    }
+
+    [Fact]
+    public async Task BuyTrainingAsync_MortalPassiveUnlock_DoesNotPublishInvalidProfile()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPassiveUnlockTeacherAsync();
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+        var npcRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+        npcRoot["UpdateNPCs"]![0]!["trainingShowcase"]!["offers"]![0]!["rarity"] = "ImpossibleRarity";
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
+        var passiveBefore = await _fs.ReadFileAsync("game_state/player/skills_passive.json");
+        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
+        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
+
+        _ = await CreateService().BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
+
+        Assert.Equal(passiveBefore, await _fs.ReadFileAsync("game_state/player/skills_passive.json"));
+        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
+        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
+    }
+
+    private async Task SeedExactCaseSiblingPracticeAsync(string targetId, string targetName)
+    {
         await SeedMortalSoulStateAsync();
         await SeedMortalPracticeTeacherAsync();
         await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
@@ -68,64 +190,6 @@ public sealed partial class TrainingServiceTests
         await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json",
             new JsonObject { ["skillMasteryChanges"] = mastery }.ToJsonString());
 
-        var result = await CreateService().BuyTrainingAsync("npc_hunter_001", "offer_knife_practice", currentTurn: 15);
-
-        Assert.True(result.Success);
-        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
-        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
-        var after = JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}")!["skillMasteryChanges"]!.AsArray();
-        Assert.Equal(2, after.Count);
-        foreach (var row in after.OfType<JsonObject>())
-        {
-            var selected = row["skillId"]!.GetValue<string>() == targetId;
-            Assert.Equal(selected ? 3 : 1, row["newCurrentMasteryProgress"]!.GetValue<int>());
-            Assert.Equal(1, row["newMasteryLevel"]!.GetValue<int>());
-            Assert.Equal(5, row["newMasteryProgressNeeded"]!.GetValue<int>());
-        }
-    }
-
-    [Theory]
-    [InlineData("rarity", "ImpossibleRarity")]
-    [InlineData("actionCost", "ImpossibleActionCost")]
-    [InlineData("scalingCharacteristic", "ImaginaryCharacteristic")]
-    public async Task BuyTrainingAsync_MortalUnlock_DoesNotPublishInvalidProfile(string field, string value)
-    {
-        await SeedMortalSoulStateAsync();
-        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
-        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
-        await SeedEmptyPlayerSkillsAsync();
-        var npcRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
-        var teacher = npcRoot["UpdateNPCs"]![0]!.AsObject();
-        teacher["trainingShowcase"]!["offers"]![0]![field] = value;
-        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", npcRoot.ToJsonString());
-        var activeBefore = await _fs.ReadFileAsync("game_state/player/skills_active.json");
-        var masteryBefore = await _fs.ReadFileAsync("game_state/player/skill_mastery.json");
-
-        _ = await CreateService().BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
-
-        // Rejection or existing pending-GM evolution is acceptable; invalid local publication is not.
-        Assert.Equal(activeBefore, await _fs.ReadFileAsync("game_state/player/skills_active.json"));
-        Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
-    }
-
-    [Fact]
-    public async Task BuyTrainingAsync_MortalUnlock_ValidProfileStillPublishes()
-    {
-        await SeedMortalSoulStateAsync();
-        await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
-        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
-        await SeedEmptyPlayerSkillsAsync();
-
-        var result = await CreateService().BuyTrainingAsync("npc_duelist_001", "offer_lunge_unlock", currentTurn: 14);
-
-        Assert.True(result.Success);
-        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
-        using var doc = JsonDocument.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}");
-        var skill = Assert.Single(doc.RootElement.GetProperty("activeSkillChanges").EnumerateArray());
-        var issues = new List<ValidationIssue>();
-        MortalSkillProfileContract.ValidateActiveSkillObject(skill, "skill", issues);
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
-        Assert.Equal("quick_lunge", skill.GetProperty("skillId").GetString());
     }
 
 }

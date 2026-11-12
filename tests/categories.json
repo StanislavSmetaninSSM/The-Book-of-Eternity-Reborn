@@ -54067,6 +54067,8 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPractice_UpdatesOnlyExactCaseSibling",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPractice_ConflictingExactIdentityDoesNotMutateSkills",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPassiveUnlock_DoesNotPublishInvalidProfile",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnlock_*",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownPassiveOffer_AddsSkillLocallyWithoutPendingGmUnlock",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalGenericPassiveOffer_UsesTeacherSkillKindForLocalUnlock",

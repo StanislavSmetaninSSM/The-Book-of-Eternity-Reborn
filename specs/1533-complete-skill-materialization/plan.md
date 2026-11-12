@@ -877,3 +877,5 @@ If confirmed, reuse the already parsed prospective skill and common validator,
 not a new cache or additional file reads. NPC prose remains a separate contract
 assessment: FR-104 intentionally scoped it out; free-text name co-occurrence is
 not reliable actor ownership and must not be silently made authority.
+
+Part 12 causal preparation update: original 13-case run was 5 FAIL / 8 PASS; two practice failures first stopped at formatting-only byte equality. Corrected that oracle to full JSON equality without changing production; rerun gave 4 genuine FAIL / 9 PASS (three invalid active profiles and lower-case sibling). Added passive invalid-profile and conflicting exact ID/name cases for independent review findings; these two are UNRUN. No production fix yet.
