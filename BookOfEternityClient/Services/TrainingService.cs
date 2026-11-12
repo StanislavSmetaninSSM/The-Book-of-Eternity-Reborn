@@ -234,9 +234,11 @@ public sealed class TrainingService
         var masteryRoot = await ReadObjectAsync(SkillMasteryPath);
         var masteryRootBaseline = masteryRoot?.ToJsonString(JsonOpts);
         masteryRoot ??= new JsonObject { ["skillMasteryChanges"] = new JsonArray() };
-        if (HasConflictingMortalTrainingTarget(activeRoot, "activeSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName) ||
-            HasConflictingMortalTrainingTarget(passiveRoot, "passiveSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName) ||
-            HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName))
+        var explicitPassive = IsExplicitPassiveMortalTrainingTarget(evaluatedOffer.TargetKind);
+        var explicitActive = IsExplicitActiveMortalTrainingTarget(evaluatedOffer.TargetKind);
+        if ((!explicitPassive && HasConflictingMortalTrainingTarget(activeRoot, "activeSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName)) ||
+            (!explicitActive && HasConflictingMortalTrainingTarget(passiveRoot, "passiveSkillChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName)) ||
+            (!explicitPassive && HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", evaluatedOffer.TargetId, evaluatedOffer.TargetName)))
             return new TrainingOperationResult(false, false,
                 "Идентификатор и точное имя навыка противоречат текущему состоянию. Ресурсы не списаны.");
 
@@ -1224,7 +1226,8 @@ public sealed class TrainingService
                 masteryRoot,
                 targetId,
                 targetName,
-                targetValue);
+                targetValue,
+                isPassive: true);
         }
 
         if (IsExplicitActiveMortalTrainingTarget(targetKind))
@@ -1248,7 +1251,8 @@ public sealed class TrainingService
                    masteryRoot,
                    targetId,
                    targetName,
-                   targetValue);
+                   targetValue,
+                   isPassive: true);
     }
 
     private static bool IsMortalSkillEvolutionSatisfiedBy(
@@ -1256,9 +1260,10 @@ public sealed class TrainingService
         JsonObject masteryRoot,
         string? targetId,
         string? targetName,
-        int targetValue)
+        int targetValue,
+        bool isPassive = false)
     {
-        if (skill == null || HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", targetId, targetName))
+        if (skill == null || (!isPassive && HasConflictingMortalTrainingTarget(masteryRoot, "skillMasteryChanges", targetId, targetName)))
             return false;
 
         var mastery = FindMortalSkillObject(masteryRoot, "skillMasteryChanges", targetId, targetName);

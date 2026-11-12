@@ -133,6 +133,68 @@ public sealed partial class TrainingServiceTests
         Assert.Equal(masteryBefore, await _fs.ReadFileAsync("game_state/player/skill_mastery.json"));
     }
 
+    [Fact]
+    public async Task BuyTrainingAsync_MortalPassiveUnlock_AllowsSameNameInActiveDomain()
+    {
+        await SeedExactCaseSiblingPracticeAsync("skill_upper", "Fireball");
+        await SeedMortalPassiveUnlockTeacherAsync();
+        var active = JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}")!.AsObject();
+        var activeSkills = active["activeSkillChanges"]!.AsArray();
+        activeSkills.RemoveAt(1);
+        activeSkills[0]!["skillName"] = "Снятие шкур";
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", active.ToJsonString());
+        var mastery = JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}")!.AsObject();
+        var masteryRows = mastery["skillMasteryChanges"]!.AsArray();
+        masteryRows.RemoveAt(1);
+        masteryRows[0]!["skillName"] = "Снятие шкур";
+        await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", mastery.ToJsonString());
+
+        var result = await CreateService().BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", currentTurn: 14);
+
+        Assert.True(result.Success);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        var passive = JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skills_passive.json") ?? "{}")!["passiveSkillChanges"]!.AsArray();
+        var skill = Assert.Single(passive);
+        Assert.Equal("skinning", skill!["skillId"]!.GetValue<string>());
+        Assert.Equal("Снятие шкур", skill["skillName"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(active,
+            JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skills_active.json") ?? "{}")));
+        Assert.True(JsonNode.DeepEquals(mastery,
+            JsonNode.Parse(await _fs.ReadFileAsync("game_state/player/skill_mastery.json") ?? "{}")));
+    }
+
+    [Fact]
+    public async Task EnsureTrainingAsync_MortalSkillEvolutionConflictingExactIdentity_PreservesRequest()
+    {
+        await SeedExactCaseSiblingPracticeAsync("skill_upper", "Fireball");
+        await TrainingRequestState.WriteRequestAsync(
+            _fs,
+            "mortal_training_skill_evolution",
+            "npc_hunter_001",
+            "Старый охотник",
+            "npc_teacher",
+            "mortal",
+            createdAtTurn: 13,
+            sourceActorSnapshotHash: "paid-lesson-hash",
+            reason: "mastery_threshold_crossed",
+            details: new JsonObject
+            {
+                ["targetId"] = "skill_upper",
+                ["targetName"] = "fireball",
+                ["targetKind"] = "active_skill_mastery",
+                ["targetValue"] = 1,
+                ["skillStateBefore"] = new JsonObject()
+            });
+        var before = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+
+        await CreateService().EnsureTrainingAsync(currentTurn: 16, createPendingRequests: false);
+
+        var after = Assert.Single(await TrainingRequestState.ReadRequestsAsync(_fs));
+        Assert.Equal(before.RequestId, after.RequestId);
+        Assert.Equal("mortal_training_skill_evolution", after.RequestKind);
+        Assert.True(JsonNode.DeepEquals(before.Details, after.Details));
+    }
+
     private async Task SeedExactCaseSiblingPracticeAsync(string targetId, string targetName)
     {
         await SeedMortalSoulStateAsync();
