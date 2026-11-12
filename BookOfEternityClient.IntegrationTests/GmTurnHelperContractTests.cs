@@ -4962,27 +4962,39 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
-    public void DaemonContextPack_RendersMortalSkillProgressionTemplate()
+    public async Task DaemonContextPack_RendersMortalSkillProgressionTemplate()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-mortal-skill-template-" + Guid.NewGuid().ToString("N"));
         var session = Path.Combine(root, "game_session");
         var logPath = Path.Combine(root, "daemon.log");
 
         Process? process = null;
+        Task<string>? stdout = null;
+        Task<string>? stderr = null;
+        BookOfEternityClient.Core.FileSystemManager? files = null;
+        Exception? testFailure = null;
         try
         {
             Directory.CreateDirectory(session);
             WriteDaemonConfig(session);
-            process = StartDaemon(session, logPath);
+            files = await GmHelperContractScenario.PrepareSessionAsync(session);
+            process = StartDaemon(session, logPath, OperatingSystem.IsWindows() ? "powershell.exe" : "pwsh");
+            stdout = process.StandardOutput.ReadToEndAsync();
+            stderr = process.StandardError.ReadToEndAsync();
 
-            var templatePath = Path.Combine(
-                session,
-                "game_state",
-                "control",
-                "gm_context_pack",
-                "Templates",
-                "MORTAL_SKILL_PROGRESSION_TEMPLATE.md");
-            Assert.True(WaitForFileContaining(templatePath, "Mortal skill progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
+            var contextPack = Path.Combine(session, "game_state", "control", "gm_context_pack");
+            var templatePath = Path.Combine(contextPack, "Templates", "MORTAL_SKILL_PROGRESSION_TEMPLATE.md");
+            var manifestPath = Path.Combine(contextPack, "context_pack_manifest.json");
+            Assert.True(
+                WaitForFileContaining(manifestPath, "compact_mortal_skill_progression_template", process, TimeSpan.FromSeconds(20)),
+                process.HasExited ? (await stdout) + (await stderr) : "The real daemon did not finish rendering its context pack within 20 seconds.");
+
+            using var manifest = JsonDocument.Parse(File.ReadAllText(manifestPath, Encoding.UTF8));
+            var skillTemplate = Assert.Single(manifest.RootElement.GetProperty("templates").EnumerateArray(),
+                item => item.GetProperty("role").GetString() == "compact_mortal_skill_progression_template");
+            Assert.Equal("Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md", skillTemplate.GetProperty("relativePath").GetString());
+            Assert.Equal(templatePath, skillTemplate.GetProperty("sessionPath").GetString());
+            Assert.True(skillTemplate.GetProperty("generated").GetBoolean());
 
             var template = File.ReadAllText(templatePath, Encoding.UTF8);
             Assert.Contains("passiveSkillChanges", template, StringComparison.Ordinal);
@@ -4995,16 +5007,92 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("fresh Mortal bootstrap", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Чтение свидетельских меток", template, StringComparison.Ordinal);
             Assert.DoesNotContain("Р§С‚РµРЅРёРµ", template, StringComparison.Ordinal);
+            Assert.Contains("character-for-character, including case and Unicode", template, StringComparison.Ordinal);
+            Assert.Contains("A case-variant or Unicode-confusable spelling never satisfies a reference or mastery initialization", template, StringComparison.Ordinal);
+            Assert.Contains("distinct exact canonical names remain distinct", template, StringComparison.Ordinal);
+            Assert.Contains("mortal_skill_reference_identity_repair", template, StringComparison.Ordinal);
+            Assert.Contains("read every `exactFieldCorrections` entry and its `repairHint`", template, StringComparison.Ordinal);
+            Assert.Contains("indexed `skillName` for the same actor", template, StringComparison.Ordinal);
+            Assert.Contains("preserving mastery levels, progress and every unrelated field", template, StringComparison.Ordinal);
+            Assert.Contains("Do not delete mastery entries, invent skills, rename canonical skills, move mastery between actors", template, StringComparison.Ordinal);
+            Assert.Contains("If an existing entry belongs to another real skill, preserve it", template, StringComparison.Ordinal);
+            Assert.Contains("stop and request clarification", template, StringComparison.Ordinal);
+            Assert.Contains("descriptive `expected` text is not a literal `skillName`", template, StringComparison.Ordinal);
+            Assert.Contains("no target may be guessed", template, StringComparison.Ordinal);
+            Assert.Contains("A spelling repair does not require a training purchase", template, StringComparison.Ordinal);
+            Assert.Contains("Call `Complete-BoeValidationRepair` only after all corrections are resolved, using the current request's exact metadata", template, StringComparison.Ordinal);
 
-            var readmePath = Path.Combine(session, "game_state", "control", "gm_context_pack", "README.md");
-            Assert.True(WaitForFileContaining(readmePath, "Mortal World skill progression", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
-            var readme = File.ReadAllText(readmePath, Encoding.UTF8);
+            var readme = File.ReadAllText(Path.Combine(contextPack, "README.md"), Encoding.UTF8);
             Assert.Contains("Mortal World skill progression", readme, StringComparison.Ordinal);
+        }
+        catch (Exception failure)
+        {
+            testFailure = failure;
+            throw;
         }
         finally
         {
-            StopProcess(process);
-            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+            var cleanupFailures = new List<Exception>();
+            try
+            {
+                if (process is not null)
+                {
+                    try
+                    {
+                        if (!process.HasExited)
+                            process.Kill(entireProcessTree: true);
+                        using var exitDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                        await process.WaitForExitAsync(exitDeadline.Token);
+                        if (stdout is not null && stderr is not null)
+                            await Task.WhenAll(stdout, stderr).WaitAsync(TimeSpan.FromSeconds(5));
+                        Assert.True(process.HasExited);
+                    }
+                    catch (Exception failure)
+                    {
+                        cleanupFailures.Add(failure);
+                    }
+                    finally
+                    {
+                        try { process.Dispose(); }
+                        catch (Exception failure) { cleanupFailures.Add(failure); }
+                    }
+                }
+            }
+            finally
+            {
+                try
+                {
+                    if (files is not null)
+                    {
+                        using var leaseDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                        await using var lease = await files.AcquireCanonicalWriteLeaseAsync(cancellationToken: leaseDeadline.Token);
+                        Assert.NotNull(files.ReadExistingSessionGeneration(lease));
+                    }
+                }
+                catch (Exception failure)
+                {
+                    cleanupFailures.Add(failure);
+                }
+                finally
+                {
+                    try
+                    {
+                        if (Directory.Exists(root))
+                            Directory.Delete(root, recursive: true);
+                        Assert.False(Directory.Exists(root));
+                    }
+                    catch (Exception failure)
+                    {
+                        cleanupFailures.Add(failure);
+                    }
+                }
+            }
+            if (cleanupFailures.Count != 0)
+            {
+                if (testFailure is not null)
+                    cleanupFailures.Insert(0, testFailure);
+                throw new AggregateException("Mortal skill template test cleanup failed.", cleanupFailures);
+            }
         }
     }
 
@@ -5665,12 +5753,27 @@ public sealed class GmTurnHelperContractTests
     private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command) =>
         GmHelperContractScenario.RunOwnedAsync(command).GetAwaiter().GetResult();
 
-    private static Process StartDaemon(string session, string logPath)
+    /// <summary>
+    /// Starts the real daemon, retaining the existing Windows shell unless a test opts into another installed shell.
+    /// </summary>
+    /// <param name="session">
+    /// The independent session directory owned by the calling test.
+    /// </param>
+    /// <param name="logPath">
+    /// The test-owned daemon log path.
+    /// </param>
+    /// <param name="powerShellExecutable">
+    /// The installed PowerShell executable; existing callers keep Windows PowerShell.
+    /// </param>
+    /// <returns>
+    /// The daemon process whose lifetime belongs to the calling test.
+    /// </returns>
+    private static Process StartDaemon(string session, string logPath, string powerShellExecutable = "powershell.exe")
     {
         var daemonPath = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "game_master_daemon.ps1");
         return Process.Start(new ProcessStartInfo
         {
-            FileName = "powershell.exe",
+            FileName = powerShellExecutable,
             Arguments = string.Join(
                 " ",
                 "-NoLogo",

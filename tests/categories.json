@@ -2,6 +2,38 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-skill-template-guidance",
+      "responsibility": "#1533 T106 actual full-daemon rendering of exact case/Unicode skill identity and bounded indexed repair guidance, plus the existing multi-actor/ambiguity worked example.",
+      "excludes": "Runtime skill validation, ownership/save-load rules, other daemon routes, provider dispatch and Windows PowerShell 5.1 qualification. Linux verification uses installed PowerShell 7; the same render test retains the Windows shell on Windows.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "Examples/E_CLI_Skill_Reference_Identity_Repair.txt"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillReferenceAuthorityTests.SkillIdentityRepairWorkedExample_CoversBoundedMultiActorAndAmbiguousRepairs"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-spiritual-guardian-group-rollback",
       "responsibility": "#1536 retained mixed N2: reached committed conflict/resource/receipt cut restores complete signed46 files, absence and generation; current authority retires.",
       "excludes": "No fresh retry equivalence, zero C4, N3, fresh birth or full RECON20 acceptance.",
@@ -34652,7 +34684,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalFactionUpdateTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalLocationTransitionTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalNpcUpdateTemplate",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalFactionIdentityLessonsToFactionTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalLocationTransitionLessonsToLocationTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalWorldMapAdjacencyLessonsToLocationTemplate",
@@ -53793,6 +53824,137 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.MortalSkillStateDuplicatePhaseTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-skill-mastery-ownership",
+      "responsibility": "Current owner-local NPC active/passive mastery authority, parsed-root reuse, real selected state phases and GM example (#1533 T104).",
+      "excludes": "Historical fallback, removal selectors, global confusable canonical names and unrelated NPC lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.NpcSkillMasteryOwnership.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillMasteryOwnershipTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.NpcSkillMasteryOwnership_HasBoundedGmRuleAndWorkedExample"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillMasteryOwnershipPhaseTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-characteristic-authority",
+      "responsibility": "#1533 T105 display-only passive summaries cannot grant characteristic mechanics; structured values, fresh reads and existing characteristic/effect controls remain authoritative.",
+      "excludes": "No knowledge adjudication, effect lifecycle redesign, static bonus schema expansion or NPC combat-action inference.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CharacteristicsService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalPassiveSkillCharacteristicAuthorityTests.*",
+            "BookOfEternityClient.Tests.CharacteristicsServiceTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.PassiveCharacteristicAuthority_WorkedExampleUsesStructuredMechanicsOnly"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-canonical-closure",
+      "responsibility": "#1533 T103 current composed mastery closure at accepted refresh and save/load admission, preserving raw deltas, exact selectors and rejected-state integrity.",
+      "excludes": "No NPC removal lifecycle, save migration, general raw-phase authority rewrite, or unrelated engine scenarios.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.CanonicalSkillMastery.cs",
+        "BookOfEternityClient/Services/SaveLoadService.Skills.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalCanonicalSkillMasteryTests.*",
+            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+            "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.AcceptedRefresh_RemovedOrRenamedSkillRejectsSnapshotOnlyMasteryAndCompensates",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.AcceptedRefresh_RetainedMasteryOnlyOrSameTurnSkillPasses",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.Save_RejectsInvalidCurrentMasteryWithoutCreatingArchiveOrMutatingState",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.Load_RejectsResealedInvalidMasteryBeforeReplacingLiveState",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.SaveLoad_ExactCurrentPairRoundTripsWithoutSnapshot",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillRemovalByExactContractNameRemovesSourceAuthority",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsAmbiguousExactNameRemoval",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsConfusableRemovalSelector",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.Normalize_CompleteSkillReplacementRemovesOmittedEffectDefinition"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-qte-closure",
+      "responsibility": "#1533 final QTE current mastery closure, exact current retention/acquisition, pre-existing-error waiver boundary and existing terminal restoration/lease controls.",
+      "excludes": "No QTE mechanics redesign, NPC/effect lifecycle expansion, save migration, Windows daemon verification or whole-issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient.IntegrationTests/MortalSkillMasteryClosureLifecycleTests.Qte.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-skill-canonical-closure",
+          "when": "Run the broader ordinary/save-load closure category when the shared closure contract changes; this QTE callsite-only block retains its prior evidence and selected ordinary controls."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.QteTerminal_*",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.AcceptedRefresh_RemovedOrRenamedSkillRejectsSnapshotOnlyMasteryAndCompensates",
+            "BookOfEternityClient.Tests.MortalSkillMasteryClosureLifecycleTests.AcceptedRefresh_RetainedMasteryOnlyOrSameTurnSkillPasses",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.QtePendingSnapshot_CallerSeparatesInvocations",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.QtePendingSnapshot_ValidationFailureRestoresAfterClose",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh"
           ]
         }
       ]

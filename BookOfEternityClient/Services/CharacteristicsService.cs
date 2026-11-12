@@ -522,7 +522,7 @@ public partial class CharacteristicsService
     }
 
     /// <summary>
-    /// Passive skills: structuredBonuses + legacy playerStatBonus fallback.
+    /// Passive skills: structuredBonuses only; playerStatBonus is display-only.
     /// </summary>
     private async Task CollectPassiveSkillBonuses(
         Dictionary<string, List<BonusSource>> permanent,
@@ -541,13 +541,6 @@ public partial class CharacteristicsService
             {
                 var skillName = GetStr(skill, "skillName", GetStr(skill, "name", "Навык"));
                 ExtractStructuredBonuses(skill, skillName, "📘", permanent, temporary);
-
-                // Legacy fallback: playerStatBonus string parsing
-                if (!skill.TryGetProperty("structuredBonuses", out var sb) ||
-                    sb.ValueKind != JsonValueKind.Array || sb.GetArrayLength() == 0)
-                {
-                    ExtractLegacyStatBonus(skill, skillName, permanent);
-                }
             }
         }
         catch (Exception ex)
@@ -764,33 +757,6 @@ public partial class CharacteristicsService
             else
             {
                 temporary[target].Add(source);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Legacy fallback: parse playerStatBonus string like "+5 strength" or "+3 к силе".
-    /// </summary>
-    private void ExtractLegacyStatBonus(JsonElement skill, string skillName,
-        Dictionary<string, List<BonusSource>> permanent)
-    {
-        if (!skill.TryGetProperty("playerStatBonus", out var psb)) return;
-        var text = psb.ValueKind == JsonValueKind.String ? psb.GetString() ?? "" : "";
-        if (string.IsNullOrWhiteSpace(text)) return;
-
-        // Try to parse patterns like "+5 strength", "+3 perception"
-        foreach (var name in Characteristics.All)
-        {
-            if (text.Contains(name, StringComparison.OrdinalIgnoreCase))
-            {
-                // Extract number
-                var match = System.Text.RegularExpressions.Regex.Match(text, @"[+-]?\d+");
-                if (match.Success && int.TryParse(match.Value, out var val) && val != 0)
-                {
-                    permanent[name].Add(new BonusSource(
-                        $"📘 {skillName} (legacy)",
-                        text, val));
-                }
             }
         }
     }

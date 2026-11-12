@@ -2,19 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-skill-state-duplicates",
-      "reason": "T102-A verifies all seven exact-duplicate collections, same-owner groups, field-error independence, isolation and GM guidance.",
+      "category": "mortal-skill-qte-closure",
+      "reason": "Only the final QTE closure callsite changed. Cover new stale/waived mastery refusal and existing ordinary closure, borrowed-proof and restoration consumers; prior 220-case branch evidence remains recorded.",
       "contracts": [
-        "#1533 FR-109..111",
-        "ValidationService skill/mastery collection validators"
-      ]
-    },
-    {
-      "category": "mortal-skill-reference-identity",
-      "reason": "Same collection callers must preserve existing exact/confusable references, player/NPC initialization, ordinal siblings and identity repair diagnostics.",
-      "contracts": [
-        "#1533 FR-101/FR-110",
-        "MortalSkillReferenceAuthority"
+        "#1533 fully composed-result and stale-reference acceptance",
+        "QTE terminal validation, original lease and restoration"
       ]
     }
   ]

@@ -2083,6 +2083,15 @@ public sealed partial class QteSceneService
                     .ToList();
             }
 
+            // Current composed skill integrity is mandatory, even when unrelated
+            // pre-existing diagnostics are waived for this terminal operation.
+            foreach (var issue in await _validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease))
+            {
+                if (issue.Severity == IssueSeverity.Error && !errors.Any(existing =>
+                        BuildValidationIssueFingerprint(existing) == BuildValidationIssueFingerprint(issue)))
+                    errors.Add(issue);
+            }
+
             if (errors.Count > 0)
             {
                 var summary = string.Join("; ", errors.Take(5).Select(issue =>

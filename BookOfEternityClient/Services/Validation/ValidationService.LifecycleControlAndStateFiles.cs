@@ -13,12 +13,14 @@ public partial class ValidationService
 {
     private async Task ValidateNpcStateFiles(List<ValidationIssue> issues)
     {
+        var masteryOwnership = ShouldValidateStateFile("game_state/npcs/npc_skills.json")
+            ? new NpcSkillMasteryOwnership() : null;
         await ValidateNpcFile("game_state/npcs/npc_core.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "UpdateNPCs", "NPCCoreChanges", "NPCsRenameData", "NPCsInScene",
                 "UpdateNpcTradeInventoryReceipts", "trainingPurchaseReceipts"
-            }, issues);
+            }, issues, masteryOwnership == null ? null : masteryOwnership.CollectCore);
 
         if (await NpcCoreChangesCommandIsPresentAsync())
             issues.AddRange(await ValidateNpcCoreChangesBeforeNormalizationAsync());
@@ -28,7 +30,8 @@ public partial class ValidationService
             {
                 "NPCActiveSkillChanges", "NPCPassiveSkillChanges",
                 "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges"
-            }, issues);
+            }, issues, masteryOwnership == null ? null :
+                root => masteryOwnership.ValidateSkills(root, "game_state/npcs/npc_skills.json", issues));
 
         await ValidateNpcFile("game_state/npcs/npc_inventory.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

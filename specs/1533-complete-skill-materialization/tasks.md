@@ -85,9 +85,21 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T102-B [RED] Minimal direct typed tests and real state-phase regressions for all seven collections, repeated same-owner groups and independent malformed-field diagnostics; add category ownership/selection.
 - [X] T102-C [GREEN] Add exact duplicate diagnostics in existing collection validators, preserving names/owners/fields and avoiding new reads or mutation.
 - [X] T102-D Compact GM rule, worked duplicate example and semantic documentation guard; existing repair flow, no automatic ambiguous deletion.
-- [ ] T102-E Frozen-source bounded verification, independent review, optimization assessment and remote checkpoint verification (coordinator owns publication).
+- [X] T102-E Frozen-source bounded verification, independent review, optimization assessment and remote checkpoint verification (coordinator owns publication).
 
 Dependencies: T102-A -> T102-B -> T102-C -> T102-D -> T102-E. This does not complete all T102 or close #1533.
+
+## Part 5 — T104-A current NPC mastery ownership
+
+Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+
+- [X] T104-A Record FR-112..114, current core/skillChanges authority evidence and bounded design in specs/1533-complete-skill-materialization/spec.md and plan.md; coordinator owns publication; latest explicit continuation direction permits local implementation while publication remains blocked.
+- [X] T104-B [RED] Add direct typed ownership and real NpcStateFiles regressions in BookOfEternityClient.Tests/MortalNpcSkillMasteryOwnershipTests.cs and BookOfEternityClient.IntegrationTests/MortalNpcSkillMasteryOwnershipPhaseTests.cs, including current core-only/new-turn positives and owner/kind/snapshot negatives; register tests/categories.json and tests/selection.json.
+- [X] T104-C [GREEN] Add operation-local current-root ownership validation in BookOfEternityClient/Services/Validation/ValidationService.NpcSkillMasteryOwnership.cs and reuse existing parsed roots from ValidationService.LifecycleControlAndStateFiles.cs / ValidationService.NpcWorldAndMeta.cs without changing initialization or duplicate validators.
+- [X] T104-D Synchronize Rules/Block_7.txt, TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt with a worked ownership example and executable PromptDocumentationCoverageTests guard; preserve existing repair flow.
+- [ ] T104-E Local implementation/review verified: 159/159 selected cases, 41/41 after name-only correction, valid 1668-category inventory, no remaining independent review findings. Only authorized publication and clean remote recovery remain; evidence is in plan.md.
+
+Dependencies: T104-A -> T104-B -> T104-C -> T104-D -> T104-E. No parallel mutation; this bounded slice does not close issue #1533.
 
 ## Later parts (issue #1533 contours, not in this branch)
 
@@ -104,3 +116,29 @@ Dependencies: T102-A -> T102-B -> T102-C -> T102-D -> T102-E. This does not comp
 - Existing codes `skill_mastery_unknown_active_skill`, `player_active_skill_missing_mastery_initialization`, `npc_skill_missing_mastery_initialization` are unchanged.
 
 Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T107 completed in Part 2 and merged via PR #1583 (see ledger above); T101 Part 3 and its PR #1586 review corrections are verified: 186/186 selected cases, valid discovery-only catalog and independent READY review (2026-11-10 checkpoint in plan.md). Publication of the final checkpoint is coordinator-owned; T102-T106 remain unchecked.
+
+## Part 6 — T105 display-only passive summary authority
+
+Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+- [X] T105-A Record the existing display-only contract and concrete reproduced fallback defect.
+- [X] T105-B Add causal ComputeAsync regressions; remove only the legacy prose-derived characteristic fallback.
+- [X] T105-C Correct contradictory GM fallback guidance and add executable worked example/guard.
+- [X] T105-D Bounded verification, independent review and local checkpoint; remote publication remains blocked.
+
+## Part 7 — T103 current canonical mastery closure
+- [X] T103-A Record reproduced snapshot/save-load gaps and existing stage-boundary design.
+- [X] T103-B Add causal accepted-refresh/save/load and closure regressions.
+- [X] T103-C Add current-only closure at leased canonical validation and save/archive admission, preserving raw-delta behavior and existing repair diagnostics.
+- [X] T103-D Bounded verification, independent review and local checkpoint; publication remains blocked.
+
+## Part 8 — T106 generated skill template guidance
+- [X] T106-A Record the bounded generated-template gap and exact identity/repair contract; preserve existing worked examples and launcher guidance.
+- [X] T106-B Extend the existing full-daemon render test with real bootstrap, opt-in OS shell, manifest/guidance assertions and deterministic owned cleanup; obtain causal Linux PowerShell 7 RED.
+- [X] T106-C Add the missing paragraph while preserving the daemon BOM; obtain isolated actual-render GREEN and register the narrow category/selection.
+- [X] T106-D Coordinator verifies fresh selected-project builds, official bounded category/catalog results, independent review and local checkpoint. Windows PowerShell 5.1 and remote publication/recovery remain unverified.
+
+## Part 9 — T103 QTE terminal closure
+- [X] T103-Q1 Confirm original issue scope and real typed QTE stale-reference acceptance.
+- [X] T103-Q2 Add terminal removal/replacement, waiver, exact retention/acquisition and restoration regressions.
+- [X] T103-Q3 Reuse current-only closure at the existing final QTE gate without changing ordinary waiver or publication machinery.
+- [X] T103-Q4 Focused verification/review and local checkpoint; objective original-criteria status, no publication retry.

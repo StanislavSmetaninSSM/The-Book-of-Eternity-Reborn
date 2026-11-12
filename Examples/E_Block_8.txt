@@ -332,4 +332,46 @@
    </jsonresponse>
   </example>
  </rule>
+ <rule id="8.display-summary-authority">
+  <example type="good" contenttype="json_fragment">
+   <title>Worked display-only characteristic authority (#1533 T105)</title>
+   <description>Never parse 'playerStatBonus' to grant mechanics. These deliberately inconsistent, pre-existing inputs demonstrate consumer robustness; they are not recommended GM-authored profiles. The first grants zero Strength despite its stale display summary. The second grants exactly +2 from structuredBonuses, not +5 or +7. These are separate alternative states, not two simultaneous skills. When authoring or correcting the summary, make the first playerStatBonus purely narrative (or null) and the second "+2 strength" to mirror its structured description. Do not invent mechanics to justify stale summary text.</description>
+   <jsonresponse><![CDATA[
+{
+  "displayOnly": {
+    "skillName": "Narrative discipline",
+    "skillDescription": "A narrative skill with optional structured mechanics.",
+    "rarity": "Common",
+    "type": "KnowledgeBased",
+    "group": "Knowledge",
+    "masteryLevel": 1,
+    "maxMasteryLevel": 5,
+    "structuredBonuses": null,
+    "playerStatBonus": "+5 strength"
+  },
+  "structured": {
+    "skillName": "Narrative discipline",
+    "skillDescription": "A narrative skill with optional structured mechanics.",
+    "rarity": "Common",
+    "type": "KnowledgeBased",
+    "group": "Knowledge",
+    "masteryLevel": 1,
+    "maxMasteryLevel": 5,
+    "structuredBonuses": [
+      {
+        "bonusType": "Characteristic",
+        "valueType": "Flat",
+        "target": "strength",
+        "value": 2,
+        "application": "Permanent",
+        "condition": null,
+        "description": "+2 strength"
+      }
+    ],
+    "playerStatBonus": "+5 strength"
+  }
+}
+   ]]></jsonresponse>
+  </example>
+ </rule>
 </instructionblock>

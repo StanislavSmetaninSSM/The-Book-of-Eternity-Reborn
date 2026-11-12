@@ -1836,6 +1836,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             receipt);
                 }
                 var issues = new List<ValidationIssue>();
+                issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
                 issues.AddRange(await validator
                     .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
                 issues.AddRange(await validator

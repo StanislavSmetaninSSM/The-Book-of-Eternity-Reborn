@@ -350,3 +350,341 @@ diagnostics with unchanged input bytes. Review accepted with the recorded Linux
 and category-selection limits. Clean remote recovery/final publication remain
 coordinator owned and pending at this checkpoint. T102's broader confusable-state contour and
 T103-T106 remain open; #1533 is not complete and was not closed or merged here.
+
+
+## Part 5 plan — T104-A current NPC mastery ownership (2026-11-10)
+
+Source issue [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+Base local `59a8acdb08fd4f50e7b3a0f59de8d11b97cdcf34`, tree
+`21b36a8afe18c9b35e907855ea1c4c46af90e6f1`, equivalent verified remote branch
+`1533-exact-skill-state-duplicates` at `baeb3e6fd11f5f61481eccf850fa5a812dc0c590`.
+T102-E is complete: coordinator verified the remote ref and a clean independent
+GitHub fetch/checkout in a new recovery directory with required files present.
+This was source recovery only, with no repeated builds. Broader T102 remains open.
+
+Acceptance/design is FR-112..114. Existing `ValidateNpcSkillMastery` remains the
+stateless shape/duplicate validator. Add a separate ownership pass only to current
+`npc_skills` validation under `NpcStateFiles`; initialization stays unchanged.
+
+Authority evidence: `GuardianPolicyContracts.EnumerateCanonicalNpcObjects` reads
+`UpdateNPCs` and `NPCsInScene`. T101 composer skill-profile validation and effect
+source export consume their actor-local `activeSkills` / `passiveSkills`.
+`NpcDetailSectionProjection.AddMechanicsSection` presents those profiles alongside
+current `npc_skills`. Requiring a skillChanges row for every mastery update would
+therefore reject retained core skills. Conversely, `npc_skills` has no canonical
+accumulation/normalization path; only player skill state is composed from backups.
+The existing NPC initialization path uses pre-turn names only to decide which
+current skillChanges names are new, not as current ownership. Do not restore
+snapshot-only names or borrow another actor's profile.
+
+Approaches considered: (1) same-root-only ownership is simple but rejects valid
+retained core skills; (2) current owner-local core plus current skillChanges is the
+chosen proposal and follows both real sources; (3) pre-turn union adds historical
+fallback authority and is excluded from this bounded current-state rule.
+
+Implementation: a fresh operation-local NPC skill-name collector receives the
+already parsed current core root during the existing `ValidateNpcFile` call,
+then adds the already parsed current skillChanges before checking mastery rows.
+Use the existing canonical NPC enumerator and BuildNpcIdentityKey semantics.
+An optional parsed-root callback on the existing reader avoids a second read or
+JSON parse; no root/tree clone is retained. When only npc_skills is selected,
+read current core once in ValidateNpcFile as a dependency without emitting its
+unselected file-shape findings; when npc_skills is excluded, do not construct the collector. Keep ordinary reader
+behavior unchanged when no callback is supplied. The collector keeps ordinal name sets
+by case-insensitive owner and skill kind only for this `ValidateNpcStateFiles`
+call. Malformed roots/rows continue through existing shape diagnostics.
+
+TDD: direct typed tests use minimal parsed roots and the same collector/pass as
+production, no GameEngine or reflection. Confirm causal RED before ownership
+logic: active/passive foreign owner, orphan, wrong kind and ID precedence.
+Positive guards cover current core-only mastery updates, same-turn skillChanges,
+canonical carriers, exact siblings, two owners with the same skill, name fallback,
+repeated owner groups, shape-error independence and non-mutation. Real phase tests
+prove ordinary and repeated unchanged validation, retained-core mastery-only state,
+new-skill initialization, a valid pending snapshot and snapshot-only refusal.
+Also pin skills-only selection with an unselected current-core dependency and
+suppressed file-shape findings from that dependency; malformed selected core keeps
+its independent file diagnostic. The separate NPCCoreChanges guard is unchanged.
+
+Optimization assessment: current root DATA is reused while each existing read is
+open; the collector is not a cache or stored permission. Full input is the current
+parsed core and skill roots, owner key and active/passive kind. Lifetime begins
+and ends inside one NpcStateFiles call; next validation builds a fresh collector,
+so changed/replaced/absent files cannot hit stale DATA. Ordinary full-file selection
+shares the existing ValidateNpcFile read/parse; skills-only selection adds one
+current-core dependency read/parse. The independent NPCCoreChanges command guard
+keeps its existing separate reads and findings, including under file selection.
+No persistent service or shared mutable fixture. No existing fresh owner/source/
+publication fence is removed. No runtime speedup claim is planned.
+
+Impact selection: focused `mortal-npc-skill-mastery-ownership` owns direct, real
+phase and executable GM example tests; keep `mortal-skill-state-duplicates` and
+`mortal-skill-reference-identity` to protect the same reader/owner callers and
+initialization diagnostics. Update tests/selection.json, inspect PlanOnly, run
+fresh serial project builds, selected categories and discovery-only ValidateCatalog.
+No full suite or manual hosted CI. Freeze source before expensive builds; if test
+authoring/build fails twice, use the cheap typed binary-reference reproducer.
+Raw diagnostics stay outside Git in `/tmp/issue1533-npc-ownership-20261110`.
+
+Consistency pass: FR-112 -> T104-B/C/E; FR-113 -> T104-B/C/E; FR-114 -> T104-D/E.
+No new schema, afterlife, player UI or unresolved product choice. No afterlife GM
+sync is needed; Mortal rules/guide/example are updated in the same block.
+Spec Kit prerequisites were verified with `SPECIFY_FEATURE_DIRECTORY` targeting
+this existing feature; unrelated `.specify/feature.json` remains unchanged.
+Optional commit/context hooks are coordinator-owned rather than run implicitly.
+
+Status: design/spec-only WIP, no production or test edits, no checks claimed.
+Coordinator approval/publication is required before implementation. Independent
+whole-block review, publication and clean recovery remain coordinator-owned.
+
+### T104 continuation checkpoint (2026-11-11, local WIP)
+
+Latest user direction is to continue #1533 independently rather than wait on a
+routine publication blocker. The earlier publication denial has not been retried
+or bypassed. Remote `1533-exact-skill-state-duplicates` is still baeb3e6fd11f5f61481eccf850fa5a812dc0c590;
+local T104 design is 7418f58390e8b88d2a96f1ec823578c379958cc5. This checkpoint and
+implementation are local-only until the coordinator resolves publication.
+
+Ruling: continue the explicitly requested bounded local implementation/testing,
+without weakening the publication restriction or claiming remote preservation.
+The earlier spec/plan approval wording does not introduce a new product decision.
+
+Causal RED: the existing eight-case production-binary probe was rerun, reproducing
+four ownership failures and four passing controls. Six permanent real-phase
+regressions (active/passive foreign, orphan and wrong kind) were compiled into a
+small typed friend runner against the pre-fix production binary: all six failed
+on the missing ownership diagnostic. No reflection or copied algorithm was used.
+Two initial .NET attempts failed on read-only runtime directories (not test RED);
+writable XDG/TMP paths fixed those. Full baseline builds were interrupted before
+results, then the small binary-reference runner supplied the causal evidence.
+Raw output is in /tmp/issue1533-npc-ownership-20261110, outside Git.
+
+Implementation follows FR-112..114: operation-local names from already parsed
+current core/skill roots; core dependency read even for skills-only selection;
+no snapshot union, extra parse, retained JSON tree or cross-operation cache.
+Current production and permanent test edits are WIP, not yet verified. Next:
+finish GM sync/snapshot coverage, freeze source, fresh bounded builds/tests and
+independent whole-block review. No CI, merge, or issue closure is requested here.
+
+### T104 frozen implementation results (2026-11-11)
+
+Implementation SHA fb61de94f9a066dc3a5c0d499e9279dff868a729, Linux x64 Debian 13,
+.NET SDK 10.0.402, target net8.0, PowerShell 7.6.8. Both project builds used
+`dotnet build <project> --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false`
+with DOTNET_CLI_USE_MSBUILD_SERVER=0 and writable XDG/TMP/CLI directories:
+unit: 0 errors / 80 existing warnings, 3m22.40; integration: 0 errors / 118 existing
+warnings, 2m12.28. No new T104 source/test warnings were reported.
+
+`pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild`:
+159 planned cases, six descriptors, successful planning, 29.708s; no tests executed.
+Same command without PlanOnly: 159/159 passed, six/six descriptors complete,
+zero failures/skips/duplicates, 76.597s and complete owned-tree/runtime cleanup.
+Ownership: 23 unit (including executable GM example) + 18 phase = 41;
+identity regressions: 54; duplicate-state regressions: 64.
+Raw logs/TRX remain outside Git under /tmp/issue1533-npc-ownership-20261110.
+
+Independent fresh-context gpt-6.1-sol/xhigh reviewed the whole T104 diff and relevant
+consumers. No Critical/Important defect or required selection expansion. One
+minor wording overstatement was corrected: the existing separate NPCCoreChanges
+guard still performs its own reads and may report findings under skills-only
+selection. Only ValidateNpcFile's unselected file-shape findings are suppressed.
+The phase-test name now states that boundary; its assertions and production code
+are unchanged. Fresh integration rebuild, affected ownership run and discovery
+follow this name-only correction; no repeat of unrelated passing categories.
+
+Ruling: keep the existing NPCCoreChanges guard's selection, fresh reads and findings
+unchanged instead of broadening T104. Preserved non-goals: name/ID alias redesign,
+removal-selector handling, core mirror uniqueness, global confusable-name rejection
+and broader progression provenance. These remain the later issue contours.
+
+Optimization: two operation-local owner maps retain only ordinal name sets for
+one NpcStateFiles call, reusing parsed roots; no new persistent cache, retained
+permission, source/owner/publication fence change, or runtime speedup claim.
+Selected fixtures are independent and typed; real current-file/snapshot paths are
+retained. Mortal GM rules, step guide, worked example and semantic guard are synced;
+there is no afterlife, UI, daemon entrypoint, or schema change in this slice.
+Publication/recovery remains blocked, local-only, and unclaimed. #1533 stays open.
+
+Final name-correction verification at 1e46affdd2d25581518b68271c4e269c005694db:
+- Fresh serial integration build, same command above: 0 errors / 153 existing
+  warnings including rebuilt production/TestSupport dependencies, 4m21.90.
+  No T104 warnings. Unit source/assertions and production behavior are unchanged.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category mortal-npc-skill-mastery-ownership -NoBuild`:
+  41/41 passed, two/two descriptors complete, zero failures/skips/duplicate IDs,
+  40.576s, complete owned cleanup.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`:
+  VALID, 1668 categories / 13882 methods-files, no unmapped tests or stale selectors,
+  discovery only, 25.378s, complete owned cleanup.
+- Both summaries record clean source 1e46affdd with zero changed files. The new
+  test-owned temporary roots are absent after cleanup. `git diff --check` passes.
+- Independent reviewer verified the narrow correction and reports no remaining
+  findings. No broad suite, hosted CI or Windows result is claimed.
+
+T104-B/C/D and the local verification/review portion of T104-E are complete.
+T104-E remains open only for authorized remote publication and clean recovery.
+The last remote read still returned baeb3e6fd11f5f61481eccf850fa5a812dc0c590;
+the denied publication was not retried through another tool or route. These
+commits are local preservation, not a durable remote checkpoint. Next action:
+coordinator resolves that exact publication restriction and verifies remote
+source/recovery before claiming the bounded block remotely saved. #1533 and its
+remaining lifecycle contours stay open.
+
+## Part 6 — T105 display-only passive summary authority (2026-11-11)
+
+Source #1533; local base 01b2881bc. Root directs continued permitted local work;
+publication remains denied and will not be retried. The existing Block_8 and
+MortalSkillProfileContract already define playerStatBonus as display-only.
+Causal isolated production probe found valid null/empty structuredBonuses +
+summary '+5 strength' adds +5; no-summary control adds 0, structured +2 adds 2.
+Raw probe: /tmp/issue1533-governed-companions-20261111 (outside Git).
+
+Chosen fix: remove the sole ExtractLegacyStatBonus call/helper in
+CharacteristicsService. Preserving that fallback contradicts the current schema;
+a new parser or cache would expand scope. Keep the structured extractor and all
+accepted-effect/item/relic consumers unchanged. No additional reads, parses,
+cache or shared mutable fixture; removal reduces work but claims no speedup.
+
+- [X] Add cheap typed ComputeAsync RED regressions for valid null/empty summaries,
+  malformed/missing structured data, structured permanent/conditional controls,
+  source replacement and no input mutation. New test class owns independent files.
+- [X] Delete prose fallback, update the exact contradictory Block_12/14 passages,
+  and add a worked example plus semantic documentation guard. Do not alter other
+  skill/effect rules or introduce broader T103/T106 changes.
+- [X] Add narrow mortal-skill-characteristic-authority category including the new
+  tests and existing CharacteristicsServiceTests; preserve T102/T104 selections
+  for the intended local branch; plan/discover, fresh serial builds, bounded checks.
+- [X] Independent whole-block review, compact local evidence checkpoint. Remote
+  publication/recovery and remaining T103/T105/T106 contours stay open.
+
+Review focus: narrative numbers never become mechanics; structured permanent and
+conditional sources still apply once; no field loss or cached stale result;
+all playerStatBonus fallback instructions are removed without changing unrelated
+knowledge adjudication or active-effect arithmetic. Existing methods and cheap
+fixtures cover these, so no new test-only production entrypoint is necessary.
+
+Part 6 RED evidence: the permanent direct ComputeAsync tests, compiled separately against the pre-fix production DLL, produced seven causal failures (null/empty/missing/malformed structured shape, negative/case display summaries, and structured-to-display-only replacement) with four passing controls (permanent, conditional, absent summary and whole-skill removal). The initial harness-only read used the wrong physical root and was corrected to FileSystemManager.ReadFileAsync before the causal run. Raw probe/build logs remain outside Git. The semantic GM example exercises the same production ComputeAsync path and validates both passive profiles.
+
+### Part 6 local verification checkpoint (2026-11-11)
+
+- Frozen production/test change: `7b76330c6`; final runtime-read example correction: `f07ea2e3d5516374f081b0c87ef09ff1221edb4d`. The example now explicitly distinguishes inconsistent stale input from valid authoring and directs summary-only correction. No C# changed after the frozen source.
+- Fresh serial build: `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false`: **0 errors**, 80 existing warnings, 3m20.38s. The same command for BookOfEternityClient.IntegrationTests: **0 errors**, 153 existing warnings, 4m10.88s. Used the previously verified SDK/PowerShell toolchain with writable per-run runtime/cache paths; no CI or broad suite.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild`: seven descriptors, **187 selected cases**, 22.651s; no tests executed.
+- Same selected command without `-PlanOnly`: **187/187 Passed**, 7/7 descriptors, zero failures/skips/duplicate IDs, complete selection and owned/runtime cleanup, 83.606s. Captured clean source HEAD `f07ea2e3d`, zero changed files. Category elapsed seconds: T105 characteristic authority **11.969**; T104 ownership 14.840; identity 19.790; duplicates 11.931. Raw summary: `/tmp/issue1533-t105-characteristics-20261111/categories/test-categories/20261111-082946-869-5-5ba0b1dfb400472591bcf2ea7f37ac90-categories/summary.json`.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`: **CATALOG-VALID**, 1669 categories, 13887 methods/files, no unmapped/stale selectors; discovery only, no tests executed, 30.680s, complete cleanup. Raw summary is in the same external diagnostic root under `20261111-083120-757-5-7a0615eb60694e99b1089ad4ea5557ff-categories`.
+- All four modified rule/example XML documents parse successfully; `git diff --check` passed; no leftover passive-characteristic fixture roots. The complete permanent test set contains 11 new ComputeAsync cases, one executable documentation example and 16 existing characteristic/item/relic/effect controls, alongside 159 prior branch cases.
+- Independent whole-block review: no runtime correctness findings. One minor stale-example authoring ambiguity was corrected in `f07ea2e3d` and independently rechecked as resolved. No remaining findings. Review did not execute tests; the verification above is the implementation-side evidence. Existing knowledge adjudication/conditional predicate behavior and broader T103/T105/T106 contours were explicitly not claimed as fixed.
+- Optimization assessment: same canonical source reads and parsed structured inputs, no added cache or retained JSON, no new framework or repeated production computation. Removes the characteristic-name scan and regex parsing of prose rather than caching them. Every ComputeAsync still reads current state; replacement/removal regressions prove no stale retained bonus. Source bytes are unchanged. Category timings measure verification cost, not a claimed runtime speedup.
+- Publication remains blocked by the prior reviewer denial and was **not retried**. All changes/checkpoints are local only; no push, upload, merge, CI run, clean remote recovery claim or issue closure. The latest explicit direction was to continue permitted local work independently. T103 canonical closure/save admission, the remaining T105 companions and T106 generated-template discipline remain open; concrete audit findings are recorded in research.md.
+
+## Part 7 — T103 current canonical mastery closure (2026-11-11)
+
+Current local base d0af7175d; read-only remote check still baeb3e6fd11f5f61481eccf850fa5a812dc0c590. Prior publication denial is not retried; explicit continuation authorizes local work.
+
+1. Add causal real-refresh and real save/load tests, exact/confusable/missing-source controls, unchanged rejected live/archive bytes and retained raw mastery-only behavior.
+2. Reuse existing mastery-core and exact identity classifiers in one parsed-current closure contract. Invoke under the existing post-normalization canonical write lease and existing compensation path. Keep general raw validators' pre-turn fallback unchanged; do not recompose already-normalized state.
+3. Reuse the closure contract at existing save/archive admission before publication. Use existing leased/strict UTF-8/archive-budget reads, no alternate publication machinery.
+4. Narrow category selection, fresh serial builds, independent whole-block review and local evidence. Then the separate bounded T106 generated-template gap.
+
+Optimization: closure parses each of its two current dependency roots once per admission, creates no retained cache and never reads snapshots. Existing neighboring resource/effect owners do not expose a reusable mastery root; fresh leased reads are needed to prove the actual published pair and prevent stale acceptance. No byte/read-count speedup is claimed. Pure-contract cases stay cheap; real refresh/save/load cases use independent filesystem fixtures rather than a GameEngine.
+
+Part 7 causal RED: all nine permanent lifecycle cases compiled separately against the pre-fix production DLL. Six failed for the intended defect: both removed/renamed real accepted refreshes returned no finding, both invalid saves returned true, both correctly resealed invalid archives committed. Three controls passed: retained mastery-only delta, same-turn new skill and exact save/load round trip. Existing portable save seed plus a pristine item identity index avoided unrelated resource/item failures; raw logs remain outside Git in /tmp/issue1533-t103-closure-20261111. Snapshot source bytes, rejected state/generation and selected archive bytes are asserted by the permanent tests. No GameEngine/reflection was introduced.
+
+## Part 8 — T106 generated skill template guidance (2026-11-11)
+
+Local source base `4edc7fc48`; publication remains denied and is not retried.
+This is the bounded generated-template gap recorded in research.md, not a new
+runtime identity policy or completion of issue #1533.
+
+1. Extend the existing real-render test before changing the template paragraph.
+   Reuse `GmHelperContractScenario.PrepareSessionAsync` for genuine canonical
+   bootstrap and the established Windows/pwsh OS choice. Only this test opts into
+   a shell parameter; all other daemon callers retain their previous default.
+2. Run the permanent test through an isolated typed executable referencing the
+   existing production/TestSupport binaries, without rebuilding shared bin/obj.
+   Wait for the generated manifest, prove its exact template role/path, then
+   assert generated guidance and Russian labels. Join owned process and streams,
+   reacquire the canonical lease and prove the independent root was removed.
+3. Add one paragraph to the daemon here-string, retaining its UTF-8 BOM/LF.
+   Reuse the existing worked example and launcher guidance without duplication.
+4. Split the exact render selector from `gm-turn-helper-process` into
+   `mortal-skill-template-guidance`, alongside the existing worked-example guard.
+   Preserve the prior T102/T103/T104/T105 selection entries. The coordinator owns
+   fresh selected-project builds, official bounded category execution, discovery
+   and independent whole-block review; those gates remain pending here.
+
+Causal RED: the actual complete daemon generated its manifest/template; existing
+shape/Russian assertions passed, and the new case/Unicode guidance assertion
+failed because the paragraph was missing. After adding the paragraph, the same
+compiled permanent test passed in **5.085s**, including exact manifest routing,
+all new guidance assertions and process/stream/lease/root cleanup. Both executions
+used Linux PowerShell **7.6.8** and the existing production DLL SHA-256
+`0cd437cc48e8c60116db64124d771d70e6087aaef3d9d170197380bbd9ef4bc7`.
+The isolated current-test compilation had zero errors/warnings. This establishes
+T106 rendering, not verification of newly changed T103 production code. Actual
+PowerShell parsing and `git diff --check` passed. Raw build/RED/GREEN logs remain
+outside Git under `/tmp/issue1533-t106-template-20261111`; no raw artifacts were
+staged. Windows PowerShell 5.1 and official category execution remain UNRUN.
+
+Optimization: one daemon, one real context-generation operation and independent
+session per render test; one read each of template/manifest/README. The complete
+generator is the consumer under test, so replacing it with a copied string or
+shared mutable cached context would lose required coverage. Existing typed
+bootstrap avoids a GameEngine/world fixture. No production reads or cache were
+added, and the measured test duration is not a runtime speedup claim. No remote
+writes, uploads, CI, full-suite run or publication/recovery claim.
+
+Part 8 review correction: independent review found that cleanup's
+`AcquireCanonicalWriteLeaseAsync().WaitAsync(5s)` abandoned the underlying
+acquisition after timeout and could later leak a lease. It now passes a timed
+CancellationToken directly into acquisition and awaits its settlement/disposal.
+Nested finally blocks attempt root removal even after process or lease failure;
+all cleanup failures and any original test failure are retained in an explicit
+aggregate rather than swallowed. Process exit waiting also receives cancellation.
+
+An isolated typed held-lease control reproduced the old pending-after-timeout
+behavior, explicitly disposed its late lease, then proved token-based acquisition
+settled as canceled while the holder remained active and a later fresh lease
+could be acquired/disposed. The corrected permanent full-daemon test passed on
+Linux PowerShell 7 in **7.264s**, including cleanup; isolated compilation had zero
+errors/warnings. These are targeted cleanup/render checks, not official category
+or Windows qualification. Logs remain outside Git beside the earlier T106 logs.
+
+### Parts 7–8 verified local checkpoint (2026-11-11)
+
+- T103 source: `4edc7fc48`; T106 source: `8f61557fa`; cleanup correction and final tested source: **`16fbfeb4b4a8e7e6b1562af959e5a98ff81b9e8b`**. T103 production source was unchanged during T106 work. Both parts remain bounded local slices, not completion of all #1533.
+- Fresh serial unit build with `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false`: **0 errors**, 80 existing warnings, **3m50.71s**. Same command for BookOfEternityClient.IntegrationTests after the cleanup correction: **0 errors**, 153 existing warnings, **4m31.66s**. Used the verified SDK and writable runtime/cache environment; no CI/full suite.
+- After the production build, the same nine permanent typed lifecycle tests used for RED passed **9/9** in the isolated runner: both removed/renamed normal-refresh cases reject and compensate, both invalid save and both correctly resealed invalid archive cases reject, both retained/new-skill refresh controls and exact save/load round trip pass. Raw log: `/tmp/issue1533-t103-closure-20261111/green.log`.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild`: **220 cases, 11 descriptors**, 20.601s; no tests executed. Six selected bounded categories preserve the earlier T102/T104/T105/identity regression coverage, adding T103 current closure and T106 actual generated-template guidance. Existing example ownership is deduplicated.
+- Same command without `-PlanOnly`: **220/220 Passed**, **11/11 descriptors complete**, zero failures/skips/duplicate IDs; owned-tree and runtime cleanup both complete; **120.603s**. Captured source HEAD `16fbfeb4b`, zero changed files. Category seconds: canonical closure **13.105**, generated-template guidance **23.046**, NPC mastery ownership 16.799, characteristic authority 11.515, reference identity 18.478, state duplicates 14.831. Every category stayed inside its five-minute budget.
+- Raw selected-run evidence: `/tmp/issue1533-t103-closure-20261111/categories/test-categories/20261111-090126-706-5-6d65985fe8d9454ebfdfda65a01b2867-categories/summary.json`. No raw diagnostic artifacts added to Git.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`: **CATALOG-VALID**, **1671 categories / 13897 methods-files**, no unmapped/stale selectors, **22.811s**, complete cleanup; discovery only, no tests executed. Summary under the same diagnostic root: `20261111-090341-155-5-b5584440a1d84eb99a58c58b034869f2-categories/summary.json`.
+- Independent T103 source review found no actionable findings; it confirmed lease/compensation and admission ordering plus the fresh-read rationale. Independent T106 review found one Important cleanup defect in test-only timeout handling; timed acquisition cancellation and nested cleanup resolved it, and focused re-review found no remaining issues. All required bounded verification is now complete. Windows PowerShell 5.1 remains **UNRUN**; Linux PowerShell 7.6.8 executed the full production daemon and real storage/bootstrap route, not a string extraction or shim.
+- `git diff --check` passed; no leftover owned skill-closure or daemon-render roots. Optimization assessments above remain valid: no new production cache or snapshot reads, one current-root parse per dependency/admission, existing cheap fixtures and one actual daemon render. Measured category times are verification costs, not runtime-speedup claims.
+- Remaining scope: the unverified QTE stale-reference hypothesis is recorded in research.md; no claim about all accepted-turn routes or complete T103/T105/T106 closure. No new publication machinery, identity policy, save migration, selector redesign or broad companion expansion.
+- **Local only.** The prior publication denial was not retried; no push/upload/merge, remote recovery claim, CI run or issue closure. Latest explicit direction was to continue permitted local implementation and verification independently. Remote publication/recovery remain outside this completed local checkpoint.
+
+## Part 9 — QTE terminal current mastery closure (2026-11-11)
+
+Base 4e42b08d2; remote read remains baeb3e6fd11f5f61481eccf850fa5a812dc0c590. No publication retry. This follows the explicit request to test only the remaining QTE hypothesis against the original issue and fix it only if real.
+
+1. Reuse the independent Part7 filesystem fixture and typed QTE terminal API for removal, same-ID replacement, retained/new exact skill controls and pre-existing invalid-mastery refusal. Validate indexed issue, exact restoration, unchanged generation and complete QTE backup cleanup. No GameEngine/reflection.
+2. Call the existing current-only closure inside QteSceneService's existing terminal lease after composition/general validation and after unrelated pre-existing-error filtering. Deduplicate only identical diagnostics using the existing fingerprint. Preserve all compensation and cleanup paths; no new authority model/cache.
+3. Narrow integration-only category: new QTE cases, existing ordinary closure controls and affected QTE proof/restoration controls. Prior 220-case evidence remains valid history; do not rerun unrelated NPC/passive/template categories for this one QTE callsite.
+4. Causal RED/GREEN, fresh selected integration build, official bounded category/discovery, independent review and compact local checkpoint. Record original acceptance-criteria evidence and verification boundaries without inventing work from broad unchecked headings.
+
+Optimization: two current-root reads/parses via the existing closure, once at the final QTE boundary. General validation's raw/snapshot authority cannot substitute for the published pair. No retained cache or mutation added; reuse fixture/bootstrap, one real terminal operation per case and existing error fingerprint.
+
+Part 9 RED: six permanent typed QTE terminal cases ran against the pre-fix production DLL. Four failed for the intended missing-gate defect (removed skill, same-ID replacement, pre-existing unknown mastery and pre-existing confusable mastery all returned success). Two exact retained/new-skill controls passed. The signed snapshot includes active skills and canonical soul realm; only deliberately unrelated missing player-status/lore bootstrap issues are waived. Probe/source artifacts are outside Git in /tmp/issue1533-qte-closure-20261111. The first exploratory compile omitted the StateDistributor namespace; adding the correct existing IO namespace resolved that harness-only error before any behavioral result.
+
+### Part 9 verified local checkpoint (2026-11-11)
+
+- Frozen C# source: `fc1405bbb`; final tested category metadata: **`faa0c3d2fab1d9f6b718d7d31d677e6babc76c56`**. Runtime change is nine lines in the existing QTE terminal gate. No C# changed after the build.
+- Fresh selected integration build: `dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false`: **0 errors**, 153 existing warnings, **5m35.89s**. No unit/frontend project was selected for execution; their unchanged inventory remained available for discovery. No CI/full-suite run.
+- Initial official PlanOnly stopped before discovery/tests because `related` metadata was a string rather than the catalog's required `{id, when}` object. Corrected in `faa0c3d2f`; formal `Read-TestCategoryCatalog` passed. Initial failure log retained outside Git as `plan-only-initial-catalog-error.log`. No behavioral test failed in this step.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild`: **one descriptor, nine methods, 16 cases**, **11.619s**; no tests executed. The category includes six new QTE cases, four existing ordinary closure controls and six existing QTE borrowed-proof/restoration controls. Old category ownership was explicitly narrowed to its five original lifecycle methods rather than silently absorbing the new partial-file tests.
+- Same selected command without `-PlanOnly`: **16/16 Passed**, full selection, zero failures/skips/duplicate IDs, complete runtime and owned-tree cleanup. Wall time **131.470s**, category cost **121.571s**, within its five-minute budget. Captured clean HEAD `faa0c3d2f`, zero changed files. Raw summary: `/tmp/issue1533-qte-closure-20261111/categories/test-categories/20261111-092817-052-5-e363c7e0ccab425689c07f54c597f043-categories/summary.json`.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`: **CATALOG-VALID**, **1672 categories / 13900 methods-files**, no unmapped/stale selectors, **25.103s**, cleanup complete. Discovery only, no tests executed. Summary under the same diagnostic root: `20261111-093103-122-5-8f9aec344e5641b496dbcd5aadad5de5-categories/summary.json`.
+- Independent review found no runtime/test findings; focused re-review accepted the metadata schema correction. Reviewer then independently read the build log, official plan, summary and TRX and ran the formal parser: 16 unique passing cases, complete cleanup and clean tested source confirmed. No remaining review findings. `git diff --check` passed; no leftover owned skill-closure roots.
+- Optimization: reuse of the existing current-only closure and the existing typed fixture; no GameEngine, reflection, new cache, persisted flag or publication system. Two fresh current dependency reads/parses are necessary after raw/snapshot validation. Real terminal validation/restoration coverage is retained despite its measured cost; no runtime-speedup claim.
+- Original acceptance-criteria status is recorded in research.md. The concrete QTE hypothesis is now resolved; no other concrete defect was reproduced. Broader route/parity/privacy criteria remain unproven by this bounded audit rather than declared implemented or broken.
+- **Local only:** prior publication denial not retried; no push, upload, merge, remote-recovery claim, hosted CI or issue closure. Prior 220-case evidence belongs to its earlier frozen source; it is not represented as rerun here.

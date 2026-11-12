@@ -182,6 +182,7 @@ public partial class SaveLoadService
             var canonicalOwnerAuthorityJson =
                 await ValidateCanonicalResourceStateForSaveAsync(
                 canonicalSnapshotLease);
+            await ValidateCanonicalSkillMasteryForSaveAsync(canonicalSnapshotLease);
 
             var state = _stateManager.CurrentState;
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -1074,6 +1075,7 @@ public partial class SaveLoadService
 
         await ValidateSoulStateEntryAsync(soulStateEntry);
         await ValidateArchivedResourceStateAsync(payloadEntries);
+        await ValidateArchivedSkillMasteryAsync(payloadEntries);
 
         var manifestEntry = FindOriginalArchiveEntry(payloadEntries, SaveManifestArchivePath);
         if (manifestEntry == null)
@@ -1225,13 +1227,13 @@ public partial class SaveLoadService
     private async Task<string> ValidateCanonicalResourceStateForSaveAsync(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease)
     {
-        var definitionsJson = await ReadCanonicalResourceFileAsync(
+        var definitionsJson = await ReadCanonicalStateForSaveAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.DefinitionsPath);
-        var stateJson = await ReadCanonicalResourceFileAsync(
+        var stateJson = await ReadCanonicalStateForSaveAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.StatePath);
-        var historyJson = await ReadCanonicalResourceFileAsync(
+        var historyJson = await ReadCanonicalStateForSaveAsync(
             canonicalSnapshotLease,
             ResourceMaterializationContract.HistoryPath);
         return await ValidateResourceDocumentsAsync(
@@ -1239,7 +1241,7 @@ public partial class SaveLoadService
             stateJson,
             historyJson,
             "Canonical save resource authority",
-            path => ReadCanonicalResourceFileAsync(canonicalSnapshotLease, path),
+            path => ReadCanonicalStateForSaveAsync(canonicalSnapshotLease, path),
             requirePersistedAuthorityRoot: true);
     }
 
@@ -1382,7 +1384,7 @@ public partial class SaveLoadService
             $"{authorityName} did not produce canonical owner authority.");
     }
 
-    private async Task<string?> ReadCanonicalResourceFileAsync(
+    private async Task<string?> ReadCanonicalStateForSaveAsync(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
         string path)
     {

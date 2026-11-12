@@ -93,42 +93,55 @@ public partial class ValidationService
                 }
             }
 
-            var authority = MortalSkillReferenceAuthority.Build(knownActiveSkills);
-            var index = 0;
-            foreach (var item in arr.EnumerateArray())
+            ValidatePlayerMasterySkillReferenceIdentityCore(doc.RootElement, masteryPath, knownActiveSkills, issues);
+        }
+    }
+
+    /// <summary>Reuses exact/confusable diagnostics for one supplied mastery root and skill catalog.</summary>
+    /// <param name="root">The already parsed mastery root.</param>
+    /// <param name="masteryPath">Indexed diagnostic source path.</param>
+    /// <param name="knownActiveSkills">Names belonging to this operation's selected authority.</param>
+    /// <param name="issues">Existing core findings to preserve or replace only at the matching reference.</param>
+    private static void ValidatePlayerMasterySkillReferenceIdentityCore(
+        JsonElement root, string masteryPath, IReadOnlySet<string> knownActiveSkills, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("skillMasteryChanges", out var arr) || arr.ValueKind != JsonValueKind.Array)
+            return;
+        var authority = MortalSkillReferenceAuthority.Build(knownActiveSkills);
+        var index = 0;
+        foreach (var item in arr.EnumerateArray())
+        {
+            var itemContext = $"{masteryPath}.skillMasteryChanges[{index++}]";
+            if (item.ValueKind != JsonValueKind.Object ||
+                !item.TryGetProperty("skillName", out var nameNode) ||
+                nameNode.ValueKind != JsonValueKind.String)
             {
-                var itemContext = $"{masteryPath}.skillMasteryChanges[{index++}]";
-                if (item.ValueKind != JsonValueKind.Object ||
-                    !item.TryGetProperty("skillName", out var nameNode) ||
-                    nameNode.ValueKind != JsonValueKind.String)
-                {
-                    continue;
-                }
-
-                var skillName = nameNode.GetString();
-                if (string.IsNullOrWhiteSpace(skillName))
-                    continue;
-
-                var match = authority.Classify(skillName);
-                if (match.Kind != MortalSkillReferenceMatchKind.Confusable)
-                    continue;
-
-                issues.RemoveAll(issue => issue.Code == "skill_mastery_unknown_active_skill" &&
-                    string.Equals(issue.FilePath, $"{itemContext}.skillName", StringComparison.Ordinal));
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.skillName",
-                    IssueSeverity.Error,
-                    "skillMasteryChanges должен ссылаться на exact canonical skillName, а не на case-variant или Unicode-confusable форму",
-                    code: "skill_mastery_confusable_reference",
-                    section: "Skills.Active",
-                    expected: match.IsAmbiguous
-                        ? "exact canonical skillName from game_state/player/skills_active.json (several distinct skills share this normalized form)"
-                        : match.CanonicalName!,
-                    actual: skillName,
-                    repairHint: match.IsAmbiguous
-                        ? "Несколько canonical active skills сводятся к одной normalized форме. Перепиши skillName посимвольно на точное имя из game_state/player/skills_active.json. Не удаляй mastery запись — это rename ссылки, а не удаление прогресса."
-                        : $"Перепиши skillName посимвольно на точное canonical имя '{match.CanonicalName}' из game_state/player/skills_active.json. Не удаляй mastery запись — это rename ссылки, а не удаление прогресса."));
+                continue;
             }
+
+            var skillName = nameNode.GetString();
+            if (string.IsNullOrWhiteSpace(skillName))
+                continue;
+
+            var match = authority.Classify(skillName);
+            if (match.Kind != MortalSkillReferenceMatchKind.Confusable)
+                continue;
+
+            issues.RemoveAll(issue => issue.Code == "skill_mastery_unknown_active_skill" &&
+                string.Equals(issue.FilePath, $"{itemContext}.skillName", StringComparison.Ordinal));
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.skillName",
+                IssueSeverity.Error,
+                "skillMasteryChanges должен ссылаться на exact canonical skillName, а не на case-variant или Unicode-confusable форму",
+                code: "skill_mastery_confusable_reference",
+                section: "Skills.Active",
+                expected: match.IsAmbiguous
+                    ? "exact canonical skillName from game_state/player/skills_active.json (several distinct skills share this normalized form)"
+                    : match.CanonicalName!,
+                actual: skillName,
+                repairHint: match.IsAmbiguous
+                    ? "Несколько canonical active skills сводятся к одной normalized форме. Перепиши skillName посимвольно на точное имя из game_state/player/skills_active.json. Не удаляй mastery запись — это rename ссылки, а не удаление прогресса."
+                    : $"Перепиши skillName посимвольно на точное canonical имя '{match.CanonicalName}' из game_state/player/skills_active.json. Не удаляй mastery запись — это rename ссылки, а не удаление прогресса."));
         }
     }
 

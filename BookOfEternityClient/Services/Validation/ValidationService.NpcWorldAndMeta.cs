@@ -4521,9 +4521,11 @@ public partial class ValidationService
         return null;
     }
 
-    private async Task ValidateNpcFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
+    private async Task ValidateNpcFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues,
+        Action<JsonElement>? parsedRoot = null)
     {
-        if (!ShouldValidateStateFile(filePath))
+        var selected = ShouldValidateStateFile(filePath);
+        if (!selected && parsedRoot == null)
             return;
 
         var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
@@ -4534,6 +4536,7 @@ public partial class ValidationService
             using var doc = JsonDocument.Parse(json);
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
             {
+                if (!selected) return;
                 issues.Add(new ValidationIssue(
                     filePath,
                     IssueSeverity.Error,
@@ -4545,6 +4548,9 @@ public partial class ValidationService
                     repairHint: $"Сохрани {filePath} как JSON object с допустимыми NPC top-level ключами: {string.Join(", ", allowedKeys.OrderBy(x => x))}."));
                 return;
             }
+
+            parsedRoot?.Invoke(doc.RootElement);
+            if (!selected) return;
 
             if (filePath.Equals(EffectCarrierCatalog.NpcPath, StringComparison.OrdinalIgnoreCase) &&
                 doc.RootElement.TryGetProperty(LegacyNpcWoundResponseProperty, out _))
@@ -4615,6 +4621,7 @@ public partial class ValidationService
         }
         catch (JsonException ex)
         {
+            if (!selected) return;
             issues.Add(new ValidationIssue(
                 filePath,
                 IssueSeverity.Error,

@@ -495,14 +495,13 @@ FOR API MODE: All existing restrictions remain functional.
                                 Examine the 'structuredBonuses' array. 
                                 Look for objects where 'bonusType' is 'Characteristic', 'target' matches the characteristic, and 'valueType' is 'Flat'.
                                 
-                                - Passive Skills (MANDATORY CHECK - Dual Source):
+                                - Passive Skills (MANDATORY STRUCTURED CHECK):
                                     a. Primary Source ('structuredBonuses'):
                                        Examine the character's passive skills. 
                                        For each skill, you MUST first look in its 'structuredBonuses' array for objects where 'bonusType' is 'Characteristic', the 'target' matches, and 'valueType' is 'Flat'.
                                     
-                                    b. Legacy Fallback ('playerStatBonus'):
-                                       IF AND ONLY IF a passive skill's 'structuredBonuses' array is empty, null, or does not exist, you MUST then check the legacy 'playerStatBonus' string. 
-                                       If this string contains a parseable flat bonus (e.g., "+5 strength"), you MUST extract and apply that value. You MUST log when you are using this fallback method.
+                                    b. Display-only summary ('playerStatBonus'):
+                                       Never parse 'playerStatBonus' to grant mechanics. If no applicable structured bonus exists, this display summary contributes no flat bonus.
                                     
                                     c. Mastery Bonus for Knowledge Skills:
                                        Crucially, if a passive skill's 'knowledgeDomain' or 'skillDescription' directly relates to the action being performed (e.g., 'Blacksmithing' skill for a crafting check), and implies a direct enhancement, you MUST add a bonus based on its 'masteryLevel'. 
@@ -542,15 +541,13 @@ FOR API MODE: All existing restrictions remain functional.
                                 - Equipped Items: 
                                 Examine the 'structuredBonuses' array. Look for objects where 'bonusType' is 'ActionCheck', 'valueType' is 'Percentage', and the human-readable 'target' applies to the current action.
                                 
-                                - Passive Skills (MANDATORY CHECK - Dual Source):
+                                - Passive Skills (MANDATORY STRUCTURED CHECK):
                                     a. Primary Source ('structuredBonuses'):
                                        Examine the character's passive skills. 
                                        For each skill, you MUST first look in its 'structuredBonuses' array for objects where 'bonusType' is 'ActionCheck', 'valueType' is 'Percentage', and the human-readable 'target' logically applies to the current action.
                                     
-                                    b. Legacy Fallback ('playerStatBonus'):
-                                       IF AND ONLY IF a passive skill's 'structuredBonuses' array is empty or non-existent, you MUST then check the legacy 'playerStatBonus' string. 
-                                       If this string contains a parseable percentage bonus that applies to the current action (e.g., "+10% to persuasion checks"), you MUST extract and apply that percentage. 
-                                       You MUST log when you are using this fallback method.
+                                    b. Display-only summary ('playerStatBonus'):
+                                       Never parse 'playerStatBonus' to grant mechanics. If no applicable structured bonus exists, this display summary contributes no percentage bonus.
 
                                 - Temporary Effects:
                                 Consume the exact percentage contribution published by the client-owned accepted mechanics snapshot for this operation. Never scan raw effect values or remaining lifetime.
@@ -1324,8 +1321,8 @@ FOR API MODE: All existing restrictions remain functional.
                                If no structured bonus is found, check the 'effectDetails' string of all passive skills for a similar narrative rule. 
                                This is a valid location for rule-changing effects.
                             
-                            c. Legacy Fallback ('playerStatBonus'):
-                               Finally, for backward compatibility, if neither of the above is found, check the legacy 'playerStatBonus' string for a clear textual description of this mitigation.
+                            c. Display-only summary ('playerStatBonus'):
+                               Never parse 'playerStatBonus' to grant mechanics or penalty mitigation. It is not a fallback source.
                     
                     4.  Final Adjudication:
                         -   If a mitigating factor fully removes the penalty, no Disadvantage is applied.

@@ -258,3 +258,106 @@ still get their existing shape/field errors. Validation does not mutate inputs.
 Non-goals: global confusable canonical-name rejection, reference-matching changes,
 `npc_core` mirror uniqueness, cross-owner reference ownership (T104), schema or
 provenance changes, migration, new repair architecture or other T102-T106 contours.
+
+
+## Part 5 Slice — Current NPC mastery ownership (T104-A)
+
+**Source**: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533)
+**Branch**: `1533-exact-skill-state-duplicates` | **Date**: 2026-11-10
+
+As a player, I need each current NPC mastery row to refer to a real skill of that
+same NPC and skill kind, so another actor's progression cannot create a phantom
+skill. Existing field checks and new-skill initialization do not reject an extra
+mastery row for NPC B when only NPC A owns that skill.
+
+- **FR-112**: During `NpcStateFiles`, every named `NPCSkillMasteryChanges` /
+  `NPCPassiveSkillMasteryChanges` row MUST resolve to an ordinal-exact active /
+  passive skill owned by that same actor in current canonical NPC carriers:
+  `npc_core.json` `UpdateNPCs` / `NPCsInScene` actor `activeSkills` / `passiveSkills`,
+  or `npc_skills.json` corresponding same-actor `skillChanges`. Same-turn skill
+  additions and retained current core skills count; mastery rows do not create
+  their own authority. A missing owner-local skill, including a name present only
+  for another owner or skill kind, fails with `npc_skill_mastery_unknown_owned_skill`
+  at the indexed mastery `.skillName`, with Actor, section and expected source.
+- **FR-113**: Reuse existing owner identity: ID preferred, name fallback, owner
+  keys compared case-insensitively. Do not alias a name-only row to an ID-keyed
+  owner or let a matching display name override a different ID. Preserve ordinal
+  skill names and NPC whitespace bytes, distinct exact siblings, repeated
+  same-owner groups and independent active/passive collections. Missing/malformed
+  identity or skillName keeps existing shape diagnostics, without fabricated
+  ownership findings. Existing duplicate, field and initialization findings remain
+  independent, and validation never changes input data.
+- **FR-114**: Ownership rejection MUST use the existing repair flow with a bounded
+  hint: inspect that actor's current skill source and progression evidence; never
+  automatically switch owner, invent a skill, delete progress or choose a similar
+  name. Synchronize the Mortal GM rule, main step guidance and worked example.
+
+Acceptance: active and passive cross-owner/orphan/wrong-kind references fail
+without a snapshot or changed input. Exact same-owner core skills and same-turn
+skillChanges pass, including mastery-only updates of retained core skills, repeated
+groups and ordinal siblings. Matching names for two different owners are valid
+when each independently owns the skill. Name fallback and ID precedence remain
+unchanged. Independent malformed-field and duplicate findings survive. A skill
+that exists only in a pre-turn snapshot cannot grant current ownership.
+
+Non-goals: NPC identity alias redesign, core mirror uniqueness, schema or save
+migration, removal-selector semantics, new cache/repair architecture, companion
+expansion, global confusable-name prohibition, or completing all T103-T106.
+
+## Part 6 slice — T105 display summaries cannot grant characteristics
+
+Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+Apply the existing Block_8/current passive profile contract: `playerStatBonus` is
+only display/narrative text, never numerical authority. A passive skill with no
+structured characteristic bonus must contribute zero characteristic bonus even
+when that summary contains a number and a characteristic name. Preserve the
+existing structured permanent/conditional bonuses and accepted effect sources.
+No new schema, effect planner, companion lifecycle, save migration, or knowledge
+check adjudication is introduced. Remove contradictory summary-fallback guidance
+in Blocks 12/14 and provide an executable worked example. This is only a bounded
+T105 contour; broader companion materialization remains open.
+
+## Part 7 slice — T103 current canonical mastery closure
+
+At the existing leased post-normalization accepted-turn gate, every player mastery
+reference must exactly identify a current composed active skill. Snapshot-only,
+removed and same-ID-renamed old names cannot authorize it. Preserve raw-delta
+semantics, retained mastery-only updates and exact/confusable selector handling.
+Reuse this side-effect-free closure check before save creation and archive load
+publication. Reject malformed present skill/mastery containers; both absent is
+valid for pristine/other-realm states. Never delete mastery or guess a replacement
+name. Existing indexed unknown/confusable diagnostics and the current repair flow
+remain authoritative. No persisted stage flag/cache, save migration, selector
+rewrite, NPC lifecycle expansion or whole T103 completion claim.
+
+## Part 8 slice — T106 generated skill template guidance
+
+Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
+The session-generated `MORTAL_SKILL_PROGRESSION_TEMPLATE.md` must explicitly teach
+ordinal case/Unicode skill reference identity and the existing identity packet's
+indexed, same-actor, non-destructive repair discipline. Preserve progression and
+unrelated fields; never invent/rename canonical skills, transfer mastery or guess
+an ambiguous target. Preserve an entry belonging to another real skill and follow
+the packet's separate initialization instruction. Descriptive ambiguous expected
+text is not a replacement name. Completion uses current request metadata only
+after all corrections are resolved; a spelling repair needs no training purchase.
+
+Acceptance exercises the actual complete daemon and its generated manifest,
+template and README from an independently bootstrapped session. Preserve Russian
+text and deterministic owned process/stream/lease/root cleanup. Linux uses the
+existing installed `pwsh` choice; native Windows PowerShell 5.1 remains separately
+unverified. Retain the daemon UTF-8 BOM. The existing indexed multi-actor/ambiguity
+worked example and launchers remain authoritative without duplicate examples.
+No runtime identity, save/load, owner, removal-selector or afterlife policy changes.
+
+## Part 9 slice — T103 QTE terminal mastery closure
+
+The original #1533 fully composed-result/stale-reference contract also applies to
+the existing QTE terminal publication path. A real typed probe confirmed that its
+normalizer consumes exact skill removal/replacement while snapshot-aware general
+validation still accepts the old mastery reference. Reuse Part 7's current-only
+closure after QTE normalization under the caller's existing lease, before success.
+Its integrity failures cannot be waived as pre-existing state issues; unrelated
+existing diagnostics keep the established waiver behavior. Preserve the current
+terminal restoration and cleanup machinery, all mastery bytes, and exact selector
+semantics. No new QTE/repair/publication system or broader lifecycle expansion.

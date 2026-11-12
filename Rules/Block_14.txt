@@ -167,11 +167,10 @@
 
                             Step 2: Calculate Bonus from Passive Skills
                             a)  'BonusFromPassiveSkills': 
-                            Sum ALL applicable percentage bonuses from the character's active Passive Skills by checking three sources for each skill:
+                            Sum ALL applicable percentage bonuses from the character's active Passive Skills by checking these two sources for each skill:
                                 - Primary Source: The 'combatEffect' array.
                                 - Secondary Source: The 'structuredBonuses' array.
-                                - Legacy Fallback: 
-                                If a skill has no relevant bonuses in either of the primary sources, you MUST then check the legacy 'playerStatBonus' string for any applicable damage bonuses and add them to the total.
+                                - Never parse 'playerStatBonus' to grant mechanics. Without an applicable bonus in those sources, this display summary contributes no damage bonus.
                             
                             b)  Applicability: A skill's bonus applies if its effect 'targetType' (e.g., 'damage (slashing)', 'damage (all)') matches or includes the damage type of the current attack.
 
@@ -303,10 +302,10 @@
                             a) 'AdditionalEquipmentBonuses%': Sum the resistance bonuses from ALL OTHER equipped items (excluding the one identified in Step 2) that apply to the 'IncomingDamageType' or 'all' types.
                             
                             c) 'PassiveSkillBonuses%': 
-                            Sum ALL applicable resistance bonuses from the character's active Passive Skills by checking three sources for each skill:
+                            Sum ALL applicable resistance bonuses from the character's active Passive Skills by checking these two sources for each skill:
                             - Primary Source: The 'combatEffect' array.
                             - Secondary Source: The 'structuredBonuses' array.
-                            - Legacy Fallback: If a skill has no relevant bonuses in either of the primary sources, you MUST then check the legacy 'playerStatBonus' string for any applicable resistance bonuses.
+                            - Never parse 'playerStatBonus' to grant mechanics. Without an applicable bonus in those sources, this display summary contributes no resistance bonus.
                             
                             c) 'TemporaryEffectsBonuses%': Use the exact resistance contribution published by the accepted mechanics snapshot for the incoming damage type. Its signed contribution already accounts for buffs and debuffs; do not reconstruct it from carrier data.
                             d) 'AdditionalBonuses% = AdditionalEquipmentBonuses% + PassiveSkillBonuses% + TemporaryEffectsBonuses%'.

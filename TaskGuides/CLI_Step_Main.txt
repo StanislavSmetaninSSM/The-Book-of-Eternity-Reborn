@@ -1529,3 +1529,17 @@ legacy IDs, effects, History, a new result/witness or a replacement request. Cur
 comparison DATA is not live authority and does not replay deleted components.
 
 Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.
+
+Current NPC mastery ownership (#1533 T104-A): each NPCSkillMasteryChanges /
+NPCPassiveSkillMasteryChanges.skillName must be ordinal-exact in the same NPC's
+current npc_core.json UpdateNPCs/NPCsInScene.activeSkills/passiveSkills or the
+matching npc_skills.json NPCActiveSkillChanges/NPCPassiveSkillChanges.skillChanges.
+A retained core skill allows a mastery-only update. Match NPCId first, NPCName only
+as fallback; a name-only owner is not an alias for an ID owner. Preserve exact
+skill spelling and whitespace. Another owner, another skill kind, or a pre-turn
+snapshot alone cannot grant authority. Rejection: npc_skill_mastery_unknown_owned_skill
+at the indexed mastery skillName, with the owner and expected current source.
+Inspect that actor's current source and progression evidence. Never automatically
+switch owner, invent a skill, delete progress, or choose a similar name. If the
+source does not determine one correction, request clarification. Existing shape,
+exact-duplicate and new-skill initialization diagnostics remain independent.
