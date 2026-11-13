@@ -3,6 +3,9 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     private readonly SpiritualOriginalDraftInputs? _sameTurnOwnerInputs;
+    // Completed candidate DATA for this isolated owner-validation invocation only.
+    // Publication still authenticates its own live source and raw-input fences.
+    private readonly MortalNpcAcceptedSkillInput? _sameTurnOwnerNpcSkillInput;
 
     /// <summary>
     /// Reads current same-turn owner data from the bound original draft, when present.

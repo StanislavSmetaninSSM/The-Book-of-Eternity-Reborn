@@ -127,6 +127,28 @@ public partial class ValidationService
                 await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"),
                 await ReadSameTurnOwnerCurrentTextAsync(MortalNpcWorldProgressionPolicy.Path));
         authority = authority with { ProgressionSource = CreateNpcProgressionSource(lookup.Manifest) };
+        if (_sameTurnOwnerNpcSkillInput is { } completed)
+        {
+            // Source assembly has already authenticated and composed this exact selected
+            // input. Reuse its result, not a permission token or a cached direct-mutation
+            // exemption. Compare the raw/original roots and authority already read here.
+            if (!JsonNode.DeepEquals(currentRoot, completed.RawCore) ||
+                !JsonNode.DeepEquals(preTurnRoot, completed.OriginalCore) ||
+                !string.Equals(MortalNpcAcceptedSkillInput.ComputeAuthorityFingerprint(authority),
+                    completed.AuthorityFingerprint, StringComparison.Ordinal))
+                issues.Add(CreateInvalidNpcCoreChangesAuthorityIssue("completed NPC skill candidate differs from selected raw/original authority"));
+            return issues;
+        }
+
+        var sidecarText = await ReadSameTurnOwnerCurrentTextAsync(MortalNpcAcceptedSkillInput.SidecarPath);
+        JsonObject? currentSidecar = null;
+        if (sidecarText is not null && !TryReadNpcProgressionOriginal(sidecarText, out currentSidecar))
+        {
+            issues.Add(new ValidationIssue(MortalNpcAcceptedSkillInput.SidecarPath, IssueSeverity.Error,
+                "Ordinary NPC skill commands require one exact object with unique properties.",
+                code: "npc_skill_candidate_invalid_root", section: "NPCSkills"));
+            return issues;
+        }
         var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
             currentRoot,
             await ReadValidatedPendingTurnSnapshotFileAsync(
@@ -135,6 +157,26 @@ public partial class ValidationService
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
                 TrainingRequestState.PendingRequestPath));
+        if (currentSidecar is not null && MortalNpcAcceptedSkillInput.HasPending(currentSidecar))
+        {
+            if (authority.ProgressionSource?.Realm != "mortal_world")
+            {
+                issues.Add(CreateInvalidNpcCoreChangesAuthorityIssue("NPC skills require current authenticated Mortal source"));
+                return issues;
+            }
+            var originalSidecar = await ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest, writeLease: null);
+            if (originalSidecar is null)
+            {
+                issues.Add(new ValidationIssue(MortalNpcAcceptedSkillInput.SidecarPath, IssueSeverity.Error,
+                    "Ordinary NPC skills require an authenticated original sidecar or signed absence.",
+                    code: "npc_skill_candidate_original_unavailable", section: "NPCSkills"));
+                return issues;
+            }
+            var candidate = MortalNpcAcceptedSkillCandidate.Compose(preTurnRoot, originalSidecar.Root,
+                currentRoot, currentSidecar, authority, acceptedTurnAuthority);
+            issues.AddRange(candidate.Issues);
+            return issues;
+        }
         var evaluation = NpcCoreChangesContract.Evaluate(
             currentRoot,
             preTurnRoot,
@@ -175,6 +217,12 @@ public partial class ValidationService
             _rawCoreBytes = rawCoreBytes?.ToArray(); _rawSidecarBytes = rawSidecarBytes?.ToArray();
             _originalTradePending = originalTradePending; _originalTrainingPending = originalTrainingPending;
             _worldPolicyFingerprint = worldPolicyFingerprint;
+        }
+
+        /// <summary>Compares the reducer's retained policy authority with this publication source.</summary>
+        internal void RequirePolicyAuthority(NpcCoreChangesContract.Authority actualReductionAuthority)
+        {
+            // Compile-only seam for the retained-authority regression; comparison follows causal RED.
         }
 
         /// <summary>Requires the reducer's actual backup to be the authenticated original, before item-only overlays.</summary>

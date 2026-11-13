@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-retained-policy",
+      "responsibility": "#1538 real issued publication source compares retained reduction policy and allowed-key authority to its current semantic witness.",
+      "excludes": "Typed retained-authority proof only; not full treatment/common publication qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionPublicationTests.RetainedPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.PublicationSource_RetainedReductionAuthorityMustMatchIssuedCurrentPolicy"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-world-policy-data",
       "responsibility": "#1538 closed world-policy text decoding and detached deterministic policy/allowed-key fingerprints.",
       "excludes": "No publication, selected-read-view or live-lease qualification.",

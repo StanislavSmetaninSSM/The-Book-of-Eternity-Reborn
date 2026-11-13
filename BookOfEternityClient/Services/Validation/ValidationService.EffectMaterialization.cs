@@ -381,7 +381,8 @@ public partial class ValidationService
                 preTurnSources,
                 acceptedSources,
                 issues,
-                currentInputs);
+                currentInputs,
+                npcSkillInput);
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
                 return;
 
@@ -528,7 +529,8 @@ public partial class ValidationService
             preTurnSources,
             acceptedSources,
             issues,
-            currentInputs);
+            currentInputs,
+            npcSkillInput);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return;
 
@@ -752,6 +754,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Immutable named original draft, or <see langword="null"/> for physical current reads.
     /// </param>
+    /// <param name="npcSkillInput">Completed ordinary NPC candidate from this same source-assembly invocation.</param>
     /// <returns>
     /// Validated same-turn exports, or empty exports when a changed owner is invalid.
     /// </returns>
@@ -760,7 +763,8 @@ public partial class ValidationService
             IReadOnlyDictionary<string, JsonNode?> preTurnSources,
             IReadOnlyDictionary<string, JsonNode?> acceptedSources,
             List<ValidationIssue> issues,
-            SpiritualOriginalDraftInputs? currentInputs)
+            SpiritualOriginalDraftInputs? currentInputs,
+            MortalNpcAcceptedSkillInput? npcSkillInput)
     {
         var changedOwnerPaths = EffectAcceptedTurnInputComposer
             .SameTurnOwnerAuthorityPaths
@@ -829,8 +833,9 @@ public partial class ValidationService
                     exception.Message));
                 return EffectAcceptedOwnerExports.Empty;
             }
-            ownerValidator = new ValidationService(_fs, _logger, currentInputs);
         }
+        if (currentInputs is not null || npcSkillInput is not null)
+            ownerValidator = new ValidationService(_fs, _logger, currentInputs, npcSkillInput);
 
         var genericOwnerPaths = changedOwnerPaths
             .Where(static path => !string.Equals(

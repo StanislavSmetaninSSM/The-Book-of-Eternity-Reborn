@@ -574,12 +574,14 @@ public partial class ValidationService
     /// <param name="sameTurnOwnerInputs">
     /// Retained current draft, or <see langword="null"/> for physical current reads.
     /// </param>
+    /// <param name="npcSkillInput">Already completed ordinary NPC candidate from the same selected input view.</param>
     private ValidationService(FileSystemManager fs, ILogger<ValidationService> logger,
-        SpiritualOriginalDraftInputs? sameTurnOwnerInputs)
+        SpiritualOriginalDraftInputs? sameTurnOwnerInputs, MortalNpcAcceptedSkillInput? npcSkillInput = null)
     {
         _fs = fs;
         _logger = logger;
         _sameTurnOwnerInputs = sameTurnOwnerInputs;
+        _sameTurnOwnerNpcSkillInput = npcSkillInput;
     }
 
     /// <summary>
