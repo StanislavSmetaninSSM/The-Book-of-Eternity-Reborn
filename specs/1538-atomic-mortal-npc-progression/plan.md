@@ -87,3 +87,30 @@ Next: rebuild affected test assemblies, run only numeric/guidance categories and
 catalog discovery, then independent P1 review. The unchanged existing core suite
 need not be repeated. No speedup claim: trivial numeric/profile work has no cache;
 current parsed baseline DATA is reused and publication/source gates are untouched.
+
+### P1 accepted bounded checkpoint
+
+Final source 80e8a3630bc3f7c062fde7151c4224ba318db84f: official numeric + guidance
+categories completed 65/65 PASS (64 numeric/command/example and 1 actual daemon
+render), 20.960s; no skips/duplicates, complete owned cleanup. The first invocation
+passed a comma-joined category as one shell argument and was rejected before any
+workload; the correct PowerShell array invocation passed. Unit/integration builds
+0 errors, 82/118 warnings, 62.24/38.59s. Catalog discovery passed 1,680 categories /
+13,977 methods/files, 10.898s, no tests executed. PE/PDB joins passed; all current
+non-generated source checksums match (runtime 1,225, unit 773, integration 1,054).
+The two runtime build copies differ only in generated AssemblyInfo timestamp.
+Linux SDK 10.0.100, net8 runtime and PowerShell 7 from the current prepared tools;
+Windows execution and clean-source rebuild remain unqualified.
+
+Independent fresh-context GPT-6.1 Sol XHigh reviewed the complete P1 diff and
+actual logs: no Critical/Important findings, accepted P1 only. Optimization and
+selection were accepted. T002/T003 are complete. P2/P3 remain open; no merge or
+issue closure. Next: thread trusted current Mortal source context through the
+existing validator and normalization owner, then bind dependent changes/replay.
+
+P2 trade investigation rejects a premature derived-tier equality change: current
+inventory contract intentionally accepts an explicitly authored Good tier even
+when the computed suggestion is Standard (existing level10/trade14/relation80
+fixture). Keep this established authority. Prove real slot-count freshness at
+level15->16 (7->8 slots), plus teacher source-hash freshness, instead of inventing
+an unconditional inventory regeneration or a new tier rule.
