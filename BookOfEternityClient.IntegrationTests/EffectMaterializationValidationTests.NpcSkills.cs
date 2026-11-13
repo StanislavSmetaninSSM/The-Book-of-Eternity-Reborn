@@ -35,6 +35,32 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Fact]
+    public async Task RawNpcSkillGrant_SignedAbsentOriginalSidecarAuthorizesFirstGrant()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await PrepareNpcSkillGrant(context, originalSidecarAbsent: true);
+        var manifest = (await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"))!.AsObject();
+        Assert.False(manifest["files"]!.AsObject().ContainsKey(PendingNpcSkillsPath));
+        Assert.False(manifest["originalPathPresenceV1"]![PendingNpcSkillsPath]!.GetValue<bool>());
+        var before = await context.CaptureBytesAsync(NpcSkillCorePath, PendingNpcSkillsPath,
+            EffectMaterializationTestContext.CommandPath, EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath);
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(context.FileSystem);
+        Assert.NotNull(handoff);
+        var plan = Assert.IsType<EffectAcceptedTurnPlan>(handoff!.Result.Plan);
+        Assert.Equal(GrantedNpcSkillId, Assert.Single(plan.ActiveEffects)["source"]!["sourceId"]!.GetValue<string>());
+        var scope = Assert.IsType<EffectRollSkillScopeAuthority>(plan.SkillScopeAuthority);
+        var owner = new EffectTargetKey("mortal_world", "npc", NpcSkillOwner);
+        Assert.True(scope.ResolveCurrent(owner, GrantedNpcSkillId, "test.current").IsUsable);
+        Assert.False(scope.ResolveForNewBinding(owner, GrantedNpcSkillId, "test.offered").IsUsable);
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
+    [Fact]
     public async Task RawNpcSkillRemoval_RevokesExistingFocusedScopeBeforePublication()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -109,7 +135,7 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 
-    private static async Task PrepareNpcSkillGrant(EffectMaterializationTestContext context)
+    private static async Task PrepareNpcSkillGrant(EffectMaterializationTestContext context, bool originalSidecarAbsent = false)
     {
         // Reuse the production-supported complete effect-source skill fixture, then move
         // its detached profile into a pending NPC grant, not another canonical source.
@@ -120,8 +146,27 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath,
             new JsonObject { ["activeSkillChanges"] = new JsonArray(), ["removeActiveSkills"] = new JsonArray() });
         await context.WriteJsonAsync(NpcSkillCorePath, MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner));
-        await context.WriteJsonAsync(PendingNpcSkillsPath, EmptyNpcSkillCommands());
+        if (originalSidecarAbsent)
+        {
+            context.FileSystem.DeleteFile(PendingNpcSkillsPath);
+            Assert.Null(await context.FileSystem.ReadFileBytesAsync(PendingNpcSkillsPath));
+        }
+        else
+            await context.WriteJsonAsync(PendingNpcSkillsPath, EmptyNpcSkillCommands());
         await context.CaptureValidatedPendingSnapshotAsync();
+        if (originalSidecarAbsent)
+        {
+            // Extend the genuine captured manifest with observed optional-path absence,
+            // then re-sign using the same test authority used by the context itself.
+            const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+            var manifest = (await context.ReadJsonAsync(manifestPath))!.AsObject();
+            Assert.False(manifest["files"]!.AsObject().ContainsKey(PendingNpcSkillsPath));
+            manifest["originalPathPresenceV1"]![PendingNpcSkillsPath] = false;
+            manifest["manifestPayloadHash"] = string.Empty;
+            manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+            await context.WriteJsonAsync(manifestPath, manifest);
+            await context.SyncPendingSnapshotAuthorityAsync();
+        }
         var pending = EmptyNpcSkillCommands();
         pending["NPCActiveSkillChanges"] = new JsonArray(new JsonObject
         {

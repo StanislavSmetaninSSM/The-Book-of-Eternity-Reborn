@@ -92,7 +92,8 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException("Ordinary NPC skill publication requires its authenticated original candidate.");
             _npcProgressionSource.RequireSkillBaseline(
                 await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups),
-                await ReadBackupObjectAsync(MortalNpcAcceptedSkillInput.SidecarPath, backups));
+                await ReadBackupObjectAsync(MortalNpcAcceptedSkillInput.SidecarPath, backups),
+                backups?.ContainsKey(MortalNpcAcceptedSkillInput.SidecarPath) == true);
             await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
         }
         if (await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath) is not JsonObject root) return;

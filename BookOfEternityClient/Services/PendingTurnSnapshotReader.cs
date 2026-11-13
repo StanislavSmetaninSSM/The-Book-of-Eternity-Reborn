@@ -55,6 +55,13 @@ internal static partial class PendingTurnSnapshotPathPresenceV1
     private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
         Array.AsReadOnly(BeforeDiagnosisClosedLogicalPaths.Concat([WoundAcceptedTurnSnapshotContract.PendingResolutionPath]).ToArray());
 
+    internal const string MortalNpcSkillsPath = "game_state/npcs/npc_skills.json";
+    // Ordinary Mortal publication can create its first skill sidecar. Signed absence must be
+    // captured before that write; existing base/combat/diagnosis observation families stay intact.
+    private static readonly ReadOnlyCollection<string> MortalNpcSkillClosedLogicalPaths =
+        Array.AsReadOnly(ClosedLogicalPaths.Concat([MortalNpcSkillsPath]).ToArray());
+    internal static IReadOnlyList<string> MortalNpcSkillLogicalPaths => MortalNpcSkillClosedLogicalPaths;
+
     // Two currently produced observation forms. A combat projection selects the
     // extra closed read set before capture; this grants no combat permission.
     private static readonly ReadOnlyCollection<string> CombatClosedLogicalPaths =
@@ -63,7 +70,8 @@ internal static partial class PendingTurnSnapshotPathPresenceV1
 
     private static readonly IReadOnlyList<IReadOnlyList<string>> CanonicalDiagnosisForms = BuildCanonicalDiagnosisForms();
     internal static IReadOnlyList<string> ObservedLogicalPaths { get; } = Array.AsReadOnly(CombatClosedLogicalPaths
-        .Concat(CanonicalDiagnosisForms.SelectMany(paths => paths)).Distinct(StringComparer.Ordinal).ToArray());
+        .Concat(CanonicalDiagnosisForms.SelectMany(paths => paths)).Concat(MortalNpcSkillClosedLogicalPaths)
+        .Distinct(StringComparer.Ordinal).ToArray());
 
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
     internal static IReadOnlyList<string> CombatLogicalPaths => CombatClosedLogicalPaths;
@@ -105,7 +113,7 @@ internal static partial class PendingTurnSnapshotPathPresenceV1
         IReadOnlyList<string> paths)
     {
         var keys = paths.ToHashSet(StringComparer.Ordinal);
-        if (keys.Count != paths.Count || !(keys.SetEquals(LogicalPaths) || keys.SetEquals(CombatLogicalPaths) || IsCanonicalDiagnosisForm(keys)))
+        if (keys.Count != paths.Count || !(keys.SetEquals(LogicalPaths) || keys.SetEquals(MortalNpcSkillLogicalPaths) || keys.SetEquals(CombatLogicalPaths) || IsCanonicalDiagnosisForm(keys)))
             throw new InvalidDataException("Unknown original source observation family.");
         return CreateForPaths(files, snapshotFileHashes, paths);
     }
@@ -586,6 +594,7 @@ internal static partial class PendingTurnSnapshotReader
 
         var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var mortalNpcSkills = PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths.ToHashSet(StringComparer.Ordinal);
         var combat = PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
         var legacy = PendingTurnSnapshotPathPresenceV1.LegacyLogicalPaths
@@ -601,6 +610,7 @@ internal static partial class PendingTurnSnapshotReader
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
         if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
+              (manifest.OriginalPathPresenceV1.Count == mortalNpcSkills.Count && actual.SetEquals(mortalNpcSkills)) ||
               (manifest.OriginalPathPresenceV1.Count == combat.Count && actual.SetEquals(combat)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeDiagnosis.Count && actual.SetEquals(beforeDiagnosis)) ||
               (manifest.OriginalPathPresenceV1.Count == beforeDiagnosisCombat.Count && actual.SetEquals(beforeDiagnosisCombat)) ||

@@ -42,7 +42,12 @@ internal static partial class PendingTurnSnapshotPathPresenceV1
         // every selected original source/absence against actual declarations.
         if (request.SpiritualHealing?[CanonicalDiagnosisHint] is not JsonValue hint ||
             !hint.TryGetValue<bool>(out var include) || !include)
-            return GetLogicalPaths(HasCombatProjection(request.SpiritualHealing));
+        {
+            var combat = HasCombatProjection(request.SpiritualHealing);
+            return !combat && request.ProgressionControl?.CurrentRealm is "Mortal World" or "mortal_world"
+                ? MortalNpcSkillLogicalPaths
+                : GetLogicalPaths(combat);
+        }
         files.EnsureCanonicalWriteLeaseActive(lease); files.VerifyCurrentSessionOperation(lease);
         async Task<JsonObject> Root(string path)
         {

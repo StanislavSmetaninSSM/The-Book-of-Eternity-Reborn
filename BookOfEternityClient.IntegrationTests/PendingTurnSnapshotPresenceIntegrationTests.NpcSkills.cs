@@ -49,4 +49,47 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
             Assert.Throws<KeyNotFoundException>(() => read.Snapshot.ReadRequiredBytes(skillsPath));
         }
     }
+    [Theory]
+    [InlineData("mortal_world", true)]
+    [InlineData("Chaos Sea", false)]
+    [InlineData("Shining Abode", false)]
+    public async Task LiveProducer_NpcSkillsObservationIsMortalOnly(string realm, bool observesSkills)
+    {
+        await using var context = await CreateSeededContextAsync();
+        await new LiveTurnPreparationService(context.FileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "presence-realm", RequestId = "presence-realm-request", TurnNumber = 42,
+            CurrentRealm = realm, PlayerAction = "Observe realm-specific original sources.", PreGeneratedDices1d20 = [7]
+        });
+        var manifest = await ReadManifestAsync(context);
+        var paths = manifest["originalPathPresenceV1"]!.AsObject().Select(pair => pair.Key).Order(StringComparer.Ordinal);
+        Assert.Equal((observesSkills ? PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths :
+            PendingTurnSnapshotPathPresenceV1.LogicalPaths).Order(StringComparer.Ordinal), paths);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var read = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths,
+                [PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath]));
+        Assert.Equal(observesSkills, read.Success);
+        if (!observesSkills)
+            Assert.Contains(read.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven");
+    }
+
+    [Fact]
+    public async Task PriorBasePresence_RemainsReadableWithoutProvingNpcSkillAbsence()
+    {
+        await using var context = await CreateSeededContextAsync();
+        await PrepareLiveAsync(context);
+        var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
+        // Deliberate reader-contract reconstruction of the prior exact closed form, never gameplay evidence.
+        await ResignAsync(context, manifest);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease, RequiredPaths).Success);
+        var selected = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths,
+                [PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath]));
+        Assert.False(selected.Success);
+        Assert.Contains(selected.Issues, issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven");
+    }
+
 }

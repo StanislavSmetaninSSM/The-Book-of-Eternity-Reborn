@@ -123,6 +123,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         var observations = manifest["originalPathPresenceV1"]!.AsObject();
         Assert.True(observations.Remove(SpiritualWoundCaptureCheckpointState.StatePath));
@@ -160,6 +161,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         var observations = manifest["originalPathPresenceV1"]!.AsObject();
         Assert.True(observations.Remove(MortalWoundOccurrenceState.StatePath));
@@ -199,6 +201,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
             await context.WriteExactBytesAsync(receiptPath, originalBytes);
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(receiptPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalWoundOccurrenceState.StatePath));
@@ -233,6 +236,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
         Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(MortalQteDecisionPublication.StatePath));
         Assert.Equal(21, manifest["originalPathPresenceV1"]!.AsObject().Count);

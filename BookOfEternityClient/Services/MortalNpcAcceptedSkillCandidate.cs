@@ -261,14 +261,16 @@ internal sealed class MortalNpcAcceptedSkillInput
     internal JsonObject ConsumedSidecar => _roots[5].DeepClone().AsObject();
     internal string Fingerprint { get; }
     internal string AuthorityFingerprint { get; }
+    internal bool OriginalSidecarExists { get; }
 
     private MortalNpcAcceptedSkillInput(JsonObject[] roots, NpcCoreChangesContract.Authority authority,
-        string? tradePending, string? trainingPending)
+        string? tradePending, string? trainingPending, bool originalSidecarExists)
     {
+        OriginalSidecarExists = originalSidecarExists;
         _roots = roots.Select(root => root.DeepClone().AsObject()).ToArray();
         AuthorityFingerprint = ComputeAuthorityFingerprint(authority);
         Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[] { "mortal_npc_accepted_skill_input:v1", tradePending, trainingPending, AuthorityFingerprint }
+            new string?[] { "mortal_npc_accepted_skill_input:v2", originalSidecarExists ? "present" : "absent", tradePending, trainingPending, AuthorityFingerprint }
                 .Concat(_roots.Select(WoundAcceptedTurnFingerprintWriter.CanonicalJson)).ToArray());
     }
 
@@ -287,13 +289,14 @@ internal sealed class MortalNpcAcceptedSkillInput
 
     internal static MortalNpcAcceptedSkillInput? Create(JsonObject originalCore, JsonObject originalSidecar,
         JsonObject rawCore, JsonObject rawSidecar, NpcCoreChangesContract.Authority authority,
-        string? originalTradePendingJson, string? originalTrainingPendingJson, out IReadOnlyList<ValidationIssue> issues)
+        string? originalTradePendingJson, string? originalTrainingPendingJson, out IReadOnlyList<ValidationIssue> issues,
+        bool originalSidecarExists = true)
     {
         var accepted = MortalActorAcceptedTurnAuthority.Create(rawCore, originalTradePendingJson, originalTrainingPendingJson);
         var result = MortalNpcAcceptedSkillCandidate.Compose(originalCore, originalSidecar, rawCore, rawSidecar, authority, accepted);
         issues = result.Issues;
         return result.IsValid ? new([originalCore, originalSidecar, rawCore, rawSidecar, result.Core!, result.Sidecar!],
-            authority, originalTradePendingJson, originalTrainingPendingJson) : null;
+            authority, originalTradePendingJson, originalTrainingPendingJson, originalSidecarExists) : null;
     }
 
     internal static bool HasPending(JsonObject root) => root.Any(pair =>

@@ -1,3 +1,7 @@
+## Signed absence producer/consumer WIP, 2026-11-13
+
+Actual live producer initial two cases give 0 PASS / 2 FAIL (missing original sidecar observation) on runtime035a. New Mortal-only 24-path closed form preserves old base/combat/diagnosis forms. Shared consumer reads signed absence only with no file AND no hash entry; reviewer caught the latter consistency requirement. Existence enters input identity and backup absence remains distinct from malformed content. Consumer signed-absence effect case and additional producer/legacy controls are unrun, not causal claims. Common publication remains outside this checkpoint.
+
 ## Signed absence causal gate, 2026-11-13
 
 Runtime 035a: publication 13/14 PASS; only signed-absent first-skill success fails as predicted. Existing focused effect controls pass 3/3. Two new actual live producer presence cases are source-only, not yet executed. No broader acceptance.

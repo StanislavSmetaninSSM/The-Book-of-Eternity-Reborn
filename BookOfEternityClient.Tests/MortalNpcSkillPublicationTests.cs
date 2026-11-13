@@ -150,6 +150,40 @@ public sealed class MortalNpcSkillPublicationTests
         await AssertConsumed(fixture);
     }
 
+    [Fact]
+    public async Task Coordinator_SignedAbsentSidecarWithOrphanHashRefusesDespiteValidAuthentication()
+    {
+        using var fixture = await Fixture.Create(includeSkillSidecar: true,
+            originalSkillSidecarExists: false);
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifest = await Read(fixture, manifestPath);
+        Assert.False(manifest["files"]!.AsObject().ContainsKey(SkillsPath));
+        Assert.False(manifest["originalPathPresenceV1"]![SkillsPath]!.GetValue<bool>());
+        manifest["snapshotFileHashes"]![SkillsPath] = PendingTurnSnapshotAuthority.ComputeSha256("{}");
+        manifest["manifestPayloadHash"] = string.Empty;
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await fixture.Files.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fixture.Files);
+
+        // The same re-signed manifest still authenticates an ordinary progression
+        // source. The later refusal must be the contradictory sidecar observation,
+        // not an invalid manifest hash, stale request, or missing detached signature.
+        await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var source = await fixture.Validator.PrepareNpcProgressionPublicationAsync(lease,
+                await fixture.Files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath));
+            Assert.Empty(source.Issues);
+            Assert.NotNull(source.Context);
+        }
+        await WritePending(fixture, mastery: false);
+        var before = await fixture.CaptureCanonical();
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_core_changes_invalid_json" &&
+            issue.Actual == "authenticated original NPC skill sidecar unavailable");
+        await fixture.AssertCanonicalUnchanged(before);
+    }
+
     [Theory]
     [InlineData("uncovered")]
     [InlineData("presentMissing")]

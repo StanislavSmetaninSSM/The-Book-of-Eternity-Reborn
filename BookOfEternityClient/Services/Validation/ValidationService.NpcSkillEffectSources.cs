@@ -35,12 +35,11 @@ public partial class ValidationService
                 "npc_skill_candidate_core_unavailable", "authenticated original and raw current NPC core", "missing or non-object"));
             return null;
         }
-        var originalText = await ReadValidatedPendingTurnSnapshotFileAsync(manifest,
-            MortalNpcAcceptedSkillInput.SidecarPath, writeLease);
-        if (!TryReadNpcProgressionOriginal(originalText, out var originalSidecar))
+        var originalSidecar = await ReadAuthenticatedNpcSkillOriginalAsync(manifest, writeLease);
+        if (originalSidecar is null)
         {
             issues.Add(NewEffectIssue(MortalNpcAcceptedSkillInput.SidecarPath,
-                "npc_skill_candidate_original_unavailable", "present authenticated clean original sidecar", "missing or invalid"));
+                "npc_skill_candidate_original_unavailable", "authenticated clean original sidecar or signed absence", "missing or invalid"));
             return null;
         }
         string? Root(string path) => current.TryGetValue(path, out var root) ? root?.ToJsonString() : null;
@@ -52,8 +51,8 @@ public partial class ValidationService
             with { ProgressionSource = CreateNpcProgressionSource(manifest) };
         var trade = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, NpcTradeRequestState.PendingRequestPath, writeLease);
         var training = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, TrainingRequestState.PendingRequestPath, writeLease);
-        var input = MortalNpcAcceptedSkillInput.Create(originalCore, originalSidecar!, rawCore, rawSidecar!,
-            authority, trade, training, out var candidateIssues);
+        var input = MortalNpcAcceptedSkillInput.Create(originalCore, originalSidecar.Root, rawCore, rawSidecar!,
+            authority, trade, training, out var candidateIssues, originalSidecar.Exists);
         issues.AddRange(candidateIssues);
         return input;
     }

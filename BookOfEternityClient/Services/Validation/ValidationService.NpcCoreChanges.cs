@@ -181,11 +181,17 @@ public partial class ValidationService
                 throw new InvalidDataException("NPC progression reduction baseline differs from the authenticated original NPC core.");
         }
 
-        internal void RequireSkillBaseline(JsonObject? core, JsonObject? sidecar)
+        internal void RequireSkillBaseline(JsonObject? core, JsonObject? sidecar, bool sidecarBackupEntryExists)
         {
             if (SkillInput is null) return;
             RequireBaseline(core);
-            if (sidecar is null || !JsonNode.DeepEquals(SkillInput.OriginalSidecar, sidecar))
+            if (!SkillInput.OriginalSidecarExists)
+            {
+                if (sidecarBackupEntryExists)
+                    throw new InvalidDataException("Proved-absent original NPC skill sidecar must have no reducer backup entry.");
+                return;
+            }
+            if (!sidecarBackupEntryExists || sidecar is null || !JsonNode.DeepEquals(SkillInput.OriginalSidecar, sidecar))
                 throw new InvalidDataException("NPC skill backup differs from the authenticated original sidecar.");
         }
 
@@ -258,11 +264,10 @@ public partial class ValidationService
                 if (!string.Equals(SkillInput.AuthorityFingerprint,
                     MortalNpcAcceptedSkillInput.ComputeAuthorityFingerprint(currentAuthority), StringComparison.Ordinal))
                     throw new InvalidDataException("NPC skill current-world authority changed before publication completed.");
-                var sidecar = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest,
-                    MortalNpcAcceptedSkillInput.SidecarPath, _lease);
-                if (!TryReadNpcProgressionOriginal(sidecar, out var sidecarRoot))
-                    throw new InvalidDataException("Authenticated original NPC skill sidecar is missing or changed.");
-                RequireSkillBaseline(originalRoot, sidecarRoot);
+                var sidecar = await _owner.ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest, _lease);
+                if (sidecar is null || sidecar.Exists != SkillInput.OriginalSidecarExists ||
+                    !JsonNode.DeepEquals(sidecar.Root, SkillInput.OriginalSidecar))
+                    throw new InvalidDataException("Authenticated original NPC skill sidecar presence or content changed.");
                 var trade = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, NpcTradeRequestState.PendingRequestPath, _lease);
                 var training = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, TrainingRequestState.PendingRequestPath, _lease);
                 if (trade != _originalTradePending || training != _originalTrainingPending)
@@ -318,20 +323,34 @@ public partial class ValidationService
                 code: "npc_core_changes_progression_source_unavailable", section: "NPCCoreChanges",
                 repairHint: "Restore the original authenticated snapshot; do not rewrite it or invent source hashes.")]);
         if (!hasSkills) return new(this, writeLease, context, issues, originalRoot);
-        // Bounded first publication contour requires an authenticated PRESENT sidecar
-        // and its actual reducer backup. Proven-absent bootstrap originals are not
-        // synthesized into {}, and remain refused until absence-aware owner plumbing.
-        var originalSidecarText = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, MortalNpcAcceptedSkillInput.SidecarPath, writeLease);
-        if (!TryReadNpcProgressionOriginal(originalSidecarText, out var originalSidecar))
+        var originalSidecar = await ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest!, writeLease);
+        if (originalSidecar is null)
             return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("authenticated original NPC skill sidecar unavailable")]);
         var originalTrade = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, NpcTradeRequestState.PendingRequestPath, writeLease);
         var originalTraining = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, TrainingRequestState.PendingRequestPath, writeLease);
         var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
         authority = authority with { ProgressionSource = context };
-        var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar!, root, rawSidecar!, authority,
-            originalTrade, originalTraining, out var candidateIssues);
+        var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar.Root, root, rawSidecar!, authority,
+            originalTrade, originalTraining, out var candidateIssues, originalSidecar.Exists);
         return new(this, writeLease, context, candidateIssues, originalRoot, input,
             npcCoreBytes, npcSkillBytes, originalTrade, originalTraining);
+    }
+
+    private sealed record AuthenticatedNpcSkillOriginal(bool Exists, JsonObject Root);
+
+    // Call only with the existing authenticated manifest. Null content alone never proves absence.
+    private async Task<AuthenticatedNpcSkillOriginal?> ReadAuthenticatedNpcSkillOriginalAsync(
+        ValidationPendingTurnSnapshotManifest manifest, FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        const string path = MortalNpcAcceptedSkillInput.SidecarPath;
+        if (manifest.OriginalPathPresenceV1 is { } presence &&
+            presence.TryGetValue(path, out var existed) && !existed)
+            return manifest.Files?.ContainsKey(path) != true && manifest.SnapshotFileHashes?.ContainsKey(path) != true
+                ? new AuthenticatedNpcSkillOriginal(false, new JsonObject()) : null;
+        if (manifest.Files?.ContainsKey(path) != true) return null;
+        var text = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease);
+        return TryReadNpcProgressionOriginal(text, out var root)
+            ? new AuthenticatedNpcSkillOriginal(true, root!) : null;
     }
 
     /// <summary>Parses already authenticated original text without accepting duplicate or non-object authority.</summary>

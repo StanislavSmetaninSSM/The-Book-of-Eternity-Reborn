@@ -76,6 +76,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         {
             // Existing exact selected coverage proves presence even in the prior
             // supported map. This signed-DATA fixture grants no gameplay owner.
+            Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
             Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(pending));
             await ResignUnderLeaseAsync(context, lease, manifest);
             var legacy = PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
