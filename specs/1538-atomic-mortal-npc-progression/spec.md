@@ -2,7 +2,7 @@
 
 Source: [#1538](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1538).
 Base: main `7c8bb04a43f40939a9c78b10245d78283bd5805d`.
-Status: implementation design, 2026-11-13. The owner delegated routine design decisions; the coordinator authorized proceeding with the explicit-profile approach.
+Status: bounded implementation qualified, 2026-11-13. The owner delegated routine design decisions; the coordinator authorized proceeding with the explicit-profile approach.
 
 ## Intent and scope
 
@@ -108,4 +108,4 @@ Characteristics use only explicit supported fixed increments or fixed allocated
 points/current-world keys; unsupported formulas fail closed. Other declared
 domains need concrete existing-owner result adapters, not arbitrary JSON paths,
 embedded alternative state, or a generic row-exists dependency language.
-Core/skill/characteristic composition, explicit profile transitions and current consumer freshness are implemented and boundedly qualified. Existing-item transfer publication and rollback are verified. Final same-NPC effect admission, evidence reconciliation and independent outcome review remain pending; see the current plan rather than historical checkpoint statuses.
+Core/skill/characteristic composition, explicit profile transitions and current consumer freshness are implemented and boundedly qualified. Existing-item transfer publication and rollback are verified. Same-NPC effect publication/repeat/rollback is also verified. See the current plan for exact evidence, exclusions and final review/recovery status rather than historical checkpoint statuses.

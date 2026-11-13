@@ -101,7 +101,7 @@
     {
       "id": "mortal-npc-progression-item-transfer",
       "responsibility": "#1538 real existing-item transfer plus progression/skill/effect common publication and reached late rollback.",
-      "excludes": "Unrun causal tests; no new item creation or location rewrite qualification.",
+      "excludes": "No new item creation, location rewrite, specialized treatment or new NPC-inventory item-source support. Incoming coverage is source eligibility, not full incoming common publication.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkillItemTransferPublication.cs"
       ],
@@ -131,7 +131,7 @@
     {
       "id": "mortal-npc-progression-profile-change",
       "responsibility": "#1538 pure explicit profile installation/replacement preserves level and stored XP while validating the new derived threshold.",
-      "excludes": "Compile scaffold initially; no authenticated command admission or real publication qualification.",
+      "excludes": "Pure profile-transition DATA only; authenticated command admission and real publication are qualified by their separate categories.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalNpcProgressionProfileChangeContract.cs",
         "BookOfEternityClient.Tests/MortalNpcProgressionProfileChangeContractTests.cs"
