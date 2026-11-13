@@ -1,3 +1,7 @@
+## Signed absence causal gate, 2026-11-13
+
+Runtime 035a: publication 13/14 PASS; only signed-absent first-skill success fails as predicted. Existing focused effect controls pass 3/3. Two new actual live producer presence cases are source-only, not yet executed. No broader acceptance.
+
 # Atomic Mortal NPC Progression Implementation Plan
 
 Source: [#1538](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1538).

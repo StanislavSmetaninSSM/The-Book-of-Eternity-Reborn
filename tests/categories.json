@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-original-presence",
+      "responsibility": "#1538 actual Mortal live producer signs present or absent original NPC skill commands without changing rollback membership.",
+      "excludes": "Afterlife forms, fabricated absence and common publication.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.NpcSkills.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LiveProducer_NpcSkillsObservesOriginalPresenceWithoutChangingRollbackMembership"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-effect-regression",
       "responsibility": "#1538 existing ordinary focused effect publication, postvalidation drift refusal and file-backed cache invalidation alongside NPC source projection.",
       "excludes": "No afterlife, wound lifecycle or full effect suite.",
