@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-item-transfer",
+      "responsibility": "#1538 real existing-item transfer plus progression/skill/effect common publication and reached late rollback.",
+      "excludes": "Unrun causal tests; no new item creation or location rewrite qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkillItemTransferPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_CommonEffectPreservesAllAcceptedResults",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_ReachedLateCutRestoresWholeTransaction"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-profile-change",
       "responsibility": "#1538 pure explicit profile installation/replacement preserves level and stored XP while validating the new derived threshold.",
       "excludes": "Compile scaffold initially; no authenticated command admission or real publication qualification.",
