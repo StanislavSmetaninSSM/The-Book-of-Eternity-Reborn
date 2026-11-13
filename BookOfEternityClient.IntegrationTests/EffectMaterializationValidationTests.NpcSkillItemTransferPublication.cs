@@ -337,15 +337,26 @@ public sealed partial class EffectMaterializationValidationTests
 
         Assert.DoesNotContain(repeated.Issues, issue => issue.Severity == IssueSeverity.Error);
         Assert.Equal(accepted, await context.CaptureBytesAsync(paths));
-        Assert.Equal(effectsBefore, await context.CaptureBytesAsync(effectPaths));
+        var effectsAfter = await context.CaptureBytesAsync(effectPaths);
+        foreach (var path in effectPaths)
+        {
+            if (effectsBefore[path] is not null)
+                Assert.Equal(effectsBefore[path], effectsAfter[path]);
+            else if (path == EffectMaterializationTestContext.IdentityIndexPath && effectsAfter[path] is not null)
+            {
+                var emptyIndex = (await context.ReadJsonAsync(path))!;
+                Assert.Equal(1, emptyIndex["schemaVersion"]!.GetValue<int>());
+                Assert.Empty(emptyIndex["entries"]!.AsArray());
+            }
+            else
+                Assert.Null(effectsAfter[path]);
+        }
     }
 
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillIncomingItemTransferAsync(EffectMaterializationTestContext context)
     {
         var item = MortalItemTestFixture.CreateCanonicalRoot(NpcSkillTransferItemId);
-        item.Remove("fateCards");
-        MortalItemTestFixture.ResealCanonical(item);
         var original = MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
         original["NPCsInScene"]![0]!["inventory"] = new JsonArray(item.DeepClone());
         await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath,

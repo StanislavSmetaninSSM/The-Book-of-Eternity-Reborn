@@ -71,11 +71,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             skill => skill["displayName"]?.GetValue<string>() == HeldTreatmentPipelineContext.ChangedSkillDisplayName);
         var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
         await context.ReleaseLeaseAsync();
+        var logger = new SpiritualLifecycleTestLogger();
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }), fileSystem: context.FileSystem);
+            new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }), fileSystem: context.FileSystem, logger: logger);
         var disposition = await engine.ValidatePreparedNpcProgressionOutcomeAsync(
             "NPC progression plus treatment skill/item oracle", HeldTreatmentPipelineContext.Turn);
-        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, disposition);
+        if (disposition != AcceptedTurnValidationDisposition.Accepted)
+        {
+            var repair = await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json");
+            Assert.True(false, $"Treatment/progression disposition: {disposition}\n{logger.Describe()}\nRetained repair request:\n{repair ?? "<absent>"}");
+        }
         var persisted = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
         Assert.True(JsonNode.DeepEquals(npcAfterImage, persisted));
         Assert.False(persisted.ContainsKey("NPCCoreChanges"));

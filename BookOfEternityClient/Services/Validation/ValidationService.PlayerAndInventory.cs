@@ -4888,7 +4888,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateItemBondAndFateCardContract(JsonElement item, string itemContext, List<ValidationIssue> issues, string? quality)
+    internal void ValidateItemBondAndFateCardContract(JsonElement item, string itemContext, List<ValidationIssue> issues, string? quality)
     {
         var rareOrHigher = string.IsNullOrWhiteSpace(quality) ? (bool?)null : IsRareOrHigherItemQuality(quality);
 
@@ -4915,17 +4915,18 @@ public partial class ValidationService
 
         if (item.TryGetProperty("fateCards", out var fateCards) && fateCards.ValueKind != JsonValueKind.Null)
         {
-            if (rareOrHigher == false)
+            if (rareOrHigher == false &&
+                (fateCards.ValueKind != JsonValueKind.Array || fateCards.GetArrayLength() != 0))
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.fateCards",
                     IssueSeverity.Error,
-                    "fateCards допустимы только для Rare+ item quality",
+                    "Непустые fateCards допустимы только для Rare+ item quality",
                     code: "item_fate_cards_forbidden_for_non_rare_quality",
                     section: "Inventory",
-                    expected: "Rare | Epic | Legendary | Unique quality when fateCards are present",
+                    expected: "Rare | Epic | Legendary | Unique quality when fateCards are nonempty",
                     actual: quality ?? "unknown quality",
-                    repairHint: "Не добавляй fateCards предметам ниже Rare. Item Fate Cards существуют только у Rare+ предметов."));
+                    repairHint: "Для предметов ниже Rare сохраняй обязательный пустой массив fateCards. Непустые Item Fate Cards существуют только у Rare+ предметов."));
             }
 
             ValidateItemFateCardArray(fateCards, $"{itemContext}.fateCards", issues);

@@ -6,8 +6,10 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class EffectMaterializationValidationTests
 {
-    [Fact]
-    public async Task OrdinaryNpcProgressionSkillAndPlayerItemCreation_PublishesOneAuthorizedItemAndCompletedCandidate()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task OrdinaryNpcProgressionSkillAndPlayerItemCreation_PublishesOneAuthorizedItemAndCompletedCandidate(bool toNpc)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath,
@@ -20,13 +22,26 @@ public sealed partial class EffectMaterializationValidationTests
         var request = (await context.ReadJsonAsync("input/turn_request.json"))!;
         var turn = request["turnNumber"]!.GetValue<int>();
         const string creationRef = "new_item_npc_progression_reward";
+        var authorityId = toNpc ? $"npc_inventory_add:{turn}:0:{NpcSkillOwner}" : $"turn_{turn}";
         var rawItem = MortalItemTestFixture.CreateRawRoot(
-            route: "player_acquisition", authorityKind: "turn_outcome", authorityId: $"turn_{turn}",
+            route: toNpc ? "npc_acquisition" : "player_acquisition",
+            authorityKind: toNpc ? "npc_inventory_add" : "turn_outcome", authorityId: authorityId,
             sourceTurn: turn, creationRef: creationRef, materializationId: "mat_npc_progression_reward");
-        rawItem.Remove("fateCards");
         var inventory = (await context.ReadJsonAsync(InventoryEquipmentService.ItemsPath))!.AsObject();
-        inventory["UpdateInventory"] = new JsonArray(rawItem);
-        await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath, inventory);
+        if (toNpc)
+            await context.WriteJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath, new JsonObject
+            {
+                ["NPCInventoryAdds"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = NpcSkillOwner, ["NPCName"] = "Test mentor",
+                    ["item"] = rawItem, ["destinationContainerId"] = null
+                })
+            });
+        else
+        {
+            inventory["UpdateInventory"] = new JsonArray(rawItem);
+            await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath, inventory);
+        }
         var admitted = await AdmitNpcSkillCommonPublicationAsync(context);
 
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
@@ -47,7 +62,10 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Empty((await context.ReadJsonAsync(PendingNpcSkillsPath))!.AsObject());
         var player = (await context.ReadJsonAsync(InventoryEquipmentService.ItemsPath))!.AsObject();
         Assert.False(player.ContainsKey("UpdateInventory"));
-        var item = Assert.Single(player["items"]!.AsArray())!;
+        var item = Assert.Single((toNpc ? actor["inventory"] : player["items"])!.AsArray())!;
+        Assert.Empty((toNpc ? player["items"] : actor["inventory"])!.AsArray());
+        var npcCommands = await context.ReadJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath);
+        Assert.False(npcCommands is JsonObject commands && commands.ContainsKey("NPCInventoryAdds"));
         var itemId = item["itemId"]!.GetValue<string>();
         Assert.False(string.IsNullOrWhiteSpace(itemId));
         Assert.False(item.AsObject().ContainsKey("creationRef"));
@@ -55,11 +73,12 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(itemId, receipt["itemId"]!.GetValue<string>());
         Assert.Equal(creationRef, receipt["creationRef"]!.GetValue<string>());
         Assert.Equal(turn, receipt["acceptedAtTurn"]!.GetValue<int>());
-        Assert.Equal($"turn_{turn}", item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
+        Assert.Equal(authorityId, item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
         var index = MortalItemIdentityState.Parse((await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!);
         Assert.Empty(index.Issues);
         Assert.Single(index.EntriesByItemId);
-        Assert.Equal("player_inventory", index.EntriesByItemId[itemId]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(toNpc ? "npc_inventory" : "player_inventory", index.EntriesByItemId[itemId]["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(toNpc ? NpcSkillOwner : "player", index.EntriesByItemId[itemId]["currentCarrier"]!["ownerId"]!.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
         var effect = Assert.Single((await context.ReadJsonAsync(EffectMaterializationTestContext.PlayerEffectsPath))!["activeEffects"]!.AsArray())!;
         Assert.Equal(GrantedNpcSkillId, effect["source"]!["sourceId"]!.GetValue<string>());

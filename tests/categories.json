@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-common-item-empty-fate-cards",
+      "responsibility": "#1538 complete Common item physical empty fate-card section is not an active capability; nonempty and malformed remain rejected.",
+      "excludes": "No NPC publication or broader item matrix.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalCommonItemFateCardContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalCommonItemFateCardContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-treatment",
       "responsibility": "#1538 actual held Mortal treatment with NPC progression, treatment-owned skill edit and selected-item consumption.",
       "excludes": "No afterlife, arbitrary treatment matrix or unrelated progression schedule qualification.",
