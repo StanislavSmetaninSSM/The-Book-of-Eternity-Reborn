@@ -209,6 +209,26 @@ public sealed class MortalNpcProgressionConsequencesTests
             p => p.Code == "npc_progression_characteristic_delta");
     }
 
+    [Theory]
+    [InlineData("npcId")]
+    [InlineData("id")]
+    public void ExistingStrictOwnerAlias_CanDischargeActualMasteryAward(string alias)
+    {
+        var before = Actor(1, mastery: 1); var after = Actor(3, mastery: 2);
+        before.Remove("NPCId"); after.Remove("NPCId");
+        before[alias] = "npc_source"; after[alias] = "npc_source";
+        Assert.Empty(Evaluate(before, after, MasteryAwards(1)));
+    }
+
+    [Fact]
+    public void ConflictingOwnerAliases_CannotDischargeActualMasteryAward()
+    {
+        var before = Actor(1, mastery: 1); var after = Actor(3, mastery: 2);
+        after["npcId"] = "npc_other";
+        Assert.Contains(Evaluate(before, after, MasteryAwards(1)),
+            problem => problem.Code == "npc_progression_consequence_owner");
+    }
+
     private static IReadOnlyList<Contract.Problem> Evaluate(JsonObject before, JsonObject after,
         JsonArray? awards = null, Contract.CharacteristicPolicy? policy = null, Contract.ProfileConsequences? profile = null) =>
         Contract.Evaluate(before, after, awards, profile ?? new(true),
