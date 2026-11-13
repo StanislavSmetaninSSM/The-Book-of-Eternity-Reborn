@@ -312,3 +312,14 @@ row shapes. It must not become selector authority: permanent exact NPCId remains
 required. The final candidate batch has 26 cases, including valid/invalid mastery
 flag metadata, display names on profile and mastery rows, and name-only refusal.
 Production remains unchanged until this last compatibility RED is observed.
+
+The final metadata batch at 922c8a3a completed 22 PASS / 4 expected FAIL:
+duplicate stable ID, valid true/false mastery flags, and NPCName display metadata.
+Invalid metadata type and name-only authority refusal passed. Test-only build
+0 errors/33 warnings,17.85s; all reused runtime/TestSupport hashes unchanged;
+runner8.258s,complete cleanup. Consolidated fixes are now authored, verification
+pending: candidate admission rejects duplicate/confusable IDs and admits typed
+metadata without authority; the new mastery API validates touched result catalogs
+including profile-only calls, ID/level aliases, active no-cap and passive caps.
+Mastery completeness is checked after the same-package mastery update so initial
+profile-plus-mastery is allowed. Original treatment Compose remains unchanged.

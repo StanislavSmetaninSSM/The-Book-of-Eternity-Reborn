@@ -94,7 +94,8 @@ internal static class MortalNpcAcceptedSkillCandidate
         {
             var start = issues.Count;
             var owner = ReadOwner(row, path, issues);
-            Closed(row, path, ["NPCId", "npcId", "id", "skillChanges", "skillsToRemove"], issues);
+            Closed(row, path, ["NPCId", "npcId", "id", "NPCName", "skillChanges", "skillsToRemove"], issues);
+            ValidateDisplayMetadata(row, path, issues);
             if (owner is not null && !seen.Add(MortalLocationIdentityState.BuildConfusableKey(owner)))
                 issues.Add(Issue(path, "npc_skill_candidate_duplicate_owner", "one exact/confusable-unique owner per kind", owner));
             if (!row.ContainsKey("skillChanges") && !row.ContainsKey("skillsToRemove"))
@@ -102,11 +103,33 @@ internal static class MortalNpcAcceptedSkillCandidate
             var changes = ReadArray(row, "skillChanges", path, issues);
             var removals = ReadArray(row, "skillsToRemove", path, issues);
             if (changes is not null)
-                foreach (var skill in changes)
+            {
+                var stableIds = new HashSet<string>(StringComparer.Ordinal);
+                for (var index = 0; index < changes.Count; index++)
                 {
-                    if (skill is not JsonObject profile || ExactText(profile["skillName"]) is null)
-                        issues.Add(Issue(path + ".skillChanges", "npc_skill_candidate_invalid_skill", "exact canonical skillName", "invalid"));
+                    var skillPath = $"{path}.skillChanges[{index}]";
+                    if (changes[index] is not JsonObject profile || ExactText(profile["skillName"]) is null)
+                    {
+                        issues.Add(Issue(skillPath, "npc_skill_candidate_invalid_skill", "exact canonical skillName", "invalid"));
+                        continue;
+                    }
+                    // Validate authored identities before the shared reducer can upsert
+                    // two differently named profiles onto the same stable identity.
+                    string? stableId = null;
+                    foreach (var alias in new[] { "skillId", "id" })
+                    {
+                        if (!profile.ContainsKey(alias)) continue;
+                        var value = ExactText(profile[alias]);
+                        if (value is null || (stableId is not null && !string.Equals(stableId, value, StringComparison.Ordinal)))
+                            issues.Add(Issue(skillPath + "." + alias, "npc_skill_candidate_invalid_skill_id",
+                                "exact agreeing skillId/id aliases when present", "invalid"));
+                        else stableId = value;
+                    }
+                    if (stableId is not null && !stableIds.Add(MortalLocationIdentityState.BuildConfusableKey(stableId)))
+                        issues.Add(Issue(skillPath, "npc_skill_candidate_duplicate_skill_id",
+                            "one exact/confusable-unique authored stable skill identity per owner/kind", stableId));
                 }
+            }
             if (removals is not null)
             {
                 var names = new HashSet<string>(StringComparer.Ordinal);
@@ -132,8 +155,12 @@ internal static class MortalNpcAcceptedSkillCandidate
             var start = issues.Count;
             var owner = ReadOwner(row, path, issues);
             Closed(row, path, passive
-                ? ["NPCId", "npcId", "id", "skillName", "skillId", "newMasteryLevel", "newMaxMasteryLevel"]
-                : ["NPCId", "npcId", "id", "skillName", "skillId", "newMasteryLevel", "newCurrentMasteryProgress", "newMasteryProgressNeeded"], issues);
+                ? ["NPCId", "npcId", "id", "NPCName", "skillName", "skillId", "newMasteryLevel", "newMaxMasteryLevel", "masteryLeveledUp"]
+                : ["NPCId", "npcId", "id", "NPCName", "skillName", "skillId", "newMasteryLevel", "newCurrentMasteryProgress", "newMasteryProgressNeeded", "masteryLeveledUp"], issues);
+            ValidateDisplayMetadata(row, path, issues);
+            if (row.ContainsKey("masteryLeveledUp") &&
+                (row["masteryLeveledUp"] is not JsonValue flag || !flag.TryGetValue<bool>(out _)))
+                issues.Add(Issue(path + ".masteryLeveledUp", "npc_skill_candidate_invalid_metadata", "JSON Boolean", "invalid"));
             var name = ExactText(row["skillName"]);
             var id = ExactText(row["skillId"]);
             if (name is null || (row.ContainsKey("skillId") && id is null))
@@ -195,6 +222,15 @@ internal static class MortalNpcAcceptedSkillCandidate
     {
         foreach (var key in row.Select(pair => pair.Key).Where(key => !allowed.Contains(key, StringComparer.Ordinal)))
             issues.Add(Issue(path + "." + key, "npc_skill_candidate_unknown_field", "supported command field", key));
+    }
+
+    // NPCName is optional display metadata. It cannot select, rename or authorize
+    // an actor; ReadOwner still requires an exact permanent identity.
+    private static void ValidateDisplayMetadata(JsonObject row, string path, List<ValidationIssue> issues)
+    {
+        if (row.ContainsKey("NPCName") &&
+            (row["NPCName"] is not JsonValue value || !value.TryGetValue<string>(out var name) || string.IsNullOrWhiteSpace(name)))
+            issues.Add(Issue(path + ".NPCName", "npc_skill_candidate_invalid_metadata", "nonempty display string", "invalid"));
     }
 
     private static void ValidatePropertyCasing(JsonObject sidecar, List<ValidationIssue> issues)

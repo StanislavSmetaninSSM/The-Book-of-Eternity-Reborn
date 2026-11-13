@@ -42,7 +42,7 @@ internal static class MortalNpcSkillComposer
         var result = Compose(before, activeCommands, passiveCommands,
             new Dictionary<string, JsonObject>(), new Dictionary<string, JsonObject>(),
             new HashSet<string>(StringComparer.Ordinal), issues, issueFactory);
-        if (result is null || (activeMastery.Count == 0 && passiveMastery.Count == 0))
+        if (result is null)
             return result;
 
         // Compose already checked permanent identities and complete mirror equality.
@@ -76,7 +76,10 @@ internal static class MortalNpcSkillComposer
                 if (!IsExactText(command.NpcId) || !IsExactText(command.SkillName) ||
                     (command.SkillId is not null && !IsExactText(command.SkillId)) ||
                     !seen.Add((command.NpcId, command.SkillName)) ||
-                    (active && (!command.NewCurrentMasteryProgress.HasValue || !command.NewMasteryProgressNeeded.HasValue)))
+                    command.NewMasteryLevel <= 0 ||
+                    (active && (!command.NewCurrentMasteryProgress.HasValue || !command.NewMasteryProgressNeeded.HasValue ||
+                        command.NewCurrentMasteryProgress.Value < 0 || command.NewMasteryProgressNeeded.Value <= 0 ||
+                        command.NewMaxMasteryLevel.HasValue)))
                 {
                     Refuse("invalid or duplicate mastery command");
                     continue;
@@ -98,15 +101,24 @@ internal static class MortalNpcSkillComposer
                 }
                 var skill = copies[0][property]![index]!.AsObject();
                 if (command.SkillId is not null &&
-                    (!TryExactText(skill["skillId"], out var id) || !string.Equals(id, command.SkillId, StringComparison.Ordinal)))
+                    (!TrySkillIdentity(skill, out var id) || !string.Equals(id, command.SkillId, StringComparison.Ordinal)))
                 {
                     Refuse(command.SkillId);
+                    continue;
+                }
+                var resultingMaximum = command.NewMaxMasteryLevel ??
+                    (TryInteger(skill, "maxMasteryLevel", out var oldMaximum) ? oldMaximum : 0);
+                if (!active && (resultingMaximum <= 0 || command.NewMasteryLevel > resultingMaximum))
+                {
+                    Refuse("passive mastery exceeds its positive resulting maximum");
                     continue;
                 }
                 foreach (var copy in copies)
                 {
                     var target = copy[property]![index]!.AsObject();
                     target["masteryLevel"] = command.NewMasteryLevel;
+                    if (target.ContainsKey("currentMasteryLevel"))
+                        target["currentMasteryLevel"] = command.NewMasteryLevel;
                     if (active)
                     {
                         target["currentMasteryProgress"] = command.NewCurrentMasteryProgress!.Value;
@@ -115,6 +127,26 @@ internal static class MortalNpcSkillComposer
                     else if (command.NewMaxMasteryLevel.HasValue)
                         target["maxMasteryLevel"] = command.NewMaxMasteryLevel.Value;
                 }
+            }
+        }
+        // Validate the final touched catalogs even for profile-only operations. Do not
+        // broaden the older treatment Compose contract or mutate unrelated catalogs.
+        foreach (var (owners, active) in new[]
+        {
+            (activeCommands.Select(c => c.NpcId).Concat(activeMastery.Select(c => c.NpcId)), true),
+            (passiveCommands.Select(c => c.NpcId).Concat(passiveMastery.Select(c => c.NpcId)), false)
+        })
+        {
+            var property = active ? "activeSkills" : "passiveSkills";
+            foreach (var owner in owners.Distinct(StringComparer.Ordinal))
+            {
+                if (!actors.TryGetValue(owner, out var copies)) continue;
+                var node = copies[0][property];
+                if (IndexMasteryCatalog(node) is null ||
+                    node!.AsArray().OfType<JsonObject>().Any(skill => !HasConsistentMastery(skill, active)))
+                    issues.Add(issueFactory(NpcSkillPath + $".npc[{owner}].{property}",
+                        "mortal_npc_skill_mastery_composition_invalid",
+                        "consistent exact skill identity and resulting mastery bounds", owner));
             }
         }
         return issues.Count == 0 ? result : null;
@@ -145,11 +177,58 @@ internal static class MortalNpcSkillComposer
             if (skills[index] is not JsonObject skill || !TryExactText(skill["skillName"], out var name) ||
                 !names.TryAdd(name, index) || !nameKeys.Add(MortalLocationIdentityState.BuildConfusableKey(name)))
                 return null;
-            if (skill.ContainsKey("skillId") &&
-                (!TryExactText(skill["skillId"], out var id) || !idKeys.Add(MortalLocationIdentityState.BuildConfusableKey(id))))
+            if (!TrySkillIdentity(skill, out var id) ||
+                (id is not null && !idKeys.Add(MortalLocationIdentityState.BuildConfusableKey(id))) ||
+                !HasConsistentLevelAliases(skill))
                 return null;
         }
         return names;
+    }
+
+    private static bool TrySkillIdentity(JsonObject skill, out string? identity)
+    {
+        identity = null;
+        foreach (var key in new[] { "skillId", "id" })
+        {
+            if (!skill.ContainsKey(key)) continue;
+            if (!TryExactText(skill[key], out var value) ||
+                (identity is not null && !string.Equals(identity, value, StringComparison.Ordinal)))
+                return false;
+            identity = value;
+        }
+        return true;
+    }
+
+    private static bool TryInteger(JsonObject skill, string key, out int value)
+    {
+        value = 0;
+        return skill[key] is JsonValue node && node.TryGetValue<int>(out value);
+    }
+
+    private static bool HasConsistentLevelAliases(JsonObject skill)
+    {
+        int? previous = null;
+        foreach (var key in new[] { "masteryLevel", "currentMasteryLevel" })
+        {
+            if (!skill.ContainsKey(key)) continue;
+            if (!TryInteger(skill, key, out var level) || level <= 0 ||
+                (previous.HasValue && previous.Value != level)) return false;
+            previous = level;
+        }
+        return true;
+    }
+
+    private static bool HasConsistentMastery(JsonObject skill, bool active)
+    {
+        if (!HasConsistentLevelAliases(skill)) return false;
+        var hasLevel = TryInteger(skill, "masteryLevel", out var level);
+        if (!hasLevel) hasLevel = TryInteger(skill, "currentMasteryLevel", out level);
+        if (!hasLevel || level <= 0) return false;
+        if (active)
+            return !skill.ContainsKey("maxMasteryLevel") &&
+                TryInteger(skill, "currentMasteryProgress", out var progress) && progress >= 0 &&
+                TryInteger(skill, "masteryProgressNeeded", out var needed) && needed > 0;
+        return TryInteger(skill, "maxMasteryLevel", out var maximum) && maximum > 0 && level <= maximum;
     }
 
     private sealed record NpcActorCopy(string Section, int Index, JsonObject Actor);
