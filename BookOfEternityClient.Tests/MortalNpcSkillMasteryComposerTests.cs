@@ -231,6 +231,67 @@ public sealed class MortalNpcSkillMasteryComposerTests
         Assert.NotEmpty(issues);
     }
 
+    [Fact]
+    public void MasteryCollectors_MasteryOnlyExportsBothCatalogsAndPreservesInputs()
+    {
+        var before = Root();
+        var original = before.DeepClone();
+        var oldActors = new Dictionary<string, JsonObject>();
+        var newActors = new Dictionary<string, JsonObject>();
+        var touched = new HashSet<string>();
+        var issues = new List<ValidationIssue>();
+        var command = Active();
+        var result = MortalNpcSkillComposer.ComposeWithMastery(before, [], [], [command], [],
+            oldActors, newActors, touched, issues,
+            (path, code, expected, actual) => new ValidationIssue(path, IssueSeverity.Error, "Rejected", code: code));
+        Assert.Empty(issues);
+        Assert.NotNull(result);
+        Assert.Equal("npc:npc_001", Assert.Single(touched));
+        Assert.Equal(2, oldActors.Count);
+        Assert.Equal(2, newActors.Count);
+        foreach (var (kind, field) in new[] { ("active", "activeSkills"), ("passive", "passiveSkills") })
+        {
+            Assert.True(JsonNode.DeepEquals(original["NPCsInScene"]![0]![field], oldActors["npc:npc_001:" + kind][field]));
+            Assert.True(JsonNode.DeepEquals(result["NPCsInScene"]![0]![field], newActors["npc:npc_001:" + kind][field]));
+        }
+        Assert.True(JsonNode.DeepEquals(result["NPCsInScene"]![0], result["UpdateNPCs"]![0]));
+        Assert.True(JsonNode.DeepEquals(original, before));
+        Assert.Equal(Active(), command);
+        newActors["npc:npc_001:active"]["activeSkills"]![0]!["masteryLevel"] = 99;
+        Assert.Equal(3, result["NPCsInScene"]![0]!["activeSkills"]![0]!["masteryLevel"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void MasteryCollectors_ProfileThenMasteryKeepsOriginalBeforeAndFinalAfter()
+    {
+        var before = Root();
+        var original = before.DeepClone();
+        var profile = before["NPCsInScene"]![0]!["activeSkills"]![0]!.DeepClone().AsObject();
+        profile["description"] = "updated profile";
+        var profiles = new JsonArray(profile);
+        var authored = profiles.ToJsonString();
+        var oldActors = new Dictionary<string, JsonObject>();
+        var newActors = new Dictionary<string, JsonObject>();
+        var touched = new HashSet<string>();
+        var issues = new List<ValidationIssue>();
+        var result = MortalNpcSkillComposer.ComposeWithMastery(before,
+            [new("npc_001", profiles, null)], [], [Active()], [], oldActors, newActors, touched, issues,
+            (path, code, expected, actual) => new ValidationIssue(path, IssueSeverity.Error, "Rejected", code: code));
+        Assert.Empty(issues);
+        Assert.NotNull(result);
+        Assert.Equal("npc:npc_001", Assert.Single(touched));
+        Assert.Equal(2, oldActors.Count);
+        Assert.Equal(2, newActors.Count);
+        Assert.True(JsonNode.DeepEquals(original["NPCsInScene"]![0]!["activeSkills"], oldActors["npc:npc_001:active"]["activeSkills"]));
+        Assert.True(JsonNode.DeepEquals(result["NPCsInScene"]![0]!["activeSkills"], newActors["npc:npc_001:active"]["activeSkills"]));
+        Assert.Equal("preserve", oldActors["npc:npc_001:active"]["activeSkills"]![0]!["description"]!.GetValue<string>());
+        Assert.Equal("updated profile", newActors["npc:npc_001:active"]["activeSkills"]![0]!["description"]!.GetValue<string>());
+        Assert.Equal(3, newActors["npc:npc_001:active"]["activeSkills"]![0]!["masteryLevel"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(original, before));
+        Assert.Equal(authored, profiles.ToJsonString());
+        Assert.True(JsonNode.DeepEquals(result["NPCsInScene"]![0], result["UpdateNPCs"]![0]));
+    }
+
     private static MortalNpcSkillComposer.MasteryCommand Active() => new("npc_001", "Spark", "spark", 3, 7, 40);
 
     private static JsonObject? Run(JsonObject before, IReadOnlyList<MortalNpcSkillComposer.Command> active,

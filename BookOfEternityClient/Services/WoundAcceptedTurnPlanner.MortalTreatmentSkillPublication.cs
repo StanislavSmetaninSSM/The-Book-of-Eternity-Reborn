@@ -23,7 +23,9 @@ internal static partial class WoundAcceptedTurnPlanner
             nameof(GameResponse.PassiveSkillChanges),
             nameof(GameResponse.RemovePassiveSkills),
             nameof(GameResponse.NPCActiveSkillChanges),
-            nameof(GameResponse.NPCPassiveSkillChanges)
+            nameof(GameResponse.NPCPassiveSkillChanges),
+            nameof(GameResponse.NPCSkillMasteryChanges),
+            nameof(GameResponse.NPCPassiveSkillMasteryChanges)
         },
         StringComparer.Ordinal);
 
@@ -50,6 +52,8 @@ internal static partial class WoundAcceptedTurnPlanner
             JsonArray? passiveRemovals,
             IReadOnlyList<FrozenNpcSkillCommand> npcActive,
             IReadOnlyList<FrozenNpcSkillCommand> npcPassive,
+            IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> npcActiveMastery,
+            IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> npcPassiveMastery,
             string fingerprint)
         {
             CommandRoot = commandRoot.DeepClone().AsObject();
@@ -59,6 +63,8 @@ internal static partial class WoundAcceptedTurnPlanner
             PassiveRemovals = Clone(passiveRemovals);
             NpcActive = npcActive.Select(Clone).ToArray();
             NpcPassive = npcPassive.Select(Clone).ToArray();
+            NpcActiveMastery = Array.AsReadOnly(npcActiveMastery.ToArray());
+            NpcPassiveMastery = Array.AsReadOnly(npcPassiveMastery.ToArray());
             Fingerprint = fingerprint;
         }
 
@@ -69,12 +75,16 @@ internal static partial class WoundAcceptedTurnPlanner
         internal JsonArray? PassiveRemovals { get; }
         internal IReadOnlyList<FrozenNpcSkillCommand> NpcActive { get; }
         internal IReadOnlyList<FrozenNpcSkillCommand> NpcPassive { get; }
+        internal IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> NpcActiveMastery { get; }
+        internal IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> NpcPassiveMastery { get; }
         internal string Fingerprint { get; }
         internal bool IsEmpty => CommandRoot.Count == 0;
         internal bool TouchesPlayerActive => ActiveChanges is not null || ActiveRemovals is not null;
         internal bool TouchesPlayerPassive => PassiveChanges is not null || PassiveRemovals is not null;
         internal bool TouchesNpc => CommandRoot.ContainsKey("NPCActiveSkillChanges") ||
-                                    CommandRoot.ContainsKey("NPCPassiveSkillChanges");
+                                    CommandRoot.ContainsKey("NPCPassiveSkillChanges") ||
+                                    CommandRoot.ContainsKey("NPCSkillMasteryChanges") ||
+                                    CommandRoot.ContainsKey("NPCPassiveSkillMasteryChanges");
 
         private static FrozenNpcSkillCommand Clone(FrozenNpcSkillCommand value) =>
             new(value.NpcId, Clone(value.SkillChanges), Clone(value.SkillsToRemove));
@@ -195,7 +205,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 issues.Add(PublicationIssue(
                     "treatmentPublication.response." + property.Name,
                     "mortal_wound_treatment_publication_response_unsupported",
-                    "only the six Mortal skill fields and seven Mortal item fields",
+                    "only the supported Mortal skill/mastery fields and seven Mortal item fields",
                     property.Name));
             }
         }
@@ -238,6 +248,8 @@ internal static partial class WoundAcceptedTurnPlanner
             "NPCPassiveSkillChanges",
             root,
             issues);
+        var npcActiveMastery = FreezeNpcMasteryCommands(response.NPCSkillMasteryChanges, false, root, issues);
+        var npcPassiveMastery = FreezeNpcMasteryCommands(response.NPCPassiveSkillMasteryChanges, true, root, issues);
         if (issues.Count != 0)
             return new(null, issues);
 
@@ -257,6 +269,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 passiveRemovals,
                 npcActive,
                 npcPassive,
+                npcActiveMastery,
+                npcPassiveMastery,
                 fingerprint),
             Array.Empty<ValidationIssue>());
     }
@@ -367,6 +381,40 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         root[propertyName] = frozen.DeepClone();
         return frozen;
+    }
+
+    private static IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> FreezeNpcMasteryCommands(
+        JsonElement[]? rows, bool passive, JsonObject root, List<ValidationIssue> issues)
+    {
+        if (rows is null) return Array.Empty<MortalNpcSkillComposer.MasteryCommand>();
+        var property = passive ? "NPCPassiveSkillMasteryChanges" : "NPCSkillMasteryChanges";
+        var frozen = new JsonArray();
+        for (var i = 0; i < rows.Length; i++)
+        {
+            if (rows[i].ValueKind != JsonValueKind.Object || HasDuplicateObjectProperties(rows[i]))
+            {
+                issues.Add(PublicationIssue($"treatmentPublication.response.{property}[{i}]",
+                    "mortal_wound_treatment_publication_npc_skill_command_invalid", "unique-property mastery object", rows[i].ValueKind.ToString()));
+                continue;
+            }
+            frozen.Add(JsonNode.Parse(rows[i].GetRawText()));
+        }
+        root[property] = frozen;
+        return MortalNpcAcceptedSkillCandidate.ParseMasteryCommands(root, passive, issues);
+    }
+
+    private static JsonObject? ComposeTreatmentNpcSkills(JsonObject before, TreatmentSkillCommandEnvelope envelope,
+        IDictionary<string, JsonObject> actorBefore, IDictionary<string, JsonObject> actorAfter,
+        ISet<string> touchedActors, ICollection<ValidationIssue> issues)
+    {
+        // Preserve the existing profile-only treatment contract. Mastery uses the shared
+        // complete final-catalog reducer once, including its atomic collector export.
+        return envelope.NpcActiveMastery.Count == 0 && envelope.NpcPassiveMastery.Count == 0
+            ? MortalNpcSkillComposer.Compose(before, envelope.NpcActive, envelope.NpcPassive,
+                actorBefore, actorAfter, touchedActors, issues, PublicationIssue)
+            : MortalNpcSkillComposer.ComposeWithMastery(before, envelope.NpcActive, envelope.NpcPassive,
+                envelope.NpcActiveMastery, envelope.NpcPassiveMastery,
+                actorBefore, actorAfter, touchedActors, issues, PublicationIssue);
     }
 
     private static IReadOnlyList<FrozenNpcSkillCommand> FreezeNpcCommands(
@@ -624,15 +672,13 @@ internal static partial class WoundAcceptedTurnPlanner
             if (liveNpcBefore is not null && semanticNpcBefore is not null)
             {
                 npcSemanticBaseline = semanticNpcBefore.DeepClone().AsObject();
-                var npcAfter = MortalNpcSkillComposer.Compose(
+                var npcAfter = ComposeTreatmentNpcSkills(
                     semanticNpcBefore,
-                    envelope.NpcActive,
-                    envelope.NpcPassive,
+                    envelope,
                     actorBefore,
                     actorAfter,
                     touchedActors,
-                    issues,
-                    PublicationIssue);
+                    issues);
                 if (npcAfter is not null)
                     afterImages[NpcSkillPath] = npcAfter;
             }
@@ -850,15 +896,13 @@ internal static partial class WoundAcceptedTurnPlanner
             var actorBefore = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
             var actorAfter = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
             var touchedActors = new HashSet<string>(StringComparer.Ordinal);
-            var npcAfter = MortalNpcSkillComposer.Compose(
+            var npcAfter = ComposeTreatmentNpcSkills(
                 finalNpcBaseline.DeepClone().AsObject(),
-                projection.CommandEnvelope.NpcActive,
-                projection.CommandEnvelope.NpcPassive,
+                projection.CommandEnvelope,
                 actorBefore,
                 actorAfter,
                 touchedActors,
-                issues,
-                PublicationIssue);
+                issues);
             if (npcAfter is null || issues.Count != 0)
                 return issues;
             composed[NpcSkillPath] = npcAfter;

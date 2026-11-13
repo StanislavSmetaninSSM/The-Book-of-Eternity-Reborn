@@ -22,6 +22,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData(8)]
     [InlineData(9)]
+    [InlineData(10)]
+    [InlineData(11)]
     public Task GuaranteedItemConsumption_NaturalNpcProgressionRequiresActualCadenceMasteryAward(int scenario) =>
         GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(scenario);
 
@@ -32,7 +34,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData(3)]
     public async Task GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(int scenario)
     {
-        var lateCut = scenario == 1;
+        var lateCut = scenario is 1 or 11;
         var armed = false;
         var reached = false;
         FileSystemManager? observedFiles = null;
@@ -78,6 +80,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var baselineSkill = Assert.Single(provider["activeSkills"]!.AsArray().OfType<JsonObject>());
                 baselineSkill["currentMasteryProgress"] = 0;
                 baselineSkill["masteryProgressNeeded"] = 100;
+                if (scenario == 10)
+                    provider["passiveSkills"] = new JsonArray(new JsonObject
+                    {
+                        ["skillId"] = "skill_care_knowledge_t070b3", ["skillName"] = "Care Knowledge",
+                        ["skillDescription"] = "Knowledge of field treatment", ["rarity"] = "Common",
+                        ["type"] = "KnowledgeBased", ["group"] = "Medicine", ["masteryLevel"] = 1,
+                        ["structuredBonuses"] = null, ["maxMasteryLevel"] = 5, ["knowledgeDomain"] = "Medicine",
+                        ["unlockedActiveSkillsCount"] = 0, ["maxUnlockableActiveSkills"] = 2
+                    });
                 provider["level"] = 1;
                 provider["experience"] = 99;
                 provider["experienceForNextLevel"] = 100;
@@ -115,7 +126,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var changedSkill = Assert.Single(ReadProvider(original)["activeSkills"]!.AsArray()
             .OfType<JsonObject>()).DeepClone().AsObject();
         changedSkill["displayName"] = HeldTreatmentPipelineContext.ChangedSkillDisplayName;
-        if (scenario is 8 or 9)
+        if (scenario is 8 or 9 or 10 or 11)
         {
             // Two gained levels require exactly one award under levelsPerAward:2.
             // The documented cadence route uses the existing active mastery delta array.
@@ -127,9 +138,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             progression["experienceForNextLevel"] = 1558;
             progression["skillAwards"] = new JsonArray(new JsonObject
             {
-                ["kind"] = "active",
-                ["skillName"] = changedSkill["skillName"]!.DeepClone(),
-                ["skillId"] = changedSkill["skillId"]!.DeepClone(),
+                ["kind"] = scenario == 10 ? "passive" : "active",
+                ["skillName"] = scenario == 10 ? JsonValue.Create("Care Knowledge") : changedSkill["skillName"]!.DeepClone(),
+                ["skillId"] = scenario == 10 ? JsonValue.Create("skill_care_knowledge_t070b3") : changedSkill["skillId"]!.DeepClone(),
                 ["award"] = "masteryIncrease"
             });
         }
@@ -142,7 +153,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ["skillChanges"] = new JsonArray(changedSkill)
             }) }
         };
-        if (scenario is 8 or 9)
+        if (scenario is 8 or 9 or 10 or 11)
         {
             proposal.NPCActiveSkillChanges = null;
             proposal.NPCSkillMasteryChanges = new[] { JsonSerializer.SerializeToElement(new JsonObject
@@ -150,17 +161,27 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ["NPCId"] = HeldTreatmentPipelineContext.ProviderId,
                 ["skillName"] = changedSkill["skillName"]!.DeepClone(),
                 ["skillId"] = changedSkill["skillId"]!.DeepClone(),
-                ["newMasteryLevel"] = scenario == 8 ? 4 : 3,
+                ["newMasteryLevel"] = scenario == 9 ? 3 : 4,
                 ["newCurrentMasteryProgress"] = 0,
                 ["newMasteryProgressNeeded"] = 100,
-                ["masteryLeveledUp"] = scenario == 8
+                ["masteryLeveledUp"] = scenario != 9
+            }) };
+        }
+        if (scenario == 10)
+        {
+            proposal.NPCSkillMasteryChanges = null;
+            proposal.NPCPassiveSkillMasteryChanges = new[] { JsonSerializer.SerializeToElement(new JsonObject
+            {
+                ["NPCId"] = HeldTreatmentPipelineContext.ProviderId,
+                ["skillName"] = "Care Knowledge", ["skillId"] = "skill_care_knowledge_t070b3",
+                ["newMasteryLevel"] = 2, ["newMaxMasteryLevel"] = 5, ["masteryLeveledUp"] = true
             }) };
         }
         if (scenario == 7)
             proposal.NPCActiveSkillChanges = null;
         await new StateDistributor(context.FileSystem, NullLogger<StateDistributor>.Instance)
             .DistributeAsync(proposal);
-        if (scenario >= 4)
+        if (scenario >= 4 && scenario != 11)
         {
             if (scenario == 5)
             {
@@ -233,9 +254,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 $"Natural treatment/progression disposition: {naturalDisposition}\n{naturalLogger.Describe()}\nRepair request before Escape:\n{naturalInput.RepairBeforeEscape ?? "<absent>"}");
             var naturalCore = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
             var naturalProvider = ReadProvider(naturalCore);
-            Assert.Equal(scenario == 8 ? 3 : 2, naturalProvider["level"]!.GetValue<int>());
-            Assert.Equal(scenario == 8 ? 0 : 1, naturalProvider["experience"]!.GetValue<int>());
-            Assert.Equal(scenario == 8 ? 1558 : 565, naturalProvider["experienceForNextLevel"]!.GetValue<int>());
+            Assert.Equal(scenario is 8 or 10 ? 3 : 2, naturalProvider["level"]!.GetValue<int>());
+            Assert.Equal(scenario is 8 or 10 ? 0 : 1, naturalProvider["experience"]!.GetValue<int>());
+            Assert.Equal(scenario is 8 or 10 ? 1558 : 565, naturalProvider["experienceForNextLevel"]!.GetValue<int>());
             if (scenario == 8)
             {
                 var masteredSkill = Assert.Single(naturalProvider["activeSkills"]!.AsArray().OfType<JsonObject>());
@@ -245,10 +266,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(0, masteredSkill["currentMasteryProgress"]!.GetValue<int>());
                 Assert.Equal(100, masteredSkill["masteryProgressNeeded"]!.GetValue<int>());
             }
+            if (scenario == 10)
+            {
+                var masteredPassive = Assert.Single(naturalProvider["passiveSkills"]!.AsArray().OfType<JsonObject>());
+                Assert.Equal("skill_care_knowledge_t070b3", masteredPassive["skillId"]!.GetValue<string>());
+                Assert.Equal("Care Knowledge", masteredPassive["skillName"]!.GetValue<string>());
+                Assert.Equal(2, masteredPassive["masteryLevel"]!.GetValue<int>());
+                Assert.Equal(5, masteredPassive["maxMasteryLevel"]!.GetValue<int>());
+                Assert.True(JsonNode.DeepEquals(ReadProvider(original)["activeSkills"], naturalProvider["activeSkills"]));
+            }
             Assert.False(naturalCore.ContainsKey("NPCCoreChanges"));
             Assert.Equal(1, ReadNpcItemCount(naturalCore, HeldTreatmentPipelineContext.SelectedItemId));
             Assert.Contains(naturalProvider["activeSkills"]!.AsArray().OfType<JsonObject>(),
-                skill => skill["displayName"]?.GetValue<string>() == (scenario == 8
+                skill => skill["displayName"]?.GetValue<string>() == (scenario is 8 or 10
                     ? "Guaranteed Care" : HeldTreatmentPipelineContext.ChangedSkillDisplayName));
             Assert.Equal(naturalTransitionsBefore + 1, await CountSelectedItemConsumeTransitionsAsync(context));
             var naturalSkills = await ReadJsonObjectAsync(context.FileSystem, "game_state/npcs/npc_skills.json");
@@ -261,7 +291,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         // The specialized treatment owner accepts its skill/item envelope only.
         // NPCCoreChanges remains in the real distributed raw core and is composed by
         // the existing final item baseline, not granted authority by this projection.
-        var treatmentProposal = new GameResponse { NPCActiveSkillChanges = proposal.NPCActiveSkillChanges };
+        var treatmentProposal = new GameResponse
+        {
+            NPCActiveSkillChanges = proposal.NPCActiveSkillChanges,
+            NPCSkillMasteryChanges = proposal.NPCSkillMasteryChanges,
+            NPCPassiveSkillMasteryChanges = proposal.NPCPassiveSkillMasteryChanges
+        };
         var publication = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(
             context.FileSystem, context.Lease, treatmentProposal,
             authorities.AcceptedState, authorities.Request, authorities.Resolution);
@@ -276,12 +311,20 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         var npcAfterImage = Assert.Single(context.Plan.OwnerCompanionAfterImages,
             pair => pair.Key == NpcCoreChangesContract.NpcCorePath).Value;
-        Assert.Equal(2, ReadProvider(npcAfterImage)["level"]!.GetValue<int>());
-        Assert.Equal(1, ReadProvider(npcAfterImage)["experience"]!.GetValue<int>());
-        Assert.Equal(565, ReadProvider(npcAfterImage)["experienceForNextLevel"]!.GetValue<int>());
+        Assert.Equal(scenario == 11 ? 3 : 2, ReadProvider(npcAfterImage)["level"]!.GetValue<int>());
+        Assert.Equal(scenario == 11 ? 0 : 1, ReadProvider(npcAfterImage)["experience"]!.GetValue<int>());
+        Assert.Equal(scenario == 11 ? 1558 : 565, ReadProvider(npcAfterImage)["experienceForNextLevel"]!.GetValue<int>());
         Assert.Equal(1, ReadNpcItemCount(npcAfterImage, HeldTreatmentPipelineContext.SelectedItemId));
         Assert.Contains(ReadProvider(npcAfterImage)["activeSkills"]!.AsArray().OfType<JsonObject>(),
-            skill => skill["displayName"]?.GetValue<string>() == HeldTreatmentPipelineContext.ChangedSkillDisplayName);
+            skill => skill["displayName"]?.GetValue<string>() == (scenario == 11
+                ? "Guaranteed Care" : HeldTreatmentPipelineContext.ChangedSkillDisplayName));
+        if (scenario == 11)
+        {
+            var finalMastery = Assert.Single(ReadProvider(npcAfterImage)["activeSkills"]!.AsArray().OfType<JsonObject>());
+            Assert.Equal(4, finalMastery["currentMasteryLevel"]!.GetValue<int>());
+            Assert.Equal(0, finalMastery["currentMasteryProgress"]!.GetValue<int>());
+            Assert.Equal(100, finalMastery["masteryProgressNeeded"]!.GetValue<int>());
+        }
         var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
         if (scenario is 2 or 3)
         {

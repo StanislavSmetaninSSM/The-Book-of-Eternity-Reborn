@@ -38,10 +38,23 @@ internal static class MortalNpcSkillComposer
         IReadOnlyList<MasteryCommand> passiveMastery,
         ICollection<ValidationIssue> issues,
         Func<string, string, string, string, ValidationIssue> issueFactory)
-    {
-        var result = Compose(before, activeCommands, passiveCommands,
+        => ComposeWithMastery(before, activeCommands, passiveCommands, activeMastery, passiveMastery,
             new Dictionary<string, JsonObject>(), new Dictionary<string, JsonObject>(),
             new HashSet<string>(StringComparer.Ordinal), issues, issueFactory);
+
+    internal static JsonObject? ComposeWithMastery(
+        JsonObject before, IReadOnlyList<Command> activeCommands, IReadOnlyList<Command> passiveCommands,
+        IReadOnlyList<MasteryCommand> activeMastery, IReadOnlyList<MasteryCommand> passiveMastery,
+        IDictionary<string, JsonObject> actorBefore, IDictionary<string, JsonObject> actorAfter,
+        ISet<string> touchedActors, ICollection<ValidationIssue> issues,
+        Func<string, string, string, string, ValidationIssue> issueFactory)
+    {
+        // Keep collectors private until the whole composition succeeds.
+        var localBefore = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var localAfter = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var localTouched = new HashSet<string>(StringComparer.Ordinal);
+        var result = Compose(before, activeCommands, passiveCommands,
+            localBefore, localAfter, localTouched, issues, issueFactory);
         if (result is null)
             return result;
 
@@ -113,6 +126,12 @@ internal static class MortalNpcSkillComposer
                     Refuse("passive mastery exceeds its positive resulting maximum");
                     continue;
                 }
+                var ownerKey = "npc:" + command.NpcId;
+                if (localTouched.Add(ownerKey))
+                {
+                    localBefore[ownerKey + ":active"] = new JsonObject { ["activeSkills"] = copies[0]["activeSkills"]?.DeepClone() ?? new JsonArray() };
+                    localBefore[ownerKey + ":passive"] = new JsonObject { ["passiveSkills"] = copies[0]["passiveSkills"]?.DeepClone() ?? new JsonArray() };
+                }
                 foreach (var copy in copies)
                 {
                     var target = copy[property]![index]!.AsObject();
@@ -149,7 +168,17 @@ internal static class MortalNpcSkillComposer
                         "consistent exact skill identity and resulting mastery bounds", owner));
             }
         }
-        return issues.Count == 0 ? result : null;
+        if (issues.Count != 0) return null;
+        foreach (var ownerKey in localTouched)
+        {
+            var finalActor = actors[ownerKey[4..]][0];
+            localAfter[ownerKey + ":active"] = new JsonObject { ["activeSkills"] = finalActor["activeSkills"]?.DeepClone() ?? new JsonArray() };
+            localAfter[ownerKey + ":passive"] = new JsonObject { ["passiveSkills"] = finalActor["passiveSkills"]?.DeepClone() ?? new JsonArray() };
+        }
+        foreach (var pair in localBefore) actorBefore[pair.Key] = pair.Value;
+        foreach (var pair in localAfter) actorAfter[pair.Key] = pair.Value;
+        foreach (var ownerKey in localTouched) touchedActors.Add(ownerKey);
+        return result;
     }
 
     private static bool IsExactText(string? value) =>

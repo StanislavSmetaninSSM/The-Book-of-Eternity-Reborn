@@ -43,10 +43,6 @@ public partial class CanonicalStateNormalizer
         RequireTreatmentNpcSkillOwner(plan, receipt);
         await _npcProgressionSource!.RequireRawSkillInputsAsync(_fs, _writeLease);
         var input = _npcProgressionSource.SkillInput!;
-        // The specialized owner supports complete active/passive profiles, not mastery commands.
-        foreach (var key in new[] { "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
-            if (input.RawSidecar[key] is JsonArray { Count: > 0 })
-                throw new InvalidDataException("Treatment publication does not import NPC mastery commands.");
         var originalMetadata = input.OriginalSidecar;
         var currentMetadata = input.RawSidecar;
         foreach (var key in new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })

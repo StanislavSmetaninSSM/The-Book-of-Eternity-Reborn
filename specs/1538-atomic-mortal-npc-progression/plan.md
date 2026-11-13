@@ -1,3 +1,11 @@
+## Documented treatment mastery causal RED and implementation WIP
+
+Retained bc016ad7 runtime, test-only integration build46.34s/0errors120warnings: the new required two-level active mastery delta case fails exactly at mortal_wound_treatment_ordinary_input_invalid / Treatment NPC intake does not support mastery command arrays. The unchanged-mastery negative passes. Official mastery category:1PASS/1FAIL,18.479s,complete/no duplicates/cleanupcomplete. This proves a documented intake gap, not invalid test preparation.
+
+The existing treatment envelope now freezes/fingerprints both standard mastery arrays, reuses the strict shared parser and production validator, and invokes the same mastery reducer at initial projection and final-baseline recomposition. The collector overload retains original before-catalogs and exports both final catalogs only after success. Profile-only treatment keeps the legacy Compose branch; no unrelated stricter catalog requirement is introduced. Intake imports both arrays, while all current owner/seal/source/final-root/sidecar/settlement fences remain. No new writer or cache. Scalar commands are detached immutable DATA; only the selected mastery property is parsed, not unrelated full payloads.
+
+Four integration cases are now UNRUN: actual active award, unfulfilled award refusal, actual passive award, and reached late rollback. Two new cheap collector controls join existing mastery tests. Coherent builds, impact regression categories and independent review follow; full task acceptance remains reopened until these pass.
+
 ## Reopened documented treatment mastery route, 2026-11-13
 
 The owner's additional completeness check found that the actual daemon guidance explicitly requires NPCSkillMasteryChanges/NPCPassiveSkillMasteryChanges for masteryIncrease awards. The specialized treatment envelope still rejects these standard delta commands. Full-profile support is not enough to claim this documented route works. Prior full task acceptance is therefore superseded for this concrete gap; earlier verified blocks remain valid. Next: a genuine natural Engine treatment with two gained levels and a required mastery delta, then minimal reuse of the existing parser/composer and bounded rollback/negative controls. No new progression system, Guided/QTE rewrite, broad suite or hosted CI.

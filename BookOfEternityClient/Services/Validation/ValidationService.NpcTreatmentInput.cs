@@ -23,9 +23,6 @@ public partial class ValidationService
             throw new InvalidDataException("Treatment NPC intake forbids direct actor resends or unrelated core mutations.");
         var originalMetadata = input.OriginalSidecar;
         var rawMetadata = input.RawSidecar;
-        foreach (var key in new[] { "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
-            if (rawMetadata[key] is JsonArray { Count: > 0 })
-                throw new InvalidDataException("Treatment NPC intake does not support mastery command arrays.");
         foreach (var key in new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
         {
             originalMetadata.Remove(key);
@@ -37,7 +34,9 @@ public partial class ValidationService
         var response = new GameResponse
         {
             NPCActiveSkillChanges = Rows("NPCActiveSkillChanges"),
-            NPCPassiveSkillChanges = Rows("NPCPassiveSkillChanges")
+            NPCPassiveSkillChanges = Rows("NPCPassiveSkillChanges"),
+            NPCSkillMasteryChanges = Rows("NPCSkillMasteryChanges"),
+            NPCPassiveSkillMasteryChanges = Rows("NPCPassiveSkillMasteryChanges")
         };
         return (response, source);
 

@@ -168,6 +168,21 @@ internal static class MortalNpcAcceptedSkillCandidate
         return result;
     }
 
+    internal static IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> ParseMasteryCommands(
+        JsonObject sidecar, bool passive, List<ValidationIssue> issues)
+    {
+        var property = passive ? "NPCPassiveSkillMasteryChanges" : "NPCSkillMasteryChanges";
+        var start = issues.Count;
+        if (sidecar.ContainsKey(property))
+        {
+            var selected = new JsonObject { [property] = sidecar[property]?.DeepClone() };
+            using var document = JsonDocument.Parse(selected.ToJsonString());
+            ValidationService.ValidateNpcSkillMastery(document.RootElement, SidecarPath, issues, property, passive);
+        }
+        var commands = ReadMastery(sidecar, property, passive, issues);
+        return issues.Count == start ? commands : Array.Empty<MortalNpcSkillComposer.MasteryCommand>();
+    }
+
     private static IReadOnlyList<MortalNpcSkillComposer.MasteryCommand> ReadMastery(
         JsonObject sidecar, string property, bool passive, List<ValidationIssue> issues)
     {
