@@ -21,6 +21,13 @@
       "contracts": [
         "Explicit progression profile and bounded repair guidance."
       ]
+    },
+    {
+      "category": "mortal-npc-progression-source",
+      "reason": "P2a exact current Mortal source context and command correlation.",
+      "contracts": [
+        "Authenticated source, realm, stale-command refusal and consume idempotence."
+      ]
     }
   ]
 }

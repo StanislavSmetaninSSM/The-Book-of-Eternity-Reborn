@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-source",
+      "responsibility": "#1538 P2a exact authenticated Mortal turn source binding for bounded NPC progression.",
+      "excludes": "Dependent package, profile transitions, general publication rollback and full issue acceptance remain separate.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionSourceBindingTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionSourceBindingTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-guidance",
       "responsibility": "#1538 actual daemon Mortal NPC template rendering for explicit numeric profile, delta and exact boundaries.",
       "excludes": "No source/consequence publication qualification; Linux PowerShell 7 is not Windows PowerShell 5.1 evidence.",

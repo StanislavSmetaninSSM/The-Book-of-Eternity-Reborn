@@ -114,3 +114,22 @@ when the computed suggestion is Standard (existing level10/trade14/relation80
 fixture). Keep this established authority. Prove real slot-count freshness at
 level15->16 (7->8 slots), plus teacher source-hash freshness, instead of inventing
 an unconditional inventory regeneration or a new tier rule.
+
+### P2a source binding: proposed bounded implementation
+
+From accepted P1 checkpoint 090733ee. First obtain causal RED with
+`MortalNpcProgressionSourceBindingTests.ExistingProgression_WithoutTrustedTurnContext_IsRejected`:
+valid P1 arithmetic currently applies despite absent trusted source context.
+Then add the closed progression.source schema documented in spec.md; attach
+trusted session/request/turn/snapshot/realm DATA to existing NPC authority.
+Reuse ValidationService's authenticated pending-turn lookup under the publication
+owner's held canonical lease for the real NoPlan path. Pass context, do not
+re-read it in the pure tail. Accepted-plan/treatment/joint paths reuse their
+existing bindings, and existing authority clone/fingerprint paths retain it.
+
+Bounded verification: typed source/realm/malformed/stale refusals; positive exact
+source and consumed-command no-op; production NoPlan positive with authenticated
+snapshot and lease, plus missing/stale source refusal. Parent owns category,
+builds, independent review and publication. No production change before RED.
+No new cache: detached small immutable context is operation DATA only; fresh
+snapshot/request/source and publication ownership checks remain authoritative.

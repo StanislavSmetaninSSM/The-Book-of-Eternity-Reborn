@@ -59,3 +59,24 @@ without mutating either input. Profile installation/change, owner/realm/source
 binding, declared consequence fields and receipts belong to P2; the numeric
 profile alone is never publication permission. P1 does not implicitly migrate
 old actors or require profiles for unrelated non-progression changes.
+
+## P2a proposed source-binding schema
+
+Bounded P2a adds `NPCCoreChanges[].progression.source` as a closed object with
+exact nonblank `sessionId`, `requestId`, and positive Int32 `turnNumber`. These
+are correlations to the existing current request, not new GM-issued authority.
+They must match the authenticated original turn context exactly. The snapshot
+hash remains client-only and is never required in the authored command.
+
+The existing `NpcCoreChangesContract.Authority` carries detached trusted context
+(session, request, turn, snapshot token, normalized realm). Progression requires
+that context and the Mortal realm; ordinary unrelated core changes do not.
+The existing snapshot authentication APIs remain the only source readers.
+Publication revalidates/obtains this context under its existing canonical write
+lease, including the real NoPlan branch, then passes it through the existing NPC
+tail and item-baseline authority. Context is included in existing clone/seal
+fingerprints. Missing/unusable authority refuses progression without publishing.
+
+P2a does not add receipts, profile transitions, dependencies or another writer.
+Absolute tuple application and command consumption retain their existing
+idempotent behavior; this block tests it without claiming all FR3-FR8 complete.
