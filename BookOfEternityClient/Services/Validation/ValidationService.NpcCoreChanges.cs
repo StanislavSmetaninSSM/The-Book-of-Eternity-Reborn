@@ -200,6 +200,7 @@ public partial class ValidationService
         private readonly string? _originalTradePending;
         private readonly string? _originalTrainingPending;
         private readonly string? _worldPolicyFingerprint;
+        private readonly NpcProgressionSettlementWitness? _settlementWitness;
         internal MortalNpcAcceptedSkillInput? SkillInput { get; }
         internal NpcCoreChangesContract.ProgressionSourceContext? Context { get; }
         internal IReadOnlyList<ValidationIssue> Issues { get; }
@@ -217,6 +218,10 @@ public partial class ValidationService
             _rawCoreBytes = rawCoreBytes?.ToArray(); _rawSidecarBytes = rawSidecarBytes?.ToArray();
             _originalTradePending = originalTradePending; _originalTrainingPending = originalTrainingPending;
             _worldPolicyFingerprint = worldPolicyFingerprint;
+            if (issues.Count == 0 && context is not null && _originalNpcCore is not null && worldPolicyFingerprint is not null)
+                _settlementWitness = new NpcProgressionSettlementWitness(context, _originalNpcCore,
+                    worldPolicyFingerprint, skillInput?.AuthorityFingerprint, skillInput?.OriginalSidecar,
+                    skillInput?.OriginalSidecarExists ?? false, originalTradePending, originalTrainingPending);
         }
 
         /// <summary>Compares the reducer's retained policy authority with this publication source.</summary>
@@ -316,7 +321,10 @@ public partial class ValidationService
                 throw new InvalidDataException("NPC core command was not consumed.");
         }
 
-        /// <summary>Checks the same live lease and existing snapshot authentication again, never extending authority.</summary>
+        /// <summary>Exports detached expected DATA for fresh checks across transaction leases.</summary>
+        internal NpcProgressionSettlementWitness CreateSettlementWitness() =>
+            _settlementWitness ?? throw new InvalidDataException("Missing accepted NPC progression settlement witness.");
+
         internal async Task RequireCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
         {
             if (!ReferenceEquals(files, _owner._fs) || !ReferenceEquals(lease, _lease))
@@ -324,37 +332,7 @@ public partial class ValidationService
             files.EnsureCanonicalWriteLeaseActive(_lease);
             if (Issues.Count != 0) throw new InvalidDataException("NPC progression publication source was refused.");
             if (Context is null) return;
-            var lookup = await _owner.LoadValidatedPendingTurnSnapshotLookupAsync(_lease, requireFreshPhysicalSource: true);
-            if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest is null ||
-                CreateNpcProgressionSource(lookup.Manifest) != Context)
-                throw new InvalidDataException("NPC progression authenticated source changed before publication completed.");
-            using var fresh = FileSystemManager.SuppressValidationReuse();
-            var original = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                lookup.Manifest, NpcCoreChangesContract.NpcCorePath, _lease);
-            if (!TryReadNpcProgressionOriginal(original, out var originalRoot))
-                throw new InvalidDataException("NPC progression authenticated original NPC core is missing or changed.");
-            RequireBaseline(originalRoot);
-            var currentAuthority = SkillInput is null
-                ? await NpcCoreChangesContract.ReadProgressionPolicyAuthorityAsync(files)
-                : await NpcCoreChangesContract.ReadAuthorityAsync(files);
-            currentAuthority = currentAuthority with { ProgressionSource = Context };
-            if (!currentAuthority.NpcCharacteristicPolicy.IsValid ||
-                !string.Equals(_worldPolicyFingerprint, MortalNpcWorldProgressionPolicy.Fingerprint(currentAuthority), StringComparison.Ordinal))
-                throw new InvalidDataException("NPC progression current-world policy changed before publication completed.");
-            if (SkillInput is not null)
-            {
-                if (!string.Equals(SkillInput.AuthorityFingerprint,
-                    MortalNpcAcceptedSkillInput.ComputeAuthorityFingerprint(currentAuthority), StringComparison.Ordinal))
-                    throw new InvalidDataException("NPC skill current-world authority changed before publication completed.");
-                var sidecar = await _owner.ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest, _lease);
-                if (sidecar is null || sidecar.Exists != SkillInput.OriginalSidecarExists ||
-                    !JsonNode.DeepEquals(sidecar.Root, SkillInput.OriginalSidecar))
-                    throw new InvalidDataException("Authenticated original NPC skill sidecar presence or content changed.");
-                var trade = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, NpcTradeRequestState.PendingRequestPath, _lease);
-                var training = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, TrainingRequestState.PendingRequestPath, _lease);
-                if (trade != _originalTradePending || training != _originalTrainingPending)
-                    throw new InvalidDataException("Authenticated NPC skill dedicated pending authority changed.");
-            }
+            await _owner.RequireNpcProgressionWitnessAsync(_lease, CreateSettlementWitness());
         }
     }
 

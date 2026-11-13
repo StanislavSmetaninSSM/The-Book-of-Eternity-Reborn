@@ -34,7 +34,7 @@ public partial class CanonicalStateNormalizer
         RequireCandidateFields(input.CandidateCore, finalRoot);
         if (finalRoot.ContainsKey(NpcCoreChangesContract.PropertyName))
             throw new InvalidDataException("Treatment final NPC root retains core commands.");
-        return finalRoot.DeepClone().AsObject();
+        return finalRoot; // OwnerCompanionAfterImages already exports detached roots.
     }
 
     private async Task ValidateTreatmentNpcSkillOpeningAsync(AcceptedMechanicsPlan plan,
@@ -56,9 +56,10 @@ public partial class CanonicalStateNormalizer
         }
         if (!JsonNode.DeepEquals(originalMetadata, currentMetadata))
             throw new InvalidDataException("Treatment NPC sidecar changes unrelated metadata.");
+        var beforeImages = plan.BeforeImages; // One detached export for both raw witnesses.
         foreach (var (path, raw) in new[]
                  { (NpcCoreChangesContract.NpcCorePath, input.RawCore), (MortalNpcAcceptedSkillInput.SidecarPath, input.RawSidecar) })
-            if (!plan.BeforeImages.TryGetValue(path, out var before) || !before.Existed || before.Bytes is null ||
+            if (!beforeImages.TryGetValue(path, out var before) || !before.Existed || before.Bytes is null ||
                 !JsonNode.DeepEquals(JsonNode.Parse(DecodePendingSnapshotText(before.Bytes)), raw))
                 throw new InvalidDataException("Treatment NPC raw witness differs from its sealed plan: " + path);
     }

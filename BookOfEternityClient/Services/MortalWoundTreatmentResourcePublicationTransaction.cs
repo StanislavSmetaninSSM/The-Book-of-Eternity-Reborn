@@ -276,6 +276,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
     private readonly string _bindingFingerprint;
     private readonly MortalWoundTreatmentPublicationTakeReceipt _receipt;
     private readonly MortalWoundTreatmentPublicationBeforeImage[] _beforeImages;
+    private readonly ValidationService.NpcProgressionSettlementWitness? _npcProgressionWitness;
     private readonly IReadOnlyDictionary<
         string,
         MortalWoundTreatmentPublicationBeforeImage> _beforeImagesByPath;
@@ -290,9 +291,11 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         AcceptedMechanicsPlan plan,
         AcceptedMechanicsPlanBinding binding,
         MortalWoundTreatmentPublicationTakeReceipt receipt,
-        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages,
+        ValidationService.NpcProgressionSettlementWitness? npcProgressionWitness = null)
     {
         _fileSystem = fileSystem;
+        _npcProgressionWitness = npcProgressionWitness;
         _plan = plan;
         _bindingFingerprint =
             AcceptedMechanicsPlanFingerprints.ComputeInput(binding);
@@ -313,7 +316,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         AcceptedMechanicsPlan plan,
         AcceptedMechanicsPlanBinding binding,
         MortalWoundTreatmentPublicationTakeReceipt receipt,
-        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages,
+        ValidationService.NpcProgressionSettlementWitness? npcProgressionWitness = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(plan);
@@ -347,7 +351,8 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
             plan,
             binding,
             receipt,
-            beforeImages);
+            beforeImages,
+            npcProgressionWitness);
     }
 
     /// <summary>
@@ -363,7 +368,9 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(beforeImages);
         var paths = beforeImages.Select(row => row.Path).ToHashSet(StringComparer.Ordinal);
-        foreach (var path in plan.TouchedPaths)
+        // NPC skill commands may be consumed by the normalizer after the specialized
+        // common writer. They remain part of this same transaction's compensation.
+        foreach (var path in plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath))
             if (!paths.Contains(path))
                 throw new InvalidDataException("Treatment publication lacks rollback coverage for touched path '" + path + "'.");
     }
@@ -512,7 +519,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
         var paths = WoundAcceptedTurnSnapshotContract
-            .BuildRequiredPaths(_plan.TouchedPaths);
+            .BuildRequiredPaths(_plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath));
         var captured = new MortalWoundTreatmentPublicationBeforeImage[paths.Count];
         for (var index = 0; index < paths.Count; index++)
         {
@@ -521,6 +528,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                 await fileSystem.ReadFileBytesAsync(writeLease, paths[index]));
         }
 
+        await RequireNpcProgressionWitnessAsync(fileSystem, writeLease);
         if (Interlocked.CompareExchange(
                 ref _publishedAgreement,
                 captured,
@@ -758,6 +766,14 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         }
     }
 
+    private async Task RequireNpcProgressionWitnessAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease)
+    {
+        if (_npcProgressionWitness is not null)
+            await new ValidationService(files, Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance)
+                .RequireNpcProgressionWitnessAsync(lease, _npcProgressionWitness);
+    }
+
     private async Task<bool> PublishedAgreementStillExactAsync(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
@@ -779,6 +795,9 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                 return false;
             }
         }
+        try { await RequireNpcProgressionWitnessAsync(fileSystem, writeLease); }
+        catch (Exception failure) when (failure is InvalidDataException or IOException or InvalidOperationException or JsonException)
+        { return false; }
         return true;
     }
 

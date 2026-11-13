@@ -11,13 +11,52 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
-    [Fact]
-    public async Task GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(int scenario)
     {
+        var lateCut = scenario == 1;
+        var armed = false;
+        var reached = false;
+        FileSystemManager? observedFiles = null;
+        JsonNode? expectedNpc = null;
+        var expectedConsumeTransitions = 0;
+        const string cutMarker = "NPC progression treatment completed publication cut";
+        var hooks = lateCut ? new FileSystemManagerHooks
+        {
+            AfterCanonicalReadInitialValidationAsync = _ =>
+            {
+                if (!armed || reached || observedFiles is null || expectedNpc is null)
+                    return Task.CompletedTask;
+                var corePath = observedFiles.ResolvePath(NpcCoreChangesContract.NpcCorePath);
+                var skillsPath = observedFiles.ResolvePath("game_state/npcs/npc_skills.json");
+                if (!File.Exists(corePath) || !File.Exists(skillsPath)) return Task.CompletedTask;
+                var core = JsonNode.Parse(File.ReadAllText(corePath));
+                var skills = JsonNode.Parse(File.ReadAllText(skillsPath)) as JsonObject;
+                if (!JsonNode.DeepEquals(expectedNpc, core) || skills is null ||
+                    new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" }
+                        .Any(skills.ContainsKey))
+                    return Task.CompletedTask;
+                var indexPath = observedFiles.ResolvePath(MortalItemIdentityState.StatePath);
+                if (!File.Exists(indexPath)) return Task.CompletedTask;
+                var index = MortalItemIdentityState.Parse(JsonNode.Parse(File.ReadAllText(indexPath))!);
+                if (index.Issues.Count != 0 || !index.EntriesByItemId.TryGetValue(
+                        HeldTreatmentPipelineContext.SelectedItemId, out var selected) ||
+                    selected["transitions"]!.AsArray().OfType<JsonObject>().Count(row =>
+                        row["kind"]?.GetValue<string>() == "consume") != expectedConsumeTransitions)
+                    return Task.CompletedTask;
+                reached = true;
+                throw new InvalidOperationException(cutMarker);
+            }
+        } : null;
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
             fault: null,
             itemScenario: HeldTreatmentItemScenario.SelectedStack(publishNpcSkillChange: true),
             composePublication: false,
+            hooks: hooks,
             configureBeforePreparation: async files =>
             {
                 var core = await ReadJsonObjectAsync(files, NpcCoreChangesContract.NpcCorePath);
@@ -100,6 +139,97 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Contains(ReadProvider(npcAfterImage)["activeSkills"]!.AsArray().OfType<JsonObject>(),
             skill => skill["displayName"]?.GetValue<string>() == HeldTreatmentPipelineContext.ChangedSkillDisplayName);
         var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
+        if (scenario is 2 or 3)
+        {
+            var before = await CaptureExactTreatmentTransactionBytesAsync(context);
+            const string skillPath = "game_state/npcs/npc_skills.json";
+            var rawSkills = Assert.IsType<byte[]>(await context.ReadFileBytesAsync(skillPath));
+            var backups = manifest["files"]!.AsObject().ToDictionary(pair => pair.Key,
+                pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
+            await context.ReleaseLeaseAsync();
+            var refreshed = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem,
+                new CanonicalStateNormalizer(context.FileSystem, NullLogger<CanonicalStateNormalizer>.Instance),
+                new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance), backups);
+            Assert.DoesNotContain(refreshed.Issues, issue => issue.Severity == IssueSeverity.Error);
+            var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(
+                refreshed.TreatmentResourcePublicationTransaction);
+            Assert.True(JsonNode.DeepEquals(npcAfterImage,
+                await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath)));
+            var consumedSkills = await ReadJsonObjectAsync(context.FileSystem, skillPath);
+            Assert.False(consumedSkills.ContainsKey("NPCActiveSkillChanges"));
+            Assert.Equal(itemTransitionsBefore + 1, await CountSelectedItemConsumeTransitionsAsync(context));
+            // The real coordinator has released its publication lease. Drift a retained
+            // publication dependency before actual final settlement, not before admission.
+            var worldBefore = await context.ReadFileBytesAsync(MortalNpcWorldProgressionPolicy.Path);
+            try
+            {
+                if (scenario == 2)
+                    await context.FileSystem.WriteFileAtomicBytesAsync(skillPath, rawSkills);
+                else
+                {
+                    const string changedPolicy = """
+                        {"npcProgression":{"schemaVersion":1,"characteristics":{
+                          "mode":"fixedIncrements","perLevel":{"strength":1}}}}
+                        """;
+                    Assert.True(MortalNpcWorldProgressionPolicy.Parse(changedPolicy).IsValid);
+                    await context.FileSystem.WriteFileAtomicAsync(MortalNpcWorldProgressionPolicy.Path, changedPolicy);
+                }
+                var completion = await transaction.CompleteAsync(context.FileSystem);
+                Assert.False(completion.IsValid);
+                Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.PublishedAgreementChanged, completion.Outcome);
+            }
+            finally
+            {
+                // World lore is an external dependency, not transaction rollback output.
+                // Remove the injected drift ourselves before asking its real owner to compensate.
+                if (scenario == 3)
+                {
+                    if (worldBefore is null)
+                        File.Delete(context.FileSystem.ResolvePath(MortalNpcWorldProgressionPolicy.Path));
+                    else
+                        await context.FileSystem.WriteFileAtomicBytesAsync(MortalNpcWorldProgressionPolicy.Path, worldBefore);
+                }
+            }
+            // Complete refuses but does not compensate automatically. Exercise its actual
+            // existing compensation owner, rather than restoring bytes in the test.
+            var compensation = await transaction.CompensateAsync(context.FileSystem);
+            Assert.True(compensation.IsValid, DescribeValidationIssues(compensation.Issues));
+            await AssertExactTreatmentTransactionBytesAsync(context, before);
+            Assert.Equal(itemTransitionsBefore, await CountSelectedItemConsumeTransitionsAsync(context));
+            return;
+        }
+        if (lateCut)
+        {
+            var before = await CaptureExactTreatmentTransactionBytesAsync(context);
+            var backups = manifest["files"]!.AsObject().ToDictionary(pair => pair.Key,
+                pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
+            var signedPaths = backups.Values.Append("game_state/control/pending_turn_snapshot.json")
+                .Append(PendingTurnSnapshotAuthority.AuthorityPath).Append("input/turn_request.json")
+                .Distinct(StringComparer.Ordinal).ToArray();
+            var signedBefore = new Dictionary<string, byte[]?>();
+            foreach (var path in signedPaths)
+                signedBefore.Add(path, await context.ReadFileBytesAsync(path));
+            observedFiles = context.FileSystem;
+            expectedNpc = npcAfterImage.DeepClone();
+            expectedConsumeTransitions = itemTransitionsBefore + 1;
+            await context.ReleaseLeaseAsync();
+            armed = true;
+            var failure = await Record.ExceptionAsync(() =>
+                AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                    context.FileSystem,
+                    new CanonicalStateNormalizer(context.FileSystem, NullLogger<CanonicalStateNormalizer>.Instance),
+                    new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance), backups));
+            armed = false;
+            Assert.True(reached, "The held transaction must publish its exact NPC item/skill/progression root and consume the skill sidecar before the cut.");
+            Assert.NotNull(failure);
+            Assert.Contains(cutMarker, failure!.ToString(), StringComparison.Ordinal);
+            await AssertExactTreatmentTransactionBytesAsync(context, before);
+            foreach (var (path, bytes) in signedBefore)
+                Assert.Equal(bytes, await context.ReadFileBytesAsync(path));
+            Assert.Equal(itemTransitionsBefore, await CountSelectedItemConsumeTransitionsAsync(context));
+            return;
+        }
         await context.ReleaseLeaseAsync();
         var logger = new SpiritualLifecycleTestLogger();
         var repairInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
