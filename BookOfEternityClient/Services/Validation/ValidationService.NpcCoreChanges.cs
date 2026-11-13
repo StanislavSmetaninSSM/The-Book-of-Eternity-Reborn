@@ -263,6 +263,18 @@ public partial class ValidationService
                 throw new InvalidDataException("Raw NPC skill candidate inputs changed before consumption.");
         }
 
+        internal async Task RequireItemPhaseSkillInputsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
+        {
+            await RequireCurrentAsync(files, lease);
+            if (SkillInput is null) throw new InvalidDataException("Missing NPC skill input.");
+            var core = await files.ReadFileAsync(_lease, NpcCoreChangesContract.NpcCorePath);
+            var sidecar = await files.ReadFileBytesAsync(_lease, MortalNpcAcceptedSkillInput.SidecarPath);
+            if (!TryReadNpcProgressionOriginal(core, out var root) ||
+                !JsonNode.DeepEquals(root, SkillInput.ItemPhaseCore) || sidecar is null || _rawSidecarBytes is null ||
+                !sidecar.AsSpan().SequenceEqual(_rawSidecarBytes))
+                throw new InvalidDataException("NPC skill item-phase input differs from its admitted exact intermediate.");
+        }
+
         internal async Task RequirePublishedSkillsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
         {
             await RequireCurrentAsync(files, lease);
@@ -287,7 +299,7 @@ public partial class ValidationService
                         !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actor, out var id) ||
                         !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actual, out var actualId) || id != actualId)
                         throw new InvalidDataException("Published NPC skill identity differs from admitted candidate.");
-                    foreach (var field in new[] { "activeSkills", "passiveSkills", "level", "experience", "experienceForNextLevel", "progressionProfile", "progressionType", "progressionTrackers", "characteristics" })
+                    foreach (var field in new[] { "activeSkills", "passiveSkills", "level", "experience", "experienceForNextLevel", "progressionProfile", "progressionType", "progressionTrackers", "characteristics", "inventory", "equippedItems", "equipment" })
                         if (actor.ContainsKey(field) != actual.ContainsKey(field) || !JsonNode.DeepEquals(actor[field], actual[field]))
                             throw new InvalidDataException("Published NPC skill/progression result differs from admitted candidate: " + field);
                 }
@@ -401,7 +413,8 @@ public partial class ValidationService
         var originalTrade = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, NpcTradeRequestState.PendingRequestPath, writeLease);
         var originalTraining = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, TrainingRequestState.PendingRequestPath, writeLease);
         var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar.Root, root, rawSidecar!, authority,
-            originalTrade, originalTraining, out var candidateIssues, originalSidecar.Exists);
+            originalTrade, originalTraining, out var candidateIssues, originalSidecar.Exists,
+            CaptureNpcSkillItemSnapshot(writeLease, context));
         return new(this, writeLease, context, candidateIssues, originalRoot, input,
             npcCoreBytes, npcSkillBytes, originalTrade, originalTraining, policyFingerprint);
     }

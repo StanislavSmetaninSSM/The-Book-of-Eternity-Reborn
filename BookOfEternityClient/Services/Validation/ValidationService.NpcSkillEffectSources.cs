@@ -53,8 +53,17 @@ public partial class ValidationService
         var trade = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, NpcTradeRequestState.PendingRequestPath, writeLease);
         var training = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, TrainingRequestState.PendingRequestPath, writeLease);
         var input = MortalNpcAcceptedSkillInput.Create(originalCore, originalSidecar.Root, rawCore, rawSidecar!,
-            authority, trade, training, out var candidateIssues, originalSidecar.Exists);
+            authority, trade, training, out var candidateIssues, originalSidecar.Exists,
+            CaptureNpcSkillItemSnapshot(writeLease, authority.ProgressionSource));
         issues.AddRange(candidateIssues);
         return input;
     }
+    private MortalItemAcceptedTurnNormalizationSnapshot? CaptureNpcSkillItemSnapshot(
+        FileSystemManager.CanonicalWriteLease? lease, NpcCoreChangesContract.ProgressionSourceContext? source)
+    {
+        if (lease is null || source is null) return null;
+        return MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(_fs, lease,
+            source.SessionId, source.SnapshotToken, source.TurnNumber, out var snapshot) ? snapshot : null;
+    }
+
 }

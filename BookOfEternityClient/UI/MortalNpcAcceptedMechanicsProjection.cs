@@ -66,8 +66,9 @@ internal sealed record MortalNpcAcceptedMechanicsProjection(
         foreach (var (key, node) in characteristics.OrderBy(pair => pair.Key, StringComparer.Ordinal))
         {
             if (PrivateCharacteristicFields.Contains(key) || node is not JsonValue value ||
-                (value.TryGetValue<double>(out var number) && !double.IsFinite(number)) ||
-                (value.TryGetValue<float>(out var single) && !float.IsFinite(single)) ||
+                (value.TryGetValue<double>(out var number)
+                    ? !double.IsFinite(number)
+                    : value.TryGetValue<float>(out var single) && !float.IsFinite(single)) ||
                 value.GetValueKind() != JsonValueKind.Number) continue;
             // Preserve exact JSON numeric text, including decimal values and zero;
             // do not narrow setting-owned values to Int32 or assign universal ranges.

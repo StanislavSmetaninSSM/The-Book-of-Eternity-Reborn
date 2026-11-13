@@ -8,6 +8,29 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalNpcAcceptedMechanicsDisplayTests
 {
+    [Fact]
+    public void SharedDrilldown_LargeFiniteParsedCharacteristicIsNotNarrowedToFloat()
+    {
+        var actor = ProgressionActor("standard");
+        actor["characteristics"] = JsonNode.Parse("""{"setting_defined_scale":1e100,"snapshotHash":123}""");
+        var projection = MortalNpcAcceptedMechanicsProjection.Build(actor);
+        var row = Assert.Single(projection.CharacteristicRows);
+        Assert.Equal("setting_defined_scale", row.Key);
+        Assert.Equal("1e100", row.Value);
+    }
+
+    [Fact]
+    public void ConsoleAdditionalScalars_ExcludeMalformedProfileAndManifestHash()
+    {
+        using var actor = JsonDocument.Parse("""
+            {"progressionProfile":"PRIVATE_SENTINEL_profile","manifestPayloadHash":"PRIVATE_SENTINEL_manifest",
+             "source":"PRIVATE_SENTINEL_source","custom_public_note":"Visible detail"}
+            """);
+        var text = string.Join("\n", ExplorerMode.BuildNpcAdditionalScalarLines(actor.RootElement));
+        Assert.DoesNotContain("PRIVATE_SENTINEL", text, StringComparison.Ordinal);
+        Assert.Contains("Visible detail", text, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("standard", "Стандартный")]
     [InlineData("table", "Табличный")]

@@ -85,6 +85,16 @@ public partial class CanonicalStateNormalizer
                 }
                 projectedRoots = itemPhase.ItemPhaseAfterImages;
             }
+            else if (_npcProgressionSource?.SkillInput is { ItemProjectionProof: not null } npcSkills)
+            {
+                // Reuse the same detached phase that shaped the admitted effect source and NPC candidate.
+                // Opening checked the exact raw roots; the snapshot proof binds every item input/allocation.
+                if (npcSkills.ItemProjectionProof != validated.Snapshot.ProjectionProofFingerprint ||
+                    npcSkills.CloneItemPhase() is not { IsValid: true } phase ||
+                    phase.Fingerprint != npcSkills.ItemPhaseFingerprint)
+                    throw new InvalidDataException("NPC skill transfer lost its admitted item phase.");
+                projectedRoots = phase.ItemPhaseAfterImages;
+            }
             else
             {
                 var backupRoots = validated.Snapshot.CloneBackupProjectionRoots();

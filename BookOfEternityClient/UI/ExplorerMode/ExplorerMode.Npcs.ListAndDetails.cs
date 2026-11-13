@@ -117,7 +117,8 @@ private async Task ShowNPCs()
         var originalName = GetStr(npc, "name", "???");
         var name = ResolveNpcDisplayName(npc, renameMap);
         var npcId = GetPrimaryNpcId(npc);
-        var acceptedMechanics = MortalNpcAcceptedMechanicsProjection.Build(CloneJsonObject(npc));
+        var acceptedActor = CloneJsonObject(npc);
+        var acceptedMechanics = MortalNpcAcceptedMechanicsProjection.Build(acceptedActor);
         var content = new Grid().AddColumn(new GridColumn());
         var lines = new List<string>();
 
@@ -779,42 +780,7 @@ private async Task ShowNPCs()
             lines.Add(wLine);
         }
 
-        // Show remaining non-core string/number/bool properties (catch-all for unknown fields)
-        var coreProps = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name", "NPCName", "npcName", "NPCId", "npcId", "id", "initialId", "shortDescription", "description",
-            "appearance", "currentLocation", "relationshipLevel", "race", "role", "occupation", "status",
-            "lastInteraction", "progressionType", "level", "experience", "experienceForNextLevel",
-            "source", "sessionId", "requestId", "turnNumber", "snapshotToken", "snapshotHash",
-            "receipt", "receiptId", "progressionReceipt", "progressionReceipts", "transitionId",
-            "playerCompanionDirective", "image_prompt", "currentHealthPercentage", "maxHealthPercentage",
-            "appearanceDescription", "raceDescription", "classDescription", "history", "worldview",
-            "attitude", "culturalLayer", "culturalStance", "personalityArchetype", "personalityTraits",
-            "characteristics", "relationshipLock", "goals", "plans", "personalQuests", "currentActivity",
-            "completedActivities", "factionAffiliations", "npcRelationships", "fateCards",
-            "activeSkills", "passiveSkills", "inventory", "equippedItems", "masks", "activeMaskId",
-            "customStates", "maxWeight", "totalWeight", "isOverloaded", "progressionTrackers",
-            "personalityProfile", "guardianId", "domain", "relationshipData", "questManagement",
-            "gachaSystem", "rarity", "age", "class", "currentLocationId", "currentLocationName",
-            "initialLocationId", "initialLocationName", "sceneStatus", "lastSeenAtUtc", "turn", "materialization" };
-        foreach (var prop in npc.EnumerateObject())
-        {
-            if (coreProps.Contains(prop.Name)) continue;
-            if (prop.Value.ValueKind == JsonValueKind.String)
-            {
-                var val = prop.Value.GetString() ?? "";
-                if (val.Length > 0)
-                    lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [white]{Markup.Escape(val)}[/]");
-            }
-            else if (prop.Value.ValueKind == JsonValueKind.Number)
-            {
-                lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [yellow]{prop.Value}[/]");
-            }
-            else if (prop.Value.ValueKind is JsonValueKind.True or JsonValueKind.False)
-            {
-                var boolColor = prop.Value.ValueKind == JsonValueKind.True ? "green" : "red";
-                var boolText = prop.Value.ValueKind == JsonValueKind.True ? "да" : "нет";
-                lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [{boolColor}]{boolText}[/]");
-            }
-        }
+        lines.AddRange(BuildNpcAdditionalScalarLines(npc));
 
         if (debugMode)
         {
@@ -881,7 +847,7 @@ private async Task ShowNPCs()
         });
 
         var projection = NpcDetailSectionProjection.Build(
-            JsonNode.Parse(npc.GetRawText()),
+            acceptedActor,
             new NpcDetailSectionDocuments(
                 Relationships: ToJsonNode(relDoc),
                 Goals: ToJsonNode(goalDoc),
@@ -894,10 +860,53 @@ private async Task ShowNPCs()
                 Masks: ToJsonNode(maskDoc),
                 Memory: ToJsonNode(memDoc),
                 FateCards: ToJsonNode(fateDoc),
-                CustomStates: ToJsonNode(customDoc)));
+                CustomStates: ToJsonNode(customDoc)), acceptedMechanics);
         ShowNpcDetailSectionMenu(name, projection.Sections);
 
         await ShowNpcDetailActions(npc, originalName, npcTradeAvailability.TradeAvailable);
+    }
+
+    internal static IReadOnlyList<string> BuildNpcAdditionalScalarLines(JsonElement npc)
+    {
+        var lines = new List<string>();
+        // Show remaining non-core string/number/bool properties (catch-all for unknown fields)
+        var coreProps = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name", "NPCName", "npcName", "NPCId", "npcId", "id", "initialId", "shortDescription", "description",
+            "appearance", "currentLocation", "relationshipLevel", "race", "role", "occupation", "status",
+            "lastInteraction", "progressionType", "progressionProfile", "level", "experience", "experienceForNextLevel",
+            "source", "sessionId", "requestId", "turnNumber", "snapshotToken", "snapshotHash", "manifestPayloadHash",
+            "receipt", "receiptId", "progressionReceipt", "progressionReceipts", "transitionId",
+            "playerCompanionDirective", "image_prompt", "currentHealthPercentage", "maxHealthPercentage",
+            "appearanceDescription", "raceDescription", "classDescription", "history", "worldview",
+            "attitude", "culturalLayer", "culturalStance", "personalityArchetype", "personalityTraits",
+            "characteristics", "relationshipLock", "goals", "plans", "personalQuests", "currentActivity",
+            "completedActivities", "factionAffiliations", "npcRelationships", "fateCards",
+            "activeSkills", "passiveSkills", "inventory", "equippedItems", "masks", "activeMaskId",
+            "customStates", "maxWeight", "totalWeight", "isOverloaded", "progressionTrackers",
+            "personalityProfile", "guardianId", "domain", "relationshipData", "questManagement",
+            "gachaSystem", "rarity", "age", "class", "currentLocationId", "currentLocationName",
+            "initialLocationId", "initialLocationName", "sceneStatus", "lastSeenAtUtc", "turn", "materialization" };
+        foreach (var prop in npc.EnumerateObject())
+        {
+            if (coreProps.Contains(prop.Name)) continue;
+            if (prop.Value.ValueKind == JsonValueKind.String)
+            {
+                var val = prop.Value.GetString() ?? "";
+                if (val.Length > 0)
+                    lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [white]{Markup.Escape(val)}[/]");
+            }
+            else if (prop.Value.ValueKind == JsonValueKind.Number)
+            {
+                lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [yellow]{prop.Value}[/]");
+            }
+            else if (prop.Value.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            {
+                var boolColor = prop.Value.ValueKind == JsonValueKind.True ? "green" : "red";
+                var boolText = prop.Value.ValueKind == JsonValueKind.True ? "да" : "нет";
+                lines.Add($"  📋 {Markup.Escape(NpcFieldToRussian(prop.Name))}: [{boolColor}]{boolText}[/]");
+            }
+        }
+
+        return lines;
     }
 
     private void ShowNpcDetailSectionMenu(string npcName, IReadOnlyList<NpcDetailSection> sections)

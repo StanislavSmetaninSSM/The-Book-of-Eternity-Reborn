@@ -30,7 +30,7 @@ internal static class MortalNpcAcceptedSkillCandidate
         JsonObject currentCore,
         JsonObject currentSidecar,
         NpcCoreChangesContract.Authority authority,
-        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null)
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null, JsonObject? itemPhaseCore = null)
     {
         ArgumentNullException.ThrowIfNull(originalCore);
         ArgumentNullException.ThrowIfNull(originalSidecar);
@@ -77,6 +77,7 @@ internal static class MortalNpcAcceptedSkillCandidate
         var composed = MortalNpcSkillComposer.ComposeWithMastery(core, active, passive,
             activeMastery, passiveMastery, issues, Issue);
         if (composed is null || issues.Count != 0) return Refuse(issues);
+        if (itemPhaseCore is not null) OverlayItemFields(composed, itemPhaseCore);
         issues.AddRange(EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition(
             new Dictionary<string, JsonNode?> { [CorePath] = originalCore },
             new Dictionary<string, JsonNode?> { [CorePath] = composed }));
@@ -194,6 +195,20 @@ internal static class MortalNpcAcceptedSkillCandidate
         }
     }
 
+    private static void OverlayItemFields(JsonObject candidate, JsonObject phaseCore)
+    {
+        var sourceActors = MortalItemNpcMirrorPolicy.BuildExactActorCatalog(phaseCore, "item phase");
+        var candidateActors = MortalItemNpcMirrorPolicy.BuildExactActorCatalog(candidate, "skill candidate");
+        foreach (var (id, mirrors) in candidateActors)
+            foreach (var mirror in mirrors)
+                foreach (var field in new[] { "inventory", "equippedItems", "equipment" })
+                {
+                    var source = sourceActors[id][0].Actor;
+                    if (source.TryGetPropertyValue(field, out var value)) mirror.Actor[field] = value?.DeepClone();
+                    else mirror.Actor.Remove(field);
+                }
+    }
+
     private static string? ReadOwner(JsonObject row, string path, List<ValidationIssue> issues)
     {
         if (GuardianPolicyContracts.TryResolveStrictPermanentNpcId(row, out var id) && ExactText(JsonValue.Create(id)) is not null)
@@ -255,6 +270,13 @@ internal sealed class MortalNpcAcceptedSkillInput
 {
     internal const string SidecarPath = "game_state/npcs/npc_skills.json";
     private readonly JsonObject[] _roots;
+    private readonly MortalItemCanonicalProjectionResult? _itemPhase;
+    internal MortalItemCanonicalProjectionResult? CloneItemPhase() => _itemPhase is null ? null : ClonePhase(_itemPhase);
+
+    private static MortalItemCanonicalProjectionResult ClonePhase(MortalItemCanonicalProjectionResult phase) =>
+        new(phase.ItemPhaseAfterImages.ToDictionary(pair => pair.Key, pair => pair.Value?.DeepClone(), StringComparer.Ordinal),
+            phase.IdentityIndexAfterImage.DeepClone().AsObject(), phase.Issues.ToArray(), phase.Fingerprint);
+
     internal JsonObject OriginalCore => _roots[0].DeepClone().AsObject();
     internal JsonObject OriginalSidecar => _roots[1].DeepClone().AsObject();
     internal JsonObject RawCore => _roots[2].DeepClone().AsObject();
@@ -264,15 +286,22 @@ internal sealed class MortalNpcAcceptedSkillInput
     internal string Fingerprint { get; }
     internal string AuthorityFingerprint { get; }
     internal bool OriginalSidecarExists { get; }
+    internal string? ItemProjectionProof { get; }
+    internal string? ItemPhaseFingerprint { get; }
+    internal JsonObject ItemPhaseCore => _roots.Length > 6 ? _roots[6].DeepClone().AsObject() : RawCore;
+
 
     private MortalNpcAcceptedSkillInput(JsonObject[] roots, NpcCoreChangesContract.Authority authority,
-        string? tradePending, string? trainingPending, bool originalSidecarExists)
+        string? tradePending, string? trainingPending, bool originalSidecarExists, string? itemProof = null, MortalItemCanonicalProjectionResult? itemPhase = null)
     {
         OriginalSidecarExists = originalSidecarExists;
+        ItemProjectionProof = itemProof;
+        _itemPhase = itemPhase is null ? null : ClonePhase(itemPhase);
+        ItemPhaseFingerprint = itemPhase?.Fingerprint;
         _roots = roots.Select(root => root.DeepClone().AsObject()).ToArray();
         AuthorityFingerprint = ComputeAuthorityFingerprint(authority);
         Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[] { "mortal_npc_accepted_skill_input:v2", originalSidecarExists ? "present" : "absent", tradePending, trainingPending, AuthorityFingerprint }
+            new string?[] { "mortal_npc_accepted_skill_input:v3", itemProof, ItemPhaseFingerprint, originalSidecarExists ? "present" : "absent", tradePending, trainingPending, AuthorityFingerprint }
                 .Concat(_roots.Select(WoundAcceptedTurnFingerprintWriter.CanonicalJson)).ToArray());
     }
 
@@ -293,13 +322,47 @@ internal sealed class MortalNpcAcceptedSkillInput
     internal static MortalNpcAcceptedSkillInput? Create(JsonObject originalCore, JsonObject originalSidecar,
         JsonObject rawCore, JsonObject rawSidecar, NpcCoreChangesContract.Authority authority,
         string? originalTradePendingJson, string? originalTrainingPendingJson, out IReadOnlyList<ValidationIssue> issues,
-        bool originalSidecarExists = true)
+        bool originalSidecarExists = true, MortalItemAcceptedTurnNormalizationSnapshot? itemSnapshot = null)
     {
         var accepted = MortalActorAcceptedTurnAuthority.Create(rawCore, originalTradePendingJson, originalTrainingPendingJson);
-        var result = MortalNpcAcceptedSkillCandidate.Compose(originalCore, originalSidecar, rawCore, rawSidecar, authority, accepted);
+        issues = Array.Empty<ValidationIssue>();
+        JsonObject? phaseCore = null;
+        string? proof = null;
+        MortalItemCanonicalProjectionResult? retainedPhase = null;
+        var originalActors = itemSnapshot?.Transfers.Count > 0
+            ? MortalItemNpcMirrorPolicy.BuildExactActorCatalog(originalCore, "original transfer endpoint") : null;
+        if (itemSnapshot is not null && itemSnapshot.Transfers.Count != 0)
+        {
+            if (itemSnapshot.HasFinalPublicationBaseline || itemSnapshot.CloneRouteCatalog().ByCreationRef.Count != 0 ||
+                itemSnapshot.Transfers.Any(transfer => !Supported(transfer.SourceCarrier) || !Supported(transfer.DestinationCarrier)) ||
+                !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()[NpcCoreChangesContract.NpcCorePath], rawCore) ||
+                !JsonNode.DeepEquals(itemSnapshot.CloneBackupProjectionRoots()[NpcCoreChangesContract.NpcCorePath], originalCore) ||
+                !itemSnapshot.TryProjectItemPhase(out var phase, out _) || phase is null ||
+                phase.ItemPhaseAfterImages[NpcCoreChangesContract.NpcCorePath] is not JsonObject projected)
+            {
+                issues = [new ValidationIssue(SidecarPath, IssueSeverity.Error,
+                    "Ordinary NPC skill transfer requires its exact existing-item phase.", code: "npc_skill_item_phase_invalid")];
+                return null;
+            }
+            phaseCore = projected;
+            proof = itemSnapshot.ProjectionProofFingerprint;
+            retainedPhase = phase;
+        }
+        var result = MortalNpcAcceptedSkillCandidate.Compose(originalCore, originalSidecar, rawCore, rawSidecar,
+            authority, accepted, phaseCore);
         issues = result.Issues;
-        return result.IsValid ? new([originalCore, originalSidecar, rawCore, rawSidecar, result.Core!, result.Sidecar!],
-            authority, originalTradePendingJson, originalTrainingPendingJson, originalSidecarExists) : null;
+        if (!result.IsValid) return null;
+        return new(phaseCore is null
+                ? [originalCore, originalSidecar, rawCore, rawSidecar, result.Core!, result.Sidecar!]
+                : [originalCore, originalSidecar, rawCore, rawSidecar, result.Core!, result.Sidecar!, phaseCore],
+            authority, originalTradePendingJson, originalTrainingPendingJson, originalSidecarExists, proof, retainedPhase);
+
+        bool Supported(MortalItemCarrierCoordinate carrier) =>
+            carrier.ContainerId is null && carrier.ContainerPath.Count == 0 &&
+            (carrier.Kind == "player_inventory" ||
+             carrier.Kind == "npc_inventory" && originalActors is not null && originalActors.TryGetValue(carrier.OwnerId, out var actors) &&
+             actors.All(actor => GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actor.Actor, out var id) &&
+                 id == carrier.OwnerId && !actor.HasInitialId));
     }
 
     internal static bool HasPending(JsonObject root) => root.Any(pair =>

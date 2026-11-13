@@ -95,7 +95,9 @@
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_CommonEffectPreservesAllAcceptedResults",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_ReachedLateCutRestoresWholeTransaction",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_InputDriftAfterAdmissionRefusesWithoutMutation",
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_UnexpectedCoreMutationAfterItemWriteRollsBack"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_UnexpectedCoreMutationAfterItemWriteRollsBack",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_SameTurnNpcEndpointRefusesBoundedComposition",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_ItemAdmissionWithoutCommonPlanRefusesBeforeWrites"
           ]
         }
       ]
@@ -754,7 +756,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalNpcProgressionConsequenceExampleTests.WorkedAlternative_UsesRealCombinedCandidateAndRequiresMatchingCompanion"
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequenceExampleTests.WorkedAlternative_UsesRealCombinedCandidateAndRequiresMatchingCompanion",
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequenceExampleTests.WorkedProfileChange_PreservesLevelAndStoredXpThroughCoreAdapter"
           ]
         }
       ]

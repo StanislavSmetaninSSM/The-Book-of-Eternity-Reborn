@@ -14,10 +14,13 @@ public partial class CanonicalStateNormalizer
         {
             if (acceptedMechanicsPlan is not null)
                 RequireOrdinaryNpcSkillCommonPlan(acceptedMechanicsPlan);
-            await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
+            if (skillInput.ItemProjectionProof is null)
+                await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
+            else
+                await _npcProgressionSource.RequireItemPhaseSkillInputsAsync(_fs, _writeLease);
             // Both writes remain inside the existing accepted-turn transaction; its
             // before-image set includes both roots, including the raw pending commands.
-            await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, skillInput.RawCore, skillInput.CandidateCore);
+            await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, skillInput.ItemPhaseCore, skillInput.CandidateCore);
             await WriteIfChangedAsync(MortalNpcAcceptedSkillInput.SidecarPath, skillInput.RawSidecar, skillInput.ConsumedSidecar);
             return;
         }

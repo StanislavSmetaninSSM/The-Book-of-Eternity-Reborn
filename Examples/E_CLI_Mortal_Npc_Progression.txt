@@ -9,7 +9,8 @@ Use NPCCoreChanges only for an existing exact permanent NPCId with a nonempty
 reason. Read the validated baseline actor's progressionProfile; do not add or
 replace it inside progression, rewrite the baseline, or infer it from class,
 progressionType, prose or player XP. Profile installation/change is a separate
-explicit transition, not supported by this numeric package. Missing authority
+explicit transition, not supported by this numeric package; see
+`Examples/E_CLI_Mortal_Npc_Profile_Change.txt`. Missing authority
 blocks progression; unrelated non-progression changes do not need a profile.
 
 Supported closed baseline profiles (JSON integer schemaVersion: 1):

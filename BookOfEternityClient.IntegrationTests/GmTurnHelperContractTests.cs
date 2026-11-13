@@ -4808,7 +4808,10 @@ public sealed class GmTurnHelperContractTests
                          "lore/current_world/world_setting.json", "fixedIncrements", "perLevel",
                          "allocatedPoints", "pointsPerLevel", "allowedKeys",
                          "malformed present policy blocks", "separate from #1533 private",
-                         "E_CLI_Mortal_Npc_Progression_Consequences.txt"
+                         "E_CLI_Mortal_Npc_Progression_Consequences.txt",
+                         "progressionProfileChange", "install", "replace", "true absence",
+                         "preserve level and stored XP", "no simultaneous XP",
+                         "no implicit advancement or discard", "E_CLI_Mortal_Npc_Profile_Change.txt"
                      })
                 Assert.Contains(required, template, StringComparison.Ordinal);
             var contextPack = Path.GetDirectoryName(Path.GetDirectoryName(templatePath)!)!;
@@ -4817,10 +4820,12 @@ public sealed class GmTurnHelperContractTests
                      {
                          "npc_progression_skill_award_unfulfilled", "npc_progression_characteristic_delta",
                          "Never delete a required award", "rewrite authenticated originals",
-                         "does not replace #1533", "Preserve authored private report rows"
+                         "does not replace #1533", "Preserve authored private report rows",
+                         "progressionProfileChange", "npc_profile_change_assets_changed",
+                         "no implicit advancement or discard", "Never convert a failed XP command"
                      })
                 Assert.Contains(required, repair, StringComparison.Ordinal);
-            foreach (var example in new[] { "E_CLI_Mortal_Npc_Progression.txt", "E_CLI_Mortal_Npc_Progression_Consequences.txt" })
+            foreach (var example in new[] { "E_CLI_Mortal_Npc_Progression.txt", "E_CLI_Mortal_Npc_Progression_Consequences.txt", "E_CLI_Mortal_Npc_Profile_Change.txt" })
                 Assert.Equal(File.ReadAllText(Path.Combine(LocateRepoRoot(), "Examples", example), Encoding.UTF8),
                     File.ReadAllText(Path.Combine(contextPack, "Examples", example), Encoding.UTF8));
             Assert.Contains("known current location", template, StringComparison.OrdinalIgnoreCase);

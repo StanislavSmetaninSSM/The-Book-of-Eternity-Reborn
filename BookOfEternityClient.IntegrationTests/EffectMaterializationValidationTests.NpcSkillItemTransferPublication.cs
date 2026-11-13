@@ -134,6 +134,49 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 
+    [Fact]
+    public async Task OrdinaryNpcSkillTransfer_SameTurnNpcEndpointRefusesBoundedComposition()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await PrepareNpcSkillItemTransferAsync(context);
+        var core = (await context.ReadJsonAsync(NpcSkillCorePath))!.AsObject();
+        var created = core["NPCsInScene"]![0]!.DeepClone().AsObject();
+        created["NPCId"] = null;
+        created["initialId"] = "new_transfer_recipient";
+        core["UpdateNPCs"] = new JsonArray(created);
+        await context.WriteJsonAsync(NpcSkillCorePath, core);
+        var commands = (await context.ReadJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath))!;
+        commands["NPCInventoryAdds"]![0]!["NPCId"] = "new_transfer_recipient";
+        await context.WriteJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath, commands);
+        var itemIssues = await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.Contains(issues, issue => issue.Code == "npc_skill_item_phase_invalid");
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcSkillTransfer_ItemAdmissionWithoutCommonPlanRefusesBeforeWrites()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var prepared = await PrepareNpcSkillItemTransferAsync(context);
+        context.FileSystem.DeleteFile(EffectMaterializationTestContext.CommandPath);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem));
+        var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+
+        var failure = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, prepared.Backups));
+
+        Assert.Equal("Ordinary NPC skill transfers require a validated ordinary common plan.", failure.Message);
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillItemTransferAsync(EffectMaterializationTestContext context)
     {

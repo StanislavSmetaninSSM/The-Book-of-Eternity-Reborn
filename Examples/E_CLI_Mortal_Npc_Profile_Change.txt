@@ -1,0 +1,71 @@
+# Mortal NPC: explicit profile installation or replacement
+
+This is a bounded command-authoring example, not a claim that the complete
+publication contour has been qualified. Use the current authenticated Mortal
+World request and an exact existing permanent NPCId. Never rewrite an original
+snapshot, canonical actor, receipt or private source token to change a profile.
+
+Validated baseline for replacement (relevant npc_core fields):
+```json
+{
+  "NPCsInScene": [{
+    "NPCId": "npc_existing_001",
+    "level": 2, "experience": 40, "experienceForNextLevel": 565,
+    "progressionProfile": {
+      "schemaVersion": 1, "mode": "standard",
+      "consequences": {
+        "skills": {"levelsPerAward": 2, "allowedAwards": ["newSkill", "masteryIncrease"]},
+        "characteristics": {"mode": "currentWorld"}
+      }
+    },
+    "activeSkills": [], "passiveSkills": [], "characteristics": {}
+  }]
+}
+```
+
+Replace the valid standard profile with the explicitly chosen table. Preserve
+level 2 and all 40 stored XP; the authored new threshold is exactly
+thresholds[2-1] = 600. Include only identity, reason and the closed
+progressionProfileChange package, with no simultaneous XP/progression or other
+mutation group in this row. Copy source values from the actual current request;
+the example assumes session_npc_example / request_npc_example / turn 42.
+```json
+{
+  "NPCCoreChanges": [{
+    "NPCId": "npc_existing_001",
+    "reason": "Adopt the explicitly agreed advancement table",
+    "progressionProfileChange": {
+      "source": {"sessionId": "session_npc_example", "requestId": "request_npc_example", "turnNumber": 42},
+      "operation": "replace",
+      "profile": {
+        "schemaVersion": 1, "mode": "table", "thresholds": [100, 600, 1600], "capOverflow": "discard",
+        "consequences": {
+          "skills": {"levelsPerAward": 2, "allowedAwards": ["newSkill", "masteryIncrease"]},
+          "characteristics": {"mode": "currentWorld"}
+        }
+      },
+      "level": 2, "experience": 40, "experienceForNextLevel": 600
+    }
+  }]
+}
+```
+
+For installation, use operation install only when the authenticated original
+really has no progressionProfile property (nor a confusable spelling). The
+otherwise identical baseline tuple above can install this table with the same
+result; omission describes that original state, not permission to delete an
+existing profile. Null/malformed present profiles are not absence. Replacement
+requires an already valid original profile and tuple, not a repair of corruption.
+
+Both operations preserve level and stored XP. Author the exact threshold from
+the new profile at that unchanged level. There is no implicit advancement or
+discard, even with capOverflow: discard: if stored XP does not fit below the
+new threshold, or the target cap/none profile would require dropping nonzero XP,
+the change is rejected. Do not add experienceDelta or a progression group to
+force conversion. A profile change grants no level-up skill/characteristic award.
+
+Repair only the named command fields within the current packet's permitted
+paths. For npc_profile_change_assets_changed, restore the unchanged level/XP;
+for an invalid result, use only the intended valid profile/derived threshold.
+Never convert a failed XP command into a profile change to evade its authority
+or consequences. Missing/stale authenticated source remains a blocker.

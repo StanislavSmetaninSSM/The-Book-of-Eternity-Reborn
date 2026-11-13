@@ -453,6 +453,9 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException("NPC progression source differs from the validated accepted-turn binding.");
             npcProgressionSource = boundSource;
         }
+        if (_npcProgressionSource?.SkillInput?.ItemProjectionProof is not null &&
+            acceptedMechanicsPreflight is not AcceptedMechanicsNormalizationPreflight.Validated)
+            throw new InvalidDataException("Ordinary NPC skill transfers require a validated ordinary common plan.");
         if (_npcProgressionSource?.SkillInput is not null &&
             acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated npcCommon)
         {

@@ -21,7 +21,8 @@ internal static class NpcDetailSectionProjection
         return result;
     }
 
-    public static NpcDetailProjection Build(JsonNode? npcNode, NpcDetailSectionDocuments documents)
+    public static NpcDetailProjection Build(JsonNode? npcNode, NpcDetailSectionDocuments documents,
+        MortalNpcAcceptedMechanicsProjection? acceptedMechanics = null)
     {
         if (npcNode is not JsonObject npc)
             return new NpcDetailProjection(string.Empty, "Неизвестный НПС", [], [], null);
@@ -36,7 +37,7 @@ internal static class NpcDetailSectionProjection
         AddActivitySection(sections, npcName, npcId, npc, documents);
         AddRelationshipSection(sections, npcName, npcId, npc, documents);
         AddPersonalitySection(sections, npcName, npcId, npc, documents);
-        AddMechanicsSection(sections, npcName, npcId, npc, documents);
+        AddMechanicsSection(sections, npcName, npcId, npc, documents, acceptedMechanics);
         AddMemorySection(sections, npcName, npcId, npc, documents);
 
         return new NpcDetailProjection(npcId, npcName, sections, personalQuests, BuildTradePresentation(npc));
@@ -272,12 +273,14 @@ internal static class NpcDetailSectionProjection
         string npcName,
         string npcId,
         JsonObject npc,
-        NpcDetailSectionDocuments documents)
+        NpcDetailSectionDocuments documents,
+        MortalNpcAcceptedMechanicsProjection? acceptedMechanics)
     {
         var rows = new List<UiTableRow>();
         var categories = new List<string>();
 
-        var mechanics = MortalNpcAcceptedMechanicsProjection.Build(npc);
+        // Invocation-local DATA from this same selected actor; no authority or cache reuse.
+        var mechanics = acceptedMechanics ?? MortalNpcAcceptedMechanicsProjection.Build(npc);
         foreach (var row in mechanics.ProfileRows)
         {
             rows.Add(new UiTableRow { Cells = [row.Key, row.Value] });
