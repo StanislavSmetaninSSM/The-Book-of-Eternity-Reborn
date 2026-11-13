@@ -52,6 +52,22 @@ public sealed class MortalNpcSkillClaimTests : IDisposable
     private async Task<List<ValidationIssue>> Evaluate() => (await _validator.ValidateAcceptedTurnNarrativePayloadAsync())
         .Where(x => x.Code?.StartsWith("npc_skill_claim_", StringComparison.Ordinal) == true).ToList();
 
+    [Fact]
+    public async Task CaseVariantOwner_DuplicateReportIsRejected()
+    {
+        var other = Claim("noProgress"); other["actorKey"] = "id:NPC_A";
+        await Setup(new JsonArray(Claim("noProgress"), other));
+        Assert.Contains(await Evaluate(), x => x.Code == "npc_skill_claim_duplicate");
+    }
+    [Fact]
+    public async Task PrivateReportMarker_IsRejectedInPlayerNarrative()
+    {
+        await Setup(new JsonArray());
+        await _fs.WriteFileAtomicAsync("output/narrative_response.json", new JsonObject
+            { ["response"] = "npcSkillClaims: []", ["timestamp"] = DateTimeOffset.UtcNow.ToString("O") }.ToJsonString());
+        Assert.Contains(await _validator.ValidateAcceptedTurnNarrativePayloadAsync(),
+            x => x.Code == "narrative_response_technical_repair_leak");
+    }
     [Theory]
     [InlineData("missing")][InlineData("null")][InlineData("object")][InlineData("row")]
     public async Task MortalReport_IsMandatoryAndClosedShape(string mode)
@@ -107,6 +123,145 @@ public sealed class MortalNpcSkillClaimTests : IDisposable
         await Setup(new JsonArray(claim));
         await Original(Core(), Skills(0));
         Assert.NotEmpty(await Evaluate());
+    }
+
+    [Fact]
+    public async Task SkillDeltaCannotInventAnAbsentNpcOwner()
+    {
+        await Setup(new JsonArray(Claim("noProgress")));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", "{}");
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
+        {"NPCActiveSkillChanges":[{"NPCId":"npc_a","skillChanges":[{"skillName":"Искра"}]}]}
+        """);
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Theory]
+    [InlineData("duplicate-report")][InlineData("duplicate-skill")][InlineData("duplicate-key")]
+    [InlineData("original-corrupt")][InlineData("cosmetic")]
+    public async Task AmbiguousOrUnreadableOrCosmeticEvidence_IsRejected(string mode)
+    {
+        await Setup(new JsonArray(Claim()));
+        await Original(mode == "original-corrupt" ? "{" : Core(), Skills(0));
+        if (mode == "duplicate-report") await _fs.WriteFileAtomicAsync("output/debug_logs.json",
+            new JsonObject { ["npcSkillClaims"] = new JsonArray(Claim(), Claim()) }.ToJsonString());
+        if (mode == "duplicate-key") await _fs.WriteFileAtomicAsync("output/debug_logs.json", """{"npcSkillClaims":[],"npcSkillClaims":[]}""");
+        if (mode == "duplicate-skill")
+        {
+            var duplicate = JsonNode.Parse(Skills(5))!.AsObject();
+            duplicate["NPCSkillMasteryChanges"]!.AsArray().Add(duplicate["NPCSkillMasteryChanges"]![0]!.DeepClone());
+            await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", duplicate.ToJsonString());
+        }
+        if (mode == "cosmetic")
+        {
+            var current = JsonNode.Parse(Skills(0))!.AsObject();
+            current["NPCSkillMasteryChanges"]![0]!["description"] = "New decorative wording";
+            await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", current.ToJsonString());
+        }
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Fact]
+    public async Task Learning_AcceptsGenuinelyNewOwnedSkill()
+    {
+        var claim = Claim(); claim["claimType"] = "learning";
+        await Setup(new JsonArray(claim)); await Original("{}", "{}");
+        Assert.Empty(await Evaluate());
+    }
+    [Fact]
+    public async Task PassiveProgress_UsesOnlyItsOwnKind()
+    {
+        var claim = Claim(); claim["skillKind"] = "passive";
+        await Setup(new JsonArray(claim));
+        await Original(Core().Replace("activeSkills", "passiveSkills"), Skills(0).Replace("NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges"));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", Core().Replace("activeSkills", "passiveSkills"));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", Skills(5).Replace("NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges"));
+        Assert.Empty(await Evaluate());
+    }
+
+    [Theory]
+    [InlineData("owner-case")][InlineData("consistent-mirror")]
+    public async Task ExistingNpcIdentityAndConsistentMirrors_RemainValid(string mode)
+    {
+        await Setup(new JsonArray(Claim("noProgress")));
+        var core = JsonNode.Parse(Core())!.AsObject();
+        if (mode == "owner-case") core["UpdateNPCs"]![0]!["NPCId"] = "NPC_A";
+        else core["NPCsInScene"] = core["UpdateNPCs"]!.DeepClone();
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", core.ToJsonString());
+        Assert.Empty(await Evaluate());
+    }
+    [Fact]
+    public async Task NewlyMortalSoul_StillRequiresReportWhenRequestStartedInAfterlife()
+    {
+        await Setup(null, false);
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """{"progressionControl":{"currentRealm":"Chaos Sea"}}""");
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Theory]
+    [InlineData("game_state/meta/soul_state.json")]
+    [InlineData("game_state/npcs/npc_core.json")]
+    [InlineData("game_state/npcs/npc_skills.json")]
+    public async Task CapturedPass_RechecksFreshRealmAndNpcSourcesUnderLease(string path)
+    {
+        await Setup(new JsonArray(Claim("noProgress")));
+        using var pass = await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+        Assert.DoesNotContain(pass.Issues, x => x.Code?.StartsWith("npc_skill_claim_", StringComparison.Ordinal) == true);
+        Assert.Contains(pass.CaptureDiagnostic().Occurrences, x => x.Path == path);
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await pass.RequireCurrentAsync(_fs, lease);
+        var physical = _fs.ResolvePath(path); var before = File.ReadAllText(physical);
+        File.WriteAllText(physical, before + " ");
+        await Assert.ThrowsAsync<InvalidDataException>(() => pass.RequireCurrentAsync(_fs, lease));
+        File.WriteAllText(physical, before);
+        await Assert.ThrowsAsync<InvalidDataException>(() => pass.RequireCurrentAsync(_fs, lease));
+    }
+    [Fact]
+    public async Task EmptyReport_ObservesRealmButDoesNotReadNpcData()
+    {
+        await Setup(new JsonArray());
+        using var pass = await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
+        Assert.DoesNotContain(pass.CaptureDiagnostic().Occurrences, x => x.Path is "game_state/npcs/npc_core.json" or "game_state/npcs/npc_skills.json");
+        Assert.Contains(pass.CaptureDiagnostic().Occurrences, x => x.Path == "game_state/meta/soul_state.json");
+    }
+
+    [Fact]
+    public async Task PublicReasoningValidator_AcceptsTheMandatoryReportField()
+    {
+        await Setup(new JsonArray());
+        await _fs.WriteFileAtomicAsync("output/debug_logs.json", new JsonObject
+        {
+            ["npcSkillClaims"] = new JsonArray(), ["gm_thoughts_markdown"] = OrdinaryReasoningFixture.ValidThoughts,
+            ["timestamp"] = DateTimeOffset.UtcNow.ToString("O")
+        }.ToJsonString());
+        Assert.DoesNotContain(await _validator.ValidateAcceptedTurnReasoningAsync(), x => x.Code == "debug_logs_unknown_field");
+    }
+    [Theory]
+    [InlineData("case-drift")][InlineData("malformed-carrier")][InlineData("malformed-actor")]
+    public async Task Learning_CannotUseCorruptOriginalOrOwnerCaseDriftAsAbsence(string mode)
+    {
+        var claim = Claim(); claim["claimType"] = "learning";
+        await Setup(new JsonArray(claim));
+        var oldCore = mode switch { "case-drift" => Core().Replace("npc_a", "NPC_A"),
+            "malformed-carrier" => """{"UpdateNPCs":{}}""", _ => """{"UpdateNPCs":[4]}""" };
+        await Original(oldCore, "{}");
+        Assert.NotEmpty(await Evaluate());
+    }
+
+    [Fact]
+    public async Task CurrentRemovalCannotSatisfyUseOwnership()
+    {
+        await Setup(new JsonArray(Claim("noProgress")));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
+        {"NPCActiveSkillChanges":[{"NPCId":"npc_a","skillsToRemove":["Искра"]}]}
+        """);
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Fact]
+    public async Task ExactCanonicalWhitespaceInSkillName_IsPreserved()
+    {
+        var claim = Claim("noProgress"); claim["skillName"] = "Искра ";
+        await Setup(new JsonArray(claim));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", Core("Искра "));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", "{}");
+        Assert.Empty(await Evaluate());
     }
     private async Task Original(string core, string skills)
     {

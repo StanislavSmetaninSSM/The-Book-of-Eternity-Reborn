@@ -36,7 +36,8 @@ public partial class ValidationService
                 continue;
 
             if (string.Equals(prop.Name, "gm_thoughts_markdown", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase))
+                string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(prop.Name, "npcSkillClaims", StringComparison.Ordinal))
                 continue;
 
             issues.Add(new ValidationIssue(
@@ -45,9 +46,9 @@ public partial class ValidationService
                 "output/debug_logs.json содержит неподдерживаемое top-level поле",
                 code: "debug_logs_unknown_field",
                 section: "gm_thoughts_markdown",
-                expected: "gm_thoughts_markdown | timestamp",
+                expected: "gm_thoughts_markdown | timestamp | npcSkillClaims",
                 actual: prop.Name,
-                repairHint: "Пиши в output/debug_logs.json только gm_thoughts_markdown и timestamp для текущего хода."));
+                repairHint: "Пиши в output/debug_logs.json gm_thoughts_markdown, timestamp и Mortal npcSkillClaims для текущего хода."));
         }
     }
 

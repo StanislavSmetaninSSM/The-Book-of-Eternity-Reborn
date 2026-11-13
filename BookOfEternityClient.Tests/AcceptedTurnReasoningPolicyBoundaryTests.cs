@@ -99,7 +99,13 @@ internal static class ReasoningPolicySourceInventory
             "        out string normalizedThoughts, out ReasoningScopeManifest scope,\n" +
             "        out ReasoningScopeMode scopeMode, out string actorType)\n    {\n" +
             scope + "        return true;\n    }\n}\n";
-        Assert.Equal(expected, File.ReadAllText(path));
+        var currentPolicy = File.ReadAllText(path);
+        const string claimAllowance = "                string.Equals(prop.Name, \"timestamp\", StringComparison.OrdinalIgnoreCase) ||\n                string.Equals(prop.Name, \"npcSkillClaims\", StringComparison.Ordinal))";
+        Assert.Equal(1, currentPolicy.Split(claimAllowance, StringSplitOptions.None).Length - 1);
+        currentPolicy = currentPolicy.Replace(claimAllowance, "                string.Equals(prop.Name, \"timestamp\", StringComparison.OrdinalIgnoreCase))", StringComparison.Ordinal)
+            .Replace("gm_thoughts_markdown | timestamp | npcSkillClaims", "gm_thoughts_markdown | timestamp", StringComparison.Ordinal)
+            .Replace("gm_thoughts_markdown, timestamp и Mortal npcSkillClaims для текущего хода.", "только gm_thoughts_markdown и timestamp для текущего хода.", StringComparison.Ordinal);
+        Assert.Equal(expected, currentPolicy);
         foreach (var (key, node) in adapters)
         {
             var adapter = node!.GetValue<string>();

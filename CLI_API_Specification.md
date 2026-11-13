@@ -493,7 +493,7 @@ game_session/
 #### **NARRATIVE & CORE**
 - Authoritative GM-authored outputs remain:
   - `output/narrative_response.json` ← `response`
-  - `output/debug_logs.json` ← `gm_thoughts_markdown`
+  - `output/debug_logs.json` ← `gm_thoughts_markdown` plus directly authored private `npcSkillClaims` on Mortal accepted turns (not a GameResponse field)
   - `output/interface_updates.json` ← optional `dialogueOptions`, `image_prompt` payload for turns that actually change the interface
 - These `output/*.json` files are fresh per-turn transient artifacts for the current `sessionId/requestId/turnNumber`.
 - Rewrite them for the current request only; never append cross-turn history there and never reuse stale payload from a previous turn.
@@ -1013,7 +1013,7 @@ Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to
 #### **OUTPUT INTERFACE**
 - `output/narrative_response.json` ← `response` (main narrative)
 - `output/interface_updates.json` ← optional `dialogueOptions`, `image_prompt` payload for turns that actually change the interface
-- `output/debug_logs.json` ← `gm_thoughts_markdown`
+- `output/debug_logs.json` ← `gm_thoughts_markdown` plus directly authored private `npcSkillClaims` on Mortal accepted turns (not a GameResponse field)
 - `output/ink_feather_action_result.json` ← mandatory structured receipt for every GM-side `[INK_FEATHER_ACTION: TAG]`
 - `output/narrative_response.json`, `output/interface_updates.json`, and `output/debug_logs.json` are per-turn transient files: they must describe the current request only and must not be reused as stale payload from a previous turn
 
@@ -1100,6 +1100,26 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `Guardian-centric` validation must not infer a Guardian from array order; only explicit `activeGuardian` state or the declared scope itself may be used.
 - If a structured actor update contains only an unresolved ID and no reliable name alias can be recovered from current state, the client should not hard-reject solely on that unresolved identity.
 - This is the canonical current runtime contract for `gm_thoughts_markdown`; older heavier all-turn templates in legacy docs do not override the current validator.
+
+### Mortal NPC skill claims in the private debug artifact (#1533)
+
+For every Mortal accepted turn, directly author `npcSkillClaims` as an array in
+`output/debug_logs.json`; author `[]` explicitly when there are no declared NPC
+skill claims. It is not a GameResponse field and is never copied into public
+`response` or interface text. Do not silently fill a missing report with `[]`.
+Each row contains exact `actorKey` (`id:`/`name:` from current NPC identity),
+`skillName`, `skillKind` (`active`/`passive`), `claimType` (`use`/`learning`/`mastery`),
+`narrativeQuote` copied from current `response`, and `resolution`
+(`stateDelta`/`noProgress`). Only `use` permits `noProgress`, with nonempty `reason`.
+Otherwise the exact owner's same-kind current skill must show genuinely new
+creation or changed numeric mastery/progress against validated pre-turn evidence;
+`learning` requires new creation. Wrong-owner/kind, confusable, stale or cosmetic
+changes and missing/unreadable original evidence cannot establish that linkage.
+The report neither creates nor mutates canonical state. The GM remains responsible
+for declaring relevant claims: the list is not proof of prose completeness and
+there is no independent semantic/model audit. Afterlife is unchanged.
+See `mortal_npc_skill_claims_v1` in `Examples/E_CLI_Step_Main.txt` for separate
+stateDelta, noProgress and explicit-empty direct-artifact examples.
 
 ### Mortal World Only
 - `resourceDefinitionCreations`, `resourceCapacityChanges`, `resourceChanges` for accepted Mortal owners and registered sources
@@ -1578,6 +1598,13 @@ const response = processGameTurn(turnRequest, gameState, rules);
 ```
 
 ### Phase 3: Output Distribution
+Before distributing files, the GM separately authors `authoredDebugArtifact`,
+the private current-turn debug object; for Mortal turns its `npcSkillClaims`
+array is explicit, including `[]` only when the GM declares no claims.
+The pseudocode below receives that object and `isMortalTurn` from validated realm
+context; these names are local illustrative inputs, not new runtime APIs or
+public response-model fields. Missing/malformed report content must be repaired,
+not replaced by a fabricated empty array.
 ```typescript
 // Create backup copies
 createBackups(affectedFiles);
@@ -1601,10 +1628,18 @@ try {
       timestamp: new Date().toISOString()
     });
   }
-  writeJSON('output/debug_logs.json', {
+  // authoredDebugArtifact is the GM's separately authored private current-turn object,
+  // not a GameResponse field. isMortalTurn comes from validated current realm context.
+  // Preserve the supplied report; never silently substitute [] for an omission.
+  const debugOutput = {
+    ...authoredDebugArtifact,
     gm_thoughts_markdown: response.gm_thoughts_markdown,
     timestamp: new Date().toISOString()
-  });
+  };
+  if (isMortalTurn && !Array.isArray(debugOutput.npcSkillClaims)) {
+    throw new Error('Mortal npcSkillClaims must be explicitly authored as an array');
+  }
+  writeJSON('output/debug_logs.json', debugOutput);
   
   // Signal terminal success
   writeJSON('ready/turn_complete.json', {
@@ -2368,7 +2403,7 @@ For brevity, the sample below shows only the NPC fields relevant to the turn. In
 ```
 output/narrative_response.json ← response field
 output/interface_updates.json ← optional dialogueOptions / image_prompt payload when this turn actually changes the interface
-output/debug_logs.json ← gm_thoughts_markdown field
+output/debug_logs.json ← gm_thoughts_markdown field + directly authored Mortal npcSkillClaims array (private artifact)
 game_state/npcs/npc_core.json ← UpdateNPCs field
 ready/turn_complete.json ← terminal success signal
 ready/turn_error.json ← terminal error signal

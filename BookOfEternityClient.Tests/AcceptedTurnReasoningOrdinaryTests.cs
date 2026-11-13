@@ -82,8 +82,8 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
 
         static ValidationIssue Unknown(string name) => new($"output/debug_logs.json.{name}", IssueSeverity.Error,
             "output/debug_logs.json содержит неподдерживаемое top-level поле", code: "debug_logs_unknown_field",
-            section: "gm_thoughts_markdown", expected: "gm_thoughts_markdown | timestamp", actual: name,
-            repairHint: "Пиши в output/debug_logs.json только gm_thoughts_markdown и timestamp для текущего хода.");
+            section: "gm_thoughts_markdown", expected: "gm_thoughts_markdown | timestamp | npcSkillClaims", actual: name,
+            repairHint: "Пиши в output/debug_logs.json gm_thoughts_markdown, timestamp и Mortal npcSkillClaims для текущего хода.");
     }
 
     [Fact]

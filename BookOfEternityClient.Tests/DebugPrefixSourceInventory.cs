@@ -9,6 +9,7 @@ internal static class DebugPrefixSourceInventory
 {
     internal static string ReverseIfPresent(string source)
     {
+        source = NarrativePolicySourceInventory.ReverseNpcClaimIfPresent(source);
         source = SkillCouplingMergeSourceInventory.ReverseIfPresent(source);
         source = SpiritualHealingInterfaceSourceInventory.ReverseIfPresent(source);
         if (source.Contains("var prefix = await EvaluateAcceptedReasoningPrefixAsync(null);", StringComparison.Ordinal))

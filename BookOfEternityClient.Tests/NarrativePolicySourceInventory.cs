@@ -12,13 +12,7 @@ internal static class NarrativePolicySourceInventory
     /// <returns>The exact f766d9d source required by the reasoning inverse, with each applicable adapter occurring exactly once.</returns>
     internal static string ReverseIfPresent(string source)
     {
-        const string npcCall = "                await ValidateMortalNpcSkillClaimsAsync(responseText, issues, source);\n";
-        if (source.Contains(npcCall, StringComparison.Ordinal))
-        {
-            Assert.Equal(1, source.Split(npcCall, StringSplitOptions.None).Length - 1);
-            source = source.Replace(npcCall, string.Empty, StringComparison.Ordinal);
-        }
-
+        source = ReverseNpcClaimIfPresent(source);
         if (source.Contains("bool readOnly = false, NarrativeInterfaceSourceSession? source = null", StringComparison.Ordinal))
         {
             foreach (var (current, previous) in Replacements)
@@ -29,6 +23,21 @@ internal static class NarrativePolicySourceInventory
             Assert.Equal(PreT587SourceSha256, SourceSha256(source));
         }
         return ReversePriorOriginalLookupAmendments(source);
+    }
+
+    /// <summary>Reverses exactly the additive NPC report adapter before unchanged historical hashes.</summary>
+    internal static string ReverseNpcClaimIfPresent(string source)
+    {
+        const string npcCall = "                await ValidateMortalNpcSkillClaimsAsync(responseText, issues, source);\n";
+        if (source.Contains(npcCall, StringComparison.Ordinal))
+        {
+            Assert.Equal(1, source.Split(npcCall, StringSplitOptions.None).Length - 1);
+            source = source.Replace(npcCall, string.Empty, StringComparison.Ordinal);
+        }
+
+        source = source.Replace("|pending_training_showcase_requests|npcSkillClaims)",
+            "|pending_training_showcase_requests)", StringComparison.Ordinal);
+        return source;
     }
 
     private const string PreT587SourceSha256 = "26d196503099018381cacc2e1c3048feab9ef2922f928040df52431532ac7fa6";

@@ -195,7 +195,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
    - Use actual paragraph breaks. Never place literal PowerShell newline tokens such as backtick+n or backtick+r+backtick+n in `response`, dialogue `text`, or `inputValue`; helper normalization is only a safety fallback.
 3. If this turn changes `dialogueOptions` and/or `image_prompt`, write output/interface_updates.json: `{ "dialogueOptions": [...], "image_prompt": "...", "timestamp": "ISO_8601" }`; otherwise omit the file
    - Each dialogue option is an object with clean player-facing `text`; if an exact hidden submitted value or control tag is needed, put it in optional `inputValue`, not in `text`. Do not show `[AFTERLIFE_SPIRITUAL_ACTION: ...]`, `[INK_FEATHER_ACTION: ...]`, or other `*_ACTION` / `*_CONTROL` markers in player-facing `text`.
-4. Write output/debug_logs.json: `{ "gm_thoughts_markdown": "...", "timestamp": "ISO_8601" }`
+4. Write output/debug_logs.json. Mortal no-claim example: `{ "gm_thoughts_markdown": "...", "npcSkillClaims": [], "timestamp": "ISO_8601" }`. When claims exist, author their rows instead of `[]`; never default an omitted report to empty. This direct private artifact is not a GameResponse field. Afterlife keeps its existing debug contract.
    - gm_thoughts_markdown must include structured `## NPC Scope` / `## Охват NPC-анализа`
    - The scope block must explicitly declare `Mode`, `Relevant actors`, `Why relevant`, `Actors outside scope`, and `Why outside scope`
    - If any relevant actors are declared, add a separate reasoning section with `### [Actor Name]` blocks for every declared actor

@@ -18,8 +18,8 @@ public partial class ValidationService
         using var soul = NpcClaimDocument(await ReadNarrativeSourceTextAsync("game_state/meta/soul_state.json", source));
         var realm = request?.RootElement.TryGetProperty("progressionControl", out var progression) == true &&
             progression.ValueKind == JsonValueKind.Object ? NpcClaimText(progression, "currentRealm") : null;
-        realm ??= soul is null ? null : NpcClaimText(soul.RootElement, "currentRealm");
-        if (!IsMortalRealmName(realm)) return;
+        var soulRealm = soul is null ? null : NpcClaimText(soul.RootElement, "currentRealm");
+        if (!IsMortalRealmName(realm) && !IsMortalRealmName(soulRealm)) return;
 
         using var debug = NpcClaimDocument(await ReadNarrativeSourceTextAsync("output/debug_logs.json", source));
         if (debug is null || !debug.RootElement.TryGetProperty("npcSkillClaims", out var claims) || claims.ValueKind != JsonValueKind.Array)
@@ -49,7 +49,7 @@ public partial class ValidationService
                 (oldSkills.Json is null || skillDoc is not null))
                 original = NpcClaimState.Read(coreDoc?.RootElement, skillDoc?.RootElement);
         }
-        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var seen = new HashSet<(NpcClaimKey Key, string Type, string Quote)>();
         var index = 0;
         foreach (var row in claims.EnumerateArray())
         {
@@ -65,7 +65,7 @@ public partial class ValidationService
                 resolution is not ("stateDelta" or "noProgress") || !narrative.Contains(quote, StringComparison.Ordinal))
             { NpcClaimIssue(issues, i, "row_invalid", "Provide exact actorKey/skillName, kind, claim type, current narrative quote and resolution."); continue; }
             var key = new NpcClaimKey(actor, kind, name);
-            if (!seen.Add(JsonSerializer.Serialize(new[] { actor, kind, name, type, quote })))
+            if (!seen.Add((key, type, quote)))
             { NpcClaimIssue(issues, i, "duplicate", "Duplicate declared claim.", actor); continue; }
             if (!current.TryGet(key, out var now))
             { NpcClaimIssue(issues, i, "ownership_invalid", "No unambiguous current exact owner/kind/skill binding.", actor); continue; }
@@ -119,7 +119,7 @@ public partial class ValidationService
     }
     private static string? NpcClaimText(JsonElement row, string property) =>
         row.TryGetProperty(property, out var value) && value.ValueKind == JsonValueKind.String &&
-        value.GetString() is { } text && !string.IsNullOrWhiteSpace(text) && text == text.Trim() ? text : null;
+        value.GetString() is { } text && !string.IsNullOrWhiteSpace(text) ? text : null;
 
     private static void NpcClaimIssue(List<ValidationIssue> issues, int? index, string code, string detail, string? actor = null) =>
         issues.Add(new ValidationIssue("output/debug_logs.json.npcSkillClaims" + (index is null ? "" : $"[{index}]"),
@@ -127,7 +127,12 @@ public partial class ValidationService
             expected: "explicit current exact NPC skill declaration and its same-owner state evidence or allowed no-progress rationale",
             actual: detail, repairHint: "Исправь только указанную строку npcSkillClaims и соответствующий реальный NPC/навык. Не угадывай владельца, не создавай прогресс ради проверки, не удаляй утверждение из отчёта без исправления прозы. Если связь не доказана, остановись и уточни."));
 
-    private readonly record struct NpcClaimKey(string Actor, string Kind, string Skill);
+    /// <summary>Preserves existing case-insensitive actor identity and ordinal kind/skill identity.</summary>
+    private readonly record struct NpcClaimKey(string Actor, string Kind, string Skill)
+    {
+        public bool Equals(NpcClaimKey other) => StringComparer.OrdinalIgnoreCase.Equals(Actor, other.Actor) && Kind == other.Kind && Skill == other.Skill;
+        public override int GetHashCode() => HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(Actor), Kind, Skill);
+    }
     private sealed record NpcClaimProgress(decimal? Level, decimal? Progress)
     {
         internal bool ProgressedFrom(NpcClaimProgress old) =>
@@ -138,6 +143,7 @@ public partial class ValidationService
     private sealed class NpcClaimState
     {
         private readonly Dictionary<NpcClaimKey, NpcClaimProgress> _skills = new();
+        private readonly HashSet<string> _owners = new(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<NpcClaimKey> _ambiguous = new();
         internal bool Valid { get; private set; } = true;
         internal bool Contains(NpcClaimKey key) => _skills.ContainsKey(key) || _ambiguous.Contains(key);
@@ -150,9 +156,21 @@ public partial class ValidationService
         {
             var state = new NpcClaimState();
             if (core is { } c)
-                foreach (var actor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(c))
-                    foreach (var kind in new[] { "active", "passive" })
-                        state.Profiles(actor, kind + "Skills", kind, false);
+            {
+                foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+                {
+                    if (!c.TryGetProperty(section, out var actors)) continue;
+                    if (actors.ValueKind != JsonValueKind.Array) { state.Valid = false; continue; }
+                    foreach (var actor in actors.EnumerateArray())
+                    {
+                        if (actor.ValueKind != JsonValueKind.Object || BuildNpcIdentityKey(actor) is not { } owner)
+                        { state.Valid = false; continue; }
+                        state._owners.Add(owner);
+                        foreach (var kind in new[] { "active", "passive" })
+                            state.Profiles(actor, kind + "Skills", kind, false);
+                    }
+                }
+            }
             if (changes is { } d)
                 foreach (var kind in new[] { "active", "passive" })
                 {
@@ -161,7 +179,11 @@ public partial class ValidationService
                     {
                         if (rows.ValueKind != JsonValueKind.Array) { state.Valid = false; continue; }
                         var seen = new HashSet<NpcClaimKey>();
-                        foreach (var group in rows.EnumerateArray()) state.Profiles(group, "skillChanges", kind, true, seen);
+                        foreach (var group in rows.EnumerateArray())
+                        {
+                            state.Profiles(group, "skillChanges", kind, true, seen);
+                            state.Remove(group, kind);
+                        }
                     }
                     var section = kind == "active" ? "NPCSkillMasteryChanges" : "NPCPassiveSkillMasteryChanges";
                     if (!d.TryGetProperty(section, out var mastery)) continue;
@@ -182,18 +204,33 @@ public partial class ValidationService
         private void Profiles(JsonElement actor, string property, string kind, bool overlay, HashSet<NpcClaimKey>? seen = null)
         {
             if (actor.ValueKind != JsonValueKind.Object) { Valid = false; return; }
+            var owner = BuildNpcIdentityKey(actor);
+            if (owner is null || !_owners.Contains(owner)) { Valid = false; return; }
             if (!actor.TryGetProperty(property, out var profiles)) return;
             if (profiles.ValueKind != JsonValueKind.Array) { Valid = false; return; }
-            var owner = BuildNpcIdentityKey(actor);
-            if (owner is null) { Valid = false; return; }
+            seen ??= new HashSet<NpcClaimKey>();
             foreach (var profile in profiles.EnumerateArray())
             {
                 if (profile.ValueKind != JsonValueKind.Object || NpcClaimText(profile, "skillName") is not { } name)
                 { Valid = false; continue; }
                 var key = new NpcClaimKey(owner, kind, name);
-                if (seen is not null && !seen.Add(key)) _ambiguous.Add(key);
-                if (!overlay && _skills.ContainsKey(key)) _ambiguous.Add(key);
-                _skills[key] = Progress(profile, false);
+                if (!seen.Add(key)) _ambiguous.Add(key);
+                var value = Progress(profile, false);
+                if (!overlay && _skills.TryGetValue(key, out var previous) && previous != value) _ambiguous.Add(key);
+                _skills[key] = value;
+            }
+        }
+        /// <summary>Applies existing owner-local removal commands after profile changes, never recreating removed authority.</summary>
+        private void Remove(JsonElement group, string kind)
+        {
+            if (group.ValueKind != JsonValueKind.Object || !group.TryGetProperty("skillsToRemove", out var removals)) return;
+            var owner = BuildNpcIdentityKey(group);
+            if (owner is null || removals.ValueKind != JsonValueKind.Array) { Valid = false; return; }
+            foreach (var value in removals.EnumerateArray())
+            {
+                if (value.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(value.GetString()))
+                { Valid = false; continue; }
+                _skills.Remove(new NpcClaimKey(owner, kind, value.GetString()!));
             }
         }
         private static NpcClaimProgress Progress(JsonElement row, bool mastery) => new(

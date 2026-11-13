@@ -603,6 +603,9 @@ MATH ASSISTANT / МАТЕМАТИК:
 4. Запиши нарратив в `output/narrative_response.json`
 5. Если этот ход реально меняет `dialogueOptions` и/или `image_prompt`, запиши `output/interface_updates.json`; если UI payload не нужен, не создавай этот файл
 6. Запиши отладку в `output/debug_logs.json`
+   - Mortal NPC skill report (#1533): в каждом принятом ходе Mortal прямо запиши приватный `npcSkillClaims` array, явно `[]` при отсутствии заявлений. This is not a GameResponse field. Не заменяй пропущенный отчёт пустым массивом автоматически и не удаляй отчёт при сборке debug object из `gm_thoughts_markdown`.
+   - Для каждой строки укажи точные `actorKey` (`id:`/`name:`), `skillName`, `skillKind` (`active`/`passive`), `claimType` (`use`/`learning`/`mastery`), `narrativeQuote` из текущего `response` и `resolution` (`stateDelta`/`noProgress`). Только `use` допускает `noProgress` с непустым `reason`. `stateDelta` требует нового навыка или числового изменения mastery/progress того же владельца и типа по валидированному pre-turn снимку; `learning` требует нового навыка. Косметические, stale, wrong-owner/kind или confusable записи и отсутствующие/нечитаемые originals это не доказывают.
+   - Не публикуй отчёт игроку и не придумывай изменения канона ради отчёта. This author-supplied list is not proof of prose completeness; независимый модельный анализ не добавлен. Afterlife без изменений. Контракт: `CLI_API_Specification.md`, пример `mortal_npc_skill_claims_v1` в `Examples/E_CLI_Step_Main.txt`.
 6.A. Считай `output/narrative_response.json`, `output/interface_updates.json`, `output/debug_logs.json` fresh per-turn transient files: перезаписывай их для текущего request и не оставляй stale payload от прошлого хода
 7. **Последним** — terminal signal: `ready/turn_complete.json` или `ready/turn_error.json`
 

@@ -6,6 +6,31 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Checks the private Mortal NPC claim authoring contract and its worked state linkage.</summary>
 public sealed class MortalNpcSkillClaimDocumentationTests
 {
+    /// <summary>Central direct-file guidance preserves authored claims without synthesizing an empty report.</summary>
+    [Fact]
+    public void CentralFileProtocol_PreservesPrivateReportAndRejectsMissingMortalArray()
+    {
+        var api = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "CLI_API_Specification.md"));
+        var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "CLI_Agent_Daemon_Specification.md"));
+        foreach (var text in new[] { api, daemon })
+        {
+            Assert.Contains("npcSkillClaims", text, StringComparison.Ordinal);
+            Assert.Contains("not a GameResponse field", text, StringComparison.Ordinal);
+            Assert.Contains("not proof of prose completeness", text, StringComparison.Ordinal);
+        }
+        Assert.Contains("...authoredDebugArtifact", api, StringComparison.Ordinal);
+        Assert.Contains("isMortalTurn && !Array.isArray(debugOutput.npcSkillClaims)", api, StringComparison.Ordinal);
+        Assert.Contains("writeJSON('output/debug_logs.json', debugOutput)", api, StringComparison.Ordinal);
+        Assert.DoesNotContain("npcSkillClaims ?? []", api, StringComparison.Ordinal);
+        foreach (var path in new[] { "BookOfEternityClient/Launcher/CLI_Launch_Script.md",
+                     "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("Mortal no-claim example", text, StringComparison.Ordinal);
+            Assert.Contains("\"npcSkillClaims\": []", text, StringComparison.Ordinal);
+        }
+    }
+
     /// <summary>Every ordinary GM entrypoint teaches the same explicit report, not inferred actors.</summary>
     [Fact]
     public void MortalEntrypoints_RequireExplicitPrivateReportAndBoundItsGuarantee()

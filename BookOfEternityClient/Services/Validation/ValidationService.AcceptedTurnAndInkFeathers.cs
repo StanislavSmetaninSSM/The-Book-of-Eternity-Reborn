@@ -199,7 +199,7 @@ public partial class ValidationService
     {
         var directTechnicalMatch = Regex.Match(
             responseText,
-            @"\b(JSON|canonical|validation|repair|game_state|debug_logs|interface_updates|narrative_response|activeSkillChanges|passiveSkillChanges|skillMasteryChanges|pending_training_showcase_requests)\b",
+            @"\b(JSON|canonical|validation|repair|game_state|debug_logs|interface_updates|narrative_response|activeSkillChanges|passiveSkillChanges|skillMasteryChanges|pending_training_showcase_requests|npcSkillClaims)\b",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         if (directTechnicalMatch.Success)
         {
