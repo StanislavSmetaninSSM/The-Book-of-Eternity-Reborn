@@ -1911,7 +1911,7 @@ public partial class ExplorerMode
             _ => rarity ?? string.Empty
         };
 
-    private static string FormatSkillActionCostLabel(string actionCost) =>
+    internal static string FormatSkillActionCostLabel(string actionCost) =>
         (actionCost ?? string.Empty).Trim().ToLowerInvariant() switch
         {
             "main" or "основное" => "основное",

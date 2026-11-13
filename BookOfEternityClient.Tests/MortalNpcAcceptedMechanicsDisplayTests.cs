@@ -25,7 +25,7 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
         Assert.Equal(7, skill.MasteryLevel);
         Assert.Equal(23, skill.CurrentMasteryProgress);
         Assert.Equal(91, skill.MasteryProgressNeeded);
-        Assert.Equal(12, skill.MaxMasteryLevel);
+        Assert.Equal(passive ? 12 : (int?)null, skill.MaxMasteryLevel);
         Assert.DoesNotContain("PRIVATE_SENTINEL", skill.Data.ToJsonString(), StringComparison.Ordinal);
         Assert.Equal(before, actor.ToJsonString());
     }
@@ -69,6 +69,23 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
         Assert.True(ExplorerMode.BuildNpcSkillDisplay(doc, "another_owner", "Accepted NPC").IsEmpty);
     }
 
+    [Theory]
+    [InlineData("Fast", "быстрое")]
+    [InlineData("Main", "основное")]
+    [InlineData("Free", "свободное")]
+    public void SharedDrilldown_LocalizesCanonicalActionCost(string cost, string label)
+    {
+        var actor = Actor(false);
+        actor["activeSkills"]![0]!["actionCost"] = cost;
+        var projection = NpcDetailSectionProjection.Build(actor, new NpcDetailSectionDocuments());
+        var text = JsonSerializer.Serialize(projection, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+        Assert.Contains(label, text, StringComparison.Ordinal);
+        Assert.DoesNotContain(cost, text, StringComparison.Ordinal);
+    }
+
     private static JsonObject Actor(bool passive)
     {
         var actor = JsonNode.Parse("""
@@ -78,10 +95,11 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
             """)!.AsObject();
         actor[passive ? "passiveSkills" : "activeSkills"] = JsonNode.Parse("""
             [{"skillName":"Fireball","description":"A bright controlled flame","type":"Combat","cooldownTurns":2,"actionCost":1,"energyCost":2.5,
-              "masteryLevel":7,"currentMasteryProgress":23,"masteryProgressNeeded":91,"maxMasteryLevel":12,
+              "masteryLevel":7,"currentMasteryProgress":23,"masteryProgressNeeded":91,
               "source":{"sessionId":"PRIVATE_SENTINEL_skill_session"},"requestId":"PRIVATE_SENTINEL_skill_request",
               "receipt":"PRIVATE_SENTINEL_skill_receipt"}]
             """);
+        if (passive) actor["passiveSkills"]![0]!["maxMasteryLevel"] = 12;
         return actor;
     }
 }

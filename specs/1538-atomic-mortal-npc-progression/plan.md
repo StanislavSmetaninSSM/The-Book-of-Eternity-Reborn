@@ -372,3 +372,20 @@ fixture is parameterized, not duplicated. Runtime publication integration is not
 yet implemented; these are RED-ready, not accepted results. All tests use existing
 owners/hooks and no hosted CI. Next: build frozen block, run the two new causal
 categories separately, then implement ordinary admission/publication integration.
+
+At11596469 the new dedicated-request gate completed6cases:4PASS/2causalFAIL
+(valid trade/training accepted by old evaluator, rejected by candidate),8.776s.
+The real NoPlan publication gate completed4/4FAIL,11.387s: missing materialized
+skills, and both later fault tests correctly refused to claim injection because
+the materialized boundary was not reached. Cleanup complete,no duplicates/skips.
+Builds at a03fe4:64.61s/38.34s,0errors,82/118warnings. Initial category invocation
+executed nothing because two new descriptors lacked mandatory changeHints; fixed
+in11596469 before these actual runs. No production failure is attributed to that
+metadata error. A fresh sparse clone recovered selected a03fe4 source/checkpoint
+files with exact SHA and clean state; no clean rebuild is claimed.
+
+Independent FR8 Sol XHigh review found one Important test-policy defect: private
+reflection in the newly added console test. It now exercises actual /нпс dispatch.
+The shared existing action-cost translator is reused and invalid active-skill cap
+fixtures corrected; three narrow enum localization controls added. These fixes
+await rereview and execution. Source/NoPlan integration proceeds separately.

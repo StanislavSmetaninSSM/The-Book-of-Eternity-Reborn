@@ -301,7 +301,7 @@ internal static class NpcDetailSectionProjection
                         details.Add(field switch
                         {
                             "cooldownTurns" => $"Перезарядка: {value}",
-                            "actionCost" => $"Стоимость действия: {value}",
+                            "actionCost" => $"Стоимость действия: {ExplorerMode.FormatSkillActionCostLabel(value)}",
                             "energyCost" => $"Энергия: {value}",
                             "timeCost" => $"Время: {value}",
                             _ => value

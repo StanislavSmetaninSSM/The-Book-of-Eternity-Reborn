@@ -458,6 +458,7 @@ public partial class ExplorerMode
                      ("timeCost", "Время"), ("category", "Категория"), ("rarity", "Редкость") })
         {
             var value = MortalNpcAcceptedMechanicsProjection.Text(skill.Data, field);
+            if (field == "actionCost") value = FormatSkillActionCostLabel(value);
             if (!string.IsNullOrWhiteSpace(value))
                 lines.Add($"      [dim]{label}: {Markup.Escape(value)}[/]");
         }

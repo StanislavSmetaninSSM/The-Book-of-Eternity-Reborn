@@ -15,7 +15,7 @@ public sealed partial class ExplorerWebCommandServiceTests
             {"NPCsInScene":[{"NPCId":"npc_accepted","name":"Accepted NPC","level":2,"experience":17,"experienceForNextLevel":565,
               "snapshotToken":"PRIVATE_SENTINEL_snapshot","requestId":"PRIVATE_SENTINEL_request",
               "activeSkills":[{"skillName":"Fireball","masteryLevel":7,"currentMasteryProgress":23,
-                "masteryProgressNeeded":91,"maxMasteryLevel":12,"receipt":"PRIVATE_SENTINEL_receipt"}]}]}
+                "masteryProgressNeeded":91,"actionCost":"Main","receipt":"PRIVATE_SENTINEL_receipt"}]}]}
             """);
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
             {"NPCActiveSkillChanges":[{"NPCId":"npc_accepted","skillChanges":[{"skillName":"UNACCEPTED_SKILL"}]}]}
@@ -25,6 +25,8 @@ public sealed partial class ExplorerWebCommandServiceTests
         var text = CollectBlockText(result.Blocks);
         Assert.Contains("Fireball", text, StringComparison.Ordinal);
         Assert.Contains("23/91", text, StringComparison.Ordinal);
+        Assert.Contains("основное", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Main", text, StringComparison.Ordinal);
         Assert.Contains("17/565", text, StringComparison.Ordinal);
         Assert.DoesNotContain("UNACCEPTED_SKILL", text, StringComparison.Ordinal);
         Assert.DoesNotContain("PRIVATE_SENTINEL", text, StringComparison.Ordinal);

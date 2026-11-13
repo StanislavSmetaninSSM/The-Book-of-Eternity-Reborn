@@ -75,7 +75,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.ShowNpcDetailPanel_AcceptedSkillsWithoutSidecar_HidesPrivateMechanics",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_AcceptedSkillsWithoutSidecar_HidesPrivateMechanics",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_AcceptedNpcMechanics_IgnoresPendingSidecarAndPrivateFields"
           ]
         }
