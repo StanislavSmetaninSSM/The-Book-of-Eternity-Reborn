@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-profile-change",
+      "responsibility": "#1538 pure explicit profile installation/replacement preserves level and stored XP while validating the new derived threshold.",
+      "excludes": "Compile scaffold initially; no authenticated command admission or real publication qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcProgressionProfileChangeContract.cs",
+        "BookOfEternityClient.Tests/MortalNpcProgressionProfileChangeContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionProfileChangeContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-retained-policy",
       "responsibility": "#1538 real issued publication source compares retained reduction policy and allowed-key authority to its current semantic witness.",
       "excludes": "Typed retained-authority proof only; not full treatment/common publication qualification.",
