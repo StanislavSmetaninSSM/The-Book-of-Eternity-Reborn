@@ -207,6 +207,30 @@ public sealed class MortalNpcSkillMasteryComposerTests
         Assert.NotEmpty(issues);
     }
 
+    [Fact]
+    public void ProfileConsistency_MalformedPresentIdentityRefusesWithoutMastery()
+    {
+        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = 9, ["masteryLevel"] = 1 };
+        Assert.Null(Run(Root(), [new("npc_001", new JsonArray(profile), null)], [], [], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void ProfileConsistency_PassiveOverCapRefusesWithoutMastery()
+    {
+        var profile = new JsonObject { ["skillName"] = "Guard", ["skillId"] = "guard", ["masteryLevel"] = 6, ["maxMasteryLevel"] = 5 };
+        Assert.Null(Run(Root(), [], [new("npc_001", new JsonArray(profile), null)], [], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void ProfileConsistency_ContradictoryAliasesRefuseWithoutMastery()
+    {
+        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = "frost", ["id"] = "other", ["masteryLevel"] = 1 };
+        Assert.Null(Run(Root(), [new("npc_001", new JsonArray(profile), null)], [], [], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
     private static MortalNpcSkillComposer.MasteryCommand Active() => new("npc_001", "Spark", "spark", 3, 7, 40);
 
     private static JsonObject? Run(JsonObject before, IReadOnlyList<MortalNpcSkillComposer.Command> active,

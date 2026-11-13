@@ -274,3 +274,25 @@ found missing resulting-state consistency: retained aliases and numeric limits.
 Eleven additional Consistency_* controls are authored against the current first
 implementation and await causal RED. Rules 7/8 govern active no-cap and passive
 cap semantics; this is not an invented new progression system.
+
+At d74beb00 both builds passed (unit64.99s/integration39.27s,0errors). Shared
+extraction now passes all8 cases, including4actual treatment consumers,24.121s.
+First-stage mastery16PASS; exactly11new consistency controls FAIL,9.061s.
+Candidate11PASS/3FAIL,8.486s: minimal passive fixtures omitted required
+structuredBonuses, confirmed independently; fix fixtures with explicitnull and
+strengthen exact production-code assertions, never loosen production validation.
+All runs completed their own selected cases with cleanup and no duplicates/skips.
+
+Independent Sol XHigh pure-candidate review additionally found profile-only
+invariants bypassed by mastery early-return, and duplicate authored stable IDs
+silently overwriting the earlier profile. Three profile-only controls and a
+same-ID/different-name regression are being collected in one bounded causal
+batch before the coherent fix. Reviewer also requested cheap malformed-original,
+active/mastery, owner-alias and mirror controls. Publication remains unimplemented.
+
+For the next test-only causal batch, production source is unchanged: both runtime
+PE/PDB joins match exactly (1,231 documents), and all1,227 nongenerated source
+checksums match current files. Reuse these pinned runtime/TestSupport outputs and
+build only the changed unit test project with BuildProjectReferences=false.
+This avoids recompiling unchanged source; it does not reuse a live authority or
+skip the tests. Recheck output hashes and report the test-only build separately.

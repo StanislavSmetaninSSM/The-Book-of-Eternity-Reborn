@@ -49,7 +49,8 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
         Assert.False(result.IsValid);
         Assert.Null(result.Core);
         Assert.Null(result.Sidecar);
-        Assert.NotEmpty(result.Issues);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_original_pending" &&
+            issue.FilePath == "game_state/npcs/npc_skills.json." + property);
     }
 
     [Fact]
@@ -89,7 +90,9 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
         var result = Compose(Core(), new(), Core(), commands);
         Assert.False(result.IsValid);
         Assert.Null(result.Core);
-        Assert.Contains(result.Issues, issue => issue.FilePath.Contains("rarity", StringComparison.Ordinal));
+        var issue = Assert.Single(result.Issues);
+        Assert.Equal("skill_invalid_rarity", issue.Code);
+        Assert.Equal("game_state/npcs/npc_skills.json.NPCPassiveSkillChanges[0].skillChanges[0].rarity", issue.FilePath);
     }
 
     [Fact]
@@ -160,6 +163,109 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
         Assert.Single(Skills(original));
     }
 
+    [Fact]
+    public void Compose_DistinctAuthoredNamesWithSameStableSkillId_RejectsRatherThanOverwriting()
+    {
+        var first = Skill("Archive A");
+        var second = Skill("Archive B");
+        first["skillId"] = "skill_shared";
+        second["skillId"] = "skill_shared";
+        var sidecar = new JsonObject
+        {
+            ["NPCPassiveSkillChanges"] = new JsonArray(new JsonObject
+            {
+                ["npcId"] = "npc_archive", ["skillChanges"] = new JsonArray(first, second)
+            })
+        };
+        var before = sidecar.ToJsonString();
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_duplicate_skill_id");
+        Assert.Equal(before, sidecar.ToJsonString());
+    }
+
+    [Theory]
+    [InlineData("null")]
+    [InlineData("{}")]
+    [InlineData("42")]
+    public void Compose_MalformedOriginalPendingValue_Refuses(string json)
+    {
+        var original = new JsonObject { ["NPCPassiveSkillChanges"] = JsonNode.Parse(json) };
+        var result = Compose(Core(), original, Core(), new());
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_original_pending");
+    }
+
+    [Fact]
+    public void Compose_ActiveGrantAndMastery_ProducesCanonicalFinalProfile()
+    {
+        var active = new JsonObject
+        {
+            ["skillId"] = "skill_strike", ["skillName"] = "Strike",
+            ["skillDescription"] = "A precise strike", ["rarity"] = "Common",
+            ["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true, ["actionName"] = "Strike", ["actionCost"] = "Main",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage", ["targetType"] = "Enemy", ["effectDescription"] = "Hit",
+                    ["value"] = "10%", ["poiseDamage"] = "5%"
+                })
+            }
+        };
+        var sidecar = new JsonObject
+        {
+            ["NPCActiveSkillChanges"] = new JsonArray(new JsonObject
+            {
+                ["npcId"] = "npc_archive", ["skillChanges"] = new JsonArray(active)
+            }),
+            ["NPCSkillMasteryChanges"] = new JsonArray(new JsonObject
+            {
+                ["npcId"] = "npc_archive", ["skillName"] = "Strike", ["skillId"] = "skill_strike",
+                ["newMasteryLevel"] = 2, ["newCurrentMasteryProgress"] = 0, ["newMasteryProgressNeeded"] = 10
+            })
+        };
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.True(result.IsValid);
+        var skill = Assert.Single(result.Core!["NPCsInScene"]![0]!["activeSkills"]!.AsArray());
+        Assert.Equal("skill_strike", skill!["skillId"]!.GetValue<string>());
+        Assert.Equal(2, skill["masteryLevel"]!.GetValue<int>());
+        Assert.Equal(0, skill["currentMasteryProgress"]!.GetValue<int>());
+        Assert.Equal(10, skill["masteryProgressNeeded"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(active["combatEffect"], skill["combatEffect"]));
+        Assert.Empty(result.Sidecar!);
+    }
+
+    [Fact]
+    public void Compose_ConflictingOwnerAliases_Refuses()
+    {
+        var sidecar = Grant("Archive A");
+        sidecar["NPCPassiveSkillChanges"]![0]!["NPCId"] = "npc_other";
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_invalid_owner");
+    }
+
+    [Fact]
+    public void Compose_CanonicalMirrors_ReceiveIdenticalDetachedSkillResults()
+    {
+        var original = Core();
+        original["UpdateNPCs"] = original["NPCsInScene"]!.DeepClone();
+        var result = Compose(original, new(), original, Grant("Archive A"));
+        Assert.True(result.IsValid);
+        Assert.Single(Skills(result.Core!));
+        Assert.True(JsonNode.DeepEquals(result.Core!["NPCsInScene"]![0], result.Core["UpdateNPCs"]![0]));
+        Assert.Empty(Skills(original));
+        result.Core["NPCsInScene"]![0]!["passiveSkills"]![0]!["skillDescription"] = "detached";
+        Assert.Equal("Archive knowledge", result.Core["UpdateNPCs"]![0]!["passiveSkills"]![0]!["skillDescription"]!.GetValue<string>());
+    }
+
     private static MortalNpcAcceptedSkillCandidate.Result Compose(JsonObject original, JsonObject originalSidecar,
         JsonObject current, JsonObject sidecar) => MortalNpcAcceptedSkillCandidate.Compose(original, originalSidecar,
         current, sidecar, new NpcCoreChangesContract.Authority(new(StringComparer.Ordinal), new(StringComparer.Ordinal),
@@ -186,6 +292,7 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
     {
         ["skillName"] = name, ["skillDescription"] = "Archive knowledge", ["rarity"] = "Common",
         ["type"] = "KnowledgeBased", ["group"] = "Archives", ["masteryLevel"] = 1,
+        ["structuredBonuses"] = null,
         ["maxMasteryLevel"] = 5, ["knowledgeDomain"] = "Archives",
         ["unlockedActiveSkillsCount"] = 0, ["maxUnlockableActiveSkills"] = 2
     };
