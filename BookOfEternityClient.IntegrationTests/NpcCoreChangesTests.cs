@@ -1248,6 +1248,8 @@ public sealed class NpcCoreChangesTests : IDisposable
             actor["fateCards"] = new JsonArray(BuildLockedFateCard("fate_remove_locked"));
             preTurnActor["fateCards"] = actor["fateCards"]!.DeepClone();
 
+            actor["characteristics"]!["setting_defined_focus"] = 4.5;
+            preTurnActor["characteristics"]!["setting_defined_focus"] = 4.5;
             var mirror = actor.DeepClone().AsObject();
             root["UpdateNPCs"] = new JsonArray(mirror);
             root["NPCCoreChanges"] = new JsonArray(new JsonObject
@@ -1295,6 +1297,9 @@ public sealed class NpcCoreChangesTests : IDisposable
         ReplaceFixturePlaceholders(fixture.CurrentRoot, fixture.FactionId, fixture.FactionName);
         await _fs.WriteFileAtomicAsync(NpcCorePath, fixture.CurrentRoot.ToJsonString());
         await WriteSnapshotAsync(fixture);
+        await _fs.WriteFileAtomicAsync("lore/current_world/world_setting.json", """
+            {"npcProgression":{"schemaVersion":1,"characteristics":{"mode":"fixedIncrements","perLevel":{"intelligence":2,"setting_defined_focus":2}}}}
+            """);
         var backupPath = $"game_state/control/pending_turn_snapshot/{NpcCorePath}";
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
 

@@ -1,3 +1,9 @@
+## Coherent ordinary publication checkpoint, 2026-11-13
+
+Pinned runtime890da: retained-policy3/3, combined public progression1/1, world freshness5/5, common publication6/6, raw effect4/4, guidance1/1 and consumer freshness4/4 PASS. Full unit/integration outputs share PDB660aa478-32e1-4f0d-b2dc-d69df3beedf3;1238documents/1234nongenerated exact source, zero mismatches. Integration build40.40s, zero errors118warnings. Every category completed without skipped/duplicated tests and with owned cleanup. This supersedes the explicitly unqualified retained integration outputs above.
+
+Existing npc-core-changes category gave90PASS/1FAIL in33.301s: its positive multi-mirror fixture requested characteristic growth without declaring a current-world policy. Fixture-only correction retains fractional coverage (original/current focus4.5, result6.5), declares fixed +2 for intelligence/focus and leaves runtime/assertions unchanged. Corrected fixture is UNRUN. No new cache or authority relaxation; fresh source and publication fences remain mandatory. Profile installation/replacement, wider item/location composition and detailed FR9 guidance remain pending, so this is not issue completion.
+
 ## Public combined candidate PASS; retained-policy comparison WIP
 
 Exact eeeb unit runtime: genuine public raw validation plus combined two-level skill publication1/1 PASS. Retained-policy source3 gave1PASS/2FAIL as expected at the no-op seam; two policy/key drift cases now have mandatory semantic comparison at earliest normalizer preflight and actual authority selection, UNRUN. This adds no read and requires sealed retained treatment authority. Unit build65.83s, zero errors84warnings, PDB98fb54d3-9609-4710-af65-9e38f35bb4ba,1238documents/1234nongenerated exact source. That unit-only script also invoked raw-effect/common integration categories using retained97 outputs: those4+4 passes are NOT eeeb integration evidence and will be replaced by a full integration build/PDB join.
