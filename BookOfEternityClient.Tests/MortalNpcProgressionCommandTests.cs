@@ -51,13 +51,15 @@ public sealed class MortalNpcProgressionCommandTests
             ["NPCId"] = "npc_progression", ["reason"] = "Two earned experience points",
             ["progression"] = new JsonObject
             {
+                ["source"] = new JsonObject { ["sessionId"] = "session_p1", ["requestId"] = "request_p1", ["turnNumber"] = 1 },
                 ["experienceDelta"] = 2, ["level"] = 2,
                 ["experience"] = 1, ["experienceForNextLevel"] = 565
             }
         });
         var authority = new NpcCoreChangesContract.Authority(
             new(StringComparer.Ordinal), new(StringComparer.Ordinal),
-            new(StringComparer.Ordinal), new(StringComparer.Ordinal));
+            new(StringComparer.Ordinal), new(StringComparer.Ordinal))
+        { ProgressionSource = new("session_p1", "request_p1", 1, "private_snapshot", "mortal_world") };
         var result = NpcCoreChangesContract.Evaluate(current, before, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);
         Assert.Empty(result.Issues);

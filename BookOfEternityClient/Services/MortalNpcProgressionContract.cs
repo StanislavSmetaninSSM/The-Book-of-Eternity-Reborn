@@ -39,7 +39,7 @@ internal static class MortalNpcProgressionContract
         foreach (var property in progression)
         {
             if (property.Key is not ("level" or "experience" or "experienceForNextLevel" or
-                "experienceDelta" or "progressionType" or "lastPlayerXPValueOnSync"))
+                "experienceDelta" or "source" or "progressionType" or "lastPlayerXPValueOnSync"))
                 return Reject(property.Key, "Unknown progression field; profile replacement requires a separate explicit transition.");
         }
 

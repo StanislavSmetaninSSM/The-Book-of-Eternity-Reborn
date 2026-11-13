@@ -1762,6 +1762,10 @@ internal static class AcceptedTurnCanonicalStateRefresh
             var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+            var npcSource = await validator.PrepareNpcProgressionPublicationAsync(writeLease,
+                beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes);
+            if (npcSource.Issues.Count != 0) return new Result(npcSource.Issues, null);
+            boundNormalizer = boundNormalizer.WithNpcProgressionSource(npcSource);
             if (spiritualPreflight is not null)
             {
                 var signed = spiritualPreflight.Authority.SignedRollbackImages;
@@ -1835,6 +1839,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             treatmentPreflight,
                             receipt);
                 }
+                await npcSource.RequireCurrentAsync(fs, writeLease);
                 var issues = new List<ValidationIssue>();
                 issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
                 issues.AddRange(await validator

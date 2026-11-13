@@ -7,7 +7,8 @@ public partial class CanonicalStateNormalizer
 {
     private async Task NormalizeNpcCoreChangesAsync(
         IReadOnlyDictionary<string, string>? backups,
-        AcceptedMechanicsPlan? acceptedMechanicsPlan)
+        AcceptedMechanicsPlan? acceptedMechanicsPlan,
+        NpcCoreChangesContract.ProgressionSourceContext? progressionSource)
     {
         var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
         if (currentNode is not JsonObject currentRoot ||
@@ -31,6 +32,9 @@ public partial class CanonicalStateNormalizer
             return;
         var authority = resourcePublication?.NpcCoreAuthority ??
                         await ReadNpcCoreAuthorityAsync();
+        if (authority.ProgressionSource is not null && authority.ProgressionSource != progressionSource)
+            throw new InvalidDataException("NPC progression source differs from the sealed item publication baseline.");
+        authority = authority with { ProgressionSource = progressionSource };
         var tradePending = resourcePublication?.NpcTradePending ?? BeforeImage(
             await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath));
         var trainingPending = resourcePublication?.TrainingPending ?? BeforeImage(
@@ -56,6 +60,16 @@ public partial class CanonicalStateNormalizer
         static CanonicalBeforeImage BeforeImage(string? json) => new(
             json != null,
             json == null ? null : Encoding.UTF8.GetBytes(json));
+    }
+
+    /// <summary>Refuses missing or stale progression source before any accumulated-state transform writes.</summary>
+    private async Task PreflightNpcProgressionSourceAsync(
+        NpcCoreChangesContract.ProgressionSourceContext? source)
+    {
+        if (await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath) is not JsonObject root) return;
+        var issues = NpcCoreChangesContract.ValidateProgressionSources(root, source);
+        if (issues.Count != 0)
+            throw new InvalidDataException(string.Join("; ", issues.Select(issue => $"{issue.Code}: {issue.Message}")));
     }
 
     private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()

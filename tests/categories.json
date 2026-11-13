@@ -2,6 +2,65 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-composer-extraction",
+      "responsibility": "#1538 behavior-preserving extraction of existing exact NPC skill composer, including retained treatment caller semantics.",
+      "excludes": "No mastery extension, sidecar admission or general NPC skill publication qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcSkillComposer.cs",
+        "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillComposerTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentCapabilityAuthorityTests.PublicationPlan_NpcActiveAndPassiveCommandsProduceOneNpcCoreAfterImage",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentCapabilityAuthorityTests.PublicationPlan_IdenticalMirroredNpcIsUpdatedInEveryCanonicalSection",
+            "BookOfEternityClient.Tests.MortalWoundTreatmentCapabilityAuthorityTests.PublicationPlan_InvalidNpcMirrorsRejectBeforeCachingOrWriting"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-progression-consumer-freshness",
+      "responsibility": "#1538 existing merchant slot and teacher source-hash freshness after canonical NPC progression changes.",
+      "excludes": "Consumer characterization only; no full accepted-turn publication or rollback qualification. Authored trade tier is not inferred-tier equality.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/NpcTradeServiceRequestFlowTests.cs",
+        "BookOfEternityClient.IntegrationTests/TrainingServiceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.EnsureTradeInventoryAsync_LevelChanges_UsesCurrentSlotContractWithoutRegeneratingStock",
+            "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalTeacherProgressionChanges_RejectsStaleShowcaseBeforePayment"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-source",
       "responsibility": "#1538 P2a exact authenticated Mortal turn source binding for bounded NPC progression.",
       "excludes": "Dependent package, profile transitions, general publication rollback and full issue acceptance remain separate.",
@@ -20,7 +79,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalNpcProgressionSourceBindingTests.*"
+            "BookOfEternityClient.Tests.MortalNpcProgressionSourceBindingTests.*",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.*"
           ]
         }
       ]

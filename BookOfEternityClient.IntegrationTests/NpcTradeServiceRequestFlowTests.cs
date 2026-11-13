@@ -46,6 +46,60 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.DoesNotContain("\"tradeInventory\":", npcRaw ?? string.Empty, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(15, 16, false)]
+    [InlineData(14, 15, true)]
+    public async Task EnsureTradeInventoryAsync_LevelChanges_UsesCurrentSlotContractWithoutRegeneratingStock(
+        int originalLevel, int resultingLevel, bool remainsReady)
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: true);
+        const string npcPath = "game_state/npcs/npc_core.json";
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(npcPath))!)!.AsObject();
+        var merchant = root["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        merchant["level"] = originalLevel;
+        await _fs.WriteFileAtomicAsync(npcPath, root.ToJsonString());
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var original = await service.EnsureTradeInventoryAsync("npc_merchant_001", currentTurn: 7);
+        Assert.NotNull(original);
+        Assert.True(original!.InventoryReady);
+        Assert.Equal(7, original.Offers.Count);
+
+        root = JsonNode.Parse((await _fs.ReadFileAsync(npcPath))!)!.AsObject();
+        merchant = root["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        var stockBefore = merchant["tradeInventory"]!.DeepClone();
+        var receiptsBefore = merchant["tradeInventoryReceipts"]?.DeepClone();
+        merchant["level"] = resultingLevel;
+        await _fs.WriteFileAtomicAsync(npcPath, root.ToJsonString());
+
+        var view = await service.EnsureTradeInventoryAsync("npc_merchant_001", currentTurn: 8);
+
+        Assert.NotNull(view);
+        Assert.Equal(remainsReady, view!.InventoryReady);
+        Assert.Equal(!remainsReady, view.InventoryRequestPending);
+        Assert.Equal(!remainsReady, view.InventoryRequestCreatedThisCall);
+        if (remainsReady)
+        {
+            // Authored Good stock remains valid across the Standard-to-Good score
+            // boundary; generation tier is not a current derived-tier equality rule.
+            Assert.Equal(original.Offers.Select(offer => offer.SlotId),
+                view.Offers.Select(offer => offer.SlotId));
+            Assert.Empty(await NpcTradeRequestState.ReadRequestsAsync(_fs));
+        }
+        else
+        {
+            Assert.Empty(view.Offers);
+            Assert.NotNull(view.PendingGmAction);
+            var request = Assert.Single(await NpcTradeRequestState.ReadRequestsAsync(_fs));
+            Assert.Equal("npc_merchant_001", request.NpcId);
+            Assert.Equal(8, request.DerivedTradeSlotCount);
+            Assert.Equal("world_trade_0", request.TradeCycleId);
+        }
+        var after = JsonNode.Parse((await _fs.ReadFileAsync(npcPath))!)!["UpdateNPCs"]![0]!;
+        Assert.True(JsonNode.DeepEquals(stockBefore, after["tradeInventory"]));
+        Assert.True(JsonNode.DeepEquals(receiptsBefore, after["tradeInventoryReceipts"]));
+        Assert.Equal(resultingLevel, after["level"]!.GetValue<int>());
+    }
+
     [Fact]
     public async Task GetCurrentLocationTradeTargetsAsync_ScopeChangesBeforeReturn_HidesMerchant()
     {

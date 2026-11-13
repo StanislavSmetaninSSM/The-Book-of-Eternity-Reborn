@@ -5681,17 +5681,22 @@ public partial class ValidationService
     /// </returns>
     /// <param name="source">Explicit invocation observations, or null for the unchanged ordinary route.</param>
     /// <param name="narrativeRolePath">The originating closed narrative logical role for nested authority reads.</param>
+    /// <param name="requireFreshPhysicalSource">Reauthenticates current physical source under the existing lease instead of returning retained DATA.</param>
     private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
         FileSystemManager.CanonicalWriteLease? writeLease = null, OriginalLookupObservation? source = null,
-        string narrativeRolePath = "output/narrative_response.json")
+        string narrativeRolePath = "output/narrative_response.json", bool requireFreshPhysicalSource = false)
     {
-        if (CurrentPendingSnapshotLookup(writeLease) is { } scoped)
+        // Still enter the scoped lookup to enforce its exact lease/lifetime restrictions.
+        // Publication freshness must not treat retained DATA or a supplied DTO as a new source proof.
+        using var fresh = requireFreshPhysicalSource ? FileSystemManager.SuppressValidationReuse() : null;
+        var currentLookup = CurrentPendingSnapshotLookup(writeLease);
+        if (!requireFreshPhysicalSource && currentLookup is { } scoped)
         {
             source?.ScopedLookup();
             if (scoped.Manifest is { } supplied) RecordNarrativeOriginalContext(source, supplied, "ScopedData");
             return scoped;
         }
-        if (_prevalidatedPendingTurnSnapshotOverride != null)
+        if (!requireFreshPhysicalSource && _prevalidatedPendingTurnSnapshotOverride != null)
         {
             RecordNarrativeOriginalContext(source, _prevalidatedPendingTurnSnapshotOverride, "SuppliedPrevalidatedData");
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);

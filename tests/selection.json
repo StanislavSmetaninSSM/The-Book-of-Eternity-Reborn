@@ -28,6 +28,20 @@
       "contracts": [
         "Authenticated source, realm, stale-command refusal and consume idempotence."
       ]
+    },
+    {
+      "category": "mortal-npc-progression-consumer-freshness",
+      "reason": "Verify existing downstream freshness rather than inventing regeneration or duplicate cache invalidation.",
+      "contracts": [
+        "Merchant current slot contract; teacher canonical source hash and no stale purchase."
+      ]
+    },
+    {
+      "category": "mortal-npc-skill-composer-extraction",
+      "reason": "Prove the moved exact-owner adapter preserves existing roots/refusals and real treatment callers.",
+      "contracts": [
+        "Shared pure NPC skill composition, exact ID fallback, mirror consistency."
+      ]
     }
   ]
 }

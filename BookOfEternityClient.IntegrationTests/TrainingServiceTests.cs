@@ -22,6 +22,69 @@ public sealed partial class TrainingServiceTests : IDisposable
         _fs.EnsureDirectoryStructure();
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BuyTrainingAsync_MortalTeacherProgressionChanges_RejectsStaleShowcaseBeforePayment(
+        bool changeProfile)
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalTeacherAsync(includeShowcase: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedPlayerActiveSkillAsync(skillName: "Ножи", masteryLevel: 1, currentProgress: 1, progressNeeded: 5);
+        const string npcPath = "game_state/npcs/npc_core.json";
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(npcPath))!)!.AsObject();
+        var teacher = root["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        teacher["level"] = 1;
+        teacher["experience"] = 0;
+        teacher["experienceForNextLevel"] = 100;
+        teacher["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "standard" };
+        var originalHash = TrainingService.ComputeSourceSnapshotHash(teacher);
+        teacher["trainingShowcase"]!["sourceActorSnapshotHash"] = originalHash;
+        await _fs.WriteFileAtomicAsync(npcPath, root.ToJsonString());
+        var service = CreateService();
+        var original = await service.EnsureTrainingAsync(currentTurn: 12);
+        var originalTeacher = Assert.Single(original.Teachers);
+        Assert.True(originalTeacher.ShowcaseReady);
+        Assert.True(Assert.Single(originalTeacher.Offers).Available);
+
+        root = JsonNode.Parse((await _fs.ReadFileAsync(npcPath))!)!.AsObject();
+        teacher = root["UpdateNPCs"]!.AsArray()[0]!.AsObject();
+        if (changeProfile)
+            teacher["progressionProfile"] = new JsonObject
+            {
+                ["schemaVersion"] = 1, ["mode"] = "table",
+                ["thresholds"] = new JsonArray(100, 200), ["capOverflow"] = "discard"
+            };
+        else
+        {
+            teacher["level"] = 2;
+            teacher["experienceForNextLevel"] = 565;
+        }
+        Assert.NotEqual(originalHash, TrainingService.ComputeSourceSnapshotHash(teacher));
+        await _fs.WriteFileAtomicAsync(npcPath, root.ToJsonString());
+        var protectedPaths = new[] { "game_state/core/player_status.json", "game_state/player/experience.json",
+            "game_state/player/skills_active.json", "game_state/player/skill_mastery.json", npcPath };
+        var before = new Dictionary<string, string?>();
+        foreach (var path in protectedPaths)
+            before[path] = await _fs.ReadFileAsync(path);
+
+        var result = await service.BuyTrainingAsync("npc_hunter_001", "offer_knife_mastery_2", currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("устарела", result.Message, StringComparison.OrdinalIgnoreCase);
+        foreach (var path in protectedPaths)
+            Assert.Equal(before[path], await _fs.ReadFileAsync(path));
+        var refreshed = await service.EnsureTrainingAsync(currentTurn: 13);
+        var staleTeacher = Assert.Single(refreshed.Teachers);
+        Assert.False(staleTeacher.ShowcaseReady);
+        Assert.True(staleTeacher.ShowcaseStale);
+        Assert.Empty(staleTeacher.Offers);
+        Assert.True(refreshed.RequestCreatedThisCall);
+        Assert.NotNull(refreshed.PendingGmAction);
+    }
+
     [Fact]
     public async Task EnsureTrainingAsync_MortalTeacherWithoutShowcase_CreatesPendingRefreshRequest()
     {

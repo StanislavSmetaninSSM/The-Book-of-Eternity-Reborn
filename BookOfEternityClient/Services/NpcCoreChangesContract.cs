@@ -35,6 +35,7 @@ internal static class NpcCoreChangesContract
     private static readonly HashSet<string> ProgressionKeys = new(StringComparer.Ordinal)
     {
         "experienceDelta",
+        "source",
         "level",
         "experience",
         "experienceForNextLevel",
@@ -123,7 +124,61 @@ internal static class NpcCoreChangesContract
         HashSet<string> KnownPermanentLocationIds,
         HashSet<string> SameTurnLocationInitialIds,
         Dictionary<string, string> FactionNamesById,
-        HashSet<string> WorldCharacteristicKeys);
+        HashSet<string> WorldCharacteristicKeys)
+    {
+        internal ProgressionSourceContext? ProgressionSource { get; init; }
+    }
+
+    /// <summary>Authenticated operation DATA; the owning lease and publication fences remain required.</summary>
+    internal sealed record ProgressionSourceContext(
+        string SessionId, string RequestId, int TurnNumber, string SnapshotToken, string Realm);
+
+    /// <summary>Detects progression packages without reading or mutating any source.</summary>
+    internal static bool HasProgressionCommand(JsonObject root) =>
+        root[PropertyName] is JsonArray commands &&
+        commands.OfType<JsonObject>().Any(command => command.ContainsKey("progression"));
+
+    /// <summary>Checks source correlation before any normalizer write, including the NoPlan path.</summary>
+    internal static IReadOnlyList<ValidationIssue> ValidateProgressionSources(
+        JsonObject root, ProgressionSourceContext? source)
+    {
+        var issues = new List<ValidationIssue>();
+        if (root[PropertyName] is not JsonArray commands) return issues;
+        for (var i = 0; i < commands.Count; i++)
+            if (commands[i] is JsonObject command && command.ContainsKey("progression"))
+                ValidateProgressionSource(command["progression"] as JsonObject, source,
+                    $"{NpcCorePath}.{PropertyName}[{i}].progression", ReadRequiredString(command, "NPCId"), issues);
+        return issues;
+    }
+
+    /// <summary>Requires exact authored request correlation, keeping the snapshot token client-only.</summary>
+    private static void ValidateProgressionSource(JsonObject? progression, ProgressionSourceContext? trusted,
+        string context, string? npcId, List<ValidationIssue> issues)
+    {
+        if (trusted is null || !ResourceMaterializationContract.IsExactIdentifier(trusted.SessionId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(trusted.RequestId) || trusted.TurnNumber <= 0 ||
+            !ResourceMaterializationContract.IsExactIdentifier(trusted.SnapshotToken))
+        {
+            issues.Add(Error(context + ".source", "npc_core_changes_progression_source_unavailable",
+                "Progression requires authenticated current-turn source context under the existing publication owner.", npcId));
+            return;
+        }
+        if (trusted.Realm != "mortal_world")
+        {
+            issues.Add(Error(context + ".source", "npc_core_changes_progression_realm_invalid",
+                "NPC progression is supported only in the authenticated current Mortal World turn.", npcId));
+            return;
+        }
+        if (progression?["source"] is not JsonObject source || source.Count != 3 ||
+            source.Any(property => property.Key is not ("sessionId" or "requestId" or "turnNumber")) ||
+            source["sessionId"] is not JsonValue session || !session.TryGetValue<string>(out var sessionId) ||
+            source["requestId"] is not JsonValue request || !request.TryGetValue<string>(out var requestId) ||
+            source["turnNumber"] is not JsonValue turn || !turn.TryGetValue<int>(out var turnNumber) ||
+            !string.Equals(sessionId, trusted.SessionId, StringComparison.Ordinal) ||
+            !string.Equals(requestId, trusted.RequestId, StringComparison.Ordinal) || turnNumber != trusted.TurnNumber)
+            issues.Add(Error(context + ".source", "npc_core_changes_progression_source_invalid",
+                "source must contain only exact current sessionId, requestId and integer turnNumber from the current request; do not author snapshot hashes.", npcId));
+    }
 
     internal sealed record ChangePlan(string NpcId, JsonObject Command);
 
@@ -264,6 +319,7 @@ internal static class NpcCoreChangesContract
                 ValidateProgression(
                     progressionNode,
                     baselineActor?.Actor,
+                    authority.ProgressionSource,
                     $"{context}.progression",
                     npcId,
                     evaluation.Issues);
@@ -697,6 +753,7 @@ internal static class NpcCoreChangesContract
     private static void ValidateProgression(
         JsonNode? node,
         JsonObject? baselineActor,
+        ProgressionSourceContext? trustedSource,
         string context,
         string? npcId,
         List<ValidationIssue> issues)
@@ -708,6 +765,7 @@ internal static class NpcCoreChangesContract
         }
 
         ValidateUnknownProperties(progression, ProgressionKeys, context, issues, npcId);
+        ValidateProgressionSource(progression, trustedSource, context, npcId, issues);
         if (baselineActor != null)
         {
             var evaluation = MortalNpcProgressionContract.Evaluate(baselineActor, progression);
@@ -1434,7 +1492,10 @@ internal static class NpcCoreChangesContract
             code: code,
             actor: npcId == null ? null : $"mortal_npc:{npcId}",
             section: "NPCCoreChanges",
-            repairHint: "Use one exact permanent NPCId and only the bounded NPCCoreChanges mutation groups; preserve every unrelated actor field.");
+            repairHint: code.StartsWith("npc_core_changes_progression_source", StringComparison.Ordinal) ||
+                        code == "npc_core_changes_progression_realm_invalid"
+                ? "Copy exact sessionId/requestId/turnNumber from the current Mortal request. Do not author snapshot hashes or repair the original snapshot; restore its existing owner if unavailable."
+                : "Use one exact permanent NPCId and only the bounded NPCCoreChanges mutation groups; preserve every unrelated actor field.");
 
     private static void CollectExactLocationAuthority(
         string? worldMapJson,

@@ -80,3 +80,32 @@ fingerprints. Missing/unusable authority refuses progression without publishing.
 P2a does not add receipts, profile transitions, dependencies or another writer.
 Absolute tuple application and command consumption retain their existing
 idempotent behavior; this block tests it without claiming all FR3-FR8 complete.
+
+## P2b accepted architecture direction (implementation still pending)
+
+The durable ordinary NPC skill catalog will be canonical core activeSkills and
+passiveSkills. The four existing npc_skills.json command arrays are pending
+commands, consumed together with their composed core after-image by the existing
+accepted-turn transaction. An authenticated accepted baseline with nonempty
+pending arrays is invalid; bootstrap is empty. Do not migrate or replay old
+retained sidecars, infer row provenance from file differences, or weaken direct
+core mutation guards. First compose validated core changes onto a detached
+candidate, then apply exact-owner profile/removal/mastery commands. The shared
+composer is the moved existing treatment adapter; treatment retains its separate
+admitted envelope and must not be double-applied. No second writer or ledger.
+
+The same candidate must feed effect/skill source authority before effects/wounds
+are planned, and existing normalization/item semantic baselines before writes.
+Extend existing retained originals, source identity/seals and rollback coverage
+for the sidecar. Update actual canonical mastery consumers when commands are
+consumed. A candidate is DATA, never publication permission.
+
+Explicit skill cadence uses levelsGainedThisTransition, matching Rule19:
+floor((resultLevel - originalLevel) / levelsPerAward), with declared new-skill or
+mastery-increase discharges. Count actual original-to-candidate changes on the
+exact actor/kind/skill, not row presence or crossed even absolute levels.
+Characteristics use only explicit supported fixed increments or fixed allocated
+points/current-world keys; unsupported formulas fail closed. Other declared
+domains need concrete existing-owner result adapters, not arbitrary JSON paths,
+embedded alternative state, or a generic row-exists dependency language.
+FR4/FR5 remain incomplete until these adapters and real publication tests exist.

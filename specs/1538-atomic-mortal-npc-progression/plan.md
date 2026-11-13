@@ -133,3 +133,49 @@ snapshot and lease, plus missing/stale source refusal. Parent owns category,
 builds, independent review and publication. No production change before RED.
 No new cache: detached small immutable context is operation DATA only; fresh
 snapshot/request/source and publication ownership checks remain authoritative.
+
+P2a implementation WIP (verification pending): source DATA is attached to existing
+NPC Authority; normalizer receives an issued source check bound to the exact
+validator/filesystem/write lease, never bare strings as publication permission.
+The existing lookup now has an opt-in fresh-physical-source mode which still
+checks scoped lease/lifetime restrictions but does not return a retained DTO or
+prevalidated override. It uses the same manifest/authority/current-request
+validation path and scoped SuppressValidationReuse, not a new reader or cache.
+Coordinator reuses captured NPC bytes, checks source before normalization, and
+checks again before accepting its result; its existing rollback handles a changed
+source after writes. Generic preflight refuses before the first normalizer write.
+Three fresh boundaries are deliberately limited to commands with progression;
+source authentication cost is unmeasured and no speedup is claimed.
+
+New focused test classes: MortalNpcProgressionSourceBindingTests and
+MortalNpcProgressionPublicationTests. Coverage includes the actual coordinator
+NoPlan positive/consumption path, missing/stale/other-realm refusal, generic
+pre-write refusal, same-lease request/manifest mutation despite a retained
+prevalidated DTO, and foreign lease refusal. Existing P1 command-positive and
+NpcCoreChanges integration-positive fixtures now provide explicit source.
+GM rule, actual daemon, both CLI examples and source repair hints are synchronized.
+
+### Parallel P2 foundations WIP, all new checks UNRUN
+
+P2a causal source regression completed 1/1, 0 PASS / 1 FAIL, 8.723s,
+no skips/duplicates and complete owned cleanup; build 0 errors, 68.16s.
+The old real evaluator accepted valid arithmetic without trusted source context.
+P2a runtime/tests now await the first build after source/lease integration.
+
+A behavior-preserving extraction moves the existing treatment NPC skill composer
+and exact-ID fallback into MortalNpcSkillComposer; both treatment call sites use
+it, while admission/fingerprints/seals/publication stay with their original owner.
+Mechanical body comparison matches the original after issue-factory rename.
+Four cheap typed controls and four selected existing treatment consumer cases
+are UNRUN. No mastery or ordinary sidecar publication is claimed by this move.
+
+Four consumer characterization cases are also UNRUN: merchant 15->16 slot-count
+refresh versus 14->15 same-slot authored-tier reuse; teacher level/profile hash
+changes refuse stale purchases without payment/state mutation. Existing service
+fixtures and entrypoints are reused; these are not full accepted-turn tests.
+
+Targeted GPT-6 Astra High read-only architectural consultation confirmed the
+ordinary skill-persistence gap and the P2b direction now recorded in spec.md.
+No broad tests or spiritual implementation are needed. The next bounded shared
+owner must prove consecutive skill grants, stale prior sidecar refusal, genuine
+cadence discharges and effect-source candidate integration before claiming FR4/5.

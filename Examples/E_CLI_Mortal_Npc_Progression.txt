@@ -1,6 +1,6 @@
 # Mortal NPC progression: explicit numeric profile and bounded XP input
 
-This example covers the numeric contract only. It is not evidence that the
+This example covers the numeric and current-source correlation contracts only. It is not evidence that the
 whole #1538 dependency/publication contract is complete. Exact actor, realm,
 source-turn and dedicated skill/characteristic/combat/trade/journal authority
 remain required; a valid tuple is not permission to publish those consequences.
@@ -31,6 +31,13 @@ not strings or fractional numbers. Intermediate XP overflow is rejected before
 cap discard. A progressing baseline has level >= 1, the exact profile threshold,
 and 0 <= experience < threshold (or zero XP/threshold at cap).
 
+Every progression package includes a closed source object with exact sessionId,
+requestId and positive integer turnNumber copied from the current turn request.
+The example below assumes session_npc_example / request_npc_example / turn 42;
+replace all three with the actual current request values. Do not supply a
+snapshot token/hash: it is client-owned private authentication evidence.
+Only the authenticated current Mortal World turn may publish progression.
+
 ## Exact-boundary standard example
 
 Relevant fields of an already validated baseline (not a creation command):
@@ -53,6 +60,7 @@ Its exact next cost is 565. Submit the full result, even when only XP changes:
       "NPCId": "npc_existing_001",
       "reason": "Completed the agreed practice objective",
       "progression": {
+        "source": {"sessionId": "session_npc_example", "requestId": "request_npc_example", "turnNumber": 42},
         "experienceDelta": 10,
         "level": 2,
         "experience": 0,
@@ -82,3 +90,7 @@ progression command's delta/result fields against the unchanged validated
 baseline. An incoherent or missing baseline profile is not repairable by
 inventing a profile, changing original XP, or falling back to the polynomial.
 Do not resubmit a progression command as an unchanged full UpdateNPCs carrier.
+
+For source mismatch repair, copy the current request correlation, not an earlier
+request. If the current authenticated snapshot is unavailable, stop and restore
+its existing owner; do not invent hashes, rewrite receipts or bypass validation.

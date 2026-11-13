@@ -1267,6 +1267,7 @@ public sealed class NpcCoreChangesTests : IDisposable
                 },
                 ["progression"] = new JsonObject
                 {
+                    ["source"] = new JsonObject { ["sessionId"] = "session_npc_core_changes_tests", ["requestId"] = "request_npc_core_changes_tests", ["turnNumber"] = 42 },
                     ["level"] = 3,
                     ["experience"] = 20,
                     ["experienceDelta"] = 170,
@@ -1297,10 +1298,19 @@ public sealed class NpcCoreChangesTests : IDisposable
         var backupPath = $"game_state/control/pending_turn_snapshot/{NpcCorePath}";
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
 
-        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        try
         {
-            [NpcCorePath] = backupPath
-        });
+            var source = await _validator.PrepareNpcProgressionPublicationAsync(lease,
+                await _fs.ReadFileBytesAsync(lease, NpcCorePath));
+            Assert.Empty(source.Issues);
+            await normalizer.BindTo(lease).WithNpcProgressionSource(source)
+                .NormalizeAccumulatedStateAsync(new Dictionary<string, string> { [NpcCorePath] = backupPath });
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, null);
+        }
 
         var normalized = JsonNode.Parse((await _fs.ReadFileAsync(NpcCorePath))!)!.AsObject();
         Assert.False(normalized.ContainsKey("NPCCoreChanges"));
@@ -1586,6 +1596,10 @@ public sealed class NpcCoreChangesTests : IDisposable
             ["turnNumber"] = turnNumber,
             ["requestTimestamp"] = "2026-07-22T00:00:00Z",
             ["playerAction"] = playerAction,
+            ["progressionControl"] = JsonSerializer.SerializeToNode(new ProgressionControl { CurrentRealm = "Mortal World" },
+                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }),
             ["files"] = files,
             ["snapshotFileHashes"] = hashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),

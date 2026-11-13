@@ -454,7 +454,12 @@ internal static class MortalItemPublicationBaselinePlanner
         return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_item.npc_core_authority",
-            "1",
+            "2",
+            authority.ProgressionSource?.SessionId,
+            authority.ProgressionSource?.RequestId,
+            authority.ProgressionSource?.TurnNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            authority.ProgressionSource?.SnapshotToken,
+            authority.ProgressionSource?.Realm,
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(root)
         });
     }

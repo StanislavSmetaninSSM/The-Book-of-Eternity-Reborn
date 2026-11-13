@@ -139,6 +139,12 @@ internal static partial class WoundAcceptedTurnPlanner
                 await files.ReadFileAsync(lease, MortalLocationMaterializationContract.CurrentLocationPath),
                 await files.ReadFileAsync(lease, "game_state/factions/faction_core.json"),
                 await files.ReadFileAsync(lease, "game_state/misc/characteristics.json"));
+            var sourceBinding = bundle.Input.Binding;
+            npc = npc with
+            {
+                ProgressionSource = new(sourceBinding.SessionId, sourceBinding.RequestId, sourceBinding.Turn,
+                    sourceBinding.SnapshotToken, sourceBinding.Realm)
+            };
             var tradeBytes = await files.ReadFileBytesAsync(lease, NpcTradeRequestState.PendingRequestPath);
             var trainingBytes = await files.ReadFileBytesAsync(lease, TrainingRequestState.PendingRequestPath);
             await mechanical.ValidateCurrentAsync(files, lease, bundle.Input.Binding);

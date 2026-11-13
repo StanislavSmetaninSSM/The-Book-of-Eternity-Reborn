@@ -843,13 +843,19 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             StringComparer.Ordinal),
         new HashSet<string>(
             authority.WorldCharacteristicKeys,
-            StringComparer.Ordinal));
+            StringComparer.Ordinal)) { ProgressionSource = authority.ProgressionSource };
 
     private static void AppendNpcCoreAuthority(
         ICollection<string?> fields,
         NpcCoreChangesContract.Authority authority)
     {
         fields.Add("npcCoreAuthority");
+        fields.Add("progressionSource");
+        fields.Add(authority.ProgressionSource?.SessionId);
+        fields.Add(authority.ProgressionSource?.RequestId);
+        fields.Add(authority.ProgressionSource?.TurnNumber.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        fields.Add(authority.ProgressionSource?.SnapshotToken);
+        fields.Add(authority.ProgressionSource?.Realm);
         foreach (var value in authority.KnownPermanentLocationIds.OrderBy(
                      static value => value,
                      StringComparer.Ordinal))

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BookOfEternityClient.Core;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -124,6 +125,7 @@ public partial class ValidationService
                 await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.CurrentLocationPath),
                 await ReadSameTurnOwnerCurrentTextAsync("game_state/factions/faction_core.json"),
                 await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"));
+        authority = authority with { ProgressionSource = CreateNpcProgressionSource(lookup.Manifest) };
         var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
             currentRoot,
             await ReadValidatedPendingTurnSnapshotFileAsync(
@@ -142,6 +144,76 @@ public partial class ValidationService
         issues.AddRange(evaluation.Issues);
         return issues;
     }
+
+
+    /// <summary>Detached source-check result; it grants no ownership beyond the caller's existing lease.</summary>
+    internal sealed class NpcProgressionPublicationSource
+    {
+        private readonly ValidationService _owner;
+        private readonly FileSystemManager.CanonicalWriteLease _lease;
+        internal NpcCoreChangesContract.ProgressionSourceContext? Context { get; }
+        internal IReadOnlyList<ValidationIssue> Issues { get; }
+
+        internal NpcProgressionPublicationSource(ValidationService owner,
+            FileSystemManager.CanonicalWriteLease lease, NpcCoreChangesContract.ProgressionSourceContext? context,
+            IReadOnlyList<ValidationIssue> issues)
+        { _owner = owner; _lease = lease; Context = context; Issues = issues; }
+
+        /// <summary>Checks the same live lease and existing snapshot authentication again, never extending authority.</summary>
+        internal async Task RequireCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
+        {
+            if (!ReferenceEquals(files, _owner._fs) || !ReferenceEquals(lease, _lease))
+                throw new InvalidDataException("NPC progression source belongs to a different publication lease.");
+            files.EnsureCanonicalWriteLeaseActive(_lease);
+            if (Issues.Count != 0) throw new InvalidDataException("NPC progression publication source was refused.");
+            if (Context is null) return;
+            var lookup = await _owner.LoadValidatedPendingTurnSnapshotLookupAsync(_lease, requireFreshPhysicalSource: true);
+            if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest is null ||
+                CreateNpcProgressionSource(lookup.Manifest) != Context)
+                throw new InvalidDataException("NPC progression authenticated source changed before publication completed.");
+        }
+    }
+
+    /// <summary>
+    /// Reuses already captured NPC bytes and the existing authenticated lookup under the exact publication
+    /// lease. No domain roots are reread and turns without progression do not authenticate another snapshot.
+    /// </summary>
+    internal async Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        if (npcCoreBytes is null) return new(this, writeLease, null, []);
+        JsonObject root;
+        try
+        {
+            using var document = JsonDocument.Parse(npcCoreBytes);
+            if (document.RootElement.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(document.RootElement, out _))
+                return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("non-object or duplicate property")]);
+            root = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
+        }
+        catch (JsonException)
+        {
+            return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed")]);
+        }
+        if (!NpcCoreChangesContract.HasProgressionCommand(root)) return new(this, writeLease, null, []);
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, requireFreshPhysicalSource: true);
+        var context = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest is not null
+            ? CreateNpcProgressionSource(lookup.Manifest) : null;
+        return new(this, writeLease, context, NpcCoreChangesContract.ValidateProgressionSources(root, context));
+    }
+
+    /// <summary>Projects already authenticated manifest DATA without exposing its token to the GM.</summary>
+    private static NpcCoreChangesContract.ProgressionSourceContext CreateNpcProgressionSource(
+        ValidationPendingTurnSnapshotManifest manifest) => new(
+            manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash,
+            manifest.ProgressionControl?.CurrentRealm switch
+            {
+                "Mortal World" or "mortal_world" => "mortal_world",
+                "Chaos Sea" or "chaos_sea" => "chaos_sea",
+                "Shining Abode" or "shining_abode" => "shining_abode",
+                _ => ""
+            });
 
     private static ValidationIssue CreateInvalidNpcCoreChangesAuthorityIssue(string actual) =>
         new(

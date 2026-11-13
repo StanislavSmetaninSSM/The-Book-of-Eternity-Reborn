@@ -509,6 +509,11 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                         Read(MortalLocationMaterializationContract.CurrentLocationPath),
                         Read("game_state/factions/faction_core.json"),
                         Read("game_state/misc/characteristics.json"));
+                npcCoreAuthority = npcCoreAuthority with
+                {
+                    ProgressionSource = new(binding.SessionId, binding.RequestId, binding.Turn,
+                        binding.SnapshotToken, binding.Realm)
+                };
                 var npcTradePending = CaptureBeforeImage(
                     NpcTradeRequestState.PendingRequestPath);
                 var trainingPending = CaptureBeforeImage(
