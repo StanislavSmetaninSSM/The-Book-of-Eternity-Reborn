@@ -235,3 +235,9 @@ source-change rollback. The small coordinator fixture now supplies actual pristi
 resource roots and ExplicitBootstrap owner authority, not a validator bypass.
 Fresh physical source checks deliberately remain fresh; detached parsed original
 DATA is reused for pure baseline comparisons. No new cache or speedup claim.
+
+Initial correction build at eb97d75 stopped on one test-fixture constructor
+argument error (hooks require the existing physical transaction-operations
+argument). Corrected the call; no test executed and this is not causal RED.
+Static targeted rereview found all three prior source issues addressed; runtime
+acceptance still awaits the selected results.

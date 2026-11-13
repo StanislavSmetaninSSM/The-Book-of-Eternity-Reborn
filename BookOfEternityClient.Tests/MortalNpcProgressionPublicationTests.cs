@@ -333,7 +333,7 @@ public sealed class MortalNpcProgressionPublicationTests
 
         internal string Physical(string path) => Files.ResolvePath(path);
         internal FileSystemManager CreateFiles(FileSystemManagerHooks hooks) =>
-            new(_root, NullLogger<FileSystemManager>.Instance, hooks);
+            new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
 
         internal async Task AddUnrelatedNormalizableCommand()
         {
