@@ -1,3 +1,7 @@
+## Bounded common publication and absence PASS, 2026-11-13
+
+Exact2437 runtime: publication15/15 PASS (including correctly ordered signed-absence/orphan-hash controls); completed ordinary common effect2/2 PASS, latecut observes actual skill/consumed sidecar/effect before rollback; pure consequence initial15/15 PASS. Runtime PE/PDB GUID9341ab0f-bbc3-410f-b4ae-eb08e841b9e5,1235documents/1231nongeneratedallcurrent, both outputs identical. Independent review found narrow UTF16 witness decoding and repeated sealed-DATA clone costs in common guard; fixes pending. Pure helper review found comparer and decimal-rounding/finite-number edges; nine extra cases bring24total, UNRUN. Initial15PASS doesnotqualify these edges. Item/location/wound common overlap remains refused.
+
 ## Pure consequences RED and fixture ordering correction, 2026-11-13
 
 Exact8199 source verified by runtime PE/PDB joins: pure15 cases yielded6 PASS/9 FAIL on compile stub as predicted. Stub implementation replaced, not yet verified. Publication fixture still failed before auth because JSON presence property was appended after manifest hash rather than DTO order; now inserted immediately after snapshotFileHashes before signing. This is a second fixture defect, not a runtime absence failure. Do not claim corrected publication PASS until actual rerun. Common runtime d70f is saved WIP; prior build captured old common files entirely (verified checksum comparison), not that implementation.

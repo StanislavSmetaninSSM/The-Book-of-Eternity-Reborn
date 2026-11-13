@@ -114,6 +114,101 @@ public sealed class MortalNpcProgressionConsequencesTests
         Assert.Contains(Evaluate(Actor(1), after), p => p.Code == "npc_progression_characteristic_delta");
     }
 
+    [Fact]
+    public void FixedPolicy_CallerCaseInsensitiveComparerDoesNotAuthorizeDifferentKey()
+    {
+        var before = Actor(1); var after = Actor(2);
+        before["characteristics"]!["Strength"] = 10;
+        after["characteristics"]!["Strength"] = 11;
+        after["characteristics"]!["strength"] = 5;
+        var policy = new Contract.CharacteristicPolicy(Contract.CharacteristicMode.FixedIncrements,
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) { ["strength"] = 1 });
+        Assert.Contains(Evaluate(before, after, policy: policy),
+            p => p.Code == "npc_progression_characteristic_delta" && p.Field == "Strength");
+    }
+
+    [Fact]
+    public void NoGrowthPolicy_PreservesUnchangedLargeFiniteJsonNumber()
+    {
+        var before = Actor(1); var after = Actor(2);
+        before["characteristics"]!["strength"] = JsonNode.Parse("1e100");
+        after["characteristics"]!["strength"] = JsonNode.Parse("1e100");
+        Assert.Empty(Evaluate(before, after));
+    }
+
+    [Fact]
+    public void NoGrowthPolicy_RejectsTinyNonzeroJsonDeltaWithoutDecimalRounding()
+    {
+        var before = Actor(1); var after = Actor(2);
+        before["characteristics"]!["strength"] = JsonNode.Parse("0");
+        after["characteristics"]!["strength"] = JsonNode.Parse("1e-29");
+        Assert.Contains(Evaluate(before, after), p => p.Code == "npc_progression_characteristic_delta");
+    }
+
+    [Fact]
+    public void FixedIncrement_AcceptsExactIntegerDeltaOnTypedFractionalBaseline()
+    {
+        var before = Actor(1); var after = Actor(2);
+        before["characteristics"]!["strength"] = JsonValue.Create(4.5);
+        after["characteristics"]!["strength"] = JsonValue.Create(5.5);
+        var policy = new Contract.CharacteristicPolicy(Contract.CharacteristicMode.FixedIncrements,
+            new Dictionary<string, int> { ["strength"] = 1 });
+        Assert.Empty(Evaluate(before, after, policy: policy));
+    }
+
+    [Fact]
+    public void ConfusableAwardReference_DoesNotResolveExactSkill()
+    {
+        var awards = MasteryAwards(1);
+        awards[0]!["skillName"] = "Gu\u0430rd"; // Cyrillic a is not the canonical Latin a.
+        Assert.Contains(Evaluate(Actor(1, mastery: 1), Actor(3, mastery: 2), awards),
+            p => p.Code == "npc_progression_skill_award_unfulfilled");
+    }
+
+    [Fact]
+    public void ConflictingMasteryAlias_CannotBackAnAward()
+    {
+        var after = Actor(3, mastery: 2);
+        after["activeSkills"]![0]!["currentMasteryLevel"] = 3;
+        Assert.Contains(Evaluate(Actor(1, mastery: 1), after, MasteryAwards(1)),
+            p => p.Code == "npc_progression_skill_catalog_invalid");
+    }
+
+    [Fact]
+    public void Allocation_CannotFundPositiveAwardWithNegativeCharacteristicDelta()
+    {
+        var after = Actor(2);
+        after["characteristics"]!["strength"] = 8;
+        after["characteristics"]!["endurance"] = 1;
+        var policy = new Contract.CharacteristicPolicy(Contract.CharacteristicMode.AllocatedPoints,
+            PointsPerLevel: 3, AllocationKeys: new HashSet<string>(StringComparer.Ordinal) { "strength", "endurance" });
+        Assert.Contains(Evaluate(Actor(1), after, policy: policy),
+            p => p.Code == "npc_progression_characteristic_delta");
+    }
+
+    [Fact]
+    public void FixedIncrement_RejectsInt32AwardBudgetOverflow()
+    {
+        var before = Actor(1, mastery: 1); var after = Actor(3, mastery: 2);
+        after["characteristics"]!["strength"] = 4L + 2L * int.MaxValue;
+        var policy = new Contract.CharacteristicPolicy(Contract.CharacteristicMode.FixedIncrements,
+            new Dictionary<string, int> { ["strength"] = int.MaxValue });
+        Assert.Contains(Evaluate(before, after, MasteryAwards(1), policy),
+            p => p.Code == "npc_progression_characteristic_authority");
+    }
+
+    [Fact]
+    public void Allocation_RejectsSubDecimalPrecisionOverspend()
+    {
+        var before = Actor(1); var after = Actor(2);
+        before["characteristics"]!["strength"] = JsonNode.Parse("0");
+        after["characteristics"]!["strength"] = JsonNode.Parse("1.00000000000000000000000000001");
+        var policy = new Contract.CharacteristicPolicy(Contract.CharacteristicMode.AllocatedPoints,
+            PointsPerLevel: 1, AllocationKeys: new HashSet<string>(StringComparer.Ordinal) { "strength" });
+        Assert.Contains(Evaluate(before, after, policy: policy),
+            p => p.Code == "npc_progression_characteristic_delta");
+    }
+
     private static IReadOnlyList<Contract.Problem> Evaluate(JsonObject before, JsonObject after,
         JsonArray? awards = null, Contract.CharacteristicPolicy? policy = null, Contract.ProfileConsequences? profile = null) =>
         Contract.Evaluate(before, after, awards, profile ?? new(true),
