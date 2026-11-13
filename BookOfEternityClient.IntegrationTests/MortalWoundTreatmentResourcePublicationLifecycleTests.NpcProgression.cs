@@ -155,7 +155,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         };
         if (scenario is 8 or 9 or 10 or 11)
         {
-            proposal.NPCActiveSkillChanges = null;
+            // The held fixture already distributed a display-only full profile. Null is
+            // omission in StateDistributor, so explicitly replace that pending array
+            // before exercising the documented delta-only route.
+            proposal.NPCActiveSkillChanges = Array.Empty<JsonElement>();
             proposal.NPCSkillMasteryChanges = new[] { JsonSerializer.SerializeToElement(new JsonObject
             {
                 ["NPCId"] = HeldTreatmentPipelineContext.ProviderId,
@@ -181,6 +184,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             proposal.NPCActiveSkillChanges = null;
         await new StateDistributor(context.FileSystem, NullLogger<StateDistributor>.Instance)
             .DistributeAsync(proposal);
+        if (scenario is 8 or 9 or 10 or 11)
+        {
+            var deltaOnlySidecar = await ReadJsonObjectAsync(context.FileSystem, "game_state/npcs/npc_skills.json");
+            Assert.Empty(deltaOnlySidecar["NPCActiveSkillChanges"]!.AsArray());
+        }
         if (scenario >= 4 && scenario != 11)
         {
             if (scenario == 5)

@@ -1,3 +1,7 @@
+## Mastery collector GREEN; earlier item baseline barrier confirmed
+
+Coherent9b59b4f5 runtime/PDBdf328827,1239current sources without mismatch, builds67.87/42.86s0errors85/120warnings. Shared mastery32/32 PASS10.069s including both new collector controls. Four integration cases give1PASS3FAIL23.479s. Reached retained composition explicitly refuses mortal_item_publication_baseline_semantic_npc_invalid: the ordinary NPC tail validates the required award before the treatment skill projection is composed. Independent review identified that earlier barrier; do not weaken ordinary Evaluate globally. The natural active case also refuses; unchanged-award negative passes. Passive case additionally exposed a fixture omission: null active-profile commands retain an old display-only pending profile. The fixture now explicitly distributes an empty array and asserts delta-only sidecar; this is not a production fix. Next is a treatment-owned final-consequence seam, reviewed before implementation; no further broad test replay.
+
 ## Documented treatment mastery causal RED and implementation WIP
 
 Retained bc016ad7 runtime, test-only integration build46.34s/0errors120warnings: the new required two-level active mastery delta case fails exactly at mortal_wound_treatment_ordinary_input_invalid / Treatment NPC intake does not support mastery command arrays. The unchanged-mastery negative passes. Official mastery category:1PASS/1FAIL,18.479s,complete/no duplicates/cleanupcomplete. This proves a documented intake gap, not invalid test preparation.
