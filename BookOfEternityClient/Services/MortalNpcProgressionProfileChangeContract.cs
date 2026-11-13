@@ -53,7 +53,10 @@ internal static class MortalNpcProgressionProfileChangeContract
         var numeric = MortalNpcProgressionContract.ValidateCanonicalActor(candidate);
         if (!numeric.IsValid)
             return new(null, numeric.Problems.Select(problem =>
-                new Problem("npc_profile_change_result_invalid", "progressionProfileChange." + problem.Field)).ToArray());
+                new Problem("npc_profile_change_result_invalid", "progressionProfileChange." +
+                    (problem.Field == "progressionProfile" ? "profile" :
+                     problem.Field.StartsWith("progressionProfile.", StringComparison.Ordinal)
+                         ? "profile." + problem.Field["progressionProfile.".Length..] : problem.Field))).ToArray());
         return new(candidate, []);
     }
 

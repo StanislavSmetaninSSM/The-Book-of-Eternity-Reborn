@@ -117,6 +117,7 @@ private async Task ShowNPCs()
         var originalName = GetStr(npc, "name", "???");
         var name = ResolveNpcDisplayName(npc, renameMap);
         var npcId = GetPrimaryNpcId(npc);
+        var acceptedMechanics = MortalNpcAcceptedMechanicsProjection.Build(CloneJsonObject(npc));
         var content = new Grid().AddColumn(new GridColumn());
         var lines = new List<string>();
 
@@ -220,6 +221,10 @@ private async Task ShowNPCs()
                 lvlLine += $" [dim]({Markup.Escape(npcXp)}/{Markup.Escape(npcXpNext)} XP)[/]";
             summaryTable.AddRow(new Markup("[yellow]Уровень[/]"), new Markup(lvlLine.Replace("  📈 Уровень: ", "")));
         }
+
+        foreach (var row in acceptedMechanics.ProfileRows)
+            summaryTable.AddRow(new Markup($"[yellow]{Markup.Escape(row.Key)}[/]"),
+                new Markup($"[white]{Markup.Escape(row.Value)}[/]"));
 
         // Companion directive
         var compDirective = GetStr(npc, "playerCompanionDirective", "");
@@ -359,37 +364,15 @@ private async Task ShowNPCs()
             }
         }
 
-        // ── Characteristics (12 stats, embedded in npc_core) ──
-        if (npc.TryGetProperty("characteristics", out var chars) && chars.ValueKind == JsonValueKind.Object)
+        // Exact accepted setting-owned values, including decimal/custom characteristics.
+        if (acceptedMechanics.CharacteristicRows.Count > 0)
         {
             lines.Add("");
             lines.Add($"  [bold yellow]📊 Характеристики:[/]");
-            foreach (var charName in Characteristics.All)
+            foreach (var row in acceptedMechanics.CharacteristicRows)
             {
-                var rusName = Characteristics.RussianNames.TryGetValue(charName, out var rn) ? rn : charName;
-                var stdProp = $"standard{char.ToUpper(charName[0])}{charName[1..]}";
-                var modProp = $"modified{char.ToUpper(charName[0])}{charName[1..]}";
-                var stdVal = chars.TryGetProperty(stdProp, out var sv) && sv.ValueKind == JsonValueKind.Number ? sv.GetInt32() : -1;
-                var modVal = chars.TryGetProperty(modProp, out var mv) && mv.ValueKind == JsonValueKind.Number ? mv.GetInt32() : -1;
-                // Also try flat format: just "strength": 10
-                if (stdVal < 0 && modVal < 0)
-                {
-                    if (chars.TryGetProperty(charName, out var flat) && flat.ValueKind == JsonValueKind.Number)
-                    {
-                        stdVal = flat.GetInt32();
-                        modVal = stdVal;
-                    }
-                    else continue;
-                }
-                if (stdVal < 0) stdVal = modVal;
-                if (modVal < 0) modVal = stdVal;
-
-                var diff = modVal - stdVal;
-                var diffStr = diff > 0 ? $" [green](+{diff})[/]" : diff < 0 ? $" [red]({diff})[/]" : "";
-                var barW = 10;
-                var filled = Math.Clamp(modVal * barW / 20, 0, barW); // scale: 0-20 typical range
-                var barColor = modVal >= 14 ? "green" : modVal >= 8 ? "yellow" : "red";
-                lines.Add($"    {Markup.Escape(rusName),-18} [{barColor}]{new string('█', filled)}[/][dim]{new string('░', barW - filled)}[/] [white]{modVal}[/]{diffStr}");
+                var label = MortalNpcAcceptedMechanicsProjection.CharacteristicLabel(row.Key);
+                lines.Add($"    {Markup.Escape(label),-18} [white]{Markup.Escape(row.Value)}[/]");
             }
         }
 
@@ -859,7 +842,7 @@ private async Task ShowNPCs()
         RenderNpcEffects(lines, effectProjection, npcId);
 
         // ── Принятые навыки из канонического NPC ──
-        RenderNpcSkills(lines, npc, npcId, originalName, debugMode);
+        RenderNpcSkills(lines, acceptedMechanics, debugMode);
 
         // ── Черты характера (npc_personality) ──
         RenderNpcPersonality(lines, persDoc, npcId, originalName, debugMode);
@@ -1405,6 +1388,12 @@ private async Task ShowNPCs()
             ? !string.Equals(actorId, npcId, StringComparison.OrdinalIgnoreCase)
             : !MatchesNpcEntry(actor, npcId, npcName)) return display;
         var projection = MortalNpcAcceptedMechanicsProjection.Build(CloneJsonObject(actor));
+        return BuildNpcSkillDisplay(projection);
+    }
+
+    private static NpcSkillDisplay BuildNpcSkillDisplay(MortalNpcAcceptedMechanicsProjection projection)
+    {
+        var display = new NpcSkillDisplay();
         foreach (var skill in projection.Active) display.Active.Add(Adapt(skill));
         foreach (var skill in projection.Passive) display.Passive.Add(Adapt(skill));
         return display;

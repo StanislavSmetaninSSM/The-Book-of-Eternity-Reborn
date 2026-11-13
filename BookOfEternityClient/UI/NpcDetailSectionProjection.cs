@@ -278,6 +278,16 @@ internal static class NpcDetailSectionProjection
         var categories = new List<string>();
 
         var mechanics = MortalNpcAcceptedMechanicsProjection.Build(npc);
+        foreach (var row in mechanics.ProfileRows)
+        {
+            rows.Add(new UiTableRow { Cells = [row.Key, row.Value] });
+            AddCategory(categories, "развитие");
+        }
+        foreach (var row in mechanics.CharacteristicRows)
+        {
+            rows.Add(new UiTableRow { Cells = [MortalNpcAcceptedMechanicsProjection.CharacteristicLabel(row.Key), row.Value] });
+            AddCategory(categories, "характеристики");
+        }
         if (mechanics.Level is { } level)
         {
             var progress = $"Уровень: {level}";

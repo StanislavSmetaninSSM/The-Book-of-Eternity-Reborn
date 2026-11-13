@@ -16,6 +16,7 @@ internal static partial class NpcCoreChangesContract
         "profile",
         "location",
         "progression",
+        "progressionProfileChange",
         "characteristicValues",
         "factionAffiliationsToUpsert",
         "fateCardsToAdd",
@@ -139,7 +140,7 @@ internal static partial class NpcCoreChangesContract
     /// <summary>Detects progression packages without reading or mutating any source.</summary>
     internal static bool HasProgressionCommand(JsonObject root) =>
         root[PropertyName] is JsonArray commands &&
-        commands.OfType<JsonObject>().Any(command => command.ContainsKey("progression"));
+        commands.OfType<JsonObject>().Any(command => command.ContainsKey("progression") || command.ContainsKey("progressionProfileChange"));
 
     /// <summary>Checks source correlation before any normalizer write, including the NoPlan path.</summary>
     internal static IReadOnlyList<ValidationIssue> ValidateProgressionSources(
@@ -148,9 +149,11 @@ internal static partial class NpcCoreChangesContract
         var issues = new List<ValidationIssue>();
         if (root[PropertyName] is not JsonArray commands) return issues;
         for (var i = 0; i < commands.Count; i++)
-            if (commands[i] is JsonObject command && command.ContainsKey("progression"))
-                ValidateProgressionSource(command["progression"] as JsonObject, source,
-                    $"{NpcCorePath}.{PropertyName}[{i}].progression", ReadRequiredString(command, "NPCId"), issues);
+            if (commands[i] is JsonObject command)
+                foreach (var group in new[] { "progression", "progressionProfileChange" })
+                    if (command.ContainsKey(group))
+                        ValidateProgressionSource(command[group] as JsonObject, source,
+                            $"{NpcCorePath}.{PropertyName}[{i}].{group}", ReadRequiredString(command, "NPCId"), issues);
         return issues;
     }
 
@@ -313,6 +316,19 @@ internal static partial class NpcCoreChangesContract
             }
 
             var hasMutation = false;
+            if (command.TryGetPropertyValue("progressionProfileChange", out var profileChangeNode))
+            {
+                hasMutation |= IsNonEmptyContainer(profileChangeNode);
+                ValidateProgressionSource(profileChangeNode as JsonObject, authority.ProgressionSource,
+                    $"{context}.progressionProfileChange", npcId, evaluation.Issues);
+                if (baselineActor is not null)
+                {
+                    var profileChange = MortalNpcProgressionProfileChangeContract.Evaluate(baselineActor.Actor, command);
+                    foreach (var problem in profileChange.Problems)
+                        evaluation.Issues.Add(Error(context + "." + problem.Field, problem.Code,
+                            "Explicit NPC profile change must preserve level and stored XP and produce a canonical profile/tuple.", npcId));
+                }
+            }
             if (command.TryGetPropertyValue("profile", out var profileNode))
             {
                 hasMutation |= IsNonEmptyContainer(profileNode);
@@ -1273,6 +1289,13 @@ internal static partial class NpcCoreChangesContract
         {
             actor["currentLocationId"] = location["currentLocationId"]?.DeepClone();
             actor["initialLocationId"] = location["initialLocationId"]?.DeepClone();
+        }
+
+        if (command["progressionProfileChange"] is JsonObject profileChange)
+        {
+            actor["progressionProfile"] = profileChange["profile"]!.DeepClone();
+            foreach (var field in new[] { "level", "experience", "experienceForNextLevel" })
+                actor[field] = profileChange[field]!.DeepClone();
         }
 
         if (command["progression"] is JsonObject progression)

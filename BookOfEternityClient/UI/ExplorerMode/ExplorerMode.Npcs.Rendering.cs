@@ -403,9 +403,9 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcSkills(List<string> lines, JsonElement actor, string npcId, string npcName, bool debugMode)
+    private void RenderNpcSkills(List<string> lines, MortalNpcAcceptedMechanicsProjection mechanics, bool debugMode)
     {
-        var display = BuildNpcSkillDisplay(actor, npcId, npcName);
+        var display = BuildNpcSkillDisplay(mechanics);
         if (display.IsEmpty) return;
 
         if (display.Active.Count > 0)

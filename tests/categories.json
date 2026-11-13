@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-profile-publication",
+      "responsibility": "#1538 real profile-only replacement through current-turn coordinator and reached post-write all-canonical rollback.",
+      "excludes": "No XP award, item overlap, or full retry qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionProfileChangePublicationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionProfileChangePublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-browser-display",
       "responsibility": "#1538 actual browser accepted NPC profile modes and setting-owned characteristics with private-data and pending-sidecar isolation.",
       "excludes": "No console rendering or publication qualification.",
