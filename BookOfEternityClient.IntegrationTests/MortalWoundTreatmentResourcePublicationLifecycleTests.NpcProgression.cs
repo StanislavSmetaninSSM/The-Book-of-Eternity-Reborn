@@ -75,8 +75,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             .DistributeAsync(proposal);
         await context.AcquireLeaseAsync();
         var authorities = RestoreHeldTreatmentAuthorities(context);
+        // The specialized treatment owner accepts its skill/item envelope only.
+        // NPCCoreChanges remains in the real distributed raw core and is composed by
+        // the existing final item baseline, not granted authority by this projection.
+        var treatmentProposal = new GameResponse { NPCActiveSkillChanges = proposal.NPCActiveSkillChanges };
         var publication = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(
-            context.FileSystem, context.Lease, proposal,
+            context.FileSystem, context.Lease, treatmentProposal,
             authorities.AcceptedState, authorities.Request, authorities.Resolution);
         Assert.True(publication.IsValid, DescribeValidationIssues(publication.Issues));
         var plan = Assert.IsType<AcceptedMechanicsPlan>(publication.Plan);

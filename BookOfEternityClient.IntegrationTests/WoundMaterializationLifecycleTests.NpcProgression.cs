@@ -46,7 +46,11 @@ public sealed partial class WoundMaterializationLifecycleTests
         var authenticatedBefore = await context.CaptureAsync(authenticatedPaths);
         var request = Assert.IsType<JsonObject>(await context.ReadJsonAsync("input/turn_request.json"));
 
-        var decision = Decision("materialize", CreatePhysicalProposal("I", includeMechanicalRoot: true));
+        // Use the complete current Mortal route, as the real quest+wound publication
+        // fixture does; the low-level physical proposal alone has no treatment route.
+        var proposal = CreateRepairRoundtripProposal("treatment");
+        proposal["severity"] = "I";
+        var decision = Decision("materialize", proposal);
         decision["opportunityRef"] = authority.Opportunity.PublicRef;
         var response = Response(decision);
         response.NPCCoreChanges = new[] { ToElement(new JsonObject
