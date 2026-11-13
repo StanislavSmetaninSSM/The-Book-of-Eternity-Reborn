@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-structured-skill-claims",
+      "responsibility": "#1533 mandatory Mortal NPC structured report and exact owner/kind/skill delta evidence; no NLP completeness guarantee.",
+      "excludes": "Independent model audit and afterlife semantics.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcSkillClaimTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillClaimTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-skill-template-guidance",
       "responsibility": "#1533 T106 actual full-daemon rendering of exact case/Unicode skill identity and bounded indexed repair guidance, plus the existing multi-actor/ambiguity worked example.",
       "excludes": "Runtime skill validation, ownership/save-load rules, other daemon routes, provider dispatch and Windows PowerShell 5.1 qualification. Linux verification uses installed PowerShell 7; the same render test retains the Windows shell on Windows.",
