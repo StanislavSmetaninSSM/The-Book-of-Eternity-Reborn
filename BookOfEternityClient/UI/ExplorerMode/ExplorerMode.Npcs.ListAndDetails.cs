@@ -46,7 +46,6 @@ private async Task ShowNPCs()
             await EffectMechanicsSnapshot.LoadAsync(_fs),
             Realm: "mortal_world",
             TargetKind: "npc"));
-        var npcSkillDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_skills.json");
 
         var debugMode = _stateManager.Settings.AllowHistoryManipulation;
 
@@ -79,7 +78,7 @@ private async Task ShowNPCs()
             var selIdx = choices.IndexOf(selected);
             if (selIdx < 0 || selIdx >= npcs.Count) break;
 
-            await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffectProjection, npcSkillDoc,
+            await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffectProjection, null,
                 debugMode, persDoc, jourDoc, npcInteractionDoc, maskDoc, memDoc, fateDoc, customDoc);
         }
     }
@@ -801,6 +800,8 @@ private async Task ShowNPCs()
         var coreProps = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name", "NPCName", "npcName", "NPCId", "npcId", "id", "initialId", "shortDescription", "description",
             "appearance", "currentLocation", "relationshipLevel", "race", "role", "occupation", "status",
             "lastInteraction", "progressionType", "level", "experience", "experienceForNextLevel",
+            "source", "sessionId", "requestId", "turnNumber", "snapshotToken", "snapshotHash",
+            "receipt", "receiptId", "progressionReceipt", "progressionReceipts", "transitionId",
             "playerCompanionDirective", "image_prompt", "currentHealthPercentage", "maxHealthPercentage",
             "appearanceDescription", "raceDescription", "classDescription", "history", "worldview",
             "attitude", "culturalLayer", "culturalStance", "personalityArchetype", "personalityTraits",
@@ -857,8 +858,8 @@ private async Task ShowNPCs()
         // ── Эффекты (npc_effects) ──
         RenderNpcEffects(lines, effectProjection, npcId);
 
-        // ── Навыки (npc_skills) ──
-        RenderNpcSkills(lines, skillDoc, npcId, originalName, debugMode);
+        // ── Принятые навыки из канонического NPC ──
+        RenderNpcSkills(lines, npc, npcId, originalName, debugMode);
 
         // ── Черты характера (npc_personality) ──
         RenderNpcPersonality(lines, persDoc, npcId, originalName, debugMode);
@@ -904,7 +905,6 @@ private async Task ShowNPCs()
                 Activities: ToJsonNode(actDoc),
                 Inventory: ToJsonNode(invDoc),
                 Effects: effectProjection,
-                Skills: ToJsonNode(skillDoc),
                 Personality: ToJsonNode(persDoc),
                 Journals: ToJsonNode(jourDoc),
                 InteractionJournal: ToJsonNode(npcInteractionDoc),
@@ -1392,105 +1392,31 @@ private async Task ShowNPCs()
     }
 
 
-    internal static NpcSkillDisplay BuildNpcSkillDisplay(JsonDocument doc, string npcId, string npcName)
+    internal static NpcSkillDisplay BuildNpcSkillDisplay(JsonDocument doc, string npcId, string npcName) =>
+        BuildNpcSkillDisplay(doc.RootElement, npcId, npcName);
+
+    private static NpcSkillDisplay BuildNpcSkillDisplay(JsonElement actor, string npcId, string npcName)
     {
         var display = new NpcSkillDisplay();
-        if (doc.RootElement.ValueKind != JsonValueKind.Object) return display;
-
-        var active = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.Ordinal);
-        var passive = new Dictionary<string, NpcSkillDisplayEntry>(StringComparer.Ordinal);
-
-        PopulateNpcSkillChanges(doc.RootElement, "NPCActiveSkillChanges", active, npcId, npcName);
-        PopulateNpcSkillChanges(doc.RootElement, "NPCPassiveSkillChanges", passive, npcId, npcName);
-        ApplyNpcSkillMastery(doc.RootElement, "NPCSkillMasteryChanges", active, npcId, npcName);
-        ApplyNpcSkillMastery(doc.RootElement, "NPCPassiveSkillMasteryChanges", passive, npcId, npcName);
-
-        foreach (var item in active.Values.OrderBy(v => GetNodeStr(v.Data, "skillName", GetNodeStr(v.Data, "name", "")), StringComparer.OrdinalIgnoreCase))
-            display.Active.Add(item);
-        foreach (var item in passive.Values.OrderBy(v => GetNodeStr(v.Data, "skillName", GetNodeStr(v.Data, "name", "")), StringComparer.OrdinalIgnoreCase))
-            display.Passive.Add(item);
-
+        if (actor.ValueKind != JsonValueKind.Object) return display;
+        var actorId = GetPrimaryNpcId(actor);
+        // A concrete ID cannot be overridden by a coincidentally equal display name.
+        if (!string.IsNullOrWhiteSpace(actorId) && !string.IsNullOrWhiteSpace(npcId)
+            ? !string.Equals(actorId, npcId, StringComparison.OrdinalIgnoreCase)
+            : !MatchesNpcEntry(actor, npcId, npcName)) return display;
+        var projection = MortalNpcAcceptedMechanicsProjection.Build(CloneJsonObject(actor));
+        foreach (var skill in projection.Active) display.Active.Add(Adapt(skill));
+        foreach (var skill in projection.Passive) display.Passive.Add(Adapt(skill));
         return display;
-    }
 
-
-    private static void PopulateNpcSkillChanges(JsonElement root, string propertyName,
-        Dictionary<string, NpcSkillDisplayEntry> target, string npcId, string npcName)
-    {
-        if (!root.TryGetProperty(propertyName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-            return;
-
-        foreach (var entry in arr.EnumerateArray())
+        static NpcSkillDisplayEntry Adapt(MortalNpcAcceptedSkillProjection skill) => new()
         {
-            if (!MatchesNpcEntry(entry, npcId, npcName))
-                continue;
-
-            if (entry.TryGetProperty("skillChanges", out var changes) && changes.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var skill in changes.EnumerateArray())
-                {
-                    var skillName = GetStr(skill, "skillName", GetStr(skill, "name", ""));
-                    if (string.IsNullOrWhiteSpace(skillName))
-                        continue;
-
-                    target[skillName] = new NpcSkillDisplayEntry
-                    {
-                        Data = CloneJsonObject(skill)
-                    };
-                }
-            }
-
-            if (entry.TryGetProperty("skillsToRemove", out var removals) && removals.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var skillName in removals.EnumerateArray()
-                    .Where(v => v.ValueKind == JsonValueKind.String)
-                    .Select(v => v.GetString())
-                    .Where(v => !string.IsNullOrWhiteSpace(v)))
-                {
-                    target.Remove(skillName!);
-                }
-            }
-        }
-    }
-
-
-    private static void ApplyNpcSkillMastery(JsonElement root, string propertyName,
-        Dictionary<string, NpcSkillDisplayEntry> target, string npcId, string npcName)
-    {
-        if (!root.TryGetProperty(propertyName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-            return;
-
-        foreach (var entry in arr.EnumerateArray())
-        {
-            if (!MatchesNpcEntry(entry, npcId, npcName))
-                continue;
-
-            var skillName = GetStr(entry, "skillName", "");
-            if (string.IsNullOrWhiteSpace(skillName))
-                continue;
-
-            if (!target.TryGetValue(skillName, out var skill))
-            {
-                var placeholder = new JsonObject
-                {
-                    ["skillName"] = skillName
-                };
-                skill = new NpcSkillDisplayEntry { Data = placeholder };
-                target[skillName] = skill;
-            }
-
-            var mastery = GetInt(entry, "newMasteryLevel", int.MinValue);
-            if (mastery != int.MinValue) skill.MasteryLevel = mastery;
-
-            var progress = GetInt(entry, "newCurrentMasteryProgress", int.MinValue);
-            if (progress != int.MinValue) skill.CurrentMasteryProgress = progress;
-
-            var needed = GetInt(entry, "newMasteryProgressNeeded", int.MinValue);
-            if (needed != int.MinValue) skill.MasteryProgressNeeded = needed;
-
-            var maxLevel = GetInt(entry, "newMaxMasteryLevel", int.MinValue);
-            if (maxLevel != int.MinValue) skill.MaxMasteryLevel = maxLevel;
-        }
+            Data = skill.Data,
+            MasteryLevel = skill.MasteryLevel,
+            CurrentMasteryProgress = skill.CurrentMasteryProgress,
+            MasteryProgressNeeded = skill.MasteryProgressNeeded,
+            MaxMasteryLevel = skill.MaxMasteryLevel
+        };
     }
 
 

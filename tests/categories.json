@@ -2,6 +2,50 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-publication",
+      "responsibility": "#1538 genuine NoPlan skill-only/combined core-sidecar materialization, late rollback and output agreement.",
+      "excludes": "No whole-feature qualification; only named #1538 bounded contract.",
+      "changeHints": [],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillPublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-skill-candidate-request-authority",
+      "responsibility": "#1538 raw dedicated trade/training authority forwarding and unapproved mutation refusal.",
+      "excludes": "No whole-feature qualification; only named #1538 bounded contract.",
+      "changeHints": [],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcAcceptedSkillCandidateAuthorityTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-accepted-mechanics-display",
       "responsibility": "#1538 accepted canonical NPC skill mastery and XP projection after pending sidecar consumption, without private fields.",
       "excludes": "No sidecar command admission, physical publication, real interactive client or spiritual UI qualification.",
@@ -22,6 +66,13 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalNpcAcceptedMechanicsDisplayTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.ShowNpcDetailPanel_AcceptedSkillsWithoutSidecar_HidesPrivateMechanics",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_AcceptedNpcMechanics_IgnoresPendingSidecarAndPrivateFields"
           ]
         }
       ]

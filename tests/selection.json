@@ -2,6 +2,27 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-skill-publication",
+      "reason": "Bounded #1538 integration causal gate.",
+      "contracts": [
+        "Core and sidecar atomic publication and current output agreement."
+      ]
+    },
+    {
+      "category": "mortal-npc-skill-candidate-request-authority",
+      "reason": "Bounded #1538 integration causal gate.",
+      "contracts": [
+        "Preserve existing exact request-bound authority."
+      ]
+    },
+    {
+      "category": "mortal-skill-ui-exact-mastery-unit",
+      "reason": "Bounded #1538 integration causal gate.",
+      "contracts": [
+        "Canonical accepted identity/kind visibility without sidecar fallback."
+      ]
+    },
+    {
       "category": "mortal-npc-accepted-mechanics-display",
       "reason": "#1538 canonical accepted mechanics must survive sidecar consumption in existing console/shared projections.",
       "contracts": [

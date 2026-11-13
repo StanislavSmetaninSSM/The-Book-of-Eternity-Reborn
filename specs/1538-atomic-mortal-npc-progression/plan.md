@@ -350,3 +350,25 @@ private sentinels must not reach public output. Four cases are authored, UNRUN;
 no UI implementation yet. No documented draft-preview mode was found. The new
 projection will read accepted canonical mechanics rather than retain a legacy
 sidecar-as-state fallback; existing exact identity/kind coverage will be retained.
+
+### P2 integration causal gate / FR8 implementation WIP
+
+At cd46b480 the isolated mastery rerun passed30/30 in8.617s; test-only build
+18.56s,0errors/33warnings, runtime/TestSupport bytes unchanged. UI causal4/4
+failed exactly empty canonical console skills and missing shared mastery,
+8.683s,complete cleanup. Catalog1686/14040 passed discovery only.
+
+FR8 now projects public accepted canonical actor mechanics through one detached
+allowlist, eliminating display reads of pending npc_skills. Existing exact-kind
+identity tests are migrated to canonical outcomes; new console/browser surface
+controls are authored. These changes are UNRUN. No new cache is warranted:
+already-loaded actor DATA is reused and obsolete sidecar reads disappear.
+
+Six new cheap dedicated-request tests isolate candidate authority forwarding;
+the optional parameter is deliberately not forwarded until causal RED. Four
+small genuine NoPlan coordinator tests cover skill-only and combined publication,
+late failure rollback and valid-shaped output tampering. Existing signed snapshot
+fixture is parameterized, not duplicated. Runtime publication integration is not
+yet implemented; these are RED-ready, not accepted results. All tests use existing
+owners/hooks and no hosted CI. Next: build frozen block, run the two new causal
+categories separately, then implement ordinary admission/publication integration.

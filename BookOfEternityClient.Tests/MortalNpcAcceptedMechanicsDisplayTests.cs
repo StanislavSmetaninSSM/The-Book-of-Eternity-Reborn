@@ -19,6 +19,9 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
         var display = ExplorerMode.BuildNpcSkillDisplay(document, "npc_accepted", "Accepted NPC");
         var skill = Assert.Single(passive ? display.Passive : display.Active);
         Assert.Equal("Fireball", skill.Data["skillName"]!.GetValue<string>());
+        Assert.Equal(2, skill.Data["cooldownTurns"]!.GetValue<int>());
+        Assert.Equal(1, skill.Data["actionCost"]!.GetValue<int>());
+        Assert.Equal(2.5m, skill.Data["energyCost"]!.GetValue<decimal>());
         Assert.Equal(7, skill.MasteryLevel);
         Assert.Equal(23, skill.CurrentMasteryProgress);
         Assert.Equal(91, skill.MasteryProgressNeeded);
@@ -48,6 +51,24 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
         Assert.Equal(before, actor.ToJsonString());
     }
 
+    [Fact]
+    public void AcceptedProjection_SameNameAcrossKindsAndRejectedSidecarStaySeparate()
+    {
+        var actor = Actor(false);
+        actor["passiveSkills"] = Actor(true)["passiveSkills"]!.DeepClone();
+        actor["passiveSkills"]![0]!["masteryLevel"] = 3;
+        var projected = MortalNpcAcceptedMechanicsProjection.Build(actor);
+        Assert.Equal(7, Assert.Single(projected.Active).MasteryLevel);
+        Assert.Equal(3, Assert.Single(projected.Passive).MasteryLevel);
+        var sidecar = JsonNode.Parse("""
+            {"NPCActiveSkillChanges":[{"NPCId":"npc_accepted","skillChanges":[{"skillName":"UNACCEPTED_SKILL"}]}]}
+            """);
+        var display = NpcDetailSectionProjection.Build(actor, new NpcDetailSectionDocuments(Skills: sidecar));
+        Assert.DoesNotContain("UNACCEPTED_SKILL", JsonSerializer.Serialize(display), StringComparison.Ordinal);
+        using var doc = JsonDocument.Parse(actor.ToJsonString());
+        Assert.True(ExplorerMode.BuildNpcSkillDisplay(doc, "another_owner", "Accepted NPC").IsEmpty);
+    }
+
     private static JsonObject Actor(bool passive)
     {
         var actor = JsonNode.Parse("""
@@ -56,7 +77,7 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
              "progressionReceipt":{"receiptId":"PRIVATE_SENTINEL_receipt"}}
             """)!.AsObject();
         actor[passive ? "passiveSkills" : "activeSkills"] = JsonNode.Parse("""
-            [{"skillName":"Fireball","description":"A bright controlled flame","type":"Combat","cooldown":2,
+            [{"skillName":"Fireball","description":"A bright controlled flame","type":"Combat","cooldownTurns":2,"actionCost":1,"energyCost":2.5,
               "masteryLevel":7,"currentMasteryProgress":23,"masteryProgressNeeded":91,"maxMasteryLevel":12,
               "source":{"sessionId":"PRIVATE_SENTINEL_skill_session"},"requestId":"PRIVATE_SENTINEL_skill_request",
               "receipt":"PRIVATE_SENTINEL_skill_receipt"}]

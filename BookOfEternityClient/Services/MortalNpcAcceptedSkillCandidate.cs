@@ -29,7 +29,8 @@ internal static class MortalNpcAcceptedSkillCandidate
         JsonObject originalSidecar,
         JsonObject currentCore,
         JsonObject currentSidecar,
-        NpcCoreChangesContract.Authority authority)
+        NpcCoreChangesContract.Authority authority,
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(originalCore);
         ArgumentNullException.ThrowIfNull(originalSidecar);

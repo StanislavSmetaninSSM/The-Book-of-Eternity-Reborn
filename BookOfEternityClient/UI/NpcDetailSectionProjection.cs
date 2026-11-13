@@ -277,8 +277,44 @@ internal static class NpcDetailSectionProjection
         var rows = new List<UiTableRow>();
         var categories = new List<string>();
 
-        AddNamedArrayRows(rows, categories, "Активный навык", npc["activeSkills"], "Навыки");
-        AddNamedArrayRows(rows, categories, "Пассивный навык", npc["passiveSkills"], "Навыки");
+        var mechanics = MortalNpcAcceptedMechanicsProjection.Build(npc);
+        if (mechanics.Level is { } level)
+        {
+            var progress = $"Уровень: {level}";
+            if (mechanics.Experience is { } xp && mechanics.ExperienceForNextLevel is { } threshold)
+                progress += $"; Опыт: {xp}/{threshold}";
+            rows.Add(new UiTableRow { Cells = ["Развитие", progress] });
+            AddCategory(categories, "развитие");
+        }
+        AddAcceptedSkills(mechanics.Active, "Активный навык");
+        AddAcceptedSkills(mechanics.Passive, "Пассивный навык");
+
+        void AddAcceptedSkills(IReadOnlyList<MortalNpcAcceptedSkillProjection> skills, string kind)
+        {
+            foreach (var skill in skills)
+            {
+                var details = new List<string>();
+                foreach (var field in new[] { "skillName", "skillDescription", "description", "type", "category", "rarity", "cooldownTurns", "actionCost", "energyCost", "timeCost" })
+                {
+                    var value = MortalNpcAcceptedMechanicsProjection.Text(skill.Data, field);
+                    if (!string.IsNullOrWhiteSpace(value))
+                        details.Add(field switch
+                        {
+                            "cooldownTurns" => $"Перезарядка: {value}",
+                            "actionCost" => $"Стоимость действия: {value}",
+                            "energyCost" => $"Энергия: {value}",
+                            "timeCost" => $"Время: {value}",
+                            _ => value
+                        });
+                }
+                if (skill.MasteryLevel is { } mastery) details.Add($"Мастерство: {mastery}");
+                if (skill.CurrentMasteryProgress is { } progress && skill.MasteryProgressNeeded is { } needed)
+                    details.Add($"Прогресс мастерства: {progress}/{needed}");
+                if (skill.MaxMasteryLevel is { } maximum) details.Add($"Максимум мастерства: {maximum}");
+                rows.Add(new UiTableRow { Cells = [kind, string.Join("; ", details)] });
+                AddCategory(categories, "Навыки");
+            }
+        }
         var inventory = npc["inventory"] as JsonArray;
         var projectedInventory = ProjectNpcInventoryForPlayer(inventory);
         AddNamedArrayRows(
@@ -318,11 +354,6 @@ internal static class NpcDetailSectionProjection
                 AddCategory(categories, "снаряжение");
         }
 
-        foreach (var entry in CollectMatchingObjects(documents.Skills, npcId, npcName))
-        {
-            rows.Add(new UiTableRow { Cells = ["Навык", DescribeNodeValue(entry)] });
-            AddCategory(categories, "Навыки");
-        }
         if (documents.Effects is { IsAvailable: false } unavailableEffects)
         {
             rows.Add(new UiTableRow { Cells = ["Эффекты", unavailableEffects.StatusMessage] });

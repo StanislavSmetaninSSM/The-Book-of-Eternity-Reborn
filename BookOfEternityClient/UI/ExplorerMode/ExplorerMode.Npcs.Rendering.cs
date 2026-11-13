@@ -403,10 +403,9 @@ public partial class ExplorerMode
     }
 
 
-    private void RenderNpcSkills(List<string> lines, JsonDocument? doc, string npcId, string npcName, bool debugMode)
+    private void RenderNpcSkills(List<string> lines, JsonElement actor, string npcId, string npcName, bool debugMode)
     {
-        if (doc == null) return;
-        var display = BuildNpcSkillDisplay(doc, npcId, npcName);
+        var display = BuildNpcSkillDisplay(actor, npcId, npcName);
         if (display.IsEmpty) return;
 
         if (display.Active.Count > 0)
@@ -430,7 +429,7 @@ public partial class ExplorerMode
     {
         var name = GetNodeStr(skill.Data, "skillName", GetNodeStr(skill.Data, "name", "?"));
         var type = GetNodeStr(skill.Data, "type", "");
-        var cooldown = GetNodeStr(skill.Data, "cooldown", "");
+        var cooldown = GetNodeStr(skill.Data, "cooldownTurns", GetNodeStr(skill.Data, "cooldown", ""));
         var description = GetNodeStr(skill.Data, "skillDescription", GetNodeStr(skill.Data, "description", ""));
 
         var line = $"    • [{color}]{Markup.Escape(name)}[/]";
@@ -455,9 +454,18 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(description))
             lines.Add($"      [dim]{Markup.Escape(description)}[/]");
 
+        foreach (var (field, label) in new[] { ("actionCost", "Стоимость действия"), ("energyCost", "Энергия"),
+                     ("timeCost", "Время"), ("category", "Категория"), ("rarity", "Редкость") })
+        {
+            var value = MortalNpcAcceptedMechanicsProjection.Text(skill.Data, field);
+            if (!string.IsNullOrWhiteSpace(value))
+                lines.Add($"      [dim]{label}: {Markup.Escape(value)}[/]");
+        }
+
+
         if (debugMode)
             RenderExtraFields(lines, JsonObjectToElement(skill.Data), new[] { "skillName", "name",
-                "skillDescription", "description", "type", "cooldown" }, "      ");
+                "skillDescription", "description", "type", "cooldown", "cooldownTurns", "actionCost", "energyCost", "timeCost", "category", "rarity" }, "      ");
     }
 
     // ── Personality (npc_personality.json) — visible to player ──

@@ -40,17 +40,13 @@ public sealed class NpcSkillDisplayIdentityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void CaseOnlyRemoval_DoesNotRemoveAnotherExactSkill(bool passive)
+    public void AcceptedCaseOnlyRemoval_RetainsOtherExactSkill(bool passive)
     {
         var root = CreateRoot(passive,
             new JsonArray(new JsonObject { ["skillName"] = "fireball" }),
             new JsonArray());
-        var changes = root[passive ? "NPCPassiveSkillChanges" : "NPCActiveSkillChanges"]!.AsArray();
-        changes.Add(new JsonObject
-        {
-            ["NPCId"] = "npc_owner",
-            ["skillsToRemove"] = new JsonArray("Fireball")
-        });
+        // Canonical end-state after the owner removed Fireball: the exact-case sibling remains.
+        // Command reduction/removal is covered by the pure composer, not replayed by the UI.
         using var doc = JsonDocument.Parse(root.ToJsonString());
 
         var display = ExplorerMode.BuildNpcSkillDisplay(doc, "npc_owner", "Owner");
@@ -62,7 +58,7 @@ public sealed class NpcSkillDisplayIdentityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void ActorMatchingAndExactRemoval_RemainUnchanged(bool passive)
+    public void AcceptedActorMatchingAndEmptyCatalog_RemainExact(bool passive)
     {
         var root = CreateRoot(passive,
             new JsonArray(new JsonObject { ["skillName"] = "Fireball" }),
@@ -76,13 +72,7 @@ public sealed class NpcSkillDisplayIdentityTests
             Assert.True(ExplorerMode.BuildNpcSkillDisplay(doc, "npc_other", "Other").IsEmpty);
         }
 
-        root[passive ? "NPCPassiveSkillMasteryChanges" : "NPCSkillMasteryChanges"] = new JsonArray();
-        root[passive ? "NPCPassiveSkillChanges" : "NPCActiveSkillChanges"]!.AsArray().Add(
-            new JsonObject
-            {
-                ["NPCId"] = "npc_owner",
-                ["skillsToRemove"] = new JsonArray("Fireball")
-            });
+        root[passive ? "passiveSkills" : "activeSkills"] = new JsonArray();
         using var removed = JsonDocument.Parse(root.ToJsonString());
         Assert.True(ExplorerMode.BuildNpcSkillDisplay(removed, "npc_owner", "Owner").IsEmpty);
     }
@@ -91,14 +81,24 @@ public sealed class NpcSkillDisplayIdentityTests
     {
         ["NPCId"] = "npc_owner",
         ["skillName"] = name,
-        ["newMasteryLevel"] = level,
-        ["newCurrentMasteryProgress"] = progress
+        ["masteryLevel"] = level,
+        ["currentMasteryProgress"] = progress
     };
 
-    private static JsonObject CreateRoot(bool passive, JsonArray skills, JsonArray mastery) => new()
+    private static JsonObject CreateRoot(bool passive, JsonArray skills, JsonArray mastery)
     {
-        [passive ? "NPCPassiveSkillChanges" : "NPCActiveSkillChanges"] = new JsonArray(
-            new JsonObject { ["NPCId"] = "npc_owner", ["skillChanges"] = skills }),
-        [passive ? "NPCPassiveSkillMasteryChanges" : "NPCSkillMasteryChanges"] = mastery
-    };
+        foreach (var skill in skills.OfType<JsonObject>())
+        {
+            var accepted = mastery.OfType<JsonObject>().SingleOrDefault(row =>
+                row["skillName"]!.GetValue<string>() == skill["skillName"]!.GetValue<string>());
+            if (accepted is null) continue;
+            skill["masteryLevel"] = accepted["masteryLevel"]!.DeepClone();
+            skill["currentMasteryProgress"] = accepted["currentMasteryProgress"]!.DeepClone();
+        }
+        return new JsonObject
+        {
+            ["NPCId"] = "npc_owner", ["name"] = "Owner",
+            [passive ? "passiveSkills" : "activeSkills"] = skills
+        };
+    }
 }

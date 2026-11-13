@@ -1192,7 +1192,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
             await EffectMechanicsSnapshot.LoadAsync(fs),
             Realm: "mortal_world",
             TargetKind: "npc"));
-        reads["game_state/npcs/npc_skills.json"] = await ReadJson(fs, "game_state/npcs/npc_skills.json");
         reads["game_state/npcs/npc_personality.json"] = await ReadJson(fs, "game_state/npcs/npc_personality.json");
         reads["game_state/npcs/npc_journals.json"] = await ReadJson(fs, "game_state/npcs/npc_journals.json");
         reads[NpcInteractionJournalState.StatePath] = await ReadJson(fs, NpcInteractionJournalState.StatePath);
@@ -1225,7 +1224,6 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 Activities: reads["game_state/npcs/npc_activities.json"].Node,
                 Inventory: reads["game_state/npcs/npc_inventory.json"].Node,
                 Effects: npcEffectProjection,
-                Skills: reads["game_state/npcs/npc_skills.json"].Node,
                 Personality: reads["game_state/npcs/npc_personality.json"].Node,
                 Journals: reads["game_state/npcs/npc_journals.json"].Node,
                 InteractionJournal: reads[NpcInteractionJournalState.StatePath].Node,

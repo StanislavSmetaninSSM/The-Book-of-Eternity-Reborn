@@ -240,7 +240,7 @@ public sealed class MortalNpcProgressionPublicationTests
         await fixture.AssertCanonicalUnchanged(before);
     }
 
-    private sealed class Fixture : IDisposable
+    internal sealed class Fixture : IDisposable
     {
         private readonly string _root = Path.Combine(
             Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT") ?? Path.GetTempPath(),
@@ -259,7 +259,7 @@ public sealed class MortalNpcProgressionPublicationTests
             Normalizer = new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance);
         }
 
-        internal static async Task<Fixture> Create(string realm = "Mortal World")
+        internal static async Task<Fixture> Create(string realm = "Mortal World", bool includeSkillSidecar = false, bool progression = true)
         {
             var fixture = new Fixture();
             try
@@ -268,12 +268,18 @@ public sealed class MortalNpcProgressionPublicationTests
                     {"NPCsInScene":[{"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
                       "progressionProfile":{"schemaVersion":1,"mode":"standard"}}]}
                     """)!.AsObject();
+                if (includeSkillSidecar)
+                {
+                    before["NPCsInScene"]![0]!["activeSkills"] = new JsonArray();
+                    before["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray();
+                }
                 var current = before.DeepClone().AsObject();
                 current["NPCCoreChanges"] = JsonNode.Parse("""
                     [{"NPCId":"npc_source","reason":"Earned two XP","progression":{
                       "source":{"sessionId":"session_source","requestId":"request_source","turnNumber":42},
                       "experienceDelta":2,"level":2,"experience":1,"experienceForNextLevel":565}}]
                     """);
+                if (!progression) current.Remove("NPCCoreChanges");
                 const string path = NpcCoreChangesContract.NpcCorePath;
                 var snapshotPath = "game_state/control/pending_turn_snapshot/" + path;
                 await fixture.Files.WriteFileAtomicAsync(path, current.ToJsonString());
@@ -301,6 +307,18 @@ public sealed class MortalNpcProgressionPublicationTests
                     ["rollbackBaselineFiles"] = new JsonArray(path), ["sourceLabel"] = "NPC source binding test",
                     ["manifestPayloadHash"] = ""
                 };
+                if (includeSkillSidecar)
+                {
+                    const string skills = "game_state/npcs/npc_skills.json";
+                    const string originalSkills = "game_state/control/pending_turn_snapshot/" + skills;
+                    const string empty = "{\"NPCActiveSkillChanges\":[],\"NPCPassiveSkillChanges\":[],\"NPCSkillMasteryChanges\":[],\"NPCPassiveSkillMasteryChanges\":[]}";
+                    await fixture.Files.WriteFileAtomicAsync(skills, empty);
+                    await fixture.Files.WriteFileAtomicAsync(originalSkills, empty);
+                    fixture.Backups[skills] = originalSkills;
+                    manifest["files"]![skills] = originalSkills;
+                    manifest["snapshotFileHashes"]![skills] = PendingTurnSnapshotAuthority.ComputeSha256(empty);
+                    manifest["rollbackBaselineFiles"]!.AsArray().Add(skills);
+                }
                 manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
                 await fixture.Files.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
                 await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fixture.Files);
