@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-combined-publication",
+      "responsibility": "#1538 real raw validation and publication of two-level gain with matching pending skill award.",
+      "excludes": "No common effect/item/location publication or replay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionPublicationTests.Combined.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.RawValidationAndCoordinator_TwoLevelGainWithMatchingSkillAwardPublishesCombinedCandidate"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-world-policy-freshness",
       "responsibility": "#1538 real core-only publication refuses malformed world policy and late policy-input drift with canonical rollback.",
       "excludes": "No skill-backed common publication or unrelated lore-field freshness qualification.",
