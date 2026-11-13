@@ -49,6 +49,8 @@ public partial class CanonicalStateNormalizer
             return;
         var authority = resourcePublication?.NpcCoreAuthority ??
                         await ReadNpcCoreAuthorityAsync();
+        if (NpcCoreChangesContract.HasProgressionCommand(currentRoot))
+            _npcProgressionSource!.RequirePolicyAuthority(authority);
         if (authority.ProgressionSource is not null && authority.ProgressionSource != progressionSource)
             throw new InvalidDataException("NPC progression source differs from the sealed item publication baseline.");
         authority = authority with { ProgressionSource = progressionSource };
@@ -82,7 +84,8 @@ public partial class CanonicalStateNormalizer
     /// <summary>Refuses missing or stale progression source before any accumulated-state transform writes.</summary>
     private async Task PreflightNpcProgressionSourceAsync(
         NpcCoreChangesContract.ProgressionSourceContext? source,
-        IReadOnlyDictionary<string, string>? backups)
+        IReadOnlyDictionary<string, string>? backups,
+        AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         var sidecar = await ReadNodeAsync(MortalNpcAcceptedSkillInput.SidecarPath) as JsonObject;
         if (_npcProgressionSource?.SkillInput is not null ||
@@ -104,6 +107,13 @@ public partial class CanonicalStateNormalizer
         if (_npcProgressionSource is null)
             throw new InvalidDataException("NPC progression publication requires its authenticated original source.");
         _npcProgressionSource.RequireBaseline(await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups));
+        if (acceptedMechanicsPlan?.TreatmentResourcePublicationAuthority is { } retainedPublication)
+        {
+            if (!retainedPublication.HasValidSeal())
+                throw new InvalidDataException("Treatment NPC-core baseline authority changed before normalization.");
+            // Compare sealed reduction authority A to issued source B before any normalizer writes.
+            _npcProgressionSource.RequirePolicyAuthority(retainedPublication.NpcCoreAuthority);
+        }
     }
 
     private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()

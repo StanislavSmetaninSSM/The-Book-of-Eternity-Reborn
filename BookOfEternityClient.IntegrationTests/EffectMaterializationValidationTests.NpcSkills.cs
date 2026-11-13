@@ -135,7 +135,8 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 
-    private static async Task PrepareNpcSkillGrant(EffectMaterializationTestContext context, bool originalSidecarAbsent = false)
+    private static async Task PrepareNpcSkillGrant(EffectMaterializationTestContext context, bool originalSidecarAbsent = false,
+        bool includeProgressionAward = false)
     {
         // Reuse the production-supported complete effect-source skill fixture, then move
         // its detached profile into a pending NPC grant, not another canonical source.
@@ -145,7 +146,20 @@ public sealed partial class EffectMaterializationValidationTests
         AddNpcMastery(skill);
         await context.WriteJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath,
             new JsonObject { ["activeSkillChanges"] = new JsonArray(), ["removeActiveSkills"] = new JsonArray() });
-        await context.WriteJsonAsync(NpcSkillCorePath, MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner));
+        var core = MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
+        if (includeProgressionAward)
+        {
+            var actor = core["NPCsInScene"]![0]!;
+            actor["level"] = 1;
+            actor["experience"] = 99;
+            actor["experienceForNextLevel"] = 100;
+            actor["progressionProfile"] = JsonNode.Parse("""
+                {"schemaVersion":1,"mode":"standard","consequences":{
+                  "skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},
+                  "characteristics":{"mode":"currentWorld"}}}
+                """);
+        }
+        await context.WriteJsonAsync(NpcSkillCorePath, core);
         if (originalSidecarAbsent)
         {
             context.FileSystem.DeleteFile(PendingNpcSkillsPath);
@@ -173,6 +187,32 @@ public sealed partial class EffectMaterializationValidationTests
             ["NPCId"] = NpcSkillOwner, ["skillChanges"] = new JsonArray(skill)
         });
         await context.WriteJsonAsync(PendingNpcSkillsPath, pending);
+        if (includeProgressionAward)
+        {
+            // Author only the bounded current command after the original actor was signed.
+            var request = (await context.ReadJsonAsync("input/turn_request.json"))!.AsObject();
+            core["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = NpcSkillOwner, ["reason"] = "Earn two levels and one governed skill award",
+                ["progression"] = new JsonObject
+                {
+                    ["source"] = new JsonObject
+                    {
+                        ["sessionId"] = request["sessionId"]!.DeepClone(),
+                        ["requestId"] = request["requestId"]!.DeepClone(),
+                        ["turnNumber"] = request["turnNumber"]!.DeepClone()
+                    },
+                    ["experienceDelta"] = 566, ["level"] = 3,
+                    ["experience"] = 0, ["experienceForNextLevel"] = 1558,
+                    ["skillAwards"] = new JsonArray(new JsonObject
+                    {
+                        ["kind"] = "active", ["skillName"] = skill["skillName"]!.DeepClone(),
+                        ["skillId"] = GrantedNpcSkillId, ["award"] = "newSkill"
+                    })
+                }
+            });
+            await context.WriteJsonAsync(NpcSkillCorePath, core);
+        }
         var apply = CreateMaterializableApplyCommand();
         apply["source"]!["sourceId"] = GrantedNpcSkillId;
         await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,

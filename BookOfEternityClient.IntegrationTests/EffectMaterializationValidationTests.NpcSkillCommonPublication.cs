@@ -9,6 +9,87 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class EffectMaterializationValidationTests
 {
     [Fact]
+    public async Task OrdinaryNpcProgressionAndSkillGrant_CommonEffectPublishesCompletedCandidate()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var backups = await PrepareNpcSkillCommonPublicationAsync(context, includeProgressionAward: true);
+        var sourcePaths = backups.Values.Concat(new[]
+        {
+            "game_state/control/pending_turn_snapshot.json", PendingTurnSnapshotAuthority.AuthorityPath,
+            "input/turn_request.json"
+        }).Distinct(StringComparer.Ordinal).ToArray();
+        var sourceBefore = await context.CaptureBytesAsync(sourcePaths);
+        var rawIssues = await context.Validator.ValidateNpcCoreChangesBeforeNormalizationAsync();
+        Assert.True(rawIssues.Count == 0, string.Join(Environment.NewLine,
+            rawIssues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Message}")));
+        // Unlike the skill-only control, this enters NPC core command validation again
+        // inside effect owner export and must reuse the completed candidate there.
+        var admitted = await AdmitNpcSkillCommonPublicationAsync(context);
+        var admittedActor = admitted.EffectPlan!.NpcSkillInput!.CandidateCore["NPCsInScene"]![0]!;
+        Assert.Equal(3, admittedActor["level"]!.GetValue<int>());
+        Assert.Equal(GrantedNpcSkillId, Assert.Single(admittedActor["activeSkills"]!.AsArray())!["skillId"]!.GetValue<string>());
+
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, backups);
+
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        var published = Assert.IsType<AcceptedMechanicsPlan>(result.MechanicsPlan);
+        Assert.Equal(admitted.InputFingerprint, published.InputFingerprint);
+        var core = (await context.ReadJsonAsync(NpcSkillCorePath))!.AsObject();
+        Assert.False(core.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(core["NPCsInScene"]!.AsArray())!;
+        Assert.Equal(3, actor["level"]!.GetValue<int>());
+        Assert.Equal(0, actor["experience"]!.GetValue<int>());
+        Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
+        var skill = Assert.Single(actor["activeSkills"]!.AsArray())!;
+        Assert.Equal(GrantedNpcSkillId, skill["skillId"]!.GetValue<string>());
+        Assert.Equal(1, skill["masteryLevel"]!.GetValue<int>());
+        Assert.Empty((await context.ReadJsonAsync(PendingNpcSkillsPath))!.AsObject());
+        Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
+        var effects = (await context.ReadJsonAsync(EffectMaterializationTestContext.PlayerEffectsPath))!["activeEffects"]!.AsArray();
+        var effect = Assert.Single(effects)!;
+        Assert.Equal(GrantedNpcSkillId, effect["source"]!["sourceId"]!.GetValue<string>());
+        var index = (await context.ReadJsonAsync(EffectMaterializationTestContext.IdentityIndexPath))!["entries"]!.AsArray();
+        Assert.Equal(effect["effectId"]!.GetValue<string>(), Assert.Single(index)!["effectId"]!.GetValue<string>());
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnCanonicalEffectMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal(sourceBefore, await context.CaptureBytesAsync(sourcePaths));
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcSkillGrant_SidecarDriftAfterCommonAdmissionRefusesPublicationWithoutMutation()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var backups = await PrepareNpcSkillCommonPublicationAsync(context);
+        var admitted = await AdmitNpcSkillCommonPublicationAsync(context);
+        var admittedSidecar = admitted.EffectPlan!.NpcSkillInput!.RawSidecar;
+        var changed = (await context.ReadJsonAsync(PendingNpcSkillsPath))!.AsObject();
+        changed["NPCActiveSkillChanges"]![0]!["skillChanges"]![0]!["skillDescription"] =
+            "Changed valid skill description after common admission";
+        Assert.False(JsonNode.DeepEquals(admittedSidecar, changed));
+        await context.WriteJsonAsync(PendingNpcSkillsPath, changed);
+        var paths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(new[]
+        {
+            NpcSkillCorePath, PendingNpcSkillsPath, "output/narrative_response.json",
+            "output/interface_updates.json", "output/debug_logs.json"
+        }).Distinct(StringComparer.Ordinal).ToArray();
+        var before = await context.CaptureBytesAsync(paths);
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+
+        var failure = await Record.ExceptionAsync(async () =>
+        {
+            result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, backups);
+        });
+
+        Assert.True(failure is InvalidDataException || result?.Issues.Any(issue => issue.Severity == IssueSeverity.Error) == true,
+            "A valid but changed raw sidecar must not publish through its previously admitted common plan. " + failure);
+        Assert.Equal(before, await context.CaptureBytesAsync(paths));
+        Assert.Equal(changed.ToJsonString(), (await context.ReadJsonAsync(PendingNpcSkillsPath))!.ToJsonString());
+    }
+
+    [Fact]
     public async Task OrdinaryNpcSkillGrant_Utf16CommonWitnessPublishesWithoutChangingSnapshotEncoding()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
@@ -172,12 +253,12 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     private static async Task<IReadOnlyDictionary<string, string>> PrepareNpcSkillCommonPublicationAsync(
-        EffectMaterializationTestContext context)
+        EffectMaterializationTestContext context, bool includeProgressionAward = false)
     {
         // Existing source fixture, real signed snapshot and empty ordinary item owner.
         // No item/location commands, treatment envelopes or constructed plans are involved.
         await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
-        await PrepareNpcSkillGrant(context);
+        await PrepareNpcSkillGrant(context, includeProgressionAward: includeProgressionAward);
         return await context.ReadPendingSnapshotBackupsAsync();
     }
 

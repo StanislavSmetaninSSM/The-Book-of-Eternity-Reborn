@@ -222,7 +222,12 @@ public partial class ValidationService
         /// <summary>Compares the reducer's retained policy authority with this publication source.</summary>
         internal void RequirePolicyAuthority(NpcCoreChangesContract.Authority actualReductionAuthority)
         {
-            // Compile-only seam for the retained-authority regression; comparison follows causal RED.
+            ArgumentNullException.ThrowIfNull(actualReductionAuthority);
+            if (Context is null || Issues.Count != 0 || _worldPolicyFingerprint is null ||
+                !actualReductionAuthority.NpcCharacteristicPolicy.IsValid ||
+                !string.Equals(_worldPolicyFingerprint,
+                    MortalNpcWorldProgressionPolicy.Fingerprint(actualReductionAuthority), StringComparison.Ordinal))
+                throw new InvalidDataException("NPC progression reduction policy differs from the current-world publication authority.");
         }
 
         /// <summary>Requires the reducer's actual backup to be the authenticated original, before item-only overlays.</summary>

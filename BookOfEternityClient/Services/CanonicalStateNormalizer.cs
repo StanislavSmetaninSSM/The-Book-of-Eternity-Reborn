@@ -460,7 +460,8 @@ public partial class CanonicalStateNormalizer
             await RequireOrdinaryNpcSkillCommonHasNoItemOrLocationWorkAsync(mortalItemMode);
         }
         // This check precedes every normalizer mutation, including generic NoPlan calls.
-        await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups);
+        await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups,
+            (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
         var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);
