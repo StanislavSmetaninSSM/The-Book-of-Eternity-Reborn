@@ -35,7 +35,8 @@ public partial class CanonicalStateNormalizer
         RequireOrdinaryNpcSkillCommonPlan(plan);
         if (plan.AwaitsPendingResolution || plan.TreatmentResourcePublicationAuthority is not null ||
             plan.JointRepairCommonAuthority is not null || plan.SpiritualHealingContinuation is not null ||
-            plan.DirectWoundPublicationAuthority is not null || plan.HasWoundStageBundle ||
+            plan.DirectWoundPublicationAuthority is not null ||
+            (plan.HasWoundStageBundle && !plan.HasOrdinaryOriginalTurnWoundStages) ||
             plan.LiveWoundProofFingerprint is not null)
             throw new InvalidDataException("Ordinary NPC skills require an exact completed ordinary common effect plan; specialized or pending publication is unsupported.");
 

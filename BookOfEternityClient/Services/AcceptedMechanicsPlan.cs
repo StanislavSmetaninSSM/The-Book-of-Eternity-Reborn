@@ -369,6 +369,16 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     private readonly WoundPreparedAcceptedTurnPlan _preparedPlan;
     private readonly WoundEffectBatchAcceptedPlan _effectBatchPlan;
     private readonly WoundAcceptedTurnPlan _finalPlan;
+    // Classification of already sealed immutable stages, never publication authority.
+    internal bool IsOrdinaryOriginalTurn =>
+        _preparedPlan.TreatmentContinuationAuthority is null &&
+        _preparedPlan.RecoveryContinuationAuthority is null &&
+        _preparedPlan.JointRepairContinuationAuthority is null &&
+        _preparedPlan.SpiritualHealingContinuationAuthority is null &&
+        _preparedPlan.MortalDiagnosisAuthority is null &&
+        _preparedPlan.CombatHealingAuthority is null &&
+        _preparedPlan.DraftBefore is null;
+
     internal AfterlifeWoundHealingPlanner.Continuation? SpiritualHealingContinuation =>
         _preparedPlan.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
 
@@ -1709,6 +1719,9 @@ internal sealed class AcceptedMechanicsPlan
 
     /// <summary>Tests the sealed stage family without cloning the immutable wound bundle.</summary>
     internal bool HasWoundStageBundle => _woundStageBundle is not null;
+
+    /// <summary>Classifies sealed original-turn stages without cloning or granting authority.</summary>
+    internal bool HasOrdinaryOriginalTurnWoundStages => _woundStageBundle?.IsOrdinaryOriginalTurn == true;
 
     /// <summary>
     /// Gets a detached, fully validated wound bundle when this object contains wound stages.

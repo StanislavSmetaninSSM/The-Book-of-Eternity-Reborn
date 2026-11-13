@@ -1,3 +1,9 @@
+## Ordinary wound causal RED and narrow gate WIP
+
+Retained integration runtime8886febe with test-only rebuild42.12s/0errors120warnings now reaches the ordinary wound-bundle blanket guard: signed player wound + NPC progression/new skill 0/1 PASS,1/1 causalFAIL15.804s. Completed admission already contains both wound stages and exact NPC candidate, no overlapping NPC whole-carrier after-image. The guard now permits only sealed original-turn stages with no treatment/recovery/joint/spiritual/diagnosis/combat-healing continuation and no retained DraftBefore. All live owner/source/raw/overlap guards remain. Classification reads retained immutable references, with no stage clone, new cache or permission. Source review and GREEN remain pending.
+
+Corrected treatment1 remains FAIL22.622s, but actual acceptance gets past raw admission and reaches the specialized transaction. The failure is ordinary NPC common-input enforcement on the treatment-owned final root, not the predicted ordinary MechanicalEnvelope refusal. This establishes the final-root integration gap; do not implement a speculative new intake or weaken exact existing treatment ownership. The existing treatment path already owns item consumption and result composition. Full issue acceptance remains open.
+
 ## Treatment prerequisite correction WIP
 
 Exact source tracing corrects the preceding interpretation: owner_unavailable was secondary to upstream mastery rejection, not established held/generic-path incompatibility. The old skill fixture omitted currentMasteryProgress/masteryProgressNeeded. The test now creates a complete canonical baseline before signed capture, then clones that baseline for the display-only pending skill proposal. It composes through the same real held publication entrypoint without regenerating the obsolete fixture. Production is unchanged. Corrected treatment and the new signed ordinary wound companion are UNRUN on retained integration runtime8886febe.
