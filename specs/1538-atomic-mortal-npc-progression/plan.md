@@ -408,3 +408,21 @@ skill is not retroactive permission for a newly focused binding. Existing small
 EffectMaterializationTestContext is reused; no full engine or diagnostic cache.
 Next combined build runs NoPlan/request controls, UI controls and these expected
 causal effect failures separately. No unchanged whole-suite replay or hosted CI.
+
+At67c8f99e: dedicated request6/6PASS8.485s, real NoPlan publication4/4PASS12.372s,
+UI18/18PASS18.442s across3descriptors, complete cleanup/no skips/duplicates.
+Unit/integration builds61.93s/42.51s,0errors,82/118warnings. UI review fixes were
+accepted statically after correcting renamed selector; these runs verify them.
+Effect gate0/3PASS: grant/mutation lack new NPC source as predicted; focused
+removal hit an unrelated invalid amount parameter first, so it was NOT causal.
+That fixture now uses exact empty focused parameters and proves baseline success
+before removal; rerun pending.
+
+NoPlan independent Astra High review found missing current-world authority
+freshness, a missing-core shortcut that ignored malformed sidecars, and duplicate
+fresh authentication at identical closing boundaries. Four tests now isolate the
+first two before fixes; existing4green bodies unchanged. The late authority test
+removes a world characteristic key after actual combined skill/core publication.
+Same-turn location-owner rewrites also need semantic integration before final
+feature acceptance; exact raw-byte fencing currently refuses them rather than
+silently applying stale DATA. This NoPlan block is not accepted yet.

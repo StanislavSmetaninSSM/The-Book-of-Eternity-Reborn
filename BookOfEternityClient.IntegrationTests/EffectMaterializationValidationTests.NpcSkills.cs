@@ -51,14 +51,22 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(NpcSkillCorePath, core);
         await context.WriteJsonAsync(PendingNpcSkillsPath, EmptyNpcSkillCommands());
         await context.CaptureValidatedPendingSnapshotAsync();
+        var apply = CreateMaterializableApplyCommand("npc");
+        // Focused roll-modifier definition has no amount parameter. Match the existing
+        // CreateFocusedSkillApplyCommand shape while retaining this fixture's source ID.
+        apply["parameters"] = new JsonObject();
+        await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(apply));
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.NotNull(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(context.FileSystem));
+
         var pending = EmptyNpcSkillCommands();
         pending["NPCActiveSkillChanges"] = new JsonArray(new JsonObject
         {
             ["NPCId"] = NpcSkillOwner, ["skillsToRemove"] = new JsonArray("Focused NPC skill")
         });
         await context.WriteJsonAsync(PendingNpcSkillsPath, pending);
-        await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,
-            EffectMaterializationTestFixture.CreateCommandRoot(CreateMaterializableApplyCommand("npc")));
         var before = await context.CaptureBytesAsync(NpcSkillCorePath, PendingNpcSkillsPath,
             EffectMaterializationTestContext.CommandPath, EffectMaterializationTestContext.NpcEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath);

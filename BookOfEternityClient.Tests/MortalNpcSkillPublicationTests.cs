@@ -51,6 +51,78 @@ public sealed class MortalNpcSkillPublicationTests
     [Fact]
     public Task Coordinator_LatePostvalidatorFailureRestoresCoreAndSidecarBytes() => VerifyLateFailure(tamper: false);
 
+    [Fact]
+    public async Task Coordinator_CurrentWorldAuthorityRemovedAfterAdmission_RefusesAndRollsBackSkills()
+    {
+        using var fixture = await Fixture.Create(includeSkillSidecar: true, progression: false);
+        await WritePending(fixture, mastery: false);
+        const string characteristicsPath = "game_state/misc/characteristics.json";
+        await fixture.Files.WriteFileAtomicAsync(characteristicsPath, "{\"ArchiveInsight\":0}");
+        var raw = await Read(fixture, NpcCoreChangesContract.NpcCorePath);
+        Assert.Null(raw["NPCsInScene"]![0]!["characteristics"]);
+        raw["NPCCoreChanges"] = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "npc_source", ["reason"] = "Study the archive",
+            ["characteristicValues"] = new JsonObject { ["ArchiveInsight"] = 2 }
+        });
+        await fixture.Files.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, raw.ToJsonString());
+        await fixture.Files.WriteFileAtomicAsync(ValidationService.CanonicalSkillMasteryPath, "{}");
+        var beforeCore = await fixture.Files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath);
+        var beforeSkills = await fixture.Files.ReadFileBytesAsync(SkillsPath);
+        var injected = false;
+        var files = fixture.CreateFiles(new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (injected || path != ValidationService.CanonicalSkillMasteryPath) return Task.CompletedTask;
+                var core = JsonNode.Parse(File.ReadAllText(fixture.Physical(NpcCoreChangesContract.NpcCorePath)))!;
+                var sidecar = JsonNode.Parse(File.ReadAllText(fixture.Physical(SkillsPath)))!.AsObject();
+                if (core["NPCCoreChanges"] is not null ||
+                    core["NPCsInScene"]![0]!["passiveSkills"] is not JsonArray { Count: 1 } ||
+                    sidecar.ContainsKey("NPCPassiveSkillChanges")) return Task.CompletedTask;
+                Assert.Equal(2, core["NPCsInScene"]![0]!["characteristics"]!["ArchiveInsight"]!.GetValue<int>());
+                injected = true;
+                // This key was authorized only by the current world, never by the original actor.
+                File.WriteAllText(fixture.Physical(characteristicsPath), "{}");
+                return Task.CompletedTask;
+            }
+        });
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+        var error = await Record.ExceptionAsync(async () =>
+        {
+            result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
+                new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
+                new ValidationService(files, NullLogger<ValidationService>.Instance), fixture.Backups);
+        });
+        Assert.True(injected, "Must admit and materialize the world-authorized characteristic and skill before removing authority.");
+        Assert.True(error is InvalidDataException || result?.Issues.Count > 0,
+            "Changed current-world authority must invalidate the retained candidate before success.");
+        Assert.Equal(beforeCore, await fixture.Files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+        Assert.Equal(beforeSkills, await fixture.Files.ReadFileBytesAsync(SkillsPath));
+    }
+
+    [Theory]
+    [InlineData("{")]
+    [InlineData("[]")]
+    [InlineData("null")]
+    public async Task Coordinator_MissingCoreWithMalformedOrNonObjectSkillSidecar_Refuses(string sidecar)
+    {
+        using var fixture = await Fixture.Create(includeSkillSidecar: true, progression: false);
+        File.Delete(fixture.Physical(NpcCoreChangesContract.NpcCorePath));
+        await fixture.Files.WriteFileAtomicAsync(SkillsPath, sidecar);
+        var beforeSkills = await fixture.Files.ReadFileBytesAsync(SkillsPath);
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+        var error = await Record.ExceptionAsync(async () =>
+        {
+            result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+        });
+        Assert.True(error is InvalidDataException || result?.Issues.Count > 0,
+            "Missing core must not bypass malformed or non-object skill command input validation.");
+        Assert.Null(await fixture.Files.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+        Assert.Equal(beforeSkills, await fixture.Files.ReadFileBytesAsync(SkillsPath));
+    }
+
     private static async Task VerifyLateFailure(bool tamper)
     {
         using var fixture = await Fixture.Create(includeSkillSidecar: true);
