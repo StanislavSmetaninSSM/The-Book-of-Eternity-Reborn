@@ -52,7 +52,7 @@ internal static class MortalNpcAcceptedSkillCandidate
         // Direct mutation checks precede any composer-owned changes. Never compare
         // raw authored core to an already patched baseline to excuse a bypass.
         var core = currentCore.DeepClone().AsObject();
-        var coreEvaluation = NpcCoreChangesContract.Evaluate(core, originalCore, authority,
+        var coreEvaluation = NpcCoreChangesContract.EvaluateForSkillComposition(core, originalCore, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true, acceptedTurnAuthority);
         issues.AddRange(coreEvaluation.Issues);
         if (issues.Count != 0) return Refuse(issues);
@@ -80,6 +80,8 @@ internal static class MortalNpcAcceptedSkillCandidate
         issues.AddRange(EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition(
             new Dictionary<string, JsonNode?> { [CorePath] = originalCore },
             new Dictionary<string, JsonNode?> { [CorePath] = composed }));
+        if (issues.Count != 0) return Refuse(issues);
+        issues.AddRange(NpcCoreChangesContract.ValidateFinalConsequences(originalCore, composed, authority, coreEvaluation));
         if (issues.Count != 0) return Refuse(issues);
         var sidecar = currentSidecar.DeepClone().AsObject();
         foreach (var property in PendingProperties) sidecar.Remove(property);

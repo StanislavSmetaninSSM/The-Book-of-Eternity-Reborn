@@ -4,7 +4,7 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-internal static class NpcCoreChangesContract
+internal static partial class NpcCoreChangesContract
 {
     internal const string PropertyName = "NPCCoreChanges";
     internal const string NpcCorePath = "game_state/npcs/npc_core.json";
@@ -190,6 +190,7 @@ internal static class NpcCoreChangesContract
         internal bool HasCommand { get; init; }
         internal List<ValidationIssue> Issues { get; } = [];
         internal List<ChangePlan> Plans { get; } = [];
+        internal Dictionary<string, MortalNpcProgressionConsequences.ProfileConsequences> ConsequenceProfiles { get; } = new(StringComparer.Ordinal);
         internal bool CanApply => HasCommand && Issues.Count == 0 && Plans.Count > 0;
     }
 
@@ -204,7 +205,21 @@ internal static class NpcCoreChangesContract
         Authority authority,
         Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
         bool detectDirectMutations,
-        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null)
+        MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null) =>
+        EvaluateCore(currentRoot, preTurnRoot, authority, validateProductionFateCards, detectDirectMutations,
+            acceptedTurnAuthority, deferFinalConsequences: false);
+
+    internal static Evaluation EvaluateForSkillComposition(
+        JsonObject currentRoot, JsonObject preTurnRoot, Authority authority,
+        Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
+        bool detectDirectMutations, MortalActorAcceptedTurnAuthority? acceptedTurnAuthority = null) =>
+        EvaluateCore(currentRoot, preTurnRoot, authority, validateProductionFateCards, detectDirectMutations,
+            acceptedTurnAuthority, deferFinalConsequences: true);
+
+    private static Evaluation EvaluateCore(
+        JsonObject currentRoot, JsonObject preTurnRoot, Authority authority,
+        Func<JsonArray, string, IReadOnlyList<ValidationIssue>> validateProductionFateCards,
+        bool detectDirectMutations, MortalActorAcceptedTurnAuthority? acceptedTurnAuthority, bool deferFinalConsequences)
     {
         var evaluation = new Evaluation { HasCommand = HasCommandLikeProperty(currentRoot) };
         var currentActors = CollectActors(currentRoot);
@@ -326,6 +341,8 @@ internal static class NpcCoreChangesContract
                     $"{context}.progression",
                     npcId,
                     evaluation.Issues);
+                ValidateConsequencePreflight(progressionNode, baselineActor?.Actor, authority,
+                    $"{context}.progression", npcId, evaluation);
             }
 
             if (command.TryGetPropertyValue("characteristicValues", out var characteristicNode))
@@ -388,6 +405,12 @@ internal static class NpcCoreChangesContract
                 evaluation.Plans.Add(new ChangePlan(npcId, command.DeepClone().AsObject()));
         }
 
+        if (!deferFinalConsequences && evaluation.CanApply)
+        {
+            var candidate = currentRoot.DeepClone().AsObject();
+            Apply(candidate, evaluation);
+            evaluation.Issues.AddRange(ValidateFinalConsequences(preTurnRoot, candidate, authority, evaluation));
+        }
         return evaluation;
     }
 

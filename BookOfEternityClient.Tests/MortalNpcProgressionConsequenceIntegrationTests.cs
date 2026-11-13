@@ -63,7 +63,7 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
     public void CoreOnly_FixedWorldPolicy_AcceptsExactCharacteristicGain()
     {
         var (before, current) = Roots(2);
-        current["NPCCoreChanges"]![0]!["characteristicValues"] = new JsonObject { ["strength"] = 5 };
+        current["NPCCoreChanges"]![0]!["characteristicValues"] = JsonNode.Parse("{\"strength\":5}");
         var result = Evaluate(before, current, Authority(FixedPolicy()));
         Assert.Empty(result.Issues);
         Assert.True(result.CanApply);
@@ -87,6 +87,18 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
         var result = Evaluate(before, current, Authority(new JsonObject { ["npcProgression"] = null }));
         Assert.False(result.CanApply);
         Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_consequence_policy_invalid");
+    }
+
+    [Theory]
+    [InlineData("null")]
+    [InlineData("3")]
+    public void SkillCandidate_PresentNonArrayAwards_RefusesBeforeDeferredFinalGate(string json)
+    {
+        var (before, current) = Roots(2);
+        current["NPCCoreChanges"]![0]!["progression"]!["skillAwards"] = JsonNode.Parse(json);
+        var result = MortalNpcAcceptedSkillCandidate.Compose(before, new(), current, new(), Authority());
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_skill_award_invalid");
     }
 
     private static NpcCoreChangesContract.Evaluation Evaluate(JsonObject before, JsonObject current,
