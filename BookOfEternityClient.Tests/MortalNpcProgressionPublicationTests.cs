@@ -266,7 +266,7 @@ public sealed class MortalNpcProgressionPublicationTests
             {
                 var before = JsonNode.Parse("""
                     {"NPCsInScene":[{"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
-                      "progressionProfile":{"schemaVersion":1,"mode":"standard"}}]}
+                      "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}]}
                     """)!.AsObject();
                 if (includeSkillSidecar)
                 {

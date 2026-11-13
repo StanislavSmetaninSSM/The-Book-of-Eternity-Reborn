@@ -40,8 +40,8 @@ public sealed class MortalNpcProgressionContractTests
         AssertAccepted(Actor(Table(), threshold: 10), Command(delta, level, xp, threshold), level, xp, threshold);
 
     [Theory]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"maxLevel\":2,\"capOverflow\":\"discard\"}", 100)]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[100,200],\"maxLevel\":2,\"capOverflow\":\"discard\"}", 100)]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"maxLevel\":2,\"capOverflow\":\"discard\"}", 100)]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[100,200],\"maxLevel\":2,\"capOverflow\":\"discard\"}", 100)]
     public void Evaluate_ExplicitCapDiscardsRemainder(string profile, int threshold) =>
         AssertAccepted(Actor(Parse(profile), threshold: threshold), Command(1000, 2, 0, 0), 2, 0, 0);
 
@@ -62,7 +62,7 @@ public sealed class MortalNpcProgressionContractTests
 
     [Fact]
     public void Evaluate_ExplicitLossNeverDelevels() =>
-        AssertAccepted(Actor(Parse("""{"schemaVersion":1,"mode":"standard","allowExperienceLoss":true}"""), level: 2, xp: 5, threshold: 565), Command(-5, 2, 0, 565), 2, 0, 565);
+        AssertAccepted(Actor(Parse("""{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"allowExperienceLoss":true}"""), level: 2, xp: 5, threshold: 565), Command(-5, 2, 0, 565), 2, 0, 565);
 
     [Theory]
     [InlineData(false, -1)]
@@ -81,21 +81,21 @@ public sealed class MortalNpcProgressionContractTests
 
     [Theory]
     [InlineData("{}")]
-    [InlineData("{\"mode\":\"standard\"}")]
-    [InlineData("{\"schemaVersion\":2,\"mode\":\"standard\"}")]
+    [InlineData("{\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}}}")]
+    [InlineData("{\"schemaVersion\":2,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}}}")]
     [InlineData("{\"schemaVersion\":1,\"mode\":\"Standard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"formula\":\"100*level\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"allowExperienceLoss\":\"true\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"maxLevel\":0,\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"maxLevel\":2}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"thresholds\":[100]}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"maxLevel\":1000,\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[] ,\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[0],\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[1.5],\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[100],\"maxLevel\":3,\"capOverflow\":\"discard\"}")]
-    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"thresholds\":[100],\"capOverflow\":\"retain\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"formula\":\"100*level\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"allowExperienceLoss\":\"true\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"maxLevel\":0,\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"maxLevel\":2}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[100]}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"standard\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"maxLevel\":1000,\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[] ,\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[0],\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[1.5],\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[100],\"maxLevel\":3,\"capOverflow\":\"discard\"}")]
+    [InlineData("{\"schemaVersion\":1,\"mode\":\"table\",\"consequences\":{\"skills\":{\"levelsPerAward\":2,\"allowedAwards\":[\"newSkill\",\"masteryIncrease\"]},\"characteristics\":{\"mode\":\"currentWorld\"}},\"thresholds\":[100],\"capOverflow\":\"retain\"}")]
     [InlineData("{\"schemaVersion\":1,\"mode\":\"none\",\"allowExperienceLoss\":false}")]
     public void Evaluate_MalformedClosedProfileIsRejected(string json) =>
         Assert.False(MortalNpcProgressionContract.Evaluate(Actor(Parse(json)), Command()).IsValid);
@@ -178,8 +178,8 @@ public sealed class MortalNpcProgressionContractTests
     }
 
     private static JsonObject Parse(string json) => JsonNode.Parse(json)!.AsObject();
-    private static JsonObject Standard() => Parse("""{"schemaVersion":1,"mode":"standard"}""");
-    private static JsonObject Table() => Parse("""{"schemaVersion":1,"mode":"table","thresholds":[10,20],"capOverflow":"discard"}""");
+    private static JsonObject Standard() => Parse("""{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}""");
+    private static JsonObject Table() => Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[10,20],"capOverflow":"discard"}""");
     private static JsonObject Actor(JsonObject? profile = null, int level = 1, int xp = 0, int threshold = 100) => new()
     {
         ["level"] = level, ["experience"] = xp, ["experienceForNextLevel"] = threshold,

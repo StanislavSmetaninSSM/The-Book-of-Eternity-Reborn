@@ -38,7 +38,7 @@ public sealed partial class TrainingServiceTests : IDisposable
         teacher["level"] = 1;
         teacher["experience"] = 0;
         teacher["experienceForNextLevel"] = 100;
-        teacher["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "standard" };
+        teacher["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "standard", ["consequences"] = JsonNode.Parse("""{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}""") };
         var originalHash = TrainingService.ComputeSourceSnapshotHash(teacher);
         teacher["trainingShowcase"]!["sourceActorSnapshotHash"] = originalHash;
         await _fs.WriteFileAtomicAsync(npcPath, root.ToJsonString());
@@ -53,7 +53,7 @@ public sealed partial class TrainingServiceTests : IDisposable
         if (changeProfile)
             teacher["progressionProfile"] = new JsonObject
             {
-                ["schemaVersion"] = 1, ["mode"] = "table",
+                ["schemaVersion"] = 1, ["mode"] = "table", ["consequences"] = JsonNode.Parse("""{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}"""),
                 ["thresholds"] = new JsonArray(100, 200), ["capOverflow"] = "discard"
             };
         else

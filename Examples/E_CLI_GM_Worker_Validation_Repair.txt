@@ -503,3 +503,5 @@ retain capacity; absent audit sink or replaced generation uses the existing exac
 fallback receipt. Lost receipt acknowledgement is retried without rewriting bytes; conflicting
 receipt bytes retain the original runtime authority and capacity. No durable reconstruction,
 main PTY, real GM/provider or new GM-authored payload/schema is introduced by this slice.
+
+For standard/table, missing or malformed explicit consequences are a profile-authority error. Do not install default cadence or characteristic policy during repair; mode none remains consequence-free.

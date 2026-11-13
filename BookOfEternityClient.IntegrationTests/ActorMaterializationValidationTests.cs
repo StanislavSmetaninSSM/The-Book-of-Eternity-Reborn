@@ -2867,7 +2867,7 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
         // Authenticated original absence makes this permanent-ID actor a genuinely new creation.
         var newActorRoot = JsonNode.Parse(currentJson)!.AsObject();
         newActorRoot["UpdateNPCs"]![0]!["progressionProfile"] =
-            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,150],"capOverflow":"discard"}""");
         currentJson = newActorRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
@@ -3718,7 +3718,7 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
         // Authenticated original absence makes this permanent-ID actor a genuinely new creation.
         var newActorRoot = JsonNode.Parse(currentJson)!.AsObject();
         newActorRoot["UpdateNPCs"]![0]!["progressionProfile"] =
-            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,150],"capOverflow":"discard"}""");
         currentJson = newActorRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnRoot.ToJsonString());
 
@@ -5276,7 +5276,7 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
     {
         // This helper authors a NEW actor. Its existing L2/XP0/threshold150 tuple uses an explicit table,
         // not the standard formula; permanent-history fixtures from the shared factory stay unchanged.
-        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,150],"capOverflow":"discard"}""");
         actor["NPCId"] = null;
         actor.Remove("npcId");
         actor.Remove("id");

@@ -1475,7 +1475,7 @@ public sealed class NpcCoreChangesTests : IDisposable
         preTurnActor["factionAffiliations"] = new JsonArray();
         preTurnActor["progressionProfile"] = new JsonObject
         {
-            ["schemaVersion"] = 1, ["mode"] = "table",
+            ["schemaVersion"] = 1, ["mode"] = "table", ["consequences"] = JsonNode.Parse("""{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}"""),
             ["thresholds"] = new JsonArray(100, 150, 200), ["capOverflow"] = "discard"
         };
         var currentRoot = preTurnRoot.DeepClone().AsObject();

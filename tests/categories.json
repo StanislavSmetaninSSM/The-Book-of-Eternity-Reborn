@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-profile-policy",
+      "responsibility": "#1538 Closed explicit consequence policy at canonical numeric profile admission.",
+      "excludes": "No filesystem publication, world freshness or whole feature qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionProfilePolicyTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionProfilePolicyTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-progression-consequence-integration",
+      "responsibility": "#1538 Core-only and composed skill candidate consequence completion with explicit world policy.",
+      "excludes": "No filesystem publication, world freshness or whole feature qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionConsequenceIntegrationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequenceIntegrationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-policy-parsing",
       "responsibility": "#1538 exact explicit consequence and current-world policy parsing.",
       "excludes": "No runtime integration or publication authority.",

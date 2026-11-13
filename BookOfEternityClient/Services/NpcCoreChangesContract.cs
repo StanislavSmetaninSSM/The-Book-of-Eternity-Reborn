@@ -127,6 +127,8 @@ internal static class NpcCoreChangesContract
         HashSet<string> WorldCharacteristicKeys)
     {
         internal ProgressionSourceContext? ProgressionSource { get; init; }
+        internal MortalNpcProgressionConsequences.ParseResult<MortalNpcProgressionConsequences.CharacteristicPolicy> NpcCharacteristicPolicy { get; init; } =
+            MortalNpcProgressionConsequences.ParseWorldPolicy(null);
     }
 
     /// <summary>Authenticated operation DATA; the owning lease and publication fences remain required.</summary>

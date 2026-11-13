@@ -11,7 +11,7 @@ public sealed class MortalNpcProgressionSourceBindingTests
     {
         var actor = JsonNode.Parse("""
             {"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
-             "progressionProfile":{"schemaVersion":1,"mode":"standard"}}
+             "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}
             """)!.AsObject();
         var before = new JsonObject { ["NPCsInScene"] = new JsonArray(actor) };
         var current = before.DeepClone().AsObject();
@@ -120,7 +120,7 @@ public sealed class MortalNpcProgressionSourceBindingTests
     {
         var before = JsonNode.Parse("""
             {"NPCsInScene":[{"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
-              "progressionProfile":{"schemaVersion":1,"mode":"standard"}}]}
+              "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}]}
             """)!.AsObject();
         var current = before.DeepClone().AsObject();
         current["NPCCoreChanges"] = JsonNode.Parse("""

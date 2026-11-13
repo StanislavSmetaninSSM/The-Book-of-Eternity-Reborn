@@ -13,13 +13,15 @@ explicit transition, not supported by this numeric package. Missing authority
 blocks progression; unrelated non-progression changes do not need a profile.
 
 Supported closed baseline profiles (JSON integer schemaVersion: 1):
-- {"schemaVersion":1,"mode":"standard"} explicitly selects the within-level
+- {"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}} explicitly selects the within-level
   cost floor(100 * L^2.5), evaluated as exact floor(sqrt(10000 * L^5)), not a
   floating-point approximation. There is no default formula.
-- {"schemaVersion":1,"mode":"table","thresholds":[100,200],"capOverflow":"discard"}
+- {"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,200],"capOverflow":"discard"}
   costs 100 to leave level 1 and 200 to leave level 2, with terminal level 3.
 - {"schemaVersion":1,"mode":"none"} permits no other profile options, retains
   the actor's nonnegative level, and requires XP, threshold and delta all 0.
+
+Standard/table must explicitly declare the consequences object shown above: one skill award per two crossed levels, allowing newSkill or masteryIncrease, and characteristics mode currentWorld. This declaration is required profile authority, not permission to publish an unvalidated skill or characteristic change. Mode none accepts no consequences object.
 
 For standard/table, optional allowExperienceLoss:true permits losses only within
 the current level; underflow or deleveling is rejected. Optional positive
@@ -44,7 +46,7 @@ Relevant fields of an already validated baseline (not a creation command):
 ```json
 {
   "NPCId": "npc_existing_001",
-  "progressionProfile": {"schemaVersion": 1, "mode": "standard"},
+  "progressionProfile": {"schemaVersion": 1, "mode": "standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}},
   "level": 1,
   "experience": 90,
   "experienceForNextLevel": 100

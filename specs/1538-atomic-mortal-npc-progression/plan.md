@@ -1,3 +1,7 @@
+## Consequence admission/candidate tests WIP
+
+Two canonical-profile policy controls and eight real core/candidate controls added; runtime numeric admission and final gate are intentionally not yet updated. Explicit progressing fixture/guidance policies migrated, so old positive tests are transitional until admission is implemented. New tests are UNRUN; earlier unknown-field rejections are not final consequence enforcement evidence. Authority compile seam holds existing parser results only, no world reader wired yet.
+
 ## Numeric creation and closed policy parser accepted bounds, 2026-11-13
 
 Exact a550272 runtime: parser 29/29 PASS (10.232 s), actual creation 11/11 PASS (14.102 s), scoped existing creation consumers 18/18 PASS (11.388 s), no skips/duplicates and complete owned cleanup. Unit/integration builds: 66.14/40.87 s, zero errors, 83/118 warnings. Runtime PE/PDB GUID 962e403e-aa7c-4819-a906-a26811cd9f94 joins both outputs; 1236 documents, all 1232 nongenerated current sources match. The earlier 107529 build failed at one unupdated detached validator signature; explicit non-creation wiring fixed it before these runs. Review accepted classification after exact diagnostic id alias correction; parser review malformed numeric/confusable/immutability controls now pass. Creation is numeric-only pending mandatory consequence-policy integration, not full FR7 acceptance. A fresh clean sparse clone of 107529 recovered the branch and selected source/plan, not a clean build claim.

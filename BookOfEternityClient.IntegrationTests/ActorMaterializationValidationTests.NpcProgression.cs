@@ -30,7 +30,7 @@ public sealed partial class ActorMaterializationValidationTests
         actor["level"] = 2;
         actor["experience"] = 17;
         actor["experienceForNextLevel"] = 565;
-        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"standard"}""");
+        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}""");
         switch (scenario)
         {
             case "missing": actor.Remove("progressionProfile"); break;
@@ -38,11 +38,11 @@ public sealed partial class ActorMaterializationValidationTests
             case "negative": actor["experience"] = -1; break;
             case "fractional": actor["level"] = 2.5m; break;
             case "terminal_cap":
-                actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"standard","maxLevel":2,"capOverflow":"discard"}""");
+                actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"maxLevel":2,"capOverflow":"discard"}""");
                 actor["experienceForNextLevel"] = 0; // terminal XP must also be zero, not the retained 17
                 break;
             case "table":
-                actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,200],"capOverflow":"discard"}""");
+                actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,200],"capOverflow":"discard"}""");
                 actor["experienceForNextLevel"] = 200;
                 break;
             case "none":
@@ -95,7 +95,7 @@ public sealed partial class ActorMaterializationValidationTests
             canTeach: true, includeEnvelope: true, includeInventory: true))!.AsObject();
         var actor = root["UpdateNPCs"]![0]!.AsObject();
         if (includeProfile)
-            actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+            actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}},"thresholds":[100,150],"capOverflow":"discard"}""");
         else
             actor.Remove("progressionProfile");
         var current = root.ToJsonString();
