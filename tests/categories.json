@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-treatment",
+      "responsibility": "#1538 actual held Mortal treatment with NPC progression, treatment-owned skill edit and selected-item consumption.",
+      "excludes": "No afterlife, arbitrary treatment matrix or unrelated progression schedule qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.NpcProgression.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-item-creation",
       "responsibility": "#1538 ordinary accepted item creation co-published with NPC progression, skill and effect.",
       "excludes": "No arbitrary loot generation or specialized treatment qualification.",
