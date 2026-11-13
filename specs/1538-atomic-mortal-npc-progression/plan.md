@@ -1,3 +1,7 @@
+## Reopened documented treatment mastery route, 2026-11-13
+
+The owner's additional completeness check found that the actual daemon guidance explicitly requires NPCSkillMasteryChanges/NPCPassiveSkillMasteryChanges for masteryIncrease awards. The specialized treatment envelope still rejects these standard delta commands. Full-profile support is not enough to claim this documented route works. Prior full task acceptance is therefore superseded for this concrete gap; earlier verified blocks remain valid. Next: a genuine natural Engine treatment with two gained levels and a required mastery delta, then minimal reuse of the existing parser/composer and bounded rollback/negative controls. No new progression system, Guided/QTE rewrite, broad suite or hosted CI.
+
 ## Final reviewed checkpoint receipt, 2026-11-13
 
 Independent Sol6.1 XHigh outcome and documentation review accepted the current FR1-FR9 map at cdec8db21e20733f4257af88a8501c6bc3b34c84 with no blockers. Astra High independently accepted the changed source and coherent48/48 outcome at e2d33b89. T009 is complete within the declared Mortal scope and evidence boundaries below. A fresh sparse recovery clone obtained e2d33b89, then fetched and checked out exact cdec8db with a clean tree and readable final map/instructions/intake source; this is source recovery only, not a clean build. The present commit changes only this receipt/status/tasks, not tested C# or selection. Issue1538 remains open and remote main remains7c8bb04a43f40939a9c78b10245d78283bd5805d. No merge, closure or hosted CI was performed.

@@ -252,6 +252,14 @@
       "contracts": [
         "Fresh authenticated core/sidecar intake through existing Guaranteed/Guided shared reader; real Guaranteed execution."
       ]
+    },
+    {
+      "category": "mortal-npc-progression-treatment-mastery",
+      "reason": "Documented NPC mastery delta during treatment must discharge the two-level progression award.",
+      "contracts": [
+        "#1538 FR4/FR6",
+        "Mortal treatment skill publication"
+      ]
     }
   ]
 }
