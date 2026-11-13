@@ -1,3 +1,9 @@
+## Treatment mastery GREEN; legacy regression fixture list correction
+
+At e4c2b253/PDB69451ecd,1240current nongenerated sources match both outputs. Builds67.52/42.22s0errors85/120warnings. Consequence boundary17/17 PASS9.926s; documented active/passive cadence+unfulfilled award+reached rollback4/4 PASS60.510s. Earlier baseline blocker is now closed by actual runtime evidence.
+
+Six-category regression batch150.916s completed62/66cases:58PASS4FAIL, no duplicates, cleanupcomplete. Candidate34, ordinary transfer10, retained treatment4, natural intake4 and common6 all pass. Four extraction integration cases fail before behavior because the legacy explicit rollback file-list oracle omits the now-governed npc_skills.json; last unit4 descriptor was not executed after failure. The fixture now adds exactly this governed path, preserving full exact-list and byte/absence assertions rather than filtering differences. Test-only rebuild and extraction8 rerun pending; no production change or broad replay is needed.
+
 ## Existing treatment composition seam WIP
 
 The final-consequence check is now coordinated through a descriptor of the existing sealed treatment continuation/reservation and skill projection, never a new writer or publication authority. Registry opts in only for actual NPC progression with the existing NPC skill projection. Snapshot clone/recompute binds explicit mode presence and projection fingerprint. Each use verifies the existing sealed projection and source coordinates, reduces bounded core commands, recomposes the existing skill envelope on the item-phase intermediate, and validates final consequences before returning that intermediate for baseline sealing. Later existing publication still owns the actual final skill/item root. The normalizer's second tail requires its existing live take receipt/source/final-root proof. Ordinary Evaluate remains unchanged.

@@ -3401,6 +3401,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/npcs/npc_interaction_journal.json",
             "game_state/npcs/npc_inventory.json",
             "game_state/npcs/npc_journals.json",
+            "game_state/npcs/npc_skills.json",
             "game_state/npcs/npc_wounds.json",
             "game_state/player/computed_characteristics.json",
             "game_state/player/effects.json",
