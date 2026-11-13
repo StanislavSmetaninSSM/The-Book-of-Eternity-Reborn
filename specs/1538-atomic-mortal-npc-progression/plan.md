@@ -1,3 +1,11 @@
+## Item companions GREEN; wound/treatment audit still open, 2026-11-13
+
+Saved production at d1a80fe, final test/interface checkpoint b308943d: Common empty fate-card contract3/3 PASS9.533s; item transfer10/10 PASS25.009s; creation6/6 PASS21.908s. Actual player/existing-NPC creation works with and without authored effects, exact common allocated item/receipt IDs, repeat and reached late rollback. Independent source and test reviews found no blockers for this bounded item work. Official category commands below were used; complete selection, no skips/duplicates, owned cleanup complete.
+
+Unit build65.71s0errors85warnings. First integration compile failed only because diagnostic input omitted AssertCompleted; corrected rebuild84.70s0errors157warnings. PDB current-source check has1236 nongenerated sources with zero mismatches in both outputs. Unit PDB4ddfb6af and integration8886febe differ only in generated AssemblyInfo commit metadata after the diagnostic-only checkpoint; they are not byte-identical builds. No runtime speedup claim.
+
+Treatment1/1 FAIL21.865s now has exact diagnostics: mortal_wound_treatment_ordinary_owner_unavailable and mortal_npc_skill_mastery_composition_invalid. The held test wire was passed through generic accepted validation without a fresh ordinary treatment owner; its old skill fixture must be checked before attributing a runtime defect. Correct composed plan still does not prove accepted publication. A separate real player-wound plus NPC progression/skill case will verify the ordinary wound-bundle guard. Full issue acceptance remains open, no merge/closure or hosted CI. Raw evidence remains local only.
+
 ## Ordinary creation projection WIP, 2026-11-13
 
 Valid complete player/NPC acquisition fixtures now reach the explicit unsupported-creation guard: 0/2 PASS, 2/2 causal FAIL in 12.1668s on retained runtime6ef97 after a test-only rebuild. The candidate and ordinary common preflight now retain the existing creation/transfer phase for root player and original existing-NPC destinations. Current raw roots, authenticated originals, projection fingerprint, accepted owner/allocated IDs and existing item writer remain authoritative. Specialized/location/new-NPC/container routes are not admitted by this extension. Source review and final execution remain pending; no creation success is claimed.

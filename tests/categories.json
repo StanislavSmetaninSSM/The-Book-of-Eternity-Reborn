@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-wound-companion",
+      "responsibility": "#1538 completed ordinary player wound with existing-NPC progression/new skill in one common publication.",
+      "excludes": "No specialized continuation or overlapping whole-NPC companion composition.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.NpcProgression.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundMaterializationLifecycleTests.SignedPlayerWound_WithNpcProgressionAndNewSkill_PublishesOneCompleteTurn"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-common-item-empty-fate-cards",
       "responsibility": "#1538 complete Common item physical empty fate-card section is not an active capability; nonempty and malformed remain rejected.",
       "excludes": "No NPC publication or broader item matrix.",
