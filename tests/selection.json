@@ -217,6 +217,34 @@
       "contracts": [
         "#1538 Core-only and composed skill candidate consequence completion with explicit world policy."
       ]
+    },
+    {
+      "category": "mortal-npc-common-item-empty-fate-cards",
+      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
+      "contracts": [
+        "Required empty canonical Common item section; nonempty/malformed remain forbidden."
+      ]
+    },
+    {
+      "category": "mortal-npc-progression-item-creation",
+      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
+      "contracts": [
+        "Existing player/NPC creation, optional effect, owner allocations, repeat and rollback."
+      ]
+    },
+    {
+      "category": "mortal-npc-progression-wound-companion",
+      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
+      "contracts": [
+        "Original-turn player wound plus NPC progression and skill; real late rollback."
+      ]
+    },
+    {
+      "category": "mortal-npc-progression-treatment",
+      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
+      "contracts": [
+        "Existing treatment result plus NPC progression/skill/item; late rollback and settlement sidecar/policy drift."
+      ]
     }
   ]
 }

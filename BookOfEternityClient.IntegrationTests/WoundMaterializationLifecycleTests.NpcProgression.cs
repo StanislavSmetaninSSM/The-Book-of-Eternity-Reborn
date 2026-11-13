@@ -119,6 +119,7 @@ public sealed partial class WoundMaterializationLifecycleTests
         AssertNoQuestPublicationErrors(await context.Validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
         AssertNoQuestPublicationErrors(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
         AssertNoQuestPublicationErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+        JsonObject admittedConsumedSidecar;
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
             Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(context.FileSystem, lease,
@@ -126,6 +127,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             Assert.True(admission.Success, Describe(admission.Issues));
             Assert.NotNull(admission.Plan!.WoundStageBundle);
             Assert.NotNull(admission.Plan.EffectPlan!.NpcSkillInput);
+            admittedConsumedSidecar = admission.Plan.EffectPlan.NpcSkillInput!.ConsumedSidecar.DeepClone().AsObject();
             Assert.False(admission.Plan.HasWholeCarrierAfterImage(corePath));
             Assert.Equal(3, admission.Plan.EffectPlan.NpcSkillInput!.CandidateCore["NPCsInScene"]![0]!["level"]!.GetValue<int>());
         }
@@ -181,7 +183,13 @@ public sealed partial class WoundMaterializationLifecycleTests
             Assert.Equal(0, actor["experience"]!.GetValue<int>());
             Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
             Assert.Equal(skillName, Assert.Single(actor["passiveSkills"]!.AsArray())!["skillName"]!.GetValue<string>());
-            Assert.Empty(Read(sidecarPath));
+            var publishedSidecar = Read(sidecarPath);
+            // StateDistributor retains ordinary metadata such as _lastUpdated;
+            // publication consumes commands, not the entire sidecar document.
+            Assert.True(JsonNode.DeepEquals(admittedConsumedSidecar, publishedSidecar));
+            foreach (var command in new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges",
+                         "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
+                Assert.False(publishedSidecar.ContainsKey(command));
             var wounds = Read(WoundCarrierCatalog.PlayerPath);
             var wound = Assert.Single(wounds["activeWounds"]!.AsArray())!;
             var woundId = wound["woundId"]!.GetValue<string>();

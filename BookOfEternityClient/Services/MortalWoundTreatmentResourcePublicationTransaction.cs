@@ -325,7 +325,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(receipt);
         ArgumentNullException.ThrowIfNull(beforeImages);
         if (!receipt.IsTerminalReleaseOnly)
-            RequireCompleteBeforeImageCoverage(plan, beforeImages);
+            RequireCompleteBeforeImageCoverage(plan, beforeImages, npcProgressionWitness is not null);
 
         var authority = plan.TreatmentResourcePublicationAuthority;
         if (authority is null ||
@@ -363,14 +363,18 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
     /// coverage DATA alone grants no live receipt or publication authority.
     /// </summary>
     internal static void RequireCompleteBeforeImageCoverage(AcceptedMechanicsPlan plan,
-        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages,
+        bool requireNpcSkillSidecar = false)
     {
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(beforeImages);
         var paths = beforeImages.Select(row => row.Path).ToHashSet(StringComparer.Ordinal);
         // NPC skill commands may be consumed by the normalizer after the specialized
         // common writer. They remain part of this same transaction's compensation.
-        foreach (var path in plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath))
+        var requiredPaths = requireNpcSkillSidecar
+            ? plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath)
+            : plan.TouchedPaths;
+        foreach (var path in requiredPaths)
             if (!paths.Contains(path))
                 throw new InvalidDataException("Treatment publication lacks rollback coverage for touched path '" + path + "'.");
     }
@@ -518,8 +522,10 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         }
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
-        var paths = WoundAcceptedTurnSnapshotContract
-            .BuildRequiredPaths(_plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath));
+        var agreementPaths = _npcProgressionWitness is not null
+            ? _plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath)
+            : _plan.TouchedPaths;
+        var paths = WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(agreementPaths);
         var captured = new MortalWoundTreatmentPublicationBeforeImage[paths.Count];
         for (var index = 0; index < paths.Count; index++)
         {

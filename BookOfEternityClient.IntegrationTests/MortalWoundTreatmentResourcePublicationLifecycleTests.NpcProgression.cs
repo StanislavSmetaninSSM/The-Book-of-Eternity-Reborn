@@ -11,6 +11,10 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public Task GuaranteedItemConsumption_NpcProgressionAndSkillUsesNaturalOwnerIntake() =>
+        GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(4);
+
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -112,6 +116,34 @@ public sealed partial class GameEngineTurnLifecycleTests
         };
         await new StateDistributor(context.FileSystem, NullLogger<StateDistributor>.Instance)
             .DistributeAsync(proposal);
+        if (scenario == 4)
+        {
+            // Natural intake: leave the distributed commands raw. The real engine must
+            // construct and admit its own plan; do not restore or compose a held plan here.
+            var naturalTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
+            var naturalLogger = new SpiritualLifecycleTestLogger();
+            var naturalInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
+            var naturalEngine = CreateGameEngine(
+                naturalInput, fileSystem: context.FileSystem, logger: naturalLogger);
+            var naturalDisposition = await naturalEngine.ValidatePreparedNpcProgressionOutcomeAsync(
+                "NPC progression treatment natural intake oracle", HeldTreatmentPipelineContext.Turn);
+            Assert.True(naturalDisposition == AcceptedTurnValidationDisposition.Accepted,
+                $"Natural treatment/progression disposition: {naturalDisposition}\n{naturalLogger.Describe()}\nRepair request before Escape:\n{naturalInput.RepairBeforeEscape ?? "<absent>"}");
+            var naturalCore = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
+            var naturalProvider = ReadProvider(naturalCore);
+            Assert.Equal(2, naturalProvider["level"]!.GetValue<int>());
+            Assert.Equal(1, naturalProvider["experience"]!.GetValue<int>());
+            Assert.Equal(565, naturalProvider["experienceForNextLevel"]!.GetValue<int>());
+            Assert.False(naturalCore.ContainsKey("NPCCoreChanges"));
+            Assert.Equal(1, ReadNpcItemCount(naturalCore, HeldTreatmentPipelineContext.SelectedItemId));
+            Assert.Contains(naturalProvider["activeSkills"]!.AsArray().OfType<JsonObject>(),
+                skill => skill["displayName"]?.GetValue<string>() == HeldTreatmentPipelineContext.ChangedSkillDisplayName);
+            Assert.Equal(naturalTransitionsBefore + 1, await CountSelectedItemConsumeTransitionsAsync(context));
+            var naturalSkills = await ReadJsonObjectAsync(context.FileSystem, "game_state/npcs/npc_skills.json");
+            foreach (var property in new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
+                Assert.False(naturalSkills.ContainsKey(property), "Natural intake must consume NPC skill commands: " + property);
+            return;
+        }
         await context.AcquireLeaseAsync();
         var authorities = RestoreHeldTreatmentAuthorities(context);
         // The specialized treatment owner accepts its skill/item envelope only.

@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-treatment-natural-intake",
+      "responsibility": "#1538 actual GameEngine treatment owner intake of distributed NPC progression and skill commands without a manually composed plan.",
+      "excludes": "No Guided QTE execution or unsupported mastery command envelope.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.NpcProgression.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedItemConsumption_NpcProgressionAndSkillUsesNaturalOwnerIntake"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-wound-companion",
       "responsibility": "#1538 completed ordinary player wound with existing-NPC progression/new skill in one common publication.",
       "excludes": "No specialized continuation or overlapping whole-NPC companion composition.",

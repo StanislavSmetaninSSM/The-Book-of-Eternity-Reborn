@@ -1,3 +1,9 @@
+## Actual owner intake audit; metadata corrections WIP
+
+Coherent a0efe runtime/PDB8b65ce57 has1238 nongenerated sources with no mismatches; builds64.49/44.12s,0errors85/120warnings. Ordinary common6/6 PASS21.027s. Wound2 reaches publication/late cut but both new oracles reject legitimate StateDistributor _lastUpdated metadata (20.340s); exact admitted-consumed-sidecar oracle is corrected, UNRUN. Treatment4 remains0PASS4FAIL43.032s because the new metadata guard also rejected that client-owned timestamp. Narrow supported metadata handling is pending; no treatment GREEN claimed.
+
+Review additionally traced both natural treatment producers: their original-equality mechanical reader returns an empty envelope. A manually composed retained plan proves final publication only, not real producer intake. A separate actual Engine Fact, with no manual Compose, is now UNRUN and has its own category. Do not infer full treatment acceptance from the retained-plan tests. The extra transaction sidecar footprint was narrowed to active NPC witness only, preserving legacy callers. Final source/test builds remain pending.
+
 ## Treatment settlement review corrections WIP
 
 Independent source review found two lease-gap holes before acceptance: consumed NPC sidecar was outside the transaction agreement, and current semantic policy/source were not freshly checked at later settlement. Existing transaction rollback coverage/agreement now includes npc_skills. A detached immutable NPC witness carries expected original roots/presence, source context, pending text and semantic authority fingerprints, never a lease or permission. The same fresh authenticated-reader helper serves original publication checks and new settlement checks under the actual current lease. Witness DATA is built once in the existing source object; private comparisons avoid cloning original JSON on each check. Unrelated world bytes are not bound.
