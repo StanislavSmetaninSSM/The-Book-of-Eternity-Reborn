@@ -128,6 +128,62 @@ public sealed class MortalNpcProgressionConsequencesParsingTests
         Refused(Contract.ParseWorldPolicy(root));
     }
 
+    [Theory]
+    [InlineData("fixedIncrements", "0")]
+    [InlineData("fixedIncrements", "-1")]
+    [InlineData("fixedIncrements", "1.5")]
+    [InlineData("fixedIncrements", "2147483648")]
+    [InlineData("allocatedPoints", "0")]
+    [InlineData("allocatedPoints", "-1")]
+    [InlineData("allocatedPoints", "1.5")]
+    [InlineData("allocatedPoints", "2147483648")]
+    public void WorldPolicy_RejectsNonpositiveFractionalOrOverflowPointAmounts(string mode, string amountJson)
+    {
+        var root = mode == "fixedIncrements"
+            ? World("""{"mode":"fixedIncrements","perLevel":{"strength":1}}""")
+            : World("""{"mode":"allocatedPoints","pointsPerLevel":1,"allowedKeys":["strength"]}""");
+        var characteristics = root["npcProgression"]!["characteristics"]!.AsObject();
+        if (mode == "fixedIncrements")
+            characteristics["perLevel"]!["strength"] = JsonNode.Parse(amountJson);
+        else
+            characteristics["pointsPerLevel"] = JsonNode.Parse(amountJson);
+
+        Refused(Contract.ParseWorldPolicy(root));
+    }
+
+    [Theory]
+    [InlineData("fixedIncrements")]
+    [InlineData("allocatedPoints")]
+    public void WorldPolicy_RejectsConfusableDuplicateCharacteristicKeys(string mode)
+    {
+        const string confusableStrength = "str\u0435ngth"; // Cyrillic e must not introduce a second authority key.
+        var root = mode == "fixedIncrements"
+            ? World("""{"mode":"fixedIncrements","perLevel":{"strength":1}}""")
+            : World("""{"mode":"allocatedPoints","pointsPerLevel":1,"allowedKeys":["strength"]}""");
+        var characteristics = root["npcProgression"]!["characteristics"]!.AsObject();
+        if (mode == "fixedIncrements")
+            characteristics["perLevel"]![confusableStrength] = 2;
+        else
+            characteristics["allowedKeys"]!.AsArray().Add(confusableStrength);
+
+        Refused(Contract.ParseWorldPolicy(root));
+    }
+
+    [Fact]
+    public void AllocatedWorldPolicy_ReturnedKeysCannotBeChangedThroughSourceOrMutableInterface()
+    {
+        var root = World("""{"mode":"allocatedPoints","pointsPerLevel":3,"allowedKeys":["strength"]}""");
+        var result = Contract.ParseWorldPolicy(root);
+        Assert.True(result.IsValid);
+        var keys = result.Value!.AllocationKeys!;
+
+        root["npcProgression"]!["characteristics"]!["allowedKeys"]![0] = "endurance";
+        if (keys is ICollection<string> mutableKeys)
+            Assert.Throws<NotSupportedException>(() => mutableKeys.Add("invented"));
+
+        Assert.Equal(new[] { "strength" }, keys.OrderBy(key => key, StringComparer.Ordinal));
+    }
+
     private static void Refused<T>(Contract.ParseResult<T> result) where T : class
     {
         Assert.False(result.IsValid);
