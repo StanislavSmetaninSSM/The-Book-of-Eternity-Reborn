@@ -241,3 +241,36 @@ argument error (hooks require the existing physical transaction-operations
 argument). Corrected the call; no test executed and this is not causal RED.
 Static targeted rereview found all three prior source issues addressed; runtime
 acceptance still awaits the selected results.
+
+### P2a source correction result and P2b causal RED
+
+b274a92c builds passed with zero errors: unit 61.60s (82 warnings), integration
+39.64s (118 warnings). Source category completed 42/42 PASS, including all 13
+new encoding/source/baseline/postvalidation rollback controls. Shared composer
+pure controls 4/4 PASS. Targeted independent rereview found no remaining must-fix
+source issue, conditional on these actual results; whole P2/P3 remains open.
+
+The combined run stopped on all four existing treatment integration cases at the
+same inventory assertion, now revealing a third omitted baseline path:
+output/mortal_wound_decisions.json. Instead of another partial guess, read the
+entire public compiled rollback inventory and compared it to the independent
+literal test list: exactly that one missing path and no stale expectations.
+Added that literal path; the production rollback contract was not changed.
+Combined run 46 PASS / 4 FAIL, 50/141 selected cases reached, 28.379s; complete
+cleanup, no skips/duplicates. Retest of the fixture correction remains pending.
+
+Pure new mastery causal category completed 11/11 FAIL (9.649s): expected mastery
+3 stayed 1 and required refusals incorrectly returned a candidate. New ordinary
+candidate causal category completed 8/8 FAIL (8.021s): no canonical skill was
+materialized and invalid inputs were admitted. Both were actual assertion RED,
+not compile/setup failures, with full cleanup. Implementers now replace these
+explicit baseline stubs; no accepted-turn integration is claimed yet.
+
+The existing core category separately passed 91/91 at b274a92c, 31.358s,
+complete cleanup and no duplicates/skips. Source fixes are bounded GREEN, not
+whole-feature acceptance. Pure ordinary candidate and mastery implementations
+are now authored (14 and 16 first-stage cases). Before accepting mastery, review
+found missing resulting-state consistency: retained aliases and numeric limits.
+Eleven additional Consistency_* controls are authored against the current first
+implementation and await causal RED. Rules 7/8 govern active no-cap and passive
+cap semantics; this is not an invented new progression system.

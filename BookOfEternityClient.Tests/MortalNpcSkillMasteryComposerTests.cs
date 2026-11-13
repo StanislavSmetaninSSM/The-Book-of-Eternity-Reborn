@@ -87,6 +87,126 @@ public sealed class MortalNpcSkillMasteryComposerTests
         Assert.Equal(5, result["NPCsInScene"]![0]!["passiveSkills"]![0]!["maxMasteryLevel"]!.GetValue<int>());
     }
 
+    [Fact]
+    public void ComposeWithMastery_DuplicateClaimsRefuseWholeCandidate()
+    {
+        var before = Root();
+        var original = before.ToJsonString();
+        var result = Run(before, [], [], [Active(), Active()], [], out var issues);
+        Assert.Null(result);
+        Assert.NotEmpty(issues);
+        Assert.Equal(original, before.ToJsonString());
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ComposeWithMastery_MissingRequiredActiveValueRefuses(bool missingProgress)
+    {
+        var command = missingProgress ? Active() with { NewCurrentMasteryProgress = null }
+            : Active() with { NewMasteryProgressNeeded = null };
+        var result = Run(Root(), [], [], [command], [], out var issues);
+        Assert.Null(result);
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void ComposeWithMastery_MalformedCanonicalIdRefusesWithoutThrowing()
+    {
+        var before = Root();
+        foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+            before[section]![0]!["activeSkills"]![0]!["skillId"] = 7;
+        var result = Run(before, [], [], [Active()], [], out var issues);
+        Assert.Null(result);
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void ComposeWithMastery_DivergentMirrorsRefuseBeforeMastery()
+    {
+        var before = Root();
+        before["UpdateNPCs"]![0]!["name"] = "Diverged";
+        var result = Run(before, [], [], [Active()], [], out var issues);
+        Assert.Null(result);
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void Consistency_RetainedMasteryAliasMovesWithCanonicalLevel()
+    {
+        var before = Root();
+        foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+            before[section]![0]!["activeSkills"]![0]!["currentMasteryLevel"] = 1;
+        var result = Run(before, [], [], [Active()], [], out var issues);
+        Assert.Empty(issues);
+        Assert.NotNull(result);
+        Assert.Equal(3, result["NPCsInScene"]![0]!["activeSkills"]![0]!["currentMasteryLevel"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void Consistency_ContradictoryMasteryAliasesRefuse()
+    {
+        var before = Root();
+        foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+            before[section]![0]!["activeSkills"]![0]!["currentMasteryLevel"] = 2;
+        Assert.Null(Run(before, [], [], [Active()], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void Consistency_ExactIdAliasResolves()
+    {
+        var before = Root();
+        foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+        {
+            var skill = before[section]![0]!["activeSkills"]![0]!.AsObject();
+            skill.Remove("skillId");
+            skill["id"] = "spark";
+        }
+        var result = Run(before, [], [], [Active()], [], out var issues);
+        Assert.Empty(issues);
+        Assert.NotNull(result);
+        Assert.Equal(3, result["NPCsInScene"]![0]!["activeSkills"]![0]!["masteryLevel"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void Consistency_ContradictoryIdAliasesRefuse()
+    {
+        var before = Root();
+        foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+            before[section]![0]!["activeSkills"]![0]!["id"] = "other";
+        Assert.Null(Run(before, [], [], [Active()], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Theory]
+    [InlineData(0, 0, 20)]
+    [InlineData(2, -1, 20)]
+    [InlineData(2, 0, 0)]
+    public void Consistency_InvalidActiveBoundsRefuse(int level, int progress, int needed)
+    {
+        var command = Active() with { NewMasteryLevel = level, NewCurrentMasteryProgress = progress, NewMasteryProgressNeeded = needed };
+        Assert.Null(Run(Root(), [], [], [command], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(4)]
+    [InlineData(0)]
+    public void Consistency_PassiveResultCannotExceedPositiveCap(int? maximum)
+    {
+        Assert.Null(Run(Root(), [], [], [], [new("npc_001", "Guard", "guard", 6, NewMaxMasteryLevel: maximum)], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
+    [Fact]
+    public void Consistency_ActiveCommandCannotIntroduceCap()
+    {
+        Assert.Null(Run(Root(), [], [], [Active() with { NewMaxMasteryLevel = 10 }], [], out var issues));
+        Assert.NotEmpty(issues);
+    }
+
     private static MortalNpcSkillComposer.MasteryCommand Active() => new("npc_001", "Spark", "spark", 3, 7, 40);
 
     private static JsonObject? Run(JsonObject before, IReadOnlyList<MortalNpcSkillComposer.Command> active,

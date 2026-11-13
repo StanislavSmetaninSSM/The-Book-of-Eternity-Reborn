@@ -3431,6 +3431,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "lore/codex_entries.json",
             "output/debug_logs.json",
             "output/interface_updates.json",
+            "output/mortal_wound_decisions.json",
             "output/narrative_response.json"
         };
 

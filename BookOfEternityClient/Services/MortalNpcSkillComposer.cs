@@ -25,8 +25,11 @@ internal static class MortalNpcSkillComposer
         int? NewCurrentMasteryProgress = null, int? NewMasteryProgressNeeded = null,
         int? NewMaxMasteryLevel = null);
 
-    // RED baseline adapter: existing profile/removal composition has no mastery application.
-    // Kept explicit until the focused causal tests have been executed by the owning worker.
+    /// <summary>
+    /// Composes profiles/removals first, then exact owner/kind/name mastery into detached
+    /// mirrors. No partial candidate escapes on refusal. Canonical inputs and commands
+    /// remain untouched; source admission and publication stay with the calling owner.
+    /// </summary>
     internal static JsonObject? ComposeWithMastery(
         JsonObject before,
         IReadOnlyList<Command> activeCommands,
@@ -34,10 +37,120 @@ internal static class MortalNpcSkillComposer
         IReadOnlyList<MasteryCommand> activeMastery,
         IReadOnlyList<MasteryCommand> passiveMastery,
         ICollection<ValidationIssue> issues,
-        Func<string, string, string, string, ValidationIssue> issueFactory) =>
-        Compose(before, activeCommands, passiveCommands,
+        Func<string, string, string, string, ValidationIssue> issueFactory)
+    {
+        var result = Compose(before, activeCommands, passiveCommands,
             new Dictionary<string, JsonObject>(), new Dictionary<string, JsonObject>(),
             new HashSet<string>(StringComparer.Ordinal), issues, issueFactory);
+        if (result is null || (activeMastery.Count == 0 && passiveMastery.Count == 0))
+            return result;
+
+        // Compose already checked permanent identities and complete mirror equality.
+        // These are operation-local references into its detached candidate, not a cache.
+        var actors = new Dictionary<string, List<JsonObject>>(StringComparer.Ordinal);
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (result[section] is not JsonArray rows) continue;
+            foreach (var actor in rows.OfType<JsonObject>())
+            {
+                GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actor, out var id);
+                if (!actors.TryGetValue(id, out var copies)) actors[id] = copies = [];
+                copies.Add(actor);
+            }
+        }
+
+        foreach (var (commands, active) in new[] { (activeMastery, true), (passiveMastery, false) })
+        {
+            var property = active ? "activeSkills" : "passiveSkills";
+            var section = active ? "NPCSkillMasteryChanges" : "NPCPassiveSkillMasteryChanges";
+            var seen = new HashSet<(string Owner, string Name)>();
+            var catalogs = new Dictionary<string, Dictionary<string, int>?>(StringComparer.Ordinal);
+            for (var row = 0; row < commands.Count; row++)
+            {
+                var command = commands[row];
+                var path = "game_state/npcs/npc_skills.json." + section + $"[{row}]";
+                void Refuse(string actual) => issues.Add(issueFactory(path,
+                    "mortal_npc_skill_mastery_composition_invalid",
+                    "one exact existing owner/kind/skill with unambiguous identity and complete mastery values", actual));
+
+                if (!IsExactText(command.NpcId) || !IsExactText(command.SkillName) ||
+                    (command.SkillId is not null && !IsExactText(command.SkillId)) ||
+                    !seen.Add((command.NpcId, command.SkillName)) ||
+                    (active && (!command.NewCurrentMasteryProgress.HasValue || !command.NewMasteryProgressNeeded.HasValue)))
+                {
+                    Refuse("invalid or duplicate mastery command");
+                    continue;
+                }
+                if (!actors.TryGetValue(command.NpcId, out var copies))
+                {
+                    Refuse(command.NpcId);
+                    continue;
+                }
+                if (!catalogs.TryGetValue(command.NpcId, out var catalog))
+                {
+                    catalog = IndexMasteryCatalog(copies[0][property]);
+                    catalogs.Add(command.NpcId, catalog);
+                }
+                if (catalog is null || !catalog.TryGetValue(command.SkillName, out var index))
+                {
+                    Refuse(command.SkillName);
+                    continue;
+                }
+                var skill = copies[0][property]![index]!.AsObject();
+                if (command.SkillId is not null &&
+                    (!TryExactText(skill["skillId"], out var id) || !string.Equals(id, command.SkillId, StringComparison.Ordinal)))
+                {
+                    Refuse(command.SkillId);
+                    continue;
+                }
+                foreach (var copy in copies)
+                {
+                    var target = copy[property]![index]!.AsObject();
+                    target["masteryLevel"] = command.NewMasteryLevel;
+                    if (active)
+                    {
+                        target["currentMasteryProgress"] = command.NewCurrentMasteryProgress!.Value;
+                        target["masteryProgressNeeded"] = command.NewMasteryProgressNeeded!.Value;
+                    }
+                    else if (command.NewMaxMasteryLevel.HasValue)
+                        target["maxMasteryLevel"] = command.NewMaxMasteryLevel.Value;
+                }
+            }
+        }
+        return issues.Count == 0 ? result : null;
+    }
+
+    private static bool IsExactText(string? value) =>
+        !string.IsNullOrWhiteSpace(value) && string.Equals(value, value.Trim(), StringComparison.Ordinal);
+
+    private static bool TryExactText(JsonNode? node, out string text)
+    {
+        text = string.Empty;
+        if (node is not JsonValue value || !value.TryGetValue<string>(out var result) || !IsExactText(result))
+            return false;
+        text = result!;
+        return true;
+    }
+
+    // Index once per touched owner/kind after profile composition. Mastery only changes
+    // numeric fields, so identity/index positions remain stable for this invocation.
+    private static Dictionary<string, int>? IndexMasteryCatalog(JsonNode? node)
+    {
+        if (node is not JsonArray skills) return null;
+        var names = new Dictionary<string, int>(StringComparer.Ordinal);
+        var nameKeys = new HashSet<string>(StringComparer.Ordinal);
+        var idKeys = new HashSet<string>(StringComparer.Ordinal);
+        for (var index = 0; index < skills.Count; index++)
+        {
+            if (skills[index] is not JsonObject skill || !TryExactText(skill["skillName"], out var name) ||
+                !names.TryAdd(name, index) || !nameKeys.Add(MortalLocationIdentityState.BuildConfusableKey(name)))
+                return null;
+            if (skill.ContainsKey("skillId") &&
+                (!TryExactText(skill["skillId"], out var id) || !idKeys.Add(MortalLocationIdentityState.BuildConfusableKey(id))))
+                return null;
+        }
+        return names;
+    }
 
     private sealed record NpcActorCopy(string Section, int Index, JsonObject Actor);
 

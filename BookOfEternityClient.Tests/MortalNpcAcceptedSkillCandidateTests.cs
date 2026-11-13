@@ -92,6 +92,74 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
         Assert.Contains(result.Issues, issue => issue.FilePath.Contains("rarity", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void Compose_PassiveMastery_UpdatesCanonicalSkillAndConsumesOnlyPendingProperties()
+    {
+        var original = Core();
+        original["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray(Skill("Archive A"));
+        var sidecar = new JsonObject
+        {
+            ["NPCPassiveSkillMasteryChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_archive", ["skillName"] = "Archive A", ["newMasteryLevel"] = 2
+            }),
+            ["other"] = new JsonObject { ["keep"] = true }
+        };
+        var result = Compose(original, new(), original, sidecar);
+        Assert.True(result.IsValid);
+        Assert.Equal(2, Assert.Single(Skills(result.Core!))["masteryLevel"]!.GetValue<int>());
+        Assert.False(result.Sidecar!.ContainsKey("NPCPassiveSkillMasteryChanges"));
+        Assert.True(JsonNode.DeepEquals(sidecar["other"], result.Sidecar["other"]));
+        Assert.Equal(1, Assert.Single(Skills(original))["masteryLevel"]!.GetValue<int>());
+    }
+
+    [Theory]
+    [InlineData("NPC_ARCHIVE")]
+    [InlineData("npc_missing")]
+    public void Compose_NonExactCurrentSkillOwner_Refuses(string actor)
+    {
+        var sidecar = Grant("Archive A");
+        sidecar["NPCPassiveSkillChanges"]![0]!["npcId"] = actor;
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+    }
+
+    [Theory]
+    [InlineData("npcPassiveSkillChanges")]
+    [InlineData("NPCPASSIVESKILLCHANGES")]
+    public void Compose_MiscasedPendingProperty_IsNotPreservedAsUnrelatedMetadata(string property)
+    {
+        var sidecar = new JsonObject { [property] = Grant("Archive A")["NPCPassiveSkillChanges"]!.DeepClone() };
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_invalid_property_case");
+    }
+
+    [Fact]
+    public void Compose_MasteringRemovedSkill_RefusesWholeCandidate()
+    {
+        var original = Core();
+        original["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray(Skill("Archive A"));
+        var sidecar = new JsonObject
+        {
+            ["NPCPassiveSkillChanges"] = new JsonArray(new JsonObject
+            {
+                ["npcId"] = "npc_archive", ["skillsToRemove"] = new JsonArray("Archive A")
+            }),
+            ["NPCPassiveSkillMasteryChanges"] = new JsonArray(new JsonObject
+            {
+                ["npcId"] = "npc_archive", ["skillName"] = "Archive A", ["newMasteryLevel"] = 2
+            })
+        };
+        var result = Compose(original, new(), original, sidecar);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+        Assert.Single(Skills(original));
+    }
+
     private static MortalNpcAcceptedSkillCandidate.Result Compose(JsonObject original, JsonObject originalSidecar,
         JsonObject current, JsonObject sidecar) => MortalNpcAcceptedSkillCandidate.Compose(original, originalSidecar,
         current, sidecar, new NpcCoreChangesContract.Authority(new(StringComparer.Ordinal), new(StringComparer.Ordinal),
