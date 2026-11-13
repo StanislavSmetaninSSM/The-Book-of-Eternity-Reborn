@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-effect-source",
+      "responsibility": "#1538 same-turn ordinary NPC skill source/current scope and sidecar fingerprint, preserving originally offered focus fence.",
+      "excludes": "No canonical publication, item baseline or spiritual behavior acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkills.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillGrant_BindsSameTurnSourceAndCurrentScopeWithoutOfferingIt",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillRemoval_RevokesExistingFocusedScopeBeforePublication",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillSidecarMutation_ChangesPreviouslyValidatedPlanFingerprint"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-publication",
       "responsibility": "#1538 genuine NoPlan skill-only/combined core-sidecar materialization, late rollback and output agreement.",
       "excludes": "No whole-feature qualification; only named #1538 bounded contract.",

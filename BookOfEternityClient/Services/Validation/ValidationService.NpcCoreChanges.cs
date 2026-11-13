@@ -152,15 +152,25 @@ public partial class ValidationService
         private readonly ValidationService _owner;
         private readonly FileSystemManager.CanonicalWriteLease _lease;
         private readonly JsonObject? _originalNpcCore;
+        private readonly byte[]? _rawCoreBytes;
+        private readonly byte[]? _rawSidecarBytes;
+        private readonly string? _originalTradePending;
+        private readonly string? _originalTrainingPending;
+        internal MortalNpcAcceptedSkillInput? SkillInput { get; }
         internal NpcCoreChangesContract.ProgressionSourceContext? Context { get; }
         internal IReadOnlyList<ValidationIssue> Issues { get; }
 
         internal NpcProgressionPublicationSource(ValidationService owner,
             FileSystemManager.CanonicalWriteLease lease, NpcCoreChangesContract.ProgressionSourceContext? context,
-            IReadOnlyList<ValidationIssue> issues, JsonObject? originalNpcCore = null)
+            IReadOnlyList<ValidationIssue> issues, JsonObject? originalNpcCore = null,
+            MortalNpcAcceptedSkillInput? skillInput = null, byte[]? rawCoreBytes = null, byte[]? rawSidecarBytes = null,
+            string? originalTradePending = null, string? originalTrainingPending = null)
         {
             _owner = owner; _lease = lease; Context = context; Issues = issues;
             _originalNpcCore = originalNpcCore?.DeepClone().AsObject();
+            SkillInput = skillInput;
+            _rawCoreBytes = rawCoreBytes?.ToArray(); _rawSidecarBytes = rawSidecarBytes?.ToArray();
+            _originalTradePending = originalTradePending; _originalTrainingPending = originalTrainingPending;
         }
 
         /// <summary>Requires the reducer's actual backup to be the authenticated original, before item-only overlays.</summary>
@@ -169,6 +179,58 @@ public partial class ValidationService
             if (Context is null || _originalNpcCore is null || baseline is null ||
                 !JsonNode.DeepEquals(_originalNpcCore, baseline))
                 throw new InvalidDataException("NPC progression reduction baseline differs from the authenticated original NPC core.");
+        }
+
+        internal void RequireSkillBaseline(JsonObject? core, JsonObject? sidecar)
+        {
+            if (SkillInput is null) return;
+            RequireBaseline(core);
+            if (sidecar is null || !JsonNode.DeepEquals(SkillInput.OriginalSidecar, sidecar))
+                throw new InvalidDataException("NPC skill backup differs from the authenticated original sidecar.");
+        }
+
+        internal async Task RequireRawSkillInputsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
+        {
+            if (SkillInput is null) return;
+            await RequireCurrentAsync(files, lease);
+            var core = await files.ReadFileBytesAsync(_lease, NpcCoreChangesContract.NpcCorePath);
+            var sidecar = await files.ReadFileBytesAsync(_lease, MortalNpcAcceptedSkillInput.SidecarPath);
+            if (core is null || sidecar is null || _rawCoreBytes is null || _rawSidecarBytes is null ||
+                !core.AsSpan().SequenceEqual(_rawCoreBytes) || !sidecar.AsSpan().SequenceEqual(_rawSidecarBytes))
+                throw new InvalidDataException("Raw NPC skill candidate inputs changed before consumption.");
+        }
+
+        internal async Task RequirePublishedSkillsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
+        {
+            if (SkillInput is null) return;
+            await RequireCurrentAsync(files, lease);
+            var core = await files.ReadFileAsync(_lease, NpcCoreChangesContract.NpcCorePath);
+            var sidecar = await files.ReadFileAsync(_lease, MortalNpcAcceptedSkillInput.SidecarPath);
+            if (!TryReadNpcProgressionOriginal(core, out var root) ||
+                !TryReadNpcProgressionOriginal(sidecar, out var skills) ||
+                !JsonNode.DeepEquals(SkillInput.ConsumedSidecar, skills))
+                throw new InvalidDataException("Published NPC skill sidecar differs from the admitted consumed result.");
+            var expected = SkillInput.CandidateCore;
+            foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+            {
+                if (expected.ContainsKey(section) != root!.ContainsKey(section))
+                    throw new InvalidDataException("Published NPC skill carrier presence changed.");
+                if (expected[section] is not JsonArray actors) continue;
+                if (root![section] is not JsonArray actualActors || actualActors.Count != actors.Count)
+                    throw new InvalidDataException("Published NPC skill carrier topology changed.");
+                for (var index = 0; index < actors.Count; index++)
+                {
+                    if (actors[index] is not JsonObject actor || actualActors[index] is not JsonObject actual ||
+                        !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actor, out var id) ||
+                        !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(actual, out var actualId) || id != actualId)
+                        throw new InvalidDataException("Published NPC skill identity differs from admitted candidate.");
+                    foreach (var field in new[] { "activeSkills", "passiveSkills", "level", "experience", "experienceForNextLevel", "progressionProfile", "progressionType", "progressionTrackers", "characteristics" })
+                        if (actor.ContainsKey(field) != actual.ContainsKey(field) || !JsonNode.DeepEquals(actor[field], actual[field]))
+                            throw new InvalidDataException("Published NPC skill/progression result differs from admitted candidate: " + field);
+                }
+            }
+            if (root!.ContainsKey(NpcCoreChangesContract.PropertyName))
+                throw new InvalidDataException("NPC core command was not consumed.");
         }
 
         /// <summary>Checks the same live lease and existing snapshot authentication again, never extending authority.</summary>
@@ -189,16 +251,28 @@ public partial class ValidationService
             if (!TryReadNpcProgressionOriginal(original, out var originalRoot))
                 throw new InvalidDataException("NPC progression authenticated original NPC core is missing or changed.");
             RequireBaseline(originalRoot);
+            if (SkillInput is not null)
+            {
+                var sidecar = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest,
+                    MortalNpcAcceptedSkillInput.SidecarPath, _lease);
+                if (!TryReadNpcProgressionOriginal(sidecar, out var sidecarRoot))
+                    throw new InvalidDataException("Authenticated original NPC skill sidecar is missing or changed.");
+                RequireSkillBaseline(originalRoot, sidecarRoot);
+                var trade = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, NpcTradeRequestState.PendingRequestPath, _lease);
+                var training = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, TrainingRequestState.PendingRequestPath, _lease);
+                if (trade != _originalTradePending || training != _originalTrainingPending)
+                    throw new InvalidDataException("Authenticated NPC skill dedicated pending authority changed.");
+            }
         }
     }
 
     /// <summary>
     /// Reuses already captured NPC bytes and the existing authenticated lookup under the exact publication
     /// lease. Progression freshly authenticates original NPC snapshot bytes at opening and closing fences;
-    /// the detached opening root also binds the reducer backup. Turns without progression skip authentication.
+    /// the detached opening roots also bind reducer backups. Turns without progression or pending skills skip authentication.
     /// </summary>
     internal async Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationAsync(
-        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes)
+        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes, byte[]? npcSkillBytes = null)
     {
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         if (npcCoreBytes is null) return new(this, writeLease, null, []);
@@ -215,12 +289,18 @@ public partial class ValidationService
         {
             return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed")]);
         }
-        if (!NpcCoreChangesContract.HasProgressionCommand(root)) return new(this, writeLease, null, []);
+        JsonObject? rawSidecar = null;
+        if (npcSkillBytes is not null && !TryReadNpcProgressionOriginal(DecodePendingSnapshotText(npcSkillBytes), out rawSidecar))
+            return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed NPC skill sidecar")]);
+        var hasSkills = rawSidecar is not null && MortalNpcAcceptedSkillInput.HasPending(rawSidecar);
+        if (!NpcCoreChangesContract.HasProgressionCommand(root) && !hasSkills) return new(this, writeLease, null, []);
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, requireFreshPhysicalSource: true);
         var context = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest is not null
             ? CreateNpcProgressionSource(lookup.Manifest) : null;
         var issues = NpcCoreChangesContract.ValidateProgressionSources(root, context);
         if (issues.Count != 0) return new(this, writeLease, context, issues);
+        if (hasSkills && (context is null || context.Realm != "mortal_world"))
+            return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("NPC skills require current authenticated Mortal source")]);
         using var fresh = FileSystemManager.SuppressValidationReuse();
         var original = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest!, NpcCoreChangesContract.NpcCorePath, writeLease);
@@ -229,7 +309,21 @@ public partial class ValidationService
                 IssueSeverity.Error, "NPC progression requires authenticated original NPC core bytes.",
                 code: "npc_core_changes_progression_source_unavailable", section: "NPCCoreChanges",
                 repairHint: "Restore the original authenticated snapshot; do not rewrite it or invent source hashes.")]);
-        return new(this, writeLease, context, issues, originalRoot);
+        if (!hasSkills) return new(this, writeLease, context, issues, originalRoot);
+        // Bounded first publication contour requires an authenticated PRESENT sidecar
+        // and its actual reducer backup. Proven-absent bootstrap originals are not
+        // synthesized into {}, and remain refused until absence-aware owner plumbing.
+        var originalSidecarText = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, MortalNpcAcceptedSkillInput.SidecarPath, writeLease);
+        if (!TryReadNpcProgressionOriginal(originalSidecarText, out var originalSidecar))
+            return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("authenticated original NPC skill sidecar unavailable")]);
+        var originalTrade = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, NpcTradeRequestState.PendingRequestPath, writeLease);
+        var originalTraining = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, TrainingRequestState.PendingRequestPath, writeLease);
+        var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
+        authority = authority with { ProgressionSource = context };
+        var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar!, root, rawSidecar!, authority,
+            originalTrade, originalTraining, out var candidateIssues);
+        return new(this, writeLease, context, candidateIssues, originalRoot, input,
+            npcCoreBytes, npcSkillBytes, originalTrade, originalTraining);
     }
 
     /// <summary>Parses already authenticated original text without accepting duplicate or non-object authority.</summary>

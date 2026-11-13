@@ -53,7 +53,7 @@ internal static class MortalNpcAcceptedSkillCandidate
         // raw authored core to an already patched baseline to excuse a bypass.
         var core = currentCore.DeepClone().AsObject();
         var coreEvaluation = NpcCoreChangesContract.Evaluate(core, originalCore, authority,
-            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);
+            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true, acceptedTurnAuthority);
         issues.AddRange(coreEvaluation.Issues);
         if (issues.Count != 0) return Refuse(issues);
         NpcCoreChangesContract.Apply(core, coreEvaluation);
@@ -246,4 +246,51 @@ internal static class MortalNpcAcceptedSkillCandidate
     private static ValidationIssue Issue(string path, string code, string expected, string actual) =>
         new(path, IssueSeverity.Error, "Ordinary NPC skill candidate rejected.", code: code,
             section: "NPCSkills", expected: expected, actual: actual);
+}
+
+/// <summary>Detached invocation DATA, not a lease, admission token, registry or writer.</summary>
+internal sealed class MortalNpcAcceptedSkillInput
+{
+    internal const string SidecarPath = "game_state/npcs/npc_skills.json";
+    private readonly JsonObject[] _roots;
+    internal JsonObject OriginalCore => _roots[0].DeepClone().AsObject();
+    internal JsonObject OriginalSidecar => _roots[1].DeepClone().AsObject();
+    internal JsonObject RawCore => _roots[2].DeepClone().AsObject();
+    internal JsonObject RawSidecar => _roots[3].DeepClone().AsObject();
+    internal JsonObject CandidateCore => _roots[4].DeepClone().AsObject();
+    internal JsonObject ConsumedSidecar => _roots[5].DeepClone().AsObject();
+    internal string Fingerprint { get; }
+
+    private MortalNpcAcceptedSkillInput(JsonObject[] roots, NpcCoreChangesContract.Authority authority,
+        string? tradePending, string? trainingPending)
+    {
+        _roots = roots.Select(root => root.DeepClone().AsObject()).ToArray();
+        var authorityJson = new JsonObject
+        {
+            ["locations"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.KnownPermanentLocationIds.OrderBy(x => x, StringComparer.Ordinal)),
+            ["initialLocations"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.SameTurnLocationInitialIds.OrderBy(x => x, StringComparer.Ordinal)),
+            ["factions"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.FactionNamesById.OrderBy(x => x.Key, StringComparer.Ordinal)),
+            ["characteristics"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.WorldCharacteristicKeys.OrderBy(x => x, StringComparer.Ordinal)),
+            ["source"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.ProgressionSource)
+        };
+        Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[] { "mortal_npc_accepted_skill_input:v1", tradePending, trainingPending,
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(authorityJson) }
+                .Concat(_roots.Select(WoundAcceptedTurnFingerprintWriter.CanonicalJson)).ToArray());
+    }
+
+    internal static MortalNpcAcceptedSkillInput? Create(JsonObject originalCore, JsonObject originalSidecar,
+        JsonObject rawCore, JsonObject rawSidecar, NpcCoreChangesContract.Authority authority,
+        string? originalTradePendingJson, string? originalTrainingPendingJson, out IReadOnlyList<ValidationIssue> issues)
+    {
+        var accepted = MortalActorAcceptedTurnAuthority.Create(rawCore, originalTradePendingJson, originalTrainingPendingJson);
+        var result = MortalNpcAcceptedSkillCandidate.Compose(originalCore, originalSidecar, rawCore, rawSidecar, authority, accepted);
+        issues = result.Issues;
+        return result.IsValid ? new([originalCore, originalSidecar, rawCore, rawSidecar, result.Core!, result.Sidecar!],
+            authority, originalTradePendingJson, originalTrainingPendingJson) : null;
+    }
+
+    internal static bool HasPending(JsonObject root) => root.Any(pair =>
+        new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" }
+            .Contains(pair.Key, StringComparer.OrdinalIgnoreCase) && (pair.Value is not JsonArray array || array.Count != 0));
 }

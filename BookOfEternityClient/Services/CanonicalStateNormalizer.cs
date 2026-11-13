@@ -71,6 +71,7 @@ public partial class CanonicalStateNormalizer
         StorageTransportMoveService.VehiclesPath,
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
+        MortalNpcAcceptedSkillInput.SidecarPath,
         "game_state/npcs/npc_journals.json",
         NpcInteractionJournalState.StatePath,
         "game_state/inventory/items.json",
@@ -452,6 +453,9 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException("NPC progression source differs from the validated accepted-turn binding.");
             npcProgressionSource = boundSource;
         }
+        if (_npcProgressionSource?.SkillInput is not null &&
+            acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated)
+            throw new InvalidDataException("Ordinary NPC skill publication with an accepted common/treatment plan is not admitted yet.");
         // This check precedes every normalizer mutation, including generic NoPlan calls.
         await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);

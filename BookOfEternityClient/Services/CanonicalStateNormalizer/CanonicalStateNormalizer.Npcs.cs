@@ -10,6 +10,17 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsPlan? acceptedMechanicsPlan,
         NpcCoreChangesContract.ProgressionSourceContext? progressionSource)
     {
+        if (_npcProgressionSource?.SkillInput is { } skillInput)
+        {
+            if (acceptedMechanicsPlan is not null)
+                throw new InvalidDataException("Ordinary NPC skills cannot share an unintegrated accepted mechanics plan.");
+            await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
+            // Both writes remain inside the existing accepted-turn transaction; its
+            // before-image set includes both roots, including the raw pending commands.
+            await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, skillInput.RawCore, skillInput.CandidateCore);
+            await WriteIfChangedAsync(MortalNpcAcceptedSkillInput.SidecarPath, skillInput.RawSidecar, skillInput.ConsumedSidecar);
+            return;
+        }
         var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
         if (currentNode is not JsonObject currentRoot ||
             !currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName))
@@ -73,6 +84,17 @@ public partial class CanonicalStateNormalizer
         NpcCoreChangesContract.ProgressionSourceContext? source,
         IReadOnlyDictionary<string, string>? backups)
     {
+        var sidecar = await ReadNodeAsync(MortalNpcAcceptedSkillInput.SidecarPath) as JsonObject;
+        if (_npcProgressionSource?.SkillInput is not null ||
+            (sidecar is not null && MortalNpcAcceptedSkillInput.HasPending(sidecar)))
+        {
+            if (_npcProgressionSource?.SkillInput is null)
+                throw new InvalidDataException("Ordinary NPC skill publication requires its authenticated original candidate.");
+            _npcProgressionSource.RequireSkillBaseline(
+                await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups),
+                await ReadBackupObjectAsync(MortalNpcAcceptedSkillInput.SidecarPath, backups));
+            await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
+        }
         if (await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath) is not JsonObject root) return;
         var issues = NpcCoreChangesContract.ValidateProgressionSources(root, source);
         if (issues.Count != 0)

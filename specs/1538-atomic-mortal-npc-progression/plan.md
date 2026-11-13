@@ -389,3 +389,22 @@ reflection in the newly added console test. It now exercises actual /нпс disp
 The shared existing action-cost translator is reused and invalid active-skill cap
 fixtures corrected; three narrow enum localization controls added. These fixes
 await rereview and execution. Source/NoPlan integration proceeds separately.
+
+### P2 NoPlan publication WIP / effect source causal controls
+
+The existing publication source now retains detached authenticated original/raw/
+composed core+sidecar DATA, full authority/request fingerprint, exact raw-byte
+fences, backup agreement and late published-result agreement. The existing
+normalizer/transaction writes and rolls back both roots. Dedicated trade/training
+authority forwarding is implemented. This bounded version requires a PRESENT
+signed original sidecar and rejects skill commands with a common/treatment plan;
+absence-aware bootstrap and effect/item integration remain explicit UNIMPLEMENTED
+adapters, not feature acceptance. Current source and tests are UNRUN.
+
+Three real raw-effect controls are authored for newly granted NPC source/current
+scope, removal of an originally offered focused skill, and sidecar-only change
+of the plan fingerprint. Original offered focus remains immutable: a new current
+skill is not retroactive permission for a newly focused binding. Existing small
+EffectMaterializationTestContext is reused; no full engine or diagnostic cache.
+Next combined build runs NoPlan/request controls, UI controls and these expected
+causal effect failures separately. No unchanged whole-suite replay or hosted CI.

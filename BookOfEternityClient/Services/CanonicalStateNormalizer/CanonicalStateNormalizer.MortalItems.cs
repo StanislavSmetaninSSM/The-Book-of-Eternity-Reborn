@@ -1763,7 +1763,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
             var npcSource = await validator.PrepareNpcProgressionPublicationAsync(writeLease,
-                beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes);
+                beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes,
+                beforeImages.FirstOrDefault(image => image.Path == MortalNpcAcceptedSkillInput.SidecarPath)?.Bytes);
             if (npcSource.Issues.Count != 0) return new Result(npcSource.Issues, null);
             boundNormalizer = boundNormalizer.WithNpcProgressionSource(npcSource);
             if (spiritualPreflight is not null)
@@ -1840,6 +1841,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             receipt);
                 }
                 await npcSource.RequireCurrentAsync(fs, writeLease);
+                await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
                 var issues = new List<ValidationIssue>();
                 issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
                 issues.AddRange(await validator
@@ -1886,6 +1888,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     ? null : await guardianMusings.CompleteAsync(fs, writeLease);
                 // No awaited post-validator or completion callback may invalidate the source before success.
                 await npcSource.RequireCurrentAsync(fs, writeLease);
+                if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                    await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation);
