@@ -624,7 +624,8 @@ public partial class ValidationService
             response,
             "response",
             issues,
-            validateCurrentMaterializationPersonality: true);
+            validateCurrentMaterializationPersonality: true,
+            isResponseCreationValidation: true);
         ValidateWorldQuestCombatFactionContract(response, "response", issues);
         ValidateMetaMiscContract(response, "response", issues);
         ValidateMathAssistantContractRoot(response, "response", issues);

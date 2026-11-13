@@ -2864,6 +2864,11 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
             includeEnvelope: true,
             includeInventory: true);
         const string preTurnJson = """{ "UpdateNPCs": [], "NPCsInScene": [] }""";
+        // Authenticated original absence makes this permanent-ID actor a genuinely new creation.
+        var newActorRoot = JsonNode.Parse(currentJson)!.AsObject();
+        newActorRoot["UpdateNPCs"]![0]!["progressionProfile"] =
+            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+        currentJson = newActorRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnJson);
 
         using var currentDocument = JsonDocument.Parse(currentJson);
@@ -3710,6 +3715,11 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
             canTeach: true,
             includeEnvelope: true,
             includeInventory: true);
+        // Authenticated original absence makes this permanent-ID actor a genuinely new creation.
+        var newActorRoot = JsonNode.Parse(currentJson)!.AsObject();
+        newActorRoot["UpdateNPCs"]![0]!["progressionProfile"] =
+            JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
+        currentJson = newActorRoot.ToJsonString();
         await WriteCurrentAndValidatedPreTurnAsync(path, currentJson, preTurnRoot.ToJsonString());
 
         using var currentDocument = JsonDocument.Parse(currentJson);

@@ -5028,14 +5028,16 @@ public partial class ValidationService
         string contextPrefix,
         List<ValidationIssue> issues,
         bool skipManifestedCompanionSourceValidation = false,
-        bool validateCurrentMaterializationPersonality = false)
+        bool validateCurrentMaterializationPersonality = false,
+        bool isResponseCreationValidation = false)
     {
         ValidateNpcSceneArray(
             root,
             contextPrefix,
             issues,
             skipManifestedCompanionSourceValidation,
-            validateCurrentMaterializationPersonality);
+            validateCurrentMaterializationPersonality,
+            isResponseCreationValidation);
         ValidateNpcTradeReceiptUpdateCommands(root, contextPrefix, issues);
         ValidateNpcRenameData(root, contextPrefix, issues);
         ValidateNpcJournals(root, contextPrefix, issues);
@@ -5081,7 +5083,8 @@ public partial class ValidationService
         string contextPrefix,
         List<ValidationIssue> issues,
         bool skipManifestedCompanionSourceValidation = false,
-        bool validateCurrentMaterializationPersonality = false)
+        bool validateCurrentMaterializationPersonality = false,
+        bool isResponseCreationValidation = false)
     {
         ObserveCompletedTreatmentNpcRoot(root, contextPrefix);
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
@@ -5137,7 +5140,8 @@ public partial class ValidationService
                     itemContext,
                     issues,
                     sectionName,
-                    requiresCompletePersonality);
+                    requiresCompletePersonality,
+                    IsNewMortalProgressionCreation(item, mortalActorPreTurnAuthority, isResponseCreationValidation));
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
                 var usesSameTurnInitialId = string.IsNullOrWhiteSpace(npcId) && hasEffectiveNpcId;
@@ -5374,25 +5378,10 @@ public partial class ValidationService
         string itemContext,
         List<ValidationIssue> issues,
         string sectionName,
-        bool requiresCompletePersonality)
+        bool requiresCompletePersonality,
+        bool requiresCreationProgression)
     {
         ValidateNpcSceneIdentity(item, itemContext, issues);
-        // Explicit initial-ID creation only. Never retrofit profiles onto permanent historical actors.
-        if ((item.TryGetProperty("NPCId", out var creationId) || item.TryGetProperty("npcId", out creationId)) &&
-            creationId.ValueKind == JsonValueKind.Null &&
-            TryReadCanonicalCurrentMortalActorIdentity(item, out var initialActorId, out var isSameTurnCreation) &&
-            isSameTurnCreation)
-        {
-            var numeric = MortalNpcProgressionContract.ValidateCanonicalActor(JsonNode.Parse(item.GetRawText())!.AsObject());
-            foreach (var problem in numeric.Problems)
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.{problem.Field}", IssueSeverity.Error, problem.Message,
-                    code: "npc_creation_progression_invalid", section: "NPCProgression",
-                    actor: $"mortal_npc:{initialActorId}",
-                    expected: "explicit versioned progressionProfile and coherent canonical level/experience/experienceForNextLevel",
-                    actual: problem.Message,
-                    repairHint: "For this new NPC, declare its numeric progression profile and a matching within-level XP tuple. Do not rewrite existing actors or infer a default profile."));
-        }
         RequireString(item, itemContext, issues, "name");
         issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(
             item,
@@ -5403,8 +5392,25 @@ public partial class ValidationService
             itemContext,
             issues,
             sectionName,
-            requiresCompletePersonality);
+            requiresCompletePersonality,
+            requiresCreationProgression);
         ValidateNpcTradeState(item, itemContext, issues);
+    }
+
+    private static bool IsNewMortalProgressionCreation(JsonElement actor,
+        MortalActorMaterializationPreTurnAuthority original, bool isResponse)
+    {
+        if (!TryReadCanonicalCurrentMortalActorIdentity(actor, out var actorId, out var isSameTurn))
+            return false;
+        // A signed original actor catalog is decisive for BOTH permanent and initial identities.
+        // Existing actors, including promotion of an old envelope-free actor, are not creations.
+        if (original.Status == ValidatedPendingTurnSnapshotStatus.Usable && original.Actors is not null)
+            return !original.Actors.ContainsKey(actorId);
+        // Without usable original authority only an explicitly authored new response can declare creation.
+        // A loaded initial-ID actor is historical DATA, not proof it was created in this invocation.
+        return isResponse && isSameTurn &&
+            (actor.TryGetProperty("NPCId", out var id) || actor.TryGetProperty("npcId", out id)) &&
+            id.ValueKind == JsonValueKind.Null;
     }
 
     private static bool RequiresCompleteCurrentMortalPersonality(
@@ -5483,7 +5489,8 @@ public partial class ValidationService
         string itemContext,
         List<ValidationIssue> issues,
         string sectionName,
-        bool requiresCompletePersonality)
+        bool requiresCompletePersonality,
+        bool requiresCreationProgression)
     {
         ValidateActiveEffectDefinitionsIfPresent(
             item,
@@ -5739,6 +5746,19 @@ public partial class ValidationService
             ValidateArrayItems(passiveSkills, $"{itemContext}.passiveSkills", issues, ValidatePassiveSkillObject);
         if (JsonNode.Parse(item.GetRawText()) is JsonObject npcRoot)
         {
+            // Reuse the already parsed canonical actor for numeric and capability validation.
+            if (requiresCreationProgression)
+            {
+                var numeric = MortalNpcProgressionContract.ValidateCanonicalActor(npcRoot);
+                foreach (var problem in numeric.Problems)
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.{problem.Field}", IssueSeverity.Error, problem.Message,
+                        code: "npc_creation_progression_invalid", section: "NPCProgression",
+                        actor: $"mortal_npc:{GetFirstNonEmptyString(item, "NPCId", "npcId", "initialId")}",
+                        expected: "explicit versioned progressionProfile and coherent canonical level/experience/experienceForNextLevel",
+                        actual: problem.Message,
+                        repairHint: "For this new NPC, declare its numeric progression profile and a matching within-level XP tuple. Do not rewrite existing actors or infer a default profile."));
+            }
             issues.AddRange(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
                 "npc",
                 GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId") ?? string.Empty,

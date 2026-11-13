@@ -23,6 +23,10 @@ public sealed partial class ActorMaterializationValidationTests
             canTeach: false, includeEnvelope: true))!.AsObject();
         var actor = root["NPCsInScene"]![0]!.AsObject();
         ConfigureSameTurnMortalActor(actor, actorId, "mat_explicit_progression");
+        actor["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "health", ["maximum"] = 60 })
+        };
         actor["level"] = 2;
         actor["experience"] = 17;
         actor["experienceForNextLevel"] = 565;
@@ -75,6 +79,7 @@ public sealed partial class ActorMaterializationValidationTests
             actor["NPCId"] = "npc_historical";
             actor.Remove("initialId");
             actor.Remove("progressionProfile");
+            actor.Remove("resourceMaterialization");
             actor["materialization"]!["actorId"] = "npc_historical";
             using var historical = JsonDocument.Parse(root.ToJsonString());
             Assert.DoesNotContain(_validator.ValidateResponse(historical.RootElement), issue => issue.Code == code);

@@ -44,6 +44,8 @@
         {
           "project": "integration",
           "tests": [
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_UsableSnapshotWithoutActor_NewPermanentIdWithEnvelopeAndInventory_HasNoErrors",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_HistoricalCarrierWithEnvelopeFreeDelta_RemainsUsableNextTurn",
             "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateAcceptedTurnContinuity_DuplicateSameTurnEffectiveMortalIdentity_IsRejected",
             "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateGameStateAsync_LoadedHistoricalInitialIdEnvelopeWithoutPendingTurnAuthority_RemainsCompatible",
             "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NullPermanentIdInitialIdCollisionCannotBypassInventoryContinuity",
