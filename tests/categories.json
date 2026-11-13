@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-numeric",
+      "responsibility": "#1538 explicit Mortal NPC within-level progression profiles, deterministic numeric evaluator and bounded existing-command tuple admission.",
+      "excludes": "Identity/realm/source authority, dependent package and publication lifecycle are separate P2/P3 gates.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcProgressionContract.cs",
+        "BookOfEternityClient.Tests/MortalNpcProgressionContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionContractTests.*",
+            "BookOfEternityClient.Tests.MortalNpcProgressionCommandTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-claim-bootstrap",
       "responsibility": "#1533 empty current bootstrap NPC roots provide authenticated originals without inferred actors or skills.",
       "excludes": "No legacy save migration, new NPC inference or whole bootstrap lifecycle qualification.",

@@ -2,150 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-npc-skill-claim-bootstrap",
-      "reason": "#1533 final integration: #1533 empty current bootstrap NPC roots provide authenticated originals without inferred actors or skills.",
+      "category": "mortal-npc-progression-numeric",
+      "reason": "#1538 P1 pure numeric contract and existing command admission; later blocks remain unqualified.",
       "contracts": [
-        "#1533 empty current bootstrap NPC roots provide authenticated originals without inferred actors or skills."
+        "Explicit profile, deterministic within-level XP, exact threshold, cap/loss/overflow."
       ]
     },
     {
-      "category": "mortal-npc-structured-skill-claims",
-      "reason": "#1533 final integration: #1533 mandatory Mortal NPC structured report and exact owner/kind/skill delta evidence; no NLP completeness guarantee.",
+      "category": "npc-core-changes",
+      "reason": "#1538 P1 changes the shared progression command validator; retain existing NPC identity, mirror, normalization and trade refusal contracts.",
       "contracts": [
-        "#1533 mandatory Mortal NPC structured report and exact owner/kind/skill delta evidence; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "mortal-skill-template-guidance",
-      "reason": "#1533 final integration: #1533 T106 actual full-daemon rendering of exact case/Unicode skill identity, bounded indexed repair guidance and mandatory private Mortal NPC claim output/repair templates, plus the existing multi-actor/ambiguity worked example.",
-      "contracts": [
-        "#1533 T106 actual full-daemon rendering of exact case/Unicode skill identity, bounded indexed repair guidance and mandatory private Mortal NPC claim output/repair templates, plus the existing multi-actor/ambiguity worked example."
-      ]
-    },
-    {
-      "category": "mortal-skill-state-duplicates",
-      "reason": "#1533 final integration: Exact duplicate current player/NPC skill and mastery rows, indexed owner diagnostics, collection isolation and synchronized GM guidance (#1533 T102-A).",
-      "contracts": [
-        "Exact duplicate current player/NPC skill and mastery rows, indexed owner diagnostics, collection isolation and synchronized GM guidance (#1533 T102-A)."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-mastery-ownership",
-      "reason": "#1533 final integration: Current owner-local NPC active/passive mastery authority, parsed-root reuse, real selected state phases and GM example (#1533 T104).",
-      "contracts": [
-        "Current owner-local NPC active/passive mastery authority, parsed-root reuse, real selected state phases and GM example (#1533 T104)."
-      ]
-    },
-    {
-      "category": "mortal-skill-characteristic-authority",
-      "reason": "#1533 final integration: #1533 T105 display-only passive summaries cannot grant characteristic mechanics; structured values, fresh reads and existing characteristic/effect controls remain authoritative.",
-      "contracts": [
-        "#1533 T105 display-only passive summaries cannot grant characteristic mechanics; structured values, fresh reads and existing characteristic/effect controls remain authoritative."
-      ]
-    },
-    {
-      "category": "mortal-skill-canonical-closure",
-      "reason": "#1533 final integration: #1533 T103 current composed mastery closure at accepted refresh and save/load admission, preserving raw deltas, exact selectors and rejected-state integrity.",
-      "contracts": [
-        "#1533 T103 current composed mastery closure at accepted refresh and save/load admission, preserving raw deltas, exact selectors and rejected-state integrity."
-      ]
-    },
-    {
-      "category": "mortal-skill-qte-closure",
-      "reason": "#1533 final integration: #1533 final QTE current mastery closure, exact current retention/acquisition, pre-existing-error waiver boundary and existing terminal restoration/lease controls.",
-      "contracts": [
-        "#1533 final QTE current mastery closure, exact current retention/acquisition, pre-existing-error waiver boundary and existing terminal restoration/lease controls."
-      ]
-    },
-    {
-      "category": "mortal-quest-skill-reference",
-      "reason": "#1533 final integration: #1533 exact quest skill references after removal/replacement; validation/projection, historical reasons and unchanged item/relationship behavior.",
-      "contracts": [
-        "#1533 exact quest skill references after removal/replacement; validation/projection, historical reasons and unchanged item/relationship behavior."
-      ]
-    },
-    {
-      "category": "mortal-skill-ui-exact-mastery-unit",
-      "reason": "#1533 final integration: #1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery.",
-      "contracts": [
-        "#1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery."
-      ]
-    },
-    {
-      "category": "mortal-skill-ui-exact-mastery-integration",
-      "reason": "#1533 final integration: #1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery.",
-      "contracts": [
-        "#1533 existing console/NPC/browser mastery projections preserve exact skill identities and canonical mastery."
-      ]
-    },
-    {
-      "category": "mortal-training-skill-profile-identity",
-      "reason": "#1533 final integration: #1533 local Mortal training binds exact skill targets, prevents new same-domain confusable siblings before spend/request and guards current skill roots through publication; publishes only shared-contract complete profiles, preserving valid GM fallback and resource control.",
-      "contracts": [
-        "#1533 local Mortal training binds exact skill targets, prevents new same-domain confusable siblings before spend/request and guards current skill roots through publication; publishes only shared-contract complete profiles, preserving valid GM fallback and resource control."
-      ]
-    },
-    {
-      "category": "fr063-narrative-policy-pass-sources",
-      "reason": "#1533 final integration: Actual single ordinary N invocation DATA: no-write and changed normalization, genuine supplied/uncovered originals and swallowed original faults, every initial/followup occurrence, sticky drift, copied diagnostics, issuer/files/G/lease/Dispose refusal, explicit partial cached provenance, actual writer preimage/outcome/owning-close and narrow authenticated I transition DATA matching. Engine authority remains separately tested.",
-      "contracts": [
-        "Actual single ordinary N invocation DATA: no-write and changed normalization, genuine supplied/uncovered originals and swallowed original faults, every initial/followup occurrence, sticky drift, copied diagnostics, issuer/files/G/lease/Dispose refusal, explicit partial cached provenance, actual writer preimage/outcome/owning-close and narrow authenticated I transition DATA matching. Engine authority remains separately tested."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-boundary",
-      "reason": "#1533 final integration: Two structural causal rows after real public narrative/interface success and exact unchanged output bytes; missing named shared stages is the final oracle. No semantic defect is invented.",
-      "contracts": [
-        "Two structural causal rows after real public narrative/interface success and exact unchanged output bytes; missing named shared stages is the final oracle. No semantic defect is invented."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-source",
-      "reason": "#1533 final integration: Four exact frozen A segments; inverse adapters reconstruct whole baseline A and shared partial is canonical value-only extraction. SOURCE guard independent of old stale World fence; intended after production.",
-      "contracts": [
-        "Four exact frozen A segments; inverse adapters reconstruct whole baseline A and shared partial is canonical value-only extraction. SOURCE guard independent of old stale World fence; intended after production."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-regression",
-      "reason": "#1533 final integration: Real public owners: complete ordered diagnostic fields, exact lookup/null/wrong-kind/root, read/catch order, no-write UTF8/UTF16 bytes+mtime, actual changed writes, single-pass tags, ambient timestamp and real mutation/close faults.",
-      "contracts": [
-        "Real public owners: complete ordered diagnostic fields, exact lookup/null/wrong-kind/root, read/catch order, no-write UTF8/UTF16 bytes+mtime, actual changed writes, single-pass tags, ambient timestamp and real mutation/close faults."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-existing",
-      "reason": "#1533 final integration: Public ordinary narrative/interface methods, including exact per-skill/blank evidence and their source-aware merge cross-cases. Pure projector suite stays unselected.",
-      "contracts": [
-        "Public ordinary narrative/interface methods, including exact per-skill/blank evidence and their source-aware merge cross-cases. Pure projector suite stays unselected."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-boundary",
-      "reason": "#1533 final integration: Real public Full, seeded byte/presence and successful prefix/tail prerequisites before final missing named document-policy seam. Only structural RED1 is predicted.",
-      "contracts": [
-        "Real public Full, seeded byte/presence and successful prefix/tail prerequisites before final missing named document-policy seam. Only structural RED1 is predicted."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-source",
-      "reason": "#1533 final integration: Exact new three-segment inverse to accepted 3d A8bde, canonical value-only partial and retained original four-segment inverse to A6a9; source guard is intended postproduct.",
-      "contracts": [
-        "Exact new three-segment inverse to accepted 3d A8bde, canonical value-only partial and retained original four-segment inverse to A6a9; source guard is intended postproduct."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-regression",
-      "reason": "#1533 final integration: Actual public Full document/scope diagnostic vectors, ordering/mode/case/duplicates, unchanged reads/catches, raw encodings/mtime, genuine LiveTurnPreparation original and unresigned corruption/policy-null contrasts.",
-      "contracts": [
-        "Actual public Full document/scope diagnostic vectors, ordering/mode/case/duplicates, unchanged reads/catches, raw encodings/mtime, genuine LiveTurnPreparation original and unresigned corruption/policy-null contrasts."
-      ]
-    },
-    {
-      "category": "mortal-skill-reference-identity",
-      "reason": "#1533 final integration: Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533). Includes existing player/NPC delta profile-schema parity tests in MortalSkillReferenceAuthorityTests.",
-      "contracts": [
-        "Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533). Includes existing player/NPC delta profile-schema parity tests in MortalSkillReferenceAuthorityTests."
+        "Existing bounded NPCCoreChanges validation and atomic normalization."
       ]
     }
   ]

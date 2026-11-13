@@ -38,3 +38,32 @@ Reuse current and original parsed roots in the invocation/accepted-turn owner. P
 ## Recovery checkpoint
 
 2026-11-13: issue/dependencies and exact main inspected; remote branch created. Spec/plan/tasks only, implementation and tests UNRUN. Next: pin P1 concrete closed profile schema, obtain causal arithmetic/tuple tests, then implement. Source path currently `skill-1533-reconcile`; local branch, not folder name, identifies #1538. SDK/runtime/PowerShell from existing environment can be reused. Temporary filesystem is nearly full; use a new owned diagnostic directory outside the repository on workspace storage instead of deleting unrelated data.
+
+### P1 causal start
+
+The official numeric category with the minimal pure API stub completed 1/1 cases
+and failed the impossible-absolute-tuple assertion as intended (0 PASS / 1 FAIL,
+8.413s, owned cleanup complete). This proves the new numeric test, not the
+existing command path. A separate command-level regression will demonstrate the
+current existing validator accepting an impossible level jump before wiring the
+evaluator. New diagnostics are owned under `/workspace/shared/1538-diagnostics`.
+
+Additional consumer finding for P2: `TrainingService.BuildSourceSnapshotNode`
+includes level/profile and excludes only showcases/receipts/inventory, so the
+existing hash naturally invalidates changed actor authority. `NpcTradeService`
+rechecks current slot count, but its inventory contract currently validates only
+that generationTradeTier is a known enum, not that it equals the current computed
+tier. A level change that crosses a tier without changing slot count needs a
+focused proof before deciding whether a correction is required.
+
+### P1 command RED / integration WIP
+
+The unchanged existing NPCCoreChanges evaluator accepted level 1 to 99 with no
+XP delta: the new command regression failed with an empty issue collection.
+Official category `mortal-npc-progression-numeric` completed 62/62 cases:
+61 pure numeric PASS, 1 causal command FAIL, no skips/duplicates, cleanup complete,
+8.273 seconds. The wrapper now delegates arithmetic to the pure evaluator and
+recognizes command-only experienceDelta; this integration is UNRUN and unreviewed.
+Next: update the active progression fixture/example, build and run this numeric
+category plus the existing npc-core-changes consumer category. No whole-feature
+acceptance, source receipts, dependent package or creation coverage is claimed.

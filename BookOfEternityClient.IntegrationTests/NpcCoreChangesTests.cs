@@ -307,6 +307,7 @@ public sealed class NpcCoreChangesTests : IDisposable
             {
                 ["level"] = 3,
                 ["experience"] = 20,
+                ["experienceDelta"] = 170,
                 ["experienceForNextLevel"] = 200
             };
             if (mutation == "missing_tuple")
@@ -1268,7 +1269,8 @@ public sealed class NpcCoreChangesTests : IDisposable
                 {
                     ["level"] = 3,
                     ["experience"] = 20,
-                    ["experienceForNextLevel"] = 200,
+                    ["experienceDelta"] = 170,
+                ["experienceForNextLevel"] = 200,
                     ["progressionType"] = "Companion",
                     ["lastPlayerXPValueOnSync"] = 1200
                 },
@@ -1461,6 +1463,11 @@ public sealed class NpcCoreChangesTests : IDisposable
             currentLocationName: currentLocation["name"]!.GetValue<string>());
         var preTurnActor = Assert.Single(preTurnRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
         preTurnActor["factionAffiliations"] = new JsonArray();
+        preTurnActor["progressionProfile"] = new JsonObject
+        {
+            ["schemaVersion"] = 1, ["mode"] = "table",
+            ["thresholds"] = new JsonArray(100, 150, 200), ["capOverflow"] = "discard"
+        };
         var currentRoot = preTurnRoot.DeepClone().AsObject();
         currentRoot["UpdateNPCs"] = new JsonArray();
         var currentActor = Assert.Single(currentRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());

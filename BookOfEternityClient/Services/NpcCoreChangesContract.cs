@@ -34,6 +34,7 @@ internal static class NpcCoreChangesContract
 
     private static readonly HashSet<string> ProgressionKeys = new(StringComparer.Ordinal)
     {
+        "experienceDelta",
         "level",
         "experience",
         "experienceForNextLevel",
@@ -707,20 +708,12 @@ internal static class NpcCoreChangesContract
         }
 
         ValidateUnknownProperties(progression, ProgressionKeys, context, issues, npcId);
-        var tupleKeys = new[] { "level", "experience", "experienceForNextLevel" };
-        if (tupleKeys.Any(progression.ContainsKey))
+        if (baselineActor != null)
         {
-            foreach (var key in tupleKeys)
-            {
-                if (!TryReadNonNegativeInteger(progression[key], out _))
-                {
-                    issues.Add(Error(
-                        $"{context}.{key}",
-                        "npc_core_changes_progression_invalid",
-                        "A progression tuple requires non-negative integer level, experience, and experienceForNextLevel values.",
-                        npcId));
-                }
-            }
+            var evaluation = MortalNpcProgressionContract.Evaluate(baselineActor, progression);
+            foreach (var problem in evaluation.Problems)
+                issues.Add(Error($"{context}.{problem.Field}",
+                    "npc_core_changes_progression_invalid", problem.Message, npcId));
         }
 
         string? requestedProgressionType = null;

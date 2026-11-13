@@ -33,3 +33,29 @@ A minimal non-progressing NPC is allowed; no fabricated level-ups or mandatory c
 ## Verification and success
 
 Use cheap pure typed arithmetic/profile tests first, then genuine existing-NPC public validation/composition tests. Cover ordinary NPC, merchant, teacher, combatant, non-progressing NPC and explicit setting table. Include negative identity/source/dependency cases and real rollback injection through existing publication. Use only impact-selected categories and discovery validation; no full suite, blanket historical replay or hosted CI. Each block needs causal RED, GREEN, independent review, source/PDB matching when compiled, and a remote checkpoint. Completion requires all FR1-FR9 mapped to evidence; partial blocks never imply whole-issue completion.
+
+## P1 concrete numeric contract
+
+Actor-owned `progressionProfile` is closed and versioned:
+`schemaVersion: 1`, `mode: standard | table | none`.
+Progressing profiles may explicitly set `allowExperienceLoss` (default false),
+`maxLevel`, and `capOverflow: discard`. A table has a nonempty array `thresholds`:
+entry L-1 is the positive integer XP cost to leave level L; its terminal cap is
+array length + 1, optionally shortened by maxLevel. Every cap requires explicit
+discard policy. An uncapped standard profile cannot carry capOverflow. The
+standard cost is exact floor(sqrt(10000 * L^5)), equivalent to the documented
+formula without floating-point rounding authority. Unsupported overflow fails.
+
+Progressing tuples use Int32 integers with level >= 1 and 0 <= experience < the
+current cost. At cap, experience and threshold are both 0. Overflow is rejected
+before excess is discarded. Allowed negative delta can reduce current-level XP
+only, never silently delevel. `none` accepts no other options, preserves its
+nonnegative level, and requires zero XP, threshold and delta. Empty/missing or
+unknown profiles are not authority for progression.
+
+The progression command supplies signed Int32 `experienceDelta` and all three
+absolute result fields. A pure evaluator compares them to the computed result
+without mutating either input. Profile installation/change, owner/realm/source
+binding, declared consequence fields and receipts belong to P2; the numeric
+profile alone is never publication permission. P1 does not implicitly migrate
+old actors or require profiles for unrelated non-progression changes.
