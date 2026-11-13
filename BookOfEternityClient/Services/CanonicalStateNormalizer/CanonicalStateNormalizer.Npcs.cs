@@ -70,12 +70,11 @@ public partial class CanonicalStateNormalizer
                 .ComposeNpcItemPhaseComparisonBaseline(
                     currentRoot,
                     preTurnRoot);
-        if (MortalItemPublicationTailTransforms.NpcCore(
-                currentRoot,
-                comparisonBaseline,
-                authority,
-                tradePending,
-                trainingPending) is not JsonObject result)
+        var projected = treatmentReceipt is not null && _npcProgressionSource?.SkillInput is not null &&
+                        resourcePublication?.NpcProgressionComposition is { } treatmentComposition
+            ? treatmentComposition.ProjectCore(currentRoot, comparisonBaseline, authority, tradePending, trainingPending)
+            : MortalItemPublicationTailTransforms.NpcCore(currentRoot, comparisonBaseline, authority, tradePending, trainingPending);
+        if (projected is not JsonObject result)
         {
             return;
         }

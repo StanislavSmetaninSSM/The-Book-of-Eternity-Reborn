@@ -45,6 +45,7 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
     private readonly JsonObject? _finalIdentityIndexAfterImage;
     private readonly string[] _appliedTransformIds;
     private readonly string _finalBaselineFingerprint;
+    internal MortalTreatmentNpcProgressionComposition? TreatmentNpcComposition { get; }
 
     internal MortalItemAcceptedTurnNormalizationSnapshot(
         string sessionId,
@@ -63,7 +64,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         CanonicalBeforeImage? trainingPending = null,
         MortalItemNpcTradeTailDisposition? npcTradeDisposition = null,
         MortalItemCanonicalProjectionResult? itemPhase = null,
-        MortalItemPublicationBaselineResult? finalBaseline = null)
+        MortalItemPublicationBaselineResult? finalBaseline = null,
+        MortalTreatmentNpcProgressionComposition? treatmentNpcComposition = null)
     {
         if (!ResourceMaterializationContract.IsExactIdentifier(sessionId))
             throw new ArgumentException("Expected an exact accepted-turn session ID.", nameof(sessionId));
@@ -122,6 +124,9 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 "A treatment item snapshot requires either every final-baseline binding or none.");
         }
 
+        if (treatmentNpcComposition is not null && !hasCompleteFinalBaselineBinding)
+            throw new ArgumentException("Treatment NPC composition requires a complete final baseline binding.");
+        TreatmentNpcComposition = treatmentNpcComposition;
         _itemCommandEnvelope = itemCommandEnvelope?.Clone();
         _npcCoreAuthority = npcCoreAuthority is null
             ? null
@@ -320,7 +325,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         NpcCoreChangesContract.Authority npcCoreAuthority,
         CanonicalBeforeImage npcTradePending,
         CanonicalBeforeImage trainingPending,
-        MortalItemNpcTradeTailDisposition npcTradeDisposition)
+        MortalItemNpcTradeTailDisposition npcTradeDisposition,
+        MortalTreatmentNpcProgressionComposition? treatmentNpcComposition = null)
     {
         ArgumentNullException.ThrowIfNull(itemCommandEnvelope);
         ArgumentNullException.ThrowIfNull(npcCoreAuthority);
@@ -335,7 +341,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 npcCoreAuthority,
                 npcTradePending,
                 trainingPending,
-                npcTradeDisposition);
+                npcTradeDisposition,
+                treatmentNpcComposition);
         return recomposed.IsValid &&
                recomposed.Snapshot is not null &&
                MatchesFinalPublicationBaseline(recomposed.Snapshot);
@@ -347,7 +354,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             NpcCoreChangesContract.Authority npcCoreAuthority,
             CanonicalBeforeImage npcTradePending,
             CanonicalBeforeImage trainingPending,
-            MortalItemNpcTradeTailDisposition npcTradeDisposition)
+            MortalItemNpcTradeTailDisposition npcTradeDisposition,
+            MortalTreatmentNpcProgressionComposition? treatmentNpcComposition = null)
     {
         ArgumentNullException.ThrowIfNull(itemCommandEnvelope);
         ArgumentNullException.ThrowIfNull(npcCoreAuthority);
@@ -376,7 +384,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 CloneBeforeImage(npcTradePending)!,
                 CloneBeforeImage(trainingPending)!,
                 npcTradeDisposition,
-                CloneBackupProjectionRoots()));
+                CloneBackupProjectionRoots(),
+                treatmentNpcComposition));
         if (finalBaseline.Issues.Count != 0)
         {
             return new MortalItemTreatmentPublicationBaselineSealResult(
@@ -401,7 +410,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             trainingPending,
             npcTradeDisposition,
             itemPhase,
-            finalBaseline);
+            finalBaseline,
+            treatmentNpcComposition);
         if (!sealedSnapshot.RecomputesFinalPublicationBaseline())
         {
             return InvalidBaselineSeal(
@@ -446,7 +456,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 CloneBeforeImage(_npcTradePending)!,
                 CloneBeforeImage(_trainingPending)!,
                 _npcTradeDisposition!.Value,
-                baseSnapshot.CloneBackupProjectionRoots()));
+                baseSnapshot.CloneBackupProjectionRoots(),
+                TreatmentNpcComposition));
         heavyTimingItemBaselineProjectFinalPublication?.Dispose();
         return FinalBaselineAgrees(finalBaseline) &&
                string.Equals(
@@ -760,7 +771,8 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             includeFinalBaseline ? _trainingPending : null,
             includeFinalBaseline ? _npcTradeDisposition : null,
             itemPhase,
-            finalBaseline);
+            finalBaseline,
+            includeFinalBaseline ? TreatmentNpcComposition : null);
     }
 
     private bool ItemPhaseAgrees(MortalItemCanonicalProjectionResult itemPhase) =>

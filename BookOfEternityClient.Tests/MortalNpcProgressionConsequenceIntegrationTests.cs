@@ -156,6 +156,25 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
             issue.FilePath == "lore/current_world/world_setting.json.npcProgression.characteristics");
     }
 
+    [Fact]
+    public void OrdinaryNpcItemTail_StillRefusesUnfulfilledSkillAward()
+    {
+        var (before, current) = Roots(3, "Archive");
+        var raw = current.ToJsonString();
+        var projected = MortalItemPublicationTailTransforms.NpcCore(current, before, Authority(),
+            new CanonicalBeforeImage(false, null), new CanonicalBeforeImage(false, null));
+        Assert.True(JsonNode.DeepEquals(current, projected));
+        Assert.NotNull(projected!["NPCCoreChanges"]);
+        Assert.Equal(1, projected["NPCsInScene"]![0]!["level"]!.GetValue<int>());
+        Assert.Equal(raw, current.ToJsonString());
+    }
+
+    [Fact]
+    public void TreatmentNpcComposition_ForeignObjectsCannotEnableDeferredTail()
+    {
+        Assert.Null(MortalTreatmentNpcProgressionComposition.FromExistingProjection(new object(), new object()));
+    }
+
     private static NpcCoreChangesContract.Evaluation Evaluate(JsonObject before, JsonObject current,
         NpcCoreChangesContract.Authority authority) => NpcCoreChangesContract.Evaluate(current, before, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);

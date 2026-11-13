@@ -956,6 +956,19 @@ internal static partial class WoundAcceptedTurnPlanner
         return true;
     }
 
+    internal static bool TryReadTreatmentNpcCompositionFingerprint(object continuationAuthority,
+        object reservationAuthority, out string fingerprint)
+    {
+        fingerprint = string.Empty;
+        if (!TryReadMortalProcedurePublication(continuationAuthority, out var continuation) ||
+            !TryReadTreatmentSkillProjectionForEnvelopeSemantics(continuation.SkillProjectionAuthority,
+                reservationAuthority, out var projection) ||
+            !projection.TouchedActorIds.Any(static id => id.StartsWith("npc:", StringComparison.Ordinal)))
+            return false;
+        fingerprint = projection.Fingerprint;
+        return true;
+    }
+
     internal static IReadOnlyList<ValidationIssue> ValidateTreatmentSkillProjectionCandidate(
         object continuationAuthority,
         object reservationAuthority,

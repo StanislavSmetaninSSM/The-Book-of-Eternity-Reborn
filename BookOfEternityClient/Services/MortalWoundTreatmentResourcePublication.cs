@@ -112,6 +112,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             ContinuationAuthority);
     internal string DraftFingerprint => _draft.Fingerprint;
     internal MortalItemNpcTradeTailDisposition NpcTradeDisposition { get; }
+    internal MortalTreatmentNpcProgressionComposition? NpcProgressionComposition => _itemSnapshot.TreatmentNpcComposition;
     internal NpcCoreChangesContract.Authority NpcCoreAuthority =>
         _itemSnapshot.CloneNpcCoreAuthority() ?? throw new InvalidOperationException(
             "The sealed treatment NPC-core authority is missing.");

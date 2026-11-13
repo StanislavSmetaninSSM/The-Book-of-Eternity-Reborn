@@ -5292,6 +5292,13 @@ internal static partial class AcceptedTurnAuthorityRegistry
                     MortalItemNpcTradeTailPolicy.SelectDisposition(
                         hasTreatmentContinuation: true,
                         ownsNpcRoot);
+                var needsNpcComposition = ownsNpcTail &&
+                    projectedItemPhase.ItemPhaseAfterImages.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) is JsonObject npcInput &&
+                    NpcCoreChangesContract.HasProgressionCommand(npcInput);
+                var npcComposition = needsNpcComposition
+                    ? MortalTreatmentNpcProgressionComposition.FromExistingProjection(treatmentContinuationAuthority, reservationAuthority)
+                    : null;
+                if (needsNpcComposition && npcComposition is null) return ItemBaselineChangedIssue();
                 if (baseSnapshot.HasFinalPublicationBaseline)
                 {
                     return baseSnapshot.MatchesTreatmentPublicationBaseline(
@@ -5299,7 +5306,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         npcCoreAuthority,
                         npcTradePending,
                         trainingPending,
-                        npcTradeDisposition)
+                        npcTradeDisposition,
+                        npcComposition)
                         ? Array.Empty<ValidationIssue>()
                         : ItemBaselineChangedIssue();
                 }
@@ -5309,7 +5317,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
                         npcCoreAuthority,
                         npcTradePending,
                         trainingPending,
-                        npcTradeDisposition);
+                        npcTradeDisposition,
+                        npcComposition);
                 if (!sealedBaseline.IsValid || sealedBaseline.Snapshot is null)
                     return sealedBaseline.Issues;
                 if (!_mortalItems.TrySealTreatmentPublicationBaseline(

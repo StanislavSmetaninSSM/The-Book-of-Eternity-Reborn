@@ -110,7 +110,8 @@ internal sealed record MortalItemPublicationBaselineInput(
     CanonicalBeforeImage NpcTradePending,
     CanonicalBeforeImage TrainingPending,
     MortalItemNpcTradeTailDisposition NpcTradeDisposition,
-    IReadOnlyDictionary<string, JsonNode?> BackupRoots);
+    IReadOnlyDictionary<string, JsonNode?> BackupRoots,
+    MortalTreatmentNpcProgressionComposition? TreatmentNpcComposition = null);
 
 internal sealed record MortalItemPublicationBaselineResult(
     IReadOnlyDictionary<string, JsonNode?> FinalCarrierRoots,
@@ -195,12 +196,11 @@ internal static class MortalItemPublicationBaselinePlanner
                 var comparisonBaseline = ComposeNpcItemPhaseComparisonBaseline(
                     current,
                     input.BackupRoots[path]);
-                var projected = MortalItemPublicationTailTransforms.NpcCore(
-                    current,
-                    comparisonBaseline,
-                    input.NpcCoreAuthority,
-                    input.NpcTradePending,
-                    input.TrainingPending);
+                var projected = input.TreatmentNpcComposition is { } treatment
+                    ? treatment.ProjectCore(current, comparisonBaseline, input.NpcCoreAuthority,
+                        input.NpcTradePending, input.TrainingPending)
+                    : MortalItemPublicationTailTransforms.NpcCore(current, comparisonBaseline,
+                        input.NpcCoreAuthority, input.NpcTradePending, input.TrainingPending);
                 if (current is JsonObject currentRoot &&
                     currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName) &&
                     projected is JsonObject projectedRoot &&
@@ -397,7 +397,9 @@ internal static class MortalItemPublicationBaselinePlanner
             input.NpcTradePending.Fingerprint,
             input.TrainingPending.Fingerprint,
             input.NpcTradeDisposition.ToString(),
-            AuthorityFingerprint(input.NpcCoreAuthority)
+            AuthorityFingerprint(input.NpcCoreAuthority),
+            input.TreatmentNpcComposition is null ? "npc_progression_composition:absent" : "npc_progression_composition:present",
+            input.TreatmentNpcComposition?.Fingerprint
         };
         foreach (var pair in input.ItemPhase.ItemPhaseAfterImages.OrderBy(
                      static pair => pair.Key,
