@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-common-publication",
+      "responsibility": "#1538 ordinary completed common effect publication consumes skill sidecar and preserves same-turn NPC source, plus reached late-cut rollback.",
+      "excludes": "Item/location transitions, treatment, joint repair and pending resolutions.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkillCommonPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectPublishesCatalogAndConsumesBothCommands",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectLateCutRestoresCatalogSidecarAndEffectOutputs"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-original-presence",
       "responsibility": "#1538 actual Mortal live producer signs present or absent original NPC skill commands without changing rollback membership.",
       "excludes": "Afterlife forms, fabricated absence and common publication.",

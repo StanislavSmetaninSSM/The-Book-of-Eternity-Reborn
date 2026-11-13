@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-skill-common-publication",
+      "reason": "Bounded next ordinary common publication integration; unchanged unrelated suites excluded.",
+      "contracts": [
+        "Accepted skill + ordinary effect publication, actual late cut restores both command sources and outputs."
+      ]
+    },
+    {
       "category": "mortal-npc-skill-original-presence",
       "reason": "Real producer must establish signed absence before first skill publication.",
       "contracts": [
