@@ -11,6 +11,7 @@ public sealed class MortalNpcProgressionCommandTests
     {
         var actor = new JsonObject
         {
+            ["activeSkills"] = new JsonArray(), ["passiveSkills"] = new JsonArray(), ["characteristics"] = new JsonObject(),
             ["NPCId"] = "npc_progression", ["level"] = 1, ["experience"] = 10,
             ["experienceForNextLevel"] = 100,
             ["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "standard", ["consequences"] = JsonNode.Parse("""{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}""") }
@@ -38,6 +39,7 @@ public sealed class MortalNpcProgressionCommandTests
     {
         var actor = new JsonObject
         {
+            ["activeSkills"] = new JsonArray(), ["passiveSkills"] = new JsonArray(), ["characteristics"] = new JsonObject(),
             ["NPCId"] = "npc_progression", ["level"] = 1, ["experience"] = 99,
             ["experienceForNextLevel"] = 100,
             ["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "standard", ["consequences"] = JsonNode.Parse("""{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}""") }

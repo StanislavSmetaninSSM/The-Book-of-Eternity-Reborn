@@ -265,14 +265,9 @@ public sealed class MortalNpcProgressionPublicationTests
             try
             {
                 var before = JsonNode.Parse("""
-                    {"NPCsInScene":[{"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
+                    {"NPCsInScene":[{"NPCId":"npc_source","activeSkills":[],"passiveSkills":[],"characteristics":{},"level":1,"experience":99,"experienceForNextLevel":100,
                       "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}]}
                     """)!.AsObject();
-                if (includeSkillSidecar)
-                {
-                    before["NPCsInScene"]![0]!["activeSkills"] = new JsonArray();
-                    before["NPCsInScene"]![0]!["passiveSkills"] = new JsonArray();
-                }
                 var current = before.DeepClone().AsObject();
                 current["NPCCoreChanges"] = JsonNode.Parse("""
                     [{"NPCId":"npc_source","reason":"Earned two XP","progression":{

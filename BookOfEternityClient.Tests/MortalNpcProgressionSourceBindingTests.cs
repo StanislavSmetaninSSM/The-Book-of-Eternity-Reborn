@@ -10,7 +10,7 @@ public sealed class MortalNpcProgressionSourceBindingTests
     public void ExistingProgression_WithoutTrustedTurnContext_IsRejected()
     {
         var actor = JsonNode.Parse("""
-            {"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
+            {"NPCId":"npc_source","activeSkills":[],"passiveSkills":[],"characteristics":{},"level":1,"experience":99,"experienceForNextLevel":100,
              "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}
             """)!.AsObject();
         var before = new JsonObject { ["NPCsInScene"] = new JsonArray(actor) };
@@ -119,7 +119,7 @@ public sealed class MortalNpcProgressionSourceBindingTests
     internal static (JsonObject Before, JsonObject Current) Roots()
     {
         var before = JsonNode.Parse("""
-            {"NPCsInScene":[{"NPCId":"npc_source","level":1,"experience":99,"experienceForNextLevel":100,
+            {"NPCsInScene":[{"NPCId":"npc_source","activeSkills":[],"passiveSkills":[],"characteristics":{},"level":1,"experience":99,"experienceForNextLevel":100,
               "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}]}
             """)!.AsObject();
         var current = before.DeepClone().AsObject();

@@ -40,7 +40,8 @@ internal static class NpcCoreChangesContract
         "experience",
         "experienceForNextLevel",
         "progressionType",
-        "lastPlayerXPValueOnSync"
+        "lastPlayerXPValueOnSync",
+        "skillAwards"
     };
 
     private static readonly HashSet<string> FactionAffiliationKeys = new(StringComparer.Ordinal)

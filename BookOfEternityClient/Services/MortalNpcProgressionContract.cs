@@ -32,6 +32,8 @@ internal static class MortalNpcProgressionContract
     /// None permits no additional profile options, retains any nonnegative level, and requires zero
     /// experience, threshold and delta. Commands require signed Int32 experienceDelta and a complete
     /// nonnegative absolute tuple. Intermediate XP overflow is rejected before cap discard.
+    /// Standard/table also require explicit consequences validated by the shared consequence-profile parser.
+    /// skillAwards is caller-owned consequence DATA; numeric validation grants no award authority.
     /// Profiles cannot be replaced here. Narrative progressionType/tracker validation remains caller-owned.
     /// </summary>
     internal static Evaluation Evaluate(JsonObject baselineActor, JsonObject progression)
@@ -39,7 +41,7 @@ internal static class MortalNpcProgressionContract
         foreach (var property in progression)
         {
             if (property.Key is not ("level" or "experience" or "experienceForNextLevel" or
-                "experienceDelta" or "source" or "progressionType" or "lastPlayerXPValueOnSync"))
+                "experienceDelta" or "source" or "progressionType" or "lastPlayerXPValueOnSync" or "skillAwards"))
                 return Reject(property.Key, "Unknown progression field; profile replacement requires a separate explicit transition.");
         }
 
@@ -123,7 +125,7 @@ internal static class MortalNpcProgressionContract
             return new Problem("progressionProfile", "An explicit canonical progressionProfile object is required.");
         foreach (var property in profile)
         {
-            if (property.Key is not ("schemaVersion" or "mode" or "allowExperienceLoss" or "maxLevel" or "capOverflow" or "thresholds"))
+            if (property.Key is not ("schemaVersion" or "mode" or "allowExperienceLoss" or "maxLevel" or "capOverflow" or "thresholds" or "consequences"))
                 return new Problem($"progressionProfile.{property.Key}", "Unknown progression profile field.");
         }
         if (!TryInteger(profile["schemaVersion"], out var version) || version != 1)
@@ -176,6 +178,12 @@ internal static class MortalNpcProgressionContract
         }
         else if (profile.ContainsKey("capOverflow"))
             return new Problem("progressionProfile.capOverflow", "An uncapped profile cannot declare capOverflow.");
+        var consequences = MortalNpcProgressionConsequences.ParseProfile(profile);
+        if (!consequences.IsValid)
+        {
+            var problem = consequences.Problems[0];
+            return new Problem(problem.Field, "Progressing profiles require explicit valid skill cadence and current-world characteristic consequences.");
+        }
         result = new Profile(mode, allowLoss, cap, thresholds);
         return null;
     }
