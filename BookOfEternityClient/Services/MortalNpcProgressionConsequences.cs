@@ -37,14 +37,16 @@ internal static partial class MortalNpcProgressionConsequences
         var originals = Catalog(originalActor, issues);
         var candidates = Catalog(candidateActor, issues);
         var used = new Dictionary<(string Kind, string Name, string Award), int>();
-        foreach (var node in skillAwards ?? [])
+        for (var awardIndex = 0; awardIndex < (skillAwards?.Count ?? 0); awardIndex++)
         {
+            var node = skillAwards![awardIndex];
+            var awardPath = $"skillAwards[{awardIndex}]";
             if (node is not JsonObject row || row.Any(p => p.Key is not ("kind" or "skillName" or "skillId" or "award")) ||
                 Exact(row["kind"]) is not ("active" or "passive") || Exact(row["skillName"]) is null ||
                 Exact(row["award"]) is not ("newSkill" or "masteryIncrease") ||
                 (row.ContainsKey("skillId") && Exact(row["skillId"]) is null))
             {
-                issues.Add(new("npc_progression_skill_award_invalid", "skillAwards"));
+                issues.Add(new("npc_progression_skill_award_invalid", awardPath));
                 continue;
             }
             var kind = Exact(row["kind"])!; var name = Exact(row["skillName"])!;
@@ -64,7 +66,7 @@ internal static partial class MortalNpcProgressionConsequences
             used.TryGetValue(claim, out var consumed);
             used[claim] = consumed + 1;
             if (consumed >= budget)
-                issues.Add(new("npc_progression_skill_award_unfulfilled", "skillAwards." + name));
+                issues.Add(new("npc_progression_skill_award_unfulfilled", awardPath));
         }
         ValidateCharacteristics(originalActor, candidateActor, gained, worldPolicy, allowedKeys, issues);
         return issues.ToArray();

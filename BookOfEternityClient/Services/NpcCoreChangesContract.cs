@@ -186,7 +186,7 @@ internal static partial class NpcCoreChangesContract
                 "source must contain only exact current sessionId, requestId and integer turnNumber from the current request; do not author snapshot hashes.", npcId));
     }
 
-    internal sealed record ChangePlan(string NpcId, JsonObject Command);
+    internal sealed record ChangePlan(string NpcId, JsonObject Command, int CommandIndex);
 
     internal sealed class Evaluation
     {
@@ -418,7 +418,7 @@ internal static partial class NpcCoreChangesContract
             }
 
             if (npcId != null && evaluation.Issues.Count == issueStart)
-                evaluation.Plans.Add(new ChangePlan(npcId, command.DeepClone().AsObject()));
+                evaluation.Plans.Add(new ChangePlan(npcId, command.DeepClone().AsObject(), index));
         }
 
         if (!deferFinalConsequences && evaluation.CanApply &&

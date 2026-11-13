@@ -62,9 +62,22 @@ internal static partial class NpcCoreChangesContract
             foreach (var target in targets)
                 foreach (var problem in MortalNpcProgressionConsequences.Evaluate(original.Actor, target.Actor,
                     awards, profile, authority.NpcCharacteristicPolicy.Value!, authority.WorldCharacteristicKeys))
-                    issues.Add(Error(target.Path + "." + problem.Field, problem.Code,
+                    issues.Add(Error(ConsequenceDiagnosticPath(plan, target.Path, problem), problem.Code,
                         "Final NPC progression consequences do not match the declared policy and awards.", plan.NpcId));
         }
         return issues;
+    }
+
+    private static string ConsequenceDiagnosticPath(ChangePlan plan, string actorPath,
+        MortalNpcProgressionConsequences.Problem problem)
+    {
+        var commandPath = $"{NpcCorePath}.{PropertyName}[{plan.CommandIndex}]";
+        if (problem.Code is "npc_progression_skill_award_count" or "npc_progression_skill_award_invalid" or
+            "npc_progression_skill_award_unfulfilled")
+            return commandPath + ".progression." + problem.Field;
+        if (problem.Code == "npc_progression_characteristic_delta")
+            return commandPath + ".characteristicValues" +
+                (problem.Field is "characteristics" or "characteristics.total" ? "" : "." + problem.Field);
+        return actorPath + "." + problem.Field;
     }
 }
