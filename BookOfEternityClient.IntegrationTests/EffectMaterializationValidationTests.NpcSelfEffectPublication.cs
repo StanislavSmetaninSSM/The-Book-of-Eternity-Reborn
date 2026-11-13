@@ -118,6 +118,8 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(resourceBefore, await context.CaptureBytesAsync(resourcePaths));
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         var apply = CreateMaterializableApplyCommand("npc");
+        var request = (await context.ReadJsonAsync("input/turn_request.json"))!;
+        apply["eventRef"]!["authorityId"] = $"turn_{request["turnNumber"]!.GetValue<int>()}";
         apply["source"]!["sourceId"] = GrantedNpcSkillId;
         apply["target"] = new JsonObject { ["kind"] = "npc", ["targetId"] = NpcSkillOwner };
         await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,

@@ -214,6 +214,7 @@ public sealed partial class EffectMaterializationValidationTests
             await context.WriteJsonAsync(NpcSkillCorePath, core);
         }
         var apply = CreateMaterializableApplyCommand();
+        apply["eventRef"]!["authorityId"] = $"turn_{snapshotTurn}";
         apply["source"]!["sourceId"] = GrantedNpcSkillId;
         await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(apply));

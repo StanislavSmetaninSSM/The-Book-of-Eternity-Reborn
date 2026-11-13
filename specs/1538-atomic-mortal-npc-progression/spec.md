@@ -81,7 +81,7 @@ P2a does not add receipts, profile transitions, dependencies or another writer.
 Absolute tuple application and command consumption retain their existing
 idempotent behavior; this block tests it without claiming all FR3-FR8 complete.
 
-## P2b accepted architecture direction (implementation still pending)
+## P2b accepted architecture and implemented composition
 
 The durable ordinary NPC skill catalog will be canonical core activeSkills and
 passiveSkills. The four existing npc_skills.json command arrays are pending
@@ -108,4 +108,4 @@ Characteristics use only explicit supported fixed increments or fixed allocated
 points/current-world keys; unsupported formulas fail closed. Other declared
 domains need concrete existing-owner result adapters, not arbitrary JSON paths,
 embedded alternative state, or a generic row-exists dependency language.
-FR4/FR5 remain incomplete until these adapters and real publication tests exist.
+Core/skill/characteristic composition, explicit profile transitions and current consumer freshness are implemented and boundedly qualified. Existing-item transfer publication and rollback are verified. Final same-NPC effect admission, evidence reconciliation and independent outcome review remain pending; see the current plan rather than historical checkpoint statuses.
