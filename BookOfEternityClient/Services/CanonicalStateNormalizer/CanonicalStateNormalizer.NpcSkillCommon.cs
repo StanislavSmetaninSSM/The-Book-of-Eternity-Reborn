@@ -5,8 +5,8 @@ namespace BookOfEternityClient.Services;
 public partial class CanonicalStateNormalizer
 {
     /// <summary>
-    /// Admits only the existing completed ordinary common owner. The immutable skill
-    /// input is DATA, never a replacement for this current lease and actual handoff.
+    /// Checks the live owner/source at each phase. Immutable witness parsing belongs
+    /// to opening validation, not to these repeated current-authority fences.
     /// </summary>
     private void RequireOrdinaryNpcSkillCommonPlan(AcceptedMechanicsPlan plan)
     {
@@ -14,12 +14,8 @@ public partial class CanonicalStateNormalizer
         var source = _npcProgressionSource?.Context;
         if (_writeLease is null || input is null || source is null || source.Realm != "mortal_world" ||
             plan.EffectPlan?.NpcSkillInput is not { } admitted ||
-            !string.Equals(input.Fingerprint, admitted.Fingerprint, StringComparison.Ordinal) ||
-            plan.AwaitsPendingResolution || plan.TreatmentResourcePublicationAuthority is not null ||
-            plan.JointRepairCommonAuthority is not null || plan.SpiritualHealingContinuation is not null ||
-            plan.DirectWoundPublicationAuthority is not null || plan.WoundStageBundle is not null ||
-            plan.LiveWoundProofFingerprint is not null)
-            throw new InvalidDataException("Ordinary NPC skills require an exact completed ordinary common effect plan; specialized or pending publication is unsupported.");
+            !string.Equals(input.Fingerprint, admitted.Fingerprint, StringComparison.Ordinal))
+            throw new InvalidDataException("Ordinary NPC skills require their exact common effect input and current Mortal source.");
 
         if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(_fs, _writeLease, out var binding, out var current) ||
             !current.Success || !ReferenceEquals(current.Plan, plan) ||
@@ -27,14 +23,32 @@ public partial class CanonicalStateNormalizer
             binding.SnapshotToken != source.SnapshotToken || binding.Turn != source.TurnNumber ||
             binding.Realm != source.Realm)
             throw new InvalidDataException("Ordinary NPC skill publication lost its exact current common owner or source binding.");
+    }
 
+    /// <summary>
+    /// Validates immutable shape and raw witnesses once before normalization writes.
+    /// Later phases require this same immutable plan through its existing live owner;
+    /// no cached permission or independently retained validation result is introduced.
+    /// </summary>
+    private void ValidateOrdinaryNpcSkillCommonOpening(AcceptedMechanicsPlan plan)
+    {
+        RequireOrdinaryNpcSkillCommonPlan(plan);
+        if (plan.AwaitsPendingResolution || plan.TreatmentResourcePublicationAuthority is not null ||
+            plan.JointRepairCommonAuthority is not null || plan.SpiritualHealingContinuation is not null ||
+            plan.DirectWoundPublicationAuthority is not null || plan.HasWoundStageBundle ||
+            plan.LiveWoundProofFingerprint is not null)
+            throw new InvalidDataException("Ordinary NPC skills require an exact completed ordinary common effect plan; specialized or pending publication is unsupported.");
+
+        var pending = plan.PendingAfterImages;
+        var transitions = plan.OwnerTransitions;
         foreach (var path in new[] { NpcCoreChangesContract.NpcCorePath, MortalNpcAcceptedSkillInput.SidecarPath })
         {
-            if (plan.HasWholeCarrierAfterImage(path) || plan.PendingAfterImages.ContainsKey(path) ||
+            if (plan.HasWholeCarrierAfterImage(path) || pending.ContainsKey(path) ||
                 plan.ConsumedPaths.Contains(path, StringComparer.Ordinal) ||
-                plan.OwnerTransitions.Any(transition => transition.Path == path))
+                transitions.Any(transition => transition.Path == path))
                 throw new InvalidDataException("Ordinary NPC skills cannot overlap a common NPC carrier after-image or transition before semantic composition is supported.");
         }
+        var input = _npcProgressionSource!.SkillInput!;
         var before = plan.BeforeImages;
         RequireRawWitness(NpcCoreChangesContract.NpcCorePath, input.RawCore);
         RequireRawWitness(MortalNpcAcceptedSkillInput.SidecarPath, input.RawSidecar);
@@ -42,7 +56,7 @@ public partial class CanonicalStateNormalizer
         void RequireRawWitness(string path, JsonObject raw)
         {
             if (!before.TryGetValue(path, out var image) || !image.Existed || image.Bytes is not { } bytes ||
-                !JsonNode.DeepEquals(JsonNode.Parse(DecodeAcceptedMechanicsUtf8(bytes)), raw))
+                !JsonNode.DeepEquals(JsonNode.Parse(DecodePendingSnapshotText(bytes)), raw))
                 throw new InvalidDataException("Ordinary NPC skill common before-image differs from its admitted raw input: " + path);
         }
     }

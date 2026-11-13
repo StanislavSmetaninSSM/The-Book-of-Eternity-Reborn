@@ -46,7 +46,9 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectPublishesCatalogAndConsumesBothCommands",
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectLateCutRestoresCatalogSidecarAndEffectOutputs"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectLateCutRestoresCatalogSidecarAndEffectOutputs",
+        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_Utf16CommonWitnessPublishesWithoutChangingSnapshotEncoding",
+        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_ValidLocationUpdateRefusesUnsupportedCommonCompositionWithoutMutation"
           ]
         }
       ]

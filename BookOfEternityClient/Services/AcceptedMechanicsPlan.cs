@@ -1707,6 +1707,9 @@ internal sealed class AcceptedMechanicsPlan
 
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
 
+    /// <summary>Tests the sealed stage family without cloning the immutable wound bundle.</summary>
+    internal bool HasWoundStageBundle => _woundStageBundle is not null;
+
     /// <summary>
     /// Gets a detached, fully validated wound bundle when this object contains wound stages.
     /// </summary>

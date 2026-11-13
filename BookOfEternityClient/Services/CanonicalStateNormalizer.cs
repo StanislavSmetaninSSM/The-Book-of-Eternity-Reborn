@@ -456,7 +456,7 @@ public partial class CanonicalStateNormalizer
         if (_npcProgressionSource?.SkillInput is not null &&
             acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated npcCommon)
         {
-            RequireOrdinaryNpcSkillCommonPlan(npcCommon.Plan);
+            ValidateOrdinaryNpcSkillCommonOpening(npcCommon.Plan);
             await RequireOrdinaryNpcSkillCommonHasNoItemOrLocationWorkAsync(mortalItemMode);
         }
         // This check precedes every normalizer mutation, including generic NoPlan calls.

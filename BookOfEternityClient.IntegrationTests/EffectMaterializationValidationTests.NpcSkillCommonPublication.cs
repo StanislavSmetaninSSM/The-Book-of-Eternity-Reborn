@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -7,6 +8,73 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class EffectMaterializationValidationTests
 {
+    [Fact]
+    public async Task OrdinaryNpcSkillGrant_Utf16CommonWitnessPublishesWithoutChangingSnapshotEncoding()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var backups = await PrepareNpcSkillCommonPublicationAsync(context);
+        var snapshotBefore = await context.CaptureBytesAsync(backups.Values
+            .Append("game_state/control/pending_turn_snapshot.json").ToArray());
+        foreach (var path in new[] { NpcSkillCorePath, PendingNpcSkillsPath })
+        {
+            var text = (await context.FileSystem.ReadFileAsync(path))!;
+            var bytes = Encoding.Unicode.GetPreamble().Concat(Encoding.Unicode.GetBytes(text)).ToArray();
+            await context.FileSystem.WriteFileAtomicBytesAsync(path, bytes);
+        }
+        var admitted = await AdmitNpcSkillCommonPublicationAsync(context);
+        var witnesses = admitted.BeforeImages;
+        Assert.Equal(new byte[] { 0xff, 0xfe }, witnesses[NpcSkillCorePath].Bytes!.Take(2).ToArray());
+        Assert.Equal(new byte[] { 0xff, 0xfe }, witnesses[PendingNpcSkillsPath].Bytes!.Take(2).ToArray());
+
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, backups);
+
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.NotNull(result.MechanicsPlan);
+        var actor = (await context.ReadJsonAsync(NpcSkillCorePath))!["NPCsInScene"]![0]!;
+        Assert.Equal(GrantedNpcSkillId, Assert.Single(actor["activeSkills"]!.AsArray())!["skillId"]!.GetValue<string>());
+        Assert.Empty((await context.ReadJsonAsync(PendingNpcSkillsPath))!.AsObject());
+        Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
+        var carrier = (await context.ReadJsonAsync(EffectMaterializationTestContext.PlayerEffectsPath))!;
+        Assert.Equal(GrantedNpcSkillId, Assert.Single(carrier["activeEffects"]!.AsArray())!["source"]!["sourceId"]!.GetValue<string>());
+        Assert.Equal(snapshotBefore, await context.CaptureBytesAsync(snapshotBefore.Keys.ToArray()));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcSkillGrant_ValidLocationUpdateRefusesUnsupportedCommonCompositionWithoutMutation()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            MortalActorTestFixtures.DefaultLocationId, MortalActorTestFixtures.DefaultLocationName);
+        var map = MortalLocationTestFixture.CreateWorldMap(location);
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location));
+        await context.WriteJsonAsync(MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location));
+        var backups = await PrepareNpcSkillCommonPublicationAsync(context);
+        map["worldMapUpdates"] = new JsonObject
+        {
+            ["locationUpdates"] = new JsonArray(new JsonObject
+            {
+                ["locationId"] = MortalActorTestFixtures.DefaultLocationId,
+                ["displayName"] = "Changed location alongside NPC skill grant"
+            })
+        };
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        await AdmitNpcSkillCommonPublicationAsync(context);
+        var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+
+        var failure = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, backups));
+
+        Assert.Contains("does not yet support location commands or governed rewrites", failure.Message, StringComparison.Ordinal);
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
     [Fact]
     public async Task OrdinaryNpcSkillGrant_CommonEffectPublishesCatalogAndConsumesBothCommands()
     {
