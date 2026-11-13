@@ -327,7 +327,17 @@ public sealed class MortalNpcProgressionPublicationTests
                         var signedFiles = manifest["files"]!.AsObject();
                         foreach (var logicalPath in PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths)
                             presence[logicalPath] = signedFiles.ContainsKey(logicalPath);
-                        manifest["originalPathPresenceV1"] = presence;
+                        // Match the validation manifest DTO's serialization order:
+                        // snapshotFileHashes, originalPathPresenceV1, clientOwnedValidationHashes.
+                        // The signing fixture hashes the authored JsonObject order.
+                        var orderedManifest = new JsonObject();
+                        foreach (var property in manifest)
+                        {
+                            orderedManifest[property.Key] = property.Value?.DeepClone();
+                            if (property.Key == "snapshotFileHashes")
+                                orderedManifest["originalPathPresenceV1"] = presence;
+                        }
+                        manifest = orderedManifest;
                     }
                 }
                 manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);

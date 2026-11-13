@@ -1,3 +1,7 @@
+## Pure consequences RED and fixture ordering correction, 2026-11-13
+
+Exact8199 source verified by runtime PE/PDB joins: pure15 cases yielded6 PASS/9 FAIL on compile stub as predicted. Stub implementation replaced, not yet verified. Publication fixture still failed before auth because JSON presence property was appended after manifest hash rather than DTO order; now inserted immediately after snapshotFileHashes before signing. This is a second fixture defect, not a runtime absence failure. Do not claim corrected publication PASS until actual rerun. Common runtime d70f is saved WIP; prior build captured old common files entirely (verified checksum comparison), not that implementation.
+
 ## Presence verification and corrected fixture, 2026-11-13
 
 Runtime767886: real producer6/6, raw effect4/4, selected prior presence9/9 and observation6/6 PASS. Publication13/15 exposed an invalid two-key signed-presence TEST fixture, not a failed signed-absence implementation; correcting it to the exact24 shape. Retire the earlier13/14 causal interpretation for signed absence. Real producer original2-case RED remains valid. Common effect2/2 desired-success tests fail at the explicit unsupported common-plan guard; late cut is not yet reached. New pure consequences component is a compile-only fail-open stub with15tests, no runtime caller, not implemented or qualified.
