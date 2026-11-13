@@ -86,8 +86,8 @@ public partial class ValidationService
             source.ReadBytesAsync(role, path, "original-rollback", lease).GetAwaiter().GetResult();
     }
 
-    /// <summary>The closed eleven logical roles consumed by ordinary narrative policy.</summary>
-    internal enum NarrativeSourceRole { Narrative, Interface, Debug, Ready, Achievements, ActiveSkills, PassiveSkills, SkillMastery, RegularQuests, QuestHistory, PlotOutline }
+    /// <summary>The closed logical roles consumed by ordinary narrative policy.</summary>
+    internal enum NarrativeSourceRole { Narrative, Interface, Debug, Ready, Achievements, ActiveSkills, PassiveSkills, SkillMastery, RegularQuests, QuestHistory, PlotOutline, TurnRequest, SoulState, NpcCore, NpcSkills }
 
     /// <summary>Detached diagnostic DATA for one actual read or policy observation.</summary>
     /// <param name="Ordinal">The ordinal retained or checked by this operation.</param>
@@ -360,10 +360,14 @@ public partial class ValidationService
         /// <param name="first">The first retained or checked by this operation.</param>
         /// <param name="second">The second retained or checked by this operation.</param>
         private static bool Same(byte[]? first, byte[]? second) => first is null ? second is null : second is not null && first.AsSpan().SequenceEqual(second);
-        /// <summary>Resolves only one of the eleven closed narrative source roles.</summary>
+        /// <summary>Resolves only one of the closed narrative source roles.</summary>
         /// <param name="path">The path retained or checked by this operation.</param>
         private static NarrativeSourceRole Role(string path) => path switch
         {
+            "input/turn_request.json" => NarrativeSourceRole.TurnRequest,
+            "game_state/meta/soul_state.json" => NarrativeSourceRole.SoulState,
+            "game_state/npcs/npc_core.json" => NarrativeSourceRole.NpcCore,
+            "game_state/npcs/npc_skills.json" => NarrativeSourceRole.NpcSkills,
             "output/narrative_response.json" => NarrativeSourceRole.Narrative,
             "output/interface_updates.json" => NarrativeSourceRole.Interface,
             "output/debug_logs.json" => NarrativeSourceRole.Debug,

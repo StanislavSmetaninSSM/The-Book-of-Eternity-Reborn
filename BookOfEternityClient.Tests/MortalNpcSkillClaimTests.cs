@@ -88,4 +88,48 @@ public sealed class MortalNpcSkillClaimTests : IDisposable
     {
         await Setup(new JsonArray(Claim())); Assert.NotEmpty(await Evaluate());
     }
+    [Theory]
+    [InlineData(5, "npc_a", false)]
+    [InlineData(0, "npc_a", true)]
+    [InlineData(5, "npc_b", true)]
+    public async Task Progression_RequiresFreshExactOwnerEntry(int progress, string owner, bool rejected)
+    {
+        await Setup(new JsonArray(Claim()));
+        await Original(Core(), Skills(0));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", Skills(progress, owner));
+        var result = await Evaluate();
+        Assert.Equal(rejected, result.Count > 0);
+    }
+    [Fact]
+    public async Task Learning_RequiresSkillAbsentFromProvenOriginal()
+    {
+        var claim = Claim(); claim["claimType"] = "learning";
+        await Setup(new JsonArray(claim));
+        await Original(Core(), Skills(0));
+        Assert.NotEmpty(await Evaluate());
+    }
+    private async Task Original(string core, string skills)
+    {
+        await _fs.WriteFileAtomicAsync("input/turn_request.json",
+            """{"sessionId":"npc-claims","requestId":"claim-turn","turnNumber":9,"playerAction":"Открыть дверь"}""");
+        var files = new JsonObject(); var hashes = new JsonObject(); var baseline = new JsonArray();
+        foreach (var (path, json) in new[] { ("game_state/npcs/npc_core.json", core), ("game_state/npcs/npc_skills.json", skills) })
+        {
+            var snapshotPath = "game_state/control/pending_turn_snapshot/" + path;
+            await _fs.WriteFileAtomicAsync(snapshotPath, json);
+            files[path] = snapshotPath; hashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(json); baseline.Add(path);
+        }
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = "npc-claims", ["requestId"] = "claim-turn", ["turnNumber"] = 9,
+            ["requestTimestamp"] = "2026-11-13T03:00:00Z", ["playerAction"] = "Открыть дверь",
+            ["files"] = files, ["snapshotFileHashes"] = hashes,
+            ["clientOwnedValidationHashes"] = new JsonObject(), ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = baseline, ["sourceLabel"] = "NPC claim test", ["manifestPayloadHash"] = ""
+        };
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
 }

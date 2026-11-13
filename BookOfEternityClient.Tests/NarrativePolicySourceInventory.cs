@@ -12,6 +12,13 @@ internal static class NarrativePolicySourceInventory
     /// <returns>The exact f766d9d source required by the reasoning inverse, with each applicable adapter occurring exactly once.</returns>
     internal static string ReverseIfPresent(string source)
     {
+        const string npcCall = "                await ValidateMortalNpcSkillClaimsAsync(responseText, issues, source);\n";
+        if (source.Contains(npcCall, StringComparison.Ordinal))
+        {
+            Assert.Equal(1, source.Split(npcCall, StringSplitOptions.None).Length - 1);
+            source = source.Replace(npcCall, string.Empty, StringComparison.Ordinal);
+        }
+
         if (source.Contains("bool readOnly = false, NarrativeInterfaceSourceSession? source = null", StringComparison.Ordinal))
         {
             foreach (var (current, previous) in Replacements)

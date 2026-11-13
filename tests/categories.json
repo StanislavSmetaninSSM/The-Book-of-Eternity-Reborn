@@ -20,7 +20,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalNpcSkillClaimTests.*"
+            "BookOfEternityClient.Tests.MortalNpcSkillClaimTests.*",
+            "BookOfEternityClient.Tests.MortalNpcSkillClaimDocumentationTests.*"
           ]
         }
       ]

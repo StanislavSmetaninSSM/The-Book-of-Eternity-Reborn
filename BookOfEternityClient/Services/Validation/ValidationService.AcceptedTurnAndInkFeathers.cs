@@ -140,6 +140,7 @@ public partial class ValidationService
             {
                 await ValidateAchievementUnlockNarrativeMarkersAsync(responseText, issues, source);
                 await ValidateAcceptedTurnProseStateDeltasAsync(responseText, issues, source);
+                await ValidateMortalNpcSkillClaimsAsync(responseText, issues, source);
             }
         }
         catch (JsonException)

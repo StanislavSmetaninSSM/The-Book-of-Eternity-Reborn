@@ -396,6 +396,90 @@ Prose State Delta Rationale / связь прозы и состояния:
 - quest: Печать Серебряной Луны - no-progress rationale: название дела упомянуто как контекст, новой зацепки или стадии квеста нет.
 ```
 
+Mortal NPC structured skill claims: mortal_npc_skill_claims_v1 (#1533)
+
+Every Mortal accepted turn writes private output/debug_logs.json.npcSkillClaims,
+including [] when no NPC skill assertion is declared. This explicit report is
+not proof of prose completeness: the client validates submitted claims, not the
+semantic completeness of the author's list. Never expose actorKey or the report
+in player-facing response. Afterlife uses no new reporting requirement.
+
+The following is an explanatory bundle, NOT a new response format. Its outer
+keys label separate documents/cases. Retain all unrelated fields in each real
+file. Premise: npc_miron already owns a complete validated active skill named
+«Точный выпад» in npc_core.json; its exact identity and profile are unchanged.
+beforeNpcSkills is the authenticated pre-turn evidence, not a file to rewrite.
+npcSkills shows the narrow current mastery entry; debugLogs accompanies the
+current narrativeResponse. The changed numeric progress is 10 -> 11 for this
+NPC and this active skill only. A change for a second NPC with the same skill,
+a passive skill of the same name, a case/Unicode variant, cosmetic text, or a
+carried-over unchanged entry cannot satisfy it. Do not fabricate a snapshot,
+change another owner or grant progress solely to silence the validator.
+
+BEGIN mortal_npc_skill_claims_v1 JSON
+{
+  "narrativeResponse": {
+    "response": "Мирон уверенно повторил «Точный выпад» и ещё немного отточил движение.",
+    "timestamp": "2026-11-13T03:00:00Z"
+  },
+  "beforeNpcSkills": {
+    "NPCSkillMasteryChanges": [{
+      "NPCId": "npc_miron", "skillName": "Точный выпад",
+      "newMasteryLevel": 2, "newCurrentMasteryProgress": 10,
+      "newMasteryProgressNeeded": 100, "masteryLeveledUp": false
+    }]
+  },
+  "npcSkills": {
+    "NPCSkillMasteryChanges": [{
+      "NPCId": "npc_miron", "skillName": "Точный выпад",
+      "newMasteryLevel": 2, "newCurrentMasteryProgress": 11,
+      "newMasteryProgressNeeded": 100, "masteryLeveledUp": false
+    }]
+  },
+  "debugLogs": {
+    "gm_thoughts_markdown": "Сохранить остальные обязательные разделы анализа этого хода.",
+    "timestamp": "2026-11-13T03:00:00Z",
+    "npcSkillClaims": [{
+      "actorKey": "id:npc_miron", "skillName": "Точный выпад", "skillKind": "active",
+      "claimType": "mastery",
+      "narrativeQuote": "Мирон уверенно повторил «Точный выпад» и ещё немного отточил движение.",
+      "resolution": "stateDelta"
+    }]
+  },
+  "noProgressNarrativeResponse": {
+    "response": "Мирон показал ученику уже знакомый «Точный выпад».",
+    "timestamp": "2026-11-13T03:01:00Z"
+  },
+  "noProgressDebugLogs": {
+    "gm_thoughts_markdown": "Сохранить остальные обязательные разделы анализа этого хода.",
+    "timestamp": "2026-11-13T03:01:00Z",
+    "npcSkillClaims": [{
+      "actorKey": "id:npc_miron", "skillName": "Точный выпад", "skillKind": "active",
+      "claimType": "use",
+      "narrativeQuote": "Мирон показал ученику уже знакомый «Точный выпад».",
+      "resolution": "noProgress", "reason": "Знакомая демонстрация без нового освоения или тренировки."
+    }]
+  },
+  "emptyDebugLogs": {
+    "gm_thoughts_markdown": "Сохранить остальные обязательные разделы анализа этого хода.",
+    "timestamp": "2026-11-13T03:02:00Z",
+    "npcSkillClaims": []
+  }
+}
+END mortal_npc_skill_claims_v1 JSON
+
+The noProgress documents are a separate alternative turn, not a second claim
+for the preceding mastery narration. Only claimType=use allows resolution=noProgress
+with nonempty reason. A claim of learning or mastery cannot be waived this way.
+Learning requires genuinely new exact owner-local skill authority against validated
+pre-turn evidence, not merely a changed description. For passive skills use
+skillKind=passive and that NPC's governed passive profile/progression surfaces;
+never satisfy a passive claim using NPCSkillMasteryChanges for an active skill.
+Both active and passive stateDelta require current owned skill authority.
+Missing, malformed or unreadable originals do not establish new creation or progress.
+The report does not itself create a skill or apply progression: write the ordinary
+canonical changes through their existing validated paths, then declare their linkage.
+
 ==================================================
 2. WORLD-PROGRESSION TURN WITH OFF-SCREEN NPCS
 ==================================================

@@ -157,3 +157,11 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [X] T103-T1 Public-route causal tests for exact training target and local profile completeness.
 - [X] T103-T2 Fix confirmed local training defects using existing identity/profile contracts, preserving other routes.
 - [X] T103-T3 Focused RED/GREEN, documentation alignment, independent review and durable checkpoint.
+
+## NPC structured report, owner-approved 2026-11-13 (#1533)
+- [x] NPC-C1 Record explicit-list choice and limitation; preserve checkpoint.
+- [x] NPC-C2 Public validator RED: mandatory report, exact identity/kind, quote,
+  no-progress restriction, original evidence and unchanged/foreign delta.
+- [ ] NPC-C3 Implement + verify declared owner/skill progression and source freshness.
+- [ ] NPC-C4 GM entrypoints/example/privacy and bounded guard verification.
+- [ ] NPC-C5 Independent review, correction, published verified checkpoint; no merge.
