@@ -71,7 +71,10 @@ public sealed partial class EffectMaterializationValidationTests
             AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
                 context.FileSystem, context.Normalizer, context.Validator, backups));
 
-        Assert.Contains("does not yet support location commands or governed rewrites", failure.Message, StringComparison.Ordinal);
+        Assert.Equal(
+            "Ordinary NPC skill common publication does not yet support changed item/location projection inputs: " +
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            failure.Message);
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 

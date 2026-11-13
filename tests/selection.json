@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-progression-creation",
+      "reason": "Public new actor creation must not evade numeric progression contract.",
+      "contracts": [
+        "New explicit initial-ID actor profile+tuple; permanent unrelated actor unchanged."
+      ]
+    },
+    {
       "category": "mortal-npc-progression-consequences",
       "reason": "Pure declared consequence contract before runtime integration.",
       "contracts": [

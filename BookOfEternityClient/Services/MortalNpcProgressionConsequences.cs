@@ -1,4 +1,7 @@
 using System.Text.Json.Nodes;
+using System.Text.Json;
+using System.Numerics;
+using System.Globalization;
 
 namespace BookOfEternityClient.Services;
 
@@ -111,6 +114,7 @@ internal static class MortalNpcProgressionConsequences
     {
         void Invalid(string field) => issues.Add(new("npc_progression_characteristic_authority", field));
         var keys = new HashSet<string>(StringComparer.Ordinal);
+        var exactIncrements = new Dictionary<string, int>(StringComparer.Ordinal);
         if (policy.Mode == CharacteristicMode.FixedIncrements)
         {
             if (policy.PerLevel is null || policy.PerLevel.Count == 0 || policy.PointsPerLevel != 0 || policy.AllocationKeys is not null)
@@ -120,6 +124,7 @@ internal static class MortalNpcProgressionConsequences
                 if (!ValidKey(pair.Key) || !allowed.Any(key => key == pair.Key) || pair.Value <= 0 ||
                     (long)pair.Value * gained > int.MaxValue) Invalid(pair.Key);
                 keys.Add(pair.Key);
+                if (!exactIncrements.TryAdd(pair.Key, pair.Value)) Invalid(pair.Key);
             }
         }
         else if (policy.Mode == CharacteristicMode.AllocatedPoints)
@@ -141,30 +146,25 @@ internal static class MortalNpcProgressionConsequences
             issues.Add(new("npc_progression_characteristic_delta", "characteristics"));
             return;
         }
-        decimal allocated = 0;
+        BigInteger allocated = 0;
         foreach (var key in oldValues.Select(p => p.Key).Concat(newValues.Select(p => p.Key)).Concat(keys).Distinct(StringComparer.Ordinal))
         {
-            if (!Number(oldValues[key], out var oldValue) || !Number(newValues[key], out var newValue))
+            if (!TryIntegerDelta(oldValues[key], newValues[key], out var delta))
             {
                 issues.Add(new("npc_progression_characteristic_delta", key));
                 continue;
             }
-            try
+            BigInteger expected = 0;
+            if (policy.Mode == CharacteristicMode.FixedIncrements && exactIncrements.TryGetValue(key, out var increment))
+                expected = (BigInteger)increment * gained;
+            if (policy.Mode == CharacteristicMode.AllocatedPoints && keys.Contains(key))
             {
-                var delta = checked(newValue - oldValue);
-                decimal expected = 0;
-                if (policy.Mode == CharacteristicMode.FixedIncrements && policy.PerLevel is { } increments &&
-                    increments.TryGetValue(key, out var increment)) expected = checked((decimal)increment * gained);
-                if (policy.Mode == CharacteristicMode.AllocatedPoints && keys.Contains(key))
-                {
-                    if (delta < 0 || decimal.Truncate(delta) != delta) issues.Add(new("npc_progression_characteristic_delta", key));
-                    allocated = checked(allocated + delta);
-                }
-                else if (delta != expected) issues.Add(new("npc_progression_characteristic_delta", key));
+                if (delta < 0) issues.Add(new("npc_progression_characteristic_delta", key));
+                allocated += delta;
             }
-            catch (OverflowException) { issues.Add(new("npc_progression_characteristic_delta", key)); }
+            else if (delta != expected) issues.Add(new("npc_progression_characteristic_delta", key));
         }
-        if (policy.Mode == CharacteristicMode.AllocatedPoints && allocated != (decimal)policy.PointsPerLevel * gained)
+        if (policy.Mode == CharacteristicMode.AllocatedPoints && allocated != (BigInteger)policy.PointsPerLevel * gained)
             issues.Add(new("npc_progression_characteristic_delta", "characteristics.total"));
     }
 
@@ -176,13 +176,67 @@ internal static class MortalNpcProgressionConsequences
         result = 0;
         return node is JsonValue value && value.TryGetValue(out result);
     }
-    private static bool Number(JsonNode? node, out decimal result)
+    // Integer point policies require exact integer differences, not decimal/double rounding.
+    // JSON serialization handles typed numeric JsonValues; numeric text remains the authority.
+    private static bool TryIntegerDelta(JsonNode? before, JsonNode? after, out BigInteger delta)
     {
-        result = 0;
-        if (node is not JsonValue value) return false;
-        if (value.TryGetValue<decimal>(out result)) return true;
-        if (value.TryGetValue<int>(out var integer)) { result = integer; return true; }
-        if (value.TryGetValue<long>(out var wide)) { result = wide; return true; }
-        return false;
+        delta = 0;
+        if (!NumericText(before, out var oldText) || !NumericText(after, out var newText)) return false;
+        if (oldText == newText) return true; // Preserve any unchanged finite supported JSON value.
+        if (!Rational(oldText, out var oldCoefficient, out var oldExponent) ||
+            !Rational(newText, out var newCoefficient, out var newExponent)) return false;
+        if (oldCoefficient == newCoefficient && oldExponent == newExponent) return true;
+        var exponent = Math.Min(oldExponent, newExponent);
+        var oldShift = oldExponent - exponent; var newShift = newExponent - exponent;
+        // Bound expansion, never round. Unsupported changed ranges fail closed.
+        if (oldShift > 1024 || newShift > 1024 || exponent is < -1024 or > 1024) return false;
+        var coefficient = newCoefficient * BigInteger.Pow(10, (int)newShift) -
+            oldCoefficient * BigInteger.Pow(10, (int)oldShift);
+        if (exponent >= 0) delta = coefficient * BigInteger.Pow(10, (int)exponent);
+        else
+        {
+            delta = BigInteger.DivRem(coefficient, BigInteger.Pow(10, (int)-exponent), out var remainder);
+            if (!remainder.IsZero) return false;
+        }
+        return true;
+    }
+
+    private static bool NumericText(JsonNode? node, out string text)
+    {
+        text = "";
+        if (node is not JsonValue) return false;
+        try
+        {
+            text = node.ToJsonString();
+            using var document = JsonDocument.Parse(text);
+            return document.RootElement.ValueKind == JsonValueKind.Number &&
+                document.RootElement.TryGetDouble(out var finite) && double.IsFinite(finite);
+        }
+        catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static bool Rational(string text, out BigInteger coefficient, out long exponent)
+    {
+        coefficient = 0; exponent = 0;
+        // This is a small point-delta adapter, not an unbounded arbitrary-precision arithmetic service.
+        if (text.Length > 4096) return false;
+        var exponentIndex = text.IndexOfAny(['e', 'E']);
+        var mantissa = exponentIndex < 0 ? text : text[..exponentIndex];
+        if (exponentIndex >= 0)
+        {
+            if (!int.TryParse(text[(exponentIndex + 1)..], NumberStyles.AllowLeadingSign,
+                CultureInfo.InvariantCulture, out var parsedExponent)) return false;
+            exponent = parsedExponent;
+        }
+        var point = mantissa.IndexOf('.');
+        if (point >= 0) exponent -= mantissa.Length - point - 1;
+        if (!BigInteger.TryParse(mantissa.Replace(".", ""), NumberStyles.AllowLeadingSign,
+            CultureInfo.InvariantCulture, out coefficient)) return false;
+        if (coefficient.IsZero) { exponent = 0; return true; }
+        while (coefficient % 10 == 0) { coefficient /= 10; exponent++; }
+        return true;
     }
 }

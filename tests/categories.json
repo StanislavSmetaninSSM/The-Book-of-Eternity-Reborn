@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-creation",
+      "responsibility": "#1538 public new Mortal NPC materialization requires explicit coherent numeric progression profile and tuple, while existing unrelated NPCs remain unchanged.",
+      "excludes": "Profile installation/replacement, dependent consequences and publication lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ActorMaterializationValidationTests.NpcProgression.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.NewMortalNpc_PublicValidationRequiresCoherentExplicitProgression"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-consequences",
       "responsibility": "#1538 pure declared skill cadence and current-world characteristic policy on actual original-to-candidate changes.",
       "excludes": "Schema parsing, publication authority, profile installation and full progression acceptance.",

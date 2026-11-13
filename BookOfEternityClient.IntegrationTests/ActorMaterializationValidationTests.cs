@@ -9,7 +9,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "FullValidation")]
-public sealed class ActorMaterializationValidationTests : IDisposable
+public sealed partial class ActorMaterializationValidationTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;

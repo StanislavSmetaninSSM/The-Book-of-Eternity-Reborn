@@ -1,3 +1,7 @@
+## Review boundaries reproduced and corrected, 2026-11-13
+
+Pinned2437 runtime: expanded consequence24 produced19PASS/5FAIL exactly at comparer/numeric representation and precision edges; exact ordinal policy + bounded rational integer-point deltas now replace rounded decimal conversion (UNRUN). Common4 baseline2PASS/2FAIL: UTF16 reaches old witness decoder failure; valid location update correctly refuses at earlier current-location projection guard, whose test message oracle is corrected without weakening admission or rollback. New creation8 public cases are source-only, expected5negative failures/3positivecontrols, not yet executed.
+
 ## Bounded common publication and absence PASS, 2026-11-13
 
 Exact2437 runtime: publication15/15 PASS (including correctly ordered signed-absence/orphan-hash controls); completed ordinary common effect2/2 PASS, latecut observes actual skill/consumed sidecar/effect before rollback; pure consequence initial15/15 PASS. Runtime PE/PDB GUID9341ab0f-bbc3-410f-b4ae-eb08e841b9e5,1235documents/1231nongeneratedallcurrent, both outputs identical. Independent review found narrow UTF16 witness decoding and repeated sealed-DATA clone costs in common guard; fixes pending. Pure helper review found comparer and decimal-rounding/finite-number edges; nine extra cases bring24total, UNRUN. Initial15PASS doesnotqualify these edges. Item/location/wound common overlap remains refused.
