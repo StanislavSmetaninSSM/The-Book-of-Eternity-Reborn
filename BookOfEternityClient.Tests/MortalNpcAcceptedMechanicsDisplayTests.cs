@@ -9,6 +9,73 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalNpcAcceptedMechanicsDisplayTests
 {
     [Theory]
+    [InlineData("standard", "Стандартный")]
+    [InlineData("table", "Табличный")]
+    [InlineData("none", "Без развития")]
+    public void SharedDrilldown_ExplicitProfileAndSettingCharacteristicsArePublic(string mode, string label)
+    {
+        var actor = ProgressionActor(mode);
+        var before = actor.ToJsonString();
+        var projection = NpcDetailSectionProjection.Build(actor, new NpcDetailSectionDocuments());
+        var mechanics = Assert.Single(projection.Sections, section => section.Id == "mechanics");
+        var text = JsonSerializer.Serialize(mechanics.Blocks, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+
+        Assert.Contains("Профиль развития", text, StringComparison.Ordinal);
+        Assert.Contains(label, text, StringComparison.Ordinal);
+        Assert.Contains("setting_defined_focus", text, StringComparison.Ordinal);
+        Assert.Contains("6.25", text, StringComparison.Ordinal);
+        Assert.Contains("setting_defined_resolve", text, StringComparison.Ordinal);
+        if (mode == "none")
+        {
+            Assert.DoesNotContain("награда за каждые 2", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("правила текущего мира", text, StringComparison.Ordinal);
+        }
+        else
+        {
+            Assert.Contains("1 награда за каждые 2 полученных уровня", text, StringComparison.Ordinal);
+            Assert.Contains("правила текущего мира", text, StringComparison.Ordinal);
+            Assert.Contains("Излишек опыта: отбрасывается", text, StringComparison.Ordinal);
+            if (mode == "standard")
+            {
+                Assert.Contains("Предел уровня: 5", text, StringComparison.Ordinal);
+                Assert.Contains("Потеря опыта: разрешена", text, StringComparison.Ordinal);
+            }
+            else
+            {
+                Assert.Contains("Предел уровня: 4", text, StringComparison.Ordinal);
+                Assert.Contains("Пороги: 10, 20, 30", text, StringComparison.Ordinal);
+            }
+        }
+        Assert.DoesNotContain("PRIVATE_SENTINEL", text, StringComparison.Ordinal);
+        Assert.Equal(before, actor.ToJsonString());
+    }
+
+    [Fact]
+    public void SharedDrilldown_ProfileMetadataAndNestedCharacteristicObjectsCannotLeak()
+    {
+        var actor = ProgressionActor("standard");
+        actor["progressionProfile"]!["source"] = JsonNode.Parse("""{"requestId":"PRIVATE_SENTINEL_profile"}""");
+        actor["progressionProfile"]!["consequences"]!["receipt"] = "PRIVATE_SENTINEL_consequence_receipt";
+        actor["characteristics"]!["nested_authority"] = JsonNode.Parse("""{"snapshotToken":"PRIVATE_SENTINEL_characteristic"}""");
+        var before = actor.ToJsonString();
+        var projection = NpcDetailSectionProjection.Build(actor, new NpcDetailSectionDocuments(
+            Skills: JsonNode.Parse("""{"NPCActiveSkillChanges":[{"NPCId":"npc_accepted","skillChanges":[{"skillName":"UNACCEPTED_SKILL"}]}]}""")));
+        var text = JsonSerializer.Serialize(projection, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+
+        Assert.Contains("setting_defined_focus", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("nested_authority", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("PRIVATE_SENTINEL", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("UNACCEPTED_SKILL", text, StringComparison.Ordinal);
+        Assert.Equal(before, actor.ToJsonString());
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void ConsoleSkillDisplay_SelectedAcceptedActorRetainsMasteryWithoutSidecar(bool passive)
@@ -100,6 +167,31 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
               "receipt":"PRIVATE_SENTINEL_skill_receipt"}]
             """);
         if (passive) actor["passiveSkills"]![0]!["maxMasteryLevel"] = 12;
+        return actor;
+    }
+
+    private static JsonObject ProgressionActor(string mode)
+    {
+        var actor = Actor(false);
+        actor["passiveSkills"] = new JsonArray();
+        actor["characteristics"] = JsonNode.Parse("""{"setting_defined_focus":6.25,"setting_defined_resolve":0}""");
+        actor["progressionProfile"] = JsonNode.Parse(mode switch
+        {
+            "none" => """{"schemaVersion":1,"mode":"none"}""",
+            "table" => """{"schemaVersion":1,"mode":"table","thresholds":[10,20,30],"maxLevel":4,"capOverflow":"discard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}""",
+            _ => """{"schemaVersion":1,"mode":"standard","allowExperienceLoss":true,"maxLevel":5,"capOverflow":"discard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}"""
+        });
+        if (mode == "table")
+        {
+            actor["experience"] = 7;
+            actor["experienceForNextLevel"] = 20;
+        }
+        if (mode == "none")
+        {
+            actor["level"] = 0;
+            actor["experience"] = 0;
+            actor["experienceForNextLevel"] = 0;
+        }
         return actor;
     }
 }

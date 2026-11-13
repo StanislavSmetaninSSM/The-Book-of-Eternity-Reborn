@@ -149,6 +149,45 @@ public sealed class MortalNpcProgressionProfileChangeContractTests
         Refused(Contract.Evaluate(original, Command("replace")), "npc_profile_change_original_invalid");
     }
 
+    [Theory]
+    [InlineData("absent")]
+    [InlineData("null")]
+    [InlineData("malformed")]
+    public void Replace_RequiresPresentValidOriginalProfile(string state)
+    {
+        var original = Actor();
+        if (state == "absent") original.Remove("progressionProfile");
+        else original["progressionProfile"] = state == "null" ? null : JsonValue.Create(3);
+        Refused(Contract.Evaluate(original, Command("replace")), "npc_profile_change_original_invalid");
+    }
+
+    [Fact]
+    public void UnknownOperation_CannotBecomeInstallOrReplace()
+    {
+        Refused(Contract.Evaluate(Actor(), Command("reset")), "npc_profile_change_command_invalid");
+    }
+
+    [Fact]
+    public void Replacement_PreservesAndDetachesUnrelatedActorPayload()
+    {
+        var original = Actor();
+        original["passiveSkills"] = JsonNode.Parse("""[{"skillName":"Archive","masteryLevel":2}]""");
+        original["inventory"] = JsonNode.Parse("""[{"itemId":"item_archive","quantity":3}]""");
+        var command = Command("replace");
+        var before = original.ToJsonString(); var raw = command.ToJsonString();
+        var result = Contract.Evaluate(original, command);
+        Assert.True(result.IsValid);
+        Assert.Equal("npc_profile", result.CandidateActor!["NPCId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(original["passiveSkills"], result.CandidateActor["passiveSkills"]));
+        Assert.True(JsonNode.DeepEquals(original["inventory"], result.CandidateActor["inventory"]));
+        Assert.True(JsonNode.DeepEquals(command["progressionProfileChange"]!["profile"], result.CandidateActor["progressionProfile"]));
+        result.CandidateActor["passiveSkills"]![0]!["masteryLevel"] = 5;
+        result.CandidateActor["inventory"]![0]!["quantity"] = 9;
+        result.CandidateActor["progressionProfile"]!["thresholds"]![1] = 999;
+        Assert.Equal(before, original.ToJsonString());
+        Assert.Equal(raw, command.ToJsonString());
+    }
+
     private static void Refused(Contract.Result result, string code)
     {
         Assert.False(result.IsValid); Assert.Null(result.CandidateActor);
