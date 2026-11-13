@@ -3421,6 +3421,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/world/rival_soul_arcs.json",
             "game_state/world/world_events.json",
             "game_state/world/world_map.json",
+            "game_state/world/world_time.json",
+            "game_state/wounds/mortal_qte_decision_publication.json",
             "game_state/wounds/spiritual_wound_opportunity_receipts.json",
             "game_state/wounds/wound_commands.json",
             "game_state/wounds/wound_history.json",

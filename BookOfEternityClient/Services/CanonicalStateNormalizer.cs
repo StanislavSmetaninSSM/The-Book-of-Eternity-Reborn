@@ -453,7 +453,7 @@ public partial class CanonicalStateNormalizer
             npcProgressionSource = boundSource;
         }
         // This check precedes every normalizer mutation, including generic NoPlan calls.
-        await PreflightNpcProgressionSourceAsync(npcProgressionSource);
+        await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
         var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);

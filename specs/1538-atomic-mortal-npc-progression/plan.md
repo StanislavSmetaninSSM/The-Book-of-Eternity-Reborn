@@ -179,3 +179,59 @@ ordinary skill-persistence gap and the P2b direction now recorded in spec.md.
 No broad tests or spiritual implementation are needed. The next bounded shared
 owner must prove consecutive skill grants, stale prior sidecar refusal, genuine
 cadence discharges and effect-source candidate integration before claiming FR4/5.
+
+### P2 first verification and concrete review corrections (WIP)
+
+Source checkpoint 6bcda5f compiled both projects with zero errors (unit 60.81s,
+integration 38.97s). Selected execution stopped after 98 cases: 91 PASS / 7 FAIL,
+30.667s; cleanup complete. Numeric 64, actual renderer 1, merchant/teacher 4 and
+source 22 passed. Seven new publication controls refused npc_core before their
+intended boundary: the normal filesystem writer emits a UTF-8 BOM, while the new
+raw parser incorrectly rejected it. This is a real source-path regression, not
+an accepted test result. Reuse the existing BOM-aware decoder and qualify encoded
+nonprogression and progression controls.
+
+Independent Astra High source review also identified missing authentication of
+actual original NPC snapshot bytes (manifest/request alone is insufficient) and
+a closing check placed before awaited postvalidators. Corrections must bind the
+consumed original to the existing authenticated snapshot reader and check at the
+final acceptance boundary. Add snapshot mutation/deletion, wrong backup and actual
+post-write source-change rollback controls. P2a is not accepted yet.
+
+The remaining consumer invocation completed 4 new pure composer controls PASS,
+then all 4 existing treatment integration controls failed at their fixture's
+independent rollback-file inventory before the target operation. Its literal list
+omitted world_time.json and mortal_qte_decision_publication.json, both already
+production tracked on the base main. Add those two explicit expected paths; retain
+the independently authored inventory and exact equality. The 91 core cases have
+not run against P2 source yet. Neither incomplete execution is a speedup claim.
+
+Next P2b pure mastery foundation uses the same composer after profile/removal
+operations; causal tests are authored with a baseline adapter that intentionally
+retains old mastery. No ordinary sidecar publication or dependency acceptance is
+implemented by this API. Its checks are UNRUN and implementation awaits RED.
+
+The separate existing core category then completed 91 cases against the same
+6bcda5f build: 90 PASS / 1 FAIL, 31.945s, complete cleanup. Its positive mirror
+normalization case hit the same BOM parsing refusal. A preceding metadata-only
+attempt rejected a malformed new related-category entry before discovery; that
+entry is corrected to the required id/when object. No runtime outcome is assigned
+to the rejected attempt. Source recovery fetch into the independent sparse clone
+also verified exact 6bcda5f bytes/SHA; this remains download-only, not clean build.
+
+A second P2b causal baseline adds the pure ordinary candidate API with eight
+cases: consecutive skill A/B/omit, sidecar consumption and detachment, four
+original pending-array refusals, direct core mutation refusal, combined core/skill
+command, and production-invalid skill. The baseline returns detached current
+roots without reduction; implementation awaits its actual RED. These helpers do
+not yet feed effects, publication, item semantics or user-facing projections.
+
+P2a corrections are now authored but UNRUN: existing BOM-aware decoder, opening
+and closing authentication of actual original NPC snapshot, detached original
+comparison with the reducer's consumed backup before writes, and a final source
+fence after awaited postvalidators/completion. Thirteen controls add encoded
+inputs, snapshot mutation/deletion, wrong/missing backups and postvalidation
+source-change rollback. The small coordinator fixture now supplies actual pristine
+resource roots and ExplicitBootstrap owner authority, not a validator bypass.
+Fresh physical source checks deliberately remain fresh; detached parsed original
+DATA is reused for pure baseline comparisons. No new cache or speedup claim.

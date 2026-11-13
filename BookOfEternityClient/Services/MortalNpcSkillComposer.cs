@@ -20,6 +20,25 @@ internal static class MortalNpcSkillComposer
         JsonArray? SkillChanges,
         JsonArray? SkillsToRemove);
 
+    internal sealed record MasteryCommand(
+        string NpcId, string SkillName, string? SkillId, int NewMasteryLevel,
+        int? NewCurrentMasteryProgress = null, int? NewMasteryProgressNeeded = null,
+        int? NewMaxMasteryLevel = null);
+
+    // RED baseline adapter: existing profile/removal composition has no mastery application.
+    // Kept explicit until the focused causal tests have been executed by the owning worker.
+    internal static JsonObject? ComposeWithMastery(
+        JsonObject before,
+        IReadOnlyList<Command> activeCommands,
+        IReadOnlyList<Command> passiveCommands,
+        IReadOnlyList<MasteryCommand> activeMastery,
+        IReadOnlyList<MasteryCommand> passiveMastery,
+        ICollection<ValidationIssue> issues,
+        Func<string, string, string, string, ValidationIssue> issueFactory) =>
+        Compose(before, activeCommands, passiveCommands,
+            new Dictionary<string, JsonObject>(), new Dictionary<string, JsonObject>(),
+            new HashSet<string>(StringComparer.Ordinal), issues, issueFactory);
+
     private sealed record NpcActorCopy(string Section, int Index, JsonObject Actor);
 
     /// <summary>

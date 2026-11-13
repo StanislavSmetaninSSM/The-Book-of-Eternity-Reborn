@@ -151,13 +151,25 @@ public partial class ValidationService
     {
         private readonly ValidationService _owner;
         private readonly FileSystemManager.CanonicalWriteLease _lease;
+        private readonly JsonObject? _originalNpcCore;
         internal NpcCoreChangesContract.ProgressionSourceContext? Context { get; }
         internal IReadOnlyList<ValidationIssue> Issues { get; }
 
         internal NpcProgressionPublicationSource(ValidationService owner,
             FileSystemManager.CanonicalWriteLease lease, NpcCoreChangesContract.ProgressionSourceContext? context,
-            IReadOnlyList<ValidationIssue> issues)
-        { _owner = owner; _lease = lease; Context = context; Issues = issues; }
+            IReadOnlyList<ValidationIssue> issues, JsonObject? originalNpcCore = null)
+        {
+            _owner = owner; _lease = lease; Context = context; Issues = issues;
+            _originalNpcCore = originalNpcCore?.DeepClone().AsObject();
+        }
+
+        /// <summary>Requires the reducer's actual backup to be the authenticated original, before item-only overlays.</summary>
+        internal void RequireBaseline(JsonObject? baseline)
+        {
+            if (Context is null || _originalNpcCore is null || baseline is null ||
+                !JsonNode.DeepEquals(_originalNpcCore, baseline))
+                throw new InvalidDataException("NPC progression reduction baseline differs from the authenticated original NPC core.");
+        }
 
         /// <summary>Checks the same live lease and existing snapshot authentication again, never extending authority.</summary>
         internal async Task RequireCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
@@ -171,12 +183,19 @@ public partial class ValidationService
             if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest is null ||
                 CreateNpcProgressionSource(lookup.Manifest) != Context)
                 throw new InvalidDataException("NPC progression authenticated source changed before publication completed.");
+            using var fresh = FileSystemManager.SuppressValidationReuse();
+            var original = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(
+                lookup.Manifest, NpcCoreChangesContract.NpcCorePath, _lease);
+            if (!TryReadNpcProgressionOriginal(original, out var originalRoot))
+                throw new InvalidDataException("NPC progression authenticated original NPC core is missing or changed.");
+            RequireBaseline(originalRoot);
         }
     }
 
     /// <summary>
     /// Reuses already captured NPC bytes and the existing authenticated lookup under the exact publication
-    /// lease. No domain roots are reread and turns without progression do not authenticate another snapshot.
+    /// lease. Progression freshly authenticates original NPC snapshot bytes at opening and closing fences;
+    /// the detached opening root also binds the reducer backup. Turns without progression skip authentication.
     /// </summary>
     internal async Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationAsync(
         FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes)
@@ -186,7 +205,7 @@ public partial class ValidationService
         JsonObject root;
         try
         {
-            using var document = JsonDocument.Parse(npcCoreBytes);
+            using var document = JsonDocument.Parse(DecodePendingSnapshotText(npcCoreBytes));
             if (document.RootElement.ValueKind != JsonValueKind.Object ||
                 TryFindDuplicateJsonProperty(document.RootElement, out _))
                 return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("non-object or duplicate property")]);
@@ -200,7 +219,33 @@ public partial class ValidationService
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, requireFreshPhysicalSource: true);
         var context = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest is not null
             ? CreateNpcProgressionSource(lookup.Manifest) : null;
-        return new(this, writeLease, context, NpcCoreChangesContract.ValidateProgressionSources(root, context));
+        var issues = NpcCoreChangesContract.ValidateProgressionSources(root, context);
+        if (issues.Count != 0) return new(this, writeLease, context, issues);
+        using var fresh = FileSystemManager.SuppressValidationReuse();
+        var original = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest!, NpcCoreChangesContract.NpcCorePath, writeLease);
+        if (!TryReadNpcProgressionOriginal(original, out var originalRoot))
+            return new(this, writeLease, null, [new ValidationIssue(NpcCoreChangesContract.NpcCorePath,
+                IssueSeverity.Error, "NPC progression requires authenticated original NPC core bytes.",
+                code: "npc_core_changes_progression_source_unavailable", section: "NPCCoreChanges",
+                repairHint: "Restore the original authenticated snapshot; do not rewrite it or invent source hashes.")]);
+        return new(this, writeLease, context, issues, originalRoot);
+    }
+
+    /// <summary>Parses already authenticated original text without accepting duplicate or non-object authority.</summary>
+    private static bool TryReadNpcProgressionOriginal(string? text, out JsonObject? root)
+    {
+        root = null;
+        if (string.IsNullOrWhiteSpace(text)) return false;
+        try
+        {
+            using var document = JsonDocument.Parse(text);
+            if (document.RootElement.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(document.RootElement, out _)) return false;
+            root = JsonNode.Parse(document.RootElement.GetRawText())!.AsObject();
+            return true;
+        }
+        catch (JsonException) { return false; }
     }
 
     /// <summary>Projects already authenticated manifest DATA without exposing its token to the GM.</summary>

@@ -1884,6 +1884,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     throw new InvalidDataException("Spiritual transaction ownership changed before acceptance.");
                 var guardianMusingsValidation = issues.Any(issue => issue.Severity == IssueSeverity.Error) || guardianMusings is null
                     ? null : await guardianMusings.CompleteAsync(fs, writeLease);
+                // No awaited post-validator or completion callback may invalidate the source before success.
+                await npcSource.RequireCurrentAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation);

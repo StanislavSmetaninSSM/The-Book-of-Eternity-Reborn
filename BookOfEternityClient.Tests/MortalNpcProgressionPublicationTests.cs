@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -116,6 +117,129 @@ public sealed class MortalNpcProgressionPublicationTests
         await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireCurrentAsync(fixture.Files, replacement));
     }
 
+    [Theory]
+    [InlineData("utf8", false)]
+    [InlineData("utf16le", false)]
+    [InlineData("utf16be", false)]
+    [InlineData("utf8", true)]
+    [InlineData("utf16le", true)]
+    [InlineData("utf16be", true)]
+    public async Task Preparation_PreservesBomAwareTextContract(string encodingName, bool unrelated)
+    {
+        using var fixture = await Fixture.Create();
+        var text = unrelated ? "{\"NPCsInScene\":[]}" :
+            (await fixture.Files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!;
+        var encoding = encodingName switch
+        {
+            "utf16le" => Encoding.Unicode, "utf16be" => Encoding.BigEndianUnicode, _ => new UTF8Encoding(true)
+        };
+        var bytes = encoding.GetPreamble().Concat(encoding.GetBytes(text)).ToArray();
+        await fixture.Files.WriteFileAtomicBytesAsync(NpcCoreChangesContract.NpcCorePath, bytes);
+        Assert.Equal(text, await fixture.Files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath));
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var source = await fixture.Validator.PrepareNpcProgressionPublicationAsync(lease, bytes);
+        Assert.Empty(source.Issues);
+        Assert.Equal(!unrelated, source.Context is not null);
+        await source.RequireCurrentAsync(fixture.Files, lease);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Preparation_AuthenticatesOriginalNpcBytesNotOnlyManifest(bool delete)
+    {
+        using var fixture = await Fixture.Create();
+        await fixture.AddUnrelatedNormalizableCommand();
+        var before = await fixture.CaptureCanonical();
+        var originalPath = fixture.Physical(fixture.Backups[NpcCoreChangesContract.NpcCorePath]);
+        if (delete) File.Delete(originalPath);
+        else File.AppendAllText(originalPath, " ", new UTF8Encoding(false));
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_core_changes_progression_source_unavailable");
+        await fixture.AssertCanonicalUnchanged(before);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task IssuedSource_OriginalMutationOrDeletionIsRejectedBeforeWrites(bool delete)
+    {
+        using var fixture = await Fixture.Create();
+        await fixture.AddUnrelatedNormalizableCommand();
+        var before = await fixture.CaptureCanonical();
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var source = await fixture.Validator.PrepareNpcProgressionPublicationAsync(lease,
+            await fixture.Files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath));
+        Assert.Empty(source.Issues);
+        var originalPath = fixture.Physical(fixture.Backups[NpcCoreChangesContract.NpcCorePath]);
+        if (delete) File.Delete(originalPath);
+        else File.AppendAllText(originalPath, " ", new UTF8Encoding(false));
+        var bound = fixture.Normalizer.BindTo(lease).WithNpcProgressionSource(source);
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => bound.NormalizeAccumulatedStateWithPlanAsync(fixture.Backups));
+        Assert.Contains("original NPC core", error.Message, StringComparison.Ordinal);
+        await fixture.AssertCanonicalUnchanged(before, lease);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Normalizer_RejectsMissingOrDifferentConsumedBackupBeforeWrites(bool missing)
+    {
+        using var fixture = await Fixture.Create();
+        await fixture.AddUnrelatedNormalizableCommand();
+        var before = await fixture.CaptureCanonical();
+        var wrongBackups = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (!missing)
+        {
+            const string wrong = "game_state/control/wrong_npc_core.json";
+            await fixture.Files.WriteFileAtomicAsync(wrong, "{\"NPCsInScene\":[]}");
+            wrongBackups[NpcCoreChangesContract.NpcCorePath] = wrong;
+        }
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var source = await fixture.Validator.PrepareNpcProgressionPublicationAsync(lease,
+            await fixture.Files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath));
+        Assert.Empty(source.Issues);
+        var bound = fixture.Normalizer.BindTo(lease).WithNpcProgressionSource(source);
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => bound.NormalizeAccumulatedStateWithPlanAsync(wrongBackups));
+        Assert.Contains("reduction baseline", error.Message, StringComparison.Ordinal);
+        await fixture.AssertCanonicalUnchanged(before, lease);
+    }
+
+    [Fact]
+    public async Task Coordinator_PostValidatorSourceMutationRollsBackEveryCanonicalFile()
+    {
+        using var fixture = await Fixture.Create();
+        await fixture.AddUnrelatedNormalizableCommand();
+        await fixture.Files.WriteFileAtomicAsync(ValidationService.CanonicalSkillMasteryPath, "{}");
+        var before = await fixture.CaptureCanonical();
+        var injected = false;
+        var files = fixture.CreateFiles(new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (injected || path != ValidationService.CanonicalSkillMasteryPath) return Task.CompletedTask;
+                var npc = JsonNode.Parse(File.ReadAllText(fixture.Physical(NpcCoreChangesContract.NpcCorePath)))!;
+                if (npc["NPCCoreChanges"] is not null) return Task.CompletedTask;
+                // This reader is the awaited canonical post-validator, after normalizer writes and its early fence.
+                Assert.Equal(2, npc["NPCsInScene"]![0]!["level"]!.GetValue<int>());
+                var quests = JsonNode.Parse(File.ReadAllText(fixture.Physical("game_state/quests/quest_history.json")))!;
+                Assert.Null(quests["quests"]);
+                injected = true;
+                File.WriteAllText(fixture.Physical("input/turn_request.json"),
+                    "{\"sessionId\":\"session_source\",\"requestId\":\"postvalidator_changed\",\"turnNumber\":43}");
+                return Task.CompletedTask;
+            }
+        });
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
+                new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
+                new ValidationService(files, NullLogger<ValidationService>.Instance), fixture.Backups));
+        Assert.True(injected);
+        Assert.Contains("authenticated source changed", error.Message, StringComparison.Ordinal);
+        await fixture.AssertCanonicalUnchanged(before);
+    }
+
     private sealed class Fixture : IDisposable
     {
         private readonly string _root = Path.Combine(
@@ -180,10 +304,36 @@ public sealed class MortalNpcProgressionPublicationTests
                 manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
                 await fixture.Files.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
                 await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fixture.Files);
+                await fixture.SeedCanonicalPostValidationRoots();
                 return fixture;
             }
             catch { fixture.Dispose(); throw; }
         }
+
+        // Keep the real postvalidators enabled, with their minimal canonical prerequisites.
+        private async Task SeedCanonicalPostValidationRoots()
+        {
+            await Files.WriteFileAtomicAsync(MortalItemIdentityState.StatePath,
+                MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+            var resources = ResourceBootstrapStateBuilder.BuildPristine();
+            Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
+            await Files.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath,
+                resources.Definitions!.ToCanonicalJson());
+            await Files.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath,
+                resources.State!.ToCanonicalJson());
+            await Files.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath,
+                resources.History!.ToCanonicalJson());
+            var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                resources.Definitions, Files.ReadFileAsync, resources.State, resources.History,
+                CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+            Assert.True(authority.IsValid, string.Join(Environment.NewLine, authority.Issues));
+            await Files.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                authority.CanonicalAuthorityJson!);
+        }
+
+        internal string Physical(string path) => Files.ResolvePath(path);
+        internal FileSystemManager CreateFiles(FileSystemManagerHooks hooks) =>
+            new(_root, NullLogger<FileSystemManager>.Instance, hooks);
 
         internal async Task AddUnrelatedNormalizableCommand()
         {
@@ -202,10 +352,11 @@ public sealed class MortalNpcProgressionPublicationTests
             return result;
         }
 
-        internal async Task AssertCanonicalUnchanged(IReadOnlyDictionary<string, byte[]?> before)
+        internal async Task AssertCanonicalUnchanged(IReadOnlyDictionary<string, byte[]?> before,
+            FileSystemManager.CanonicalWriteLease? lease = null)
         {
             foreach (var (path, bytes) in before)
-                Assert.Equal(bytes, await Files.ReadFileBytesAsync(path));
+                Assert.Equal(bytes, lease is null ? await Files.ReadFileBytesAsync(path) : await Files.ReadFileBytesAsync(lease, path));
         }
 
         public void Dispose()

@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-accepted-skill-candidate",
+      "reason": "#1538 P2b pure ordinary candidate owner before physical integration.",
+      "contracts": [
+        "Original pending rejection, exact canonical core/skill composition and sidecar consumption."
+      ]
+    },
+    {
+      "category": "mortal-npc-skill-mastery-composition",
+      "reason": "#1538 P2b causal pure mastery foundation, before publication integration.",
+      "contracts": [
+        "Exact actor/kind/skill mastery after profile/removal; mirrors and immutable input."
+      ]
+    },
+    {
       "category": "mortal-npc-progression-numeric",
       "reason": "#1538 P1 pure numeric contract and existing command admission; later blocks remain unqualified.",
       "contracts": [

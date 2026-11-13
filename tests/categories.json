@@ -2,6 +2,66 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-accepted-skill-candidate",
+      "responsibility": "#1538 pure combined ordinary NPC core/skill candidate, exact owner admission, consumed sidecar and stale baseline refusal.",
+      "excludes": "No source authentication, physical publication, effect-owner integration or rollback qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcAcceptedSkillCandidate.cs",
+        "BookOfEternityClient.Tests/MortalNpcAcceptedSkillCandidateTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-npc-skill-mastery-composition",
+          "when": "Combined candidate uses shared profile/removal/mastery reducer."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcAcceptedSkillCandidateTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-skill-mastery-composition",
+      "responsibility": "#1538 pure exact-owner NPC mastery composition after ordinary skill profiles/removals, preserving canonical mirrors and inputs.",
+      "excludes": "No sidecar admission, accepted-turn publication, cadence or rollback qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcSkillComposer.cs",
+        "BookOfEternityClient.Tests/MortalNpcSkillMasteryComposerTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-npc-skill-composer-extraction",
+          "when": "Shared profile/removal composition changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcSkillMasteryComposerTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-composer-extraction",
       "responsibility": "#1538 behavior-preserving extraction of existing exact NPC skill composer, including retained treatment caller semantics.",
       "excludes": "No mastery extension, sidecar admission or general NPC skill publication qualification.",

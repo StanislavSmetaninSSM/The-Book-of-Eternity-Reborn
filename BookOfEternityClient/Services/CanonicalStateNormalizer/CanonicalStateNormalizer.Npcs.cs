@@ -28,6 +28,12 @@ public partial class CanonicalStateNormalizer
                           await ReadBackupObjectAsync(
                               NpcCoreChangesContract.NpcCorePath,
                               backups);
+        if (NpcCoreChangesContract.HasProgressionCommand(currentRoot))
+        {
+            if (_npcProgressionSource is null)
+                throw new InvalidDataException("NPC progression publication requires its authenticated original source.");
+            _npcProgressionSource.RequireBaseline(preTurnRoot);
+        }
         if (preTurnRoot == null)
             return;
         var authority = resourcePublication?.NpcCoreAuthority ??
@@ -64,12 +70,17 @@ public partial class CanonicalStateNormalizer
 
     /// <summary>Refuses missing or stale progression source before any accumulated-state transform writes.</summary>
     private async Task PreflightNpcProgressionSourceAsync(
-        NpcCoreChangesContract.ProgressionSourceContext? source)
+        NpcCoreChangesContract.ProgressionSourceContext? source,
+        IReadOnlyDictionary<string, string>? backups)
     {
         if (await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath) is not JsonObject root) return;
         var issues = NpcCoreChangesContract.ValidateProgressionSources(root, source);
         if (issues.Count != 0)
             throw new InvalidDataException(string.Join("; ", issues.Select(issue => $"{issue.Code}: {issue.Message}")));
+        if (!NpcCoreChangesContract.HasProgressionCommand(root)) return;
+        if (_npcProgressionSource is null)
+            throw new InvalidDataException("NPC progression publication requires its authenticated original source.");
+        _npcProgressionSource.RequireBaseline(await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups));
     }
 
     private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()
