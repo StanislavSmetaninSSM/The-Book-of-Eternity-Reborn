@@ -10,7 +10,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalNpcProgressionPublicationTests
+public sealed partial class MortalNpcProgressionPublicationTests
 {
     [Fact]
     public async Task Coordinator_NoPlan_AuthenticatedProgressionAppliesAndConsumesCommand()

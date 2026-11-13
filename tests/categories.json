@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-world-policy-freshness",
+      "responsibility": "#1538 real core-only publication refuses malformed world policy and late policy-input drift with canonical rollback.",
+      "excludes": "No skill-backed common publication or unrelated lore-field freshness qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcProgressionPublicationTests.WorldPolicy.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_CoreOnlyPostValidatorWorldPolicyMutationRollsBackCanonicalOutputs",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_CoreOnlyMalformedPresentWorldPolicyRefusesBeforeNormalizerWrites"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-profile-policy",
       "responsibility": "#1538 Closed explicit consequence policy at canonical numeric profile admission.",
       "excludes": "No filesystem publication, world freshness or whole feature qualification.",
