@@ -119,6 +119,10 @@ public static class MortalBootstrapStateBuilder
                 JsonNode.Parse(resources.History!.ToCanonicalJson())!.AsObject(),
             ["game_state/inventory/item_bonds.json"] = BuildEmptyEntries(),
             ["game_state/inventory/item_text_updates.json"] = BuildEmptyEntries(),
+            // Empty original images let the first NPC skill declaration prove a fresh delta.
+            // They materialize no actor, skill, or capability from bootstrap prose.
+            ["game_state/npcs/npc_core.json"] = new(),
+            ["game_state/npcs/npc_skills.json"] = new(),
             ["game_state/npcs/item_journals.json"] = BuildEmptyEntries(),
             ["game_state/world/world_events.json"] = BuildWorldEvents(
                 idSuffix,

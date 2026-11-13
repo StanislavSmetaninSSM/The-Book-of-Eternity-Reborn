@@ -84,7 +84,7 @@ public partial class ValidationService
         }
     }
 
-    /// <summary>Distinguishes authenticated absence from an unreadable or uncovered original.</summary>
+    /// <summary>Requires authenticated original files; the existing closed absence contract excludes NPC core/skills.</summary>
     private async Task<(bool Proven, string? Json)> ReadNpcClaimOriginalAsync(string path, NarrativeInterfaceSourceSession? source)
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(source: source, narrativeRolePath: path);
@@ -93,7 +93,7 @@ public partial class ValidationService
             return (false, null);
         var manifest = lookup.Manifest;
         if (manifest.Files?.ContainsKey(path) != true)
-            return (manifest.OriginalPathPresenceV1?.TryGetValue(path, out var existed) == true && !existed, null);
+            return (false, null);
         var json = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, source: source, treatBlankAsMissing: false);
         return (json is not null, json);
     }

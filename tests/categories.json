@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-claim-bootstrap",
+      "responsibility": "#1533 empty current bootstrap NPC roots provide authenticated originals without inferred actors or skills.",
+      "excludes": "No legacy save migration, new NPC inference or whole bootstrap lifecycle qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs",
+        "BookOfEternityClient.IntegrationTests/MortalBootstrapValidationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_BuildsCanonicalBaselineWithoutKnownRepairLoopShapes",
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_UnstructuredProseDoesNotMaterializeMechanicsOrActors",
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_DoesNotInferResourcesFromPaidTrainingOrTradeProse",
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_DoesNotMaterializeTeacherUntilGmDeclaresCapability",
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_DoesNotInferTeacherFromLearnIntent",
+            "BookOfEternityClient.Tests.MortalBootstrapValidationTests.MortalBootstrapStateBuilder_PreservesNarrativeWorldEventWithoutInferringMechanics"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-structured-skill-claims",
       "responsibility": "#1533 mandatory Mortal NPC structured report and exact owner/kind/skill delta evidence; no NLP completeness guarantee.",
       "excludes": "Independent model audit and afterlife semantics.",
@@ -28,7 +58,7 @@
     },
     {
       "id": "mortal-skill-template-guidance",
-      "responsibility": "#1533 T106 actual full-daemon rendering of exact case/Unicode skill identity and bounded indexed repair guidance, plus the existing multi-actor/ambiguity worked example.",
+      "responsibility": "#1533 T106 actual full-daemon rendering of exact case/Unicode skill identity, bounded indexed repair guidance and mandatory private Mortal NPC claim output/repair templates, plus the existing multi-actor/ambiguity worked example.",
       "excludes": "Runtime skill validation, ownership/save-load rules, other daemon routes, provider dispatch and Windows PowerShell 5.1 qualification. Linux verification uses installed PowerShell 7; the same render test retains the Windows shell on Windows.",
       "changeHints": [
         "BookOfEternityClient/game_master_daemon.ps1",

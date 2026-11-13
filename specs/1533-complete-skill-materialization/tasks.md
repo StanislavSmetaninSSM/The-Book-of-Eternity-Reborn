@@ -162,6 +162,6 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [x] NPC-C1 Record explicit-list choice and limitation; preserve checkpoint.
 - [x] NPC-C2 Public validator RED: mandatory report, exact identity/kind, quote,
   no-progress restriction, original evidence and unchanged/foreign delta.
-- [ ] NPC-C3 Implement + verify declared owner/skill progression and source freshness.
-- [ ] NPC-C4 GM entrypoints/example/privacy and bounded guard verification.
-- [ ] NPC-C5 Independent review, correction, published verified checkpoint; no merge.
+- [x] NPC-C3 Implement + verify declared owner/skill progression and source freshness.
+- [x] NPC-C4 GM entrypoints/example/privacy and bounded guard verification.
+- [x] NPC-C5 Independent review, correction, published verified checkpoint; no merge.

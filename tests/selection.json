@@ -56,6 +56,27 @@
       "contracts": [
         "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
       ]
+    },
+    {
+      "category": "fr063-reasoning-prefix-regression",
+      "reason": "Changed debug report allowlist expected/hint vectors and ordinary reasoning regressions.",
+      "contracts": [
+        "Existing reasoning policy accepts the private NPC report without loosening other fields."
+      ]
+    },
+    {
+      "category": "mortal-skill-template-guidance",
+      "reason": "#1533 runtime report guidance and first Mortal canonical baseline.",
+      "contracts": [
+        "No inferred actors, no synthetic report; exact ordinary turn consumer."
+      ]
+    },
+    {
+      "category": "mortal-npc-skill-claim-bootstrap",
+      "reason": "#1533 runtime report guidance and first Mortal canonical baseline.",
+      "contracts": [
+        "No inferred actors, no synthetic report; exact ordinary turn consumer."
+      ]
     }
   ]
 }

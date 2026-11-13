@@ -927,16 +927,16 @@ adapter; source observations use existing NarrativeInterfaceSourceSession and
 validated original reader, never cached authority or new lock ownership.
 Spec: spec.md section Mortal NPC structured skill claims.
 
-- [ ] Add minimal public-validator RED cases and a bounded category: missing report,
+- [X] Add minimal public-validator RED cases and a bounded category: missing report,
   wrong owner/name/kind, stale vs real progression, learning/new creation, explicit
   no-progress use, malformed report, afterlife exclusion and no prose inference.
-- [ ] Implement detached report evaluation, current/pre-turn exact NPC bindings,
+- [X] Implement detached report evaluation, current/pre-turn exact NPC bindings,
   and original-source observation through the existing reader. No writes.
-- [ ] Synchronize Mortal GM guide/launcher, worked example and documentation guard;
+- [X] Synchronize Mortal GM guide/launcher, worked example and documentation guard;
   update current generated fixtures where this new mandatory report applies.
-- [ ] Fresh build and bounded official category runs, current-source and held-lease
+- [X] Fresh build and bounded official category runs, current-source and held-lease
   source mutation checks; independent code/test/optimization review and fixes.
-- [ ] Publish reviewed checkpoint, verify remote SHA and clean recovery; no merge
+- [X] Publish reviewed checkpoint, verify remote SHA and clean recovery; no merge
   or issue closure.
 
 Optimization: parse each required current/original NPC document once per invocation,
@@ -946,3 +946,58 @@ reuse an obsolete pass. No independent/static cache; operation ends with existin
 source-session disposal. No speedup claim. Review focus: report omission, actor
 identity ambiguity, cross-owner identical names, cosmetic/stale state, unreadable
 originals, new skill vs mastery, private output leakage, held-lease freshness.
+
+
+### NPC report bounded verification, 2026-11-13
+
+The owner-approved explicit self-report is implemented for Mortal turns only.
+It does not infer actors from prose or guarantee completeness of the author's
+list. Existing owner identity is case-insensitive; skill names remain ordinal
+and preserve meaningful whitespace. Report evaluation writes no state.
+
+Independent source review exposed and causal tests reproduced owner existence,
+case/mirror identity, realm transition, corrupt original, removal, report allowlist,
+private-output marker and duplicate-report gaps. These were corrected using the
+existing source session, authenticated snapshot reader and ordinary validators.
+No frozen historical hash was changed; additive source adapters are inverted
+explicitly before the old source/extraction comparisons.
+
+The existing closed snapshot-absence format does not admit NPC core/skills.
+Missing originals therefore fail closed. Current Mortal bootstrap now creates
+two empty canonical roots through its existing writer, not actors inferred from
+prose. A real builder-to-authenticated-original learning test failed for missing
+npc_core before the two-root fix and passed after it. Six existing bootstrap
+no-inference controls now require both roots empty. No save migration or new
+snapshot authority was introduced. A trial forged absence fixture was corrected
+to retain a real signed unrelated entry; it now proves missing/forged NPC evidence
+cannot establish learning, rather than pretending to prove supported absence.
+
+Final fresh serial unit and integration builds: 0 errors, 35.55s/39.97s;
+12/118 warnings respectively. The official selected run completed 204/204 PASS,
+12/12 descriptors, no skipped/duplicate tests, complete owned-tree cleanup,
+75.5282731 seconds. This includes 50 NPC report cases, six bootstrap cases,
+actual daemon output/repair-template rendering and the existing worked example,
+plus the affected ordinary/source/reasoning consumers. The daemon-render check
+first failed on missing npcSkillClaims before its runtime guidance fix.
+
+Current source/PDB joins: 1,224 production, 771 unit and 1,054 integration
+non-generated documents, zero mismatches; matching PE/PDB identities and identical
+production copies in both test outputs. Selection SHA256:
+0f49cd4a3f20ee0763c6f20c943c1cbabbd84b75f0b131a1e394d70e3b245717.
+Run identity: 20261112-221053-494-182-7f8f607c75344ba792c6c1f017f5927c-categories.
+An earlier 203-PASS run is not the final source qualification: the selection was
+expanded before its runner started but integration tests were stale. One attempted
+concurrent integration compilation ended csc137; final builds/tests were serial.
+An earlier runner invocation used an invalid SelectionPath parameter and ran no
+tests. These do not replace the final verified run.
+
+Optimization review accepted detached per-invocation lookup reuse and no NPC
+reads for an empty report. Current/original authentication remains fresh; no
+persistent cache, new authority, lock bypass or performance speedup is claimed.
+The small existing debug read is repeated by the separate report policy; no
+unsupported latency improvement is asserted. Raw diagnostics stay out of Git.
+No hosted CI, Windows qualification, independent NLP scan, merge or issue closure.
+
+Independent final source/outcome review: no outstanding blocking findings; accepted
+for this bounded slice, not the whole issue. Official discovery-only catalog audit
+passed: 1,678 categories, 13,951 methods/files, zero test execution, 10.666s.

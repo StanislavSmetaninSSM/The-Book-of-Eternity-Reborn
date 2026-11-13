@@ -5022,6 +5022,20 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("A spelling repair does not require a training purchase", template, StringComparison.Ordinal);
             Assert.Contains("Call `Complete-BoeValidationRepair` only after all corrections are resolved, using the current request's exact metadata", template, StringComparison.Ordinal);
 
+            // These are real daemon-rendered artifacts, not source-text stand-ins.
+            // Both first output and output-only repair must retain the private report.
+            foreach (var outputTemplateName in new[] { "TURN_OUTPUT_TEMPLATE.md", "OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md" })
+            {
+                var outputTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", outputTemplateName), Encoding.UTF8);
+                Assert.Contains("npcSkillClaims", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("Mortal no-claim skeleton", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("never replace a missing or authored report with synthetic []", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("actorKey", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("narrativeQuote", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("not proof of prose completeness", outputTemplate, StringComparison.Ordinal);
+                Assert.Contains("Afterlife is unchanged", outputTemplate, StringComparison.Ordinal);
+            }
+
             var readme = File.ReadAllText(Path.Combine(contextPack, "README.md"), Encoding.UTF8);
             Assert.Contains("Mortal World skill progression", readme, StringComparison.Ordinal);
         }

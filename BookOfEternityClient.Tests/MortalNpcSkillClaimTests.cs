@@ -196,12 +196,15 @@ public sealed class MortalNpcSkillClaimTests : IDisposable
         Assert.NotEmpty(await Evaluate());
     }
     [Theory]
+    [InlineData("input/turn_request.json")]
+    [InlineData("output/debug_logs.json")]
     [InlineData("game_state/meta/soul_state.json")]
     [InlineData("game_state/npcs/npc_core.json")]
     [InlineData("game_state/npcs/npc_skills.json")]
     public async Task CapturedPass_RechecksFreshRealmAndNpcSourcesUnderLease(string path)
     {
         await Setup(new JsonArray(Claim("noProgress")));
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", "{}");
         using var pass = await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync();
         Assert.DoesNotContain(pass.Issues, x => x.Code?.StartsWith("npc_skill_claim_", StringComparison.Ordinal) == true);
         Assert.Contains(pass.CaptureDiagnostic().Occurrences, x => x.Path == path);
@@ -261,6 +264,43 @@ public sealed class MortalNpcSkillClaimTests : IDisposable
         await Setup(new JsonArray(claim));
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", Core("Искра "));
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", "{}");
+        Assert.Empty(await Evaluate());
+    }
+    [Theory]
+    [InlineData(true)][InlineData(false)]
+    public async Task Learning_RejectsForgedNpcPresenceAndUncoveredOriginal(bool signedAbsent)
+    {
+        var claim = Claim(); claim["claimType"] = "learning";
+        await Setup(new JsonArray(claim)); await Original("{}", "{}");
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifest = JsonNode.Parse(await _fs.ReadFileAsync(manifestPath))!.AsObject();
+        manifest["files"]!.AsObject().Remove("game_state/npcs/npc_core.json");
+        manifest["snapshotFileHashes"]!.AsObject().Remove("game_state/npcs/npc_core.json");
+        manifest["rollbackBaselineFiles"] = new JsonArray("game_state/npcs/npc_skills.json");
+        if (signedAbsent) manifest["originalPathPresenceV1"] = new JsonObject
+        { ["game_state/npcs/npc_core.json"] = false, ["game_state/npcs/npc_skills.json"] = true };
+        else manifest.Remove("originalPathPresenceV1");
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Fact]
+    public async Task OriginalSnapshot_HashDriftCannotProveProgress()
+    {
+        await Setup(new JsonArray(Claim())); await Original(Core(), Skills(0));
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/npcs/npc_skills.json", "{}");
+        Assert.NotEmpty(await Evaluate());
+    }
+    [Fact]
+    public async Task FirstMortalNpcLearning_UsesEmptyBootstrapOriginals()
+    {
+        var roots = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(1, 1,
+            "Путник", "Смертный мир", "Первый день", DateTimeOffset.Parse("2026-11-13T03:00:00Z"));
+        var claim = Claim(); claim["claimType"] = "learning";
+        await Setup(new JsonArray(claim));
+        await Original(roots["game_state/npcs/npc_core.json"].ToJsonString(),
+            roots["game_state/npcs/npc_skills.json"].ToJsonString());
         Assert.Empty(await Evaluate());
     }
     private async Task Original(string core, string skills)

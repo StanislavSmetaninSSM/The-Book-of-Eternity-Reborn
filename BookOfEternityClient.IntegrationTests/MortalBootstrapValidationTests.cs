@@ -54,7 +54,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Contains("game_state/player/skills_passive.json", files.Keys);
         Assert.Contains("game_state/player/skill_mastery.json", files.Keys);
         Assert.Contains("lore/codex_entries.json", files.Keys);
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/npcs/npc_core.json"]);
+        Assert.Empty(files["game_state/npcs/npc_skills.json"]);
 
         var currentLocation = files[MortalLocationMaterializationContract.CurrentLocationPath];
         Assert.True(JsonNode.DeepEquals(
@@ -722,7 +723,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
                 "A mentor offers training, a vendor offers goods, and a sealed letter lies beside a runic glove.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-26T00:00:00Z"));
 
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/npcs/npc_core.json"]);
+        Assert.Empty(files["game_state/npcs/npc_skills.json"]);
         Assert.Empty(files["game_state/inventory/items.json"]["items"]!.AsArray());
         Assert.Empty(files["game_state/player/skills_active.json"]["activeSkillChanges"]!.AsArray());
         Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
@@ -1005,7 +1007,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T02:00:00Z"));
 
         Assert.Empty(paidStartFiles["game_state/player/experience.json"]);
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", paidStartFiles.Keys);
+        Assert.Empty(paidStartFiles["game_state/npcs/npc_core.json"]);
+        Assert.Empty(paidStartFiles["game_state/npcs/npc_skills.json"]);
         Assert.Empty(paidStartFiles["game_state/inventory/items.json"]["items"]!.AsArray());
 
         var plainStartFiles = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
@@ -1030,7 +1033,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             startingCircumstances: "За дверью ждёт наставница семейного архива, которая может обучить чтению печатей за плату.",
             createdAtUtc: DateTimeOffset.Parse("2026-07-06T01:00:00Z"));
 
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/npcs/npc_core.json"]);
+        Assert.Empty(files["game_state/npcs/npc_skills.json"]);
 
         foreach (var (path, node) in files)
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
@@ -1080,7 +1084,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
             createdAtUtc: DateTimeOffset.Parse("2026-07-09T01:00:00Z"));
 
         Assert.Empty(files["game_state/player/experience.json"]);
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/npcs/npc_core.json"]);
+        Assert.Empty(files["game_state/npcs/npc_skills.json"]);
     }
 
     [Fact]
@@ -1163,7 +1168,8 @@ public sealed class MortalBootstrapValidationTests : IDisposable
         Assert.Empty(files["game_state/player/skills_passive.json"]["passiveSkillChanges"]!.AsArray());
         Assert.Empty(files["game_state/player/skill_mastery.json"]["skillMasteryChanges"]!.AsArray());
         Assert.Empty(files["game_state/inventory/items.json"]["items"]!.AsArray());
-        Assert.DoesNotContain("game_state/npcs/npc_core.json", files.Keys);
+        Assert.Empty(files["game_state/npcs/npc_core.json"]);
+        Assert.Empty(files["game_state/npcs/npc_skills.json"]);
 
         var worldEvents = files["game_state/world/world_events.json"]["worldEventsLog"]!.AsArray();
         var openingEvent = Assert.Single(worldEvents.OfType<JsonObject>());

@@ -370,7 +370,7 @@ contract, not by adding natural-language actor inference.
 
 Every Mortal accepted turn supplies `npcSkillClaims` in `output/debug_logs.json`,
 an array (empty when none). Each row has exact `actorKey` (`id:` or `name:` using
-existing NPC identity), `skillName`, `skillKind` (`active`/`passive`), `claimType`
+existing case-insensitive NPC identity), byte-exact `skillName`, `skillKind` (`active`/`passive`), `claimType`
 (`use`/`learning`/`mastery`), `narrativeQuote` copied from the current narrative,
 and `resolution` (`stateDelta`/`noProgress`). Only `use` admits `noProgress`, with
 nonempty `reason`. Otherwise the same owner's same-kind exact skill must have
@@ -378,6 +378,9 @@ new current creation or changed numeric progression compared with the validated
 pre-turn NPC core/skill snapshot. Cosmetic changes, stale entries, another owner,
 wrong kind, confusable names, missing/unreadable originals and duplicate bindings
 cannot satisfy a declared claim. Learning requires genuinely new skill authority.
+The existing closed snapshot-absence contract does not cover NPC core/skills;
+authenticated original files are required (`{}` is a valid empty baseline), not
+an invented absence marker or `filesModified` fallback.
 The report is private, cannot create or modify canonical state, and has bounded
 indexed repair diagnostics. No claim is made that an empty/incomplete author list
 proves absence of mechanical assertions in arbitrary prose. Afterlife is unchanged.

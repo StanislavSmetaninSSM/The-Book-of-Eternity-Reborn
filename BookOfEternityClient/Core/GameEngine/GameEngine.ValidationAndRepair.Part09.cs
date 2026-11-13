@@ -319,6 +319,8 @@ public partial class GameEngine
             expectedShape.Add(
                 "output/debug_logs.json must be a fresh JSON object for the current accepted turn: { \"gm_thoughts_markdown\": \"## Охват NPC-анализа\\n...\", \"timestamp\": \"ISO-8601 UTC timestamp\" }.");
             expectedShape.Add(
+                "For Mortal turns the debug object also requires the explicitly authored private npcSkillClaims array, not a public GameResponse field. Preserve authored rows; never replace a missing or authored report with synthetic []. Explicit [] is valid only for a no-claim turn. Rows identify exact actorKey (id:/name:), skillName, skillKind (active/passive), claimType (use/learning/mastery), narrativeQuote from the current response, and resolution (stateDelta/noProgress). Only use permits noProgress with a nonempty reason. stateDelta requires the same exact owner/kind skill and numeric mastery/progress change against validated pre-turn state or genuinely new creation; learning requires new creation. Missing or unreadable originals do not prove change. Repair only named invalid fields and keep quotes aligned with the current response; do not mutate canonical state to satisfy this report. This is not proof of prose completeness. Afterlife is unchanged.");
+            expectedShape.Add(
                 "gm_thoughts_markdown must contain a separate `## Охват NPC-анализа` / `## NPC Scope` section before full Actor Brain reasoning blocks for every relevant actor.");
             expectedShape.Add(
                 "If no NPC, Guardian, faction, or other actor meaningfully acts or changes, explicitly preserve an actorless scope and explain why; do not invent an actor.");
