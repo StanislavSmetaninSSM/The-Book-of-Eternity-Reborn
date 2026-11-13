@@ -188,6 +188,17 @@ public sealed class MortalNpcProgressionProfileChangeContractTests
         Assert.Equal(raw, command.ToJsonString());
     }
 
+    [Fact]
+    public void InvalidNewNumericProfile_DiagnosticNamesAuthoredProfileField()
+    {
+        var command = Command("replace");
+        command["progressionProfileChange"]!["profile"]!["maxLevel"] = 0;
+        var result = Contract.Evaluate(Actor(), command);
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Problems, problem => problem.Code == "npc_profile_change_result_invalid" &&
+            problem.Field == "progressionProfileChange.profile.maxLevel");
+    }
+
     private static void Refused(Contract.Result result, string code)
     {
         Assert.False(result.IsValid); Assert.Null(result.CandidateActor);

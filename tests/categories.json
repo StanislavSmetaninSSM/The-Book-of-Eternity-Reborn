@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-browser-display",
+      "responsibility": "#1538 actual browser accepted NPC profile modes and setting-owned characteristics with private-data and pending-sidecar isolation.",
+      "excludes": "No console rendering or publication qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTests.AcceptedNpcMechanics.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_AcceptedNpcMechanics_IgnoresPendingSidecarAndPrivateFields"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-profile-change-source",
       "responsibility": "#1538 explicit profile change through actual core evaluator, mirror application, same-turn Mortal source and direct-mutation refusal.",
       "excludes": "Detached source-contract tests only; not real disk publication or rollback.",
@@ -45,7 +69,9 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_CommonEffectPreservesAllAcceptedResults",
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_ReachedLateCutRestoresWholeTransaction"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndExistingItemTransfer_ReachedLateCutRestoresWholeTransaction",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_InputDriftAfterAdmissionRefusesWithoutMutation",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_UnexpectedCoreMutationAfterItemWriteRollsBack"
           ]
         }
       ]

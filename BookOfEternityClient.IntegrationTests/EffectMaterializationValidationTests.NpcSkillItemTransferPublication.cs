@@ -79,6 +79,61 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(before, await context.CaptureBytesAsync(paths));
     }
 
+    [Fact]
+    public async Task OrdinaryNpcSkillTransfer_InputDriftAfterAdmissionRefusesWithoutMutation()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var prepared = await PrepareNpcSkillItemTransferAsync(context);
+        await AdmitNpcSkillCommonPublicationAsync(context);
+        var commands = (await context.ReadJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath))!;
+        commands["NPCInventoryAdds"]![0]!["NPCName"] = "Changed display metadata after admission";
+        await context.WriteJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath, commands);
+        var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+        var failure = await Record.ExceptionAsync(async () =>
+            result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, prepared.Backups));
+        Assert.True(failure is InvalidDataException || result?.Issues.Any(issue => issue.Severity == IssueSeverity.Error) == true);
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcSkillTransfer_UnexpectedCoreMutationAfterItemWriteRollsBack()
+    {
+        var armed = false;
+        var reached = false;
+        FileSystemManager? files = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = path =>
+            {
+                if (!armed || reached || path != MortalItemAcceptedTransferCatalog.NpcCommandsPath)
+                    return Task.CompletedTask;
+                var core = JsonNode.Parse(File.ReadAllText(files!.ResolvePath(NpcSkillCorePath)))!;
+                Assert.Equal(NpcSkillTransferItemId,
+                    Assert.Single(core["NPCsInScene"]![0]!["inventory"]!.AsArray())!["itemId"]!.GetValue<string>());
+                reached = true;
+                core["NPCsInScene"]![0]!["unexpectedPostItemMutation"] = true;
+                File.WriteAllText(files.ResolvePath(NpcSkillCorePath), core.ToJsonString());
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        files = context.FileSystem;
+        var prepared = await PrepareNpcSkillItemTransferAsync(context);
+        await AdmitNpcSkillCommonPublicationAsync(context);
+        var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        armed = true;
+        var failure = await Record.ExceptionAsync(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, prepared.Backups));
+        armed = false;
+        Assert.True(reached, "The real item writer must publish NPC inventory before the mutation injection.");
+        Assert.IsType<InvalidDataException>(failure);
+        Assert.Contains("item-phase input differs", failure!.Message, StringComparison.Ordinal);
+        Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
+    }
+
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillItemTransferAsync(EffectMaterializationTestContext context)
     {
