@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-consequences",
+      "responsibility": "#1538 pure declared skill cadence and current-world characteristic policy on actual original-to-candidate changes.",
+      "excludes": "Schema parsing, publication authority, profile installation and full progression acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcProgressionConsequences.cs",
+        "BookOfEternityClient.Tests/MortalNpcProgressionConsequencesTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequencesTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-common-publication",
       "responsibility": "#1538 ordinary completed common effect publication consumes skill sidecar and preserves same-turn NPC source, plus reached late-cut rollback.",
       "excludes": "Item/location transitions, treatment, joint repair and pending resolutions.",

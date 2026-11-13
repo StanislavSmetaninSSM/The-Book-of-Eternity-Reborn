@@ -1,3 +1,7 @@
+## Presence verification and corrected fixture, 2026-11-13
+
+Runtime767886: real producer6/6, raw effect4/4, selected prior presence9/9 and observation6/6 PASS. Publication13/15 exposed an invalid two-key signed-presence TEST fixture, not a failed signed-absence implementation; correcting it to the exact24 shape. Retire the earlier13/14 causal interpretation for signed absence. Real producer original2-case RED remains valid. Common effect2/2 desired-success tests fail at the explicit unsupported common-plan guard; late cut is not yet reached. New pure consequences component is a compile-only fail-open stub with15tests, no runtime caller, not implemented or qualified.
+
 ## Signed absence producer/consumer WIP, 2026-11-13
 
 Actual live producer initial two cases give 0 PASS / 2 FAIL (missing original sidecar observation) on runtime035a. New Mortal-only 24-path closed form preserves old base/combat/diagnosis forms. Shared consumer reads signed absence only with no file AND no hash entry; reviewer caught the latter consistency requirement. Existence enters input identity and backup absence remains distinct from malformed content. Consumer signed-absence effect case and additional producer/legacy controls are unrun, not causal claims. Common publication remains outside this checkpoint.

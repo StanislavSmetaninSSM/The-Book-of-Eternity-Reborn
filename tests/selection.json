@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-progression-consequences",
+      "reason": "Pure declared consequence contract before runtime integration.",
+      "contracts": [
+        "Actual cadence discharges and setting-authorized characteristic changes."
+      ]
+    },
+    {
       "category": "mortal-npc-skill-common-publication",
       "reason": "Bounded next ordinary common publication integration; unchanged unrelated suites excluded.",
       "contracts": [

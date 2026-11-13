@@ -323,11 +323,11 @@ public sealed class MortalNpcProgressionPublicationTests
                     }
                     else if (originalSkillSidecarExists == false)
                     {
-                        manifest["originalPathPresenceV1"] = new JsonObject
-                        {
-                            [path] = true,
-                            [skills] = false
-                        };
+                        var presence = new JsonObject();
+                        var signedFiles = manifest["files"]!.AsObject();
+                        foreach (var logicalPath in PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths)
+                            presence[logicalPath] = signedFiles.ContainsKey(logicalPath);
+                        manifest["originalPathPresenceV1"] = presence;
                     }
                 }
                 manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
