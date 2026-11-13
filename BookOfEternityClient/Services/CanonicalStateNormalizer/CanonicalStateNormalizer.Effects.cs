@@ -16,6 +16,14 @@ public partial class CanonicalStateNormalizer
         SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
         AcceptedMechanicsPlan? commonPlan = null)
     {
+        if (plan.NpcSkillInput is not null)
+        {
+            if (!normalizedAcceptedCarrierBaselines || commonPlan is null ||
+                !ReferenceEquals(commonPlan.EffectPlan, plan))
+                throw StaleEffectPlan("ordinary NPC skills require their normalized common owner");
+            RequireOrdinaryNpcSkillCommonPlan(commonPlan);
+            await _npcProgressionSource!.RequirePublishedSkillsAsync(_fs, _writeLease);
+        }
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
             ? EffectCarrierCatalog.CreateAuthorityFingerprint(

@@ -13,7 +13,7 @@ public partial class CanonicalStateNormalizer
         if (_npcProgressionSource?.SkillInput is { } skillInput)
         {
             if (acceptedMechanicsPlan is not null)
-                throw new InvalidDataException("Ordinary NPC skills cannot share an unintegrated accepted mechanics plan.");
+                RequireOrdinaryNpcSkillCommonPlan(acceptedMechanicsPlan);
             await _npcProgressionSource.RequireRawSkillInputsAsync(_fs, _writeLease);
             // Both writes remain inside the existing accepted-turn transaction; its
             // before-image set includes both roots, including the raw pending commands.

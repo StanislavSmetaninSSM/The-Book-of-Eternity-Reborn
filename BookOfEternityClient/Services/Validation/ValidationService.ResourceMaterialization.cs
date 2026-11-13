@@ -918,6 +918,8 @@ public partial class ValidationService
                         woundHandoff.StageBundle.BundleFingerprint
                 }
         };
+        if (effectPlan?.NpcSkillInput is { } npcSkillInput)
+            internalInputs["npcSkillInputFingerprint"] = npcSkillInput.Fingerprint;
         var commonAcceptedEvents = events.Root.DeepClone().AsObject();
         if (mortalReceipt is not null)
         {
@@ -978,6 +980,11 @@ public partial class ValidationService
             beforePaths.UnionWith(effectPlan.TouchedPaths);
             beforePaths.UnionWith(effectPlan.DeletedPaths);
             beforePaths.UnionWith(effectPlan.CarrierBeforeImages.Keys);
+            if (effectPlan.NpcSkillInput is not null)
+            {
+                beforePaths.Add(NpcCoreChangesContract.NpcCorePath);
+                beforePaths.Add(MortalNpcAcceptedSkillInput.SidecarPath);
+            }
         }
         if (woundHandoff is not null)
         {
