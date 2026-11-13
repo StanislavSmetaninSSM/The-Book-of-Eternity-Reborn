@@ -361,3 +361,23 @@ Its integrity failures cannot be waived as pre-existing state issues; unrelated
 existing diagnostics keep the established waiver behavior. Preserve the current
 terminal restoration and cleanup machinery, all mastery bytes, and exact selector
 semantics. No new QTE/repair/publication system or broader lifecycle expansion.
+
+## Mortal NPC structured skill claims (2026-11-13)
+
+Owner approved mandatory explicit NPC/skill/state linkage instead of independent
+model analysis of prose completeness. This supersedes FR-104 for this bounded
+contract, not by adding natural-language actor inference.
+
+Every Mortal accepted turn supplies `npcSkillClaims` in `output/debug_logs.json`,
+an array (empty when none). Each row has exact `actorKey` (`id:` or `name:` using
+existing NPC identity), `skillName`, `skillKind` (`active`/`passive`), `claimType`
+(`use`/`learning`/`mastery`), `narrativeQuote` copied from the current narrative,
+and `resolution` (`stateDelta`/`noProgress`). Only `use` admits `noProgress`, with
+nonempty `reason`. Otherwise the same owner's same-kind exact skill must have
+new current creation or changed numeric progression compared with the validated
+pre-turn NPC core/skill snapshot. Cosmetic changes, stale entries, another owner,
+wrong kind, confusable names, missing/unreadable originals and duplicate bindings
+cannot satisfy a declared claim. Learning requires genuinely new skill authority.
+The report is private, cannot create or modify canonical state, and has bounded
+indexed repair diagnostics. No claim is made that an empty/incomplete author list
+proves absence of mechanical assertions in arbitrary prose. Afterlife is unchanged.

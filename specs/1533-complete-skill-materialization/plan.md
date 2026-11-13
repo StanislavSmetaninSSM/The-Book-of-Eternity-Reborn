@@ -918,3 +918,31 @@ reproducible defect remains in the inspected bounded training/UI/quest consumers
 this is not blanket execution of every acquisition route or every future system.
 
 Independent final source and outcome review: READY, no blocking findings. Reviewer confirmed 18 unique PASS, 1/1 descriptor, both cleanup flags, build/catalog counts and exact source/recovery identity; no additional runs. Part12 tasks complete within the stated boundary.
+
+## NPC structured claims implementation plan (2026-11-13)
+
+Goal: enforce the owner-approved explicit Mortal NPC skill/state linkage, #1533.
+Architecture: pure typed report evaluation plus one ordinary narrative-policy
+adapter; source observations use existing NarrativeInterfaceSourceSession and
+validated original reader, never cached authority or new lock ownership.
+Spec: spec.md section Mortal NPC structured skill claims.
+
+- [ ] Add minimal public-validator RED cases and a bounded category: missing report,
+  wrong owner/name/kind, stale vs real progression, learning/new creation, explicit
+  no-progress use, malformed report, afterlife exclusion and no prose inference.
+- [ ] Implement detached report evaluation, current/pre-turn exact NPC bindings,
+  and original-source observation through the existing reader. No writes.
+- [ ] Synchronize Mortal GM guide/launcher, worked example and documentation guard;
+  update current generated fixtures where this new mandatory report applies.
+- [ ] Fresh build and bounded official category runs, current-source and held-lease
+  source mutation checks; independent code/test/optimization review and fixes.
+- [ ] Publish reviewed checkpoint, verify remote SHA and clean recovery; no merge
+  or issue closure.
+
+Optimization: parse each required current/original NPC document once per invocation,
+reuse detached lookups across report rows. Empty report avoids all NPC file reads.
+Realm and report sources are observed even when empty so later mutation cannot
+reuse an obsolete pass. No independent/static cache; operation ends with existing
+source-session disposal. No speedup claim. Review focus: report omission, actor
+identity ambiguity, cross-owner identical names, cosmetic/stale state, unreadable
+originals, new skill vs mastery, private output leakage, held-lease freshness.
