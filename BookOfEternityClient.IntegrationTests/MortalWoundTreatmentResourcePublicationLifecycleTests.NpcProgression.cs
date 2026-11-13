@@ -22,6 +22,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 var core = await ReadJsonObjectAsync(files, NpcCoreChangesContract.NpcCorePath);
                 var provider = ReadProvider(core);
+                var baselineSkill = Assert.Single(provider["activeSkills"]!.AsArray().OfType<JsonObject>());
+                baselineSkill["currentMasteryProgress"] = 0;
+                baselineSkill["masteryProgressNeeded"] = 100;
                 provider["level"] = 1;
                 provider["experience"] = 99;
                 provider["experienceForNextLevel"] = 100;
@@ -56,10 +59,33 @@ public sealed partial class GameEngineTurnLifecycleTests
               "source":{"sessionId":"session_t070b3_game_engine","requestId":"request_t070b3_game_engine","turnNumber":42},
               "experienceDelta":2,"level":2,"experience":1,"experienceForNextLevel":565}}
             """)!;
+        var changedSkill = Assert.Single(ReadProvider(original)["activeSkills"]!.AsArray()
+            .OfType<JsonObject>()).DeepClone().AsObject();
+        changedSkill["displayName"] = HeldTreatmentPipelineContext.ChangedSkillDisplayName;
+        var proposal = new GameResponse
+        {
+            NPCCoreChanges = new[] { JsonSerializer.SerializeToElement(command) },
+            NPCActiveSkillChanges = new[] { JsonSerializer.SerializeToElement(new JsonObject
+            {
+                ["npcId"] = HeldTreatmentPipelineContext.ProviderId,
+                ["skillChanges"] = new JsonArray(changedSkill)
+            }) }
+        };
         await new StateDistributor(context.FileSystem, NullLogger<StateDistributor>.Instance)
-            .DistributeAsync(new GameResponse { NPCCoreChanges = new[] { JsonSerializer.SerializeToElement(command) } });
+            .DistributeAsync(proposal);
         await context.AcquireLeaseAsync();
-        await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
+        var authorities = RestoreHeldTreatmentAuthorities(context);
+        var publication = WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(
+            context.FileSystem, context.Lease, proposal,
+            authorities.AcceptedState, authorities.Request, authorities.Resolution);
+        Assert.True(publication.IsValid, DescribeValidationIssues(publication.Issues));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(publication.Plan);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem, context.Lease, out var binding, out var cached));
+        Assert.True(cached.Success, DescribeValidationIssues(cached.Issues));
+        Assert.Same(plan, cached.Plan);
+        context.SetCurrentAuthorities(authorities.AcceptedState, authorities.Request,
+            authorities.Resolution, plan, binding);
 
         var npcAfterImage = Assert.Single(context.Plan.OwnerCompanionAfterImages,
             pair => pair.Key == NpcCoreChangesContract.NpcCorePath).Value;

@@ -1,3 +1,7 @@
+## Treatment prerequisite correction WIP
+
+Exact source tracing corrects the preceding interpretation: owner_unavailable was secondary to upstream mastery rejection, not established held/generic-path incompatibility. The old skill fixture omitted currentMasteryProgress/masteryProgressNeeded. The test now creates a complete canonical baseline before signed capture, then clones that baseline for the display-only pending skill proposal. It composes through the same real held publication entrypoint without regenerating the obsolete fixture. Production is unchanged. Corrected treatment and the new signed ordinary wound companion are UNRUN on retained integration runtime8886febe.
+
 ## Item companions GREEN; wound/treatment audit still open, 2026-11-13
 
 Saved production at d1a80fe, final test/interface checkpoint b308943d: Common empty fate-card contract3/3 PASS9.533s; item transfer10/10 PASS25.009s; creation6/6 PASS21.908s. Actual player/existing-NPC creation works with and without authored effects, exact common allocated item/receipt IDs, repeat and reached late rollback. Independent source and test reviews found no blockers for this bounded item work. Official category commands below were used; complete selection, no skips/duplicates, owned cleanup complete.
