@@ -2,7 +2,7 @@
 
 Source: [#1538](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1538).
 Base: main `7c8bb04a43f40939a9c78b10245d78283bd5805d`.
-Status: completeness audit reopened; ordinary item companions and treatment publication under verification, 2026-11-13. The owner delegated routine design decisions; the coordinator authorized proceeding with the explicit-profile approach.
+Status: companion audit fixes verified; final requirement reconciliation and checkpoint review, 2026-11-13. The owner delegated routine design decisions; the coordinator authorized proceeding with the explicit-profile approach.
 
 ## Intent and scope
 
