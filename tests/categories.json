@@ -51,7 +51,7 @@
     },
     {
       "id": "mortal-npc-progression-item-creation",
-      "responsibility": "#1538 ordinary accepted item creation co-published with NPC progression, skill and effect.",
+      "responsibility": "#1538 ordinary player/existing-NPC item creation with progression and skill, optional effect, exact allocated IDs, repeat and reached late rollback.",
       "excludes": "No arbitrary loot generation or specialized treatment qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkillItemCreationPublication.cs"
@@ -68,7 +68,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndPlayerItemCreation_PublishesOneAuthorizedItemAndCompletedCandidate"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndPlayerItemCreation_PublishesOneAuthorizedItemAndCompletedCandidate",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndItemCreation_ReachedLateCutRestoresAllocatedPublication"
           ]
         }
       ]

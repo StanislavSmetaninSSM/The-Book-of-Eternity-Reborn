@@ -72,14 +72,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
         await context.ReleaseLeaseAsync();
         var logger = new SpiritualLifecycleTestLogger();
+        var repairInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
         var engine = CreateGameEngine(
-            new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }), fileSystem: context.FileSystem, logger: logger);
+            repairInput, fileSystem: context.FileSystem, logger: logger);
         var disposition = await engine.ValidatePreparedNpcProgressionOutcomeAsync(
             "NPC progression plus treatment skill/item oracle", HeldTreatmentPipelineContext.Turn);
         if (disposition != AcceptedTurnValidationDisposition.Accepted)
         {
             var repair = await context.FileSystem.ReadFileAsync("game_state/control/validation_repair_request.json");
-            Assert.True(false, $"Treatment/progression disposition: {disposition}\n{logger.Describe()}\nRetained repair request:\n{repair ?? "<absent>"}");
+            var diagnostic = await context.FileSystem.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json");
+            Assert.True(false, $"Treatment/progression disposition: {disposition}\n{logger.Describe()}\nRepair request before Escape:\n{repairInput.RepairBeforeEscape ?? "<absent>"}\nRetained repair request:\n{repair ?? "<absent>"}\nDiagnostic failure report:\n{diagnostic ?? "<absent>"}");
         }
         var persisted = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
         Assert.True(JsonNode.DeepEquals(npcAfterImage, persisted));
@@ -89,4 +91,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var property in new[] { "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
             Assert.False(consumed.ContainsKey(property), "Accepted treatment must not retain replayable NPC skill commands: " + property);
     }
+
+    // Read the owner's already-authored diagnostic before Escape cleanup removes it.
+    // This observes output only; it does not re-run validation or modify authority.
+    private sealed class NpcTreatmentRepairDiagnosticInput(FileSystemManager files) : IConsoleInputSource
+    {
+        private bool _escapeRead;
+        public string? RepairBeforeEscape { get; private set; }
+        public bool IsScripted => true;
+        public bool KeyAvailable => !_escapeRead;
+        public ConsoleKeyInfo ReadKey(bool intercept = true)
+        {
+            var path = Path.Combine(files.GameSessionPath, "game_state", "control", "validation_repair_request.json");
+            RepairBeforeEscape = File.Exists(path) ? File.ReadAllText(path) : null;
+            _escapeRead = true;
+            return Key(ConsoleKey.Escape);
+        }
+        public string? ReadLine() => string.Empty;
+    }
+
 }
