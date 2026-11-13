@@ -1,3 +1,11 @@
+## Reopened scope audit and no-effect/incoming controls WIP, 2026-11-13
+
+The user requested a fresh completeness audit. Prior blanket FR1–FR9 acceptance is withdrawn: existing explicit refusals for item creation and wound/treatment composition require reconciliation with the issue's declared companions, not dismissal as arbitrary matrices. Previously passed bounded evidence remains valid; this checkpoint does not merge or close the issue.
+
+Three new real controls extend existing transfer coverage: incoming publication/repeat, incoming reached-late rollback, and outgoing progression/skill/item publication with no effect command after BOTH item and resource/common admission. They are UNRUN against unchanged runtime. The old item-only NoPlan negative remains a missing-authority test, not proof that an unrelated effect must be authored. Source review identifies the no-command effect identity early return as a likely gap: it discards an existing NPC/item candidate before the common owner can bind it. No production correction before causal verification.
+
+Preparation reuses the existing signed NPC fixture, item catalog and coordinator with independent owned roots. No new cache, gameplay system or relaxed authority. Next: run the expanded transfer category, distinguish fixture failures from runtime defects, then preserve the existing empty-identity/common-owner path where required. New-item/wound concrete existing routes are under audit separately.
+
 ## Accepted branch checkpoint and recovery receipt, 2026-11-13
 
 T001–T009 are complete for the agreed Mortal NPC scope. Independent source/transaction and ordinary documentation/consequence reviewers verified the final bounded outcomes and FR1–FR9 mapping without remaining blockers. This is branch acceptance, not permission to merge or close #1538.

@@ -210,6 +210,192 @@ public sealed partial class EffectMaterializationValidationTests
                 context.FileSystem, lease, session, token));
     }
 
+    [Fact]
+    public async Task OrdinaryNpcProgressionSkillAndIncomingItemTransfer_PublishesOnceAndRepeatDoesNotDuplicate()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var prepared = await PrepareNpcSkillIncomingItemTransferAsync(context);
+        var sourcePaths = prepared.Backups.Values.Concat(new[] { "input/turn_request.json",
+            "game_state/control/pending_turn_snapshot.json", PendingTurnSnapshotAuthority.AuthorityPath })
+            .Distinct(StringComparer.Ordinal).ToArray();
+        var sourceBefore = await context.CaptureBytesAsync(sourcePaths);
+        var admitted = await AdmitNpcSkillCommonPublicationAsync(context);
+
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, prepared.Backups);
+
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal(admitted.InputFingerprint, Assert.IsType<AcceptedMechanicsPlan>(result.MechanicsPlan).InputFingerprint);
+        AssertNpcSkillIncomingTransferPublished(context.FileSystem, prepared.Item);
+        Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnCanonicalEffectMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem));
+        var acceptedPaths = new[] { NpcSkillCorePath, PendingNpcSkillsPath, InventoryEquipmentService.ItemsPath,
+            MortalItemIdentityState.StatePath, MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+            EffectMaterializationTestContext.PlayerEffectsPath, EffectMaterializationTestContext.IdentityIndexPath };
+        var accepted = await context.CaptureBytesAsync(acceptedPaths);
+
+        var repeated = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, prepared.Backups);
+
+        Assert.DoesNotContain(repeated.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal(accepted, await context.CaptureBytesAsync(acceptedPaths));
+        AssertNpcSkillIncomingTransferPublished(context.FileSystem, prepared.Item);
+        Assert.Equal(sourceBefore, await context.CaptureBytesAsync(sourcePaths));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcProgressionSkillAndIncomingItemTransfer_ReachedLateCutRestoresWholeTransaction()
+    {
+        var armed = false;
+        var reached = false;
+        FileSystemManager? files = null;
+        JsonObject? item = null;
+        const string marker = "incoming NPC skill transfer reached late cut";
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = path =>
+            {
+                if (!armed || reached || path != EffectMaterializationTestContext.CommandPath)
+                    return Task.CompletedTask;
+                reached = true;
+                AssertNpcSkillIncomingTransferPublished(files!, item!);
+                throw new InvalidOperationException(marker);
+            }
+        };
+        await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        files = context.FileSystem;
+        var prepared = await PrepareNpcSkillIncomingItemTransferAsync(context);
+        item = prepared.Item;
+        await AdmitNpcSkillCommonPublicationAsync(context);
+        var paths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(prepared.Backups.Values)
+            .Concat(new[] { NpcSkillCorePath, PendingNpcSkillsPath, "input/turn_request.json",
+                "game_state/control/pending_turn_snapshot.json", PendingTurnSnapshotAuthority.AuthorityPath,
+                "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" })
+            .Distinct(StringComparer.Ordinal).ToArray();
+        var before = await context.CaptureBytesAsync(paths);
+        armed = true;
+
+        var failure = await Record.ExceptionAsync(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, prepared.Backups));
+
+        armed = false;
+        Assert.True(reached, "The actual common writer must reach effect-command consumption after incoming transfer publication.");
+        Assert.NotNull(failure);
+        Assert.Contains(marker, failure!.ToString(), StringComparison.Ordinal);
+        Assert.Equal(before, await context.CaptureBytesAsync(paths));
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcProgressionSkillAndOutgoingTransfer_WithoutEffectPublishesAndRepeatsStably()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var prepared = await PrepareNpcSkillItemTransferAsync(context);
+        context.FileSystem.DeleteFile(EffectMaterializationTestContext.CommandPath);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var rawIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(rawIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, rawIssues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, prepared.Backups);
+
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        var core = (await context.ReadJsonAsync(NpcSkillCorePath))!.AsObject();
+        Assert.False(core.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(core["NPCsInScene"]!.AsArray())!;
+        Assert.Equal(3, actor["level"]!.GetValue<int>());
+        Assert.Equal(0, actor["experience"]!.GetValue<int>());
+        Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
+        var skill = Assert.Single(actor["activeSkills"]!.AsArray())!;
+        Assert.Equal(GrantedNpcSkillId, skill["skillId"]!.GetValue<string>());
+        Assert.Equal(1, skill["masteryLevel"]!.GetValue<int>());
+        var moved = Assert.Single(actor["inventory"]!.AsArray())!;
+        Assert.Equal(NpcSkillTransferItemId, moved["itemId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(prepared.Item["materializationReceipt"], moved["materializationReceipt"]));
+        Assert.Empty((await context.ReadJsonAsync(InventoryEquipmentService.ItemsPath))!["items"]!.AsArray());
+        var index = MortalItemIdentityState.Parse((await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Empty(index.Issues);
+        Assert.Equal(NpcSkillOwner, index.EntriesByItemId[NpcSkillTransferItemId]["currentCarrier"]!["ownerId"]!.GetValue<string>());
+        Assert.Empty((await context.ReadJsonAsync(PendingNpcSkillsPath))!.AsObject());
+        var npcCommands = await context.ReadJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath);
+        Assert.False(npcCommands is JsonObject commands && commands.ContainsKey("NPCInventoryAdds"));
+        Assert.Null(await context.ReadJsonAsync(EffectMaterializationTestContext.CommandPath));
+        var effects = await context.ReadJsonAsync(EffectMaterializationTestContext.PlayerEffectsPath);
+        Assert.True(effects is null || effects["activeEffects"] is JsonArray { Count: 0 });
+        var paths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles;
+        var accepted = await context.CaptureBytesAsync(paths);
+
+        var repeated = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            context.FileSystem, context.Normalizer, context.Validator, prepared.Backups);
+
+        Assert.DoesNotContain(repeated.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal(accepted, await context.CaptureBytesAsync(paths));
+    }
+
+    private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
+        PrepareNpcSkillIncomingItemTransferAsync(EffectMaterializationTestContext context)
+    {
+        var item = MortalItemTestFixture.CreateCanonicalRoot(NpcSkillTransferItemId);
+        var original = MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
+        original["NPCsInScene"]![0]!["inventory"] = new JsonArray(item.DeepClone());
+        await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath,
+            new JsonObject { ["items"] = new JsonArray(), ["equipment"] = new JsonObject() });
+        await context.WriteJsonAsync(MortalItemIdentityState.StatePath,
+            MortalItemTestFixture.CreateIndexForCarrier(item, "npc_inventory", NpcSkillOwner));
+        // Existing helper signs NPC-owned item/index before authoring skill/progression/effect commands.
+        await PrepareNpcSkillGrant(context, includeProgressionAward: true, originalCore: original);
+        var player = (await context.ReadJsonAsync(InventoryEquipmentService.ItemsPath))!.AsObject();
+        player["UpdateInventory"] = new JsonArray(item.DeepClone());
+        await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath, player);
+        await context.WriteJsonAsync(MortalItemAcceptedTransferCatalog.NpcCommandsPath, new JsonObject
+        {
+            ["NPCInventoryRemovals"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = NpcSkillOwner, ["NPCName"] = original["NPCsInScene"]![0]!["name"]!.DeepClone(),
+                ["itemId"] = NpcSkillTransferItemId
+            })
+        });
+        return (await context.ReadPendingSnapshotBackupsAsync(), item);
+    }
+
+    private static void AssertNpcSkillIncomingTransferPublished(FileSystemManager files, JsonObject originalItem)
+    {
+        JsonNode Read(string path) => JsonNode.Parse(File.ReadAllText(files.ResolvePath(path)))!;
+        var core = Read(NpcSkillCorePath).AsObject();
+        Assert.False(core.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(core["NPCsInScene"]!.AsArray())!;
+        Assert.Equal(NpcSkillOwner, actor["NPCId"]!.GetValue<string>());
+        Assert.Equal(3, actor["level"]!.GetValue<int>());
+        Assert.Equal(0, actor["experience"]!.GetValue<int>());
+        Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
+        var skill = Assert.Single(actor["activeSkills"]!.AsArray())!;
+        Assert.Equal(GrantedNpcSkillId, skill["skillId"]!.GetValue<string>());
+        Assert.Equal(1, skill["masteryLevel"]!.GetValue<int>());
+        Assert.Empty(actor["inventory"]!.AsArray());
+        var player = Read(InventoryEquipmentService.ItemsPath).AsObject();
+        var moved = Assert.Single(player["items"]!.AsArray())!;
+        Assert.Equal(NpcSkillTransferItemId, moved["itemId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(originalItem["materializationReceipt"], moved["materializationReceipt"]));
+        Assert.False(player.ContainsKey("UpdateInventory"));
+        var index = MortalItemIdentityState.Parse(Read(MortalItemIdentityState.StatePath));
+        Assert.Empty(index.Issues);
+        var carrier = index.EntriesByItemId[NpcSkillTransferItemId]["currentCarrier"]!;
+        Assert.Equal("player_inventory", carrier["kind"]!.GetValue<string>());
+        Assert.Equal("player", carrier["ownerId"]!.GetValue<string>());
+        var commandsPath = files.ResolvePath(MortalItemAcceptedTransferCatalog.NpcCommandsPath);
+        if (File.Exists(commandsPath))
+            Assert.False(JsonNode.Parse(File.ReadAllText(commandsPath))!.AsObject().ContainsKey("NPCInventoryRemovals"));
+        Assert.Empty(Read(PendingNpcSkillsPath).AsObject());
+        var effect = Assert.Single(Read(EffectMaterializationTestContext.PlayerEffectsPath)["activeEffects"]!.AsArray())!;
+        Assert.Equal(GrantedNpcSkillId, effect["source"]!["sourceId"]!.GetValue<string>());
+        var effectEntry = Assert.Single(Read(EffectMaterializationTestContext.IdentityIndexPath)["entries"]!.AsArray())!;
+        Assert.Equal(effect["effectId"]!.GetValue<string>(), effectEntry["effectId"]!.GetValue<string>());
+    }
+
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillItemTransferAsync(EffectMaterializationTestContext context)
     {
