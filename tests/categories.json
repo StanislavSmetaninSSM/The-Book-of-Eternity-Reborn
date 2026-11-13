@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-self-effect",
+      "responsibility": "#1538 ordinary same-NPC awarded-skill effect publication, accepted-repeat stability and reached late rollback.",
+      "excludes": "No specialized treatment, NPC-core whole-carrier effect layout, or generic combat matrix.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSelfEffectPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndSelfEffect_PublishesSameActorWithoutCoreOverwrite",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndSelfEffect_ReachedLateCutRestoresCoreSidecarsAndEffect"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-profile-publication",
       "responsibility": "#1538 real profile-only replacement through current-turn coordinator and reached post-write all-canonical rollback.",
       "excludes": "No XP award, item overlap, or full retry qualification.",

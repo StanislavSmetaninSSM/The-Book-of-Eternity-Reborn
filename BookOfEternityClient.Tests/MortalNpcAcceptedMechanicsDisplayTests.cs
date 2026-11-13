@@ -2,6 +2,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.CommandProtocol;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -60,16 +61,23 @@ public sealed class MortalNpcAcceptedMechanicsDisplayTests
         {
             Assert.Contains("1 награда за каждые 2 полученных уровня", text, StringComparison.Ordinal);
             Assert.Contains("правила текущего мира", text, StringComparison.Ordinal);
-            Assert.Contains("Излишек опыта: отбрасывается", text, StringComparison.Ordinal);
+            // The real dossier renderer splits "key: value" profile details into
+            // structured facts. Assert paired public fields, not JSON adjacency.
+            var dossier = Assert.IsType<UiEntityDossierBlock>(Assert.Single(mechanics.Blocks));
+            var profileCard = Assert.Single(dossier.Sections.SelectMany(section => section.Blocks)
+                .OfType<UiEntityDossierBlock>(), card => card.Title == "Профиль развития");
+            var facts = profileCard.Sections.SelectMany(section => section.Blocks)
+                .OfType<UiKeyValueGridBlock>().SelectMany(grid => grid.Items).ToArray();
+            Assert.Contains(facts, fact => fact.Key == "Излишек опыта" && fact.Value == "отбрасывается");
             if (mode == "standard")
             {
-                Assert.Contains("Предел уровня: 5", text, StringComparison.Ordinal);
-                Assert.Contains("Потеря опыта: разрешена", text, StringComparison.Ordinal);
+                Assert.Contains(facts, fact => fact.Key == "Предел уровня" && fact.Value == "5");
+                Assert.Contains(facts, fact => fact.Key == "Потеря опыта" && fact.Value == "разрешена");
             }
             else
             {
-                Assert.Contains("Предел уровня: 4", text, StringComparison.Ordinal);
-                Assert.Contains("Пороги: 10, 20, 30", text, StringComparison.Ordinal);
+                Assert.Contains(facts, fact => fact.Key == "Предел уровня" && fact.Value == "4");
+                Assert.Contains(facts, fact => fact.Key == "Пороги" && fact.Value == "10, 20, 30");
             }
         }
         Assert.DoesNotContain("PRIVATE_SENTINEL", text, StringComparison.Ordinal);
