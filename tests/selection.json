@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-accepted-mechanics-display",
+      "reason": "#1538 canonical accepted mechanics must survive sidecar consumption in existing console/shared projections.",
+      "contracts": [
+        "Accepted core-only mastery/XP visibility, exact public fields and private sentinel exclusion."
+      ]
+    },
+    {
       "category": "mortal-npc-accepted-skill-candidate",
       "reason": "#1538 P2b pure ordinary candidate owner before physical integration.",
       "contracts": [

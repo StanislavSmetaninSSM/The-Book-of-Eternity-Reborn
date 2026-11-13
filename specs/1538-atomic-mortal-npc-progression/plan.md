@@ -323,3 +323,30 @@ metadata without authority; the new mastery API validates touched result catalog
 including profile-only calls, ID/level aliases, active no-cap and passive caps.
 Mastery completeness is checked after the same-package mastery update so initial
 profile-plus-mastery is allowed. Original treatment Compose remains unchanged.
+
+### P2 pure candidate accepted, integration still pending
+
+846c2bf passed 64/64 selected cases (26 candidate,30 mastery,8 extraction),
+31.293s,all four descriptors complete,no skips/duplicates,owned cleanup complete.
+Builds: unit62.51s/integration41.83s,0errors,82/118warnings. Discovery passed
+1,685 categories/14,038 methods/files in10.999s with zero tests executed.
+Both runtime PE/PDB joins and every current nongenerated source matched
+(runtime1,227,unit778,integration1,054); runtime copies were identical.
+Independent targeted Sol XHigh rereview found no Critical/Important production
+issue. Two identity negatives were then isolated by supplying otherwise valid
+active mastery fields; only that test-body correction awaits its narrow rerun.
+
+P2a source and pure P2b DATA are now verified bounded building blocks, not FR4/5
+publication acceptance. Next integration separates raw admission, admitted DATA
+projection and canonical output agreement; it never re-admits consumed output
+as raw commands. Existing effect/item/source owners must bind sidecar inputs and
+expected output; no new writer, cache or ledger. Trade/training authority must be
+forwarded from raw existing inputs. Sidecar is retained draft DATA, not an effect
+source owner. Creation, cadence/dependencies, lifecycle and real retry remain open.
+
+Parallel FR8 causal controls use existing console and shared drilldown entrypoints:
+accepted core skill mastery/XP must survive an absent/empty consumed sidecar;
+private sentinels must not reach public output. Four cases are authored, UNRUN;
+no UI implementation yet. No documented draft-preview mode was found. The new
+projection will read accepted canonical mechanics rather than retain a legacy
+sidecar-as-state fallback; existing exact identity/kind coverage will be retained.

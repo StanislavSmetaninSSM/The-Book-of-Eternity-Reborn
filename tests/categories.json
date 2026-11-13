@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-accepted-mechanics-display",
+      "responsibility": "#1538 accepted canonical NPC skill mastery and XP projection after pending sidecar consumption, without private fields.",
+      "excludes": "No sidecar command admission, physical publication, real interactive client or spiritual UI qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "BookOfEternityClient.Tests/MortalNpcAcceptedMechanicsDisplayTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcAcceptedMechanicsDisplayTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-accepted-skill-candidate",
       "responsibility": "#1538 pure combined ordinary NPC core/skill candidate, exact owner admission, consumed sidecar and stale baseline refusal.",
       "excludes": "No source authentication, physical publication, effect-owner integration or rollback qualification.",

@@ -210,7 +210,7 @@ public sealed class MortalNpcSkillMasteryComposerTests
     [Fact]
     public void ProfileConsistency_MalformedPresentIdentityRefusesWithoutMastery()
     {
-        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = 9, ["masteryLevel"] = 1 };
+        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = 9, ["masteryLevel"] = 1, ["currentMasteryProgress"] = 0, ["masteryProgressNeeded"] = 20 };
         Assert.Null(Run(Root(), [new("npc_001", new JsonArray(profile), null)], [], [], [], out var issues));
         Assert.NotEmpty(issues);
     }
@@ -226,7 +226,7 @@ public sealed class MortalNpcSkillMasteryComposerTests
     [Fact]
     public void ProfileConsistency_ContradictoryAliasesRefuseWithoutMastery()
     {
-        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = "frost", ["id"] = "other", ["masteryLevel"] = 1 };
+        var profile = new JsonObject { ["skillName"] = "Frost", ["skillId"] = "frost", ["id"] = "other", ["masteryLevel"] = 1, ["currentMasteryProgress"] = 0, ["masteryProgressNeeded"] = 20 };
         Assert.Null(Run(Root(), [new("npc_001", new JsonArray(profile), null)], [], [], [], out var issues));
         Assert.NotEmpty(issues);
     }
