@@ -1,3 +1,7 @@
+## No-effect causal refusal and identity-path correction WIP
+
+Expanded transfer10 gives7PASS/3FAIL in23.147s on unchanged runtime: no-effect fails after real item AND resource admission because no common owner was produced; incoming2 fail before publication at invalid Common-item fateCards test data. Incoming fixture removes that unsupported property and reseals before authenticated capture. The no-effect validator now retains its existing empty identity-plan path when an admitted item projection proof exists; normalizer NoPlan/current-owner/raw/phase fences remain unchanged. This correction is UNRUN. A new ordinary player acquisition + NPC progression/skill/effect case is also UNRUN; item creation and treatment scope remain open.
+
 ## Reopened scope audit and no-effect/incoming controls WIP, 2026-11-13
 
 The user requested a fresh completeness audit. Prior blanket FR1–FR9 acceptance is withdrawn: existing explicit refusals for item creation and wound/treatment composition require reconciliation with the issue's declared companions, not dismissal as arbitrary matrices. Previously passed bounded evidence remains valid; this checkpoint does not merge or close the issue.

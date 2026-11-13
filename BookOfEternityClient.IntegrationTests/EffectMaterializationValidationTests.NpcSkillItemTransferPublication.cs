@@ -294,6 +294,9 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var prepared = await PrepareNpcSkillItemTransferAsync(context);
         context.FileSystem.DeleteFile(EffectMaterializationTestContext.CommandPath);
+        var effectPaths = new[] { EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.NpcEffectsPath, EffectMaterializationTestContext.IdentityIndexPath };
+        var effectsBefore = await context.CaptureBytesAsync(effectPaths);
         Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
             issue => issue.Severity == IssueSeverity.Error);
         var rawIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
@@ -334,12 +337,15 @@ public sealed partial class EffectMaterializationValidationTests
 
         Assert.DoesNotContain(repeated.Issues, issue => issue.Severity == IssueSeverity.Error);
         Assert.Equal(accepted, await context.CaptureBytesAsync(paths));
+        Assert.Equal(effectsBefore, await context.CaptureBytesAsync(effectPaths));
     }
 
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillIncomingItemTransferAsync(EffectMaterializationTestContext context)
     {
         var item = MortalItemTestFixture.CreateCanonicalRoot(NpcSkillTransferItemId);
+        item.Remove("fateCards");
+        MortalItemTestFixture.ResealCanonical(item);
         var original = MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
         original["NPCsInScene"]![0]!["inventory"] = new JsonArray(item.DeepClone());
         await context.WriteJsonAsync(InventoryEquipmentService.ItemsPath,

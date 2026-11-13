@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-item-creation",
+      "responsibility": "#1538 ordinary accepted item creation co-published with NPC progression, skill and effect.",
+      "excludes": "No arbitrary loot generation or specialized treatment qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/EffectMaterializationValidationTests.NpcSkillItemCreationPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionSkillAndPlayerItemCreation_PublishesOneAuthorizedItemAndCompletedCandidate"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-self-effect",
       "responsibility": "#1538 ordinary same-NPC awarded-skill effect publication, accepted-repeat stability and reached late rollback.",
       "excludes": "No specialized treatment, NPC-core whole-carrier effect layout, or generic combat matrix.",

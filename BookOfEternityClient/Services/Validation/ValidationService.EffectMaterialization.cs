@@ -378,7 +378,8 @@ public partial class ValidationService
             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
                 (!EffectAcceptedTurnInputComposer.HasPendingCombatantRefs(currentCarriers) &&
                  EffectCarrierCatalog.Build(currentCarriers).Occurrences.Count == 0 &&
-                 rawWoundDraft is null && !requireSpiritualBase))
+                 rawWoundDraft is null && !requireSpiritualBase &&
+                 npcSkillInput?.ItemProjectionProof is null))
             {
                 return;
             }
