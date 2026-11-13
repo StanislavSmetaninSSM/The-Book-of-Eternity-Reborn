@@ -8,9 +8,10 @@ public partial class CanonicalStateNormalizer
     private async Task NormalizeNpcCoreChangesAsync(
         IReadOnlyDictionary<string, string>? backups,
         AcceptedMechanicsPlan? acceptedMechanicsPlan,
-        NpcCoreChangesContract.ProgressionSourceContext? progressionSource)
+        NpcCoreChangesContract.ProgressionSourceContext? progressionSource,
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentReceipt = null)
     {
-        if (_npcProgressionSource?.SkillInput is { } skillInput)
+        if (_npcProgressionSource?.SkillInput is { } skillInput && treatmentReceipt is null)
         {
             if (acceptedMechanicsPlan is not null)
                 RequireOrdinaryNpcSkillCommonPlan(acceptedMechanicsPlan);
@@ -24,6 +25,8 @@ public partial class CanonicalStateNormalizer
             await WriteIfChangedAsync(MortalNpcAcceptedSkillInput.SidecarPath, skillInput.RawSidecar, skillInput.ConsumedSidecar);
             return;
         }
+        if (treatmentReceipt is not null && _npcProgressionSource?.SkillInput is not null)
+            RequireTreatmentNpcSkillOwner(treatmentReceipt.Plan, treatmentReceipt);
         var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
         if (currentNode is not JsonObject currentRoot ||
             !currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName))

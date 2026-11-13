@@ -1791,6 +1791,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
             SpiritualPublicationReceipt? spiritualReceipt = null;
             var spiritualWritesStarted = false;
             MortalWoundTreatmentResourcePublicationTransaction? treatmentTransaction = null;
+            MortalWoundTreatmentPublicationTakeReceipt? npcTreatmentReceipt = null;
             try
             {
                 var treatmentPreflight = spiritualPreflight is null
@@ -1837,6 +1838,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             "The held Mortal wound-treatment publication transaction could not take the exact validated plan.");
                     }
 
+                    npcTreatmentReceipt = receipt;
                     treatmentTransaction =
                         MortalWoundTreatmentResourcePublicationTransaction.Create(
                             fs,
@@ -1850,7 +1852,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             treatmentPreflight,
                             receipt);
                 }
-                await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
+                await npcSource.RequirePublishedSkillsAsync(fs, writeLease, npcTreatmentReceipt);
                 var issues = new List<ValidationIssue>();
                 issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
                 issues.AddRange(await validator
@@ -1897,7 +1899,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     ? null : await guardianMusings.CompleteAsync(fs, writeLease);
                 // No awaited post-validator or completion callback may invalidate the source before success.
                 if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
-                    await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
+                    await npcSource.RequirePublishedSkillsAsync(fs, writeLease, npcTreatmentReceipt);
                 else
                     await npcSource.RequireCurrentAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,

@@ -275,7 +275,8 @@ public partial class ValidationService
                 throw new InvalidDataException("NPC skill item-phase input differs from its admitted exact intermediate.");
         }
 
-        internal async Task RequirePublishedSkillsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
+        internal async Task RequirePublishedSkillsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease,
+            MortalWoundTreatmentPublicationTakeReceipt? treatmentReceipt = null)
         {
             await RequireCurrentAsync(files, lease);
             if (SkillInput is null) return;
@@ -286,6 +287,13 @@ public partial class ValidationService
                 !JsonNode.DeepEquals(SkillInput.ConsumedSidecar, skills))
                 throw new InvalidDataException("Published NPC skill sidecar differs from the admitted consumed result.");
             var expected = SkillInput.CandidateCore;
+            if (treatmentReceipt is not null)
+            {
+                expected = CanonicalStateNormalizer.RequireTreatmentNpcSkillResult(
+                    files, _lease, this, treatmentReceipt.Plan, treatmentReceipt);
+                if (!JsonNode.DeepEquals(expected, root))
+                    throw new InvalidDataException("Published treatment NPC root differs from its sealed final owner result.");
+            }
             foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (expected.ContainsKey(section) != root!.ContainsKey(section))

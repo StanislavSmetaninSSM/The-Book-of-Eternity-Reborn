@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.IO;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -8,14 +9,41 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class WoundMaterializationLifecycleTests
 {
-    [Fact]
-    public async Task SignedPlayerWound_WithNpcProgressionAndNewSkill_PublishesOneCompleteTurn()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SignedPlayerWound_WithNpcProgressionAndNewSkill_PublishesOneCompleteTurn(bool failAfterCommandConsumption)
     {
         const string npcId = "npc_progression_wound_companion";
         const string skillName = "Archive";
         const string corePath = NpcCoreChangesContract.NpcCorePath;
         const string sidecarPath = MortalNpcAcceptedSkillInput.SidecarPath;
-        await using var context = await CreatePlayerContextAsync();
+        KnownRollbackPublicationCut? cut = null;
+        ResourceMaterializationTestContext? observedContext = null;
+        Dictionary<string, byte[]?>? observedAtCut = null;
+        var observedPaths = new[]
+        {
+            corePath, sidecarPath, WoundCarrierCatalog.PlayerPath, EffectCarrierCatalog.PlayerPath,
+            WoundIdentityState.StatePath, WoundHistoryState.HistoryPath, AcceptedMechanicsPlan.WoundCommandPath,
+            MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath
+        };
+        var hooks = new FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (cut is null) return;
+                try { cut.Hooks.LocalPublicationObserver?.Invoke(phase, index); }
+                catch (Exception error) when (ReferenceEquals(error, cut.Failure))
+                {
+                    observedAtCut = observedPaths.ToDictionary(path => path,
+                        path => CleanupPublicationCut.ReadOptional(observedContext!.FileSystem.ResolvePath(path)),
+                        StringComparer.Ordinal);
+                    throw;
+                }
+            }
+        };
+        await using var context = await CreatePlayerContextAsync(hooks);
+        observedContext = context;
         await context.WriteExactJsonAsync("game_state/meta/soul_state.json",
             """{"currentRealm":"Mortal World"}""");
         await context.WriteExactJsonAsync(MortalItemIdentityState.StatePath,
@@ -102,34 +130,75 @@ public sealed partial class WoundMaterializationLifecycleTests
             Assert.Equal(3, admission.Plan.EffectPlan.NpcSkillInput!.CandidateCore["NPCsInScene"]![0]!["level"]!.GetValue<int>());
         }
 
-        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
-            context.FileSystem, context.Normalizer, context.Validator, backups);
-
-        AssertNoQuestPublicationErrors(result.Issues);
-        Assert.Null(result.TreatmentResourcePublicationTransaction);
-        Assert.NotNull(result.MechanicsPlan?.WoundStageBundle);
-        var publishedCore = Assert.IsType<JsonObject>(await context.ReadJsonAsync(corePath));
-        Assert.False(publishedCore.ContainsKey("NPCCoreChanges"));
-        var actor = Assert.Single(publishedCore["NPCsInScene"]!.AsArray())!;
-        Assert.Equal(3, actor["level"]!.GetValue<int>());
-        Assert.Equal(0, actor["experience"]!.GetValue<int>());
-        Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
-        Assert.Equal(skillName, Assert.Single(actor["passiveSkills"]!.AsArray())!["skillName"]!.GetValue<string>());
-        Assert.Empty(Assert.IsType<JsonObject>(await context.ReadJsonAsync(sidecarPath)));
-        var wounds = Assert.IsType<JsonObject>(await context.ReadJsonAsync(WoundCarrierCatalog.PlayerPath));
-        var wound = Assert.Single(wounds["activeWounds"]!.AsArray())!;
-        var woundId = wound["woundId"]!.GetValue<string>();
-        var rootBinding = Assert.Single(wound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray())!;
-        var effects = Assert.IsType<JsonObject>(await context.ReadJsonAsync(EffectCarrierCatalog.PlayerPath));
-        Assert.Contains(effects["activeEffects"]!.AsArray().OfType<JsonObject>(), effect =>
-            effect["effectId"]!.GetValue<string>() == rootBinding["effectId"]!.GetValue<string>() &&
-            effect["source"]!["sourceId"]!.GetValue<string>() == woundId);
-        var index = Assert.IsType<JsonObject>(await context.ReadJsonAsync(WoundIdentityState.StatePath));
-        Assert.Equal(woundId, Assert.Single(index["entries"]!.AsArray())!["woundId"]!.GetValue<string>());
-        var history = Assert.IsType<JsonObject>(await context.ReadJsonAsync(WoundHistoryState.HistoryPath));
-        Assert.Equal(woundId, Assert.Single(history["transitions"]!.AsArray())!["woundId"]!.GetValue<string>());
-        Assert.Null(await context.ReadJsonAsync(AcceptedMechanicsPlan.WoundCommandPath));
+        var captured = await context.CaptureAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
+            .Concat(observedPaths).Concat(authenticatedPaths).Distinct(StringComparer.Ordinal));
+        var before = captured.ToDictionary(pair => pair.Key, pair => pair.Value.Bytes, StringComparer.Ordinal);
+        var generationBefore = CleanupPublicationCut.ReadOptional(context.FileSystem.SessionGenerationPath);
+        if (failAfterCommandConsumption)
+        {
+            // Ordinary common publication writes all mechanics before deleting consumed
+            // commands. Observe the actual successful deletion, then force compensation.
+            cut = new KnownRollbackPublicationCut(context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath));
+            cut.Attach(context.FileSystem);
+        }
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+        var failure = await Record.ExceptionAsync(async () => result =
+            await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem, context.Normalizer, context.Validator, backups));
+        if (failAfterCommandConsumption)
+        {
+            Assert.True(cut!.Cuts == 1, failure?.ToString() ?? "The late publication cut was not reached.");
+            Assert.NotNull(failure);
+            var causes = new List<Exception>();
+            for (var error = failure; error is not null; error = error.InnerException) causes.Add(error);
+            Assert.Contains(causes, error => ReferenceEquals(error, cut.Failure));
+            Assert.Null(result);
+            Assert.NotNull(observedAtCut);
+            AssertPublished(observedAtCut!);
+            cut.AssertRestored(before, generationBefore, failure, Console.WriteLine);
+        }
+        else
+        {
+            Assert.Null(failure);
+            Assert.NotNull(result);
+            AssertNoQuestPublicationErrors(result!.Issues);
+            Assert.Null(result.TreatmentResourcePublicationTransaction);
+            Assert.NotNull(result.MechanicsPlan?.WoundStageBundle);
+            var after = observedPaths.ToDictionary(path => path,
+                path => CleanupPublicationCut.ReadOptional(context.FileSystem.ResolvePath(path)), StringComparer.Ordinal);
+            AssertPublished(after);
+        }
         foreach (var (path, snapshot) in authenticatedBefore)
             Assert.Equal(snapshot.Bytes, await context.FileSystem.ReadFileBytesAsync(path));
+
+        void AssertPublished(IReadOnlyDictionary<string, byte[]?> actual)
+        {
+            JsonObject Read(string path) => JsonNode.Parse(QuestPublicationText(actual[path]))!.AsObject();
+            var publishedCore = Read(corePath);
+            Assert.False(publishedCore.ContainsKey("NPCCoreChanges"));
+            var actor = Assert.Single(publishedCore["NPCsInScene"]!.AsArray())!;
+            Assert.Equal(3, actor["level"]!.GetValue<int>());
+            Assert.Equal(0, actor["experience"]!.GetValue<int>());
+            Assert.Equal(1558, actor["experienceForNextLevel"]!.GetValue<int>());
+            Assert.Equal(skillName, Assert.Single(actor["passiveSkills"]!.AsArray())!["skillName"]!.GetValue<string>());
+            Assert.Empty(Read(sidecarPath));
+            var wounds = Read(WoundCarrierCatalog.PlayerPath);
+            var wound = Assert.Single(wounds["activeWounds"]!.AsArray())!;
+            var woundId = wound["woundId"]!.GetValue<string>();
+            var rootBinding = Assert.Single(wound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray())!;
+            var effects = Read(EffectCarrierCatalog.PlayerPath);
+            Assert.Contains(effects["activeEffects"]!.AsArray().OfType<JsonObject>(), effect =>
+                effect["effectId"]!.GetValue<string>() == rootBinding["effectId"]!.GetValue<string>() &&
+                effect["source"]!["sourceId"]!.GetValue<string>() == woundId);
+            var index = Read(WoundIdentityState.StatePath);
+            Assert.Equal(woundId, Assert.Single(index["entries"]!.AsArray())!["woundId"]!.GetValue<string>());
+            var history = Read(WoundHistoryState.HistoryPath);
+            Assert.Equal(woundId, Assert.Single(history["transitions"]!.AsArray())!["woundId"]!.GetValue<string>());
+            Assert.Null(actual[AcceptedMechanicsPlan.WoundCommandPath]);
+            // This signed formal occurrence has no QTE receipt owner; preserve its
+            // existing occurrence/receipt bytes rather than fabricate a new receipt.
+            Assert.Equal(before[MortalWoundOccurrenceState.StatePath], actual[MortalWoundOccurrenceState.StatePath]);
+            Assert.Equal(before[MortalWoundOpportunityReceiptState.StatePath], actual[MortalWoundOpportunityReceiptState.StatePath]);
+        }
     }
 }

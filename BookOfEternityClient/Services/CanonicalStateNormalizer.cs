@@ -459,8 +459,13 @@ public partial class CanonicalStateNormalizer
         if (_npcProgressionSource?.SkillInput is not null &&
             acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated npcCommon)
         {
-            ValidateOrdinaryNpcSkillCommonOpening(npcCommon.Plan);
-            await RequireOrdinaryNpcSkillCommonHasNoItemOrLocationWorkAsync(mortalItemMode);
+            if (treatmentPublicationReceipt is not null)
+                await ValidateTreatmentNpcSkillOpeningAsync(npcCommon.Plan, treatmentPublicationReceipt);
+            else
+            {
+                ValidateOrdinaryNpcSkillCommonOpening(npcCommon.Plan);
+                await RequireOrdinaryNpcSkillCommonHasNoItemOrLocationWorkAsync(mortalItemMode);
+            }
         }
         // This check precedes every normalizer mutation, including generic NoPlan calls.
         await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups,
@@ -517,7 +522,7 @@ public partial class CanonicalStateNormalizer
             backups,
             (acceptedMechanicsPreflight as
                 AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
-            npcProgressionSource);
+            npcProgressionSource, treatmentPublicationReceipt);
         await NormalizeNpcTradeCoreAsync(
             backups,
             (acceptedMechanicsPreflight as
@@ -531,7 +536,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeGuardianThoughtJournalAsync(backups);
         await NormalizeGuardianSocialJournalAsync(backups);
         await NormalizePlayerSkillStateAsync(backups);
-        return acceptedMechanicsPreflight == null
+        var publishedPlan = acceptedMechanicsPreflight == null
             ? null
             : await PublishAcceptedMechanicsAsync(
                  backups,
@@ -540,6 +545,9 @@ public partial class CanonicalStateNormalizer
                  normalizedAcceptedCarrierBaselines: true,
                  treatmentPublicationReceipt,
                  spiritualPublicationReceipt);
+        if (_npcProgressionSource?.SkillInput is not null && treatmentPublicationReceipt is not null)
+            await ConsumeTreatmentNpcSkillsAsync(treatmentPublicationReceipt);
+        return publishedPlan;
     }
 
     private void EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority()

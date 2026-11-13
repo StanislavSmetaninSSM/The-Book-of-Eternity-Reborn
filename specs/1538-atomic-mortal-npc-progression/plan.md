@@ -1,3 +1,9 @@
+## Specialized treatment final-root join WIP
+
+The demonstrated treatment publication guard is now addressed by a distinct receipt-bound branch, not by weakening ordinary effect ownership. Opening compares source/session/snapshot, current taken receipt, sealed treatment publication authority and NPC baseline/policy, raw before-images and exact candidate skill/progression/characteristic fields against the treatment-owned final NPC root. Existing item-baseline and common writers remain responsible for core/item effects; pending skill consumption uses the existing writer within coordinator rollback. Both closing checks require the same live take receipt, exact whole final NPC root and consumed sidecar. Mastery command envelopes and unrelated sidecar metadata changes remain refused; no speculative ordinary-intake changes were made.
+
+No new cache or retained authority: immutable candidate DATA is reused, while current receipt/source checks remain mandatory. New original-turn wound companion now has success and reached-late rollback theory cases (2), UNRUN. Specialized treatment source review and runtime verification are pending. This WIP does not qualify all wounds/treatments or whole #1538.
+
 ## Ordinary wound causal RED and narrow gate WIP
 
 Retained integration runtime8886febe with test-only rebuild42.12s/0errors120warnings now reaches the ordinary wound-bundle blanket guard: signed player wound + NPC progression/new skill 0/1 PASS,1/1 causalFAIL15.804s. Completed admission already contains both wound stages and exact NPC candidate, no overlapping NPC whole-carrier after-image. The guard now permits only sealed original-turn stages with no treatment/recovery/joint/spiritual/diagnosis/combat-healing continuation and no retained DraftBefore. All live owner/source/raw/overlap guards remain. Classification reads retained immutable references, with no stage clone, new cache or permission. Source review and GREEN remain pending.
