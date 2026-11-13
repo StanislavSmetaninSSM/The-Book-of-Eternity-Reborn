@@ -296,3 +296,19 @@ checksums match current files. Reuse these pinned runtime/TestSupport outputs an
 build only the changed unit test project with BuildProjectReferences=false.
 This avoids recompiling unchanged source; it does not reuse a live authority or
 skip the tests. Recheck output hashes and report the test-only build separately.
+
+Test-only batch a5add156 reused unchanged runtime/TestSupport DLL/PDB hashes
+successfully; unit build0errors/33warnings18.79s. Mastery16PASS/14expectedFAIL
+(11command consistency+3profile-only),8.427s. Candidate20PASS/1expectedFAIL
+(duplicate stableID),8.410s; the real-profile fixture and added malformed/alias/
+active/mirror controls now pass. Both selections complete,cleanup complete.
+A final current-template audit found supported masteryLeveledUp metadata in the
+actual CLI example, currently rejected by the new closed parser. Add its bounded
+nominal/type controls before the consolidated parser fix; do not reject current
+GM output as legacy or weaken numeric authority.
+
+The schema audit also found optional NPCName display metadata in all four current
+row shapes. It must not become selector authority: permanent exact NPCId remains
+required. The final candidate batch has 26 cases, including valid/invalid mastery
+flag metadata, display names on profile and mastery rows, and name-only refusal.
+Production remains unchanged until this last compatibility RED is observed.

@@ -203,20 +203,7 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
     [Fact]
     public void Compose_ActiveGrantAndMastery_ProducesCanonicalFinalProfile()
     {
-        var active = new JsonObject
-        {
-            ["skillId"] = "skill_strike", ["skillName"] = "Strike",
-            ["skillDescription"] = "A precise strike", ["rarity"] = "Common",
-            ["combatEffect"] = new JsonObject
-            {
-                ["isActivatedEffect"] = true, ["actionName"] = "Strike", ["actionCost"] = "Main",
-                ["effects"] = new JsonArray(new JsonObject
-                {
-                    ["effectType"] = "Damage", ["targetType"] = "Enemy", ["effectDescription"] = "Hit",
-                    ["value"] = "10%", ["poiseDamage"] = "5%"
-                })
-            }
-        };
+        var active = ActiveSkill();
         var sidecar = new JsonObject
         {
             ["NPCActiveSkillChanges"] = new JsonArray(new JsonObject
@@ -264,6 +251,87 @@ public sealed class MortalNpcAcceptedSkillCandidateTests
         Assert.Empty(Skills(original));
         result.Core["NPCsInScene"]![0]!["passiveSkills"]![0]!["skillDescription"] = "detached";
         Assert.Equal("Archive knowledge", result.Core["UpdateNPCs"]![0]!["passiveSkills"]![0]!["skillDescription"]!.GetValue<string>());
+    }
+
+    private static JsonObject ActiveSkill() => new JsonObject
+        {
+            ["skillId"] = "skill_strike", ["skillName"] = "Strike",
+            ["skillDescription"] = "A precise strike", ["rarity"] = "Common",
+            ["combatEffect"] = new JsonObject
+            {
+                ["isActivatedEffect"] = true, ["actionName"] = "Strike", ["actionCost"] = "Main",
+                ["effects"] = new JsonArray(new JsonObject
+                {
+                    ["effectType"] = "Damage", ["targetType"] = "Enemy", ["effectDescription"] = "Hit",
+                    ["value"] = "10%", ["poiseDamage"] = "5%"
+                })
+            }
+        };
+
+    [Theory]
+    [InlineData("false", true)]
+    [InlineData("true", true)]
+    [InlineData("\"false\"", false)]
+    public void Compose_CurrentMasteryLeveledUpMetadata_AcceptsOnlyBooleanWithoutGrantAuthority(string json, bool valid)
+    {
+        var original = Core();
+        original["NPCsInScene"]![0]!["activeSkills"] = new JsonArray(ActiveSkill());
+        var sidecar = new JsonObject
+        {
+            ["NPCSkillMasteryChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_archive", ["skillName"] = "Strike", ["newMasteryLevel"] = 2,
+                ["newCurrentMasteryProgress"] = 11, ["newMasteryProgressNeeded"] = 100,
+                ["masteryLeveledUp"] = JsonNode.Parse(json)
+            })
+        };
+        var result = Compose(original, new(), original, sidecar);
+        Assert.Equal(valid, result.IsValid);
+        if (valid)
+        {
+            var skill = Assert.Single(result.Core!["NPCsInScene"]![0]!["activeSkills"]!.AsArray());
+            Assert.Equal(2, skill!["masteryLevel"]!.GetValue<int>());
+            Assert.Equal(11, skill["currentMasteryProgress"]!.GetValue<int>());
+            Assert.False(skill.AsObject().ContainsKey("masteryLeveledUp"));
+            Assert.Empty(result.Sidecar!);
+        }
+        else
+        {
+            Assert.Null(result.Core);
+            Assert.Null(result.Sidecar);
+            Assert.NotEmpty(result.Issues);
+        }
+    }
+
+    [Fact]
+    public void Compose_CurrentNpcNameMetadata_IsDisplayOnlyOnProfileAndMasteryRows()
+    {
+        var sidecar = Grant("Archive A");
+        sidecar["NPCPassiveSkillChanges"]![0]!["NPCName"] = "A display label, not a selector";
+        sidecar["NPCPassiveSkillMasteryChanges"] = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "npc_archive", ["NPCName"] = "Another display label",
+            ["skillName"] = "Archive A", ["newMasteryLevel"] = 2
+        });
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.True(result.IsValid);
+        Assert.Equal("Archivist", result.Core!["NPCsInScene"]![0]!["name"]!.GetValue<string>());
+        Assert.Equal(2, Assert.Single(Skills(result.Core))["masteryLevel"]!.GetValue<int>());
+        Assert.Empty(result.Sidecar!);
+    }
+
+    [Fact]
+    public void Compose_NpcNameWithoutPermanentId_DoesNotResolveOwner()
+    {
+        var sidecar = Grant("Archive A");
+        var row = sidecar["NPCPassiveSkillChanges"]![0]!.AsObject();
+        row.Remove("npcId");
+        row["NPCName"] = "Archivist";
+        var result = Compose(Core(), new(), Core(), sidecar);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Core);
+        Assert.Null(result.Sidecar);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_skill_candidate_invalid_owner");
     }
 
     private static MortalNpcAcceptedSkillCandidate.Result Compose(JsonObject original, JsonObject originalSidecar,
