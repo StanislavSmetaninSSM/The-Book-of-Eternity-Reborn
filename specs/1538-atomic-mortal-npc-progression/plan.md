@@ -445,3 +445,23 @@ parsed source roots are reused; only the additional sidecar and existing origina
 request inputs are read. No new cache/registry/writer or performance claim. Common
 publication/item semantic adapters and absence/relocation remain unimplemented;
 NoPlan source block and this raw source integration await build/test/review.
+
+### P2 bounded NoPlan and raw effect sources verified
+
+035a771c passed publication9/9(15.120s), raw NPC effect3/3(11.638s), and unchanged
+original-source42/42(18.618s), all complete with no skips/duplicates and owned
+cleanup. Unit/integration builds60.72s/36.31s,0errors,83/118warnings. Catalog
+1689categories/14056methods/files passed discovery only. Runtime copies have
+matching PE/PDB GUID and1233documents; all1229nongenerated source hashes current.
+Astra High targeted rereview found no remaining must-fix within this boundedscope.
+Prior UI18/18 remains applicable; UI runtime unchanged. Common/item/relocation,
+absence-aware bootstrap, consequence/profile/creation qualification remain open.
+
+Five absence controls are now authored: first sidecar with signedabsence succeeds;
+uncovered original, missing declared artifact, and supplied present/malformed
+backup against signedabsence refuse. These are UNRUN against currentpresent-only
+runtime. Fixture creates true signedpresence evidence, not guessednull. Real
+live-turn producer presence inventory still lacksnpc_skills; separate bounded
+producer control is needed before claiming real bootstrap support. Existing
+focused effect publication/drift/cache tests get a narrow selection rather than
+running the broad effects-authority category with unrelated afterlife coverage.

@@ -135,6 +135,52 @@ public sealed class MortalNpcSkillPublicationTests
         await fixture.AssertCanonicalUnchanged(before);
     }
 
+    [Fact]
+    public async Task Coordinator_SignedAbsentOriginalSidecar_FirstSkillPublishesAndConsumes()
+    {
+        using var fixture = await Fixture.Create(includeSkillSidecar: true, progression: false,
+            originalSkillSidecarExists: false);
+        Assert.False(fixture.Backups.ContainsKey(SkillsPath));
+        await WritePending(fixture, mastery: false);
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+        Assert.Empty(result.Issues);
+        var core = await Read(fixture, NpcCoreChangesContract.NpcCorePath);
+        Assert.Equal("Archive", Assert.Single(core["NPCsInScene"]![0]!["passiveSkills"]!.AsArray())!["skillName"]!.GetValue<string>());
+        await AssertConsumed(fixture);
+    }
+
+    [Theory]
+    [InlineData("uncovered")]
+    [InlineData("presentMissing")]
+    [InlineData("absentWithPresentBackup")]
+    [InlineData("absentWithMalformedBackup")]
+    public async Task Coordinator_OriginalSidecarAbsenceRequiresProofAndActualBackupAbsence(string scenario)
+    {
+        bool? originalExists = scenario == "uncovered" ? null : scenario == "presentMissing";
+        using var fixture = await Fixture.Create(includeSkillSidecar: true, progression: false,
+            originalSkillSidecarExists: originalExists);
+        if (scenario == "presentMissing") File.Delete(fixture.Physical(fixture.Backups[SkillsPath]));
+        if (scenario.StartsWith("absentWith", StringComparison.Ordinal))
+        {
+            const string suppliedBackup = "game_state/control/extra_npc_skills_backup.json";
+            await fixture.Files.WriteFileAtomicAsync(suppliedBackup,
+                scenario == "absentWithPresentBackup" ? "{}" : "{");
+            fixture.Backups[SkillsPath] = suppliedBackup;
+        }
+        await WritePending(fixture, mastery: false);
+        var before = await fixture.CaptureCanonical();
+        AcceptedTurnCanonicalStateRefresh.Result? result = null;
+        var error = await Record.ExceptionAsync(async () =>
+        {
+            result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+        });
+        Assert.True(error is InvalidDataException || result?.Issues.Count > 0,
+            "Only authenticated absence with an actually absent reducer backup can bootstrap NPC skills.");
+        await fixture.AssertCanonicalUnchanged(before);
+    }
+
     private static async Task VerifyLateFailure(bool tamper)
     {
         using var fixture = await Fixture.Create(includeSkillSidecar: true);

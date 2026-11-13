@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-skill-effect-regression",
+      "responsibility": "#1538 existing ordinary focused effect publication, postvalidation drift refusal and file-backed cache invalidation alongside NPC source projection.",
+      "excludes": "No afterlife, wound lifecycle or full effect suite.",
+      "changeHints": [
+        "BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectSkillScopeLifecycleTests.FocusedApply_OrdinarySkillPublishesExactScopeAndCarrierIndexAgreement",
+            "BookOfEternityClient.Tests.EffectSkillScopeLifecycleTests.FocusedApply_ChangedSelectorAfterValidationRejectsWithoutPublication",
+            "BookOfEternityClient.Tests.EffectSkillScopeLifecycleTests.FocusedApply_SkillAuthorityChangeInvalidatesFileBackedPlanCache"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-skill-effect-source",
       "responsibility": "#1538 same-turn ordinary NPC skill source/current scope and sidecar fingerprint, preserving originally offered focus fence.",
       "excludes": "No canonical publication, item baseline or spiritual behavior acceptance.",

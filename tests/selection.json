@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-npc-skill-effect-regression",
+      "reason": "Shared raw effect input/cache changes need existing focused-scope preservation without unrelated afterlife tests.",
+      "contracts": [
+        "Ordinary published focused authority, changed selector refusal, cache invalidation."
+      ]
+    },
+    {
       "category": "mortal-npc-skill-effect-source",
       "reason": "Same-turn skill command source must reach existing effect source owner before publication.",
       "contracts": [

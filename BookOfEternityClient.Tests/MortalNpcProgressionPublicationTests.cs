@@ -259,7 +259,7 @@ public sealed class MortalNpcProgressionPublicationTests
             Normalizer = new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance);
         }
 
-        internal static async Task<Fixture> Create(string realm = "Mortal World", bool includeSkillSidecar = false, bool progression = true)
+        internal static async Task<Fixture> Create(string realm = "Mortal World", bool includeSkillSidecar = false, bool progression = true, bool? originalSkillSidecarExists = true)
         {
             var fixture = new Fixture();
             try
@@ -313,11 +313,22 @@ public sealed class MortalNpcProgressionPublicationTests
                     const string originalSkills = "game_state/control/pending_turn_snapshot/" + skills;
                     const string empty = "{\"NPCActiveSkillChanges\":[],\"NPCPassiveSkillChanges\":[],\"NPCSkillMasteryChanges\":[],\"NPCPassiveSkillMasteryChanges\":[]}";
                     await fixture.Files.WriteFileAtomicAsync(skills, empty);
-                    await fixture.Files.WriteFileAtomicAsync(originalSkills, empty);
-                    fixture.Backups[skills] = originalSkills;
-                    manifest["files"]![skills] = originalSkills;
-                    manifest["snapshotFileHashes"]![skills] = PendingTurnSnapshotAuthority.ComputeSha256(empty);
-                    manifest["rollbackBaselineFiles"]!.AsArray().Add(skills);
+                    if (originalSkillSidecarExists == true)
+                    {
+                        await fixture.Files.WriteFileAtomicAsync(originalSkills, empty);
+                        fixture.Backups[skills] = originalSkills;
+                        manifest["files"]![skills] = originalSkills;
+                        manifest["snapshotFileHashes"]![skills] = PendingTurnSnapshotAuthority.ComputeSha256(empty);
+                        manifest["rollbackBaselineFiles"]!.AsArray().Add(skills);
+                    }
+                    else if (originalSkillSidecarExists == false)
+                    {
+                        manifest["originalPathPresenceV1"] = new JsonObject
+                        {
+                            [path] = true,
+                            [skills] = false
+                        };
+                    }
                 }
                 manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
                 await fixture.Files.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
