@@ -54103,7 +54103,7 @@
     },
     {
       "id": "mortal-training-skill-profile-identity",
-      "responsibility": "#1533 local Mortal training binds exact skill targets and publishes only shared-contract complete profiles; preserve existing paid GM fallback and resource control.",
+      "responsibility": "#1533 local Mortal training binds exact skill targets, prevents new same-domain confusable siblings before spend/request and guards current skill roots through publication; publishes only shared-contract complete profiles, preserving valid GM fallback and resource control.",
       "excludes": "No afterlife training, new NPC prose protocol, general actor identity redesign or legacy save migration.",
       "changeHints": [
         "BookOfEternityClient/Services/TrainingService.cs",

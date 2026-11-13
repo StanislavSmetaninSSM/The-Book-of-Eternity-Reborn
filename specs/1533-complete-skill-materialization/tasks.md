@@ -165,3 +165,8 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [x] NPC-C3 Implement + verify declared owner/skill progression and source freshness.
 - [x] NPC-C4 GM entrypoints/example/privacy and bounded guard verification.
 - [x] NPC-C5 Independent review, correction, published verified checkpoint; no merge.
+
+## Training acquisition collision closure (#1533)
+- [x] TR-C1 Reproduce two genuine purchases creating case/Unicode confusable siblings.
+- [x] TR-C2 Refuse new same-domain collision before spend/request and guard its original skill root through commit.
+- [x] TR-C3 Verify active/passive/generic/GM-threshold, concurrency, exact existing practice and separate-domain controls; review and publish.

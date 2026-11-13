@@ -1,12 +1,95 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class TrainingServiceTests
 {
+    [Fact]
+    public async Task BuyTrainingAsync_MortalUnlock_GmFallbackRechecksSkillRootBeforeCharging()
+    {
+        await SeedMortalSoulStateAsync();
+        await SeedMortalPassiveUnlockTeacherAsync(targetValue: 2);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        var paths = new[] { "game_state/core/player_status.json", "game_state/player/experience.json", "game_state/npcs/npc_core.json" };
+        var before = new Dictionary<string, string?>();
+        foreach (var path in paths) before[path] = await _fs.ReadFileAsync(path);
+        const string skillPath = "game_state/player/skills_passive.json";
+        var concurrent = """{"passiveSkillChanges":[{"skillId":"concurrent","skillName":"СНЯТИЕ ШКУР"}]}""";
+        var resolver = new SequenceLocalInteractionScopeResolver(async call =>
+        {
+            if (call == 2) await _fs.WriteFileAtomicAsync(skillPath, concurrent);
+        }, scope, scope);
+        var service = new TrainingService(_fs, NullLogger<TrainingService>.Instance, resolver);
+        var result = await service.BuyTrainingAsync("npc_skinner_001", "offer_skinning_unlock", 15);
+        Assert.False(result.Success);
+        foreach (var path in paths) Assert.Equal(before[path], await _fs.ReadFileAsync(path));
+        Assert.Equal(concurrent, await _fs.ReadFileAsync(skillPath));
+        Assert.Empty(await TrainingRequestState.ReadRequestsAsync(_fs));
+    }
+
+    [Theory]
+    [InlineData(false, "fireball", false)]
+    [InlineData(false, "Firеball", false)]
+    [InlineData(true, "fireball", false)]
+    [InlineData(true, "Firеball", false)]
+    [InlineData(false, "Frostbolt", true)]
+    [InlineData(true, "Frostbolt", true)]
+    [InlineData(true, "fireball", false, "generic")]
+    [InlineData(false, "fireball", false, "evolution")]
+    [InlineData(true, "Firеball", false, "evolution")]
+    public async Task BuyTrainingAsync_MortalUnlock_RejectsNewConfusableSiblingBeforeSpending(bool passive, string second, bool allowed, string mode = "explicit")
+    {
+        await SeedMortalSoulStateAsync();
+        if (passive) await SeedMortalPassiveUnlockTeacherAsync(targetKind: mode == "generic" ? "skill_mastery" : "passive_skill_unlock");
+        else await SeedMortalActiveUnlockTeacherAsync(includeCombatEffect: true);
+        await SeedMortalPlayerProgressAsync(money: 500, currentLevelExperience: 400, experienceForNextLevel: 1000);
+        await SeedEmptyPlayerSkillsAsync();
+        var actor = passive ? "npc_skinner_001" : "npc_duelist_001";
+        var offerId = passive ? "offer_skinning_unlock" : "offer_lunge_unlock";
+        async Task Offer(string name, string id)
+        {
+            var root = JsonNode.Parse(await _fs.ReadFileAsync("game_state/npcs/npc_core.json") ?? "{}")!.AsObject();
+            var teacher = root["UpdateNPCs"]![0]!.AsObject();
+            teacher["teacherProfile"]!["skills"]![0]!["skillId"] = id;
+            teacher["teacherProfile"]!["skills"]![0]!["skillName"] = name;
+            teacher["trainingShowcase"]!["offers"]![0]!["targetId"] = id;
+            teacher["trainingShowcase"]!["offers"]![0]!["targetName"] = name;
+            if (id == "second_skill" && mode == "evolution") teacher["trainingShowcase"]!["offers"]![0]!["targetValue"] = 2;
+            teacher["trainingShowcase"]!["sourceActorSnapshotHash"] = TrainingService.ComputeSourceSnapshotHash(teacher);
+            await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString());
+        }
+        await Offer("Fireball", "first_skill");
+        var first = await CreateService().BuyTrainingAsync(actor, offerId, 14);
+        Assert.True(first.Success, first.Message);
+        await Offer(second, "second_skill");
+        var paths = new[] { "game_state/npcs/npc_core.json", "game_state/core/player_status.json",
+            "game_state/player/experience.json", "game_state/player/skills_active.json",
+            "game_state/player/skills_passive.json", "game_state/player/skill_mastery.json" };
+        var before = new Dictionary<string, string?>();
+        foreach (var path in paths) before[path] = await _fs.ReadFileAsync(path);
+        var result = await CreateService().BuyTrainingAsync(actor, offerId, 15);
+        Assert.Equal(allowed, result.Success);
+        Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+        if (!allowed)
+            foreach (var path in paths) Assert.Equal(before[path], await _fs.ReadFileAsync(path));
+        var skillPath = passive ? "game_state/player/skills_passive.json" : "game_state/player/skills_active.json";
+        var section = passive ? "passiveSkillChanges" : "activeSkillChanges";
+        var current = JsonNode.Parse(await _fs.ReadFileAsync(skillPath) ?? "{}")!;
+        Assert.Equal(allowed ? 2 : 1, current[section]!.AsArray().Count);
+        var after = current.DeepClone();
+        after[section]![0]!["skillDescription"] = "Revised complete profile description";
+        var issues = EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition(
+            new Dictionary<string, JsonNode?> { [skillPath] = current },
+            new Dictionary<string, JsonNode?> { [skillPath] = after });
+        Assert.DoesNotContain(issues, issue => issue.Code == "effect_skill_composition_name_confusable");
+    }
+
     [Theory]
     [InlineData("skill_upper", "Fireball")]
     [InlineData("skill_lower", "fireball")]

@@ -1001,3 +1001,38 @@ No hosted CI, Windows qualification, independent NLP scan, merge or issue closur
 Independent final source/outcome review: no outstanding blocking findings; accepted
 for this bounded slice, not the whole issue. Official discovery-only catalog audit
 passed: 1,678 categories, 13,951 methods/files, zero test execution, 10.666s.
+
+
+### Training acquisition-time confusable closure, 2026-11-13
+
+Whole-issue audit reproduced two successful public Mortal training purchases with
+distinct IDs creating Fireball plus fireball or Firеball (Cyrillic e). The same
+canonical root then failed the real composed-skill name check. This amendment
+prevents *new acquisition* of a conflicting same-domain identity; it does not
+revoke exact practice on pre-existing siblings or same-name cross-domain skills.
+
+The guard reuses the current compositor's BuildConfusableKey and loaded canonical
+skillName/name in the plan-selected domain, only when ExistingSkill is null. It
+runs before resources, receipts or paid pending requests. The GM-unlock commit
+also guards that exact pre-scan skill root via the existing non-mutating expected
+image and owned-request cleanup. No new writer, cache, migration, afterlife logic
+or GM payload exists. The client-owned check needs no new GM prompt schema.
+
+Permanent public-route RED: 20 PASS / 8 FAIL across active/passive case and Unicode,
+generic passive, both GM-threshold collisions, and deterministic concurrent skill
+root insertion before paid GM commit. Fresh GREEN: 28/28 PASS, one descriptor,
+no skips/duplicates, complete cleanup, 14.757576 seconds. Distinct-name purchases,
+existing exact sibling practice and separate-domain controls still pass. Refusal
+checks preserve money, XP, NPC receipts, canonical skills and pending requests;
+surviving roots pass the real composition consumer after a descriptive-only edit.
+
+Fresh integration build: 0 errors, 153 warnings, 78.26 seconds. Actual production
+and integration PE/PDB matches; 1,224 production and 1,054 integration current
+non-generated document checksums match with zero mismatches. Run identity:
+20261112-222826-085-196-240d251f7e3340a6b37042550b2157c9-categories.
+Independent source review found no outstanding issues; loaded-root linear scan
+and existing publication freshness guard are appropriate, with no speedup claim.
+Raw logs remain outside Git. No unrelated NPC/spiritual/full-suite rerun, merge,
+issue closure or hosted CI was performed for this bounded training correction.
+
+Official discovery-only catalog audit passed: 1,678 categories, 13,953 methods/files; zero tests executed, 11.399s.

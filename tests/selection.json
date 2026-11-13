@@ -2,80 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-npc-structured-skill-claims",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
+      "category": "mortal-training-skill-profile-identity",
+      "reason": "#1533 prevent new confusable skill acquisition before spending, including same-domain baseline race on GM unlock.",
       "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-narrative-policy-pass-sources",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-boundary",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-source",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-policy-regression",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-ordinary-output-existing",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-boundary",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-source",
-      "reason": "#1533 explicit Mortal NPC report and affected ordinary/source/reasoning consumer regression.",
-      "contracts": [
-        "Explicit NPC self-report, exact owned skill and authenticated current-turn delta; no NLP completeness guarantee."
-      ]
-    },
-    {
-      "category": "fr063-reasoning-prefix-regression",
-      "reason": "Changed debug report allowlist expected/hint vectors and ordinary reasoning regressions.",
-      "contracts": [
-        "Existing reasoning policy accepts the private NPC report without loosening other fields."
-      ]
-    },
-    {
-      "category": "mortal-skill-template-guidance",
-      "reason": "#1533 runtime report guidance and first Mortal canonical baseline.",
-      "contracts": [
-        "No inferred actors, no synthetic report; exact ordinary turn consumer."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-claim-bootstrap",
-      "reason": "#1533 runtime report guidance and first Mortal canonical baseline.",
-      "contracts": [
-        "No inferred actors, no synthetic report; exact ordinary turn consumer."
+        "Existing compositor same-domain name uniqueness; existing exact practice and independent active/passive domains remain valid."
       ]
     }
   ]

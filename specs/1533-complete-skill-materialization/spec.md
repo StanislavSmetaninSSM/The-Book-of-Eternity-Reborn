@@ -384,3 +384,15 @@ an invented absence marker or `filesModified` fallback.
 The report is private, cannot create or modify canonical state, and has bounded
 indexed repair diagnostics. No claim is made that an empty/incomplete author list
 proves absence of mechanical assertions in arbitrary prose. Afterlife is unchanged.
+
+### Mortal training acquisition-time sibling uniqueness
+
+Local Mortal training must not create a new skill whose canonical name has the
+same existing compositor confusable key as another skill in the same active or
+passive domain. This applies before charging for either local unlock or a pending
+GM unlock. It is not a blanket ban on addressing existing exact siblings: exact
+practice and same-name skills in different domains retain their existing behavior.
+Use current canonical skillName/name, not display aliases; preserve resources,
+receipts and pending requests on refusal. The current skill-root baseline remains
+a guard through publication, including the paid GM-unlock branch. No new GM
+payload, gameplay system, afterlife rule or migration is introduced.

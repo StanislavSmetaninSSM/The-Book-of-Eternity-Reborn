@@ -243,6 +243,13 @@ public sealed class TrainingService
                 "Идентификатор и точное имя навыка противоречат текущему состоянию. Ресурсы не списаны.");
 
         var applicationPlan = BuildMortalTrainingApplicationPlan(evaluatedOffer, activeRoot, passiveRoot, masteryRoot);
+        var newSkillRoot = applicationPlan.IsPassive ? passiveRoot : activeRoot;
+        var newSkillSection = applicationPlan.IsPassive ? "passiveSkillChanges" : "activeSkillChanges";
+        if (applicationPlan.ExistingSkill == null &&
+            HasConfusableMortalUnlockSibling(newSkillRoot, newSkillSection, evaluatedOffer.TargetName))
+            return new TrainingOperationResult(false, false,
+                "Название нового навыка совпадает или слишком похоже на уже изученный навык. Выберите однозначное название; ресурсы не списаны.");
+
         var sourceActorIdForPlan = ResolveMortalTeacherActorId(teacher);
 
         if (applicationPlan.RequiresGmEvolution)
@@ -302,6 +309,11 @@ public sealed class TrainingService
             if (!await CoordinatedStateWriteHelper.TryCommitAsync(
                     _fs,
                     CoordinatedStateWriteHelper.CreateAuthorityGuardWrites(purchaseScope)
+                        .Concat(applicationPlan.ExistingSkill == null
+                            ? new[] { CoordinatedStateWriteHelper.CreateGuardWrite(
+                                applicationPlan.IsPassive ? PassiveSkillsPath : ActiveSkillsPath,
+                                applicationPlan.IsPassive ? passiveRootBaseline : activeRootBaseline) }
+                            : Array.Empty<CoordinatedStateWriteHelper.PlannedWrite>())
                         .Concat(new[]
                         {
                     new CoordinatedStateWriteHelper.PlannedWrite(PlayerStatusPath, statusRootBaseline, statusRoot.ToJsonString(JsonOpts), true),
@@ -2938,6 +2950,19 @@ public sealed class TrainingService
     {
         return ResolveMortalTrainingTarget(root[arrayName] as JsonArray, targetId, targetName, out var conflict) is { } skill && !conflict
             ? skill : null;
+    }
+
+    /// <summary>Rejects only new same-domain identities using the composed-skill contract's existing confusable key.</summary>
+    private static bool HasConfusableMortalUnlockSibling(JsonObject root, string section, string name)
+    {
+        if (root[section] is not JsonArray skills) return false;
+        var key = MortalLocationIdentityState.BuildConfusableKey(name);
+        return skills.OfType<JsonObject>().Any(skill =>
+        {
+            var existingName = GetNodeString(skill["skillName"]) ?? GetNodeString(skill["name"]);
+            return !string.IsNullOrWhiteSpace(existingName) &&
+                string.Equals(MortalLocationIdentityState.BuildConfusableKey(existingName), key, StringComparison.Ordinal);
+        });
     }
 
     private static bool HasConflictingMortalTrainingTarget(JsonObject root, string arrayName, string? targetId, string? targetName)
