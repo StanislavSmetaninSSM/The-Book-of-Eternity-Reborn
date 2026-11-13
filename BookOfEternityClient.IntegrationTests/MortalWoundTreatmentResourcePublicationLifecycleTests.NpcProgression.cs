@@ -11,9 +11,13 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
-    [Fact]
-    public Task GuaranteedItemConsumption_NpcProgressionAndSkillUsesNaturalOwnerIntake() =>
-        GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(4);
+    [Theory]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    public Task GuaranteedItemConsumption_NpcProgressionAndSkillUsesNaturalOwnerIntake(int scenario) =>
+        GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(scenario);
 
     [Theory]
     [InlineData(0)]
@@ -114,10 +118,31 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ["skillChanges"] = new JsonArray(changedSkill)
             }) }
         };
+        if (scenario == 7)
+            proposal.NPCActiveSkillChanges = null;
         await new StateDistributor(context.FileSystem, NullLogger<StateDistributor>.Instance)
             .DistributeAsync(proposal);
-        if (scenario == 4)
+        if (scenario >= 4)
         {
+            if (scenario == 5)
+            {
+                var tamperedCore = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
+                ReadProvider(tamperedCore)["displayName"] = "Unplanned canonical provider change";
+                await context.FileSystem.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, tamperedCore.ToJsonString());
+            }
+            else if (scenario == 6)
+            {
+                var tamperedSkills = await ReadJsonObjectAsync(context.FileSystem, "game_state/npcs/npc_skills.json");
+                tamperedSkills["unrelatedMechanicalMetadata"] = new JsonObject { ["grantAuthority"] = true };
+                await context.FileSystem.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", tamperedSkills.ToJsonString());
+            }
+            else if (scenario == 7)
+                File.Delete(context.FileSystem.ResolvePath("game_state/npcs/npc_skills.json"));
+            var untouchedRoots = new Dictionary<string, byte[]?>();
+            foreach (var path in new[] { MortalItemIdentityState.StatePath, WoundCarrierCatalog.PlayerPath,
+                         WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
+                         ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath })
+                untouchedRoots[path] = await context.ReadFileBytesAsync(path);
             // Natural intake: leave the distributed commands raw. The real engine must
             // construct and admit its own plan; do not restore or compose a held plan here.
             var naturalTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
@@ -127,6 +152,40 @@ public sealed partial class GameEngineTurnLifecycleTests
                 naturalInput, fileSystem: context.FileSystem, logger: naturalLogger);
             var naturalDisposition = await naturalEngine.ValidatePreparedNpcProgressionOutcomeAsync(
                 "NPC progression treatment natural intake oracle", HeldTreatmentPipelineContext.Turn);
+            if (scenario is 5 or 6 or 7)
+            {
+                Assert.NotEqual(AcceptedTurnValidationDisposition.Accepted, naturalDisposition);
+                var refusalDiagnostic = naturalInput.RepairBeforeEscape ?? string.Empty;
+                if (scenario == 5)
+                {
+                    // The candidate's direct-mutation guard can reject before owner intake.
+                    Assert.Contains("npc_existing_core_direct_mutation_forbidden", refusalDiagnostic, StringComparison.Ordinal);
+                    Assert.Contains("npc_core.json", refusalDiagnostic, StringComparison.Ordinal);
+                }
+                else if (scenario == 7)
+                {
+                    Assert.Contains("npc_skill_treatment_original_sidecar_deleted", refusalDiagnostic, StringComparison.Ordinal);
+                    Assert.Contains("npc_skills.json", refusalDiagnostic, StringComparison.Ordinal);
+                }
+                else
+                {
+                    // Unknown metadata survives candidate parsing but is forbidden by the
+                    // intake-only exact original metadata comparison, surfaced by its catch.
+                    Assert.Contains("mortal_wound_treatment_ordinary_input_invalid", refusalDiagnostic, StringComparison.Ordinal);
+                    Assert.Contains("Treatment NPC intake changes unrelated sidecar metadata.", refusalDiagnostic, StringComparison.Ordinal);
+                }
+                foreach (var (path, bytes) in untouchedRoots)
+                    Assert.Equal(bytes, await context.ReadFileBytesAsync(path));
+                Assert.Equal(naturalTransitionsBefore, await CountSelectedItemConsumeTransitionsAsync(context));
+                var rejectedCore = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);
+                var rejectedProvider = ReadProvider(rejectedCore);
+                Assert.Equal(1, rejectedProvider["level"]!.GetValue<int>());
+                Assert.Equal(99, rejectedProvider["experience"]!.GetValue<int>());
+                Assert.Equal(100, rejectedProvider["experienceForNextLevel"]!.GetValue<int>());
+                Assert.Equal(2, ReadNpcItemCount(rejectedCore, HeldTreatmentPipelineContext.SelectedItemId));
+                Assert.True(JsonNode.DeepEquals(ReadProvider(original)["activeSkills"], rejectedProvider["activeSkills"]));
+                return;
+            }
             Assert.True(naturalDisposition == AcceptedTurnValidationDisposition.Accepted,
                 $"Natural treatment/progression disposition: {naturalDisposition}\n{naturalLogger.Describe()}\nRepair request before Escape:\n{naturalInput.RepairBeforeEscape ?? "<absent>"}");
             var naturalCore = await ReadJsonObjectAsync(context.FileSystem, NpcCoreChangesContract.NpcCorePath);

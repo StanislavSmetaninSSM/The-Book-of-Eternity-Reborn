@@ -341,8 +341,13 @@ public partial class ValidationService
     /// lease. Progression freshly authenticates original NPC snapshot bytes at opening and closing fences;
     /// the detached opening roots also bind reducer backups. Turns without progression or pending skills skip authentication.
     /// </summary>
-    internal async Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationAsync(
-        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes, byte[]? npcSkillBytes = null)
+    internal Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes, byte[]? npcSkillBytes = null) =>
+        PrepareNpcProgressionPublicationCoreAsync(writeLease, npcCoreBytes, npcSkillBytes, treatmentIntake: false);
+
+    private async Task<NpcProgressionPublicationSource> PrepareNpcProgressionPublicationCoreAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes, byte[]? npcSkillBytes,
+        bool treatmentIntake)
     {
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         JsonObject? rawSidecar = null;
@@ -372,7 +377,7 @@ public partial class ValidationService
             ? CreateNpcProgressionSource(lookup.Manifest) : null;
         var issues = NpcCoreChangesContract.ValidateProgressionSources(root, context);
         if (issues.Count != 0) return new(this, writeLease, context, issues);
-        if (hasSkills && (context is null || context.Realm != "mortal_world"))
+        if ((hasSkills || treatmentIntake) && (context is null || context.Realm != "mortal_world"))
             return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("NPC skills require current authenticated Mortal source")]);
         using var fresh = FileSystemManager.SuppressValidationReuse();
         var original = await ReadValidatedPendingTurnSnapshotFileAsync(
@@ -382,7 +387,7 @@ public partial class ValidationService
                 IssueSeverity.Error, "NPC progression requires authenticated original NPC core bytes.",
                 code: "npc_core_changes_progression_source_unavailable", section: "NPCCoreChanges",
                 repairHint: "Restore the original authenticated snapshot; do not rewrite it or invent source hashes.")]);
-        var authority = hasSkills
+        var authority = hasSkills || treatmentIntake
             ? await NpcCoreChangesContract.ReadAuthorityAsync(_fs)
             : await NpcCoreChangesContract.ReadProgressionPolicyAuthorityAsync(_fs);
         authority = authority with { ProgressionSource = context };
@@ -391,16 +396,20 @@ public partial class ValidationService
                 IssueSeverity.Error, "Current-world NPC progression policy must be a valid closed declaration.",
                 code: "npc_progression_consequence_policy_invalid", section: "NPCProgression")]);
         var policyFingerprint = MortalNpcWorldProgressionPolicy.Fingerprint(authority);
-        if (!hasSkills) return new(this, writeLease, context, issues, originalRoot,
+        if (!hasSkills && !treatmentIntake) return new(this, writeLease, context, issues, originalRoot,
             worldPolicyFingerprint: policyFingerprint);
         var originalSidecar = await ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest!, writeLease);
         if (originalSidecar is null)
             return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("authenticated original NPC skill sidecar unavailable")]);
+        if (treatmentIntake && originalSidecar.Exists && npcSkillBytes is null)
+            return new(this, writeLease, context, [new ValidationIssue(MortalNpcAcceptedSkillInput.SidecarPath,
+                IssueSeverity.Error, "Treatment NPC intake cannot delete an authenticated original skill sidecar.",
+                code: "npc_skill_treatment_original_sidecar_deleted", section: "NPCSkills")]);
         var originalTrade = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, NpcTradeRequestState.PendingRequestPath, writeLease);
         var originalTraining = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, TrainingRequestState.PendingRequestPath, writeLease);
-        var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar.Root, root, rawSidecar!, authority,
+        var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar.Root, root, rawSidecar ?? new JsonObject(), authority,
             originalTrade, originalTraining, out var candidateIssues, originalSidecar.Exists,
-            CaptureNpcSkillItemSnapshot(writeLease, context));
+            treatmentIntake ? null : CaptureNpcSkillItemSnapshot(writeLease, context));
         return new(this, writeLease, context, candidateIssues, originalRoot, input,
             npcCoreBytes, npcSkillBytes, originalTrade, originalTraining, policyFingerprint);
     }

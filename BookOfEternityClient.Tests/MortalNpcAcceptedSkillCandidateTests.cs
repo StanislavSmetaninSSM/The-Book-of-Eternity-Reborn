@@ -6,6 +6,27 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalNpcAcceptedSkillCandidateTests
 {
+    [Theory]
+    [InlineData("{}", "{}", true)]
+    [InlineData("{\"_lastUpdated\":null}", "{\"_lastUpdated\":null}", true)]
+    [InlineData("{\"_lastUpdated\":\"2026-01-01T00:00:00.0000000Z\"}", "{\"_lastUpdated\":\"2026-01-02T00:00:00.0000000Z\"}", true)]
+    [InlineData("{}", "{\"_lastUpdated\":null}", false)]
+    [InlineData("{\"_lastUpdated\":null}", "{}", false)]
+    [InlineData("{\"_lastUpdated\":\"2026-01-01T00:00:00.0000000Z\"}", "{}", false)]
+    [InlineData("{}", "{\"_lastUpdated\":\"2026-01-01T00:00:00.0000000+02:00\"}", false)]
+    [InlineData("{\"metadata\":1}", "{\"metadata\":2,\"_lastUpdated\":\"2026-01-01T00:00:00.0000000Z\"}", false)]
+    public void DistributorTimestampComparison_RequiresExactPresenceOrValidUtcOnlyChange(
+        string originalJson, string currentJson, bool expected)
+    {
+        var original = JsonNode.Parse(originalJson)!.AsObject();
+        var current = JsonNode.Parse(currentJson)!.AsObject();
+        var originalBefore = original.ToJsonString();
+        var currentBefore = current.ToJsonString();
+        Assert.Equal(expected, MortalNpcAcceptedSkillCandidate.HasOnlyDistributorTimestampDifference(original, current));
+        Assert.Equal(originalBefore, original.ToJsonString());
+        Assert.Equal(currentBefore, current.ToJsonString());
+    }
+
     [Fact]
     public void Compose_ConsecutiveSkillOnlyGrantsAndOmission_PreserveCanonicalSkillsAndConsumeCommands()
     {

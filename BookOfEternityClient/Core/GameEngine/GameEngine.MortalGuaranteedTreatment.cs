@@ -120,9 +120,25 @@ public partial class GameEngine
         if (original.SessionId != binding.SessionId || original.RequestId != binding.RequestId ||
             original.SnapshotToken != binding.SnapshotToken || original.TurnNumber != binding.TurnNumber || original.Realm != binding.Realm)
             return (null, OrdinaryTreatmentRefusal("mortal_wound_treatment_ordinary_guard_binding_invalid", "The mechanical read must retain the actual official original binding."));
+        byte[]? npcCoreBytes = null;
+        byte[]? npcSidecarBytes = null;
+        var npcInputsChanged = false;
         foreach (var path in paths)
         {
             var current = await _fs.ReadFileBytesAsync(lease, path);
+            if (path is NpcCoreChangesContract.NpcCorePath or MortalNpcAcceptedSkillInput.SidecarPath)
+            {
+                if (path == NpcCoreChangesContract.NpcCorePath) npcCoreBytes = current;
+                else npcSidecarBytes = current;
+                var covered = original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal);
+                if (current is null)
+                    npcInputsChanged |= covered;
+                else if (!covered || ReadOrdinaryTreatmentNode(original.ReadRequiredBytes(path), path) is not JsonObject oldRoot ||
+                         ReadOrdinaryTreatmentNode(current, path) is not JsonObject newRoot ||
+                         !MortalNpcAcceptedSkillCandidate.HasOnlyDistributorTimestampDifference(oldRoot, newRoot))
+                    npcInputsChanged = true;
+                continue;
+            }
             // Its effective resource outcome is checked by the existing owner intake.
             // Ordinary guardian narrative markers still follow normal canonical cleanup;
             // the complete current root is nevertheless captured in the common fence.
@@ -148,10 +164,28 @@ public partial class GameEngine
                     ReadOrdinaryTreatmentNode(current, path)))
                 return (null, OrdinaryTreatmentRefusal("mortal_wound_treatment_ordinary_mechanical_input_changed", "This first contour cannot carry a changed mechanical source/afterimage: " + path));
         }
-        // This is the proven EMPTY concurrent command envelope, not a stripped display
-        // response. Actual narrative is separately exact-bound; existing canonical periodic
-        // effects still run once inside the existing treatment publication's effect stage.
-        return (new GameResponse(), Array.Empty<ValidationIssue>());
+        if (!npcInputsChanged) return (new GameResponse(), Array.Empty<ValidationIssue>());
+        var npc = await _validator.ReadTreatmentNpcProgressionInputAsync(lease, npcCoreBytes, npcSidecarBytes);
+        if (npc.Source.Issues.Count != 0) return (null, npc.Source.Issues);
+        var source = npc.Source.Context;
+        if (npc.Response is null || source is null || source.SessionId != original.SessionId ||
+            source.RequestId != original.RequestId || source.SnapshotToken != original.SnapshotToken ||
+            source.TurnNumber != original.TurnNumber || source.Realm != original.Realm)
+            return (null, OrdinaryTreatmentRefusal("mortal_wound_treatment_ordinary_mechanical_input_changed",
+                "Changed NPC inputs require exact current-source bounded progression or supported skill commands."));
+        await npc.Source.RequireCurrentAsync(_fs, lease);
+        foreach (var (path, captured) in new[]
+                 { (NpcCoreChangesContract.NpcCorePath, npcCoreBytes), (MortalNpcAcceptedSkillInput.SidecarPath, npcSidecarBytes) })
+        {
+            var current = await _fs.ReadFileBytesAsync(lease, path);
+            if ((current is null) != (captured is null) ||
+                current is not null && !current.AsSpan().SequenceEqual(captured!))
+                return (null, OrdinaryTreatmentRefusal("mortal_wound_treatment_ordinary_mechanical_input_changed",
+                    "NPC intake bytes changed during fresh source admission: " + path));
+        }
+        // Only the supported skill envelope reaches the specialized composer. Raw core
+        // commands stay with the existing item baseline and final publication owner.
+        return (npc.Response, Array.Empty<ValidationIssue>());
     }
 
     private static JsonNode ReadOrdinaryTreatmentNode(byte[] bytes, string path) =>

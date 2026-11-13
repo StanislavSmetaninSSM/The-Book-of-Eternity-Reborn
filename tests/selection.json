@@ -245,6 +245,13 @@
       "contracts": [
         "Existing treatment result plus NPC progression/skill/item; late rollback and settlement sidecar/policy drift."
       ]
+    },
+    {
+      "category": "mortal-npc-progression-treatment-natural-intake",
+      "reason": "#1538 actual producer must admit supported NPC commands without a preissued plan and reject unrelated direct mutation/deletion.",
+      "contracts": [
+        "Fresh authenticated core/sidecar intake through existing Guaranteed/Guided shared reader; real Guaranteed execution."
+      ]
     }
   ]
 }

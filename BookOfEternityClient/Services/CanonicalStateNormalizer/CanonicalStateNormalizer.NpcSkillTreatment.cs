@@ -54,19 +54,7 @@ public partial class CanonicalStateNormalizer
             originalMetadata.Remove(key);
             currentMetadata.Remove(key);
         }
-        // StateDistributor stamps every canonical output with UTC round-trip metadata.
-        // Permit only this exact producer field; actual raw/consumed bytes stay sealed.
-        if (!JsonNode.DeepEquals(originalMetadata["_lastUpdated"], currentMetadata["_lastUpdated"]))
-        {
-            if (currentMetadata["_lastUpdated"] is not JsonValue stamp ||
-                !stamp.TryGetValue<string>(out var timestamp) ||
-                !DateTime.TryParseExact(timestamp, "o", System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.RoundtripKind, out var parsed) || parsed.Kind != DateTimeKind.Utc)
-                throw new InvalidDataException("Treatment NPC distributor timestamp must retain the UTC round-trip producer format.");
-            originalMetadata.Remove("_lastUpdated");
-            currentMetadata.Remove("_lastUpdated");
-        }
-        if (!JsonNode.DeepEquals(originalMetadata, currentMetadata))
+        if (!MortalNpcAcceptedSkillCandidate.HasOnlyDistributorTimestampDifference(originalMetadata, currentMetadata))
             throw new InvalidDataException("Treatment NPC sidecar changes unrelated metadata.");
         var beforeImages = plan.BeforeImages; // One detached export for both raw witnesses.
         foreach (var (path, raw) in new[]

@@ -325,7 +325,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(receipt);
         ArgumentNullException.ThrowIfNull(beforeImages);
         if (!receipt.IsTerminalReleaseOnly)
-            RequireCompleteBeforeImageCoverage(plan, beforeImages, npcProgressionWitness is not null);
+            RequireCompleteBeforeImageCoverage(plan, beforeImages, npcProgressionWitness?.AuthorityFingerprint is not null);
 
         var authority = plan.TreatmentResourcePublicationAuthority;
         if (authority is null ||
@@ -522,7 +522,7 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
         }
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
-        var agreementPaths = _npcProgressionWitness is not null
+        var agreementPaths = _npcProgressionWitness?.AuthorityFingerprint is not null
             ? _plan.TouchedPaths.Append(MortalNpcAcceptedSkillInput.SidecarPath)
             : _plan.TouchedPaths;
         var paths = WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(agreementPaths);

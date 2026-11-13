@@ -1846,7 +1846,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             treatmentPreflight.Binding,
                             receipt,
                             beforeImages,
-                            npcSource.SkillInput is null ? null : npcSource.CreateSettlementWitness());
+                            npcSource.Context is null ? null : npcSource.CreateSettlementWitness());
                     mechanicsPlan = await boundNormalizer
                         .NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync(
                             backups,

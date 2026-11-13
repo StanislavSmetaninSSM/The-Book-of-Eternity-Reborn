@@ -14,6 +14,24 @@ internal static class MortalNpcAcceptedSkillCandidate
     private static readonly string[] PendingProperties =
     ["NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges"];
 
+    // StateDistributor owns only this exact UTC round-trip metadata field.
+    // Comparison does not mutate supplied DATA or grant authority to any mechanical change.
+    internal static bool HasOnlyDistributorTimestampDifference(JsonObject original, JsonObject current)
+    {
+        if (JsonNode.DeepEquals(original, current)) return true;
+        if ((original.ContainsKey("_lastUpdated") != current.ContainsKey("_lastUpdated") ||
+             !JsonNode.DeepEquals(original["_lastUpdated"], current["_lastUpdated"])) &&
+            (current["_lastUpdated"] is not JsonValue stamp || !stamp.TryGetValue<string>(out var timestamp) ||
+             !DateTime.TryParseExact(timestamp, "o", System.Globalization.CultureInfo.InvariantCulture,
+                 System.Globalization.DateTimeStyles.RoundtripKind, out var parsed) || parsed.Kind != DateTimeKind.Utc))
+            return false;
+        var left = original.DeepClone().AsObject();
+        var right = current.DeepClone().AsObject();
+        left.Remove("_lastUpdated");
+        right.Remove("_lastUpdated");
+        return JsonNode.DeepEquals(left, right);
+    }
+
     internal sealed record Result(JsonObject? Core, JsonObject? Sidecar, IReadOnlyList<ValidationIssue> Issues)
     {
         internal bool IsValid => Core is not null && Sidecar is not null && Issues.Count == 0;
