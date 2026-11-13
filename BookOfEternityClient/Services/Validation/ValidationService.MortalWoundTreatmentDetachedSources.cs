@@ -92,7 +92,8 @@ public partial class ValidationService
                     context,
                     issues,
                     section,
-                    requiresCompletePersonality: false);
+                    requiresCompletePersonality: false,
+                    requiresCreationProgression: false);
             }
         }
     }

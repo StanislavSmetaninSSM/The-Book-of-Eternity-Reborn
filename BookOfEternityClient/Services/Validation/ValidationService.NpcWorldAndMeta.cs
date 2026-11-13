@@ -5754,7 +5754,7 @@ public partial class ValidationService
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.{problem.Field}", IssueSeverity.Error, problem.Message,
                         code: "npc_creation_progression_invalid", section: "NPCProgression",
-                        actor: $"mortal_npc:{GetFirstNonEmptyString(item, "NPCId", "npcId", "initialId")}",
+                        actor: $"mortal_npc:{GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId")}",
                         expected: "explicit versioned progressionProfile and coherent canonical level/experience/experienceForNextLevel",
                         actual: problem.Message,
                         repairHint: "For this new NPC, declare its numeric progression profile and a matching within-level XP tuple. Do not rewrite existing actors or infer a default profile."));
