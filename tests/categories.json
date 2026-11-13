@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-guidance",
+      "responsibility": "#1538 actual daemon Mortal NPC template rendering for explicit numeric profile, delta and exact boundaries.",
+      "excludes": "No source/consequence publication qualification; Linux PowerShell 7 is not Windows PowerShell 5.1 evidence.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalNpcUpdateTemplate"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-numeric",
       "responsibility": "#1538 explicit Mortal NPC within-level progression profiles, deterministic numeric evaluator and bounded existing-command tuple admission.",
       "excludes": "Identity/realm/source authority, dependent package and publication lifecycle are separate P2/P3 gates.",
@@ -34764,7 +34789,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalExperienceLevelTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalFactionUpdateTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalLocationTransitionTemplate",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalNpcUpdateTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalFactionIdentityLessonsToFactionTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalLocationTransitionLessonsToLocationTemplate",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RoutesMortalWorldMapAdjacencyLessonsToLocationTemplate",

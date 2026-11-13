@@ -4783,7 +4783,7 @@ public sealed class GmTurnHelperContractTests
         {
             Directory.CreateDirectory(session);
             WriteDaemonConfig(session);
-            process = StartDaemon(session, logPath);
+            process = StartDaemon(session, logPath, OperatingSystem.IsWindows() ? "powershell.exe" : "pwsh");
 
             var templatePath = Path.Combine(
                 session,
@@ -4796,6 +4796,11 @@ public sealed class GmTurnHelperContractTests
 
             var template = File.ReadAllText(templatePath, Encoding.UTF8);
             Assert.Contains("NPCsInScene", template, StringComparison.Ordinal);
+            Assert.Contains("progressionProfile", template, StringComparison.Ordinal);
+            Assert.Contains("experienceDelta", template, StringComparison.Ordinal);
+            Assert.Contains("advance at `>=`", template, StringComparison.Ordinal);
+            Assert.Contains("baseline profile is not installed or replaced", template, StringComparison.Ordinal);
+            Assert.Contains("capOverflow: discard", template, StringComparison.Ordinal);
             Assert.Contains("known current location", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("same-turn new location", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("\"currentLocationId\": \"<currentLocationData.locationId for known current location>\"", template, StringComparison.Ordinal);

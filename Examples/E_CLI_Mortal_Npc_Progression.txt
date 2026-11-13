@@ -1,0 +1,84 @@
+# Mortal NPC progression: explicit numeric profile and bounded XP input
+
+This example covers the numeric contract only. It is not evidence that the
+whole #1538 dependency/publication contract is complete. Exact actor, realm,
+source-turn and dedicated skill/characteristic/combat/trade/journal authority
+remain required; a valid tuple is not permission to publish those consequences.
+
+Use NPCCoreChanges only for an existing exact permanent NPCId with a nonempty
+reason. Read the validated baseline actor's progressionProfile; do not add or
+replace it inside progression, rewrite the baseline, or infer it from class,
+progressionType, prose or player XP. Profile installation/change is a separate
+explicit transition, not supported by this numeric package. Missing authority
+blocks progression; unrelated non-progression changes do not need a profile.
+
+Supported closed baseline profiles (JSON integer schemaVersion: 1):
+- {"schemaVersion":1,"mode":"standard"} explicitly selects the within-level
+  cost floor(100 * L^2.5), evaluated as exact floor(sqrt(10000 * L^5)), not a
+  floating-point approximation. There is no default formula.
+- {"schemaVersion":1,"mode":"table","thresholds":[100,200],"capOverflow":"discard"}
+  costs 100 to leave level 1 and 200 to leave level 2, with terminal level 3.
+- {"schemaVersion":1,"mode":"none"} permits no other profile options, retains
+  the actor's nonnegative level, and requires XP, threshold and delta all 0.
+
+For standard/table, optional allowExperienceLoss:true permits losses only within
+the current level; underflow or deleveling is rejected. Optional positive
+maxLevel caps standard or shortens a table's terminal level; it cannot extend a
+table. Every cap requires capOverflow:"discard". Uncapped standard forbids
+capOverflow. At cap, experience and experienceForNextLevel are both 0.
+All tuple fields and the signed experienceDelta must be Int32 JSON integers,
+not strings or fractional numbers. Intermediate XP overflow is rejected before
+cap discard. A progressing baseline has level >= 1, the exact profile threshold,
+and 0 <= experience < threshold (or zero XP/threshold at cap).
+
+## Exact-boundary standard example
+
+Relevant fields of an already validated baseline (not a creation command):
+```json
+{
+  "NPCId": "npc_existing_001",
+  "progressionProfile": {"schemaVersion": 1, "mode": "standard"},
+  "level": 1,
+  "experience": 90,
+  "experienceForNextLevel": 100
+}
+```
+
+Grant 10: 90 + 10 >= 100, so consume 100, enter level 2 with 0 XP.
+Its exact next cost is 565. Submit the full result, even when only XP changes:
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "npc_existing_001",
+      "reason": "Completed the agreed practice objective",
+      "progression": {
+        "experienceDelta": 10,
+        "level": 2,
+        "experience": 0,
+        "experienceForNextLevel": 565
+      }
+    }
+  ]
+}
+```
+
+Each further threshold uses >= too, not >. For the explicit table above, a
+baseline (level 1, XP 90, threshold 100) with delta 210 reaches the cap exactly:
+result (level 3, XP 0, threshold 0). Delta 211 gives the same terminal tuple
+because the profile explicitly discards excess. Never reuse the player's
+cumulative-XP threshold semantics for an NPC.
+
+A role/tracker-only change still supplies experienceDelta:0 and the complete
+unchanged tuple. Keep progressionType separate from progressionProfile; include
+lastPlayerXPValueOnSync when the dedicated role/synchronization contract requires
+it. Do not infer or award skills, characteristics, merchandise or rewards from
+this example: use their existing dedicated commands and explicit authority.
+
+## Bounded repair
+
+Follow the current harnessRepairPackets and permitted paths. Correct the named
+progression command's delta/result fields against the unchanged validated
+baseline. An incoherent or missing baseline profile is not repairable by
+inventing a profile, changing original XP, or falling back to the polynomial.
+Do not resubmit a progression command as an unchanged full UpdateNPCs carrier.

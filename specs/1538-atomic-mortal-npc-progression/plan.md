@@ -67,3 +67,23 @@ recognizes command-only experienceDelta; this integration is UNRUN and unreviewe
 Next: update the active progression fixture/example, build and run this numeric
 category plus the existing npc-core-changes consumer category. No whole-feature
 acceptance, source receipts, dependent package or creation coverage is claimed.
+
+### P1 bounded GREEN and documentation WIP
+
+Remote source checkpoint 4763541fab65196f91f7f8b55b931bf37b7dc2a5:
+Linux official numeric category 62/62 PASS (8.222s), existing npc-core-changes
+91/91 PASS (34.452s), no skipped/duplicate cases, complete owned cleanup. Serial
+no-restore unit/integration builds: 0 errors, 81/118 warnings, 63.41/38.95s.
+A fresh shallow sparse clone from GitHub at that exact SHA recovered all selected
+new source/spec/catalog bytes; this proves source recovery, not a clean rebuild.
+
+Subsequent WIP adds a positive Apply/mirror/delta-not-persisted control, an actual
+worked-example numeric test and a native daemon template assertion. These new
+checks are UNRUN. Existing rules/main/repair/daemon examples now describe explicit
+profiles, delta/full result and exact >= boundaries. One existing renderer moved
+from the broad template owner to mortal-npc-progression-guidance; Linux uses pwsh,
+Windows retains powershell.exe. Source receipts/dependencies/creation remain P2/P3.
+Next: rebuild affected test assemblies, run only numeric/guidance categories and
+catalog discovery, then independent P1 review. The unchanged existing core suite
+need not be repeated. No speedup claim: trivial numeric/profile work has no cache;
+current parsed baseline DATA is reused and publication/source gates are untouched.

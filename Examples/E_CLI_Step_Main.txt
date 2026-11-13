@@ -1728,7 +1728,7 @@ Worked `mortal_npc_inventory_update_repair` decision:
 
 Worked ordinary-existing location plus progression/characteristic change:
 
-`NPCCoreChanges` is a non-carrier command. Every value below is an absolute resulting value from explicit current-world authority; the target is an exact existing permanent `NPCId`, not a name or same-turn `initialId`.
+`NPCCoreChanges` is a non-carrier command. Result values below are absolute; `experienceDelta` is the signed XP input. The target is an exact existing permanent `NPCId`, not a name or same-turn `initialId`. This example assumes validated baseline level 4, experience 0, threshold 500, and actor-owned `progressionProfile: {"schemaVersion":1,"mode":"table","thresholds":[100,200,300,500],"capOverflow":"discard"}`. Delta 25 yields the tuple below without a level-up. Characteristic changes need their own explicit authority, not an inferred level reward. The command cannot install that baseline profile. See `E_CLI_Mortal_Npc_Progression.txt` for exact-boundary, standard and none semantics.
 
 ```json
 {
@@ -1744,6 +1744,7 @@ Worked ordinary-existing location plus progression/characteristic change:
         "initialLocationId": null
       },
       "progression": {
+        "experienceDelta": 25,
         "level": 4,
         "experience": 25,
         "experienceForNextLevel": 500,

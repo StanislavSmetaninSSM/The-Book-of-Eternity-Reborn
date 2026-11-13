@@ -1467,7 +1467,8 @@
      <instructiontext>
       <![CDATA[
 
-                            The experience required to advance is calculated using a polynomial formula based on the character's CURRENT level. 
+                            The experience required to advance is calculated using a polynomial formula based on the character's CURRENT level.
+                            For Mortal NPC commands this formula applies only when the validated canonical progressionProfile explicitly selects mode standard; table/none modes do not inherit it, and a missing profile is not authority.
                             This value represents the TOTAL XP required to complete the current level and serves as the foundation for all scaled XP rewards.
                             
                             ]]>

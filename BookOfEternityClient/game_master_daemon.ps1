@@ -1654,6 +1654,8 @@ Use this before opening large examples for repair mode.
 
 ## Repair packet discipline
 
+- For NPC progression errors, use `MORTAL_NPC_UPDATE_TEMPLATE.md`: preserve the validated baseline profile/tuple, correct only the current permitted `NPCCoreChanges.progression` delta/result fields, and use exact `>=` level boundaries. Never repair missing authority by guessing a formula, changing the baseline, or supplying a profile inside the command. Numeric validation alone is not authorization to publish other consequences.
+
 - Keep `sessionId`, `requestId`, and `turnNumber` from the current repair request.
 - If diagnostic-only sentinel metadata is present, restore the missing authority first.
 - If `harnessRepairPackets[]` contains `exactFieldCorrections[]`, apply those path -> expected replacements first, then recompute only dependent fields named by the same packet. Do not infer different values from prose when exact corrections are present.
@@ -1794,7 +1796,10 @@ Use this before creating or repairing Mortal World NPCs in `game_state/npcs/npc_
 ## Ordinary existing core changes
 
 - `NPCCoreChanges` is a Mortal-only non-carrier command mapped to `game_state/npcs/npc_core.json`. It targets one exact existing permanent `NPCId`; never target by name or `initialId`.
-- Every entry needs a non-empty in-world/mechanical `reason` and at least one non-empty mutation group. Values are absolute resulting values, not expressions or prose math.
+- Every entry needs a non-empty in-world/mechanical `reason` and at least one non-empty mutation group. Result values are absolute, not expressions or prose math; `experienceDelta` is the explicit signed XP input.
+- Read the existing validated actor's explicit `progressionProfile` (`schemaVersion: 1`, `mode: standard | table | none`); never infer a formula from role, class, prose or the player's XP. Every progression command includes signed Int32 `experienceDelta` and the complete absolute `level`, `experience`, `experienceForNextLevel` result. XP is within-level: advance at `>=`, including every recursive boundary. The baseline profile is not installed or replaced by this command.
+- `standard` explicitly selects floor(100 * L^2.5), evaluated exactly; `table.thresholds[L-1]` is the positive cost to leave level L. A table ends at level thresholds.length + 1; optional `maxLevel` can shorten it. Every cap requires `capOverflow: discard` and ends with XP/threshold both 0. Uncapped standard forbids capOverflow. `none` accepts only schemaVersion/mode, preserves nonnegative level and requires XP/threshold/delta all 0. Loss requires `allowExperienceLoss: true`, cannot underflow current-level XP or delevel; Int32 overflow is rejected before cap discard.
+- Missing/malformed baseline authority is not repaired by inventing a profile or editing the original tuple. These numeric checks do not replace dedicated skill, characteristic, combat, trade or journal ownership; see `Examples/E_CLI_Mortal_Npc_Progression.txt`.
 - Include only groups that actually change. Omit every unused optional group; never emit an empty object or array as a placeholder.
 - Allowed groups are exactly `profile`, `location`, `progression`, `characteristicValues`, `factionAffiliationsToUpsert`, `fateCardsToAdd`, and `fateCardIdsToRemove`. Unknown members and protected identity/name/materialization/inventory/equipment/skill/relationship/journal/goal/quest/activity/mask/custom-state/teacher/trade fields are forbidden.
 - `characteristicValues` may use only keys already owned by the actor or explicit current-world characteristic authority. Carrying and progression formulas also come only from explicit current-world authority; keep setting-owned nullable results null when no authority exists.

@@ -7,6 +7,13 @@ worker. It writes `game_state/control/validation_repair_request.json` only when
 no enabled worker exists or worker dispatch/apply fails, so the worker and main
 GM never own the same repair concurrently.
 
+For Mortal NPC numeric progression, read `Examples/E_CLI_Mortal_Npc_Progression.txt`
+and the current repair packet. Preserve the validated baseline progressionProfile
+and tuple; repair only permitted command fields, including signed experienceDelta
+and all three absolute result fields. Use >= at every threshold. Never invent a
+missing profile, replace it inside progression, or use a hidden formula fallback.
+Numeric validity does not replace dedicated consequence/publication authority.
+
 Worker profile:
 
 ```json

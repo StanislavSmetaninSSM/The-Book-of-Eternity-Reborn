@@ -200,10 +200,10 @@
                             - 'NPCCoreChanges' is a non-carrier response command mapped to 'game_state/npcs/npc_core.json'. It is never a partial NPC object and never carries 'materialization' or 'inventory'.
                             - Each entry targets one exact existing permanent 'NPCId', includes a non-empty in-world/mechanical 'reason', and contains at least one non-empty mutation group.
                             - Include only groups that actually change. Omit every unused optional group; never emit an empty object or array as a placeholder.
-                            - All values are absolute resulting values. Do not send arithmetic expressions, prose-derived math, names, 'initialId', arbitrary JSON paths, or unchanged fields.
+                            - Result values are absolute; 'experienceDelta' is the explicit signed XP input. Do not send arithmetic expressions, prose-derived math, names, 'initialId', arbitrary JSON paths, or unrelated unchanged fields; the complete required progression tuple is always included.
                             - Allowed groups are exactly 'profile', 'location', 'progression', 'characteristicValues', 'factionAffiliationsToUpsert', 'fateCardsToAdd', and 'fateCardIdsToRemove'. Unknown members at any depth are invalid.
                             - 'characteristicValues' may use only numeric keys already owned by the actor or explicitly defined by current-world characteristic authority. Never infer a universal characteristic vocabulary.
-                            - A location change carries both 'currentLocationId' and 'initialLocationId'. A progression tuple carries coherent non-negative 'level', 'experience', and 'experienceForNextLevel'; include 'lastPlayerXPValueOnSync' when the role/progression transition requires synchronization.
+                            - A location change carries both 'currentLocationId' and 'initialLocationId'. A progression command requires signed Int32 'experienceDelta' and the full non-negative Int32 'level', 'experience', and 'experienceForNextLevel' result, computed from the validated baseline actor's explicit 'progressionProfile' (schemaVersion: 1; mode: standard, table, or none). There is no implicit formula or profile replacement in this command; see Examples/E_CLI_Mortal_Npc_Progression.txt for numeric profile options. Include 'lastPlayerXPValueOnSync' when the role/progression transition requires synchronization.
                             - Faction upserts use exact existing faction identity and the complete affiliation shape. Fate Card additions are complete, uniquely identified, and initially locked; every addition must pass the full production Fate Card, nested skill, Combat Action, and effect contract before reduction. Every Combat Action effect requires canonical effectType, value, targetType, and effectDescription plus type-specific duration/poise fields. Removals target only validated pre-turn locked/unrealized cards. Unlock an existing card only through 'NPCFateCardUnlocks'.
 
                             {
@@ -573,7 +573,7 @@
                             11.2. "experience": (integer) The NPC's current experience points within their current level. 
                             For a newly generated NPC, this is always initialized to 0.
 
-                            11.3. "experienceForNextLevel": (integer) The total XP needed for the NPC to advance to the next level, calculated based on the formula in Rule #5.10.A.1.
+                            11.3. "experienceForNextLevel": (integer) The within-level XP cost selected by the actor's explicit canonical progressionProfile. Only mode 'standard' selects Rule #5.10.A.1; mode 'table' supplies explicit costs, and mode 'none' has zero XP and threshold. Never infer a profile from progressionType.
 
                             11.4. "progressionTrackers": (object) A memory-safe object used to track NPC growth.
                                 - "lastPlayerXPValueOnSync": Stores the player's total cumulative XP at the last point of interaction.
@@ -2158,9 +2158,10 @@
         <![CDATA[
 
                                     Immediately after calculating an 'XP_Grant' for an NPC, you MUST perform this check.
-                                    -   Condition: '(NPC.experience + XP_Grant) >= NPC.experienceForNextLevel'
+                                    -   First resolve the validated explicit progressionProfile. Mode none cannot gain XP; at an explicit cap use its terminal zero-XP/zero-threshold discard policy without incrementing level.
+                                    -   Condition for a positive current threshold: '(NPC.experience + XP_Grant) >= NPC.experienceForNextLevel'
                                     
-                                    If the condition is FALSE, no level-up occurs. You only need to report the new 'experience' value.
+                                    If the condition is FALSE, no level-up occurs. Still report signed 'experienceDelta' and the complete resulting progression tuple.
                                     If the condition is TRUE, a level-up is triggered. You MUST proceed to Step 2.
 
                                     ]]>
@@ -2180,10 +2181,10 @@
                                         1.  Calculate 'RemainingXP = (NPC.experience + XP_Grant) - NPC.experienceForNextLevel'.
                                         2.  Increment 'level' by 1.
                                         3.  Set 'experience' to 'RemainingXP'.
-                                        4.  Calculate the new 'experienceForNextLevel' for the new level using the formula from Rule #5.10.A.1.
-                                        5.  RECURSIVE CHECK: You MUST immediately check if 'RemainingXP' is still greater than the NEW 'experienceForNextLevel'. 
+                                        4.  Calculate the new 'experienceForNextLevel' using the validated baseline actor's explicit progressionProfile, never an implicit formula. At its explicit cap, discard remaining XP only under capOverflow: discard and set experience and experienceForNextLevel to 0.
+                                        5.  RECURSIVE CHECK: You MUST immediately check if the NEW 'experienceForNextLevel' is positive and 'RemainingXP' is greater than or equal to it (>=).
                                             If so, repeat this entire step (A) for the next level-up. 
-                                            Continue until the remaining XP is less than the requirement for the next level.
+                                            Continue until the remaining XP is less than the requirement for the next level, or the explicit terminal cap is reached.
 
                                     B. Apply Setting-Owned Characteristic Progression:
                                         1.  Read explicit current-world progression authority before changing characteristics. It defines whether a level grants any points, the amount or formula, and the allowed characteristic keys.
@@ -2196,7 +2197,7 @@
                                         2.  This skill change MUST be reported via 'NPCActiveSkillChanges'/'NPCPassiveSkillChanges' and/or their corresponding mastery change commands.
 
                                     D. Reporting:
-                                        For an existing NPC, send one 'NPCCoreChanges' entry. Its 'progression' group contains the coherent absolute resulting 'level', 'experience', and 'experienceForNextLevel' tuple plus 'progressionType'/'lastPlayerXPValueOnSync' when changed; 'characteristicValues' contains only setting-authorized absolute results. Report skill changes through their dedicated commands.
+                                        For an existing NPC, send one 'NPCCoreChanges' entry. Its 'progression' group contains signed 'experienceDelta' and the coherent absolute resulting 'level', 'experience', and 'experienceForNextLevel' tuple plus 'progressionType'/'lastPlayerXPValueOnSync' when changed; 'characteristicValues' contains only setting-authorized absolute results. Report skill changes through their dedicated commands.
 
                                     E. Logging:
                                         In 'gm_thoughts_markdown', you MUST log the entire process: the level-up, the number of points awarded, how you distributed them, and any skill advancements granted.
