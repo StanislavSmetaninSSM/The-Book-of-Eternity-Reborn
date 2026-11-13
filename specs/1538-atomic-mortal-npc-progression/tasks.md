@@ -11,4 +11,4 @@ Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
 - [x] T006 P2 negative/source/replay checks, independent review and checkpoint.
 - [x] T007 P3 creation, representative NPC roles, real rollback/failure/retry, public UI privacy (FR6/FR7/FR8).
 - [x] T008 Synchronize actual GM entrypoints/repair/examples and bounded diagnostics (FR9).
-- [ ] T009 Final requirement/evidence reconciliation, independent review and GitHub recovery. No merge/closure without explicit instruction.
+- [x] T009 Final requirement/evidence reconciliation, independent review and GitHub recovery. No merge/closure without explicit instruction.
