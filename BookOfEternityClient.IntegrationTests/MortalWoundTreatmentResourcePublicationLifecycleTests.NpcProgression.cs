@@ -108,6 +108,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             return Key(ConsoleKey.Escape);
         }
         public string? ReadLine() => string.Empty;
+        public void AssertCompleted() { } // Escape is diagnostic-only; success reads no key.
     }
 
 }
