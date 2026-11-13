@@ -75,6 +75,8 @@ internal static partial class NpcCoreChangesContract
         if (problem.Code is "npc_progression_skill_award_count" or "npc_progression_skill_award_invalid" or
             "npc_progression_skill_award_unfulfilled")
             return commandPath + ".progression." + problem.Field;
+        if (problem.Code == "npc_progression_characteristic_authority")
+            return "lore/current_world/world_setting.json.npcProgression.characteristics";
         if (problem.Code == "npc_progression_characteristic_delta")
             return commandPath + ".characteristicValues" +
                 (problem.Field is "characteristics" or "characteristics.total" ? "" : "." + problem.Field);
