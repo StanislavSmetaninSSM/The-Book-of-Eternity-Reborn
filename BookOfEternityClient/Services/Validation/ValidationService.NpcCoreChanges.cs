@@ -124,7 +124,8 @@ public partial class ValidationService
                 await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.WorldMapPath),
                 await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.CurrentLocationPath),
                 await ReadSameTurnOwnerCurrentTextAsync("game_state/factions/faction_core.json"),
-                await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"));
+                await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"),
+                await ReadSameTurnOwnerCurrentTextAsync(MortalNpcWorldProgressionPolicy.Path));
         authority = authority with { ProgressionSource = CreateNpcProgressionSource(lookup.Manifest) };
         var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
             currentRoot,
@@ -156,6 +157,7 @@ public partial class ValidationService
         private readonly byte[]? _rawSidecarBytes;
         private readonly string? _originalTradePending;
         private readonly string? _originalTrainingPending;
+        private readonly string? _worldPolicyFingerprint;
         internal MortalNpcAcceptedSkillInput? SkillInput { get; }
         internal NpcCoreChangesContract.ProgressionSourceContext? Context { get; }
         internal IReadOnlyList<ValidationIssue> Issues { get; }
@@ -164,13 +166,15 @@ public partial class ValidationService
             FileSystemManager.CanonicalWriteLease lease, NpcCoreChangesContract.ProgressionSourceContext? context,
             IReadOnlyList<ValidationIssue> issues, JsonObject? originalNpcCore = null,
             MortalNpcAcceptedSkillInput? skillInput = null, byte[]? rawCoreBytes = null, byte[]? rawSidecarBytes = null,
-            string? originalTradePending = null, string? originalTrainingPending = null)
+            string? originalTradePending = null, string? originalTrainingPending = null,
+            string? worldPolicyFingerprint = null)
         {
             _owner = owner; _lease = lease; Context = context; Issues = issues;
             _originalNpcCore = originalNpcCore?.DeepClone().AsObject();
             SkillInput = skillInput;
             _rawCoreBytes = rawCoreBytes?.ToArray(); _rawSidecarBytes = rawSidecarBytes?.ToArray();
             _originalTradePending = originalTradePending; _originalTrainingPending = originalTrainingPending;
+            _worldPolicyFingerprint = worldPolicyFingerprint;
         }
 
         /// <summary>Requires the reducer's actual backup to be the authenticated original, before item-only overlays.</summary>
@@ -257,10 +261,15 @@ public partial class ValidationService
             if (!TryReadNpcProgressionOriginal(original, out var originalRoot))
                 throw new InvalidDataException("NPC progression authenticated original NPC core is missing or changed.");
             RequireBaseline(originalRoot);
+            var currentAuthority = SkillInput is null
+                ? await NpcCoreChangesContract.ReadProgressionPolicyAuthorityAsync(files)
+                : await NpcCoreChangesContract.ReadAuthorityAsync(files);
+            currentAuthority = currentAuthority with { ProgressionSource = Context };
+            if (!currentAuthority.NpcCharacteristicPolicy.IsValid ||
+                !string.Equals(_worldPolicyFingerprint, MortalNpcWorldProgressionPolicy.Fingerprint(currentAuthority), StringComparison.Ordinal))
+                throw new InvalidDataException("NPC progression current-world policy changed before publication completed.");
             if (SkillInput is not null)
             {
-                var currentAuthority = await NpcCoreChangesContract.ReadAuthorityAsync(files);
-                currentAuthority = currentAuthority with { ProgressionSource = Context };
                 if (!string.Equals(SkillInput.AuthorityFingerprint,
                     MortalNpcAcceptedSkillInput.ComputeAuthorityFingerprint(currentAuthority), StringComparison.Ordinal))
                     throw new InvalidDataException("NPC skill current-world authority changed before publication completed.");
@@ -322,18 +331,26 @@ public partial class ValidationService
                 IssueSeverity.Error, "NPC progression requires authenticated original NPC core bytes.",
                 code: "npc_core_changes_progression_source_unavailable", section: "NPCCoreChanges",
                 repairHint: "Restore the original authenticated snapshot; do not rewrite it or invent source hashes.")]);
-        if (!hasSkills) return new(this, writeLease, context, issues, originalRoot);
+        var authority = hasSkills
+            ? await NpcCoreChangesContract.ReadAuthorityAsync(_fs)
+            : await NpcCoreChangesContract.ReadProgressionPolicyAuthorityAsync(_fs);
+        authority = authority with { ProgressionSource = context };
+        if (!authority.NpcCharacteristicPolicy.IsValid)
+            return new(this, writeLease, context, [new ValidationIssue(MortalNpcWorldProgressionPolicy.Path,
+                IssueSeverity.Error, "Current-world NPC progression policy must be a valid closed declaration.",
+                code: "npc_progression_consequence_policy_invalid", section: "NPCProgression")]);
+        var policyFingerprint = MortalNpcWorldProgressionPolicy.Fingerprint(authority);
+        if (!hasSkills) return new(this, writeLease, context, issues, originalRoot,
+            worldPolicyFingerprint: policyFingerprint);
         var originalSidecar = await ReadAuthenticatedNpcSkillOriginalAsync(lookup.Manifest!, writeLease);
         if (originalSidecar is null)
             return new(this, writeLease, context, [CreateInvalidNpcCoreChangesAuthorityIssue("authenticated original NPC skill sidecar unavailable")]);
         var originalTrade = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, NpcTradeRequestState.PendingRequestPath, writeLease);
         var originalTraining = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest!, TrainingRequestState.PendingRequestPath, writeLease);
-        var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
-        authority = authority with { ProgressionSource = context };
         var input = MortalNpcAcceptedSkillInput.Create(originalRoot!, originalSidecar.Root, root, rawSidecar!, authority,
             originalTrade, originalTraining, out var candidateIssues, originalSidecar.Exists);
         return new(this, writeLease, context, candidateIssues, originalRoot, input,
-            npcCoreBytes, npcSkillBytes, originalTrade, originalTraining);
+            npcCoreBytes, npcSkillBytes, originalTrade, originalTraining, policyFingerprint);
     }
 
     private sealed record AuthenticatedNpcSkillOriginal(bool Exists, JsonObject Root);

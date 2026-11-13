@@ -259,7 +259,7 @@ public sealed partial class MortalNpcProgressionPublicationTests
             Normalizer = new CanonicalStateNormalizer(Files, NullLogger<CanonicalStateNormalizer>.Instance);
         }
 
-        internal static async Task<Fixture> Create(string realm = "Mortal World", bool includeSkillSidecar = false, bool progression = true, bool? originalSkillSidecarExists = true)
+        internal static async Task<Fixture> Create(string realm = "Mortal World", bool includeSkillSidecar = false, bool progression = true, bool? originalSkillSidecarExists = true, int? initialStrength = null)
         {
             var fixture = new Fixture();
             try
@@ -268,6 +268,8 @@ public sealed partial class MortalNpcProgressionPublicationTests
                     {"NPCsInScene":[{"NPCId":"npc_source","activeSkills":[],"passiveSkills":[],"characteristics":{},"level":1,"experience":99,"experienceForNextLevel":100,
                       "progressionProfile":{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}}]}
                     """)!.AsObject();
+                if (initialStrength.HasValue)
+                    before["NPCsInScene"]![0]!["characteristics"]!["strength"] = initialStrength.Value;
                 var current = before.DeepClone().AsObject();
                 current["NPCCoreChanges"] = JsonNode.Parse("""
                     [{"NPCId":"npc_source","reason":"Earned two XP","progression":{

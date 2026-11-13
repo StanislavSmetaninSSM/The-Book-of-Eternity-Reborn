@@ -405,7 +405,8 @@ internal static partial class NpcCoreChangesContract
                 evaluation.Plans.Add(new ChangePlan(npcId, command.DeepClone().AsObject()));
         }
 
-        if (!deferFinalConsequences && evaluation.CanApply)
+        if (!deferFinalConsequences && evaluation.CanApply &&
+            evaluation.Plans.Any(plan => plan.Command["progression"] is JsonObject))
         {
             var candidate = currentRoot.DeepClone().AsObject();
             Apply(candidate, evaluation);
@@ -453,14 +454,28 @@ internal static partial class NpcCoreChangesContract
             await fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath),
             await fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath),
             await fs.ReadFileAsync("game_state/factions/faction_core.json"),
-            await fs.ReadFileAsync("game_state/misc/characteristics.json"));
+            await fs.ReadFileAsync("game_state/misc/characteristics.json"),
+            await fs.ReadFileAsync(MortalNpcWorldProgressionPolicy.Path));
+    }
+
+    /// <summary>
+    /// Reads only current-world progression policy and its allowed characteristic keys.
+    /// Core-only publication needs no location or faction authority at this fence.
+    /// </summary>
+    internal static async Task<Authority> ReadProgressionPolicyAuthorityAsync(FileSystemManager fs)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        return CreateAuthorityFromCanonicalJson(null, null, null,
+            await fs.ReadFileAsync("game_state/misc/characteristics.json"),
+            await fs.ReadFileAsync(MortalNpcWorldProgressionPolicy.Path));
     }
 
     internal static Authority CreateAuthorityFromCanonicalJson(
         string? worldMapJson,
         string? currentLocationJson,
         string? factionCoreJson,
-        string? characteristicsJson)
+        string? characteristicsJson,
+        string? worldSettingJson = null)
     {
         var permanentLocationIds = new HashSet<string>(StringComparer.Ordinal);
         var sameTurnLocationIds = new HashSet<string>(StringComparer.Ordinal);
@@ -509,7 +524,7 @@ internal static partial class NpcCoreChangesContract
             permanentLocationIds,
             sameTurnLocationIds,
             factionNamesById,
-            characteristicKeys);
+            characteristicKeys) { NpcCharacteristicPolicy = MortalNpcWorldProgressionPolicy.Parse(worldSettingJson) };
     }
 
     private static ActorReference? ValidateTargetIdentity(

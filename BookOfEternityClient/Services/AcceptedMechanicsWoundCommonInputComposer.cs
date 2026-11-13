@@ -33,6 +33,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                 ResourceMaterializationContract.CommandPath, ResourcePendingResolutionState.PendingPath,
                 EffectAcceptedTurnPlan.CommandPath, EffectAcceptedTurnInputComposer.WorldTimePath, MortalWoundOpportunityAdapter.DecisionPath,
                 "game_state/player/skill_mastery.json", "game_state/npcs/npc_skills.json",
+                "game_state/misc/characteristics.json",
                 "game_state/inventory/item_movements.json", "game_state/inventory/storage_operations.json",
                 "game_state/misc/player_interactions.json", "game_state/meta/soul_state.json",
                 "game_state/meta/shining_abode_state.json", "game_state/core/game_settings.json",
@@ -508,7 +509,10 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                         Read(MortalLocationMaterializationContract.WorldMapPath),
                         Read(MortalLocationMaterializationContract.CurrentLocationPath),
                         Read("game_state/factions/faction_core.json"),
-                        Read("game_state/misc/characteristics.json"));
+                        Read("game_state/misc/characteristics.json"),
+                        // Policy freshness is semantic, not a whole-lore byte witness.
+                        fileSystem.ReadFileAsync(writeLease, MortalNpcWorldProgressionPolicy.Path)
+                            .GetAwaiter().GetResult());
                 npcCoreAuthority = npcCoreAuthority with
                 {
                     ProgressionSource = new(binding.SessionId, binding.RequestId, binding.Turn,

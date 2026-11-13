@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-world-policy-data",
+      "responsibility": "#1538 closed world-policy text decoding and detached deterministic policy/allowed-key fingerprints.",
+      "excludes": "No publication, selected-read-view or live-lease qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalNpcWorldProgressionPolicyTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcWorldProgressionPolicyTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-combined-publication",
       "responsibility": "#1538 real raw validation and publication of two-level gain with matching pending skill award.",
       "excludes": "No common effect/item/location publication or replay qualification.",
@@ -45,7 +69,8 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_CoreOnlyPostValidatorWorldPolicyMutationRollsBackCanonicalOutputs",
-            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_CoreOnlyMalformedPresentWorldPolicyRefusesBeforeNormalizerWrites"
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_CoreOnlyMalformedPresentWorldPolicyRefusesBeforeNormalizerWrites",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.RawValidationAndCoordinator_CoreOnlyFixedWorldPolicyFromDiskPublishesExactCharacteristicGain"
           ]
         }
       ]
@@ -538,7 +563,17 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalNpcProgressionSourceBindingTests.*",
-            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.*"
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_NoPlan_AuthenticatedProgressionAppliesAndConsumesCommand",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_SourceRefusalPrecedesEveryNormalizerWrite",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.GenericNormalizer_WithoutPublicationContextRefusesBeforeWrites",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.RawValidation_UsesAuthenticatedRealmAndRequestCorrelation",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.PublicationSource_SameLeaseMutationCannotHideBehindPrevalidatedDto",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.PublicationSource_CannotMoveToAnotherLease",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Preparation_PreservesBomAwareTextContract",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Preparation_AuthenticatesOriginalNpcBytesNotOnlyManifest",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.IssuedSource_OriginalMutationOrDeletionIsRejectedBeforeWrites",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Normalizer_RejectsMissingOrDifferentConsumedBackupBeforeWrites",
+            "BookOfEternityClient.Tests.MortalNpcProgressionPublicationTests.Coordinator_PostValidatorSourceMutationRollsBackEveryCanonicalFile"
           ]
         }
       ]

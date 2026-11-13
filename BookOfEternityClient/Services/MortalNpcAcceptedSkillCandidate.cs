@@ -284,6 +284,7 @@ internal sealed class MortalNpcAcceptedSkillInput
             ["initialLocations"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.SameTurnLocationInitialIds.OrderBy(x => x, StringComparer.Ordinal)),
             ["factions"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.FactionNamesById.OrderBy(x => x.Key, StringComparer.Ordinal)),
             ["characteristics"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.WorldCharacteristicKeys.OrderBy(x => x, StringComparer.Ordinal)),
+            ["worldPolicy"] = MortalNpcWorldProgressionPolicy.Fingerprint(authority),
             ["source"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.ProgressionSource)
         };
         return WoundAcceptedTurnFingerprintWriter.CanonicalJson(authorityJson);

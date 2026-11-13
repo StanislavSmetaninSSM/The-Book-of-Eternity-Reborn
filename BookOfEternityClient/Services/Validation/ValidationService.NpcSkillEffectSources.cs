@@ -47,7 +47,8 @@ public partial class ValidationService
             Root(MortalLocationMaterializationContract.WorldMapPath),
             Root(MortalLocationMaterializationContract.CurrentLocationPath),
             Root("game_state/factions/faction_core.json"),
-            await ReadEffectFileAsync("game_state/misc/characteristics.json", writeLease, currentInputs))
+            await ReadEffectFileAsync("game_state/misc/characteristics.json", writeLease, currentInputs),
+            await ReadEffectFileAsync(MortalNpcWorldProgressionPolicy.Path, writeLease, currentInputs))
             with { ProgressionSource = CreateNpcProgressionSource(manifest) };
         var trade = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, NpcTradeRequestState.PendingRequestPath, writeLease);
         var training = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, TrainingRequestState.PendingRequestPath, writeLease);

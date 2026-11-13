@@ -22,7 +22,7 @@ internal static partial class MortalNpcProgressionConsequences
         var issues = new List<Problem>();
         if (!GuardianPolicyContracts.TryResolveStrictPermanentNpcId(originalActor, out var originalId) ||
             !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(candidateActor, out var candidateId) ||
-            Exact(originalActor["NPCId"]) != originalId || Exact(candidateActor["NPCId"]) != candidateId || originalId != candidateId)
+            originalId != candidateId)
             return [new("npc_progression_consequence_owner", "NPCId")];
         if (!Integer(originalActor["level"], out var before) || !Integer(candidateActor["level"], out var after) ||
             before < 0 || after < before || (profile.Progresses && (before < 1 || profile.LevelsPerAward != 2)))

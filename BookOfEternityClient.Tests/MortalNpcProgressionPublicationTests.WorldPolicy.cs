@@ -15,6 +15,46 @@ public sealed partial class MortalNpcProgressionPublicationTests
         """{"npcProgression":{"schemaVersion":1,"characteristics":{"mode":"fixedIncrements","perLevel":{"strength":1}}}}""";
     private const string MalformedCharacteristicGrowthPolicy = """{"npcProgression":null}""";
 
+    [Fact]
+    public async Task RawValidationAndCoordinator_CoreOnlyFixedWorldPolicyFromDiskPublishesExactCharacteristicGain()
+    {
+        using var fixture = await Fixture.Create(initialStrength: 4);
+        Assert.False(fixture.Files.FileExists(MortalNpcAcceptedSkillInput.SidecarPath));
+        await fixture.Files.WriteFileAtomicAsync(ProgressionWorldSettingPath, FixedCharacteristicGrowthPolicy);
+        const string characteristicKeysPath = "game_state/misc/characteristics.json";
+        await fixture.Files.WriteFileAtomicAsync(characteristicKeysPath, """{"strength":10}""");
+        var raw = JsonNode.Parse((await fixture.Files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
+        Assert.Equal(4, raw["NPCsInScene"]![0]!["characteristics"]!["strength"]!.GetValue<int>());
+        raw["NPCCoreChanges"]![0]!["characteristicValues"] = JsonNode.Parse("""{"strength":5}""");
+        await fixture.Files.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, raw.ToJsonString());
+        var sourceInputs = new Dictionary<string, byte[]?>();
+        foreach (var path in fixture.Backups.Values.Concat(new[]
+                 {
+                     "game_state/control/pending_turn_snapshot.json", PendingTurnSnapshotAuthority.AuthorityPath,
+                     "input/turn_request.json", ProgressionWorldSettingPath, characteristicKeysPath
+                 }).Distinct(StringComparer.Ordinal))
+            sourceInputs.Add(path, await fixture.Files.ReadFileBytesAsync(path));
+
+        var rawIssues = await fixture.Validator.ValidateNpcCoreChangesBeforeNormalizationAsync();
+        Assert.True(rawIssues.Count == 0, string.Join(Environment.NewLine,
+            rawIssues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Message}")));
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+            fixture.Files, fixture.Normalizer, fixture.Validator, fixture.Backups);
+
+        Assert.Empty(result.Issues);
+        Assert.Null(result.MechanicsPlan);
+        var published = JsonNode.Parse((await fixture.Files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
+        Assert.False(published.ContainsKey("NPCCoreChanges"));
+        var actor = Assert.Single(published["NPCsInScene"]!.AsArray())!;
+        Assert.Equal("npc_source", actor["NPCId"]!.GetValue<string>());
+        Assert.Equal(2, actor["level"]!.GetValue<int>());
+        Assert.Equal(1, actor["experience"]!.GetValue<int>());
+        Assert.Equal(5, actor["characteristics"]!["strength"]!.GetValue<int>());
+        Assert.False(fixture.Files.FileExists(MortalNpcAcceptedSkillInput.SidecarPath));
+        foreach (var (path, bytes) in sourceInputs)
+            Assert.Equal(bytes, await fixture.Files.ReadFileBytesAsync(path));
+    }
+
     [Theory]
     [InlineData("absent_to_present")]
     [InlineData("changed_policy")]

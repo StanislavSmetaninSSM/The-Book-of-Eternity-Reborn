@@ -787,6 +787,7 @@ public partial class ValidationService
                 MortalLocationMaterializationContract.CurrentLocationPath,
                 "game_state/factions/faction_core.json",
                 "game_state/misc/characteristics.json",
+                MortalNpcWorldProgressionPolicy.Path,
                 "game_state/player/player_status.json",
                 "game_state/core/player_status.json"
             ]);

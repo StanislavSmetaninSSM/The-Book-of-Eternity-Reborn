@@ -101,6 +101,28 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
         Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_skill_award_invalid");
     }
 
+    [Theory]
+    [InlineData("npcId")]
+    [InlineData("id")]
+    public void SkillCandidate_ExistingStrictOwnerAlias_PreservesIdentityAndDischargesAward(string alias)
+    {
+        var (before, current) = Roots(3, "Archive");
+        foreach (var root in new[] { before, current })
+        {
+            var actor = root["NPCsInScene"]![0]!.AsObject();
+            actor.Remove("NPCId");
+            actor[alias] = "npc_consequences";
+        }
+        var result = MortalNpcAcceptedSkillCandidate.Compose(before, new(), current, Grant(), Authority());
+        Assert.True(result.IsValid, string.Join("; ", result.Issues.Select(issue => issue.Code + ": " + issue.Message)));
+        var final = result.Core!["NPCsInScene"]![0]!.AsObject();
+        Assert.False(final.ContainsKey("NPCId"));
+        Assert.Equal("npc_consequences", final[alias]!.GetValue<string>());
+        Assert.Equal(3, final["level"]!.GetValue<int>());
+        Assert.Equal("Archive", Assert.Single(final["passiveSkills"]!.AsArray())!["skillName"]!.GetValue<string>());
+        Assert.False(result.Sidecar!.ContainsKey("NPCPassiveSkillChanges"));
+    }
+
     private static NpcCoreChangesContract.Evaluation Evaluate(JsonObject before, JsonObject current,
         NpcCoreChangesContract.Authority authority) => NpcCoreChangesContract.Evaluate(current, before, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);

@@ -102,6 +102,7 @@ public partial class ValidationService
             "game_state/meta/guardians.json",
             "game_state/control/life_transitions.json",
             "game_state/misc/characteristics.json",
+            MortalNpcWorldProgressionPolicy.Path,
             "game_state/player/player_status.json",
             "game_state/core/player_status.json",
             LegacyItemResourcePath,
