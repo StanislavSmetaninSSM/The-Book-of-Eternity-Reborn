@@ -329,11 +329,15 @@ internal sealed class MortalNpcAcceptedSkillInput
         JsonObject? phaseCore = null;
         string? proof = null;
         MortalItemCanonicalProjectionResult? retainedPhase = null;
-        var originalActors = itemSnapshot?.Transfers.Count > 0
-            ? MortalItemNpcMirrorPolicy.BuildExactActorCatalog(originalCore, "original transfer endpoint") : null;
-        if (itemSnapshot is not null && itemSnapshot.Transfers.Count != 0)
+        var routes = itemSnapshot?.CloneRouteCatalog();
+        var hasItemWork = itemSnapshot is not null &&
+            (itemSnapshot.Transfers.Count != 0 || routes!.ByCreationRef.Count != 0);
+        var originalActors = hasItemWork
+            ? MortalItemNpcMirrorPolicy.BuildExactActorCatalog(originalCore, "original item endpoint") : null;
+        if (hasItemWork)
         {
-            if (itemSnapshot.HasFinalPublicationBaseline || itemSnapshot.CloneRouteCatalog().ByCreationRef.Count != 0 ||
+            if (itemSnapshot!.HasFinalPublicationBaseline ||
+                routes!.ByCreationRef.Values.Any(route => !Supported(route.Destination)) ||
                 itemSnapshot.Transfers.Any(transfer => !Supported(transfer.SourceCarrier) || !Supported(transfer.DestinationCarrier)) ||
                 !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()[NpcCoreChangesContract.NpcCorePath], rawCore) ||
                 !JsonNode.DeepEquals(itemSnapshot.CloneBackupProjectionRoots()[NpcCoreChangesContract.NpcCorePath], originalCore) ||
@@ -341,7 +345,7 @@ internal sealed class MortalNpcAcceptedSkillInput
                 phase.ItemPhaseAfterImages[NpcCoreChangesContract.NpcCorePath] is not JsonObject projected)
             {
                 issues = [new ValidationIssue(SidecarPath, IssueSeverity.Error,
-                    "Ordinary NPC skill transfer requires its exact existing-item phase.", code: "npc_skill_item_phase_invalid")];
+                    "Ordinary NPC skill item work requires its exact admitted creation/transfer phase.", code: "npc_skill_item_phase_invalid")];
                 return null;
             }
             phaseCore = projected;

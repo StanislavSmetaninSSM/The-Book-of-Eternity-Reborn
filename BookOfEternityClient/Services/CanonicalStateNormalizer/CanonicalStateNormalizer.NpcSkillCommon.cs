@@ -62,23 +62,23 @@ public partial class CanonicalStateNormalizer
     }
 
     /// <summary>
-    /// Reuses the existing captured item snapshot for bounded existing-item transfers.
+    /// Reuses the existing captured item snapshot for root-item creation and existing-item transfers.
     /// The immutable projection proof and exact physical raw inputs remain binding;
-    /// creation, specialized publication and location rewrites remain unsupported.
+    /// specialized publication and location rewrites remain unsupported.
     /// </summary>
     private async Task RequireOrdinaryNpcSkillCommonHasNoItemOrLocationWorkAsync(
         MortalItemAcceptedTurnNormalizationMode itemMode)
     {
         if (itemMode is not MortalItemAcceptedTurnNormalizationMode.Validated validated ||
-            validated.Snapshot.HasFinalPublicationBaseline ||
-            validated.Snapshot.CloneRouteCatalog().ByCreationRef.Count != 0)
-            throw new InvalidDataException("Ordinary NPC skill common publication does not yet support item creation or specialized item publication.");
+            validated.Snapshot.HasFinalPublicationBaseline)
+            throw new InvalidDataException("Ordinary NPC skill common publication does not yet support specialized item publication.");
 
         var current = validated.Snapshot.CloneCurrentProjectionRoots();
         var original = validated.Snapshot.CloneBackupProjectionRoots();
         var admitted = _npcProgressionSource!.SkillInput!;
-        var hasTransfers = validated.Snapshot.Transfers.Count != 0;
-        if (hasTransfers)
+        var hasItemWork = validated.Snapshot.Transfers.Count != 0 ||
+            validated.Snapshot.CloneRouteCatalog().ByCreationRef.Count != 0;
+        if (hasItemWork)
         {
             if (admitted.ItemProjectionProof != validated.Snapshot.ProjectionProofFingerprint ||
                 admitted.CloneItemPhase() is not { IsValid: true } phase ||
@@ -90,11 +90,11 @@ public partial class CanonicalStateNormalizer
                     throw new InvalidDataException("Ordinary NPC skill item projection input changed: " + path);
         }
         else if (admitted.ItemProjectionProof is not null)
-            throw new InvalidDataException("Ordinary NPC skill item transfer authority disappeared.");
+            throw new InvalidDataException("Ordinary NPC skill item phase authority disappeared.");
         foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
         {
             if (path == NpcCoreChangesContract.NpcCorePath) continue;
-            if (hasTransfers && (path is InventoryEquipmentService.ItemsPath or
+            if (hasItemWork && (path is InventoryEquipmentService.ItemsPath or
                     MortalItemAcceptedTransferCatalog.PlayerRemovalPath or MortalItemAcceptedTransferCatalog.NpcCommandsPath))
                 continue;
             if (!JsonNode.DeepEquals(current[path], original[path]))
@@ -109,7 +109,7 @@ public partial class CanonicalStateNormalizer
         if ((await ReadNodeAsync(MortalLocationMaterializationContract.WorldMapPath) as JsonObject)?["worldMapUpdates"] is not null ||
             (await ReadNodeAsync(MortalLocationMaterializationContract.CurrentLocationPath) as JsonObject)?["currentLocationData"] is not null)
             throw new InvalidDataException("Ordinary NPC skill common publication does not yet support location commands or governed rewrites.");
-        if (!hasTransfers && current[MortalItemAcceptedTransferCatalog.NpcCommandsPath] is JsonObject commands &&
+        if (!hasItemWork && current[MortalItemAcceptedTransferCatalog.NpcCommandsPath] is JsonObject commands &&
             commands.Any(pair => pair.Key.StartsWith("NPC", StringComparison.Ordinal) &&
                 (pair.Value is not JsonArray rows || rows.Count != 0)))
             throw new InvalidDataException("Ordinary NPC skill common publication does not yet support NPC item commands.");
