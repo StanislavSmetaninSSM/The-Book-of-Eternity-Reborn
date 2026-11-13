@@ -4801,6 +4801,28 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("advance at `>=`", template, StringComparison.Ordinal);
             Assert.Contains("baseline profile is not installed or replaced", template, StringComparison.Ordinal);
             Assert.Contains("capOverflow: discard", template, StringComparison.Ordinal);
+            foreach (var required in new[]
+                     {
+                         "progression.skillAwards", "floor(levelsGained / 2)", "not even-level crossings",
+                         "newSkill", "masteryIncrease", "NPCPassiveSkillMasteryChanges",
+                         "lore/current_world/world_setting.json", "fixedIncrements", "perLevel",
+                         "allocatedPoints", "pointsPerLevel", "allowedKeys",
+                         "malformed present policy blocks", "separate from #1533 private",
+                         "E_CLI_Mortal_Npc_Progression_Consequences.txt"
+                     })
+                Assert.Contains(required, template, StringComparison.Ordinal);
+            var contextPack = Path.GetDirectoryName(Path.GetDirectoryName(templatePath)!)!;
+            var repair = File.ReadAllText(Path.Combine(contextPack, "Templates", "VALIDATION_REPAIR_TEMPLATE.md"), Encoding.UTF8);
+            foreach (var required in new[]
+                     {
+                         "npc_progression_skill_award_unfulfilled", "npc_progression_characteristic_delta",
+                         "Never delete a required award", "rewrite authenticated originals",
+                         "does not replace #1533", "Preserve authored private report rows"
+                     })
+                Assert.Contains(required, repair, StringComparison.Ordinal);
+            foreach (var example in new[] { "E_CLI_Mortal_Npc_Progression.txt", "E_CLI_Mortal_Npc_Progression_Consequences.txt" })
+                Assert.Equal(File.ReadAllText(Path.Combine(LocateRepoRoot(), "Examples", example), Encoding.UTF8),
+                    File.ReadAllText(Path.Combine(contextPack, "Examples", example), Encoding.UTF8));
             Assert.Contains("known current location", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("same-turn new location", template, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("\"currentLocationId\": \"<currentLocationData.locationId for known current location>\"", template, StringComparison.Ordinal);

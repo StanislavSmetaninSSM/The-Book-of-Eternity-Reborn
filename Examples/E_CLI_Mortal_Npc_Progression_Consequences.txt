@@ -1,0 +1,250 @@
+# Mortal NPC progression: governed consequences, two independent alternatives
+
+This is a bounded existing-NPC command/composition example, not a creation payload
+or a claim that all #1538 combat, trade, journal, item and location dependencies are
+implemented. The actor shown is the relevant projection of an already validated
+original. Preserve the complete actor in real state; do not replace it with this
+projection. The original skill sidecar is absent with authenticated absence or has
+only empty consumed-command arrays. Do not replay commands retained from old turns.
+
+The two alternatives below each start from the SAME original, not from each other's
+result. Do not send both. Source correlation assumes session_npc_example /
+request_npc_example / turn 42; copy the actual current turn request in real use.
+No snapshot tokens, hashes or client-owned publication evidence belong in commands.
+The world policies below are pre-existing setting authority, not policy changes to
+submit alongside XP. Missing world file/subtree means no characteristic growth;
+malformed present npcProgression blocks progression instead of becoming absence.
+
+## Shared original npc_core projection
+
+```json
+{
+  "NPCsInScene": [
+    {
+      "NPCId": "npc_existing_001",
+      "level": 1,
+      "experience": 99,
+      "experienceForNextLevel": 100,
+      "progressionProfile": {
+        "schemaVersion": 1,
+        "mode": "standard",
+        "consequences": {
+          "skills": {
+            "levelsPerAward": 2,
+            "allowedAwards": [
+              "newSkill",
+              "masteryIncrease"
+            ]
+          },
+          "characteristics": {
+            "mode": "currentWorld"
+          }
+        }
+      },
+      "characteristics": {
+        "setting_defined_focus": 4,
+        "setting_defined_resolve": 3
+      },
+      "activeSkills": [],
+      "passiveSkills": [
+        {
+          "skillName": "Archive",
+          "skillDescription": "Archives knowledge",
+          "rarity": "Common",
+          "type": "KnowledgeBased",
+          "group": "Archives",
+          "masteryLevel": 1,
+          "maxMasteryLevel": 5,
+          "structuredBonuses": null,
+          "knowledgeDomain": "Archives",
+          "unlockedActiveSkillsCount": 0,
+          "maxUnlockableActiveSkills": 2
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Shared current-world characteristic keys
+
+These keys are explicitly declared in game_state/misc/characteristics.json; their
+numeric player values do not award NPC points. They are setting-defined examples,
+not universal attributes.
+
+```json
+{
+  "setting_defined_focus": 0,
+  "setting_defined_resolve": 0
+}
+```
+
+## Alternative A: fixed increments plus one new skill
+
+Existing lore/current_world/world_setting.json policy:
+
+```json
+{
+  "npcProgression": {
+    "schemaVersion": 1,
+    "characteristics": {
+      "mode": "fixedIncrements",
+      "perLevel": {
+        "setting_defined_focus": 1
+      }
+    }
+  }
+}
+```
+
+99 + 566 = 100 + 565: leave levels 1 and 2, enter level 3 at XP 0; its next cost
+is 1558. Exactly floor((3 - 1) / 2) = 1 skill award is required, not a reward for
+crossing an even-numbered level. Fixed +1 per level raises focus from 4 to 6 and
+leaves resolve at 3. The claim references a genuinely new passive skill Fieldwork.
+
+Current response command fields (distribute NPCCoreChanges to npc_core.json and
+NPCPassiveSkillChanges to game_state/npcs/npc_skills.json through the existing flow):
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "npc_existing_001",
+      "reason": "Completed the agreed two-level study objective",
+      "progression": {
+        "source": {
+          "sessionId": "session_npc_example",
+          "requestId": "request_npc_example",
+          "turnNumber": 42
+        },
+        "experienceDelta": 566,
+        "level": 3,
+        "experience": 0,
+        "experienceForNextLevel": 1558,
+        "skillAwards": [
+          {
+            "kind": "passive",
+            "skillName": "Fieldwork",
+            "award": "newSkill"
+          }
+        ]
+      },
+      "characteristicValues": {
+        "setting_defined_focus": 6
+      }
+    }
+  ],
+  "NPCPassiveSkillChanges": [
+    {
+      "NPCId": "npc_existing_001",
+      "skillChanges": [
+        {
+          "skillName": "Fieldwork",
+          "skillDescription": "Fieldwork knowledge",
+          "rarity": "Common",
+          "type": "KnowledgeBased",
+          "group": "Fieldwork",
+          "masteryLevel": 1,
+          "maxMasteryLevel": 5,
+          "structuredBonuses": null,
+          "knowledgeDomain": "Fieldwork",
+          "unlockedActiveSkillsCount": 0,
+          "maxUnlockableActiveSkills": 2
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Alternative B: allocated points plus one mastery level
+
+Alternative existing lore/current_world/world_setting.json policy:
+
+```json
+{
+  "npcProgression": {
+    "schemaVersion": 1,
+    "characteristics": {
+      "mode": "allocatedPoints",
+      "pointsPerLevel": 1,
+      "allowedKeys": [
+        "setting_defined_focus",
+        "setting_defined_resolve"
+      ]
+    }
+  }
+}
+```
+
+The same two-level gain awards two allocated characteristic points. Assign one to
+each allowed key, giving focus 5 and resolve 4. Archive already exists at mastery 1
+in the shared original; its same-owner mastery command reaches level 2. Do not use
+a mastery-only command for an unowned skill. No stable skillId is available in this
+example, so claims omit it; when supplied it must match the exact skill identity.
+
+Alternative current response command fields:
+
+```json
+{
+  "NPCCoreChanges": [
+    {
+      "NPCId": "npc_existing_001",
+      "reason": "Completed the agreed two-level study objective",
+      "progression": {
+        "source": {
+          "sessionId": "session_npc_example",
+          "requestId": "request_npc_example",
+          "turnNumber": 42
+        },
+        "experienceDelta": 566,
+        "level": 3,
+        "experience": 0,
+        "experienceForNextLevel": 1558,
+        "skillAwards": [
+          {
+            "kind": "passive",
+            "skillName": "Archive",
+            "award": "masteryIncrease"
+          }
+        ]
+      },
+      "characteristicValues": {
+        "setting_defined_focus": 5,
+        "setting_defined_resolve": 4
+      }
+    }
+  ],
+  "NPCPassiveSkillMasteryChanges": [
+    {
+      "NPCId": "npc_existing_001",
+      "skillName": "Archive",
+      "newMasteryLevel": 2
+    }
+  ]
+}
+```
+
+## Atomic validation and bounded repair
+
+A skillAwards declaration does not itself create skills or change mastery. The real
+candidate must fulfill every claim through the existing exact-owner skill reducer,
+and every characteristic result through current-world authority before publication.
+One new skill counts once; repeated masteryIncrease claims require that many actual
+mastery levels gained. A one-level transition requires no skill award, even when it
+ends on an even level. Preserve all unrelated characteristics and actor fields.
+
+For npc_progression_skill_award_count, npc_progression_skill_award_invalid, or
+npc_progression_skill_award_unfulfilled, repair only the permitted
+indexed claim and its matching companion command. For npc_progression_characteristic_delta,
+repair absolute characteristicValues against existing policy. Never delete a required
+award, switch owner, weaken cadence, rewrite authenticated originals, or invent policy
+or a progressionProfile. Missing/malformed authority is a blocker. Follow any required
+full-turn resubmission; do not repair a published after-image directly.
+
+These mechanical skillAwards do not replace #1533 private npcSkillClaims in
+output/debug_logs.json. A real narrative that claims learning/mastery still needs
+its existing exact-owner, kind, narrativeQuote and resolution report. Preserve authored
+rows during output-only repair; never synthesize [] to hide a consequence. This example
+omits output artifacts deliberately and does not authorize any additional effect,
+combat, trade, journal, item, or location changes.

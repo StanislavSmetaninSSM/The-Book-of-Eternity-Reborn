@@ -631,7 +631,7 @@
     },
     {
       "id": "mortal-npc-progression-guidance",
-      "responsibility": "#1538 actual daemon Mortal NPC template rendering for explicit numeric profile, delta and exact boundaries.",
+      "responsibility": "#1538 actual daemon progression/repair guidance and executable fixed/new-skill plus allocated/mastery examples through the real detached candidate.",
       "excludes": "No source/consequence publication qualification; Linux PowerShell 7 is not Windows PowerShell 5.1 evidence.",
       "changeHints": [
         "BookOfEternityClient/game_master_daemon.ps1",
@@ -650,6 +650,12 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalNpcUpdateTemplate"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequenceExampleTests.WorkedAlternative_UsesRealCombinedCandidateAndRequiresMatchingCompanion"
           ]
         }
       ]

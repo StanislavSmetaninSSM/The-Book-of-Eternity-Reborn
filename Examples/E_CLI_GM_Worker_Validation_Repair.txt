@@ -14,6 +14,16 @@ and all three absolute result fields. Use >= at every threshold. Never invent a
 missing profile, replace it inside progression, or use a hidden formula fallback.
 Numeric validity does not replace dedicated consequence/publication authority.
 
+
+For governed consequences, read `Examples/E_CLI_Mortal_Npc_Progression_Consequences.txt`.
+Repair the indexed skillAwards row and matching same-owner skill/mastery command,
+or absolute characteristicValues under the existing fixed/allocated world policy,
+only within permitted repair paths. Never delete a required award, switch owner,
+weaken cadence, rewrite authenticated originals, or invent policy/profile authority.
+Missing policy means no growth; malformed present policy blocks. Follow the packet's
+full-turn resubmission requirement. Progression skillAwards does not replace #1533
+private npcSkillClaims: preserve authored rows and their exact current-response quotes.
+
 Worker profile:
 
 ```json

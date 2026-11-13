@@ -1,3 +1,7 @@
+## Profile-change and FR9 WIP; corrected consumer PASS
+
+Corrected npc-core-changes91/91 PASS,35.453s; test-only integration build45.27s, zero errors, unchanged pinned runtime890. Independent outcome review accepts ordinary publication/source closure with no blocking findings. Profile-change pure scaffold18 and detailed FR9 example2 plus extended actual-daemon rendering are UNRUN. No profile-change publication acceptance yet. Explicit install/replace preserves level and stored within-level XP; the authored threshold must match the new curve, with no implicit advance or discard. Reuse existing numeric/policy parsers and owner/source; no new migration/cache/writer. Executable examples are cheap detached candidates and the actual daemon extends its existing single fixture rather than adding repeated preparation.
+
 ## Coherent ordinary publication checkpoint, 2026-11-13
 
 Pinned runtime890da: retained-policy3/3, combined public progression1/1, world freshness5/5, common publication6/6, raw effect4/4, guidance1/1 and consumer freshness4/4 PASS. Full unit/integration outputs share PDB660aa478-32e1-4f0d-b2dc-d69df3beedf3;1238documents/1234nongenerated exact source, zero mismatches. Integration build40.40s, zero errors118warnings. Every category completed without skipped/duplicated tests and with owned cleanup. This supersedes the explicitly unqualified retained integration outputs above.

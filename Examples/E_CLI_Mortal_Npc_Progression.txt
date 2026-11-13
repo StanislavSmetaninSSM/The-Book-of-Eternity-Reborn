@@ -85,6 +85,10 @@ lastPlayerXPValueOnSync when the dedicated role/synchronization contract require
 it. Do not infer or award skills, characteristics, merchandise or rewards from
 this example: use their existing dedicated commands and explicit authority.
 
+For matching skillAwards and fixed/allocated current-world characteristic commands,
+see `Examples/E_CLI_Mortal_Npc_Progression_Consequences.txt`. Those examples are
+separate alternatives and do not replace #1533 private npcSkillClaims reporting.
+
 ## Bounded repair
 
 Follow the current harnessRepairPackets and permitted paths. Correct the named
