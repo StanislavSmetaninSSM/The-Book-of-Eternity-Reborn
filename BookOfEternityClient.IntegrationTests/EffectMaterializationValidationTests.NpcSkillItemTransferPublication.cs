@@ -182,6 +182,34 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 
+    [Fact]
+    public async Task IncomingNpcItemTransfer_ExportsAcceptedPlayerSourceAndRetainsReplacementOwner()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeNpcToPlayerTransferAsync();
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var manifest = (await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"))!;
+        var session = manifest["sessionId"]!.GetValue<string>();
+        var token = manifest["manifestPayloadHash"]!.GetValue<string>();
+        var turn = manifest["turnNumber"]!.GetValue<int>();
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem, lease, session, token, turn, out var snapshot));
+        Assert.True(snapshot.TryProjectItemPhase(out var phase, out var issues));
+        Assert.Empty(issues);
+        var sources = EffectAcceptedTurnInputComposer.CollectAcceptedPlayerItemPhaseSources(
+            phase!.ItemPhaseAfterImages[InventoryEquipmentService.ItemsPath]);
+        var item = Assert.Single(sources.Where(source => source.Kind == "item" &&
+            source.SourceId == MortalItemMaterializationTestContext.TransferItemId));
+        Assert.True(item.Active);
+        Assert.True(item.SameTurn);
+        Assert.Contains("carried", item.SatisfiedPredicates!);
+        Assert.Contains(new EffectSourceOwnerKey("mortal_world", "item", item.SourceId),
+            MortalItemAcceptedTurnAuthority.GetReplacedEffectSourceOwners(
+                context.FileSystem, lease, session, token));
+    }
+
     private static async Task<(IReadOnlyDictionary<string, string> Backups, JsonObject Item)>
         PrepareNpcSkillItemTransferAsync(EffectMaterializationTestContext context)
     {

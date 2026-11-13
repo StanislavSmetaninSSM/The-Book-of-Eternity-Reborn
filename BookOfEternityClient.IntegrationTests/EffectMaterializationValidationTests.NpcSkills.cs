@@ -136,7 +136,7 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     private static async Task PrepareNpcSkillGrant(EffectMaterializationTestContext context, bool originalSidecarAbsent = false,
-        bool includeProgressionAward = false)
+        bool includeProgressionAward = false, JsonObject? originalCore = null, int snapshotTurn = 42)
     {
         // Reuse the production-supported complete effect-source skill fixture, then move
         // its detached profile into a pending NPC grant, not another canonical source.
@@ -146,7 +146,7 @@ public sealed partial class EffectMaterializationValidationTests
         AddNpcMastery(skill);
         await context.WriteJsonAsync(EffectMaterializationTestContext.MaterializableSkillPath,
             new JsonObject { ["activeSkillChanges"] = new JsonArray(), ["removeActiveSkills"] = new JsonArray() });
-        var core = MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
+        var core = originalCore?.DeepClone().AsObject() ?? MortalActorTestFixtures.CreateNpcCoreRoot(NpcSkillOwner);
         if (includeProgressionAward)
         {
             var actor = core["NPCsInScene"]![0]!;
@@ -167,7 +167,7 @@ public sealed partial class EffectMaterializationValidationTests
         }
         else
             await context.WriteJsonAsync(PendingNpcSkillsPath, EmptyNpcSkillCommands());
-        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.CaptureValidatedPendingSnapshotAsync(turn: snapshotTurn);
         if (originalSidecarAbsent)
         {
             // Extend the genuine captured manifest with observed optional-path absence,

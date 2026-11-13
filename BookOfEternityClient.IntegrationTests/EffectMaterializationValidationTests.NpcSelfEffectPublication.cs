@@ -83,7 +83,40 @@ public sealed partial class EffectMaterializationValidationTests
     private static async Task<IReadOnlyDictionary<string, string>> PrepareNpcSelfEffectPublicationAsync(
         EffectMaterializationTestContext context)
     {
-        var backups = await PrepareNpcSkillCommonPublicationAsync(context, includeProgressionAward: true);
+        await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
+        await context.WriteJsonAsync(NpcSkillCorePath, new JsonObject { ["NPCsInScene"] = new JsonArray() });
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor(NpcSkillOwner);
+        actor["progressionProfile"] = JsonNode.Parse("""
+            {"schemaVersion":1,"mode":"standard",
+             "consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},
+             "characteristics":{"mode":"currentWorld"}}}
+            """);
+        actor["level"] = 1;
+        actor["experience"] = 99;
+        actor["experienceForNextLevel"] = 100;
+        actor["resourceMaterialization"] = CreateResourceMaterialization(("health", 60m));
+        await context.WriteJsonAsync(NpcSkillCorePath, new JsonObject { ["UpdateNPCs"] = new JsonArray(actor) });
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var resourceIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(resourceIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, resourceIssues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+            Assert.NotNull(await context.Normalizer.BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+        var canonical = (await context.ReadJsonAsync(NpcSkillCorePath))!["UpdateNPCs"]![0]!.DeepClone().AsObject();
+        Assert.Equal(NpcSkillOwner, canonical["NPCId"]!.GetValue<string>());
+        Assert.False(canonical.ContainsKey("resourceMaterialization"));
+        var resourcePaths = new[] { ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath };
+        var resourceBefore = await context.CaptureBytesAsync(resourcePaths);
+        await PrepareNpcSkillGrant(context, includeProgressionAward: true,
+            originalCore: new JsonObject { ["NPCsInScene"] = new JsonArray(canonical) }, snapshotTurn: 43);
+        Assert.True(JsonNode.DeepEquals(canonical,
+            (await context.ReadJsonAsync(NpcSkillCorePath))!["NPCsInScene"]![0]),
+            "The next-turn fixture must preserve the genuinely published canonical actor/profile/tuple.");
+        Assert.Equal(resourceBefore, await context.CaptureBytesAsync(resourcePaths));
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
         var apply = CreateMaterializableApplyCommand("npc");
         apply["source"]!["sourceId"] = GrantedNpcSkillId;
         apply["target"] = new JsonObject { ["kind"] = "npc", ["targetId"] = NpcSkillOwner };

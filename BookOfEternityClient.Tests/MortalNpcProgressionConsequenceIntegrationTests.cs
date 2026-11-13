@@ -123,6 +123,26 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
         Assert.False(result.Sidecar!.ContainsKey("NPCPassiveSkillChanges"));
     }
 
+    [Fact]
+    public void UnfulfilledSkillClaim_DiagnosticPointsToAuthorableAwardRow()
+    {
+        var (before, current) = Roots(3, "Different skill");
+        var result = MortalNpcAcceptedSkillCandidate.Compose(before, new(), current, Grant(), Authority());
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_skill_award_unfulfilled" &&
+            issue.FilePath == "game_state/npcs/npc_core.json.NPCCoreChanges[0].progression.skillAwards[0]");
+    }
+
+    [Fact]
+    public void MissingCharacteristicGain_DiagnosticPointsToAuthorableCharacteristicValue()
+    {
+        var (before, current) = Roots(2);
+        var result = Evaluate(before, current, Authority(FixedPolicy()));
+        Assert.False(result.CanApply);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_characteristic_delta" &&
+            issue.FilePath == "game_state/npcs/npc_core.json.NPCCoreChanges[0].characteristicValues.strength");
+    }
+
     private static NpcCoreChangesContract.Evaluation Evaluate(JsonObject before, JsonObject current,
         NpcCoreChangesContract.Authority authority) => NpcCoreChangesContract.Evaluate(current, before, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);

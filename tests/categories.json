@@ -122,7 +122,8 @@
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_InputDriftAfterAdmissionRefusesWithoutMutation",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_UnexpectedCoreMutationAfterItemWriteRollsBack",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_SameTurnNpcEndpointRefusesBoundedComposition",
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_ItemAdmissionWithoutCommonPlanRefusesBeforeWrites"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillTransfer_ItemAdmissionWithoutCommonPlanRefusesBeforeWrites",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.IncomingNpcItemTransfer_ExportsAcceptedPlayerSourceAndRetainsReplacementOwner"
           ]
         }
       ]
