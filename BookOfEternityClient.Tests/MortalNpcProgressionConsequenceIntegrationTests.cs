@@ -143,6 +143,19 @@ public sealed class MortalNpcProgressionConsequenceIntegrationTests
             issue.FilePath == "game_state/npcs/npc_core.json.NPCCoreChanges[0].characteristicValues.strength");
     }
 
+    [Fact]
+    public void UnknownWorldCharacteristicKey_DiagnosticPointsToWorldPolicyNotActorDelta()
+    {
+        var (before, current) = Roots(2);
+        var world = JsonNode.Parse("""
+            {"npcProgression":{"schemaVersion":1,"characteristics":{"mode":"fixedIncrements","perLevel":{"invented":1}}}}
+            """)!.AsObject();
+        var result = Evaluate(before, current, Authority(world));
+        Assert.False(result.CanApply);
+        Assert.Contains(result.Issues, issue => issue.Code == "npc_progression_characteristic_authority" &&
+            issue.FilePath == "lore/current_world/world_setting.json.npcProgression.characteristics");
+    }
+
     private static NpcCoreChangesContract.Evaluation Evaluate(JsonObject before, JsonObject current,
         NpcCoreChangesContract.Authority authority) => NpcCoreChangesContract.Evaluate(current, before, authority,
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract, detectDirectMutations: true);
