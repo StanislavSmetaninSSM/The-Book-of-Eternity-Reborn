@@ -426,3 +426,22 @@ removes a world characteristic key after actual combined skill/core publication.
 Same-turn location-owner rewrites also need semantic integration before final
 feature acceptance; exact raw-byte fencing currently refuses them rather than
 silently applying stale DATA. This NoPlan block is not accepted yet.
+
+At76779190, with verified unchanged67c8 runtime/TestSupport bytes, publication
+8cases gave4oldPASS/4causalFAIL (world authority removed after actual publication;
+missing-core sidecars '{','[]','null' wrongly accepted),14.639s. Corrected effect
+fixture gave3/3causalFAIL,11.487s; removal now passes its live baseline and then
+incorrectly accepts removed focused skill, while grant/mutation still lack source.
+Reviewed fixes now bind/recheck current-world authority, parse present sidecars
+before core shortcuts, and remove duplicate same-boundary authentication. A cheap
+generic normalizer bypass control is added without claiming a prior RED for it.
+
+Raw-effect integration WIP now composes the same detached ordinary NPC input before
+source exports/current-scope projection, retaining raw owner validation and the
+original offered-skill fence. The full immutable input fingerprint enters existing
+plan-cache identity; ordinary/finalized/cloned plans retain its DATA. Sidecar is
+registered as retained draft/transitive input, NOT as a new effect owner. Original
+parsed source roots are reused; only the additional sidecar and existing original
+request inputs are read. No new cache/registry/writer or performance claim. Common
+publication/item semantic adapters and absence/relocation remain unimplemented;
+NoPlan source block and this raw source integration await build/test/review.

@@ -19,7 +19,8 @@ internal sealed record EffectAcceptedTurnInput(
     CombatantIdentityState? PreallocatedCombatantIdentities = null,
     EffectCarrierCatalogInput? AcceptedCarrierBaselines = null,
     EffectRollSkillScopeAuthority? SkillScopeAuthority = null,
-    EffectApplicationDiagnosticLocations? WoundApplicationLocations = null);
+    EffectApplicationDiagnosticLocations? WoundApplicationLocations = null,
+    MortalNpcAcceptedSkillInput? NpcSkillInput = null);
 
 internal sealed record EffectApplicationDiagnosticLocation(string Path, string Section);
 
@@ -257,7 +258,8 @@ internal sealed class EffectAcceptedTurnPlan
         object? lifecycleLedgerIssuer = null,
         object? spiritualHealingExecutionAuthority = null,
         object? mortalDiagnosisExecutionAuthority = null,
-        object? mortalTreatmentExecutionAuthority = null)
+        object? mortalTreatmentExecutionAuthority = null,
+        MortalNpcAcceptedSkillInput? npcSkillInput = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
@@ -265,6 +267,7 @@ internal sealed class EffectAcceptedTurnPlan
         MortalDiagnosisExecutionAuthority = mortalDiagnosisExecutionAuthority;
         MortalTreatmentExecutionAuthority = mortalTreatmentExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
+        NpcSkillInput = npcSkillInput;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
         TargetAuthorityFingerprint = targetAuthorityFingerprint;
@@ -358,6 +361,7 @@ internal sealed class EffectAcceptedTurnPlan
     internal EffectLifecycleExecutionLedger? LifecycleExecutionLedger { get; }
 
     internal EffectRollSkillScopeAuthority? SkillScopeAuthority { get; }
+    internal MortalNpcAcceptedSkillInput? NpcSkillInput { get; }
 
     internal string CarrierAuthorityFingerprint { get; }
 
@@ -540,7 +544,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.LifecycleExecutionLedger,
             spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority,
             mortalDiagnosisExecutionAuthority: source.MortalDiagnosisExecutionAuthority,
-            mortalTreatmentExecutionAuthority: source.MortalTreatmentExecutionAuthority);
+            mortalTreatmentExecutionAuthority: source.MortalTreatmentExecutionAuthority,
+            npcSkillInput: source.NpcSkillInput);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

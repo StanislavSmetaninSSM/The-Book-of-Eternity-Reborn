@@ -123,6 +123,18 @@ public sealed class MortalNpcSkillPublicationTests
         Assert.Equal(beforeSkills, await fixture.Files.ReadFileBytesAsync(SkillsPath));
     }
 
+    [Fact]
+    public async Task GenericNormalizer_PendingSkillsWithoutPublicationSource_RefusesBeforeWrites()
+    {
+        using var fixture = await Fixture.Create(includeSkillSidecar: true, progression: false);
+        await WritePending(fixture, mastery: false);
+        var before = await fixture.CaptureCanonical();
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            fixture.Normalizer.NormalizeAccumulatedStateAsync(fixture.Backups));
+        Assert.Contains("NPC skill", error.Message, StringComparison.Ordinal);
+        await fixture.AssertCanonicalUnchanged(before);
+    }
+
     private static async Task VerifyLateFailure(bool tamper)
     {
         using var fixture = await Fixture.Create(includeSkillSidecar: true);

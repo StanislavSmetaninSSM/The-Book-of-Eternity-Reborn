@@ -97,6 +97,7 @@ public partial class ValidationService
             AcceptedMechanicsPlan.WoundCommandPath,
             EffectAcceptedTurnInputComposer.WorldTimePath,
             FullPartyInteractionsPath,
+            MortalNpcAcceptedSkillInput.SidecarPath,
             StorageTransportMoveService.VehiclesPath,
             "game_state/meta/guardians.json",
             "game_state/control/life_transitions.json",

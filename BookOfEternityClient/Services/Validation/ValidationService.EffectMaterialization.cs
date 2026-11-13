@@ -341,6 +341,19 @@ public partial class ValidationService
             issues);
         var preTurnSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues, writeLease);
         var acceptedSources = await ReadCurrentEffectSourceRootsAsync(issues, currentInputs, writeLease);
+        // Admit raw NPC commands once; owner validation below still reads the raw
+        // selected input view, while source exports use the detached accepted DATA.
+        var npcSkillInput = acceptedRealm == "mortal_world"
+            ? await ComposeOrdinaryNpcSkillEffectInputAsync(manifest, preTurnSources,
+                acceptedSources, issues, currentInputs, writeLease)
+            : null;
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return;
+        if (npcSkillInput is not null)
+        {
+            var projected = acceptedSources.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+            projected[NpcCoreChangesContract.NpcCorePath] = npcSkillInput.CandidateCore;
+            acceptedSources = projected;
+        }
         var currentWorldTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
             await ReadEffectFileAsync(EffectAcceptedTurnInputComposer.WorldTimePath,
                 writeLease: writeLease, currentInputs: currentInputs));
@@ -431,7 +444,8 @@ public partial class ValidationService
                     grantedBuiltInApplicationAuthorities:
                         builtInApplicationAuthorities,
                     preparedWoundPlan: preparedWoundPlan,
-                    acceptedSourceRoots: acceptedSources);
+                    acceptedSourceRoots: acceptedSources,
+                    npcSkillInput: npcSkillInput);
 
             var identityInput = ComposeIdentityInput();
             if (mortalCapture != null)
@@ -576,7 +590,8 @@ public partial class ValidationService
                     builtInApplicationAuthorities,
                 acceptedReportedLifecycleEvents: reportedEvents.LifecycleEvents,
                 preparedWoundPlan: preparedWoundPlan,
-                acceptedSourceRoots: acceptedSources);
+                acceptedSourceRoots: acceptedSources,
+                    npcSkillInput: npcSkillInput);
         var input = ComposeInput();
         if (mortalCapture != null)
         {
@@ -767,6 +782,7 @@ public partial class ValidationService
                 "game_state/player/skills_active.json",
                 "game_state/player/skills_passive.json",
                 NpcCoreChangesContract.NpcCorePath,
+                MortalNpcAcceptedSkillInput.SidecarPath,
                 MortalLocationMaterializationContract.WorldMapPath,
                 MortalLocationMaterializationContract.CurrentLocationPath,
                 "game_state/factions/faction_core.json",

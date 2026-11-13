@@ -260,11 +260,20 @@ internal sealed class MortalNpcAcceptedSkillInput
     internal JsonObject CandidateCore => _roots[4].DeepClone().AsObject();
     internal JsonObject ConsumedSidecar => _roots[5].DeepClone().AsObject();
     internal string Fingerprint { get; }
+    internal string AuthorityFingerprint { get; }
 
     private MortalNpcAcceptedSkillInput(JsonObject[] roots, NpcCoreChangesContract.Authority authority,
         string? tradePending, string? trainingPending)
     {
         _roots = roots.Select(root => root.DeepClone().AsObject()).ToArray();
+        AuthorityFingerprint = ComputeAuthorityFingerprint(authority);
+        Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[] { "mortal_npc_accepted_skill_input:v1", tradePending, trainingPending, AuthorityFingerprint }
+                .Concat(_roots.Select(WoundAcceptedTurnFingerprintWriter.CanonicalJson)).ToArray());
+    }
+
+    internal static string ComputeAuthorityFingerprint(NpcCoreChangesContract.Authority authority)
+    {
         var authorityJson = new JsonObject
         {
             ["locations"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.KnownPermanentLocationIds.OrderBy(x => x, StringComparer.Ordinal)),
@@ -273,10 +282,7 @@ internal sealed class MortalNpcAcceptedSkillInput
             ["characteristics"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.WorldCharacteristicKeys.OrderBy(x => x, StringComparer.Ordinal)),
             ["source"] = System.Text.Json.JsonSerializer.SerializeToNode(authority.ProgressionSource)
         };
-        Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[] { "mortal_npc_accepted_skill_input:v1", tradePending, trainingPending,
-                WoundAcceptedTurnFingerprintWriter.CanonicalJson(authorityJson) }
-                .Concat(_roots.Select(WoundAcceptedTurnFingerprintWriter.CanonicalJson)).ToArray());
+        return WoundAcceptedTurnFingerprintWriter.CanonicalJson(authorityJson);
     }
 
     internal static MortalNpcAcceptedSkillInput? Create(JsonObject originalCore, JsonObject originalSidecar,

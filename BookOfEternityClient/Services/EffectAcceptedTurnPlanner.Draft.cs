@@ -962,7 +962,8 @@ internal static partial class EffectAcceptedTurnPlanner
                     skillScopeAuthority: plan.SkillScopeAuthority,
                     lifecycleExecutionLedger: plan.LifecycleExecutionLedger?.AppendFinalPass(
                         LifecycleLedgerIssuer, finalLifecyclePass),
-                    lifecycleLedgerIssuer: LifecycleLedgerIssuer),
+                    lifecycleLedgerIssuer: LifecycleLedgerIssuer,
+                    npcSkillInput: plan.NpcSkillInput),
                 Array.Empty<ValidationIssue>());
         }
     }

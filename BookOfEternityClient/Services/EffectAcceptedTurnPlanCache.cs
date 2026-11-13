@@ -296,6 +296,8 @@ internal sealed class EffectAcceptedTurnPlanCache
                 input.PublicationCarrierBaselines),
             ["preTurnIdentityIndex"] = input.PreTurnIdentityIndex?.DeepClone()
         };
+        if (input.NpcSkillInput is not null)
+            root["npcSkillInputFingerprint"] = input.NpcSkillInput.Fingerprint;
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
 

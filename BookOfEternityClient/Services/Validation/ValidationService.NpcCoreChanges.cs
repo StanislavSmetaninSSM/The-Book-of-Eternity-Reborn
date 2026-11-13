@@ -202,8 +202,8 @@ public partial class ValidationService
 
         internal async Task RequirePublishedSkillsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease? lease)
         {
-            if (SkillInput is null) return;
             await RequireCurrentAsync(files, lease);
+            if (SkillInput is null) return;
             var core = await files.ReadFileAsync(_lease, NpcCoreChangesContract.NpcCorePath);
             var sidecar = await files.ReadFileAsync(_lease, MortalNpcAcceptedSkillInput.SidecarPath);
             if (!TryReadNpcProgressionOriginal(core, out var root) ||
@@ -253,6 +253,11 @@ public partial class ValidationService
             RequireBaseline(originalRoot);
             if (SkillInput is not null)
             {
+                var currentAuthority = await NpcCoreChangesContract.ReadAuthorityAsync(files);
+                currentAuthority = currentAuthority with { ProgressionSource = Context };
+                if (!string.Equals(SkillInput.AuthorityFingerprint,
+                    MortalNpcAcceptedSkillInput.ComputeAuthorityFingerprint(currentAuthority), StringComparison.Ordinal))
+                    throw new InvalidDataException("NPC skill current-world authority changed before publication completed.");
                 var sidecar = await _owner.ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest,
                     MortalNpcAcceptedSkillInput.SidecarPath, _lease);
                 if (!TryReadNpcProgressionOriginal(sidecar, out var sidecarRoot))
@@ -275,7 +280,14 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease writeLease, byte[]? npcCoreBytes, byte[]? npcSkillBytes = null)
     {
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        if (npcCoreBytes is null) return new(this, writeLease, null, []);
+        JsonObject? rawSidecar = null;
+        if (npcSkillBytes is not null && !TryReadNpcProgressionOriginal(DecodePendingSnapshotText(npcSkillBytes), out rawSidecar))
+            return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed NPC skill sidecar")]);
+        var hasSkills = rawSidecar is not null && MortalNpcAcceptedSkillInput.HasPending(rawSidecar);
+        if (npcCoreBytes is null)
+            return new(this, writeLease, null, hasSkills
+                ? [CreateInvalidNpcCoreChangesAuthorityIssue("pending NPC skills require current NPC core")]
+                : []);
         JsonObject root;
         try
         {
@@ -289,10 +301,6 @@ public partial class ValidationService
         {
             return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed")]);
         }
-        JsonObject? rawSidecar = null;
-        if (npcSkillBytes is not null && !TryReadNpcProgressionOriginal(DecodePendingSnapshotText(npcSkillBytes), out rawSidecar))
-            return new(this, writeLease, null, [CreateInvalidNpcCoreChangesAuthorityIssue("malformed NPC skill sidecar")]);
-        var hasSkills = rawSidecar is not null && MortalNpcAcceptedSkillInput.HasPending(rawSidecar);
         if (!NpcCoreChangesContract.HasProgressionCommand(root) && !hasSkills) return new(this, writeLease, null, []);
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease, requireFreshPhysicalSource: true);
         var context = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest is not null

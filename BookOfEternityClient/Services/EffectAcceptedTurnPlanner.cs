@@ -4561,7 +4561,8 @@ internal static partial class EffectAcceptedTurnPlanner
                 lifecycleLedgerIssuer: LifecycleLedgerIssuer,
                 spiritualHealingExecutionAuthority: healingProof,
                 mortalDiagnosisExecutionAuthority: diagnosisProof,
-                mortalTreatmentExecutionAuthority: treatmentProof);
+                mortalTreatmentExecutionAuthority: treatmentProof,
+                npcSkillInput: input.NpcSkillInput);
         recoveryProof?.Seal(completedPlan);
         healingProof?.Seal(completedPlan);
         diagnosisProof?.Seal(completedPlan);

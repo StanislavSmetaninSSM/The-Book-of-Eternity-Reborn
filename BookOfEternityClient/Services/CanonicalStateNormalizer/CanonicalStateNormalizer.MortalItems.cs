@@ -1840,7 +1840,6 @@ internal static class AcceptedTurnCanonicalStateRefresh
                             treatmentPreflight,
                             receipt);
                 }
-                await npcSource.RequireCurrentAsync(fs, writeLease);
                 await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
                 var issues = new List<ValidationIssue>();
                 issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
@@ -1887,9 +1886,10 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 var guardianMusingsValidation = issues.Any(issue => issue.Severity == IssueSeverity.Error) || guardianMusings is null
                     ? null : await guardianMusings.CompleteAsync(fs, writeLease);
                 // No awaited post-validator or completion callback may invalidate the source before success.
-                await npcSource.RequireCurrentAsync(fs, writeLease);
                 if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
                     await npcSource.RequirePublishedSkillsAsync(fs, writeLease);
+                else
+                    await npcSource.RequireCurrentAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation);

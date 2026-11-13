@@ -127,7 +127,8 @@ internal static partial class EffectAcceptedTurnInputComposer
         IReadOnlySet<string>? grantedBuiltInApplicationAuthorities = null,
         IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null,
         WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null,
-        IReadOnlyDictionary<string, JsonNode?>? acceptedSourceRoots = null)
+        IReadOnlyDictionary<string, JsonNode?>? acceptedSourceRoots = null,
+        MortalNpcAcceptedSkillInput? npcSkillInput = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -288,7 +289,8 @@ internal static partial class EffectAcceptedTurnInputComposer
                 publicationCarrierBaselines ?? acceptedCarriers),
             PreallocatedCombatantIdentities: preallocatedCombatantIdentities,
             AcceptedCarrierBaselines: CloneCarriers(acceptedCarriers),
-            SkillScopeAuthority: ComposeSkillScopeAuthority(preTurnSourceRoots, acceptedSourceRoots));
+            SkillScopeAuthority: ComposeSkillScopeAuthority(preTurnSourceRoots, acceptedSourceRoots),
+            NpcSkillInput: npcSkillInput);
     }
 
     private static EffectCarrierCatalogInput PreserveClosingSpiritualConflictCarrier(
