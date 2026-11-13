@@ -1,3 +1,7 @@
+## Final reviewed checkpoint receipt, 2026-11-13
+
+Independent Sol6.1 XHigh outcome and documentation review accepted the current FR1-FR9 map at cdec8db21e20733f4257af88a8501c6bc3b34c84 with no blockers. Astra High independently accepted the changed source and coherent48/48 outcome at e2d33b89. T009 is complete within the declared Mortal scope and evidence boundaries below. A fresh sparse recovery clone obtained e2d33b89, then fetched and checked out exact cdec8db with a clean tree and readable final map/instructions/intake source; this is source recovery only, not a clean build. The present commit changes only this receipt/status/tasks, not tested C# or selection. Issue1538 remains open and remote main remains7c8bb04a43f40939a9c78b10245d78283bd5805d. No merge, closure or hosted CI was performed.
+
 ## Current requirement reconciliation after companion audit
 
 This current map supersedes earlier whole-feature conclusions and the obsolete incoming-admission-only boundary below. The earlier entries remain historical evidence, not current blockers or blanket acceptance. The final outcome review and documentation checkpoint are recorded separately.
@@ -20,7 +24,7 @@ Unit/integration builds completed with 0 errors, 85/120 warnings in 91.24/41.54s
 
 Selection discovery only: official -SelectionFile tests/selection.json -NoBuild -PlanOnly exited0 in10.196s,36categories/39descriptors/529plannedcases, zero executions/TRX and complete cleanup. This is not a529case PASS. Source recovery was independently verified by a new shallow sparse GitHub clone at e2d33b89: exact head, clean tree, instructions/plan/new intake source readable. It proves downloaded selected sources, not clean compilation.
 
-Optimization: existing immutable candidate/policy DATA and existing transaction/composer/readers/writers are reused; no new cache or publication authority. Current lease/source/receipt and late settlement checks remain fresh because they delimit mutable epochs. Pure timestamp controls are cheap; each integration leaf owns its independent cold source/root. Timings above are costs, not a speedup claim. Raw diagnostics remain outside Git under /workspace/shared/1538-diagnostics. Full issue requirement reconciliation remains pending; no merge, closure or hosted CI.
+Optimization: existing immutable candidate/policy DATA and existing transaction/composer/readers/writers are reused; no new cache or publication authority. Current lease/source/receipt and late settlement checks remain fresh because they delimit mutable epochs. Pure timestamp controls are cheap; each integration leaf owns its independent cold source/root. Timings above are costs, not a speedup claim. Raw diagnostics remain outside Git under /workspace/shared/1538-diagnostics. The current requirement map above and final review receipt supersede the pending whole-issue reconciliation; no merge, closure or hosted CI.
 
 ## Natural treatment intake implementation WIP
 
