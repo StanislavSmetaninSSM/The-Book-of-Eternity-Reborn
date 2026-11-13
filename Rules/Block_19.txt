@@ -2190,7 +2190,7 @@
                                             Continue until the remaining XP is less than the requirement for the next level, or the explicit terminal cap is reached.
 
                                     B. Apply Setting-Owned Characteristic Progression:
-                                        1.  Read explicit current-world progression authority before changing characteristics. It defines whether a level grants any points, the amount or formula, and the allowed characteristic keys.
+                                        1.  Read explicit current-world progression authority before changing characteristics. Supported modes are 'none' (no growth), 'fixedIncrements' (declared per-level increments), and 'allocatedPoints' (declared per-level point budget and allowed characteristic keys). Arbitrary formulas are not supported.
                                         2.  If no such authority exists, do not invent characteristic points or class-based allocations. Preserve the existing values. When authority does exist, send only the absolute resulting setting-defined keys through 'NPCCoreChanges.characteristicValues'.
 
                                     C. Grant Skill Advancement:
