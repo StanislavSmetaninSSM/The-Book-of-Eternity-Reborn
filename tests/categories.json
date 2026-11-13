@@ -2,6 +2,67 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-policy-parsing",
+      "responsibility": "#1538 exact explicit consequence and current-world policy parsing.",
+      "excludes": "No runtime integration or publication authority.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcProgressionConsequences.Parsing.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcProgressionConsequencesParsingTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-progression-creation-fixtures",
+      "responsibility": "#1538 scoped current initial-ID creation fixture compatibility after explicit numeric profile requirement.",
+      "excludes": "No broad actor or afterlife qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ActorMaterializationValidationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateAcceptedTurnContinuity_DuplicateSameTurnEffectiveMortalIdentity_IsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateGameStateAsync_LoadedHistoricalInitialIdEnvelopeWithoutPendingTurnAuthority_RemainsCompatible",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NullPermanentIdInitialIdCollisionCannotBypassInventoryContinuity",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NonCollidingSameTurnInitialIdKeepsNewActorInitialInventory",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_GenuinelyNewSameTurnInitialIdWithoutPreTurnAuthorityKeepsInitialInventory",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithoutLocationAuthorityIsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithUnknownInitialLocationIsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithUnknownCurrentLocationIsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithBothLocationAuthoritiesIsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithExactSameTurnInitialLocationIsAccepted",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateResponse_NewUpdateNpcWithIncompleteSameTurnLocationIsRejected",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.MortalLocationActorBinding_SameTurnActorRewritesToExactEffectiveIdentity",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.MortalLocationActorBinding_NarrowUpdateRewritesSameTurnActorIdentity",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.ValidateAcceptedTurnContinuity_SameTurnMortalActorsWithDifferentInitialIdsAndDuplicateMaterializationId_IsRejected"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-creation",
       "responsibility": "#1538 public new Mortal NPC materialization requires explicit coherent numeric progression profile and tuple, while existing unrelated NPCs remain unchanged.",
       "excludes": "Profile installation/replacement, dependent consequences and publication lifecycle.",
@@ -20,7 +81,9 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.NewMortalNpc_PublicValidationRequiresCoherentExplicitProgression"
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.NewMortalNpc_PublicValidationRequiresCoherentExplicitProgression",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.NewPermanentMortalNpc_AuthenticatedOriginalAbsenceRequiresProfile",
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.LoadedHistoricalInitialId_WithoutProfileOrPendingTurn_DoesNotRequireCreationProfile"
           ]
         }
       ]

@@ -43,11 +43,7 @@ internal static class MortalNpcProgressionContract
                 return Reject(property.Key, "Unknown progression field; profile replacement requires a separate explicit transition.");
         }
 
-        var profileProblem = ReadProfile(baselineActor["progressionProfile"], out var profile);
-        if (profileProblem is not null)
-            return new Evaluation(null, [profileProblem]);
-
-        var baselineProblem = ReadTuple(baselineActor, "baseline.", out var baseline);
+        var baselineProblem = ReadCanonicalActor(baselineActor, "baseline.", out var profile, out var baseline);
         if (baselineProblem is not null)
             return new Evaluation(null, [baselineProblem]);
         var requestedProblem = ReadTuple(progression, "", out var requested);
@@ -58,21 +54,12 @@ internal static class MortalNpcProgressionContract
 
         if (profile!.Mode == "none")
         {
-            if (baseline!.Experience != 0 || baseline.ExperienceForNextLevel != 0)
-                return Reject("baseline.experience", "A non-progressing actor requires zero experience and threshold.");
             if (delta != 0)
                 return Reject("experienceDelta", "A non-progressing actor cannot gain or lose experience.");
-            return Match(baseline, requested!);
+            return Match(baseline!, requested!);
         }
 
-        if (baseline!.Level < 1 || (profile.MaxLevel is int maximum && baseline.Level > maximum))
-            return Reject("baseline.level", "The baseline level is outside the explicit progression profile.");
-        if (!TryThreshold(profile, baseline.Level, out var threshold))
-            return Reject("baseline.experienceForNextLevel", "The profile threshold exceeds the supported Int32 range.");
-        if (baseline.ExperienceForNextLevel != threshold)
-            return Reject("baseline.experienceForNextLevel", "The baseline threshold does not match its explicit profile.");
-        if (threshold == 0 ? baseline.Experience != 0 : baseline.Experience >= threshold)
-            return Reject("baseline.experience", "Baseline experience must be below its threshold, or zero at the cap.");
+        var threshold = baseline!.ExperienceForNextLevel;
         if (delta < 0 && !profile.AllowLoss)
             return Reject("experienceDelta", "Experience loss requires allowExperienceLoss:true.");
 
@@ -93,6 +80,39 @@ internal static class MortalNpcProgressionContract
         if (threshold == 0)
             experience = 0; // ReadProfile has required the explicit discard policy.
         return Match(new ProgressionTuple(level, experience, threshold), requested!);
+    }
+
+    /// <summary>
+    /// Validates only a canonical actor's explicit numeric profile and within-level tuple.
+    /// This is not a transition: no synthetic delta, source, identity or publication authority is supplied.
+    /// Creation callers decide whether the actor is genuinely new; unchanged historical actors need not opt in.
+    /// </summary>
+    internal static Evaluation ValidateCanonicalActor(JsonObject actor)
+    {
+        var problem = ReadCanonicalActor(actor, "", out _, out var tuple);
+        return problem is null ? new Evaluation(tuple, Array.Empty<Problem>()) : new Evaluation(null, [problem]);
+    }
+
+    private static Problem? ReadCanonicalActor(JsonObject actor, string prefix,
+        out Profile? profile, out ProgressionTuple? tuple)
+    {
+        tuple = null;
+        var profileProblem = ReadProfile(actor["progressionProfile"], out profile);
+        if (profileProblem is not null) return profileProblem;
+        var tupleProblem = ReadTuple(actor, prefix, out tuple);
+        if (tupleProblem is not null) return tupleProblem;
+        if (profile!.Mode == "none")
+            return tuple!.Experience != 0 || tuple.ExperienceForNextLevel != 0
+                ? new Problem(prefix + "experience", "A non-progressing actor requires zero experience and threshold.") : null;
+        if (tuple!.Level < 1 || (profile.MaxLevel is int maximum && tuple.Level > maximum))
+            return new Problem(prefix + "level", "The actor level is outside the explicit progression profile.");
+        if (!TryThreshold(profile, tuple.Level, out var threshold))
+            return new Problem(prefix + "experienceForNextLevel", "The profile threshold exceeds the supported Int32 range.");
+        if (tuple.ExperienceForNextLevel != threshold)
+            return new Problem(prefix + "experienceForNextLevel", "The actor threshold does not match its explicit profile.");
+        if (threshold == 0 ? tuple.Experience != 0 : tuple.Experience >= threshold)
+            return new Problem(prefix + "experience", "Actor experience must be below its threshold, or zero at the cap.");
+        return null;
     }
 
     /// <summary>Parses the closed, versioned numeric profile without inferring mechanics.</summary>

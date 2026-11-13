@@ -1,3 +1,7 @@
+## Exact helper and ordinary common review PASS, 2026-11-13
+
+Runtimefea60: exact consequence24/24 PASS and reviewed ordinary common4/4 PASS (including UTF16 and valid-location explicit refusal). Independent targeted reviews found no remaining blocker in those bounds. Creation8 causal3PASS/5FAIL; numeric canonical validator now extracted into real newinitial-ID validation, UNRUN. Tests extend to authenticated-absent newpermanent-ID actor: initial-only gate is knowingly incomplete until this next causalcontrol and classification fix. Pure closed parser18 compile-stub cases are UNRUN, expected4PASS/14FAIL. Scoped creationfixtures now declare an explicit [100,150] table rather than fabricate standard semantics or touch shared permanent-history factory.
+
 ## Review boundaries reproduced and corrected, 2026-11-13
 
 Pinned2437 runtime: expanded consequence24 produced19PASS/5FAIL exactly at comparer/numeric representation and precision edges; exact ordinal policy + bounded rational integer-point deltas now replace rounded decimal conversion (UNRUN). Common4 baseline2PASS/2FAIL: UTF16 reaches old witness decoder failure; valid location update correctly refuses at earlier current-location projection guard, whose test message oracle is corrected without weakening admission or rollback. New creation8 public cases are source-only, expected5negative failures/3positivecontrols, not yet executed.

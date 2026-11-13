@@ -5377,6 +5377,22 @@ public partial class ValidationService
         bool requiresCompletePersonality)
     {
         ValidateNpcSceneIdentity(item, itemContext, issues);
+        // Explicit initial-ID creation only. Never retrofit profiles onto permanent historical actors.
+        if ((item.TryGetProperty("NPCId", out var creationId) || item.TryGetProperty("npcId", out creationId)) &&
+            creationId.ValueKind == JsonValueKind.Null &&
+            TryReadCanonicalCurrentMortalActorIdentity(item, out var initialActorId, out var isSameTurnCreation) &&
+            isSameTurnCreation)
+        {
+            var numeric = MortalNpcProgressionContract.ValidateCanonicalActor(JsonNode.Parse(item.GetRawText())!.AsObject());
+            foreach (var problem in numeric.Problems)
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.{problem.Field}", IssueSeverity.Error, problem.Message,
+                    code: "npc_creation_progression_invalid", section: "NPCProgression",
+                    actor: $"mortal_npc:{initialActorId}",
+                    expected: "explicit versioned progressionProfile and coherent canonical level/experience/experienceForNextLevel",
+                    actual: problem.Message,
+                    repairHint: "For this new NPC, declare its numeric progression profile and a matching within-level XP tuple. Do not rewrite existing actors or infer a default profile."));
+        }
         RequireString(item, itemContext, issues, "name");
         issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(
             item,

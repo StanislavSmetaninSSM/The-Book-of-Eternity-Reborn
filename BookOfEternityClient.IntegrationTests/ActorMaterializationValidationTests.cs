@@ -5264,6 +5264,9 @@ public sealed partial class ActorMaterializationValidationTests : IDisposable
         string initialId,
         string materializationId)
     {
+        // This helper authors a NEW actor. Its existing L2/XP0/threshold150 tuple uses an explicit table,
+        // not the standard formula; permanent-history fixtures from the shared factory stay unchanged.
+        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"table","thresholds":[100,150],"capOverflow":"discard"}""");
         actor["NPCId"] = null;
         actor.Remove("npcId");
         actor.Remove("id");

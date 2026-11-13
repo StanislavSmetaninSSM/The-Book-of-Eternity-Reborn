@@ -6,7 +6,7 @@ using System.Globalization;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Pure consequence validation over detached original and accepted candidate DATA.</summary>
-internal static class MortalNpcProgressionConsequences
+internal static partial class MortalNpcProgressionConsequences
 {
     internal sealed record Problem(string Code, string Field);
     internal sealed record ProfileConsequences(bool Progresses, int LevelsPerAward = 2);
