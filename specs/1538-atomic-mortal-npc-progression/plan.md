@@ -1,3 +1,11 @@
+## Verified profile transitions; item-export correction WIP, 2026-11-13
+
+Runtime8a425/d4fc510d-2b50-49ad-a0fc-6392d17a510e has coherent unit/integration source and PDB:1239documents/1235nongenerated exact. Full builds68.23/41.53s, zero errors85/118warnings. Profile pure24/24, source6/6, real profile-only publication/late rollback2/2, guidance5/5, ordinary common6/6 and combinedpublic1/1 PASS. Latest sparse clean recovery0ce92e1a contains current profile/candidate/UI source and plan; no clean rebuild claim.
+
+UI unit14 gave12PASS/2FAIL: the browser dossier intentionally splits colon-delimited profile text into typed Key/Value facts, so contiguous-string assertions were wrong. Exact typed-pair oracle correction preserves all mechanics checks; production unchanged. Integration display descriptor did not complete after that failure. Transfer6 gave3PASS/3FAIL: valid publication hit missing moved-item owner at final source catalog; latecut therefore not reached. Endpoint fixture hit an earlier unrelated resource prerequisite, now corrected to real issued-source admission. Root cause is stale raw player-item export, not weakened final agreement: retained phase now supplies existing accepted roots and the existing player-item collector in both effect branches, retaining governed replacement IDs. Review/static correction is WIP/UNRUN. No new NPC-item source support.
+
+Same-NPC effects are already a separate npc_effects carrier, not NPC-core whole afterimages; new two characterization controls and one subsequent-curve core-sequence test are UNRUN. Do not implement an unnecessary adapter or treat unrelated location/new-item cross-products as mandatory progression consequences. Existing declarations do not invent loot, goals or journal changes. Current workflow remains bounded and main/issue unchanged.
+
 ## Explicit profiles and public display WIP, 2026-11-13
 
 Runtime05610384-06ed-4197-85c2-1e9e79146bee has matching unit/integration outputs,1239documents/1235nongenerated exact. Full builds68.36/43.63s, zero errors85/118warnings. Detailed FR9 actual-daemon plus two executable examples3/3PASS20.318s, independently reviewed. Transfer2 causalRED reaches explicit unsupported-transfer guard (late cut not reached). New immutable item-phase composition is under review, not accepted.

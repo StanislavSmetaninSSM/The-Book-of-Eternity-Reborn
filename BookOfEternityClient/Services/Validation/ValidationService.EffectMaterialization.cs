@@ -351,6 +351,12 @@ public partial class ValidationService
         if (npcSkillInput is not null)
         {
             var projected = acceptedSources.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
+            // Source exports must see the same accepted item phase as the eventual writer.
+            // In particular, a transferred-away player item is no longer a player source.
+            if (npcSkillInput.CloneItemPhase() is { } itemPhase)
+                foreach (var path in projected.Keys.ToArray())
+                    if (itemPhase.ItemPhaseAfterImages.TryGetValue(path, out var after))
+                        projected[path] = after?.DeepClone();
             projected[NpcCoreChangesContract.NpcCorePath] = npcSkillInput.CandidateCore;
             acceptedSources = projected;
         }
@@ -399,6 +405,9 @@ public partial class ValidationService
                 writeLease,
                 manifest.SessionId,
                 manifest.ManifestPayloadHash, spiritualAllocations?.Items);
+            if (npcSkillInput?.ItemProjectionProof is not null)
+                identityItemSources = EffectAcceptedTurnInputComposer.CollectAcceptedPlayerItemPhaseSources(
+                    acceptedSources.GetValueOrDefault(InventoryEquipmentService.ItemsPath));
             var identityAcceptedPlanSources =
                 EffectAcceptedTurnInputComposer.CollectLocationPlanSources(identityLocationPlan)
                     .Concat(identityItemSources)
@@ -547,6 +556,9 @@ public partial class ValidationService
             writeLease,
             manifest.SessionId,
             manifest.ManifestPayloadHash, spiritualAllocations?.Items);
+        if (npcSkillInput?.ItemProjectionProof is not null)
+            itemSources = EffectAcceptedTurnInputComposer.CollectAcceptedPlayerItemPhaseSources(
+                acceptedSources.GetValueOrDefault(InventoryEquipmentService.ItemsPath));
         var acceptedPlanSources =
             EffectAcceptedTurnInputComposer.CollectLocationPlanSources(locationPlan)
                 .Concat(itemSources)

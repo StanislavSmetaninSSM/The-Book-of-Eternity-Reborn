@@ -1341,6 +1341,13 @@ internal static partial class EffectAcceptedTurnInputComposer
         return false;
     }
 
+    /// <summary>Exports the existing player-item source surface from an admitted detached item phase.</summary>
+    internal static IReadOnlyList<EffectSourceExport> CollectAcceptedPlayerItemPhaseSources(JsonNode? items) =>
+        CollectSources(new Dictionary<string, JsonNode?>
+        {
+            [InventoryEquipmentService.ItemsPath] = items
+        }, sameTurn: true);
+
     internal static EffectSourceAuthority BuildCanonicalSourceAuthority(
         IReadOnlyDictionary<string, JsonNode?> sourceRoots,
         WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null)

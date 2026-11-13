@@ -152,9 +152,14 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
         var before = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
 
-        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        // Exercise the real issued skill-input gate directly after item admission;
+        // unrelated new-actor resource composition is not this endpoint control's subject.
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var source = await context.Validator.PrepareNpcProgressionPublicationAsync(lease,
+            await context.FileSystem.ReadFileBytesAsync(lease, NpcSkillCorePath),
+            await context.FileSystem.ReadFileBytesAsync(lease, PendingNpcSkillsPath));
 
-        Assert.Contains(issues, issue => issue.Code == "npc_skill_item_phase_invalid");
+        Assert.Contains(source.Issues, issue => issue.Code == "npc_skill_item_phase_invalid");
         Assert.Equal(before, await context.CaptureBytesAsync(before.Keys.ToArray()));
     }
 
