@@ -101,13 +101,13 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 
 Dependencies: T104-A -> T104-B -> T104-C -> T104-D -> T104-E. No parallel mutation; this bounded slice does not close issue #1533.
 
-## Broader issue #1533 contours (bounded implemented slices are recorded below; whole contours remain unqualified)
+## Issue #1533 final contours (accepted Mortal scope, 2026-11-13)
 
-- [ ] T102 Duplicate and confusable detection inside historical skill state files themselves (composition layer covers accepted-turn input only)
-- [ ] T103 Stale skill reference detection across save/load boundaries and `removeActiveSkills` selector authority
-- [ ] T104 Cross-owner reference detection (mastery pointing at another actor's skill)
-- [ ] T105 Governed companions: characteristics, effects, combat actions materialization for companion entities
-- [ ] T106 GM prompt/worked-example sweep for exact-`skillName` discipline beyond Block_7 rule 7.7, with documentation coverage guards
+- [X] T102 Current-state duplicate detection, exact reference authority and new-acquisition confusable rejection (including local training); no legacy-save migration
+- [X] T103 Stale skill reference detection across save/load boundaries and `removeActiveSkills` selector authority
+- [X] T104 Cross-owner reference detection (mastery pointing at another actor's skill)
+- [X] T105 Governed linked mechanics: structured characteristics/effects/combat-action contracts and source removal/replacement; no new companion system
+- [X] T106 GM prompt/worked-example sweep for exact-`skillName` discipline beyond Block_7 rule 7.7, with documentation coverage guards
 - [X] T107 Prose-claimed skill change ↔ state delta coupling audit (`HasSkillMasteryChanges` path) under the new authority — completed as Part 2 above (T107-A..T107-E); evidence in plan.md part-2 ledger
 
 ## Notes
@@ -115,7 +115,7 @@ Dependencies: T104-A -> T104-B -> T104-C -> T104-D -> T104-E. No parallel mutati
 - Codes introduced in part 1: `skill_mastery_confusable_reference`, `player_active_skill_mastery_initialization_confusable`, `npc_skill_mastery_initialization_confusable`; repair kind `mortal_skill_reference_identity_repair`.
 - Existing codes `skill_mastery_unknown_active_skill`, `player_active_skill_missing_mastery_initialization`, `npc_skill_missing_mastery_initialization` are unchanged.
 
-Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T107 completed in Part 2 and merged via PR #1583 (see ledger above); T101 Part 3 and its PR #1586 review corrections are verified: 186/186 selected cases, valid discovery-only catalog and independent READY review (2026-11-10 checkpoint in plan.md). Publication of the final checkpoint is coordinator-owned; T102-T106 remain unchecked.
+Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T107 completed in Part 2 and merged via PR #1583 (see ledger above); T101 Part 3 and its PR #1586 review corrections are verified: 186/186 selected cases, valid discovery-only catalog and independent READY review (2026-11-10 checkpoint in plan.md). That checkpoint did not yet qualify T102-T106. The final reconciliation below supersedes those historical open statuses.
 
 ## Part 6 — T105 display-only passive summary authority
 
@@ -170,3 +170,17 @@ Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [x] TR-C1 Reproduce two genuine purchases creating case/Unicode confusable siblings.
 - [x] TR-C2 Refuse new same-domain collision before spend/request and guard its original skill root through commit.
 - [x] TR-C3 Verify active/passive/generic/GM-threshold, concurrency, exact existing practice and separate-domain controls; review and publish.
+
+## Final acceptance reconciliation, 2026-11-13
+
+The owner authorized completion and integration into main after the independent
+whole-issue audit and the reproduced training collision correction at aa309b9f.
+T102-T106 above are now complete in the agreed Mortal scope. See the final
+acceptance table in plan.md for routes, references and evidence. Historical
+partial-slice disclaimers remain as provenance, not current open work.
+
+Explicit exclusions: legacy-save migration (pre-release test saves only),
+afterlife/spiritual combat, new companion systems, and independent NLP
+completeness. NPC progression uses the approved mandatory structured report;
+omitted prose claims are not guaranteed detectable. No full-suite, Windows or
+hosted-CI pass is implied. Merge and issue state are verified separately on GitHub.

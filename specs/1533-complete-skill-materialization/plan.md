@@ -1036,3 +1036,53 @@ Raw logs remain outside Git. No unrelated NPC/spiritual/full-suite rerun, merge,
 issue closure or hosted CI was performed for this bounded training correction.
 
 Official discovery-only catalog audit passed: 1,678 categories, 13,953 methods/files; zero tests executed, 11.399s.
+
+
+### Final Mortal acceptance and integration preparation, 2026-11-13
+
+The owner's final direction is to reconcile the completed tasks, merge the working
+branch into main, and close #1533. Source checkpoint aa309b9f contains the last
+behavioral correction. GitHub compare against main efa28884833cecd72a1a33872350dbd14178d5bb
+reports 27 commits ahead, zero behind, with main as merge base. All 69 changed
+paths belong to the recorded #1533 blocks; no unrelated feature or raw diagnostics
+is included. Fast-forward integration can preserve the verified runtime tree.
+
+| Original criterion | Final evidence and interpretation |
+| --- | --- |
+| Starter and first NPC creation | Shared active/passive profile and composed-result gates; empty authenticated NPC bootstrap roots; NPC owner/mastery initialization checks. |
+| Acquisition and progression routes | GM-authored reward, discovery, quest, item, Fate Card and level-up use the same skill roots and composition gates; combat use retains existing action/source mechanics authority and same-turn skill references; the separate local TrainingService writer is covered by Part12 and the 28-case collision closure. |
+| Prose and state parity | Player coupling from Part2; approved explicit NPC report at 0539e68b. Missing or invalid reports fail; completeness of arbitrary prose is not inferred. |
+| Exact identity and bad references | Current duplicate/owner checks, exact canonical lookup, bounded repairs and same-domain new-acquisition confusable refusal. Existing exact siblings are not silently retargeted. |
+| Removal and replacement | Parts7/9 current ordinary, QTE and save/load closure; Part10 quest references; existing effect source-loss/replacement gates; Part11 UI projection. |
+| Save compatibility | Migration is waived by the owner for this pre-release game. Current supported-state integrity is retained. |
+| Console/browser mechanics and privacy | Part11 public projection tests; structured mechanics authority; private NPC-report marker controls. |
+| Verification and rollback | Earlier bounded RED/GREEN ledgers remain explicit; latest NPC 204/204 and training 28/28, source/PDB joins and independent reviews. These are not one combined run or a full-suite claim. |
+| GM authoring surfaces | Updated rules/examples, launcher/daemon and repair generators; actual rendered-consumer verification. |
+
+The independent whole-issue audit found the training collision seam, reproduced
+it through two real purchases and the next composition check, and found no other
+concrete unfinished requirement within this scope. The correction's independent
+recovery review found no blocking issue and rechecked 1,224 production plus 1,054
+integration source documents against the tested PE/PDB. All seven correction
+files were recovered directly from GitHub and compared byte-for-byte. A full
+recovery fetch exhausted temporary storage; filtered sparse recovery succeeded.
+No behavior changed during this final documentation reconciliation.
+
+tests/selection.json is reconciled to the entire unmerged #1533 change rather
+than retaining only the last training slice. It names the changed contract
+categories and affected ordinary/source/reasoning consumers; this metadata does
+not authorize or dispatch hosted CI or a broad replay. The gm-turn-helper-process
+metadata change merely moves the skill-render test to its dedicated owner.
+No full-suite rerun is required; existing passing evidence is retained under the
+repository's no-redundant-rerun policy. Windows PowerShell 5.1 remains unrun.
+
+Optimization is unchanged: current parsed roots and existing source owners are
+reused, freshness and publication guards remain authoritative, no new cache or
+speedup claim is added. No migration, new companion system, spiritual combat or
+independent prose-model audit is included. The remaining operation is authorized
+GitHub integration and issue closure, followed by remote-state verification.
+
+Final metadata validation: `pwsh -NoProfile -File scripts/plan-test-ci.ps1
+-SelectionFile tests/selection.json` exited 0: 21 explicit categories grouped
+into 9 ubuntu-24.04 and 12 windows-latest category entries. This is only planner
+metadata, not execution or Windows qualification. `git diff --check` passed.
