@@ -176,6 +176,40 @@ public sealed partial class MortalLocationMaterializationValidationTests
         }
     }
 
+    [Theory]
+    [InlineData("missingStorages")]
+    [InlineData("nullStorages")]
+    [InlineData("scalarStorages")]
+    [InlineData("missingStorageId")]
+    [InlineData("nullTransitions")]
+    [InlineData("scalarTransitions")]
+    public void StorageAddition_MalformedOriginalFailsClosedWithoutMutation(string fault)
+    {
+        var baseline = CreateGovernedCommandBaseline();
+        var map = baseline.WorldMap.DeepClone().AsObject();
+        var identity = baseline.IdentityIndex.DeepClone().AsObject();
+        var location = map["locations"]![0]!.AsObject();
+        if (fault == "missingStorages") location.Remove("locationStorages");
+        if (fault == "nullStorages") location["locationStorages"] = null;
+        if (fault == "scalarStorages") location["locationStorages"] = 3;
+        if (fault == "missingStorageId") location["locationStorages"]![0]!.AsObject().Remove("storageId");
+        if (fault == "nullTransitions") identity["locationEntries"]![0]!["transitions"] = null;
+        if (fault == "scalarTransitions") identity["locationEntries"]![0]!["transitions"] = 3;
+        var updates = EmptyStorageAddition(baseline.LocationId);
+        var beforeMap = map.ToJsonString();
+        var beforeIdentity = identity.ToJsonString();
+        var beforeUpdates = updates.ToJsonString();
+
+        var result = Build(map, baseline.CurrentLocation, identity, rawWorldMapUpdates: updates, turn: 43);
+
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.NotEmpty(result.Issues);
+        Assert.Equal(beforeMap, map.ToJsonString());
+        Assert.Equal(beforeIdentity, identity.ToJsonString());
+        Assert.Equal(beforeUpdates, updates.ToJsonString());
+    }
+
     private static JsonObject EmptyStorageAddition(string locationId, string storageId = "storage_added") => new()
     { ["storagesToAdd"] = new JsonArray(new JsonObject { ["targetLocationId"] = locationId,
         ["storage"] = MortalLocationTestFixture.CreateStorageMetadata(storageId, "Новый сундук", false, new JsonArray()) }) };
