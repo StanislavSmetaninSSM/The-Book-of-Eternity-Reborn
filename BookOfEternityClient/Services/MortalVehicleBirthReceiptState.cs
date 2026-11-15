@@ -4,7 +4,7 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>Immutable vehicle birth DATA in the existing vehicle companion.
 /// Seals prove internal consistency, never publication permission or current cargo/access.</summary>
-internal static class MortalVehicleBirthReceiptState
+internal static partial class MortalVehicleBirthReceiptState
 {
     internal static JsonObject CreateEmptyRoot() => new()
     { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null, ["birthReceipts"] = new JsonArray() };
@@ -74,7 +74,7 @@ internal static class MortalVehicleBirthReceiptState
                 !Closed(health, "resourceKey", "maximum", "sourceKind", "sourceId", "authorityFingerprint") ||
                 Exact(health["resourceKey"]) != "health" || !Number(health["maximum"], out var maximum) || maximum < 0 ||
                 Exact(health["sourceKind"]) != "owner_materialization" || Exact(health["sourceId"]) != reference ||
-                Exact(health["authorityFingerprint"]) is null || Exact(receipt["seal"]) != ComputeSeal(receipt))
+                !ResourceMaterializationContract.IsAuthorityFingerprint(Exact(health["authorityFingerprint"])) || Exact(receipt["seal"]) != ComputeSeal(receipt))
             { issues.Add(Issue("birthReceipts", "Unique complete internally sealed version-1 vehicle birth evidence.")); continue; }
             var structuralBirth = birth.DeepClone().AsObject();
             structuralBirth.Remove("cargoBirthEvidence");
@@ -82,10 +82,12 @@ internal static class MortalVehicleBirthReceiptState
             const string birthPath = StorageTransportMoveService.VehiclesPath + ".birthReceipts.birthState";
             var birthIssues = MortalTransportStorageContract.ValidateVehicleBirth(birthElement, birthPath).ToList();
             ValidationService.ValidateVehicleCoreFields(birthElement, birthPath, birthIssues);
+            ValidationService.ValidateHistoricalVehicleSemantics(birthElement, birthPath, birthIssues);
             if (birthIssues.Count != 0)
                 issues.Add(Issue("birthReceipts.birthState", "Complete historical vehicle birth facts."));
             if (birth["cargoBirthEvidence"] is not JsonObject cargo || Exact(cargo["vehicleId"]) != id ||
-                !Integer(cargo["sourceTurn"], out var cargoTurn) || cargoTurn != turn)
+                !Integer(cargo["sourceTurn"], out var cargoTurn) || cargoTurn != turn ||
+                !ValidateHistoricalCargo(structuralBirth, cargo, id, reference, turn))
                 issues.Add(Issue("birthReceipts.birthState.cargoBirthEvidence", "Matching immutable historical cargo evidence."));
         }
         var live = new HashSet<string>(StringComparer.Ordinal);

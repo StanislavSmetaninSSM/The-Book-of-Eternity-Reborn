@@ -7188,7 +7188,7 @@ public partial class ValidationService
         ValidateOptionalString(item, context, issues, "source");
     }
 
-    private void ValidateCombatActionArray(JsonElement value, string context, List<ValidationIssue> issues,
+    private static void ValidateCombatActionArray(JsonElement value, string context, List<ValidationIssue> issues,
         bool requireActionNameForActivatedEffect = true, string section = "Inventory")
     {
         RequireArrayOfObjects(value, context, issues);
@@ -7430,7 +7430,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateCombatResistanceArray(JsonElement value, string context, List<ValidationIssue> issues)
+    private static void ValidateCombatResistanceArray(JsonElement value, string context, List<ValidationIssue> issues)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)

@@ -8,6 +8,17 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Receipt integrity correction, WIP 2026-11-15
+
+The exact 20 causal detached failures at f72d437e now have a bounded source fix:
+reuse current full-vehicle enum/location/action/resistance/legacy-resource checks;
+require the existing initialization fingerprint format; rebuild historical cargo
+with the existing item contract, one detached catalog and shared birth-capacity
+algorithm. Exact historical cargo identity/configuration/count/source and evidence
+must agree, without consulting later live cargo or current actor/location state.
+No ResourceAgreement algorithm change, new cache, writer or archive. The matching
+58-case policy and9actual-publication controls need fresh GREEN; source is UNRUN.
+
 ## Downstream retry consumer finding and causal tests, WIP 2026-11-15
 
 At f72d437e, zero-error builds took 95.50s unit and 59.13s integration.
