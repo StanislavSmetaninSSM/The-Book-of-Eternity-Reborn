@@ -94,7 +94,35 @@ public sealed class MortalVehicleBirthLocationTests
     }
 
     private static Dictionary<string, string> EmptyMapping() => new(StringComparer.Ordinal);
-    private static JsonObject Map(params string[] ids) => new() { ["locations"] = new JsonArray(ids.Select(id => (JsonNode?)new JsonObject { ["locationId"] = id }).ToArray()) };
+    [Fact]
+    public void ValidBindingDoesNotEscapeWhenAnotherBirthIsInvalid()
+    {
+        var raw = Vehicles("location_port");
+        var bad = raw["UpdateVehicles"]![0]!.DeepClone();
+        bad["vehicleRef"] = "new_bad"; bad["currentLocationId"] = "missing";
+        raw["UpdateVehicles"]!.AsArray().Add(bad);
+        var result = MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthLocations(raw,
+            Map("location_port"), new Dictionary<string, string>());
+        Assert.False(result.IsValid);
+        Assert.Empty(result.LocationIdsByVehicleRef);
+        Assert.Single(result.Issues);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SelectedLocationRequiresMortalMapAndLocationRealm(bool mapRealm)
+    {
+        var map = Map("location_port");
+        if (mapRealm) map["realm"] = "afterlife";
+        else map["locations"]![0]!["realm"] = "afterlife";
+        var result = MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthLocations(
+            Vehicles("location_port"), map, EmptyMapping());
+        Assert.Equal("resource_owner_vehicle_birth_location_realm_invalid", Assert.Single(result.Issues).Code);
+        Assert.Empty(result.LocationIdsByVehicleRef);
+    }
+
+    private static JsonObject Map(params string[] ids) => new() { ["realm"] = "mortal_world", ["locations"] = new JsonArray(ids.Select(id => (JsonNode?)new JsonObject { ["locationId"] = id, ["realm"] = "mortal_world" }).ToArray()) };
     private static JsonObject Vehicles(params string[] locations) => new() { ["UpdateVehicles"] = new JsonArray(locations.Select((id, i) => (JsonNode?)new JsonObject
         { ["vehicleRef"] = "new_cart_" + i, ["currentLocationId"] = id }).ToArray()) };
 }

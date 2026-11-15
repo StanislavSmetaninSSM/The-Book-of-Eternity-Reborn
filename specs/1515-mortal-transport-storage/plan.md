@@ -8,6 +8,27 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Location causal evidence and wiring WIP, 2026-11-15
+
+At6a2d67ab:1PASS/7FAIL21.126s,8 completed cases, cleanup complete,
+build125.43s/0errors. Three are causal: both unknown targets admitted and empty
+cargo map drift not fenced. Four positive fixtures failed an unrelated post-seal
+pending-bootstrap current-location invariant, not location binding. Their baseline
+now uses a complete canonical current projection/index (an anchor for new-location
+birth), rather than leaving neutral pending current state with a populated map.
+No claim that these four were causal RED.
+
+WIP retains the existing fresh cargo capture's location plan and observations.
+Empty parked births use that same context once. Existing location plan cache owns
+allocation reuse; helper resolves only detached DATA and final vehicle companions.
+Raw preparation input, sourceTurn receipt, location writer and common before-image
+preflight stay unchanged. Canonical-map fallback parses already captured bytes for
+membership, never re-reads a file or installs a cache. One extra cheap mixed
+valid/invalid policy case proves no partial rewrite output. Two additional cheap
+controls require exact Mortal map/selected-location realm; no full receipt re-audit.
+The older resource creation/destruction fixture now seeds its actual parking
+location/current projection/index instead of an unmaterialized ID. GREEN/review pending.
+
 ## Location binding WIP, 2026-11-15
 
 Fresh clean clone early-shape-restore matches checkpoint d61fb99e; fsck0.

@@ -436,6 +436,8 @@ public partial class ValidationService
         IReadOnlyDictionary<string, CanonicalBeforeImage>? cargoBeforeImages = null;
         MortalVehicleBirthPreparation? preparedVehicles = null;
         MortalItemCanonicalProjectionResult? capacityItemPhase = null;
+        VehicleBirthLocationInputs? vehicleLocationInputs = null;
+        MortalVehicleBirthLocationResult? vehicleLocations = null;
         var capacityCreationIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var currentVehicleBirthInput = currentMortalRoots.Vehicles;
         if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
@@ -466,9 +468,10 @@ public partial class ValidationService
                     !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()
                         .GetValueOrDefault(StorageTransportMoveService.VehiclesPath), currentVehicleBirthInput))
                     throw new InvalidDataException("Cargo requires the exact current raw vehicle item snapshot.");
-                cargoBeforeImages = await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
-                if (cargoBeforeImages is null)
+                vehicleLocationInputs = await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
+                if (vehicleLocationInputs is null)
                     return issues;
+                cargoBeforeImages = vehicleLocationInputs.Observations;
                 var cargoRoutes = itemSnapshot.CloneRouteCatalog();
                 var birthIds = MortalVehicleCargoProjection.BirthIds(cargoRoutes);
                 foreach (var creationRef in cargoRoutes.ByCreationRef.Keys)
@@ -496,6 +499,32 @@ public partial class ValidationService
                     "exact accepted birth cargo projection", error.Message));
                 return issues;
             }
+        }
+        if (spiritualCapture is null && preparedVehicles is not null &&
+            currentVehicleBirthInput?["UpdateVehicles"] is JsonArray locationUpdates &&
+            locationUpdates.OfType<JsonObject>().Any(row => row["vehicleRef"] is not null && row["currentLocationId"] is not null))
+        {
+            vehicleLocationInputs ??= await CaptureFreshVehicleCargoInputsAsync(null, writeLease, issues);
+            if (vehicleLocationInputs is null)
+                return issues;
+            cargoBeforeImages = vehicleLocationInputs.Observations;
+            var observedVehicles = ParseProjectionRoot(
+                DecodeObservedCanonicalInput(cargoBeforeImages[StorageTransportMoveService.VehiclesPath]),
+                StorageTransportMoveService.VehiclesPath, issues);
+            if (!JsonNode.DeepEquals(currentVehicleBirthInput, observedVehicles))
+            {
+                issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
+                    "resource_owner_vehicle_birth_location_source_changed",
+                    "the exact prepared raw vehicle source", "source changed during location capture"));
+                return issues;
+            }
+            vehicleLocations = MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthLocations(
+                currentVehicleBirthInput, vehicleLocationInputs.AcceptedMap,
+                vehicleLocationInputs.LocationPlan?.LocationIdsByInitialId ??
+                    new Dictionary<string, string>(StringComparer.Ordinal));
+            issues.AddRange(vehicleLocations.Issues);
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                return issues;
         }
         var cargoBirthEvidence = spiritualCapture is null && preparedVehicles is not null
             ? ValidateMortalVehicleBirthCapacity(currentVehicleBirthInput, preparedVehicles,
@@ -552,6 +581,10 @@ public partial class ValidationService
         {
             return issues;
         }
+
+        if (vehicleLocations is not null && !AttachVehicleBirthLocations(
+                ownerComposition, preparedVehicles!, vehicleLocations, issues))
+            return issues;
 
         if (cargoBirthEvidence.Count > 0)
         {

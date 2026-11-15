@@ -94,6 +94,14 @@ public sealed class ResourceVehicleIntegrationTests
         await context.WriteExactJsonAsync(
             StorageTransportMoveService.VehiclesPath,
             new JsonObject { ["vehicles"] = new JsonArray() }.ToJsonString());
+        var parkingLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+            "location_market", "Market");
+        await context.WriteExactJsonAsync(MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(parkingLocation).ToJsonString());
+        await context.WriteExactJsonAsync(MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(parkingLocation).ToJsonString());
+        await context.WriteExactJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(parkingLocation).ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
         await context.WriteExactJsonAsync(
             StorageTransportMoveService.VehiclesPath,

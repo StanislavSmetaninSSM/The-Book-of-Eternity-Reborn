@@ -47,7 +47,9 @@ public sealed partial class MortalVehicleBirthCargoTests
         await context.NormalizeAcceptedTurnAsync();
 
         var map = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!;
-        var acceptedLocation = Assert.Single(map["locations"]!.AsArray())!;
+        var acceptedLocation = Assert.Single(map["locations"]!.AsArray().OfType<JsonObject>(),
+            location => location["materializationReceipt"]?["initialId"]?.GetValue<string>() ==
+                MortalLocationTestFixture.LocationInitialId);
         var permanentId = acceptedLocation["locationId"]!.GetValue<string>();
         Assert.NotEqual(MortalLocationTestFixture.LocationInitialId, permanentId);
         var vehicles = (await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!;
@@ -92,12 +94,14 @@ public sealed partial class MortalVehicleBirthCargoTests
         MortalItemMaterializationTestContext context, bool sameTurn)
     {
         await context.ArrangeEmptyMortalTurnAsync();
-        var canonical = MortalLocationTestFixture.CreateCanonicalLocation();
-        var map = sameTurn ? MortalLocationTestFixture.CreateWorldMap() :
-            MortalLocationTestFixture.CreateWorldMap(canonical);
+        var canonical = sameTurn
+            ? MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("location_anchor", "Anchor")
+            : MortalLocationTestFixture.CreateCanonicalLocation();
+        var map = MortalLocationTestFixture.CreateWorldMap(canonical);
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(canonical));
         await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
-        await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, sameTurn
-            ? MortalLocationIdentityState.CreateEmptyRoot() : MortalLocationTestFixture.CreateIdentityIndex(canonical));
+        await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, MortalLocationTestFixture.CreateIdentityIndex(canonical));
         await context.CaptureValidatedPendingSnapshotAsync();
         if (sameTurn)
         {

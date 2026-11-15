@@ -14,8 +14,12 @@ public partial class ValidationService
         return reader.ReadToEnd();
     }
 
-    private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>?> CaptureFreshVehicleCargoInputsAsync(
-        MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+    private sealed record VehicleBirthLocationInputs(
+        IReadOnlyDictionary<string, CanonicalBeforeImage> Observations,
+        MortalLocationAcceptedTurnPlan? LocationPlan, JsonObject AcceptedMap);
+
+    private async Task<VehicleBirthLocationInputs?> CaptureFreshVehicleCargoInputsAsync(
+        MortalItemAcceptedTurnNormalizationSnapshot? snapshot,
         FileSystemManager.CanonicalWriteLease lease,
         List<ValidationIssue> issues)
     {
@@ -32,8 +36,11 @@ public partial class ValidationService
         var localIssues = new List<ValidationIssue>();
         var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
             localIssues, lease, currentObservations: observations);
+        var acceptedMap = locationPlan?.FinalWorldMap ??
+            ParseProjectionRoot(DecodeObservedCanonicalInput(observations[MortalLocationMaterializationContract.WorldMapPath]),
+                MortalLocationMaterializationContract.WorldMapPath, localIssues) as JsonObject ?? new JsonObject();
         var current = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
-        foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+        foreach (var path in snapshot is null ? Array.Empty<string>() : MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
         {
             current[path] = ParseProjectionRoot(DecodeObservedCanonicalInput(observations[path]), path, localIssues);
         }
@@ -44,7 +51,7 @@ public partial class ValidationService
         if (locationPlan?.FinalStorageContents is { } storage)
             current[MortalLocationStorageContentsState.StatePath] = storage.DeepClone();
         if (localIssues.Any(issue => issue.Severity == IssueSeverity.Error) ||
-            !snapshot.MatchesProjectionRoots(current, snapshot.CloneBackupProjectionRoots()))
+            snapshot is not null && !snapshot.MatchesProjectionRoots(current, snapshot.CloneBackupProjectionRoots()))
         {
             issues.AddRange(localIssues);
             issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
@@ -52,6 +59,6 @@ public partial class ValidationService
                 "unchanged accepted item projection dependencies", "current source drift or invalid input"));
             return null;
         }
-        return observations;
+        return new VehicleBirthLocationInputs(observations, locationPlan, acceptedMap);
     }
 }

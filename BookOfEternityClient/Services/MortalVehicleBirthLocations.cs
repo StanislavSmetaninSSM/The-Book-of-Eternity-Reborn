@@ -23,12 +23,14 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         var resolved = new Dictionary<string, string>(StringComparer.Ordinal);
         var canonical = new ExactIdentityIndex();
         var selectors = new ExactIdentityIndex();
+        var mortalLocations = new HashSet<string>(StringComparer.Ordinal);
         if (acceptedMap["locations"] is JsonArray locations)
             foreach (var location in locations.OfType<JsonObject>())
                 if (ReadExactString(location, "locationId") is { } id)
                 {
                     canonical.Add(id);
                     selectors.Add(id);
+                    if (ReadExactString(location, "realm") == "mortal_world") mortalLocations.Add(id);
                 }
         // Copy mappings with ordinal identity even if a caller supplies a dictionary
         // with a permissive comparer. These are operation-local values, not a cache.
@@ -53,9 +55,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     target = mappings.TryGetValue(selector!, out var mapped) ? mapped : selector;
                     resolution = canonical.Resolve(target!);
                 }
-                if (resolution != MortalLocationReferenceResolution.Exact)
+                var realmInvalid = resolution == MortalLocationReferenceResolution.Exact &&
+                    (ReadExactString(acceptedMap, "realm") != "mortal_world" || !mortalLocations.Contains(target!));
+                if (resolution != MortalLocationReferenceResolution.Exact || realmInvalid)
                 {
-                    var suffix = resolution switch
+                    var suffix = realmInvalid ? "realm_invalid" : resolution switch
                     {
                         MortalLocationReferenceResolution.Confusable => "confusable",
                         MortalLocationReferenceResolution.Ambiguous => "ambiguous",
