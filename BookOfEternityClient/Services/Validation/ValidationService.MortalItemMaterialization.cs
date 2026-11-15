@@ -98,6 +98,34 @@ public partial class ValidationService
             var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
                 locationPlanningIssues,
                 writeLease, spiritualAllocations?.Locations, currentInputs);
+            var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
+            var previous = snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                           snapshotLookup.Manifest is not null
+                ? await LoadPreTurnMortalItemCatalogAsync(snapshotLookup, false, issues, writeLease)
+                : null;
+            MortalVehicleBirthPreparation? preparedVehicleBirths = null;
+            MortalVehicleBirthPreparation? PrepareVehicleBirths(JsonObject? raw)
+            {
+                if (currentInputs is not null)
+                    return null;
+                if (raw is null || !MortalVehicleBirthPreparation.HasBirthCommands(raw))
+                {
+                    AcceptedTurnAuthorityRegistry.ClearMortalVehicleBirths(_fs, writeLease);
+                    return null;
+                }
+                if (previous is null || snapshotLookup.Manifest is null)
+                {
+                    issues.Add(MissingItemSnapshotBaselineIssue("vehicle birth cargo authority"));
+                    return null;
+                }
+                var preparation = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(
+                    _fs, writeLease, snapshotLookup.Manifest.SessionId,
+                    snapshotLookup.Manifest.ManifestPayloadHash,
+                    previous.Roots.Vehicles ?? new JsonObject(), raw);
+                issues.AddRange(preparation.Issues);
+                preparedVehicleBirths = preparation.Preparation;
+                return preparedVehicleBirths;
+            }
             var current = await LoadMortalItemCatalogAsync(
                 writeLease,
                 includeNpcInventoryCommands: true,
@@ -105,10 +133,9 @@ public partial class ValidationService
                 locationPlanningIssues.Any(issue => issue.Severity == IssueSeverity.Error)
                 ? null
                 : locationPlan,
-                currentInputs);
+                currentInputs, PrepareVehicleBirths);
             MortalItemRouteAuthorityCatalog? routeAuthorities = null;
             MortalItemAcceptedTransferCatalog? transferCatalog = null;
-            MortalItemCatalogFiles? previous = null;
             MortalItemIdentityParseResult? currentIndex = null;
             ValidationPendingTurnSnapshotManifest? validatedManifest = null;
             try
@@ -146,14 +173,12 @@ public partial class ValidationService
                         issue.Severity == IssueSeverity.Error)
                         ? null
                 : locationPlan?.AcceptedStorageCoordinates,
-                    currentInputs: currentInputs);
+                    currentInputs: currentInputs, vehicleBirthIds: preparedVehicleBirths?.Ids);
                 AddRouteAuthorityIssues(routeAuthorities, issues);
 
                 currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
                 issues.AddRange(currentIndex.Issues);
 
-                var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync(
-                    writeLease);
                 var hasRawCreations = current.Catalog.Occurrences.Any(occurrence =>
                     IsRawMortalItemCreation(occurrence.Item));
                 if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
@@ -189,11 +214,6 @@ public partial class ValidationService
                         issues);
                 }
 
-                previous = await LoadPreTurnMortalItemCatalogAsync(
-                    snapshotLookup,
-                    includeNpcInventoryCommands: false,
-                    issues,
-                    writeLease);
                 if (previous == null)
                 {
                     if (hasRawCreations || current.Catalog.Occurrences.Count > 0)
@@ -974,7 +994,8 @@ public partial class ValidationService
         bool includeNpcInventoryCommands,
         List<ValidationIssue> issues,
         MortalLocationAcceptedTurnPlan? effectiveLocationPlan = null,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        Func<JsonObject?, MortalVehicleBirthPreparation?>? prepareVehicleBirths = null)
     {
         if (currentInputs != null && writeLease == null)
             throw new InvalidOperationException("Original current inputs require a real canonical lease.");
@@ -1011,6 +1032,8 @@ public partial class ValidationService
                 companions.Add(path, companion);
         }
 
+        var vehicleRoot = ParseVehiclesObject(vehiclesJson, issues);
+        var vehicleBirths = prepareVehicleBirths?.Invoke(vehicleRoot);
         var input = new MortalItemCarrierCatalogInput(
             ParseCarrierObject(playerJson, InventoryEquipmentService.ItemsPath, issues),
             ParseCarrierObject(npcCoreJson, NpcCoreChangesContract.NpcCorePath, issues),
@@ -1023,13 +1046,14 @@ public partial class ValidationService
                 currentLocationJson,
                 StorageTransportMoveService.CurrentLocationPath,
                 issues),
-            ParseVehiclesObject(vehiclesJson, issues),
+            vehicleRoot,
             companions,
             effectiveLocationPlan?.FinalStorageContents ??
             ParseCarrierObject(
                 offscreenLocationStorageJson,
                 MortalLocationStorageContentsState.StatePath,
-                issues));
+                issues),
+            prepareVehicleBirths is null ? null : vehicleBirths?.Ids ?? new Dictionary<string, string>());
         return new MortalItemCatalogFiles(
             MortalItemCarrierCatalog.Build(input),
             identityIndexJson,

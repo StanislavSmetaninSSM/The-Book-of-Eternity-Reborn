@@ -40,7 +40,8 @@ internal sealed record MortalItemCarrierCatalogInput(
     JsonObject? CurrentLocation,
     JsonObject? Vehicles,
     IReadOnlyDictionary<string, JsonObject> CompanionRoots,
-    JsonObject? OffscreenLocationStorageContents = null);
+    JsonObject? OffscreenLocationStorageContents = null,
+    IReadOnlyDictionary<string, string>? VehicleBirthIds = null);
 
 internal sealed record MortalItemCatalogScanMetrics(int Items, int Companions, int Routes)
 {
@@ -128,6 +129,8 @@ internal sealed class MortalItemCarrierCatalog
         builder.ScanCurrentLocation(input.CurrentLocation);
         builder.ScanOffscreenLocationStorages(input.OffscreenLocationStorageContents);
         builder.ScanVehicles(input.Vehicles);
+        if (input.VehicleBirthIds is not null)
+            builder.ScanVehicleBirths(input.Vehicles, input.VehicleBirthIds);
         builder.ScanCompanionRoots(input.CompanionRoots);
         return new MortalItemCarrierCatalog(builder);
     }
@@ -587,6 +590,31 @@ internal sealed class MortalItemCarrierCatalog
                         vehicleId ?? string.Empty,
                         null,
                         Array.Empty<string>()));
+            }
+        }
+
+        internal void ScanVehicleBirths(JsonObject? root, IReadOnlyDictionary<string, string> birthIds)
+        {
+            if (root?["UpdateVehicles"] is not JsonArray updates)
+                return;
+            for (var index = 0; index < updates.Count; index++)
+            {
+                if (updates[index] is not JsonObject vehicle || vehicle["vehicleRef"] is null)
+                    continue;
+                var path = $"{VehiclesPath}.UpdateVehicles[{index}].inventory";
+                if (vehicle["inventory"] is not JsonArray inventory || inventory.Count == 0)
+                    continue;
+                var reference = ReadString(vehicle["vehicleRef"]);
+                if (reference is null || !birthIds.TryGetValue(reference, out var vehicleId))
+                {
+                    Issues.Add(new MortalItemCarrierCatalogIssue(
+                        "mortal_item_vehicle_birth_carrier_missing", path,
+                        "Nonempty birth cargo requires its exact prepared vehicle carrier.",
+                        "vehicleRef", reference));
+                    continue;
+                }
+                ScanItemArray(inventory, VehiclesPath, path,
+                    new MortalItemCarrierCoordinate("vehicle_inventory", vehicleId, null, Array.Empty<string>()));
             }
         }
 

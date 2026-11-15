@@ -17,6 +17,8 @@ internal sealed class MortalVehicleBirthPreparation
     private MortalVehicleBirthPreparation(Dictionary<string, string> ids) =>
         _ids = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(ids, StringComparer.Ordinal));
 
+    internal IReadOnlyDictionary<string, string> Ids => _ids;
+
     internal bool TryResolve(string vehicleRef, out string vehicleId) => _ids.TryGetValue(vehicleRef, out vehicleId!);
 
     internal static bool HasBirthCommands(JsonObject raw) => raw["UpdateVehicles"] is JsonArray updates &&

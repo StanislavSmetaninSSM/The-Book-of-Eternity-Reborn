@@ -96,6 +96,7 @@ internal static class MortalItemMaterializationContract
             ["player_acquisition"] = "turn_outcome",
             ["npc_acquisition"] = "npc_inventory_add",
             ["new_npc_inventory"] = "new_npc",
+            ["new_vehicle_inventory"] = "new_vehicle",
             ["loot_acquisition"] = "loot_template",
             ["craft_output"] = "craft_request",
             ["trade_output"] = "npc_trade_receipt",

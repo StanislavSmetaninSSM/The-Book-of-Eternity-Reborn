@@ -100,7 +100,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease? writeLease = null,
         IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        IReadOnlyDictionary<string, string>? vehicleBirthIds = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
 
@@ -149,7 +150,7 @@ internal sealed class MortalItemRouteAuthorityCatalog
                 currentLocation,
                 vehicles,
                 new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                offscreenLocationStorage));
+                offscreenLocationStorage, vehicleBirthIds));
         var builder = new Builder(
             turnRequest,
             npcCore,
@@ -159,7 +160,7 @@ internal sealed class MortalItemRouteAuthorityCatalog
             questHistory,
             baselineNpcCore,
             baselineLocation,
-            acceptedStorageCoordinates);
+            acceptedStorageCoordinates, vehicleBirthIds);
         foreach (var occurrence in carrierCatalog.Occurrences)
         {
             if (IsRawCreation(occurrence.Item))
@@ -290,6 +291,7 @@ internal sealed class MortalItemRouteAuthorityCatalog
     private sealed class Builder
     {
         private readonly int _turn;
+        private readonly Dictionary<string, string> _vehicleBirthRefsById;
         private readonly HashSet<string> _lootAuthorities;
         private readonly Dictionary<string, NpcAddAuthorityCandidate>
             _npcAddAuthoritiesByCreationRef;
@@ -311,8 +313,11 @@ internal sealed class MortalItemRouteAuthorityCatalog
             JsonObject? questHistory,
             JsonObject? baselineNpcCore,
             JsonObject? baselineLocation,
-            IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates)
+            IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
+            IReadOnlyDictionary<string, string>? vehicleBirthIds)
         {
+            _vehicleBirthRefsById = (vehicleBirthIds ?? new Dictionary<string, string>())
+                .ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
             _turn = ReadInt(turnRequest?["turnNumber"]);
             _lootAuthorities = BuildLootAuthorities(turnRequest, _turn);
             var currentNpcOwners = BuildNpcOwners(npcCore);
@@ -444,6 +449,9 @@ internal sealed class MortalItemRouteAuthorityCatalog
                         occurrence,
                         creationRef,
                         out destination);
+                    break;
+                case "new_vehicle_inventory":
+                    expectedAuthorityId = _vehicleBirthRefsById.GetValueOrDefault(occurrence.Carrier.OwnerId);
                     break;
                 case "new_npc_inventory":
                     expectedAuthorityId = DeriveNewNpcAuthority(occurrence, creationRef);
@@ -712,6 +720,7 @@ internal sealed class MortalItemRouteAuthorityCatalog
                 "npc_acquisition" or "new_npc_inventory" =>
                     carrier.Kind == "npc_inventory",
                 "storage_placement" => carrier.Kind == "location_storage",
+                "new_vehicle_inventory" => carrier.Kind == "vehicle_inventory",
                 "trade_output" => carrier.Kind == "player_inventory",
                 "loot_acquisition" or "craft_output" or "quest_reward" => carrier.Kind is
                         "player_inventory" or "npc_inventory" or "location_storage",

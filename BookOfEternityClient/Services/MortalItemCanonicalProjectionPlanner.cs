@@ -122,7 +122,8 @@ internal static class MortalItemCanonicalProjectionPlanner
         var creationMap = new Dictionary<string, string>(StringComparer.Ordinal);
         var knownItemIds = new HashSet<string>(parsedIndex.EntriesByItemId.Keys,
             StringComparer.Ordinal);
-        var currentCatalog = BuildCatalog(roots, includeNpcCommands: true);
+        var currentCatalog = BuildCatalog(roots, includeNpcCommands: true,
+            vehicleBirthIds: MortalVehicleCargoProjection.BirthIds(input.RouteCatalog));
         if (currentCatalog.Issues.Count > 0)
         {
             return Invalid(input, new[]
@@ -137,6 +138,11 @@ internal static class MortalItemCanonicalProjectionPlanner
         }
         foreach (var occurrence in currentCatalog.Occurrences)
         {
+            if (occurrence.JsonPath.StartsWith(StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[", StringComparison.Ordinal) &&
+                occurrence.CreationRef is { } cargoRef &&
+                (!input.RouteCatalog.ByCreationRef.TryGetValue(cargoRef, out var cargoRoute) ||
+                 cargoRoute.Route != "new_vehicle_inventory" || cargoRoute.Destination.OwnerId != occurrence.Carrier.OwnerId))
+                throw new InvalidDataException("Cargo route must match its exact parent vehicle birth command.");
             if (occurrence.ItemId != null)
                 knownItemIds.Add(occurrence.ItemId);
         }
@@ -187,6 +193,7 @@ internal static class MortalItemCanonicalProjectionPlanner
             npcCommandIndex,
             npcCommandsRoot,
             AddPending);
+        CanonicalStateNormalizer.CollectVehicleMortalItemCreations(roots[StorageTransportMoveService.VehiclesPath] as JsonObject, AddPending);
         CanonicalStateNormalizer.CollectLocationMortalItemCreations(locationRoot, AddPending);
         CanonicalStateNormalizer.CollectOffscreenLocationStorageMortalItemCreations(
             offscreenRoot,
@@ -229,6 +236,7 @@ internal static class MortalItemCanonicalProjectionPlanner
             npcCommandIndex,
             npcCommandsRoot,
             new HashSet<string>(creationMap.Values, StringComparer.Ordinal));
+        CanonicalStateNormalizer.RewriteMortalItemCreationReferences(roots[StorageTransportMoveService.VehiclesPath], creationMap);
         CanonicalStateNormalizer.RewriteMortalItemCreationReferences(locationRoot, creationMap);
         CanonicalStateNormalizer.RewriteMortalItemCreationReferences(offscreenRoot, creationMap);
         foreach (var path in ProjectionRootPaths.Skip(8))
@@ -356,7 +364,8 @@ internal static class MortalItemCanonicalProjectionPlanner
 
     internal static MortalItemCarrierCatalog BuildCatalog(
         IReadOnlyDictionary<string, JsonNode?> roots,
-        bool includeNpcCommands)
+        bool includeNpcCommands,
+        IReadOnlyDictionary<string, string>? vehicleBirthIds = null)
     {
         var companions = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in ProjectionRootPaths.Skip(8))
@@ -379,7 +388,7 @@ internal static class MortalItemCanonicalProjectionPlanner
             roots[StorageTransportMoveService.CurrentLocationPath] as JsonObject,
             vehicleRoot,
             companions,
-            roots[MortalLocationStorageContentsState.StatePath] as JsonObject));
+            roots[MortalLocationStorageContentsState.StatePath] as JsonObject, vehicleBirthIds));
     }
 
     private static MortalItemCanonicalProjectionResult Invalid(

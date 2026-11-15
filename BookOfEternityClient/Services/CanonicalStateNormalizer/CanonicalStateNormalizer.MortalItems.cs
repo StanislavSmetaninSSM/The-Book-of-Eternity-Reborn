@@ -832,6 +832,30 @@ public partial class CanonicalStateNormalizer
             npcCoreChanged);
     }
 
+    internal static bool CollectVehicleMortalItemCreations(
+        JsonObject? root, Action<JsonObject, string, Action<JsonObject>> addPending)
+    {
+        if (root?["UpdateVehicles"] is not JsonArray updates)
+            return false;
+        var changed = false;
+        for (var vehicleIndex = 0; vehicleIndex < updates.Count; vehicleIndex++)
+        {
+            if (updates[vehicleIndex] is not JsonObject vehicle || vehicle["vehicleRef"] is null ||
+                vehicle["inventory"] is not JsonArray inventory)
+                continue;
+            for (var index = 0; index < inventory.Count; index++)
+            {
+                if (inventory[index] is not JsonObject item || !IsRawMortalItemCreation(item))
+                    continue;
+                var capturedIndex = index;
+                addPending(item, $"{StorageTransportMoveService.VehiclesPath}.UpdateVehicles[{vehicleIndex}].inventory[{index}]",
+                    canonical => inventory[capturedIndex] = canonical);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
     internal static bool CollectLocationMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)

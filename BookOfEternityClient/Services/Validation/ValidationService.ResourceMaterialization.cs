@@ -449,6 +449,40 @@ public partial class ValidationService
         {
             AcceptedTurnAuthorityRegistry.ClearMortalVehicleBirths(_fs, writeLease);
         }
+        if (spiritualCapture is null && MortalVehicleCargoProjection.HasCargo(currentVehicleBirthInput))
+        {
+            try
+            {
+                if (preparedVehicles is null ||
+                    !MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                        _fs, writeLease, manifest.SessionId, manifest.ManifestPayloadHash,
+                        manifest.TurnNumber, out var itemSnapshot) ||
+                    !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()
+                        .GetValueOrDefault(StorageTransportMoveService.VehiclesPath), currentVehicleBirthInput))
+                    throw new InvalidDataException("Cargo requires the exact current raw vehicle item snapshot.");
+                var birthIds = MortalVehicleCargoProjection.BirthIds(itemSnapshot.CloneRouteCatalog());
+                foreach (var pair in birthIds)
+                    if (!preparedVehicles.TryResolve(pair.Key, out var vehicleId) || vehicleId != pair.Value)
+                        throw new InvalidDataException("Cargo and vehicle preparation identities must agree exactly.");
+                if (!itemSnapshot.TryProjectItemPhase(out var itemPhase, out var cargoIssues) || itemPhase is null)
+                {
+                    issues.AddRange(cargoIssues);
+                    return issues;
+                }
+                if (itemPhase.ItemPhaseAfterImages.GetValueOrDefault(StorageTransportMoveService.VehiclesPath)
+                    is not JsonObject projectedVehicles)
+                    throw new InvalidDataException("Cargo projection must retain the vehicle command root.");
+                currentMortalRoots = new MortalResourceOwnerRoots(currentMortalRoots.NpcCore,
+                    currentMortalRoots.EnemyCombatants, currentMortalRoots.AllyCombatants, projectedVehicles);
+            }
+            catch (InvalidDataException error)
+            {
+                issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
+                    "resource_owner_vehicle_cargo_projection_invalid",
+                    "exact accepted birth cargo projection", error.Message));
+                return issues;
+            }
+        }
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions, previousMortalRoots, currentMortalRoots,
                 BuildSameTurnResourceOwnerCapabilities(commands),

@@ -325,3 +325,12 @@ Implementation sequence after causal RED:
 Existing-only cargo relocation is not authorized by a new-item route. Keep it
 fail-closed unless the existing transition machinery is explicitly integrated;
 this bounded block does not claim it, capacity, or whole-issue completeness.
+
+Initial cargo RED at a63ff8f2: 0 PASS / 2 FAIL, 12.489s, exact two cases and
+complete cleanup. Foreign-ref admission returned no issue; actual normalization
+failed post-seal with `mortal_item_materialization_identity_conflict`. Build passed
+with 0 errors (124.64s). These are causal missing-cargo behavior, not fixture errors.
+Initial SOURCE now adds explicit birth scanning, route binding, projection collection
+and guarded resource-companion substitution described above. Not compiled/verified;
+independent source review and narrow GREEN are next. Existing-only cargo remains
+outside this new-item route; issue completeness and guidance are not claimed.
