@@ -171,6 +171,68 @@ public sealed class MortalVehicleBirthCargoTests
         await context.AssertExactBytesAsync(before);
     }
 
+    [Fact]
+    public async Task SameTurnVehicleCargo_HistoryPublicationCutRestoresExactRawInputs()
+    {
+        const string cutMessage = "vehicle cargo accepted publication fixture";
+        var armed = false;
+        var cutHits = 0;
+        MortalItemMaterializationTestContext? active = null;
+        var hooks = new BookOfEternityClient.Core.FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (!armed || cutHits != 0 ||
+                    phase != BookOfEternityClient.Core.TrustedLocalPublicationPhase.MemberPublished)
+                    return;
+                var files = active!.FileSystem;
+                var journalPath = Path.Combine(files.RuntimeRootPath,
+                    "trusted-local-publication-v1", "active.json");
+                using var document = System.Text.Json.JsonDocument.Parse(File.ReadAllBytes(journalPath));
+                var member = document.RootElement.GetProperty("Members")[index];
+                var historyPath = files.ResolvePath(ResourceMaterializationContract.HistoryPath);
+                if (member.GetProperty("Path").GetString() != historyPath)
+                    return;
+                Assert.True(member.GetProperty("After").GetProperty("Exists").GetBoolean());
+                var publishedBytes = member.GetProperty("After").GetProperty("Bytes").GetBytesFromBase64();
+                Assert.Equal(publishedBytes, File.ReadAllBytes(historyPath));
+                cutHits++;
+                // InvalidDataException is an IOException, but is explicitly not retried by
+                // PublishCanonicalImagesAsync. A plain IOException would retry after rollback.
+                throw new InvalidDataException(cutMessage);
+            }
+        };
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync(hooks);
+        active = context;
+        await context.ArrangeEmptyMortalTurnAsync();
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, CargoBirth("new_cart"));
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureExactBytesAsync(new[]
+        {
+            StorageTransportMoveService.VehiclesPath,
+            MortalItemIdentityState.StatePath,
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+        });
+
+        armed = true;
+        var failure = await Record.ExceptionAsync(() => context.NormalizeAcceptedTurnAsync());
+        armed = false;
+
+        Assert.True(cutHits == 1, $"Vehicle cargo publication cut hits={cutHits}; failure={failure}");
+        Assert.NotNull(failure);
+        // Match the real known-rollback route, which can wrap the publication failure.
+        Assert.Contains(cutMessage, failure.ToString(), StringComparison.Ordinal);
+        await context.AssertExactBytesAsync(before);
+        Assert.False(File.Exists(Path.Combine(context.FileSystem.RuntimeRootPath,
+            "trusted-local-publication-v1", "active.json")));
+    }
+
     private static JsonObject CargoBirth(string authorityId)
     {
         var root = BirthRoot();

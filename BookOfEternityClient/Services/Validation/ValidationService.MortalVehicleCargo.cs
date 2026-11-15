@@ -5,6 +5,15 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    private static string? DecodeObservedCanonicalInput(CanonicalBeforeImage observation)
+    {
+        var bytes = observation.Bytes;
+        if (bytes is null)
+            return null;
+        using var reader = new StreamReader(new MemoryStream(bytes), detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
+
     private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>?> CaptureFreshVehicleCargoInputsAsync(
         MortalItemAcceptedTurnNormalizationSnapshot snapshot,
         FileSystemManager.CanonicalWriteLease lease,
@@ -21,18 +30,12 @@ public partial class ValidationService
         });
         var observations = await CaptureResourceBeforeImagesAsync(paths, writeLease: lease);
         var localIssues = new List<ValidationIssue>();
-        var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(localIssues, lease);
+        var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
+            localIssues, lease, currentObservations: observations);
         var current = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
         {
-            var bytes = observations[path].Bytes;
-            string? json = null;
-            if (bytes is not null)
-            {
-                using var reader = new StreamReader(new MemoryStream(bytes), detectEncodingFromByteOrderMarks: true);
-                json = reader.ReadToEnd();
-            }
-            current[path] = ParseProjectionRoot(json, path, localIssues);
+            current[path] = ParseProjectionRoot(DecodeObservedCanonicalInput(observations[path]), path, localIssues);
         }
         // Match the effective roots used by original item intake, not raw movement
         // commands. Keep their raw observations above for publication-time fencing.

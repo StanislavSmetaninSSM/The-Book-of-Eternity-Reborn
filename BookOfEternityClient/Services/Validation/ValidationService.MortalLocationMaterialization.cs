@@ -103,31 +103,31 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         FileSystemManager.CanonicalWriteLease? writeLease = null,
         MortalLocationIdentityFactory? identityFactory = null,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        IReadOnlyDictionary<string, CanonicalBeforeImage>? currentObservations = null)
     {
         if (currentInputs != null && writeLease == null)
             throw new InvalidOperationException("Original current inputs require a real canonical lease.");
-        var currentRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.CurrentLocationPath,
-            writeLease, currentInputs);
-        var mapRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.WorldMapPath,
-            writeLease, currentInputs);
-        var indexRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationIdentityState.StatePath,
-            writeLease, currentInputs);
-        var rawNpcCore = await ReadOptionalLocationObjectAsync(
-            NpcCoreChangesContract.NpcCorePath,
-            writeLease, currentInputs);
-        var rawFactionCore = await ReadOptionalLocationObjectAsync(
-            FactionCoreChangesContract.FactionCorePath,
-            writeLease, currentInputs);
+        if (currentObservations is not null &&
+            (writeLease is null || currentInputs is not null || identityFactory is not null))
+            throw new InvalidOperationException("Ordinary observed location inputs require their canonical lease and no private allocator.");
+        Task<string?> ReadSelectedTextAsync(string path) => currentObservations is null
+            ? ReadMortalLocationValidationFileAsync(path, writeLease, currentInputs)
+            : Task.FromResult(DecodeObservedCanonicalInput(currentObservations[path]));
+        async Task<JsonObject?> ReadSelectedObjectAsync(string path) =>
+            ParseOptionalLocationObject(await ReadSelectedTextAsync(path));
+        bool SelectedExists(string path) => currentObservations is null
+            ? FileExistsForMortalLocationValidation(path, writeLease, currentInputs)
+            : currentObservations[path].Existed;
+        var currentRoot = await ReadSelectedObjectAsync(MortalLocationMaterializationContract.CurrentLocationPath);
+        var mapRoot = await ReadSelectedObjectAsync(MortalLocationMaterializationContract.WorldMapPath);
+        var indexRoot = await ReadSelectedObjectAsync(MortalLocationIdentityState.StatePath);
+        var rawNpcCore = await ReadSelectedObjectAsync(NpcCoreChangesContract.NpcCorePath);
+        var rawFactionCore = await ReadSelectedObjectAsync(FactionCoreChangesContract.FactionCorePath);
         var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
                              mapRoot?["worldMapUpdates"] is JsonObject;
 
-        var scaffoldJson = await ReadMortalLocationValidationFileAsync(
-            MortalBootstrapLocationScaffold.StatePath,
-            writeLease, currentInputs);
+        var scaffoldJson = await ReadSelectedTextAsync(MortalBootstrapLocationScaffold.StatePath);
 
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
         if (currentInputs != null && lookup.Manifest is { } originalManifest &&
@@ -207,9 +207,7 @@ public partial class ValidationService
             preMap,
             mapRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.WorldMapPath),
-            FileExistsForMortalLocationValidation(
-                MortalLocationMaterializationContract.WorldMapPath,
-                writeLease, currentInputs),
+            SelectedExists(MortalLocationMaterializationContract.WorldMapPath),
             "worldMapUpdates",
             "mortal_location:map",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -220,9 +218,7 @@ public partial class ValidationService
             preCurrent,
             currentRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.CurrentLocationPath),
-            FileExistsForMortalLocationValidation(
-                MortalLocationMaterializationContract.CurrentLocationPath,
-                writeLease, currentInputs),
+            SelectedExists(MortalLocationMaterializationContract.CurrentLocationPath),
             "currentLocationData",
             "mortal_location:current",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -233,9 +229,7 @@ public partial class ValidationService
             preIndex,
             indexRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationIdentityState.StatePath),
-            FileExistsForMortalLocationValidation(
-                MortalLocationIdentityState.StatePath,
-                writeLease, currentInputs),
+            SelectedExists(MortalLocationIdentityState.StatePath),
             rawWrapper: null,
             "mortal_location:index",
             "mortal_location_identity_index_client_owned_mutation",

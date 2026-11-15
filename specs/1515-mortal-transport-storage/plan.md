@@ -363,3 +363,13 @@ These are not a new cache or inventory writer. The ordinary item phase is projec
 for the vehicle companion and again by normalization; no speedup/cached-phase claim.
 Freshness observations add bounded reads/parse work, while preserving their first
 bytes avoids replacing checked facts with later changed captures. Verification pending.
+
+Follow-up source review prevents a location A→B→A read gap: the ordinary location
+planner now consumes the same scoped captured current images (text and existence),
+not independent rereads. Its signed pre-turn reads and existing cache/factory remain
+unchanged; private original inputs cannot be combined with this ordinary view.
+Four current ordinary vehicle fixtures receive inventory:[] only, including two
+allocation-interop fixtures whose filenames mention spiritual capture. No spiritual
+production/assertion change. A genuine committed history-member cut test is added;
+its observer verifies journal After bytes before throwing a non-retried exception.
+Source uncompiled and test result pending; no rollback success claimed yet.
