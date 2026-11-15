@@ -34,7 +34,7 @@ public sealed class MortalVehicleBirthCargoTests
 
         var field = kind == "faction" ? "owner.ownerId" : "controller.actorId";
         Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
-            issue.Code == "mortal_vehicle_birth_reference_unknown" &&
+            issue.Code == "resource_owner_vehicle_birth_reference_unknown" &&
             issue.FilePath == StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[0]." + field);
         await context.AssertExactBytesAsync(before);
     }

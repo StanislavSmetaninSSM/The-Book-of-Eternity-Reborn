@@ -88,7 +88,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
 
         void Add(string path, string suffix, string expected) => issues.Add(new ValidationIssue(path,
             IssueSeverity.Error, "Vehicle birth references unavailable or inconsistent actor authority.",
-            code: "mortal_vehicle_birth_reference_" + suffix, section: "Vehicles", expected: expected,
+            code: "resource_owner_vehicle_birth_reference_" + suffix, section: "Vehicles", expected: expected,
             actual: "unresolved or invalid birth reference",
             repairHint: "Correct only this new vehicle's indexed owner/controller reference or name using the accepted Mortal actor/faction. Do not invent identities, alter canonical actors, or repair client-owned evidence."));
         static string Suffix(MortalLocationReferenceResolution resolution) => resolution switch

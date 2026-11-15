@@ -35,7 +35,7 @@ public partial class ValidationService
         var observedFactions = ReadObservedObject(FactionCoreChangesContract.FactionCorePath, null);
         if (!JsonNode.DeepEquals(vehicles, observedVehicles) || !JsonNode.DeepEquals(npcCore, observedNpc))
             issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
-                "mortal_vehicle_birth_reference_source_changed",
+                "resource_owner_vehicle_birth_reference_source_changed",
                 "the same vehicle and NPC inputs used by current owner composition",
                 "source differs from its captured before-image"));
         return issues.Any(issue => issue.Severity == IssueSeverity.Error)
@@ -48,7 +48,7 @@ public partial class ValidationService
                 return missingCollection is null ? null : new JsonObject { [missingCollection] = new JsonArray() };
             if (TryParseStrictResourceObject(json, out var root))
                 return root;
-            issues.Add(ResourceIssue(path, "mortal_vehicle_birth_reference_root_invalid",
+            issues.Add(ResourceIssue(path, "resource_owner_vehicle_birth_reference_root_invalid",
                 "one strict object root for vehicle birth references", "malformed or non-object input"));
             return null;
         }

@@ -31,6 +31,9 @@ shape checks already prevent final acceptance; their earlier publication boundar
 and location selector are separate remaining work, not an absent global validator.
 Primary vehicle rules and delivered daemon describe exact references; existing
 player-owned cargo example is unchanged because it has no Faction/NPC reference.
+Protected identity/source errors use the existing resource_owner prefix and
+fail-closed rollback routing; no broad GM canonical-repair permission is added.
+Pure negatives assert this router using their actual produced diagnostics.
 No hosted CI, main merge or issue closure. Next: serial targeted verification/review.
 
 ## Current checkpoint — birth cargo capacity verified, 2026-11-15

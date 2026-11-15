@@ -43,8 +43,10 @@ public sealed class MortalVehicleBirthActorReferenceTests
             case "npcRealm": npc["NPCsInScene"]![0]!["materialization"]!["actorType"] = "guardian"; break;
         }
         var issues = MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthActorReferences(vehicles, npc, factions, Compose(npc, false));
-        Assert.Contains(issues, i => i.Code == "mortal_vehicle_birth_reference_" + suffix &&
+        Assert.Contains(issues, i => i.Code == "resource_owner_vehicle_birth_reference_" + suffix &&
             i.FilePath.StartsWith("game_state/misc/vehicles.json.UpdateVehicles[0].", StringComparison.Ordinal));
+        Assert.Empty(ResourceRepairPacketBuilder.Build(issues));
+        Assert.True(ResourceRepairPacketBuilder.RequiresFailClosedRollback(issues));
     }
 
     [Fact]
