@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-vehicle-canonical-display",
+      "reason": "FR8 canonical-only current transport display, shared browser result and actual CLI command paths.",
+      "contracts": [
+        "Pending commands/legacy aliases never appear as accepted vehicles; exact active selection and canonical availability are rendered without changing movement or resource policy."
+      ]
+    },
+    {
       "category": "mortal-storage-current-normalization-control",
       "reason": "Independent review identified an existing populated location test calling the metadata-only normalizer without required accepted item/source binding.",
       "contracts": [

@@ -187,3 +187,15 @@ birth context is not claimed. No new coverage marker or legacy-save promotion is
 introduced. Later accepted movement/consumption must preserve historical evidence
 without rechecking birth capacity against changed live contents. Actual populated
 offscreen birth remains a separate required follow-on in this same task.
+
+## Canonical vehicle display (FR8 implementation decision)
+
+Both the real CLI transport screen and shared browser command result consume only
+the canonical `vehicles` array of an object root. Pending UpdateVehicles and its
+aliases, legacy root arrays, birth receipts, id/status/isActive aliases do not
+become accepted cards, actions, selection or availability. Selection is an exact
+ordinal join of canonical activeVehicleId and vehicleId. Unknown availability is
+shown as unknown rather than inferred. Retain existing layouts, resource display
+and movement commands. Do not add semantic validation or permission caching to UI.
+Each consumer reuses its existing native parsed DOM; trivial scalar presentation
+can share policy without converting/reparsing whole roots.

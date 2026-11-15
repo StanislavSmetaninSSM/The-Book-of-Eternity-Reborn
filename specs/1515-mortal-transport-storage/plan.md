@@ -8,6 +8,35 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Remaining blocks: canonical vehicle display first, 2026-11-15
+
+Base c1eac5c74a95a02769ee6a210ab3f53002204bcc. The user delegated both remaining
+functional blocks and final review, without another approval pause. Live issue
+1515 was reread; its legacy-promotion text remains superseded by the user's
+explicit pre-release/no-legacy policy. No scope change is needed.
+
+FR8 files: ExplorerMortalWorldCommandResultBuilder transport region and actual
+ExplorerMode.MetaLoreAndTravel.ShowTransport. Both currently accept aliases or
+pending state; both must read canonical fields and exact activeVehicleId. Use
+existing parsed JsonNode/JsonElement DATA, not a new reader/cache or validation
+layer. Keep resource projection and movement services unchanged. Existing
+transportRoutes/availableTransport summary aliases have no authority; remove their
+unneeded map/current reads rather than treating them as accepted vehicle state.
+
+- [x] Add minimal actual builder and CLI command causal tests for pending/root
+  alias exclusion, exact/null selection and availability; preserve canonical
+  positive/type/pocket controls. Own two new focused test partials only.
+- [ ] Save test-only checkpoint, build affected projects and run one narrow
+  category; distinguish actual causal RED from fixture or compile failures.
+- [ ] Correct only these consumer regions, preserve layouts and resource batch.
+- [ ] Save, verify narrow controls and impacted existing transport controls;
+  independent Sol XHigh review and final evidence verification.
+
+Test-only source now has 18 cases across 10 methods; no production change or execution yet. Expected 14 causal failures and 4 unchanged positive controls.
+
+Offscreen storage mapping proceeds read-only in parallel. Implementation remains
+serialized so builds and source checkpoints stay coherent. No merge or closure.
+
 ## Current-scene storage birth accepted, 2026-11-15
 
 Verified saved source: 819ef456f1bc0a832957510fddc609f5c6bf381b on

@@ -2,6 +2,39 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-canonical-display",
+      "responsibility": "#1515 FR8 actual shared browser result and CLI transport command display only canonical vehicles, availability and exact activeVehicleId.",
+      "excludes": "Vehicle birth admission, resource authority, movement policy and UI redesign.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs",
+        "BookOfEternityClient.Tests/MortalVehicleDisplayTests.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.VehicleDisplay.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleDisplayTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_VehicleDisplay_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-current-normalization-control",
       "responsibility": "#1515 affected current-scene metadata normalization and existing-destination storage parking/hydration; no incomplete cargo publication bypass.",
       "excludes": "Whole canonical normalization and offscreen storage births.",
