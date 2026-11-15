@@ -199,3 +199,122 @@ shown as unknown rather than inferred. Retain existing layouts, resource display
 and movement commands. Do not add semantic validation or permission caching to UI.
 Each consumer reuses its existing native parsed DOM; trivial scalar presentation
 can share policy without converting/reparsing whole roots.
+
+## Populated offscreen storage birth (next bounded FR5–FR7 block)
+
+This approved design extends the accepted empty `storagesToAdd` checkpoint; it is
+not an implementation or verification claim. The required new case creates a
+fresh storage directly at an exact active pre-turn Mortal location B while A
+remains current. Its fresh items are born at B in that same accepted turn.
+Creating a current-scene storage and subsequently parking it is not a substitute.
+The accepted current-scene creation path and existing empty additions remain
+supported without a retroactive evidence migration.
+
+### Raw authority and prepared coordinates
+
+Reuse the closed `worldMapUpdates.storagesToAdd[i]` operation
+`{targetLocationId, storage}`. The target remains an exact permanent pre-turn
+location identity, never a same-turn initialId or an inferred/confusable target.
+The storage retains all existing complete metadata fields and explicit `contents`;
+nonempty contents contain fresh, complete item declarations. Their existing route
+is `storage_placement`, with source authority kind `location_storage` and exact
+client-derived authorityId `locationId:storageId`. Optional `cargoMeasurements`
+uses the already specified whole-stack/configuration format. No new item route,
+transfer permission or GM-authored permanent identity is introduced.
+
+Reject canonical-item injection without an independently authorized transfer,
+dangling/duplicate contents, reused active/historical/confusable child identities,
+conflicting birth/update/removal, wrong source coordinates and authored history.
+This block does not add a transfer-to-new-storage operation. Empty existing
+additions retain their accepted empty-carrier behavior.
+
+The first metadata plan retains detached raw storage DATA, derives its explicit
+item source coordinate, and allocates the existing child transition once. Each
+populated addition has an exact expected draft containing locationId, storageId,
+transitionId, operationRef `worldMapUpdates.storagesToAdd[i]`, source turn and raw
+storage path `worldMapUpdates.storagesToAdd[i].storage`. Authorization comes only
+from these validated commands, not all final-map storages, catalog membership or
+the absence of a location initialId. Conflicting alias/destination mappings fail
+explicitly; dictionary insertion must not silently choose one.
+
+Project raw cargo into the held plan's existing item-owned carrier after ordinary
+source parking and existing-destination hydration. For the required noncurrent B
+case this is the exact `(location_storage, B, storageId)` entry in
+`location_storage_contents.json`; do not place items in world-map metadata. The
+original location envelope/receipt stays unchanged. Preserve current storage,
+existing offscreen entries and unrelated location metadata.
+
+### Acyclic DATA reuse and fresh publication authority
+
+Keep the dependency order: validated location commands → stable coordinates/raw
+carrier projection → item catalog and route admission → frozen item allocations
+and projected item phase → storage evidence completion → existing writers.
+Location preparation must not depend on completed item allocation or evidence.
+The existing item loader and projector already consume the held
+`FinalStorageContents`; extend that seam rather than adding an inventory writer.
+
+Route admission may borrow the already built raw item catalog from the same
+`LoadMortalItemCatalogAsync` invocation and canonical lease. It is operation-local,
+read-only DATA over the same effective current/offscreen roots and prepared vehicle
+IDs, not a retained cache or publication permission. Freeze/detach admitted roots,
+routes and allocations through the existing snapshot owner. No borrowed mutable
+alias may escape or survive a repair, retry, source mutation or generation change.
+Preserve request/manifest, signed-baseline and NPC/quest/craft/trade authority
+reads. Eliminate only player/current/offscreen/vehicle reads and catalog rebuilding
+whose sole purpose was reconstructing that same occurrence catalog.
+
+Keep occurrence FilePath/JsonPath values on their effective canonical carriers;
+they participate in identity/allocation fingerprints. Separately remap repair
+errors through detached draft provenance to the exact raw command/storage/item
+field. Never redirect authority fingerprints or instruct the GM to repair a
+client-owned projected companion or history record.
+
+Use the existing fresh observed-input capture and common before-image fences for
+raw world-map commands, current/offscreen item roots, location/item indices,
+storage access, scaffold and relevant NPC/faction dependencies. Effective-root
+equality alone is insufficient. A route-based trigger can request fresh checks,
+but only the fresh matching held plan identifies expected births. Retain actual
+owner, lease, generation, source and opening/closing publication checks.
+
+### Atomic evidence and acceptance
+
+Finalize the existing typed storage-birth completion over the admitted item phase
+and one shared projected graph. Reuse the real-coordinate capacity core, exact
+arithmetic and historical configuration validation. Compare immutable metadata
+with the prepared accepted map, and contents with the exact projected carrier.
+Allocate nothing during finalization and never mutate the cached metadata plan.
+Persist the existing version-1 `cargoBirthEvidence` only in the exact
+`storage_addition.afterState`; bind child/location, accepted source turn,
+session/request/snapshot and detached measurements. The parent receipt is unchanged.
+Every expected populated draft must complete before the first governed write, and
+closing readback must match the completed index. Existing metadata/item writers,
+common transaction, backups and rollback own all effects together: storage, item
+identities/receipts, capacity history and effective access. No archive, new receipt
+file, authority service, coverage marker or cache is added.
+
+Minimal evidence for this block is:
+
+- Cheap independent typed controls for direct offscreen preparation, exact draft
+  and route coordinates, conflicting mappings, detached completion, wrong-carrier
+  refusal and raw diagnostic provenance. Retain current-scene and existing empty
+  addition/parking/hydration controls rather than broadening their suites.
+- A real noncurrent B birth with fresh same-turn items, permanent identities and
+  exact source-bound child history/access. Include a measured nested/stack load;
+  equality with the declared limits succeeds and violated limits fail with indexed
+  diagnostics and unchanged tracked bytes/absence. Repeated admission must not
+  allocate duplicate identities or history.
+- Invalid item/source/coordinate and post-admission source-drift refusal, including
+  proof that raw map and companion dependencies remain fenced.
+- A reached existing offscreen-contents publication cut proving restoration of
+  all tracked bytes/absence, history/access and generation, not merely an earlier
+  validation exception.
+- A subsequent accepted travel to B followed by the existing retrieve/deposit
+  consumer, preserving item/resource identity and immutable birth evidence after
+  live contents change. Explicit restricted access must remain restricted.
+
+Synchronize the GM rules, actual daemon, worked noncurrent birth example and narrow
+source/repair guards with the supported raw contract. Use fresh matching builds
+and impact-selected official categories after a saved checkpoint, followed by
+independent whole-block review. No full suite, hosted CI, merge or issue closure.
+Optimization evidence must distinguish eliminated duplicate DATA reconstruction
+from mandatory fresh source/closing checks; no speedup is claimed without measurement.

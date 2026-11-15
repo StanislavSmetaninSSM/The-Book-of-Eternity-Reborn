@@ -8,6 +8,18 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Independent display review: strict selected-ID type, 2026-11-15
+
+The independent reviewer identified JSON scalar coercion: numeric/bool
+activeVehicleId matched the corresponding string vehicleId in both readers.
+Saved test-only f4db49be205c012aa5b30b5a86e4c4358fbcbbac proves it:
+unit17 completed15PASS/2causalFAIL; actualCLI13 completed11PASS/2causalFAIL.
+The previous six eligibility cases and the retained actual inventory transfer now
+pass. Runner times10.282s/10.284s, complete ownership cleanup, no skips/duplicates
+or timeout. Fresh unit build79.82s/57warnings, integration58.46s/124warnings,
+zero errors. Only native string-kind extraction is now released; no broader
+validation or gameplay changes. Final GREEN/review remains pending.
+
 ## Canonical display correction and exact-identity RED, 2026-11-15
 
 Saved source fce11b6b9139041fdb7cb74b537274dd2fc73497. Corrected rendering

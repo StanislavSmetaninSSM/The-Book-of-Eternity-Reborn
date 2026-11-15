@@ -6310,7 +6310,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Specs: []);
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var vehiclesRead = await ReadJson(fs, "game_state/misc/vehicles.json");
-        var activeVehicleId = GetNodeString(vehiclesRead.Node, "activeVehicleId");
+        var activeVehicleId = vehiclesRead.Node is JsonObject vehicleState &&
+                              vehicleState["activeVehicleId"] is JsonValue selectedIdentity &&
+                              selectedIdentity.TryGetValue<string>(out var selectedId)
+            ? selectedId
+            : null;
         var blocks = new List<UiBlock>();
         var entries = EnumerateVehicleObjects(vehiclesRead.Node)
             .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle, activeVehicleId))

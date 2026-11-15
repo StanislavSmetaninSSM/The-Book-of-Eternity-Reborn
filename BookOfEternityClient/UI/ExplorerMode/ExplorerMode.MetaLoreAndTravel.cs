@@ -609,7 +609,10 @@ public partial class ExplorerMode
         if (doc == null || doc.RootElement.ValueKind != JsonValueKind.Object)
         { ShowEmptyPanel(_loc.T("transport"), "Транспорта нет"); return; }
 
-        var activeVehicleId = GetStr(doc.RootElement, "activeVehicleId", "");
+        var activeVehicleId = doc.RootElement.TryGetProperty("activeVehicleId", out var selectedIdentity) &&
+                              selectedIdentity.ValueKind == JsonValueKind.String
+            ? selectedIdentity.GetString()
+            : null;
         var vehicles = new List<(string name, string type, bool active, string id, JsonElement el)>();
         EnumerateArray(doc.RootElement, "vehicles", item =>
         {
