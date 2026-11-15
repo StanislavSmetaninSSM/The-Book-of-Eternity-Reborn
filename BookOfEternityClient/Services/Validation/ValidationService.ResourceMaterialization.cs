@@ -433,6 +433,7 @@ public partial class ValidationService
                 manifest.ManifestPayloadHash, spiritualCapture?.Allocations.Items);
         var previousMortalRoots = await ReadMortalResourceOwnerRootsAsync(manifest, issues, writeLease);
         var currentMortalRoots = await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs);
+        IReadOnlyDictionary<string, CanonicalBeforeImage>? cargoBeforeImages = null;
         MortalVehicleBirthPreparation? preparedVehicles = null;
         var currentVehicleBirthInput = currentMortalRoots.Vehicles;
         if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
@@ -460,6 +461,9 @@ public partial class ValidationService
                     !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()
                         .GetValueOrDefault(StorageTransportMoveService.VehiclesPath), currentVehicleBirthInput))
                     throw new InvalidDataException("Cargo requires the exact current raw vehicle item snapshot.");
+                cargoBeforeImages = await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
+                if (cargoBeforeImages is null)
+                    return issues;
                 var birthIds = MortalVehicleCargoProjection.BirthIds(itemSnapshot.CloneRouteCatalog());
                 foreach (var pair in birthIds)
                     if (!preparedVehicles.TryResolve(pair.Key, out var vehicleId) || vehicleId != pair.Value)
@@ -1086,8 +1090,13 @@ public partial class ValidationService
                 return issues;
             }
         }
-        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths, currentInputs, writeLease))
+        var beforeImages = (await CaptureResourceBeforeImagesAsync(
+                beforePaths.Where(path => cargoBeforeImages is null || !cargoBeforeImages.ContainsKey(path)),
+                currentInputs, writeLease))
             .ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        if (cargoBeforeImages is not null)
+            foreach (var pair in cargoBeforeImages)
+                beforeImages[pair.Key] = pair.Value;
         if (hasStagedFullPartyResourcePackets)
         {
             beforeImages[FullPartyInteractionsPath] = new CanonicalBeforeImage(

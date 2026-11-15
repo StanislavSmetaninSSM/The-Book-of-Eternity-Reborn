@@ -16,6 +16,18 @@ internal static class MortalTransportStorageContract
             Add(context, "complete vehicle creation object");
             return issues;
         }
+        if (!vehicle.TryGetProperty("inventory", out var inventory) || inventory.ValueKind != JsonValueKind.Array)
+            Add(context + ".inventory", "explicit cargo array containing item objects only");
+        else
+        {
+            var itemIndex = 0;
+            foreach (var item in inventory.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    Add($"{context}.inventory[{itemIndex}]", "complete item object");
+                itemIndex++;
+            }
+        }
         if (!vehicle.TryGetProperty("capacity", out var capacity) ||
             capacity.ValueKind != JsonValueKind.Number || !capacity.TryGetInt32(out var slots) || slots < 0)
             Add(context + ".capacity", "nonnegative integer direct-stack capacity");

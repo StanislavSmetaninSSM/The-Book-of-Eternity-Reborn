@@ -351,3 +351,15 @@ A follow-through regression now checks drift after resource admission but before
 normalization. Common source before-images must preserve the actual observed item
 dependencies, not merely check a stale projection once. No production fixes for
 these review findings have been applied yet.
+
+At 691d11d5 the additional post-resource drift leaf also causally fails: ordinary
+normalization throws no exception and uses stale item evidence. Total 2 PASS / 6
+FAIL, 17.165s, complete cleanup; build 118.00s, 0 errors. SOURCE corrections now
+require inventory arrays of objects before allocation, compare all live item
+projection dependencies using the same effective location projection, and preserve
+the checked raw before-images (including four transitive current location sources)
+in the common plan. Signed backup DATA remains from the currently validated manifest.
+These are not a new cache or inventory writer. The ordinary item phase is projected
+for the vehicle companion and again by normalization; no speedup/cached-phase claim.
+Freshness observations add bounded reads/parse work, while preserving their first
+bytes avoids replacing checked facts with later changed captures. Verification pending.
