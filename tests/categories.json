@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-preparation",
+      "responsibility": "#1515 ordinary pending-turn vehicle identity preparation and exact-source repetition before publication.",
+      "excludes": "Cargo projection, specialized spiritual capture, full birth authority and publication receipt remain separate.",
+      "changeHints": ["BookOfEternityClient/Services/MortalResourceOwnerComposer.cs", "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthPreparationTests.*"] }]
+    },
+    {
       "id": "mortal-vehicle-birth-allocation-interop",
       "responsibility": "#1515 migrate ordinary Mortal vehicle birth fixtures used by the existing original allocation capture/replay paths; preserve those paths unchanged.",
       "excludes": "No new spiritual combat behavior, broad afterlife suite or feature qualification.",

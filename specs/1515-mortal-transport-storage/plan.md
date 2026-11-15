@@ -62,6 +62,28 @@ The complete map input/source/factory identity and invalidation must be tested;
 identity DATA is never permission to publish. See spec for historical quantity/shape
 measurement binding. Receipt/access/storage and bounded repair remain subsequent work.
 
+### Next implementation step: ordinary allocation preparation
+
+Clean restore of checkpoint `627eac3f7772cf63b4332ba940eb04bc7a2f7931` verified
+exact HEAD, clean status and `git fsck --connectivity-only` in a fresh directory.
+
+- [ ] Causal RED integration test repeats ordinary raw resource admission for the
+  same authenticated pending snapshot and asserts one stable vehicle identity.
+- [ ] `MortalVehicleBirthPreparation.Prepare(JsonObject pre, JsonObject raw,
+  VehicleIdentityFactory factory)` produces detached exact ref-to-ID DATA after
+  preassigned/duplicate identity and structural-birth checks. No writes/authority.
+- [ ] Existing `AcceptedTurnAuthorityRegistry` retains preparation for exact
+  session/snapshot token, pre/raw vehicle bytes and current root generation under
+  its existing gate. An input change or full invalidation discards it; no new cache
+  owner/static dictionary. The lease/generation is checked on every access.
+- [ ] `MortalResourceOwnerCompositionInput.PreparedVehicles` is optional detached
+  preparation; the ordinary resource service passes it and the composer looks up
+  the existing allocation instead of minting twice. Direct pure composition retains
+  its explicit factory path. This step leaves specialized original spiritual capture
+  on its existing selected factory path; it adds no spiritual replay behavior.
+- [ ] Targeted replay/source-change regression, independent review and checkpoint;
+  then extend the same preparation into raw item intake/catalog/route/projection.
+
 ## Earlier checkpoint — active selection verified, 2026-11-15
 
 Verified source: `633ce3d774ae8a422c8ac914366f34f058e669d2` on this task branch.
