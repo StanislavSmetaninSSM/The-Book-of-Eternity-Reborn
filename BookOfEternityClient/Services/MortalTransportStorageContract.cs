@@ -16,6 +16,8 @@ internal static class MortalTransportStorageContract
             Add(context, "complete vehicle creation object");
             return issues;
         }
+        if (vehicle.TryGetProperty("cargoBirthEvidence", out _))
+            Add(context + ".cargoBirthEvidence", "client-owned historical evidence; omit from raw birth");
         if (!vehicle.TryGetProperty("inventory", out var inventory) || inventory.ValueKind != JsonValueKind.Array)
             Add(context + ".inventory", "explicit cargo array containing item objects only");
         else

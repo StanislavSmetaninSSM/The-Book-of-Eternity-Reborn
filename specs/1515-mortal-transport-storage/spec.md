@@ -81,3 +81,12 @@ Allocation and receipt/resource normalization alone do not change the basis.
 After birth the evidence remains immutable historical DATA, never current capacity
 or access authority. This representation implements the approved historical
 quantity/shape binding without inventing container exterior from interior volume.
+
+Measurement rows select direct cargo roots only; descendants appear exclusively
+in the configuration graph. Basis clones use the existing governed reference
+rewriter with the same frozen item allocation map before semantic comparison.
+Validate the actual nonempty container graph before selecting roots; zero roots
+is not proof of an empty load. Arithmetic compares exact decimal values of
+invariant round-trip finite-double representations (not original JSON tokens).
+It normalizes signed zero, preserves the finite-double numeric domain and avoids
+epsilon-based over-capacity acceptance, including fractional equality.

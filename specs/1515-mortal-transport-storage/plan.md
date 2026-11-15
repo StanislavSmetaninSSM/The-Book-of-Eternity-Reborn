@@ -447,3 +447,13 @@ Capacity WIP adds three actual admission refusal cases (slot overflow, physical
 volume overflow, and missing explicit multi-unit measurement). Production is
 unchanged; behavioral RED is expected but unrun. Each case proves item admission
 first, then checks the capacity diagnostic and six unchanged raw paths.
+
+At a0e1570d, actual capacity admission gives **0 PASS / 3 causal FAIL**: each
+refusal assertion receives an empty issue list after successful item admission.
+Official runner 12.610s, 3/3 completed, cleanup complete; build120.15s/0 errors.
+No compile or fixture failure counted. Implementation is now WIP: one projected
+catalog scan plus pure helper, and detached evidence on the common vehicle
+companion. A separate two-case cheap composer test targets historical evidence
+mutation (direct and command); this guard is not yet implemented or verified.
+Independent design review accepts exact roundtrip-double arithmetic, existing
+reference rewriting, direct-root rows and graph-before-roots invariants.

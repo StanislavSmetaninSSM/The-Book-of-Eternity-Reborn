@@ -163,6 +163,34 @@ public sealed class MortalVehicleBirthContractTests
             "vehicles.UpdateVehicles[0].inventory[0]", MortalItemMaterializationPhase.RawPreSeal));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Compose_RejectsHistoricalCargoEvidenceMutation(bool command)
+    {
+        var before = Compose(EmptyRoot(), BirthRoot()).OwnerCompanionAfterImages[
+            StorageTransportMoveService.VehiclesPath].DeepClone().AsObject();
+        var vehicle = before["vehicles"]![0]!.AsObject();
+        vehicle["cargoBirthEvidence"] = new JsonObject { ["schemaVersion"] = 1, ["sourceTurn"] = 42 };
+        var current = before.DeepClone().AsObject();
+        if (command)
+            current["UpdateVehicles"] = new JsonArray(new JsonObject
+            {
+                ["vehicleId"] = vehicle["vehicleId"]!.DeepClone(),
+                ["cargoBirthEvidence"] = new JsonObject { ["schemaVersion"] = 1, ["sourceTurn"] = 99 }
+            });
+        else current["vehicles"]![0]!["cargoBirthEvidence"]!["sourceTurn"] = 99;
+        var original = before.ToJsonString();
+        var proposal = current.ToJsonString();
+
+        var result = Compose(before, current);
+
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_birth_evidence_immutable");
+        Assert.Null(result.Authority);
+        Assert.Equal(original, before.ToJsonString());
+        Assert.Equal(proposal, current.ToJsonString());
+    }
+
     private static void AssertRejectedWithoutMutation(JsonObject current)
     {
         var before = EmptyRoot();

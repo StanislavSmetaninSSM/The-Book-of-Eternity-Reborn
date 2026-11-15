@@ -435,6 +435,8 @@ public partial class ValidationService
         var currentMortalRoots = await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs);
         IReadOnlyDictionary<string, CanonicalBeforeImage>? cargoBeforeImages = null;
         MortalVehicleBirthPreparation? preparedVehicles = null;
+        MortalItemCanonicalProjectionResult? capacityItemPhase = null;
+        var capacityCreationIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var currentVehicleBirthInput = currentMortalRoots.Vehicles;
         if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
         {
@@ -464,7 +466,11 @@ public partial class ValidationService
                 cargoBeforeImages = await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
                 if (cargoBeforeImages is null)
                     return issues;
-                var birthIds = MortalVehicleCargoProjection.BirthIds(itemSnapshot.CloneRouteCatalog());
+                var cargoRoutes = itemSnapshot.CloneRouteCatalog();
+                var birthIds = MortalVehicleCargoProjection.BirthIds(cargoRoutes);
+                foreach (var creationRef in cargoRoutes.ByCreationRef.Keys)
+                    if (itemSnapshot.TryGetAllocatedItemId(creationRef, out var itemId))
+                        capacityCreationIds.Add(creationRef, itemId);
                 foreach (var pair in birthIds)
                     if (!preparedVehicles.TryResolve(pair.Key, out var vehicleId) || vehicleId != pair.Value)
                         throw new InvalidDataException("Cargo and vehicle preparation identities must agree exactly.");
@@ -476,6 +482,7 @@ public partial class ValidationService
                 if (itemPhase.ItemPhaseAfterImages.GetValueOrDefault(StorageTransportMoveService.VehiclesPath)
                     is not JsonObject projectedVehicles)
                     throw new InvalidDataException("Cargo projection must retain the vehicle command root.");
+                capacityItemPhase = itemPhase;
                 currentMortalRoots = new MortalResourceOwnerRoots(currentMortalRoots.NpcCore,
                     currentMortalRoots.EnemyCombatants, currentMortalRoots.AllyCombatants, projectedVehicles);
             }
@@ -487,6 +494,12 @@ public partial class ValidationService
                 return issues;
             }
         }
+        var cargoBirthEvidence = spiritualCapture is null && preparedVehicles is not null
+            ? ValidateMortalVehicleBirthCapacity(currentVehicleBirthInput, preparedVehicles,
+                capacityItemPhase, capacityCreationIds, manifest.TurnNumber, issues)
+            : new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            return issues;
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions, previousMortalRoots, currentMortalRoots,
                 BuildSameTurnResourceOwnerCapabilities(commands),
@@ -516,6 +529,30 @@ public partial class ValidationService
             ownerComposition.Authority == null)
         {
             return issues;
+        }
+
+        if (cargoBirthEvidence.Count > 0)
+        {
+            var attached = 0;
+            if (ownerComposition.OwnerCompanionAfterImages.TryGetValue(
+                    StorageTransportMoveService.VehiclesPath, out var cargoCompanion) &&
+                cargoCompanion["vehicles"] is JsonArray acceptedVehicles)
+                foreach (var acceptedVehicle in acceptedVehicles.OfType<JsonObject>())
+                    if (acceptedVehicle["vehicleId"] is JsonValue identity &&
+                        identity.TryGetValue<string>(out var vehicleId) &&
+                        cargoBirthEvidence.TryGetValue(vehicleId, out var evidence))
+                    {
+                        acceptedVehicle["cargoBirthEvidence"] = evidence.DeepClone();
+                        acceptedVehicle.Remove("cargoMeasurements");
+                        attached++;
+                    }
+            if (attached != cargoBirthEvidence.Count)
+            {
+                issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
+                    "resource_owner_vehicle_cargo_capacity_invalid",
+                    "one final companion for every verified birth evidence", "missing companion"));
+                return issues;
+            }
         }
 
         var owners = ownerComposition.Authority;

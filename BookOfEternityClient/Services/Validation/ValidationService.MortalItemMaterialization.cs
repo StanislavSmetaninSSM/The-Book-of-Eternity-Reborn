@@ -1601,7 +1601,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateCanonicalContainerPaths(
+    internal static void ValidateCanonicalContainerPaths(
         MortalItemCarrierCatalog catalog,
         List<ValidationIssue> issues)
     {

@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-cargo-capacity-policy",
+      "responsibility": "#1515 pure historical birth cargo measurement, exact finite-double roundtrip arithmetic, shape and containment binding, and immutable historical evidence boundary.",
+      "excludes": "Real publication, storage creation, post-birth movement policy and whole issue completion.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalCargoBirthCapacity.cs",
+        "BookOfEternityClient.Tests/MortalCargoBirthCapacityTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalCargoBirthCapacityTests.*",
+            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.Compose_RejectsHistoricalCargoEvidenceMutation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-cargo-capacity",
       "responsibility": "#1515 first-birth vehicle load refuses slot/volume overflow and unmeasured multi-unit cargo through actual ordinary admission.",
       "excludes": "Full measurement shape/graph, storage, post-birth movement and whole issue qualification.",
