@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-early-shape",
+      "responsibility": "#1515 existing full vehicle semantics at raw resource admission before publication, including original indexes and preceding existing partial updates.",
+      "excludes": "New movement policy, full location/access authority and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthShape_IsRejectedBeforeResourcePublication",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthShape_PreservesExistingPartialUpdateAndOriginalIndex"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-npc-item-interop",
       "responsibility": "#1515 genuine same-turn NPC with new_npc_inventory creationRef cargo controls a newly materialized vehicle; canonical actor evidence checked after item normalization.",
       "excludes": "General NPC inventory/lifecycle, equipment gameplay and whole transport/storage qualification.",

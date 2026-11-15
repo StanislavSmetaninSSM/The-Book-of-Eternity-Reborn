@@ -8,6 +8,24 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Actor reference checkpoint and next bounded shape gate, 2026-11-15
+
+At e276d5624, 52/52 unit PASS12.646s and27/27 combined PASS64.252s;
+2/6 descriptors complete, cleanup complete, no skips/duplicates/timeouts.
+Builds92.38s and62.49s,0 errors. Independent phase-fix review found no blockers.
+The restored clone now has exact e276d5624 source, clean worktree and fsck0;
+this is source recovery, not an extra build. Exact actor reference binding is
+qualified, not full FR1 or full actor semantics at this early boundary.
+
+Next: reuse existing full ValidateVehicleArray semantics at raw resource admission
+before publication. Existing MetaMisc validation remains after canonical publication
+and before final acceptance; do not describe this as successful malformed turns.
+Pass the raw whole UpdateVehicles array and already-read original vehicle state
+to preserve partial-update simulation and indexes without another snapshot read.
+Six new real boundary cases are UNRUN: four malformed full births and a valid/
+invalid birth after a genuine published existing vehicle's partial update.
+No production shape behavior changed yet.
+
 ## In progress — exact actor references, 2026-11-15
 
 Source2062371a:50/50unitPASS15.491s and26/26combinedPASS59.208s,

@@ -474,6 +474,72 @@ public sealed class MortalVehicleBirthCargoTests
             "trusted-local-publication-v1", "active.json")));
     }
 
+    [Theory]
+    [InlineData("type", "vehicle_invalid_type", ".type")]
+    [InlineData("availability", "vehicle_invalid_availability", ".availability")]
+    [InlineData("actions", "combat_action_empty_effects", ".actions[0].effects")]
+    [InlineData("description", "missing_required_string", ".description")]
+    public async Task BirthShape_IsRejectedBeforeResourcePublication(string field, string code, string suffix)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var root = BirthRoot();
+        var vehicle = root["UpdateVehicles"]![0]!.AsObject();
+        if (field == "description") vehicle.Remove(field);
+        else if (field == "actions") vehicle[field] = new JsonArray(
+            new JsonObject { ["actionName"] = "Probe", ["effects"] = new JsonArray() });
+        else vehicle[field] = "InvalidValue";
+        if (field == "availability") root.Remove("activeVehicleChange");
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureExactBytesAsync(new[]
+        { StorageTransportMoveService.VehiclesPath, ResourceMaterializationContract.StatePath,
+          ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.HistoryPath,
+          CanonicalResourceOwnerAuthorityComposer.AuthorityPath, MortalItemIdentityState.StatePath });
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error && issue.Code == code &&
+            issue.FilePath == StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[0]" + suffix);
+        await context.AssertExactBytesAsync(before);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BirthShape_PreservesExistingPartialUpdateAndOriginalIndex(bool missingDescription)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, BirthRoot());
+        Assert.DoesNotContain(await context.ValidateAcceptedTurnRawMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        await context.NormalizeAcceptedTurnAsync();
+        var root = (await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!;
+        var existingId = root["vehicles"]![0]!["vehicleId"]!.GetValue<string>();
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var birth = BirthRoot()["UpdateVehicles"]![0]!.DeepClone().AsObject();
+        birth["vehicleRef"] = "new_second_cart";
+        birth["availability"] = "Pocket";
+        if (missingDescription) birth.Remove("description");
+        root["UpdateVehicles"] = new JsonArray(
+            new JsonObject { ["vehicleId"] = existingId, ["description"] = "Updated description" }, birth);
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+
+        var issues = await context.ValidateAcceptedTurnRawMaterializationAsync();
+
+        if (missingDescription)
+        {
+            Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
+                issue.Code == "missing_required_string" &&
+                issue.FilePath == StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[1].description");
+            Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error &&
+                issue.FilePath.StartsWith(StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[0]", StringComparison.Ordinal));
+        }
+        else Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
     private static JsonObject CargoBirth(string authorityId)
     {
         var root = BirthRoot();
