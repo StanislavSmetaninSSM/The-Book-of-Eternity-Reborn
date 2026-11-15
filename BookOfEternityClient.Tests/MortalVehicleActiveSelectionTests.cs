@@ -177,6 +177,55 @@ public sealed class MortalVehicleActiveSelectionTests
         Assert.Empty(result.OwnerCompanionAfterImages);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Compose_CanonicalRetentionDoesNotUseTransientNamespace(bool explicitCommand)
+    {
+        var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        var created = Vehicle("unused", "Parked");
+        created.Remove("vehicleId");
+        created["vehicleRef"] = "vehicle_cart";
+        created["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "health", ["maximum"] = 100 })
+        };
+        current["UpdateVehicles"] = new JsonArray(created);
+        if (explicitCommand) current["activeVehicleChange"] = "vehicle_cart";
+        var result = Compose(before, current);
+        if (explicitCommand)
+            Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        else
+        {
+            Assert.Empty(result.Issues);
+            Assert.Equal("vehicle_cart", result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath]["activeVehicleId"]!.GetValue<string>());
+        }
+    }
+
+    [Theory]
+    [InlineData("selected")]
+    [InlineData("clear")]
+    [InlineData("duplicate")]
+    public void Compose_UsesAdmittedCaseInsensitiveAvailability(string scenario)
+    {
+        var before = Root(Vehicle("vehicle_cart", "active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        current["activeVehicleChange"] = scenario == "clear" ? null : "vehicle_cart";
+        if (scenario == "duplicate")
+        {
+            before["vehicles"]!.AsArray().Add(Vehicle("vehicle_other", "Parked"));
+            current["vehicles"]!.AsArray().Add(Vehicle("vehicle_other", "Active"));
+        }
+        var result = Compose(before, current);
+        if (scenario == "selected")
+            Assert.Empty(result.Issues);
+        else
+            Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+    }
+
     private static ResourceOwnerCompositionResult Compose(JsonObject before, JsonObject current) =>
         MortalResourceOwnerComposer.Compose(new MortalResourceOwnerCompositionInput(
             ResourceDefinitionCatalog.CreateBuiltIn(), Roots(before), Roots(current)));

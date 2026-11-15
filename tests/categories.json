@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-active-publication",
+      "responsibility": "#1515 exact same-turn active selection admission and existing common vehicle/health publication plus removal; related existing vehicle owners.",
+      "excludes": "Full transport/storage cargo and access qualification, UI and all resource owner families.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.InventoryNpcWorldCrossRefs.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleActiveSelectionIntegrationTests.*",
+            "BookOfEternityClient.Tests.ResourceVehicleOwnerTests.*",
+            "BookOfEternityClient.Tests.ResourceVehicleIntegrationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-active-selection",
       "responsibility": "#1515 exact active vehicle selection reduction through existing vehicle owner composer; existing and same-turn identity.",
       "excludes": "Full vehicle semantics, storage access, live publication and UI.",

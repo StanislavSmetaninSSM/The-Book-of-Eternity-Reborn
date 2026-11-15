@@ -84,3 +84,5 @@ Continuity RED at dae28787: 13 planned/executed, 10 PASS and exactly 3 expected 
 Added one further pending case: a new Active vehicle without an explicit selection must not leave canonical selection absent. Next run expects this remaining RED while verifying the three continuity fixes.
 
 At a464fcda, all 13 prior cases passed and only the new missing-selection case failed as expected (14/14 executed, 9.061s runner, 90.51s build). Selection agreement is now checked even without a command, and every published vehicle after-image emits activeVehicleId (null when no vehicle is Active). Final GREEN and review pending.
+
+Independent fresh-context Sol 6.1 XHigh review found two Important reducer defects: retained canonical IDs must ignore the transient namespace, and Active detection must match the existing case-insensitive availability contract (identities remain exact). Five regression cases added, UNRUN, before fixes. Added real cross-reference/common-publication integration tests plus existing ResourceVehicleOwner/Integration selections in a narrow category; no broad resource family run. New integration checks are UNRUN.
