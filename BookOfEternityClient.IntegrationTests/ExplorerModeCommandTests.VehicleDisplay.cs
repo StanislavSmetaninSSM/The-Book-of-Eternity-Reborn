@@ -31,6 +31,26 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Equal(before, await _fs.ReadFileBytesAsync(StorageTransportMoveService.VehiclesPath));
     }
 
+    [Theory]
+    [InlineData("123", "123")]
+    [InlineData("true", "true")]
+    public async Task TryProcessCommand_VehicleDisplay_DoesNotCoerceNonStringActiveIdentity(string selectedJson, string vehicleId)
+    {
+        await SeedMortalStateAsync();
+        var root = VehicleDisplayRoot();
+        root["activeVehicleId"] = JsonNode.Parse(selectedJson);
+        root["vehicles"]![0]!["vehicleId"] = vehicleId;
+        await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
+
+        await ExecuteVehicleDisplayCommandAsync();
+
+        AssertNoHiddenExplorerErrors("vehicle_display_selection_type");
+        var choices = _console.SelectionChoicesHistory.First(p => p.Title.Contains("Транспорт", StringComparison.Ordinal)).Choices;
+        var vehicleChoice = Assert.Single(choices.Where(c => c.Contains("Каноническая телега", StringComparison.Ordinal)));
+        Assert.DoesNotContain("✓", vehicleChoice, StringComparison.Ordinal);
+        Assert.Contains("Припаркован", ExtractRenderedText(), StringComparison.Ordinal);
+    }
+
     [Fact]
     public async Task TryProcessCommand_VehicleDisplay_RejectsLegacyRootArray()
     {

@@ -116,6 +116,24 @@ public sealed class MortalVehicleDisplayTests : IDisposable
     }
 
     [Theory]
+    [InlineData("123", "123")]
+    [InlineData("true", "true")]
+    public async Task Selection_DoesNotCoerceNonStringActiveIdentity(string selectedJson, string vehicleId)
+    {
+        var root = CanonicalRoot();
+        root["activeVehicleId"] = JsonNode.Parse(selectedJson);
+        root["vehicles"]![0]!["vehicleId"] = vehicleId;
+        await WriteVehiclesAsync(root);
+
+        foreach (var command in new[] { "/transport", "/transport vehicle " + vehicleId })
+        {
+            var result = await BuildAsync(command);
+            Assert.Equal("нет", Assert.Single(Facts(result.Blocks).Where(f => f.Key == "Выбран")).Value);
+            Assert.Contains(Dossiers(result.Blocks), d => d.Title.Contains("Каноническая телега", StringComparison.Ordinal));
+        }
+    }
+
+    [Theory]
     [InlineData("Active", true)]
     [InlineData("Pocket", false)]
     public async Task Detail_LegacyStatusAndIsActiveDoNotSupplyAvailability(string status, bool isActive)
