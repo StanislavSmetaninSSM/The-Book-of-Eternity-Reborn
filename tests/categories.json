@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-actor-reference-policy",
+      "responsibility": "#1515 pure exact Faction/NPC birth binding, accepted composition identities, Mortal evidence, legitimate mirrors and protected failure routing.",
+      "excludes": "Filesystem admission, publication, location and effective access.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.VehicleBirthReferences.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthActorReferenceTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-actor-references",
       "responsibility": "#1515 first vehicle birth exact Faction owner and Mortal NPC controller references at resource admission, with and without cargo.",
       "excludes": "Location selector, full vehicle semantics, ordinary lifecycle access and whole issue qualification.",
@@ -22,12 +46,6 @@
           "tests": [
             "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReferences_RejectUnknownOwnerOrController",
             "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthFactionReference_PublishesOrRejectsDependencyDrift"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.MortalVehicleBirthActorReferenceTests.*"
           ]
         }
       ]
