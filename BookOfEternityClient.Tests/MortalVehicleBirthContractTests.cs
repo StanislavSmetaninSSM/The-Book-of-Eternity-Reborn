@@ -151,6 +151,13 @@ public sealed class MortalVehicleBirthContractTests
             Assert.Contains("UpdateVehicles[i].vehicleRef", text, StringComparison.Ordinal);
             Assert.Contains("does not authorize existing-item transfers", text, StringComparison.Ordinal);
         }
+        foreach (var path in new[] { "Rules/Block_10.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var references = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("exact accepted Mortal faction", references, StringComparison.Ordinal);
+            Assert.Contains("complete Mortal NPC materialization evidence", references, StringComparison.Ordinal);
+            Assert.Contains("same-turn initialId", references, StringComparison.Ordinal);
+        }
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         Assert.Contains("mortal_vehicle_birth_cargo_example", daemon, StringComparison.Ordinal);
         foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_10.txt", "Rules/Block_19.A.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })

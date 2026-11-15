@@ -20,7 +20,14 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReferences_RejectUnknownOwnerOrController"
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReferences_RejectUnknownOwnerOrController",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthFactionReference_PublishesOrRejectsDependencyDrift"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthActorReferenceTests.*"
           ]
         }
       ]

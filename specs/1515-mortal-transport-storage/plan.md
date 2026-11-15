@@ -10,16 +10,28 @@
 
 ## In progress — exact actor references, 2026-11-15
 
-Bounded next deliverable: new vehicle Faction owner and NPC controller must resolve
-through existing Mortal location actor/faction authority using exact accepted
-current roots. Reuse cargo's captured current observations when present; otherwise
-capture only the needed roots once and retain those same before-images through
-common publication. No extra persistent cache or authority registry. Existing
-actor/faction admission remains responsible for complete entity semantics; vehicle
-binding is not a replacement for their validation. Player stays player_current.
-Location selectors and full vehicle semantics are examined separately, not claimed
-by this block. Four real admission refusals (cargo/empty × Faction/NPC) are added;
-execution is UNRUN before source publication. No production behavior changed yet.
+Source4837d5ba7f5a53968c3b1aadebd6f8f9ad842d85 proved4/4 causal RED:
+unknown Faction/NPC × cargo/empty produced no resource-admission issue. Official
+mortal-vehicle-birth-actor-references completed4 cases,0 PASS/4 FAIL,15.333s,
+no skips/duplicates/timeout and complete cleanup; integration build121.40s,0 errors.
+
+WIP fix: selected NPC identity comes from successful existing Mortal owner
+composition (including exact mirror/duplicate rules), then its existing Mortal actor
+envelope validator. Faction binding reuses location's strict faction authority and
+exact name. Cheap pure fixtures cover permanent/new identities and refusals; real
+resource admission covers missing references plus exact faction publication/source
+drift with cargo and empty inventory. New source verification/review is UNRUN.
+
+Optimization: cargo observations are reused without rereading. Empty inventory
+captures only vehicle/NPC/faction roots once and retains identical before-images
+through publication; previously read vehicle/NPC values must match. Selected NPC
+evidence is checked once per distinct ID. No persistent cache/registry, no permission
+reuse. Actor/faction full admission remains independent. Existing late vehicle Meta
+shape checks already prevent final acceptance; their earlier publication boundary
+and location selector are separate remaining work, not an absent global validator.
+Primary vehicle rules and delivered daemon describe exact references; existing
+player-owned cargo example is unchanged because it has no Faction/NPC reference.
+No hosted CI, main merge or issue closure. Next: serial targeted verification/review.
 
 ## Current checkpoint — birth cargo capacity verified, 2026-11-15
 

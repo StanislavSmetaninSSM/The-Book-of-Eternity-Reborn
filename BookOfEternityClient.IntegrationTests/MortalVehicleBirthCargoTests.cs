@@ -39,6 +39,53 @@ public sealed class MortalVehicleBirthCargoTests
         await context.AssertExactBytesAsync(before);
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task BirthFactionReference_PublishesOrRejectsDependencyDrift(bool withCargo, bool drift)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var faction = EffectMaterializationTestFixture.CreateSameTurnMortalFaction("faction_cart");
+        faction["factionId"] = "faction_cart";
+        faction.Remove("initialId");
+        faction.Remove("isNewFaction");
+        faction.Remove("activeEffectDefinitions");
+        var factions = new JsonObject { ["factions"] = new JsonArray(faction) };
+        await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var root = withCargo ? CargoBirth("new_cart") : BirthRoot();
+        root["UpdateVehicles"]![0]!["owner"] = new JsonObject
+        { ["ownerType"] = "Faction", ["ownerId"] = "faction_cart", ["ownerName"] = faction["name"]!.DeepClone() };
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.ValidateAcceptedTurnRawMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+
+        if (drift)
+        {
+            faction["name"] = "Changed after admission";
+            await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
+            var before = await context.CaptureExactBytesAsync(new[]
+            { StorageTransportMoveService.VehiclesPath, FactionCoreChangesContract.FactionCorePath,
+                MortalItemIdentityState.StatePath, ResourceMaterializationContract.StatePath,
+                ResourceMaterializationContract.HistoryPath });
+            await Assert.ThrowsAnyAsync<InvalidDataException>(() => context.NormalizeAcceptedTurnWithIssuesAsync());
+            await context.AssertExactBytesAsync(before);
+        }
+        else
+        {
+            await context.NormalizeAcceptedTurnAsync();
+            var acceptedRoot = (await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!;
+            var vehicle = Assert.Single(acceptedRoot["vehicles"]!.AsArray())!;
+            Assert.False(acceptedRoot.AsObject().ContainsKey("UpdateVehicles"));
+            Assert.Equal("faction_cart", vehicle["owner"]!["ownerId"]!.GetValue<string>());
+            Assert.Equal(faction["name"]!.GetValue<string>(), vehicle["owner"]!["ownerName"]!.GetValue<string>());
+            Assert.Equal(withCargo ? 1 : 0, vehicle["inventory"]!.AsArray().Count);
+        }
+    }
+
     [Fact]
     public async Task SameTurnVehicleBirth_SealsCargoWithPermanentCarrierAndHealth()
     {

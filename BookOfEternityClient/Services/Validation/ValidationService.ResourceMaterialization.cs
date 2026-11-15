@@ -500,6 +500,16 @@ public partial class ValidationService
             : new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
+        VehicleBirthActorInputs? vehicleActorInputs = null;
+        if (spiritualCapture is null && preparedVehicles is not null &&
+            HasVehicleBirthActorReferences(currentVehicleBirthInput))
+        {
+            vehicleActorInputs = await CaptureVehicleBirthActorInputsAsync(currentVehicleBirthInput,
+                currentMortalRoots.NpcCore, cargoBeforeImages, writeLease, issues);
+            if (vehicleActorInputs is null)
+                return issues;
+            cargoBeforeImages = vehicleActorInputs.Observations;
+        }
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions, previousMortalRoots, currentMortalRoots,
                 BuildSameTurnResourceOwnerCapabilities(commands),
@@ -508,6 +518,14 @@ public partial class ValidationService
             ? MortalResourceOwnerComposer.Compose(mortalOwnerInput)
             : MortalResourceOwnerComposer.Compose(mortalOwnerInput,
                 spiritualCapture.Allocations.Effects, spiritualCapture.Allocations.Vehicles);
+        if (vehicleActorInputs is not null && mortalOwnerComposition.IsValid)
+        {
+            issues.AddRange(MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthActorReferences(
+                currentVehicleBirthInput, currentMortalRoots.NpcCore, vehicleActorInputs.Factions,
+                mortalOwnerComposition.Authority!));
+            if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                return issues;
+        }
         var preTurnAfterlifeOwners = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest,
             issues, writeLease);

@@ -90,3 +90,15 @@ is not proof of an empty load. Arithmetic compares exact decimal values of
 invariant round-trip finite-double representations (not original JSON tokens).
 It normalizes signed zero, preserves the finite-double numeric domain and avoids
 epsilon-based over-capacity acceptance, including fractional equality.
+
+## Vehicle birth actor references
+
+Faction owners resolve through the existing exact Mortal faction authority,
+including independently admitted same-turn creation, and retain the exact name.
+NPC controllers must belong to successful current Mortal resource owner composition;
+that existing composer rejects duplicate/divergent identities and permits legitimate
+identical cross-section mirrors. Validate the selected NPC's existing complete Mortal
+materialization evidence, not unrelated actors. Existing identity bytes are retained
+for same-turn NPC/faction initialId after normalization. No registry or inferred actor
+is introduced. Birth reference observations remain fenced through common publication.
+This is separate from location resolution and effective access.
