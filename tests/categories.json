@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-birth-player-access",
+      "responsibility": "#1515 exact single-player storage owner/recipient identities; explicit restricted access remains valid even for an owner.",
+      "excludes": "Faction authority, access grant/revoke engine, publication, storage capacity and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalStorageBirthAccessTests.cs",
+        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-location-bindings",
       "responsibility": "#1515 Exact canonical/same-turn parked birth location binding with original indexes and no mutation or allocation.",
       "excludes": "Post-birth travel, storage access and whole issue acceptance.",

@@ -8,6 +8,26 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Accepted location binding checkpoint and next storage slice, 2026-11-15
+
+Guidance source 4b976df6: 3/3 PASS in 21.017s, 2 descriptors, complete cleanup,
+no skips/duplicates/timeouts. Fresh builds have 0 errors. Independent final review
+found no Critical/Important issue in runtime 7b3c9f28 or delivered guidance.
+Fresh clean clone location-binding-restore matches 4b976df6; fsck exited 0.
+This qualifies exact vehicle birth locations, not post-birth travel or all #1515.
+
+Next bounded storage work: require the existing single-player identity
+player_current for Player/Shared storage owners and authorizedUsers. Unknown
+recipients must fail closed. Explicit hasFullAccess=false remains valid even for
+the owner: ownership must not bypass a closed object. Do not infer faction access
+from membership or add a grant/revoke engine. Existing source-turn location receipt,
+current/offscreen contents and common writer remain the owners of publication.
+Eight cheap contract cases are now added and UNRUN (three expected identity refusals,
+five current-identity/restricted-access controls). Production is unchanged. Then verify
+one real restricted storage birth, existing move-target consumer and reached rollback.
+Storage added to an existing location, nonempty capacity and access projection remain
+separate concrete gaps, not acceptance claims for this first slice.
+
 ## Location runtime verification, 2026-11-15
 
 At7b3c9f28:16/16 pure PASS9.815s and55/55 integration PASS56.621s;

@@ -112,3 +112,11 @@ stable IDs, location initialIds become newly allocated permanent IDs. Resolve on
 the detached final vehicle companion; never mutate the raw prepared birth. Empty
 cargo is not an exemption from fresh location source fences. Existing post-birth
 vehicle updates and travel remain outside this binding change.
+
+
+### Explicit restricted access
+The current single-player authority is player_current. Unknown Player/Shared
+storage owners or authorizedUsers are unsupported and fail closed. A known owner
+does not override explicit hasFullAccess=false: a closed owned object remains
+unavailable to the existing storage move consumer. Do not infer access from faction
+membership or silently widen permission while materializing the entity.
