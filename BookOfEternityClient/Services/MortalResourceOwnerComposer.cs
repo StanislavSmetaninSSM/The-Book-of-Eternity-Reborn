@@ -499,6 +499,7 @@ internal static class MortalResourceOwnerComposer
         var finalVehicles = vehicles.DeepClone().AsArray();
 
         var preTurnIds = new HashSet<string>(StringComparer.Ordinal);
+        var preTurnVehicleEvidence = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         var preTurnAliases = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < preTurnVehicles.Count; index++)
         {
@@ -535,6 +536,7 @@ internal static class MortalResourceOwnerComposer
                 new[] { "currentHealth", "maxHealth" },
                 issues);
             RejectExistingMaterialization(vehicle, path, issues);
+            preTurnVehicleEvidence.Add(vehicleId, vehicle);
             preTurnExports.Add(CreateExport(
                 definitions,
                 ResourceOwnerKind.Vehicle,
@@ -582,6 +584,17 @@ internal static class MortalResourceOwnerComposer
                     vehicleId);
                 continue;
             }
+
+            var original = preTurnVehicleEvidence[vehicleId];
+            var oldEvidence = original["cargoBirthEvidence"];
+            var currentEvidence = vehicle["cargoBirthEvidence"];
+            if (original.ContainsKey("cargoBirthEvidence") != vehicle.ContainsKey("cargoBirthEvidence") ||
+                (oldEvidence is null) != (currentEvidence is null) ||
+                oldEvidence is not null && currentEvidence is not null &&
+                    !MortalItemMaterializationContract.ImmutableEvidenceEquals(oldEvidence, currentEvidence) ||
+                vehicle.ContainsKey("cargoMeasurements"))
+                Add(issues, path + ".cargoBirthEvidence", "resource_owner_vehicle_birth_evidence_immutable",
+                    "unchanged historical birth evidence, no live remeasurement", "changed or injected birth facts");
 
             if (vehicle.ContainsKey("vehicleRef"))
             {
@@ -746,6 +759,13 @@ internal static class MortalResourceOwnerComposer
                 new[] { "currentHealth", "maxHealth" },
                 issues);
             RejectExistingMaterialization(update, path, issues);
+            if (update.ContainsKey("cargoBirthEvidence") || update.ContainsKey("cargoMeasurements"))
+            {
+                Add(issues, path + ".cargoBirthEvidence", "resource_owner_vehicle_birth_evidence_immutable",
+                    "historical birth evidence is not an ordinary update field", "birth evidence update");
+                continue;
+            }
+
 
             var matches = finalVehicles
                 .OfType<JsonObject>()

@@ -457,3 +457,11 @@ companion. A separate two-case cheap composer test targets historical evidence
 mutation (direct and command); this guard is not yet implemented or verified.
 Independent design review accepts exact roundtrip-double arithmetic, existing
 reference rewriting, direct-root rows and graph-before-roots invariants.
+
+At bb6a34e1 the cheap policy category completes 28/28: **26 PASS / 2 causal FAIL**
+(only the expected direct/command historical mutation diagnostics are absent).
+Runner9.776s, cleanup complete, build100.52s/0 errors. Historical evidence is now
+compared with signed pre-turn vehicle facts, and birth evidence/measurement fields
+are forbidden ordinary updates. A cheap positive explicitly avoids re-evaluating
+historical configuration after a later cargo quantity change; it does not claim
+item-consumption authorization. New source verification is pending.

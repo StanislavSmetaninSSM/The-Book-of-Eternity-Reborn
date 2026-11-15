@@ -22,7 +22,8 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalCargoBirthCapacityTests.*",
-            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.Compose_RejectsHistoricalCargoEvidenceMutation"
+            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.Compose_RejectsHistoricalCargoEvidenceMutation",
+            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.Compose_LaterCargoChangeDoesNotReevaluateHistoricalMeasurement"
           ]
         }
       ]
@@ -46,7 +47,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.CargoCapacityAdmission_RejectsUnprovedBirthLoadWithoutMutation"
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.CargoCapacityAdmission_RejectsUnprovedBirthLoadWithoutMutation",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.MeasuredStackBirth_PublishesBoundHistoricalConfiguration"
           ]
         }
       ]

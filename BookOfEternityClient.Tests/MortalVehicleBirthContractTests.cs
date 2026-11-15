@@ -191,6 +191,23 @@ public sealed class MortalVehicleBirthContractTests
         Assert.Equal(proposal, current.ToJsonString());
     }
 
+    [Fact]
+    public void Compose_LaterCargoChangeDoesNotReevaluateHistoricalMeasurement()
+    {
+        var before = Compose(EmptyRoot(), BirthRoot()).OwnerCompanionAfterImages[
+            StorageTransportMoveService.VehiclesPath].DeepClone().AsObject();
+        var vehicle = before["vehicles"]![0]!.AsObject();
+        vehicle["cargoBirthEvidence"] = new JsonObject { ["schemaVersion"] = 1, ["sourceTurn"] = 42 };
+        vehicle["inventory"] = new JsonArray(new JsonObject { ["itemId"] = "existing_item", ["count"] = 2 });
+        var current = before.DeepClone().AsObject();
+        current["vehicles"]![0]!["inventory"]![0]!["count"] = 1;
+        var result = Compose(before, current);
+        Assert.Empty(result.Issues);
+        Assert.True(JsonNode.DeepEquals(vehicle["cargoBirthEvidence"],
+            result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath]["vehicles"]![0]!["cargoBirthEvidence"]));
+        // This cheap owner-composition check is not an authorized item consumption test.
+    }
+
     private static void AssertRejectedWithoutMutation(JsonObject current)
     {
         var before = EmptyRoot();

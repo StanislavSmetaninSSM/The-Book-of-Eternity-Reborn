@@ -26,6 +26,15 @@ public sealed class MortalVehicleBirthCargoTests
         Assert.False(vehicle.ContainsKey("resourceMaterialization"));
         var cargo = Assert.Single(vehicle["inventory"]!.AsArray())!.AsObject();
         var itemId = cargo["itemId"]!.GetValue<string>();
+        var birthEvidence = vehicle["cargoBirthEvidence"]!.AsObject();
+        Assert.Equal(42, birthEvidence["sourceTurn"]!.GetValue<int>());
+        Assert.Equal(vehicleId, birthEvidence["vehicleId"]!.GetValue<string>());
+        var measured = Assert.Single(birthEvidence["cargoMeasurements"]!.AsArray())!;
+        Assert.Equal(itemId, measured["itemId"]!.GetValue<string>());
+        Assert.Equal(1, measured["count"]!.GetValue<int>());
+        Assert.NotNull(measured["configurationFingerprint"]);
+        Assert.Equal(cargo["volume"]!.GetValue<double>(), measured["externalVolumeDm3"]!.GetValue<double>());
+
         Assert.Equal(itemId, cargo["existedId"]!.GetValue<string>());
         Assert.NotNull(cargo["materializationReceipt"]);
         Assert.False(cargo.ContainsKey("creationRef"));
@@ -54,6 +63,45 @@ public sealed class MortalVehicleBirthCargoTests
             value => value.Coordinate.ResourceOwnerId == vehicleId && value.Coordinate.ResourceKey == "health");
         Assert.Equal(100m, health.Current);
         Assert.Equal(100m, health.Maximum);
+    }
+
+    [Fact]
+    public async Task MeasuredStackBirth_PublishesBoundHistoricalConfiguration()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var root = CargoBirth("new_cart");
+        var vehicle = root["UpdateVehicles"]![0]!.AsObject();
+        var item = vehicle["inventory"]![0]!.AsObject();
+        item["count"] = 2;
+        var shape = item.DeepClone().AsObject();
+        foreach (var field in new[] { "existedId", "creationRef", "materialization", "count", "contentsPath" })
+            shape.Remove(field);
+        vehicle["capacity"] = 1;
+        vehicle["volume"] = 0.1;
+        vehicle["cargoMeasurements"] = new JsonArray(new JsonObject
+        {
+            ["creationRef"] = "cargo_birth_item", ["count"] = 2, ["externalVolumeDm3"] = 0.1,
+            ["measuredConfiguration"] = new JsonObject
+            { ["schemaVersion"] = 1, ["item"] = shape, ["contents"] = new JsonArray() }
+        });
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+
+        await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
+
+        var after = (await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!;
+        var accepted = Assert.Single(after["vehicles"]!.AsArray())!.AsObject();
+        Assert.False(accepted.ContainsKey("cargoMeasurements"));
+        var cargo = Assert.Single(accepted["inventory"]!.AsArray())!;
+        var receipt = Assert.Single(accepted["cargoBirthEvidence"]!["cargoMeasurements"]!.AsArray())!;
+        Assert.Equal(cargo["itemId"]!.GetValue<string>(), receipt["itemId"]!.GetValue<string>());
+        Assert.Equal(2, receipt["count"]!.GetValue<int>());
+        Assert.Equal(0.1, receipt["externalVolumeDm3"]!.GetValue<double>());
+        Assert.NotNull(receipt["configurationFingerprint"]);
+        Assert.True(MortalItemMaterializationContract.ImmutableEvidenceEquals(shape,
+            receipt["measuredConfiguration"]!["item"]!));
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
     }
 
     [Theory]
