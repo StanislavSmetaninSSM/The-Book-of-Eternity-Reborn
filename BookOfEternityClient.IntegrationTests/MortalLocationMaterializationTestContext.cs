@@ -55,6 +55,7 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
             Path.GetTempPath(),
             "boe-mortal-location-materialization-" + Guid.NewGuid().ToString("N"));
         var context = new MortalLocationMaterializationTestContext(rootPath);
+        await context.WriteJsonAsync(MortalStorageAccessProjection.StatePath, MortalStorageAccessProjection.CreateEmptyRoot());
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             context.FileSystem);
         return context;
@@ -84,6 +85,9 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
             map["links"]!.AsArray().Add(link.DeepClone());
 
         await WriteJsonAsync(WorldMapPath, map);
+        var access = MortalStorageAccessProjection.Build(map, null);
+        if (!access.IsValid) throw new InvalidDataException("Invalid fixture storage metadata.");
+        await WriteJsonAsync(MortalStorageAccessProjection.StatePath, access.Root!);
         await WriteJsonAsync(
             CurrentLocationPath,
             MortalLocationTestFixture.CreateCurrentProjection(location));

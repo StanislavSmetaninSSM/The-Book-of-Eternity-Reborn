@@ -755,6 +755,10 @@ public static class StorageTransportMoveService
             if (vehicles[index] is not JsonObject vehicle)
                 continue;
 
+            if (vehicle["hasFullAccess"] is not JsonValue access ||
+                !access.TryGetValue<bool>(out var granted) || !granted)
+                continue;
+
             if (vehicle["inventory"] is not JsonArray inventory)
             {
                 if (requireInventoryArray)
@@ -792,7 +796,7 @@ public static class StorageTransportMoveService
             return resolved;
 
         return resolved.Message.Length == 0
-            ? ResolveTargetResult.Failed("Такого транспорта сейчас нет. Откройте форму заново.")
+            ? ResolveTargetResult.Failed("Такого доступного транспорта сейчас нет. Откройте форму заново.")
             : resolved;
     }
 

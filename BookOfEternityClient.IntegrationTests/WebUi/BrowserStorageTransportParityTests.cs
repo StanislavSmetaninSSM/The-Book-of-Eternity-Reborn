@@ -771,6 +771,86 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
         return Assert.Single(prompt.Options, option => option.Label.Contains(labelContains, StringComparison.OrdinalIgnoreCase)).Value;
     }
 
+    /// <summary>Player ownership must not expose a target without explicit effective access.</summary>
+    [Theory]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    [InlineData("false")]
+    [InlineData("missing")]
+    [InlineData("\"true\"")]
+    public async Task ReadVehicleMoveContext_ExcludesVehiclesWithoutExplicitTrueAccess(string accessJson)
+    {
+        await SeedStorageTransportStateAsync();
+        await SetVehicleExplicitAccessForTestAsync(accessJson);
+        var beforeVehicles = await _fs.ReadFileBytesAsync(StorageTransportMoveService.VehiclesPath);
+        var context = await StorageTransportMoveService.ReadVehicleMoveContextAsync(_fs);
+        Assert.True(context.Success, context.Message);
+        Assert.DoesNotContain(context.Vehicles, vehicle => vehicle.VehicleId == "wagon_1");
+        Assert.Equal(beforeVehicles, await _fs.ReadFileBytesAsync(StorageTransportMoveService.VehiclesPath));
+    }
+
+    /// <summary>Fresh write admission rejects unavailable access even with an exact stale target key.</summary>
+    [Theory]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    [InlineData("false")]
+    [InlineData("missing")]
+    [InlineData("\"true\"")]
+    public async Task MoveVehicleItem_RejectsUnavailableExplicitAccessWithoutMutation(string accessJson)
+    {
+        await SeedStorageTransportStateAsync();
+        await SetVehicleExplicitAccessForTestAsync("true");
+        // Establish that direction, target and existing accepted item are independently usable.
+        // This is read-only service validation, not an invented positive vehicle receipt or write.
+        var usable = await StorageTransportMoveService.ValidateVehicleMoveAsync(
+            _fs, StorageTransportMoveService.DirectionDeposit, "id:wagon_1", "id:blade_1");
+        Assert.True(usable.Success, usable.Message);
+        await SetVehicleExplicitAccessForTestAsync(accessJson);
+        var paths = new[] { StorageTransportMoveService.InventoryPath, StorageTransportMoveService.VehiclesPath,
+            StorageTransportMoveService.CurrentLocationPath, MortalItemIdentityState.StatePath };
+        var before = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+            before.Add(path, await _fs.ReadFileBytesAsync(path));
+
+        var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(
+            _fs, StorageTransportMoveService.DirectionDeposit, "id:wagon_1", "id:blade_1");
+
+        Assert.False(outcome.Success);
+        foreach (var path in paths)
+            Assert.Equal(before[path], await _fs.ReadFileBytesAsync(path));
+    }
+
+    /// <summary>An access filter must preserve an explicitly permitted existing target.</summary>
+    [Fact]
+    [Trait("Category", "BrowserStorageTransportParity")]
+    public async Task ReadVehicleMoveContext_OffersExplicitlyPermittedVehicle()
+    {
+        await SeedStorageTransportStateAsync();
+        await SetVehicleExplicitAccessForTestAsync("true");
+        var context = await StorageTransportMoveService.ReadVehicleMoveContextAsync(_fs);
+        Assert.True(context.Success, context.Message);
+        var vehicle = Assert.Single(context.Vehicles);
+        Assert.Equal("wagon_1", vehicle.VehicleId);
+        Assert.Equal("id:wagon_1", vehicle.Key);
+    }
+
+    /// <summary>Changes only explicit current access on the existing genuine transport fixture.</summary>
+    private async Task SetVehicleExplicitAccessForTestAsync(string accessJson)
+    {
+        var root = await ReadVehiclesAsync();
+        var vehicle = Assert.Single(root["vehicles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("wagon_1", vehicle["vehicleId"]!.GetValue<string>());
+        root["activeVehicleId"] = "wagon_1";
+        vehicle["currentLocationId"] = null;
+        vehicle["owner"] = new JsonObject
+        {
+            ["ownerType"] = "Player", ["ownerId"] = "player_current", ["ownerName"] = "Current player"
+        };
+        if (accessJson == "missing")
+            vehicle.Remove("hasFullAccess");
+        else
+            vehicle["hasFullAccess"] = JsonNode.Parse(accessJson);
+        await WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+    }
+
     private async Task SeedStorageTransportStateAsync(bool includeLocationItem = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -821,6 +901,7 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
                     {
                         ["vehicleId"] = "wagon_1",
                         ["name"] = "Старый фургон",
+                        ["hasFullAccess"] = true,
                         ["availability"] = "Active",
                         ["inventory"] = Items(rope)
                     }

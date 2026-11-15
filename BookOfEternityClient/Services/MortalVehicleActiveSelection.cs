@@ -49,6 +49,9 @@ internal static class MortalVehicleActiveSelection
             !activeId.TryGetValue<string>(out var activeText) ||
             !string.Equals(activeText, resolved, StringComparison.Ordinal))
             return Invalid(issues, "selected vehicle is the only final Active vehicle", identity);
+        if (active[0]["hasFullAccess"] is not JsonValue access ||
+            !access.TryGetValue<bool>(out var granted) || !granted)
+            return Invalid(issues, "selected vehicle has explicit hasFullAccess=true", identity);
         selectedVehicleId = resolved;
         return true;
     }
@@ -61,7 +64,7 @@ internal static class MortalVehicleActiveSelection
             "Active vehicle selection must agree with the accepted vehicle state.",
             code: "resource_owner_vehicle_active_selection_invalid", section: "Vehicles",
             expected: expected, actual: actual,
-            repairHint: "Choose one exact existing vehicleId or same-turn vehicleRef and explicitly set its availability to Active. Park the previous vehicle with its exact location; null requires no Active vehicle."));
+            repairHint: "Choose one accessible exact existing vehicleId or same-turn vehicleRef and explicitly set its availability to Active. Ownership does not override hasFullAccess=false; never invent permission. Park the previous vehicle with its exact location; null requires no Active vehicle."));
         return false;
     }
 }

@@ -14,7 +14,10 @@ internal sealed record MortalLocationAcceptedTurnInput(
     JsonObject? RawNpcCore = null,
     JsonObject? RawFactionCore = null,
     JsonObject? PreTurnStorageContents = null,
-    JsonObject? RawCurrentItemCarrier = null);
+    JsonObject? RawCurrentItemCarrier = null,
+    JsonObject? PreTurnStorageAccess = null,
+    JsonObject? RawStorageAccess = null,
+    bool ProjectStorageAccess = false);
 
 internal sealed record MortalLocationStorageCoordinate(
     string LocationId,
@@ -55,7 +58,8 @@ internal sealed class MortalLocationAcceptedTurnPlan
         IReadOnlyList<MortalLocationGovernedRewrite> governedRewrites,
         IReadOnlyList<string> touchedPaths,
         IReadOnlyList<MortalLocationRepairContext> repairContexts,
-        JsonObject? finalBootstrapScaffold = null)
+        JsonObject? finalBootstrapScaffold = null,
+        JsonObject? finalStorageAccess = null)
     {
         FinalWorldMap = finalWorldMap ?? throw new ArgumentNullException(nameof(finalWorldMap));
         FinalCurrentLocation = finalCurrentLocation;
@@ -68,7 +72,10 @@ internal sealed class MortalLocationAcceptedTurnPlan
         TouchedPaths = touchedPaths ?? throw new ArgumentNullException(nameof(touchedPaths));
         RepairContexts = repairContexts ?? throw new ArgumentNullException(nameof(repairContexts));
         FinalBootstrapScaffold = finalBootstrapScaffold;
+        FinalStorageAccess = finalStorageAccess;
     }
+
+    internal JsonObject? FinalStorageAccess { get; }
 
     internal JsonObject FinalWorldMap { get; }
 

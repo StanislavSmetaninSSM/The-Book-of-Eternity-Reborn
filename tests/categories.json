@@ -2,6 +2,183 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-receipt-publication",
+      "responsibility": "#1515 full resolved vehicle creation evidence bound to accepted source turn and health initialization in existing atomic publication.",
+      "excludes": "Ordinary travel, afterlife semantics, whole vehicle receipt lifecycle and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.Receipts.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReceipt_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-existing-location-empty-storage-birth",
+      "responsibility": "#1515 empty storagesToAdd birth in exact pre-turn locations: metadata, immutable original receipt and existing child history.",
+      "excludes": "Nonempty cargo, capacity measurement, ordinary access lifecycle, actual publication and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.GovernedCommands.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageAddition_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-effective-access-interop",
+      "responsibility": "#1515 accepted storage access overview/detail and existing current/offscreen storage movement and rollback fixtures.",
+      "excludes": "No grant reducer, new storage-add route or capacity qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageAccessProjection.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_StorageEffectiveAccess_RendersAcceptedOverviewAndDetail",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ChangedLocationPublishesOnePhysicalOccurrenceAndPreservesIndexCarrier",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_OffscreenPublicationFailureRestoresEveryTrackedPathByteExact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-vehicle-explicit-access-policy",
+      "responsibility": "#1515 pure active vehicle selection requires explicit boolean true access; owner identity never overrides denial.",
+      "excludes": "Storage access projection, cargo qualification, accepted vehicle entity receipts, travel and browser rendering.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalVehicleActiveSelection.cs",
+        "BookOfEternityClient/Services/StorageTransportMoveService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleExplicitAccessTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-vehicle-explicit-access",
+      "responsibility": "#1515 existing vehicle move/read admission requires explicit true access; includes two genuine successful write controls.",
+      "excludes": "Storage access projection, cargo qualification, accepted vehicle entity receipts, travel and browser rendering.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalVehicleActiveSelection.cs",
+        "BookOfEternityClient/Services/StorageTransportMoveService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WebUi.BrowserStorageTransportParityTests.ReadVehicleMoveContext_ExcludesVehiclesWithoutExplicitTrueAccess",
+            "BookOfEternityClient.Tests.WebUi.BrowserStorageTransportParityTests.MoveVehicleItem_RejectsUnavailableExplicitAccessWithoutMutation",
+            "BookOfEternityClient.Tests.WebUi.BrowserStorageTransportParityTests.ReadVehicleMoveContext_OffersExplicitlyPermittedVehicle",
+            "BookOfEternityClient.Tests.WebUi.BrowserStorageTransportParityTests.SubmitAsync_VehicleMoveDepositMovesExactJsonNodeFromInventoryToVehicle",
+            "BookOfEternityClient.Tests.WebUi.BrowserStorageTransportParityTests.SubmitAsync_VehicleMoveRetrieveMovesExactJsonNodeFromVehicleToInventory",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthAccess_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-effective-access-policy",
+      "responsibility": "#1515 pure effective projection: exact coordinates, metadata copying, removal, pending commands and protected continuity.",
+      "excludes": "No grant reducer, publication or capacity acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalStorageAccessProjection.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalStorageAccessProjectionTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-effective-access-publication",
+      "responsibility": "#1515 effective storage access derived from accepted metadata; real publication and pending-command preservation.",
+      "excludes": "No grant reducer, new storage-add route or capacity qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageAccessProjection.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageAccessProjection_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-access-existing-controls",
       "responsibility": "#1515 impacted existing exact faction ownership and synchronized storage access update controls.",
       "excludes": "Whole location feature, threat semantics and new grant lifecycle.",

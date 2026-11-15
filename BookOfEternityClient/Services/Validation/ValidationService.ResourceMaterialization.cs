@@ -440,6 +440,8 @@ public partial class ValidationService
         MortalVehicleBirthLocationResult? vehicleLocations = null;
         var capacityCreationIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var currentVehicleBirthInput = currentMortalRoots.Vehicles;
+        issues.AddRange(MortalVehicleBirthReceiptState.ValidateContinuity(previousMortalRoots.Vehicles, currentVehicleBirthInput));
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
         if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
         {
             ValidateMortalVehicleBirthShape(previousMortalRoots.Vehicles, currentVehicleBirthInput!, issues);
@@ -609,6 +611,10 @@ public partial class ValidationService
                 return issues;
             }
         }
+
+        if (preparedVehicles is not null && !AttachMortalVehicleBirthReceipts(ownerComposition, preparedVehicles,
+                manifest.SessionId, manifest.RequestId, manifest.ManifestPayloadHash, manifest.TurnNumber, issues))
+            return issues;
 
         var owners = ownerComposition.Authority;
         issues.AddRange(owners.ValidateCanonicalAgreement(
@@ -1120,6 +1126,7 @@ public partial class ValidationService
             PendingTurnSnapshotAuthority.AuthorityPath,
             ResourcePendingResolutionState.PendingPath
         };
+        if (spiritualCapture is null) beforePaths.Add(MortalStorageAccessProjection.StatePath);
         if (effectPlan != null)
         {
             beforePaths.UnionWith(effectPlan.TouchedPaths);

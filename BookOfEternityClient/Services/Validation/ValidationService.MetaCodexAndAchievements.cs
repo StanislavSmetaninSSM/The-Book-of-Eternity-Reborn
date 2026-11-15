@@ -807,6 +807,8 @@ public partial class ValidationService
 
     private void ValidateVehicleData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        if (root.ValueKind == JsonValueKind.Object)
+            issues.AddRange(MortalVehicleBirthReceiptState.ValidateLocal(JsonNode.Parse(root.GetRawText())!.AsObject()));
         if (root.TryGetProperty("UpdateVehicles", out var updates))
             ValidateVehicleArray(updates, $"{contextPrefix}.UpdateVehicles", issues, requireCanonicalStoredShape: false);
         if (root.TryGetProperty("vehicles", out var vehicles))

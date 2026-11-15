@@ -8,6 +8,112 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## WIP recovery boundary, 2026-11-15
+
+Branch `1515-mortal-transport-storage`; verified remote base remains
+`82a41bbd7b71b0faa6672640cc3aa5ec8513a917`. The interrupted GitHub blob request
+was checked read-only: exact frozen payload blob
+`ebf032c1e23481321768af675341b34d735af0f4` returned 404, while the known base blob
+`cf998e9bd0ce62e2fde43e7d3a00bd5f49ff2575` was read successfully. The remote ref
+remained at the base above. No tree, commit or ref update was performed.
+The uncertain effect is resolved; this WIP checkpoint preserves the frozen source,
+not acceptance of the incomplete storage and receipt changes.
+New implementation is paused under the repository recovery rule; only read-only
+diagnosis and safe checkpoint preparation may continue until publication is verified.
+
+The access slice below has bounded accepted evidence. Later changes are WIP:
+
+- Existing-location empty `storagesToAdd` uses the current location child-history
+  mechanism. Its official `mortal-existing-location-empty-storage-birth` run
+  passed 24/24 pure cases in 10.389 seconds after the causal 2/2 RED. Independent
+  review found an Important malformed-original scan exception; this is NOT fixed.
+  Actual publication, rollback and delivered guidance remain unverified.
+- Full vehicle birth receipts have a genuine actual-publication RED: official
+  `mortal-vehicle-birth-receipt-publication` completed 0/2 PASS in 13.697 seconds,
+  both because successful births lacked `birthReceipts`. The new receipt helper,
+  attachment, canonical resource agreement, explicit bootstrap root and identity
+  reservation are UNCOMPILED/UNRUN. Do not treat this working tree as passing.
+  No receipt unit test file has been created yet. Current aggregate fixtures still
+  need migration and targeted control coverage. Historical shape completeness,
+  malformed-input behavior, immutable updates/removal, replay and rollback still
+  need verification. Source inspection shows effect carriers do not include the
+  vehicle document, so a suspected effect-after-image overwrite was not confirmed.
+
+Latest integration build before the receipt implementation: 122.96 seconds,
+0 errors, 237 warnings. It supported the separate storage GREEN and receipt RED,
+not the subsequent uncompiled receipt code. Commands used the existing official
+`scripts/test-csharp.ps1 -Category <named category> -NoBuild` on Linux with the
+shared SDK/PowerShell environment described below. No hosted CI was dispatched.
+Raw logs stay outside Git; `git diff --check` currently passes.
+
+Optimization: receipt composition reuses already resolved owner/cargo after-images
+and capacity drafts; aggregate checks reuse the already-read document and supplied
+resource state/history. No retained cache or extra publication writer is added.
+This design is not yet performance-qualified. Next step: verify safe remote WIP
+persistence first, then fix the storage malformed-original refusal with a causal
+check and finish the receipt tests/fixture migration before targeted builds.
+
+## Local verified access projection and vehicle access, 2026-11-15
+
+UNPUBLISHED on top of 82a41bbd. Existing GitHub approval outcome remains unresolved;
+no write retry, tree, commit or ref update occurred. This is local evidence only.
+
+Vehicle explicit access now requires boolean true for selected Active vehicles
+and for both existing move-target listing and fresh write resolution. Owner prose
+cannot override false/missing/malformed access. Restricted Parked births remain
+valid. Historical full vehicle receipt is still a separate unfinished requirement.
+The two original RED executions completed 18 distinct cases: 12 causal FAIL and
+6 positive PASS. Final targeted runtime selection completed 42/42 PASS in 25.711s
+(active selection 22, access policy 9, service/write controls plus actual births 11).
+Independent GPT-6.1 Sol XHigh source and outcome review accepted this bounded slice.
+Updated rules, actual daemon text and worked example explain explicit access;
+the refreshed four-surface guidance guard passed with the 22 active cases below.
+
+Projection review exposed three real UI cases: a mutually consistent but
+unaccepted map/sidecar pair was trusted, and hidden/rumored storage IDs leaked.
+CreatePlayerView now reuses the existing accepted location receipt/index/catalog
+and exact visible detail selectors. It adds accepted human names only to detached
+view entries; no canonical schema or sanitizer change. Pending commands remain
+pending. Both unsafe numeric-realm mode getters were fixed after two genuine
+production InvalidOperationException failures. Initial malformed tests had failed
+fixture setup instead; these were not counted as causal evidence.
+
+Final core: projection 10 + pure policy 13 + active selection/guidance 22 = 45/45
+PASS in 29.756s. After the human-label correction, projection 10/10 PASS in 18.956s.
+Actual service overview/detail plus two existing offscreen-movement/rollback
+controls finally passed 3/3 in 12.285s. The exact coordinate is checked before
+player-facing sanitization; final views retain meaningful names and explicit denial.
+Old command-as-rights fixtures were migrated, not retained as compatibility.
+One new category selector initially had a wrong namespace and stopped discovery
+with zero cases. Actual-service assertions also exposed the missing human title,
+then two fixture expectations conflicted with existing sanitizer behavior (raw
+parenthetical coordinates are removed; English Chest is translated as a protocol
+token). The final test uses unambiguous Russian names and full failure text. No
+sanitizer bypass or broad localization change was introduced. All these failures
+remain in local evidence, not hidden as successful runs.
+
+All final selections completed exactly with no skipped/duplicate cases, no timeout
+and complete runner-owned cleanup. Latest integration build: 63.73s, 0 errors,
+126 warnings. Linux SDK10.0.404/runtime8.0.34/PowerShell7.7 via the existing shared
+tool environment. Official scripts/test-csharp.ps1 categories were used with
+-NoBuild after matching successful builds. Raw logs remain outside Git under
+/workspace/shared/BoeDiagnostics/1515/access-review. Windows/hosted CI were not run.
+No whole issue or branch acceptance is claimed; default aggregate selection is
+still to be reconciled at T014.
+
+Optimization: scalar vehicle access checks reuse already composed/read DATA;
+no extra reads or cache. Projection reuses the accepted planner/cache with both
+sidecar roots and mode in its input identity. Player rendering reuses the existing
+accepted catalog and one operation-local label lookup, with no retained authority
+or second cache framework. Fresh source/continuity/publication checks remain.
+Build outputs were reused across bounded runs when inputs allowed; no speedup
+claim is inferred from different workloads. Post-review outcome confirmation is
+recorded separately by the reviewer; publication remains blocked as above.
+
+Next: existing-location empty storage addition through the existing child-history
+mechanism; then actual cargo capacity/routes, full vehicle birth evidence and
+remaining canonical vehicle display/interoperability. No main merge or issue close.
+
 ## Storage identity causal RED and integration WIP, 2026-11-15
 
 Source 60ac8258: 5 PASS / 3 causal FAIL, 8 completed typed cases in 9.558s,
@@ -749,3 +855,75 @@ false, metadata changes/removal, command preservation and forged projection,
 then real atomic acceptance/refusal/reached rollback and consumer display.
 No spiritual combat path or ordinary access policy is added. Separate storage
 birth in an existing location, capacity and vehicle receipt remain future blocks.
+
+### Local WIP: effective storage access projection, 2026-11-15
+
+Based on82a41bbd. Remote persistence is BLOCKED pending the already-delivered
+GitHub create_blob approval; no returned blob SHA, tree, commit or ref update.
+Do not retry the uncertain write without resolving that pending request. These
+local files and this note are not a remotely recoverable checkpoint.
+
+The ordinary detached location plan derives schemaVersion1 entries keyed by exact
+locationId/storageId from accepted metadata, copying owner/users/explicit access.
+No contents duplication or access inference; recognized commands remain pending.
+Raw entries/schemaVersion must retain signed-original presence and values, even
+without location commands. Original and raw roots participate in the existing
+plan fingerprint; observed input and common before-image fences include the
+sidecar. Its writes join the existing tracked rollback transaction. Bootstrap and
+active location fixtures create the current explicit empty projection. Protected
+repair does not delegate client entries to GM. CLI/web validate the projection
+against the canonical map, show coordinate and effective permission, and never
+present pending commands as rights. Physical malformed location/realm/storage
+arrays fail closed. Storage born with a location still uses its location receipt.
+
+Initial genuine birth admission/normalization RED:0/1, missing schemaVersion,
+runner11.9907958s. First implementation actual4/5: web consumer failed because the
+generic renderer hid the coordinate and deduplicated by location alone. Storage
+entries now use coordinate titles, ordinal selectors and explicit permission
+summaries. Final actual5/5 PASS,17.3550010s; reached sidecar publication cut proves
+exact tracked-file and generation restoration. Integration build112.87s,
+0errors/214warnings. Fresh unit build33.11s,0errors/34warnings; policy13 plus prior
+storage publication6 and actual delivered guidance2 pass21/21 in34.5873694s.
+All completed selections have no skips, duplicate IDs or timeouts and complete
+owned cleanup. An incorrectly comma-joined shell category argument was refused
+before workload; corrected PowerShell array invocation produced the21/21 result.
+
+Optimization: reuse the accepted map and existing location plan/cache; add both
+sidecar roots and projection mode to the full cache identity. No new cache or
+reader framework. One cheap metadata traversal creates detached entries. Fresh
+signed-original continuity, canonical consistency and publication fences remain
+mandatory; UI does its fresh map comparison because physical files can change
+outside the accepted-turn call. This is integrity work, not a claimed speedup.
+The same integration build served actual projection, previous publication and
+rendered guidance checks. Independent review remains pending; no whole #1515
+acceptance, ordinary grant/revoke execution, storage addition or spiritual changes.
+
+Separate next-block tests (no vehicle production fix yet): official vehicle
+service descriptor completed9 cases with6 causal FAIL and3 PASS controls,
+including two real deposit/retrieve writers;16.6796988s. Combined fail-fast runner
+did not execute its unit descriptor. Category ownership is now split:
+mortal-vehicle-explicit-access (service9),
+mortal-vehicle-explicit-access-policy (unit9). Separate unit run9 complete gives
+6causal FAIL/3PASS,9.4290832s. These are18 distinct cases across two executions,
+not one complete combined run. Both cleanups completed. Explicit false/missing/
+string-true still pass existing access checks, as intended RED; parent owns fix.
+Raw diagnostics remain outside Git in the existing diagnostics destination.
+
+### Local WIP: empty storage birth in existing locations
+
+Pure planner current/offscreen desired-success cases produced2/2 causal RED with
+only mortal_location_world_map_command_unknown for storagesToAdd; integration
+build59.29s/0errors126warnings, runner10.0929296s, complete cleanup and no duplicate
+IDs/timeouts. Expanded indexed negatives, history reuse, travel and plan-cache
+checks are source-prepared; implementation is UNVERIFIED pending the next run.
+The bounded closed command and empty-only scope are recorded in spec.md.
+
+Implementation reuses full metadata/owner validation, detached location plans,
+existing current/offscreen reconciliation and child lifecycle history. One
+operation-local scan collects active/historical coordinate identities; no new
+registry/cache/source reader/writer. Existing complete plan fingerprints include
+raw command changes; repeat planning retains existing identity factory behavior.
+No nonempty cargo, new-location add route, ordinary access grants or spiritual
+behavior is introduced. No runtime publication/rollback or whole-issue claim.
+Remote persistence remains blocked on the previously delivered approval; no new
+GitHub write was attempted. Raw diagnostic files remain outside Git.

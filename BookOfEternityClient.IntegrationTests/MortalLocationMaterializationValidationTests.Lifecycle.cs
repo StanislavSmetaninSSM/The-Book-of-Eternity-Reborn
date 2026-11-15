@@ -779,6 +779,9 @@ public sealed partial class MortalLocationMaterializationValidationTests(ITestOu
             MortalLocationStorageContentsState.StatePath,
             preTurnOffscreen);
         await context.WriteJsonAsync(MortalItemIdentityState.StatePath, itemIndex);
+        var access = MortalStorageAccessProjection.Build(accepted.FinalWorldMap, null);
+        Assert.True(access.IsValid);
+        await context.WriteJsonAsync(MortalStorageAccessProjection.StatePath, access.Root!);
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         await context.WriteRawTurnStateAsync(
             currentLocationData: new JsonObject
@@ -795,7 +798,8 @@ public sealed partial class MortalLocationMaterializationValidationTests(ITestOu
                 MortalLocationMaterializationContract.WorldMapPath,
                 MortalLocationMaterializationContract.CurrentLocationPath,
                 MortalLocationIdentityState.StatePath,
-                MortalLocationStorageContentsState.StatePath
+                MortalLocationStorageContentsState.StatePath,
+                MortalStorageAccessProjection.StatePath
             }
             .ToDictionary(
                 static path => path,

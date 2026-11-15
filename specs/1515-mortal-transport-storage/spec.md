@@ -120,3 +120,44 @@ storage owners or authorizedUsers are unsupported and fail closed. A known owner
 does not override explicit hasFullAccess=false: a closed owned object remains
 unavailable to the existing storage move consumer. Do not infer access from faction
 membership or silently widen permission while materializing the entity.
+
+### Planned full vehicle creation evidence v1
+The existing `vehicles.json` companion owns append-only client-authored
+`birthReceipts`. Each receipt has exactly `schemaVersion: 1`, `vehicleId`,
+`vehicleRef`, `sourceTurn`, `sourceAuthority` (sessionId, requestId, snapshotToken),
+`birthState`, `resourceInitialization` and `seal`. The source fields come from the
+validated pending-turn manifest, never GM declarations. `birthState` is the
+complete detached resolved vehicle after item/actor/location/cargo materialization;
+resourceInitialization reuses the accepted health capacity draft. The consistency
+seal uses the project's canonical JSON fingerprint conventions, not a new signing
+key or publication authority. Signed-original continuity remains authoritative.
+
+Receipts survive ordinary updates, cargo movement/consumption and vehicle removal.
+Never recompare historical birthState to mutable current cargo or re-resolve its
+historical actors/locations. Current input must preserve the exact original receipt
+collection; only the existing accepted-turn vehicle companion can append births.
+Raw receipt injection/deletion, duplicate or reused historical identity and missing
+required evidence fail closed. Canonical receipt reads must not enumerate historical
+cargo as active items. Current bootstrap/fixtures use the declared schema; no
+production migration or fabricated old receipts. Full-entity validation is separate
+from cheap partial resource-owner composition. Exact canonical boundary and
+historical-resource cross-checks are being verified before runtime wiring.
+
+### Bounded existing-location empty storage admission
+
+`worldMapUpdates.storagesToAdd[]` contains closed `{targetLocationId, storage}`
+operations. The target is an exact active pre-turn permanent Mortal location,
+not a same-turn initialId. `storage` declares all existing metadata fields and
+explicit `contents: []`; this checkpoint rejects nonempty contents, transfers
+and measurement fields rather than silently discarding them. Zero capacity and
+volume are valid for an empty declaration. Ordinary access remains explicit;
+ownership does not override false. Faction owners reuse existing exact authority.
+
+The metadata is inserted through the existing detached location plan. The
+original location envelope/receipt is immutable; an existing-index child
+`storage_addition` transition records source turn, exact operationRef, child ID,
+absent before-state and detached metadata after-state. A coordinate cannot reuse
+an active, historical or same-turn confusable storage ID, or combine birth with
+update/removal. Equal storage IDs in different locations remain independent.
+Empty offscreen births create no contents carrier. Existing travel reconciliation
+and effective-access projection consume the resulting accepted map.

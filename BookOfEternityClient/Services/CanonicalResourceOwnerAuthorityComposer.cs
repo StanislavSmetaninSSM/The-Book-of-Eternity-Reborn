@@ -92,10 +92,12 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             await ReadAsync(StorageTransportMoveService.CurrentLocationPath),
             StorageTransportMoveService.CurrentLocationPath,
             issues);
-        var vehicles = ParseOptionalVehicles(
-            await ReadAsync(StorageTransportMoveService.VehiclesPath),
-            StorageTransportMoveService.VehiclesPath,
-            issues);
+        var vehicleJson = await ReadAsync(StorageTransportMoveService.VehiclesPath);
+        var vehicles = ParseOptionalVehicles(vehicleJson, StorageTransportMoveService.VehiclesPath, issues);
+        if (vehicleJson is not null && !TryParseStrictObject(vehicleJson, out _))
+            AddInvalidRoot(StorageTransportMoveService.VehiclesPath, issues);
+        else
+            issues.AddRange(MortalVehicleBirthReceiptState.ValidateResourceAgreement(vehicles, state, history));
         var offscreenStorage = ParseOptionalObject(
             await ReadAsync(MortalLocationStorageContentsState.StatePath),
             MortalLocationStorageContentsState.StatePath,

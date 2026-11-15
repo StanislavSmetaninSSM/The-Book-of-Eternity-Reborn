@@ -328,6 +328,7 @@ internal sealed class MortalLocationIdentityState
     };
     private static readonly HashSet<string> LocationChildTransitionKinds = new(StringComparer.Ordinal)
     {
+        "storage_addition",
         "storage_update",
         "storage_removal",
         "threat_addition",

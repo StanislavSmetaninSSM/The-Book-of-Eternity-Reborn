@@ -1009,36 +1009,30 @@ public partial class ExplorerMode
             return;
         }
 
-        var lines = new List<string> { "[bold cyan]📦 Доступ к хранилищам[/]" };
-        var rendered = false;
-        void RenderAccessArray(string title, JsonElement arr, string color)
+        var mapDoc = await _stateManager.LoadGameStateFileAsync(MortalLocationMaterializationContract.WorldMapPath);
+        var access = System.Text.Json.Nodes.JsonNode.Parse(doc.RootElement.GetRawText()) as System.Text.Json.Nodes.JsonObject;
+        var map = mapDoc == null ? null : System.Text.Json.Nodes.JsonNode.Parse(mapDoc.RootElement.GetRawText()) as System.Text.Json.Nodes.JsonObject;
+        var currentDoc = await _stateManager.LoadGameStateFileAsync(MortalLocationMaterializationContract.CurrentLocationPath);
+        var indexDoc = await _stateManager.LoadGameStateFileAsync(MortalLocationIdentityState.StatePath);
+        access = MortalStorageAccessProjection.CreatePlayerView(map,
+            currentDoc == null ? null : System.Text.Json.Nodes.JsonNode.Parse(currentDoc.RootElement.GetRawText()),
+            indexDoc == null ? null : System.Text.Json.Nodes.JsonNode.Parse(indexDoc.RootElement.GetRawText()), access);
+        if (access == null)
         {
-            if (arr.ValueKind != JsonValueKind.Array || arr.GetArrayLength() == 0) return;
-            rendered = true;
-            lines.Add("");
-            lines.Add($"[bold {color}]{title}:[/]");
-            foreach (var item in arr.EnumerateArray())
-            {
-                var storageId = GetStr(item, "storageId", GetStr(item, "storageName", "хранилище"));
-                var playerId = GetStr(item, "playerId", GetStr(item, "targetPlayerId", GetStr(item, "sharedWithPlayerId", "")));
-                var line = $"  • {Markup.Escape(storageId)}";
-                if (!string.IsNullOrWhiteSpace(playerId))
-                    line += $" → [white]{Markup.Escape(playerId)}[/]";
-                lines.Add(line);
-                RenderExtraFields(lines, item, new[] { "storageId", "storageName", "playerId", "targetPlayerId", "sharedWithPlayerId" }, "    ");
-            }
+            ShowEmptyPanel("Доступ к хранилищам", "Каноническая проекция не согласована. Ожидающие команды не являются правами доступа.");
+            return;
         }
-
-        var root = doc.RootElement;
-        if (root.TryGetProperty("grantStorageAccess", out var grants))
-            RenderAccessArray("Выдан доступ", grants, "green");
-        if (root.TryGetProperty("shareStorageAccess", out var shares))
-            RenderAccessArray("Совместный доступ", shares, "yellow");
-        if (root.TryGetProperty("revokeStorageAccess", out var revokes))
-            RenderAccessArray("Отозван доступ", revokes, "red");
-
-        if (!rendered)
-            lines.Add("\n[dim]Нет данных о доступах к хранилищам[/]");
+        var lines = new List<string> { "[bold cyan]📦 Действующий доступ к хранилищам[/]" };
+        foreach (var entry in access!["entries"]!.AsArray().OfType<System.Text.Json.Nodes.JsonObject>())
+        {
+            var coordinate = entry["locationId"]!.GetValue<string>() + "/" + entry["storageId"]!.GetValue<string>();
+            var label = entry["locationName"]!.GetValue<string>() + ": " + entry["storageName"]!.GetValue<string>();
+            lines.Add($"  • {Markup.Escape(label)} ({Markup.Escape(coordinate)}): " +
+                (entry["hasFullAccess"]!.GetValue<bool>() ? "[green]доступно[/]" : "[red]закрыто[/]"));
+        }
+        if (access["entries"]!.AsArray().Count == 0) lines.Add("[dim]Нет хранилищ[/]");
+        if (MortalStorageAccessProjection.PendingFields.Any(field => access[field] is System.Text.Json.Nodes.JsonArray { Count: > 0 }))
+            lines.Add("[dim]Есть ожидающие команды доступа; они не изменяют действующие права.[/]");
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {

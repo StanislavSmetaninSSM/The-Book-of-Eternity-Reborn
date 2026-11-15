@@ -115,7 +115,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         raw["locationStorages"] = new JsonArray(storage);
         SetSectionPopulated(raw, "storageMetadata");
         await context.WriteRawTurnStateAsync(raw, worldMapUpdates: null);
-        return new[] { MortalLocationMaterializationContract.WorldMapPath, MortalLocationIdentityState.StatePath }
+        return new[] { MortalLocationMaterializationContract.WorldMapPath, MortalLocationIdentityState.StatePath, MortalStorageAccessProjection.StatePath }
             .ToDictionary(path => path, path => "game_state/control/pending_turn_snapshot/" + path, StringComparer.Ordinal);
     }
 }

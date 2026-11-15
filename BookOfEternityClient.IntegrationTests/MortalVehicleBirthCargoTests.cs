@@ -553,6 +553,7 @@ public sealed partial class MortalVehicleBirthCargoTests
     private static JsonObject BirthRoot() => JsonNode.Parse("""
         {
           "vehicles": [],
+          "birthReceipts": [],
           "activeVehicleChange": "new_cart",
           "UpdateVehicles": [{
             "vehicleRef": "new_cart",

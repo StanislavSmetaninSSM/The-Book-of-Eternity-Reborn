@@ -30,7 +30,8 @@ public partial class ValidationService
             MortalLocationMaterializationContract.WorldMapPath,
             MortalLocationIdentityState.StatePath,
             MortalBootstrapLocationScaffold.StatePath,
-            FactionCoreChangesContract.FactionCorePath
+            FactionCoreChangesContract.FactionCorePath,
+            MortalStorageAccessProjection.StatePath
         });
         var observations = await CaptureResourceBeforeImagesAsync(paths, writeLease: lease);
         var localIssues = new List<ValidationIssue>();

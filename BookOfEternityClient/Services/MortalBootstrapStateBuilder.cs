@@ -52,6 +52,7 @@ public static class MortalBootstrapStateBuilder
 
         var files = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
         {
+            [StorageTransportMoveService.VehiclesPath] = MortalVehicleBirthReceiptState.CreateEmptyRoot(),
             ["lore/current_world/world_setting.json"] = new()
             {
                 ["title"] = "Текущий смертный мир",
@@ -109,6 +110,7 @@ public static class MortalBootstrapStateBuilder
             [MortalLocationMaterializationContract.CurrentLocationPath] = BuildPendingCurrentLocation(),
             [MortalLocationMaterializationContract.WorldMapPath] = BuildEmptyWorldMap(),
             [MortalLocationIdentityState.StatePath] = MortalLocationIdentityState.CreateEmptyRoot(),
+            [MortalStorageAccessProjection.StatePath] = MortalStorageAccessProjection.CreateEmptyRoot(),
             ["game_state/inventory/items.json"] = BuildInventory(),
             [MortalItemIdentityState.StatePath] = MortalItemIdentityState.CreateEmptyRoot(),
             [ResourceMaterializationContract.DefinitionsPath] =

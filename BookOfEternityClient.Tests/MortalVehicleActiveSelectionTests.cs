@@ -253,6 +253,8 @@ public sealed class MortalVehicleActiveSelectionTests
             Assert.Contains("same-turn vehicleRef", text, StringComparison.Ordinal);
             Assert.Contains("null requires no Active vehicle", text, StringComparison.Ordinal);
             Assert.Contains("does not implicitly activate or park", text, StringComparison.Ordinal);
+            Assert.Contains("selected vehicle must have explicit hasFullAccess=true", text, StringComparison.Ordinal);
+            Assert.Contains("cannot be bypassed by ownership", text, StringComparison.Ordinal);
         }
     }
 

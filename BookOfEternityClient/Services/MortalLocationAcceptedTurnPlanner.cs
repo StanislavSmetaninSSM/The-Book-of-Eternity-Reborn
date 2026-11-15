@@ -289,6 +289,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             preTurnStorageContents.Entries,
             preTurnLocationsById,
             locationCandidates,
+            preTurnIndex,
             factionControlAuthority,
             issues);
 
@@ -523,6 +524,18 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             touchedPaths.Add(MortalBootstrapLocationScaffold.StatePath);
         }
 
+        JsonObject? finalStorageAccess = null;
+        if (input.ProjectStorageAccess)
+        {
+            issues.AddRange(MortalStorageAccessProjection.ValidateContinuity(input.PreTurnStorageAccess, input.RawStorageAccess));
+            var access = MortalStorageAccessProjection.Build(finalWorldMap, input.RawStorageAccess);
+            issues.AddRange(access.Issues);
+            if (issues.Count != 0) return Failed(issues);
+            finalStorageAccess = access.Root;
+            if (!JsonNode.DeepEquals(input.RawStorageAccess, finalStorageAccess))
+                touchedPaths.Add(MortalStorageAccessProjection.StatePath);
+        }
+
         var plan = new MortalLocationAcceptedTurnPlan(
             finalWorldMap,
             finalCurrent,
@@ -534,7 +547,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             governedRewrites,
             touchedPaths.Distinct(StringComparer.Ordinal).ToArray(),
             Array.Empty<MortalLocationRepairContext>(),
-            finalBootstrapScaffold);
+            finalBootstrapScaffold, finalStorageAccess);
         return new MortalLocationAcceptedTurnPlanningResult(plan, Array.Empty<ValidationIssue>());
     }
 

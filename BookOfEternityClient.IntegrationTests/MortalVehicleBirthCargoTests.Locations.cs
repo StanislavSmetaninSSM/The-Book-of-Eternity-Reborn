@@ -102,6 +102,9 @@ public sealed partial class MortalVehicleBirthCargoTests
             MortalLocationTestFixture.CreateCurrentProjection(canonical));
         await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
         await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, MortalLocationTestFixture.CreateIdentityIndex(canonical));
+        var access = MortalStorageAccessProjection.Build(map, null);
+        Assert.True(access.IsValid);
+        await context.WriteJsonAsync(MortalStorageAccessProjection.StatePath, access.Root!);
         await context.CaptureValidatedPendingSnapshotAsync();
         if (sameTurn)
         {

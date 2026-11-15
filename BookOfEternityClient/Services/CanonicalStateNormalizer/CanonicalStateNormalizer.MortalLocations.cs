@@ -37,12 +37,36 @@ public partial class CanonicalStateNormalizer
             MortalLocationMaterializationContract.CurrentLocationPath);
         var hasCurrentCommand = currentProjection?["currentLocationData"] is JsonObject;
         var hasMapCommand = currentMap?["worldMapUpdates"] is JsonObject;
+        var projectStorageAccess = spiritualPublicationReceipt is null &&
+            ((currentMap?["realm"] is JsonValue realmValue && realmValue.TryGetValue<string>(out var realm) && realm == "mortal_world") || hasCurrentCommand || hasMapCommand);
+        var rawStorageAccess = projectStorageAccess
+            ? await ReadMortalLocationObjectRootAsync(MortalStorageAccessProjection.StatePath) : null;
+        JsonObject? preStorageAccess = null;
+        if (projectStorageAccess)
+        {
+            if (backups?.ContainsKey(MortalStorageAccessProjection.StatePath) == true)
+                preStorageAccess = await ReadRequiredMortalLocationBackupAsync(MortalStorageAccessProjection.StatePath, backups);
+            var accessIssues = backups is not null
+                ? MortalStorageAccessProjection.ValidateContinuity(preStorageAccess, rawStorageAccess)
+                : Array.Empty<ValidationIssue>();
+            if (accessIssues.Count != 0) throw new InvalidDataException(accessIssues[0].Code);
+            if (!hasCurrentCommand && !hasMapCommand && currentMap != null)
+            {
+                var canonicalIssues = MortalStorageAccessProjection.ValidateCanonical(currentMap, rawStorageAccess);
+                if (canonicalIssues.Count != 0) throw new InvalidDataException(canonicalIssues[0].Code);
+            }
+        }
         if (!hasCurrentCommand && !hasMapCommand)
             return null;
 
         var preTurnMap = await ReadRequiredMortalLocationBackupAsync(
             MortalLocationMaterializationContract.WorldMapPath,
             backups);
+        if (projectStorageAccess)
+        {
+            var originalAccessIssues = MortalStorageAccessProjection.ValidateCanonical(preTurnMap, preStorageAccess);
+            if (originalAccessIssues.Count != 0) throw new InvalidDataException(originalAccessIssues[0].Code);
+        }
         var preTurnIndex = await ReadRequiredMortalLocationBackupAsync(
             MortalLocationIdentityState.StatePath,
             backups);
@@ -114,7 +138,8 @@ public partial class CanonicalStateNormalizer
                 rawNpcCore,
                 rawFactionCore,
                 preTurnStorageContents,
-                MortalItemCurrentLocationCarrier.Select(currentProjection)));
+                MortalItemCurrentLocationCarrier.Select(currentProjection),
+                preStorageAccess, rawStorageAccess, projectStorageAccess));
         if (!result.Success || result.Plan == null)
         {
             var issue = result.Issues.FirstOrDefault();
@@ -171,6 +196,8 @@ public partial class CanonicalStateNormalizer
                 MortalBootstrapLocationScaffold.StatePath,
                 settledRoot.ToJsonString(JsonOpts));
         }
+        if (plan.FinalStorageAccess is not null && plan.TouchedPaths.Contains(MortalStorageAccessProjection.StatePath, StringComparer.Ordinal))
+            await WriteCanonicalFileAtomicAsync(MortalStorageAccessProjection.StatePath, plan.FinalStorageAccess.ToJsonString(JsonOpts));
         await ApplyMortalLocationGovernedRewritesAsync(plan, rawNpcCore);
         return plan;
     }

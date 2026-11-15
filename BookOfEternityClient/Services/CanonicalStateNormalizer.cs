@@ -66,6 +66,7 @@ public partial class CanonicalStateNormalizer
         MortalLocationMaterializationContract.WorldMapPath,
         MortalLocationMaterializationContract.CurrentLocationPath,
         MortalLocationStorageContentsState.StatePath,
+        MortalStorageAccessProjection.StatePath,
         MortalLocationIdentityState.StatePath,
         MortalBootstrapLocationScaffold.StatePath,
         StorageTransportMoveService.VehiclesPath,

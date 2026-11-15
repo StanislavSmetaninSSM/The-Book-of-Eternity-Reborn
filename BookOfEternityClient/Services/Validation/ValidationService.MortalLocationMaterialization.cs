@@ -127,6 +127,9 @@ public partial class ValidationService
         var indexRoot = await ReadSelectedObjectAsync(MortalLocationIdentityState.StatePath);
         var rawNpcCore = await ReadSelectedObjectAsync(NpcCoreChangesContract.NpcCorePath);
         var rawFactionCore = await ReadSelectedObjectAsync(FactionCoreChangesContract.FactionCorePath);
+        var projectStorageAccess = currentInputs is null &&
+            ((mapRoot?["realm"] is JsonValue realmValue && realmValue.TryGetValue<string>(out var realm) && realm == "mortal_world") || mapRoot?["worldMapUpdates"] is JsonObject || currentRoot?["currentLocationData"] is JsonObject);
+        var rawStorageAccess = projectStorageAccess ? await ReadSelectedObjectAsync(MortalStorageAccessProjection.StatePath) : null;
         var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
                              mapRoot?["worldMapUpdates"] is JsonObject;
 
@@ -180,6 +183,14 @@ public partial class ValidationService
                 lookup.Manifest,
                 MortalLocationIdentityState.StatePath,
                 writeLease));
+        var preStorageAccess = projectStorageAccess ? ParseOptionalLocationObject(
+            await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, MortalStorageAccessProjection.StatePath, writeLease)) : null;
+        if (projectStorageAccess)
+        {
+            issues.AddRange(MortalStorageAccessProjection.ValidateContinuity(preStorageAccess, rawStorageAccess));
+            if (preMap is not null) issues.AddRange(MortalStorageAccessProjection.ValidateCanonical(preMap, preStorageAccess));
+            if (issues.Any(i => i.Severity == IssueSeverity.Error)) return null;
+        }
         var preStorageContents = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
@@ -313,7 +324,8 @@ public partial class ValidationService
                 rawNpcCore,
                 rawFactionCore,
                 preStorageContents,
-                MortalItemCurrentLocationCarrier.Select(currentRoot)), identityFactory);
+                MortalItemCurrentLocationCarrier.Select(currentRoot),
+                preStorageAccess, rawStorageAccess, projectStorageAccess), identityFactory);
         foreach (var issue in planningResult.Issues)
         {
             var contextual = AttachMortalLocationPlannerRepairContext(
@@ -747,6 +759,8 @@ public partial class ValidationService
             return;
         }
 
+        var accessRoot = ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(MortalStorageAccessProjection.StatePath, writeLease));
+        issues.AddRange(MortalStorageAccessProjection.ValidateCanonical(map, accessRoot));
         ValidateCanonicalLocationArray(locations, links: false, issues);
         ValidateCanonicalLocationArray(links, links: true, issues);
         for (var index = 0; index < locations.Count; index++)

@@ -77,6 +77,11 @@ internal sealed class MortalVehicleBirthPreparation
         if (issues.Count != 0)
             return Invalid();
 
+        // Retired birth identities remain reserved even after their live owner is removed.
+        if (before["birthReceipts"] is JsonArray receipts)
+            foreach (var receipt in receipts.OfType<JsonObject>())
+                if (Exact(receipt["vehicleId"]) is { } historicalId)
+                    aliases.Add(ResourceMaterializationContract.BuildConfusableKey(historicalId));
         var ids = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var reference in refs)
         {

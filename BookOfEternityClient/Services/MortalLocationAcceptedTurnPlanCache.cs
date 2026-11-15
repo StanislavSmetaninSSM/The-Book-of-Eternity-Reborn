@@ -118,6 +118,9 @@ internal sealed class MortalLocationAcceptedTurnPlanCache
             ["rawFactionCore"] = input.RawFactionCore?.DeepClone(),
             ["preTurnStorageContents"] = input.PreTurnStorageContents?.DeepClone(),
             ["rawCurrentItemCarrier"] = input.RawCurrentItemCarrier?.DeepClone(),
+            ["preTurnStorageAccess"] = input.PreTurnStorageAccess?.DeepClone(),
+            ["rawStorageAccess"] = input.RawStorageAccess?.DeepClone(),
+            ["projectStorageAccess"] = input.ProjectStorageAccess,
             ["companionAuthority"] = input.CompanionAuthority?.Fingerprint
         };
         return Convert.ToHexString(

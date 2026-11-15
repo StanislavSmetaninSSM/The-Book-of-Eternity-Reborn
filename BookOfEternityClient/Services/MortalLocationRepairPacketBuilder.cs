@@ -53,6 +53,7 @@ internal static class MortalLocationRepairPacketBuilder
     {
         MortalLocationIdentityState.StatePath,
         MortalLocationStorageContentsState.StatePath,
+        MortalStorageAccessProjection.StatePath,
         MortalBootstrapLocationScaffold.StatePath,
         "game_state/control/pending_turn_snapshot.json",
         "game_state/control/pending_turn_snapshot",

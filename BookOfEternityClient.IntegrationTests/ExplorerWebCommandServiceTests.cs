@@ -313,7 +313,6 @@ public sealed partial class ExplorerWebCommandServiceTests :
     [InlineData("/транспорт", "Серый конь")]
     [InlineData("/эффекты", "Кровотечение")]
     [InlineData("/бой", "Теневой посыльный")]
-    [InlineData("/доступ_к_хранилищам", "Приватный письменный стол")]
     [InlineData("/взаимодействия", "странной печати")]
     public async Task ExecuteAsync_MortalReadOnlySummaries_ReadCanonicalStateKeys(string command, string expectedText)
     {
@@ -900,7 +899,6 @@ public sealed partial class ExplorerWebCommandServiceTests :
     [InlineData("/локации", "locations-detail-loc_square", "/локации локация loc_square", "Старая площадь")]
     [InlineData("/чужие_нити", "rival-threads-detail-rival_arc_moonlit_claimant", "/чужие_нити нить rival_arc_moonlit_claimant", "Лунный претендент")]
     [InlineData("/коррективы_хранителя", "guardian-corrections-detail-correction_valmont_slot", "/коррективы_хранителя корректировка correction_valmont_slot", "Спорный слот вмешательства")]
-    [InlineData("/доступ_к_хранилищам", "storage-access-detail-storage_valmont_private_desk", "/доступ_к_хранилищам хранилище storage_valmont_private_desk", "Приватный письменный стол")]
     [InlineData("/транспорт", "transport-detail-vehicle_gray_horse", "/транспорт транспорт vehicle_gray_horse", "Серый конь")]
     public async Task ExecuteAsync_MortalReferenceBrowserDetailActions_ExposeDrilldownActions(
         string command,
@@ -929,7 +927,6 @@ public sealed partial class ExplorerWebCommandServiceTests :
     [InlineData("/фракции", "reference-bundle", "Фракции")]
     [InlineData("/чужие_нити", "reference-bundle", "Чужие нити")]
     [InlineData("/коррективы_хранителя", "reference-bundle", "Коррективы Хранителя")]
-    [InlineData("/доступ_к_хранилищам", "reference-bundle", "Доступ к хранилищам")]
     public async Task ExecuteAsync_MortalReferenceOverview_RendersDossierCardsWithoutTables(
         string command,
         string expectedEntityType,
@@ -1183,7 +1180,6 @@ public sealed partial class ExplorerWebCommandServiceTests :
     [InlineData("/локации локация loc_square", "Локация: Старая площадь", "тёмным фонтаном")]
     [InlineData("/чужие_нити нить rival_arc_moonlit_claimant", "Чужая нить: Лунный претендент", "руническую перчатку")]
     [InlineData("/коррективы_хранителя корректировка correction_valmont_slot", "Корректива Хранителя: Спорный слот вмешательства", "Азалия")]
-    [InlineData("/доступ_к_хранилищам хранилище storage_valmont_private_desk", "Доступ к хранилищу: Приватный письменный стол", "ключ от верхнего ящика")]
     [InlineData("/транспорт транспорт vehicle_gray_horse", "Транспорт: Серый конь", "Активен")]
     public async Task ExecuteAsync_MortalReferenceDetail_RendersOneSelectedRecordWithoutRawJson(
         string command,
@@ -9271,6 +9267,41 @@ public sealed partial class ExplorerWebCommandServiceTests :
         """);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_StorageEffectiveAccess_RendersAcceptedOverviewAndDetail()
+    {
+        await PrepareMortalReadOnlySummaryFilesAsync();
+        var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_effective_storage", "Склад у ворот", "visited");
+        location["locationStorages"] = new JsonArray(MortalLocationTestFixture.CreateStorageMetadata("storage_effective", "Дубовый сундук", false));
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject { ["disposition"] = "populated", ["reason"] = null };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        await WriteCanonicalBrowserMortalLocationStateAsync([location], MortalLocationTestFixture.CreateCurrentProjection(location), [location]);
+        var map = MortalLocationTestFixture.CreateWorldMap(location);
+        var access = MortalStorageAccessProjection.Build(map, null);
+        Assert.True(access.IsValid);
+        await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, access.Root!.ToJsonString());
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/доступ_к_хранилищам"));
+        Assert.Equal(CommandExecutionState.Completed, overview.State);
+        // The service intentionally removes technical IDs from player-facing titles.
+        // Exact coordinates remain in the shared detached view, not its sanitized label.
+        var playerView = MortalStorageAccessProjection.CreatePlayerView(map,
+            MortalLocationTestFixture.CreateCurrentProjection(location),
+            MortalLocationTestFixture.CreateIdentityIndex(location), access.Root);
+        var displayedEntry = Assert.Single(playerView!["entries"]!.AsArray())!;
+        Assert.Equal("loc_effective_storage", displayedEntry["locationId"]!.GetValue<string>());
+        Assert.Equal("storage_effective", displayedEntry["storageId"]!.GetValue<string>());
+        var overviewText = CollectBlockText(overview.Blocks);
+        Assert.True(overviewText.Contains("Склад у ворот: Дубовый сундук", StringComparison.Ordinal), overviewText);
+        Assert.Contains("Доступ закрыт", CollectBlockText(overview.Blocks));
+        var action = Assert.Single(overview.Actions, action => action.Id == "storage-access-detail-1");
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest(action.Command!));
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        var detailText = CollectBlockText(detail.Blocks);
+        Assert.True(detailText.Contains("Склад у ворот: Дубовый сундук", StringComparison.Ordinal), detailText);
+        Assert.Contains("Доступ закрыт", CollectBlockText(detail.Blocks));
+        Assert.DoesNotContain(detail.Blocks, block => block is UiRawJsonBlock);
+    }
+
     private async Task SeedRichMortalReferenceDetailFilesAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", """
@@ -9381,19 +9412,7 @@ public sealed partial class ExplorerWebCommandServiceTests :
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/misc/storage_access.json", """
-        {
-          "grantStorageAccess": [
-            {
-              "storageId": "storage_valmont_private_desk",
-              "storageName": "Приватный письменный стол",
-              "accessLevel": "owner",
-              "visibleReason": "Найден ключ от верхнего ящика.",
-              "locationName": "Старая площадь"
-            }
-          ]
-        }
-        """);
+        await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, MortalStorageAccessProjection.CreateEmptyRoot().ToJsonString());
 
         await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", """
         {
@@ -9587,17 +9606,7 @@ public sealed partial class ExplorerWebCommandServiceTests :
         }
         """);
 
-        await _fs.WriteFileAtomicAsync("game_state/misc/storage_access.json", """
-        {
-          "grantStorageAccess": [
-            {
-              "storageId": "storage_valmont_private_desk",
-              "storageName": "Приватный письменный стол",
-              "accessLevel": "owner"
-            }
-          ]
-        }
-        """);
+        await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, MortalStorageAccessProjection.CreateEmptyRoot().ToJsonString());
 
         await _fs.WriteFileAtomicAsync("game_state/misc/player_interactions.json", """
         {

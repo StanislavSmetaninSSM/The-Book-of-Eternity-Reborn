@@ -255,8 +255,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 NotFoundMessage: "Такая запись доступа к хранилищу не отмечена в текущих данных.",
                 Specs:
                 [
-                new("game_state/misc/storage_access.json", "grantStorageAccess|storages", "Хранилищ"),
-                new("game_state/misc/storage_access.json", "entries", "Записей")
+                new("game_state/misc/storage_access.json", "entries", "Хранилищ")
                 ])),
             CommandKind.Interactions => await BuildInteractions(normalizedCommand, fs),
             _ => null
@@ -3423,6 +3422,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var group in grouped)
             reads[group.Key] = await ReadJson(fs, group.Key);
 
+        if (definition.EnglishCommand == "/storage_access")
+        {
+            var mapRead = await ReadJson(fs, MortalLocationMaterializationContract.WorldMapPath);
+            var currentRead = await ReadJson(fs, MortalLocationMaterializationContract.CurrentLocationPath);
+            var indexRead = await ReadJson(fs, MortalLocationIdentityState.StatePath);
+            var playerAccess = MortalStorageAccessProjection.CreatePlayerView(mapRead.Node as JsonObject,
+                currentRead.Node, indexRead.Node, reads[MortalStorageAccessProjection.StatePath].Node as JsonObject);
+            if (playerAccess is null)
+                return Completed(command, new UiBlock[] { new UiTextBlock
+                    { Text = "Доступ к хранилищам недоступен: каноническая проекция не согласована. Ожидающие команды не являются правами доступа." } });
+            reads[MortalStorageAccessProjection.StatePath] = reads[MortalStorageAccessProjection.StatePath] with { Node = playerAccess };
+        }
         var entries = BuildReferenceEntries(definition, reads).ToList();
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
@@ -4873,6 +4884,18 @@ public static class ExplorerMortalWorldCommandResultBuilder
             foreach (var obj in EnumerateReferenceObjects(node))
             {
                 index++;
+                if (definition.EnglishCommand == "/storage_access")
+                {
+                    // The validated projection uses a composite identity. A location alone is
+                    // not a selector: several independent storages can share one location.
+                    yield return new ReferenceEntrySnapshot(
+                        Index: index, Selector: index.ToString(),
+                        Title: $"{FirstReferenceNodeString(obj, "locationName")}: {FirstReferenceNodeString(obj, "storageName")} ({FirstReferenceNodeString(obj, "locationId")}/{FirstReferenceNodeString(obj, "storageId")})",
+                        Section: spec.Label,
+                        Summary: obj["hasFullAccess"]!.GetValue<bool>() ? "Доступ разрешён" : "Доступ закрыт",
+                        Node: obj);
+                    continue;
+                }
                 var title = BuildReferenceTitle(obj, spec.Label, index);
                 var selector = NormalizeCombatSelector(FirstNonEmpty(
                     FirstReferenceNodeString(

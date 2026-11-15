@@ -5035,6 +5035,7 @@ public sealed class GmTurnHelperContractTests
             var storageTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_LOCATION_TRANSITION_TEMPLATE.md"));
             Assert.Contains("every authorizedUsers.playerId must be exactly player_current", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("hasFullAccess=false remains restricted even for the owner", storageTemplate, StringComparison.Ordinal);
+            Assert.Contains("Never author or repair schemaVersion/entries", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("Do not infer faction access from membership", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("\"storageId\":\"storage_locked\"", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("\"hasFullAccess\":false,\"contents\":[]", storageTemplate, StringComparison.Ordinal);

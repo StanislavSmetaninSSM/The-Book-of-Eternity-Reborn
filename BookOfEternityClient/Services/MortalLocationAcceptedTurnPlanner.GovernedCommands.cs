@@ -11,6 +11,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         "newLinks",
         "locationUpdates",
         "locationDiscoveryTransitions",
+        "storagesToAdd",
         "storageUpdates",
         "storagesToRemove",
         "linkUpdates",
@@ -19,6 +20,17 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         "threatsToUpdate",
         "threatsToRemove",
         "completeThreatActivities"
+    };
+
+    private static readonly HashSet<string> StorageAdditionFields = new(StringComparer.Ordinal)
+    {
+        "targetLocationId", "storage"
+    };
+
+    private static readonly HashSet<string> StorageAdditionMetadataFields = new(StringComparer.Ordinal)
+    {
+        "storageId", "name", "description", "image_prompt", "capacity", "volume",
+        "owner", "authorizedUsers", "hasFullAccess", "contents"
     };
 
     private static readonly HashSet<string> StorageUpdateFields = new(StringComparer.Ordinal)
@@ -100,9 +112,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         IReadOnlyDictionary<MortalLocationStorageKey, JsonArray> preTurnOffscreenContents,
         IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
         IReadOnlyList<LocationCandidate> locationCandidates,
+        MortalLocationIdentityState preTurnIdentity,
         FactionControlAuthority factionAuthority,
         List<ValidationIssue> issues)
     {
+        var storageAdds = ReadStorageAdditions(updates, preTurnLocationsById, preTurnIdentity, factionAuthority, issues);
         var storageUpdates = ReadStorageUpdates(
             updates,
             preTurnLocationsById,
@@ -132,12 +146,73 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             threatCompletions,
             issues);
         return new GovernedLocationCommands(
+            storageAdds,
             storageUpdates,
             storageRemovals,
             threatAdds,
             threatUpdates,
             threatRemovals,
             threatCompletions);
+    }
+
+    private static List<StorageAdditionCommand> ReadStorageAdditions(
+        JsonObject? updates,
+        IReadOnlyDictionary<string, JsonObject> preTurnLocationsById,
+        MortalLocationIdentityState identity,
+        FactionControlAuthority factionAuthority,
+        List<ValidationIssue> issues)
+    {
+        var result = new List<StorageAdditionCommand>();
+        if (!TryReadOperationArray(updates, "storagesToAdd", out var values, issues)) return result;
+        // One operation-local scan of active and historical child identities; not a cache.
+        var occupied = new HashSet<string>(StringComparer.Ordinal);
+        string Key(string location, string storage) => location + "\u001f" + MortalLocationIdentityState.BuildConfusableKey(storage);
+        foreach (var (locationId, location) in preTurnLocationsById)
+            foreach (var storage in location["locationStorages"]!.AsArray().OfType<JsonObject>())
+                occupied.Add(Key(locationId, ReadExactString(storage, "storageId")!));
+        foreach (var (locationId, entry) in identity.LocationEntriesById)
+            foreach (var transition in entry["transitions"]!.AsArray().OfType<JsonObject>())
+                if (ReadExactString(transition, "kind") is "storage_addition" or "storage_update" or "storage_removal" &&
+                    ReadExactString(transition, "childId") is { } child)
+                    occupied.Add(Key(locationId, child));
+        var conflicting = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var field in new[] { "storageUpdates", "storagesToRemove" })
+            if (updates?[field] is JsonArray operations)
+                foreach (var operation in operations.OfType<JsonObject>())
+                    if (ReadExactString(operation, "targetLocationId") is { } location && ReadExactString(operation, "storageId") is { } storage)
+                        conflicting.Add(Key(location, storage));
+
+        for (var index = 0; index < values.Count; index++)
+        {
+            var context = $"worldMapUpdates.storagesToAdd[{index}]";
+            if (values[index] is not JsonObject operation)
+            { issues.Add(InvalidOperationRoot(context, values[index])); continue; }
+            var issueStart = issues.Count;
+            ValidateExactOperationFields(operation, StorageAdditionFields, context, "mortal_location_storage_addition_invalid", issues);
+            var target = ReadGovernedTargetLocation(operation, context, "mortal_location_storage_addition_target_unresolved", preTurnLocationsById, issues);
+            if (operation["storage"] is not JsonObject storage)
+            { issues.Add(InvalidLifecycleShape(context + ".storage", "mortal_location_storage_addition_invalid", operation["storage"])); continue; }
+            ValidateExactOperationFields(storage, StorageAdditionMetadataFields, context + ".storage", "mortal_location_storage_addition_invalid", issues);
+            if (storage["contents"] is not JsonArray { Count: 0 })
+                issues.Add(Issue(context + ".storage.contents", "mortal_location_storage_addition_contents_invalid",
+                    "This empty storage birth requires explicit contents: []; nonempty cargo and measurement are not admitted by this route.", "empty array", storage["contents"]?.ToJsonString() ?? "missing"));
+            using var document = JsonDocument.Parse(storage.ToJsonString());
+            issues.AddRange(MortalLocationStorageMetadataContract.Validate(document.RootElement, context + ".storage"));
+            issues.AddRange(ValidateCanonicalStorageOwners(new JsonObject { ["locationStorages"] = new JsonArray(storage.DeepClone()) }, context + ".storage", factionAuthority, allowTemporaryFactionOwners: true));
+            if (target is null || ReadExactString(storage, "storageId") is not { } storageId) continue;
+            var locationId = ReadExactString(target, "locationId")!;
+            var key = Key(locationId, storageId);
+            if (!occupied.Add(key))
+                issues.Add(Issue(context + ".storage.storageId", "mortal_location_storage_addition_identity_reused",
+                    "A storage birth cannot reuse an active, historical or same-turn confusable identity at this location.", "fresh exact storage identity", storageId));
+            if (conflicting.Contains(key))
+                issues.Add(Issue(context + ".storage.storageId", "mortal_location_storage_transition_conflict",
+                    "A storage birth cannot be combined with update or removal at the same coordinate.", "one birth only", storageId));
+            if (issues.Count != issueStart) continue;
+            var metadata = storage.DeepClone().AsObject(); metadata.Remove("contents");
+            result.Add(new StorageAdditionCommand(locationId, storageId, metadata, context));
+        }
+        return result;
     }
 
     private static List<StorageUpdateCommand> ReadStorageUpdates(
@@ -908,6 +983,15 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         int turn,
         MortalLocationIdentityFactory identityFactory)
     {
+        foreach (var command in commands.StorageAdds)
+        {
+            var location = FindExactObject(locations, "locationId", command.LocationId)!;
+            var metadata = command.Metadata.DeepClone().AsObject();
+            location["locationStorages"]!.AsArray().Add(metadata);
+            AppendLocationChildTransition(indexEntries, command.LocationId, "storage_addition", command.StorageId,
+                new JsonObject { ["state"] = "absent" }, metadata, command.Context, turn, identityFactory);
+        }
+
         foreach (var command in commands.StorageUpdates)
         {
             var location = FindExactObject(locations, "locationId", command.LocationId)!;
@@ -1073,6 +1157,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     }
 
     private sealed record GovernedLocationCommands(
+        IReadOnlyList<StorageAdditionCommand> StorageAdds,
         IReadOnlyList<StorageUpdateCommand> StorageUpdates,
         IReadOnlyList<StorageRemovalCommand> StorageRemovals,
         IReadOnlyList<ThreatAdditionCommand> ThreatAdds,
@@ -1080,10 +1165,12 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         IReadOnlyList<ThreatRemovalCommand> ThreatRemovals,
         IReadOnlyList<ThreatCompletionCommand> ThreatCompletions)
     {
-        internal bool HasCommands => StorageUpdates.Count > 0 || StorageRemovals.Count > 0 ||
+        internal bool HasCommands => StorageAdds.Count > 0 || StorageUpdates.Count > 0 || StorageRemovals.Count > 0 ||
                                      ThreatAdds.Count > 0 || ThreatUpdates.Count > 0 ||
                                      ThreatRemovals.Count > 0 || ThreatCompletions.Count > 0;
     }
+
+    private sealed record StorageAdditionCommand(string LocationId, string StorageId, JsonObject Metadata, string Context);
 
     private sealed record StorageUpdateCommand(
         string LocationId,
