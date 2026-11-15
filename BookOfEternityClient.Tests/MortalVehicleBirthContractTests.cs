@@ -141,6 +141,26 @@ public sealed class MortalVehicleBirthContractTests
         Assert.Contains("player_current", example, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void CargoGuidance_DeclaresExactBirthRouteAndCompleteExample()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_19.A.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("new_vehicle_inventory", text, StringComparison.Ordinal);
+            Assert.Contains("UpdateVehicles[i].vehicleRef", text, StringComparison.Ordinal);
+            Assert.Contains("does not authorize existing-item transfers", text, StringComparison.Ordinal);
+        }
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt"));
+        var root = JsonNode.Parse(example[example.IndexOf("\n{", StringComparison.Ordinal)..])!.AsObject();
+        var vehicle = Assert.Single(root["UpdateVehicles"]!.AsArray())!.AsObject();
+        var item = Assert.Single(vehicle["inventory"]!.AsArray())!.AsObject();
+        Assert.Equal(vehicle["vehicleRef"]!.GetValue<string>(), item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
+        using var document = System.Text.Json.JsonDocument.Parse(item.ToJsonString());
+        Assert.Empty(MortalItemMaterializationContract.Validate(document.RootElement,
+            "vehicles.UpdateVehicles[0].inventory[0]", MortalItemMaterializationPhase.RawPreSeal));
+    }
+
     private static void AssertRejectedWithoutMutation(JsonObject current)
     {
         var before = EmptyRoot();

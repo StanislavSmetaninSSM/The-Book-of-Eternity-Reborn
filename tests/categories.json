@@ -2,6 +2,27 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-cargo-item-interop",
+      "responsibility": "#1515 exact existing player birth, parent-container and same-turn location storage item paths after shared cargo intake/projection changes; two existing route-contract controls.",
+      "excludes": "Whole item suite, transfer matrix, capacity/access policy and whole issue qualification.",
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs", "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        { "project": "integration", "tests": [
+          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.RawCompletePlayerCreation_NormalizesToValidSealedState",
+          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Companions.SameTurnParentContainerPath_ResolvesOnlyToPermanentItemId",
+          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Routes.StoragePlacement_SameTurnCurrentLocationSealsIntoPermanentCarrier"
+        ] },
+        { "project": "unit", "tests": [
+          "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_CompleteRawRoot_ReturnsNoIssues",
+          "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_RouteAuthorityKindMustMatchRoute"
+        ] }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-cargo",
       "responsibility": "#1515 genuine same-turn vehicle birth cargo sealing and exact birth-ref route refusal.",
       "excludes": "Existing-item loading, capacity measurement, full vehicle semantics and broader issue qualification.",

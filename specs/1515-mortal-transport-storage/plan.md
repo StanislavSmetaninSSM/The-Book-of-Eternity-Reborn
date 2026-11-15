@@ -373,3 +373,13 @@ allocation-interop fixtures whose filenames mention spiritual capture. No spirit
 production/assertion change. A genuine committed history-member cut test is added;
 its observer verifies journal After bytes before throwing a non-retried exception.
 Source uncompiled and test result pending; no rollback success claimed yet.
+
+Runtime source 9b860a08: **39/39 PASS**, 4 complete official descriptors, 37.958s,
+no skips/duplicates/timeouts, complete cleanup. Cargo contributes 9 cases including
+committed-history-member cut and exact six-path raw rollback, plus both drift gaps
+and indexed malformed inventory refusals. Build 123.35s, 0 errors, 237 warnings.
+Independent review has no remaining Critical/Important source finding. No generation
+rollback or cut-time item publication claim is added. New route guidance across
+Block_2/19.A/CLI/daemon, full raw cargo example and source guard now follow; one more
+unit active-selection birth fixture gains inventory:[]. Five exact existing item
+interop controls are selected separately. Their fresh build/results are pending.

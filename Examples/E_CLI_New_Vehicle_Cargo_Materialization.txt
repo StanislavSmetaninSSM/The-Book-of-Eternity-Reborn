@@ -1,0 +1,159 @@
+INITIAL CARGO OF A NEW MORTAL VEHICLE
+
+Precondition: an otherwise valid pending Mortal turn 42; no existing vehicle or
+item is being transferred. This is a complete raw vehicles.json proposal, not a
+complete GM response and not canonical saved state. The neutral item deliberately
+matches the current complete test fixture, including all twelve sections.
+
+The cargo authorityId equals its containing vehicleRef, new_cart. The client
+allocates the permanent vehicle ID before sealing the cargo receipt and binding
+its vehicle_inventory carrier. Do not supply permanent vehicle/item IDs, a receipt,
+seal, or item identity-index record. Existing-item transfers are outside this route.
+
+{
+  "vehicles": [],
+  "activeVehicleChange": "new_cart",
+  "UpdateVehicles": [
+    {
+      "vehicleRef": "new_cart",
+      "name": "Cart",
+      "description": "A serviceable cart used to carry supplies.",
+      "image_prompt": "A wooden supply cart with iron-rimmed wheels",
+      "type": "Vehicle",
+      "isSentient": false,
+      "availability": "Active",
+      "currentLocationId": null,
+      "speedBonus": 0,
+      "actions": [],
+      "resistances": [],
+      "inventory": [
+        {
+          "existedId": null,
+          "creationRef": "cargo_birth_item",
+          "name": "Тестовый предмет",
+          "description": "Полный нейтральный предмет для проверки materialization-контракта.",
+          "image_prompt": "small neutral fantasy test object on dark cloth, realistic lighting",
+          "type": "Test item",
+          "group": "Test fixtures",
+          "quality": "Common",
+          "rarity": "Common",
+          "price": 10,
+          "count": 1,
+          "weight": 0.1,
+          "volume": 0.05,
+          "bonuses": [],
+          "effects": [],
+          "structuredBonuses": [],
+          "combatEffect": [],
+          "customProperties": [],
+          "mechanicalSummaryAuthority": null,
+          "mechanicalSummaryUnresolvedReason": null,
+          "equipmentSlot": null,
+          "accessoryForSlot": null,
+          "requiresTwoHands": false,
+          "isContainer": false,
+          "capacity": null,
+          "containerWeight": null,
+          "weightReduction": null,
+          "contentsPath": null,
+          "isConsumption": false,
+          "textContent": null,
+          "journalEntries": [],
+          "isSentient": false,
+          "unreadableReason": null,
+          "sealedReason": null,
+          "lockedReason": null,
+          "disassembleTo": null,
+          "ownerBondLevelCurrent": null,
+          "ownerBondLevelMax": null,
+          "fateCards": [],
+          "questLinks": [],
+          "materialization": {
+            "schemaVersion": 1,
+            "materializationId": "cargo_birth_materialization",
+            "realm": "Mortal",
+            "route": "new_vehicle_inventory",
+            "sourceTurn": 42,
+            "sourceAuthority": {
+              "kind": "new_vehicle",
+              "authorityId": "new_cart"
+            },
+            "creationRef": "cargo_birth_item",
+            "state": "complete",
+            "sections": {
+              "presentation": {
+                "state": "populated",
+                "reason": null
+              },
+              "physical": {
+                "state": "populated",
+                "reason": null
+              },
+              "mechanics": {
+                "state": "empty_by_design",
+                "reason": "У тестового предмета нет самостоятельной механики."
+              },
+              "equipment": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не экипируется."
+              },
+              "container": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет ничего не вмещает."
+              },
+              "consumption": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не расходуется при использовании."
+              },
+              "readableOrSentient": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не читается и не обладает голосом."
+              },
+              "craftingAndDisassembly": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не задаёт рецепт или разборку."
+              },
+              "bondsAndFateCards": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не образует связь и не имеет Карт Судьбы."
+              },
+              "questRole": {
+                "state": "empty_by_design",
+                "reason": "Тестовый предмет не связан с заданием."
+              },
+              "provenance": {
+                "state": "populated",
+                "reason": null
+              },
+              "ownershipAndPlacement": {
+                "state": "populated",
+                "reason": null
+              }
+            }
+          }
+        }
+      ],
+      "capacity": 12,
+      "volume": 100.0,
+      "owner": {
+        "ownerType": "Player",
+        "ownerId": "player_current",
+        "ownerName": "Current player"
+      },
+      "controller": {
+        "actorType": "player",
+        "actorId": "player_current"
+      },
+      "authorizedUsers": [],
+      "hasFullAccess": true,
+      "resourceMaterialization": {
+        "resources": [
+          {
+            "resourceKey": "health",
+            "maximum": 100
+          }
+        ]
+      }
+    }
+  ]
+}

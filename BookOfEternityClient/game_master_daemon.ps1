@@ -2200,11 +2200,14 @@ artifacts use their afterlife contracts instead.
 | player_acquisition | turn_outcome | current accepted turn outcome |
 | npc_acquisition | npc_inventory_add | exact NPCInventoryAdds owner/entry |
 | new_npc_inventory | new_npc | exact genuinely-new NPC creationRef |
+| new_vehicle_inventory | new_vehicle | exact containing UpdateVehicles[i].vehicleRef |
 | loot_acquisition | loot_template | derived validated loot template key |
 | craft_output | craft_request | pending craft request ID |
 | trade_output | npc_trade_receipt | exact trade request/receipt and unique slotId |
 | quest_reward | quest_reward | exact canonical quest/reward authority |
 | storage_placement | location_storage | exact existing location/storage authority |
+
+Initial cargo in a genuinely new vehicle uses new_vehicle_inventory with sourceAuthority.kind new_vehicle and authorityId exactly equal to the containing UpdateVehicles[i].vehicleRef. Put complete new item roots in that entry's inventory. The client allocates the permanent vehicle ID before sealing cargo receipts and binding the vehicle_inventory carrier. This route creates new items only; it does not authorize existing-item transfers. Do not author permanent vehicle/item IDs, receipts or identity-index records. See Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt.
 
 ## Complete raw new root
 
