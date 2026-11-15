@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-contract",
+      "responsibility": "#1515 first vehicle birth structural cargo limits and explicit owner/controller/access; exact existing single-player identity.",
+      "excludes": "Faction/NPC resolution, location binding, cargo measurements, receipt/publication and ordinary lifecycle policy remain separate.",
+      "changeHints": ["BookOfEternityClient/Services/MortalTransportStorageContract.cs", "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.*"] }]
+    },
+    {
       "id": "mortal-vehicle-active-publication",
       "responsibility": "#1515 exact same-turn active selection admission and existing common vehicle/health publication plus removal; related existing vehicle owners.",
       "excludes": "Full transport/storage cargo and access qualification, UI and all resource owner families.",

@@ -4,7 +4,7 @@
 
 **Issue:** [#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1515)
 **Goal:** Complete first materialization and make existing transport/storage consumers respect its accepted authority.
-**Architecture:** Extend the existing vehicle resource-owner composer and governed location storage metadata; one pure policy contract supplies creation and move validation. Effective access and active selection join existing accepted-turn after-images and backup/readback/rollback, never a second writer.
+**Architecture:** Extend the existing vehicle resource-owner composer and governed location storage metadata; pure birth contracts validate the new semantic envelope and reuse existing item/location planning. Effective access and active selection join existing accepted-turn after-images and backup/readback/rollback, never a second writer.
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
@@ -42,6 +42,15 @@ This is a completed **narrow active-selection block**, not completion of #1515.
   location; do not create a duplicate receipt. Vehicle health history is not a full
   semantic vehicle receipt. Ordinary post-birth movement/access redesign is excluded.
 
+Clean restoration of checkpoint `9e951bb6c7626378f86a2b5dcb8615c6a9f92e0d` was independently fetched into a new shallow directory; exact HEAD, clean status and `git fsck --connectivity-only` all verified. The next source block remains unimplemented/unrun.
+
+## Next bounded block: complete vehicle birth shape
+
+- [ ] Add typed causal RED tests against the existing owner composer for missing/invalid cargo limits, ownership/controller/access and unknown single-player IDs; add one valid positive fixture.
+- [ ] Add `MortalTransportStorageContract.ValidateVehicleBirth(JsonObject, string)` returning indexed issues, called before identity allocation by owner composition and by new-vehicle shape admission. This first slice is structural and player-reference validation only; faction/location authority and full receipt/cargo evidence remain explicit follow-on work.
+- [ ] Migrate active creation fixtures, add a narrow catalog entry, publish WIP before official RED/build. Implement only after causal failures, verify targeted positives/negatives and actual shape entry.
+- [ ] Independent review of the bounded implemented slice, then durable checkpoint. No whole-issue completion claim.
+
 ## Global constraints
 
 Mortal world only; no legacy save promotion, new travel simulation, hosted CI, full-suite run, main merge or issue closure. Preserve complete source/lease/generation and item/resource identity checks. Raw diagnostics stay outside Git in `/workspace/shared/BoeDiagnostics/1515`; active bootstrap/templates/fixtures follow the current schema.
@@ -51,9 +60,9 @@ Mortal world only; no legacy save promotion, new travel simulation, hosted CI, f
 - `MortalResourceOwnerComposer.ComposeVehicleOwners` already allocates client vehicle IDs and captures health materialization. Extend it; never allocate again in a new subsystem.
 - `ValidationService.MetaCodexAndAchievements.cs` has full/partial shape checks but lacks cargo/access/owner semantics. Pure new `MortalTransportStorageContract` validation must be called from both shape admission and final composed state, not just prompts.
 - `MortalLocationStorageMetadataContract` and `MortalLocationStorageContentsState` already own storage metadata and contents. Keep these authorities and enrich their existing accepted planning, not duplicate inventory.
-- `StorageTransportMoveService` already uses `MortalItemTransitionWriter` and canonical lease. Add fresh policy checks before the existing transition; remove unsupported legacy identity fallbacks only in affected transport/storage consumers.
+- `StorageTransportMoveService` already uses `MortalItemTransitionWriter` and canonical lease. Preserve that existing transition and its ordinary lifecycle; test new-schema interoperability without adding a new movement policy.
 - `CanonicalStateNormalizer.AcceptedMechanics.cs` publishes `OwnerCompanionAfterImages` in the common transaction. Storage access must be added to the original backup/source and governed-path sets before using this channel.
-- `activeVehicleChange` currently survives unconsumed; no actual selection reducer was found. Canonical `activeVehicleId` must agree with availability, and same-turn vehicleRef must resolve through the existing composer.
+- The initial gap in `activeVehicleChange` reduction is now fixed in the verified active-selection block. Canonical `activeVehicleId` must agree with availability, and same-turn vehicleRef must resolve through the existing composer.
 - CLI storage-access screen currently shows commands; effective canonical projection must replace that interpretation without UI redesign.
 
 ## Review focus

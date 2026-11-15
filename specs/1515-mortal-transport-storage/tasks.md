@@ -22,7 +22,7 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 - [ ] T011 Update storage bootstrap/fixtures, GM worked examples and guards; verify/review/publish bounded block.
 
 ## US3: Consumer interoperability (FR7–FR9)
-- [ ] T012 Add RED deposit/retrieve tests for full/inaccessible/wrong-location carriers and exact-boundary success; use `StorageTransportMoveService` existing transition writer.
+- [ ] T012 Add narrow new-schema consumption/transfer interoperability tests through the existing writer; do not add ordinary post-birth movement/access policy.
 - [ ] T013 Update CLI/web canonical active/access projection consumers and narrow tests, without UI redesign.
 - [ ] T014 Reconcile full intended diff with `tests/selection.json`; discover category ownership, run impact-selected tests and complete independent whole-change review.
 - [ ] T015 Publish final source/checkpoint and verify clean GitHub restore; report ready without merging main or closing issue.
