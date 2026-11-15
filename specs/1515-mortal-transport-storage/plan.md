@@ -1,0 +1,64 @@
+# Mortal transport/storage implementation plan
+
+> **For agentic workers:** Use superpowers:executing-plans task-by-task, with independent fresh-context review of each complete bounded deliverable.
+
+**Issue:** [#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1515)
+**Goal:** Complete first materialization and make existing transport/storage consumers respect its accepted authority.
+**Architecture:** Extend the existing vehicle resource-owner composer and governed location storage metadata; one pure policy contract supplies creation and move validation. Effective access and active selection join existing accepted-turn after-images and backup/readback/rollback, never a second writer.
+**Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
+**Spec:** [spec.md](spec.md)
+
+## Global constraints
+
+Mortal world only; no legacy save promotion, new travel simulation, hosted CI, full-suite run, main merge or issue closure. Preserve complete source/lease/generation and item/resource identity checks. Raw diagnostics stay outside Git in `/workspace/shared/BoeDiagnostics/1515`; active bootstrap/templates/fixtures follow the current schema.
+
+## Source map and decisions
+
+- `MortalResourceOwnerComposer.ComposeVehicleOwners` already allocates client vehicle IDs and captures health materialization. Extend it; never allocate again in a new subsystem.
+- `ValidationService.MetaCodexAndAchievements.cs` has full/partial shape checks but lacks cargo/access/owner semantics. Pure new `MortalTransportStorageContract` validation must be called from both shape admission and final composed state, not just prompts.
+- `MortalLocationStorageMetadataContract` and `MortalLocationStorageContentsState` already own storage metadata and contents. Keep these authorities and enrich their existing accepted planning, not duplicate inventory.
+- `StorageTransportMoveService` already uses `MortalItemTransitionWriter` and canonical lease. Add fresh policy checks before the existing transition; remove unsupported legacy identity fallbacks only in affected transport/storage consumers.
+- `CanonicalStateNormalizer.AcceptedMechanics.cs` publishes `OwnerCompanionAfterImages` in the common transaction. Storage access must be added to the original backup/source and governed-path sets before using this channel.
+- `activeVehicleChange` currently survives unconsumed; no actual selection reducer was found. Canonical `activeVehicleId` must agree with availability, and same-turn vehicleRef must resolve through the existing composer.
+- CLI storage-access screen currently shows commands; effective canonical projection must replace that interpretation without UI redesign.
+
+## Review focus
+
+1. Same-turn location + vehicle + item creation resolves once with no stale reference or duplicate ID.
+2. Active selection only, removal of selected vehicle and replacement selection are coherent.
+3. Shared/restricted access cannot be bypassed with current-location projection or offscreen contents.
+4. Capacity equality passes; excess, malformed numeric values and repeated/duplicate contents fail atomically.
+5. A late fault restores entity, access/active projection, items/resources and receipt/source evidence together.
+
+## Bounded implementation sequence
+
+### Block A: Complete semantics and cheap contract tests
+
+- [ ] Define concrete fields in the existing vehicle/storage contracts and worked examples, preserving existing IDs, health, location, condition and access semantics where already present.
+- [ ] Add typed `MortalTransportStorageContractTests` and category `mortal-transport-storage-contract`; prove missing owner/controller/purpose/cargo/access/provenance and boundary capacity cases fail for the intended reason before implementation.
+- [ ] Implement pure one-pass validators; integrate vehicle creation and storage metadata entry points; update active fixtures and GM documentation for changed fields.
+- [ ] Run the category through `scripts/test-csharp.ps1`, record exact counts and independent review; publish WIP before long build/review.
+
+### Block B: Canonical selection/access and evidence
+
+- [ ] Add pure reduction tests for exact transient selection, stale/missing targets, grant/share/revoke, duplicate and contradictory access; specify canonical access schema in spec before implementation.
+- [ ] Extend existing vehicle composer, storage accepted planning, original-source readers and common companion publication to produce canonical state and versioned creation evidence.
+- [ ] Add genuine integration category `mortal-transport-storage-publication` for vehicle + shared/restricted storage birth, same-turn contents, rejected partial writes and late rollback. Retain existing resource/location/item owner invariants.
+- [ ] Verify exact tests, review related contracts and update source/daemon guards in the same bounded block.
+
+### Block C: Existing consumers and final qualification
+
+- [ ] Add deposit/retrieve tests for accepted fresh access, wrong location, at/over capacity and failure without mutation; integrate into existing move path.
+- [ ] Update CLI/web canonical projection interpretation and corresponding narrow consumer tests.
+- [ ] Reconcile `tests/selection.json` against the entire diff; discovery validates ownership without running all categories. Run only new and affected existing resource/location/item/consumer selections.
+- [ ] Independent review of complete FR1–FR9 coverage, scoped fixes and verified clean GitHub restoration. Leave branch ready for user integration decision, issue open.
+
+## Optimization assessment
+
+Reuse detached JSON/accepted plans already read by resource/location owners within their stable operation. New pure contract checks are bounded single traversals, so no additional cache is justified. Do not re-read every file in each field helper, reconstruct GameEngine for pure tests, cache authorization, share mutable roots or add a parallel dictionary cache. Current source/lease/version checks remain fresh. Before integration, measure named preparation/planning/publication sections and inspect repeated expensive source reads; no speedup is claimed without measured equal-work evidence.
+
+## Recovery checkpoint — 2026-11-15, WIP design
+
+Remote task branch created and verified at base `f3d0bc668481d1b648381a83dfc39d425fec8bde`. Fresh public GitHub clone provided the complete source; no earlier local WIP assumed. #1511/#1513 live issues are completed and explicitly leave capacity/entity work to #1515; #1514 does not technically block this Mortal implementation. Read-only mapping confirmed the gaps above. Production/tests unchanged. Spec Kit clarify paths validated; design schema details, all implementation and tests/reviews remain UNRUN. Next: complete bounded policy schema and start causal RED tests, not a broad audit.
+
+Linux x64 tool restoration: PowerShell 7.7.0 from official release runs with writable HOME/XDG_CACHE_HOME; SDK 10.0.404 installed in `/workspace/shared/boe-tools/dotnet`, .NET 8 runtime installation pending verification. No hosted Actions dispatched. Current status is not implementation completion or acceptance.
