@@ -2,6 +2,89 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-access-existing-controls",
+      "responsibility": "#1515 impacted existing exact faction ownership and synchronized storage access update controls.",
+      "excludes": "Whole location feature, threat semantics and new grant lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageUpdate_FactionOwnerWithoutExactAuthorityFailsClosed",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.FactionOwnedStorage_ExactSameTurnFactionAuthorityIsAccepted",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.GovernedCommands_OwnerChangeWithoutSynchronizedAccessSnapshotFailsClosed",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.GovernedCommands_AuthorizedUsersChangeWithoutSynchronizedAccessFlagFailsClosed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-birth-publication",
+      "responsibility": "#1515 Real restricted/accessible storage birth, exact owner/recipient rejection, accepted move-target consumer and reached common publication rollback.",
+      "excludes": "New grant/revoke engine, later storage addition, nonempty capacity and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageBirthAccess.cs",
+        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageBirth_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-birth-guidance",
+      "responsibility": "#1515 Actual full-daemon rendering and complete source-local restricted owner storage guidance.",
+      "excludes": "New grant/revoke engine, later storage addition, nonempty capacity and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageBirthAccess.cs",
+        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-birth-player-access",
       "responsibility": "#1515 exact single-player storage owner/recipient identities; explicit restricted access remains valid even for an owner.",
       "excludes": "Faction authority, access grant/revoke engine, publication, storage capacity and whole issue acceptance.",
@@ -254,97 +337,192 @@
       "id": "mortal-vehicle-cargo-guidance",
       "responsibility": "#1515 cargo route source guard, exact example manifest inventory, and actual full daemon template/example delivery through the existing context-pack test.",
       "excludes": "Provider dispatch, Windows PowerShell qualification, capacity/access and whole issue acceptance. Linux uses installed PowerShell 7.",
-      "changeHints": ["BookOfEternityClient/game_master_daemon.ps1", "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt", "Examples/example_validation_manifest.json"],
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt",
+        "Examples/example_validation_manifest.json"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "integration", "tests": [
-          "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
-          "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
-        ] },
-        { "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.CargoGuidance_DeclaresExactBirthRouteAndCompleteExample"] }
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.CargoGuidance_DeclaresExactBirthRouteAndCompleteExample"
+          ]
+        }
       ]
     },
     {
       "id": "mortal-vehicle-cargo-item-interop",
       "responsibility": "#1515 exact existing player birth, parent-container and same-turn location storage item paths after shared cargo intake/projection changes; two existing route-contract controls.",
       "excludes": "Whole item suite, transfer matrix, capacity/access policy and whole issue qualification.",
-      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs", "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs",
+        "BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "integration", "tests": [
-          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.RawCompletePlayerCreation_NormalizesToValidSealedState",
-          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Companions.SameTurnParentContainerPath_ResolvesOnlyToPermanentItemId",
-          "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Routes.StoragePlacement_SameTurnCurrentLocationSealsIntoPermanentCarrier"
-        ] },
-        { "project": "unit", "tests": [
-          "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_CompleteRawRoot_ReturnsNoIssues",
-          "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_RouteAuthorityKindMustMatchRoute"
-        ] }
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.RawCompletePlayerCreation_NormalizesToValidSealedState",
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Companions.SameTurnParentContainerPath_ResolvesOnlyToPermanentItemId",
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+Routes.StoragePlacement_SameTurnCurrentLocationSealsIntoPermanentCarrier"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_CompleteRawRoot_ReturnsNoIssues",
+            "BookOfEternityClient.Tests.MortalItemMaterializationContractTests.Validate_RouteAuthorityKindMustMatchRoute"
+          ]
+        }
       ]
     },
     {
       "id": "mortal-vehicle-birth-cargo",
       "responsibility": "#1515 genuine same-turn vehicle birth cargo sealing and exact birth-ref route refusal.",
       "excludes": "Existing-item loading, capacity measurement, full vehicle semantics and broader issue qualification.",
-      "changeHints": ["BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.*"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-vehicle-birth-preparation",
       "responsibility": "#1515 ordinary pending-turn vehicle identity preparation and exact-source repetition before publication.",
       "excludes": "Cargo projection, specialized spiritual capture, full birth authority and publication receipt remain separate.",
-      "changeHints": ["BookOfEternityClient/Services/MortalResourceOwnerComposer.cs", "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs",
+        "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthPreparationTests.*"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthPreparationTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-vehicle-birth-allocation-interop",
       "responsibility": "#1515 migrate ordinary Mortal vehicle birth fixtures used by the existing original allocation capture/replay paths; preserve those paths unchanged.",
       "excludes": "No new spiritual combat behavior, broad afterlife suite or feature qualification.",
-      "changeHints": ["BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": [
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_AllocationInventoryIncludesOrdinaryVehicleCreation",
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ReplaysOwnedAllocationsThroughExchange"
-      ] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_AllocationInventoryIncludesOrdinaryVehicleCreation",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ReplaysOwnedAllocationsThroughExchange"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-vehicle-birth-admission",
       "responsibility": "#1515 full raw vehicle birth enters the actual MetaMiscStateFiles validator; required cargo/owner/controller/access fields.",
       "excludes": "Accepted publication, cargo graph and authority source resolution; no whole feature claim.",
-      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthAdmissionTests.*"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthAdmissionTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-vehicle-birth-contract",
       "responsibility": "#1515 first vehicle birth structural cargo limits and explicit owner/controller/access; exact existing single-player identity.",
       "excludes": "Faction/NPC resolution, location binding, cargo measurements, receipt/publication and ordinary lifecycle policy remain separate.",
-      "changeHints": ["BookOfEternityClient/Services/MortalTransportStorageContract.cs", "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalTransportStorageContract.cs",
+        "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.*", "BookOfEternityClient.Tests.SpiritualWoundVehicleIdentityTests.*"] }]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthContractTests.*",
+            "BookOfEternityClient.Tests.SpiritualWoundVehicleIdentityTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-vehicle-active-publication",
@@ -978,8 +1156,8 @@
           "tests": [
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectPublishesCatalogAndConsumesBothCommands",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_CommonEffectLateCutRestoresCatalogSidecarAndEffectOutputs",
-        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_Utf16CommonWitnessPublishesWithoutChangingSnapshotEncoding",
-        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_ValidLocationUpdateRefusesUnsupportedCommonCompositionWithoutMutation",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_Utf16CommonWitnessPublishesWithoutChangingSnapshotEncoding",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_ValidLocationUpdateRefusesUnsupportedCommonCompositionWithoutMutation",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcProgressionAndSkillGrant_CommonEffectPublishesCompletedCandidate",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.OrdinaryNpcSkillGrant_SidecarDriftAfterCommonAdmissionRefusesPublicationWithoutMutation"
           ]
@@ -1059,7 +1237,7 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillGrant_BindsSameTurnSourceAndCurrentScopeWithoutOfferingIt",
-        "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillGrant_SignedAbsentOriginalSidecarAuthorizesFirstGrant",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillGrant_SignedAbsentOriginalSidecarAuthorizesFirstGrant",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillRemoval_RevokesExistingFocusedScopeBeforePublication",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawNpcSkillSidecarMutation_ChangesPreviouslyValidatedPlanFingerprint"
           ]

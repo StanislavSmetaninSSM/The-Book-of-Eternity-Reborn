@@ -8,6 +8,21 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Storage player identity is exact; explicit access is never derived from ownership.</summary>
 public sealed class MortalStorageBirthAccessTests
 {
+    [Fact]
+    public void DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment()
+    {
+        const string fragment = """{"storageId":"storage_locked","name":"Locked chest","description":"A closed chest owned by the current player.","image_prompt":"A closed wooden chest, no text","capacity":8,"volume":40,"owner":{"ownerType":"Player","ownerId":"player_current","ownerName":"Current player"},"authorizedUsers":[],"hasFullAccess":false,"contents":[]}""";
+        foreach (var path in new[] { "Rules/Block_2.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains(fragment, text, StringComparison.Ordinal);
+            Assert.Contains("Explicit hasFullAccess=false remains restricted even for the owner", text, StringComparison.Ordinal);
+            Assert.Contains("unknown players are unsupported", text, StringComparison.Ordinal);
+        }
+        using var document = JsonDocument.Parse(fragment);
+        Assert.Empty(MortalLocationStorageMetadataContract.Validate(document.RootElement, "storage"));
+    }
+
     [Theory]
     [InlineData("Player", false)]
     [InlineData("Shared", false)]

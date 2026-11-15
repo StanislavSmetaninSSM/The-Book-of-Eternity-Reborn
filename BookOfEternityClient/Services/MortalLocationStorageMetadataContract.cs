@@ -96,7 +96,9 @@ internal static class MortalLocationStorageMetadataContract
         var ownerContext = context + ".owner";
         ValidateClosedObject(owner, ownerContext, OwnerFields, issues);
         var ownerType = RequireString(owner, ownerContext, "ownerType", issues);
-        RequireExactIdentifier(owner, ownerContext, "ownerId", issues);
+        var ownerId = RequireExactIdentifier(owner, ownerContext, "ownerId", issues);
+        if (ownerType is "Player" or "Shared" && ownerId is not null && ownerId != "player_current")
+            Add(issues, ownerContext + ".ownerId", "existing single-player identity player_current", ownerId);
         RequireString(owner, ownerContext, "ownerName", issues);
         if (ownerType != null && !AllowedOwnerTypes.Contains(ownerType))
         {
@@ -143,6 +145,8 @@ internal static class MortalLocationStorageMetadataContract
             RequireString(user, userContext, "playerName", issues);
             if (playerId == null)
                 continue;
+            if (playerId != "player_current")
+                Add(issues, userContext + ".playerId", "existing single-player identity player_current; unknown recipients unsupported", playerId);
             var exactUnique = playerIds.Add(playerId);
             var aliasUnique = aliasKeys.Add(MortalLocationIdentityState.BuildConfusableKey(playerId));
             if (!exactUnique || !aliasUnique)

@@ -2347,6 +2347,9 @@ Rule 20 and `Examples/E_Block_20.txt` contain the complete shapes.
 - Item, NPC, faction, and lore identity remain governed by their own exact
   contracts; location creation does not invent them.
 
+Mortal storage Player/Shared ownerId and every authorizedUsers.playerId must be exactly player_current; unknown players are unsupported. Explicit hasFullAccess=false remains restricted even for the owner. Do not infer faction access from membership or override a closed object through ownership. This complete storage metadata fragment belongs only inside an independently admitted new location; it is not a full location or GM response:
+{"storageId":"storage_locked","name":"Locked chest","description":"A closed chest owned by the current player.","image_prompt":"A closed wooden chest, no text","capacity":8,"volume":40,"owner":{"ownerType":"Player","ownerId":"player_current","ownerName":"Current player"},"authorizedUsers":[],"hasFullAccess":false,"contents":[]}
+
 ## wound_treatment_scene_authority_v1
 
 - The only reserved treatment location states are the closed version-1 kinds

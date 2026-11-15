@@ -8,6 +8,18 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Storage identity causal RED and integration WIP, 2026-11-15
+
+Source 60ac8258: 5 PASS / 3 causal FAIL, 8 completed typed cases in 9.558s,
+complete cleanup; build 95.69s with 0 errors. All three unknown identities
+incorrectly returned no issues. The existing metadata contract now checks exact
+player_current for Player/Shared owner and authorized recipients; no access value
+is inferred or changed. Six real birth/refusal/consumer/rollback cases are added,
+not yet run. Complete restricted-owner metadata is delivered in Rules2 and the
+actual daemon; the additional cheap guidance guard is also unrun.
+Optimization: reuse the existing metadata pass and canonical location writer;
+two scalar comparisons add no reads, cache, registry or authority reuse.
+
 ## Accepted location binding checkpoint and next storage slice, 2026-11-15
 
 Guidance source 4b976df6: 3/3 PASS in 21.017s, 2 descriptors, complete cleanup,
