@@ -92,6 +92,9 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var result = Build(map, MortalLocationTestFixture.CreateCurrentProjection(location), index, rawWorldMapUpdates: updates, turn: 43);
         Assert.False(result.Success);
         Assert.Contains(result.Issues, issue => issue.Code == code && issue.FilePath.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal));
+        if (fault == "unknownFaction")
+            Assert.Contains(result.Issues, issue => issue.Code == code &&
+                issue.FilePath == "worldMapUpdates.storagesToAdd[0].storage.owner.ownerId");
         Assert.Null(result.Plan); Assert.Equal(before, updates.ToJsonString()); Assert.Equal(beforeMap, map.ToJsonString()); Assert.Equal(beforeIndex, index.ToJsonString());
     }
 

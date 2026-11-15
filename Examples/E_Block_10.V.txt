@@ -186,6 +186,7 @@
    </title>
    <content language="json" type="code_example">
     <![CDATA[
+    // Do not write birthReceipts: the client supplies the resolved historical receipt; keep it unchanged on later turns.
     // Mortal active selection: activeVehicleId is client-owned; preserve it unchanged. activeVehicleChange accepts one exact permanent vehicleId or same-turn vehicleRef, never a case/whitespace alias. It does not implicitly activate or park a vehicle: update availability/currentLocationId coherently. Exactly one final Active vehicle must match the selection; null requires no Active vehicle. The selected vehicle must have explicit hasFullAccess=true; false, missing or malformed access cannot be bypassed by ownership. Restricted vehicles may remain Parked but are not targets for vehicle_move. Removing the selected vehicle clears selection unless an explicit surviving replacement is selected. The client resolves and consumes the command atomically with vehicle and health state.
     // Example of a player mounting their horse
     "activeVehicleChange": "horse-destrier-thunderhoof-001",

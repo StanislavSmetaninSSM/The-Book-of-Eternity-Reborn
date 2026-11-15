@@ -1,0 +1,42 @@
+MORTAL EMPTY STORAGE BIRTH IN AN EXISTING LOCATION
+
+Source-local worldMapUpdates fragment, not a complete GM response. The location
+loc_warehouse must already exist in accepted PRE-TURN Mortal state. Replace it
+with the actual exact permanent locationId, never an initialId or guessed alias.
+The storage identity must be unused in this location's active and historical
+child identities. Player ownership does not override explicit closed access.
+
+```json
+{
+  "worldMapUpdates": {
+    "storagesToAdd": [
+      {
+        "targetLocationId": "loc_warehouse",
+        "storage": {
+          "storageId": "storage_new_locked",
+          "name": "Запертый дорожный сундук",
+          "description": "Прочный пустой сундук героя с закрытым замком.",
+          "image_prompt": "A sturdy closed wooden travelling chest, no text",
+          "capacity": 8,
+          "volume": 40,
+          "owner": { "ownerType": "Player", "ownerId": "player_current", "ownerName": "Герой" },
+          "authorizedUsers": [],
+          "hasFullAccess": false,
+          "contents": []
+        }
+      }
+    ]
+  }
+}
+```
+
+The client consumes the command, adds canonical metadata/current projection and
+one storage_addition transition, and updates effective access in the same accepted
+publication. Original location materialization/receipt remain immutable.
+Do not author history, receipts, seals or storage_access.json entries. Do not
+combine this birth with storageUpdates/storagesToRemove for the same coordinate.
+This route currently accepts empty contents only: no nonempty cargo, measurements
+or same-turn newly created location. Use an independently admitted new location's
+own complete locationStorages declaration for storage born with that location.
+An invalid field is repaired only in the indexed raw operation; never rewrite
+canonical originals to make it pass.

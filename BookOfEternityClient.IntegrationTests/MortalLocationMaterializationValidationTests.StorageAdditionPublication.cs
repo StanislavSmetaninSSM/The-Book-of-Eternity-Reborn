@@ -97,6 +97,22 @@ public sealed partial class MortalLocationMaterializationValidationTests
         foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
     }
 
+    [Fact]
+    public async Task StorageAdditionPublication_InvalidRawNameHasBoundedIndexedRepair()
+    {
+        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        await ArrangeStorageAdditionPublicationAsync(context, access: false);
+        var raw = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!;
+        raw["worldMapUpdates"]!["storagesToAdd"]![0]!["storage"]!["name"] = "";
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, raw);
+        var issues = await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+        Assert.Contains(issues, issue => issue.Code == "mortal_location_storage_semantic_invalid");
+        Assert.False(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(issues));
+        var packet = Assert.Single(MortalLocationRepairPacketBuilder.Build(issues));
+        Assert.Equal("worldMapUpdates.storagesToAdd[0]", packet.RawCoordinate);
+        Assert.Equal(new[] { MortalLocationMaterializationContract.WorldMapPath }, packet.TargetFiles);
+    }
+
     private static async Task<(JsonObject Location, Dictionary<string, string> Backups)> ArrangeStorageAdditionPublicationAsync(
         MortalLocationMaterializationTestContext context, bool access)
     {

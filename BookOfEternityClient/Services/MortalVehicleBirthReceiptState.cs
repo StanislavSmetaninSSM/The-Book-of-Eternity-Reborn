@@ -78,8 +78,11 @@ internal static class MortalVehicleBirthReceiptState
             { issues.Add(Issue("birthReceipts", "Unique complete internally sealed version-1 vehicle birth evidence.")); continue; }
             var structuralBirth = birth.DeepClone().AsObject();
             structuralBirth.Remove("cargoBirthEvidence");
-            if (MortalTransportStorageContract.ValidateVehicleBirth(System.Text.Json.JsonSerializer.SerializeToElement(structuralBirth),
-                    StorageTransportMoveService.VehiclesPath + ".birthReceipts.birthState").Count != 0)
+            var birthElement = System.Text.Json.JsonSerializer.SerializeToElement(structuralBirth);
+            const string birthPath = StorageTransportMoveService.VehiclesPath + ".birthReceipts.birthState";
+            var birthIssues = MortalTransportStorageContract.ValidateVehicleBirth(birthElement, birthPath).ToList();
+            ValidationService.ValidateVehicleCoreFields(birthElement, birthPath, birthIssues);
+            if (birthIssues.Count != 0)
                 issues.Add(Issue("birthReceipts.birthState", "Complete historical vehicle birth facts."));
             if (birth["cargoBirthEvidence"] is not JsonObject cargo || Exact(cargo["vehicleId"]) != id ||
                 !Integer(cargo["sourceTurn"], out var cargoTurn) || cargoTurn != turn)

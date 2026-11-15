@@ -1324,17 +1324,7 @@ public partial class ValidationService
 
             if (mustLookLikeFullVehicleObject)
             {
-                RequireString(item, itemContext, issues, "name");
-                RequireString(item, itemContext, issues, "description");
-                RequireString(item, itemContext, issues, "image_prompt");
-                RequireString(item, itemContext, issues, "type");
-                RequireBooleanField(item, itemContext, issues, "isSentient");
-                RequireString(item, itemContext, issues, "availability");
-                ValidateRequiredNullableStringField(item, itemContext, issues, "currentLocationId");
-                ValidateIntegerField(item, itemContext, issues, "speedBonus");
-                RequireObjectArrayField(item, itemContext, issues, "actions");
-                RequireObjectArrayField(item, itemContext, issues, "resistances");
-                RequireObjectArrayField(item, itemContext, issues, "inventory");
+                ValidateVehicleCoreFields(item, itemContext, issues);
             }
             else
             {

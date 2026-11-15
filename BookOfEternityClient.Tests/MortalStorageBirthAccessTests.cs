@@ -23,6 +23,28 @@ public sealed class MortalStorageBirthAccessTests
         Assert.Empty(MortalLocationStorageMetadataContract.Validate(document.RootElement, "storage"));
     }
 
+    [Fact]
+    public void ExistingStorageBirthGuidanceUsesCompleteEmptySourceLocalOperation()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("mortal_existing_storage_birth_v1", text, StringComparison.Ordinal);
+            Assert.Contains("same-turn new-location targets are not supported", text, StringComparison.Ordinal);
+            Assert.Contains("preserving the original location envelope/receipt", text, StringComparison.Ordinal);
+        }
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_Storage_Birth.txt"));
+        var json = example.Split("```json", StringSplitOptions.None)[1].Split("```", StringSplitOptions.None)[0];
+        var root = JsonNode.Parse(json)!;
+        var operation = Assert.Single(root["worldMapUpdates"]!["storagesToAdd"]!.AsArray())!;
+        Assert.Equal("loc_warehouse", operation["targetLocationId"]!.GetValue<string>());
+        var storage = operation["storage"]!;
+        Assert.Empty(storage["contents"]!.AsArray());
+        Assert.False(storage["hasFullAccess"]!.GetValue<bool>());
+        Assert.Equal("player_current", storage["owner"]!["ownerId"]!.GetValue<string>());
+        Assert.Empty(MortalLocationStorageMetadataContract.Validate(JsonSerializer.SerializeToElement(storage), "storage"));
+    }
+
     [Theory]
     [InlineData("Player", false)]
     [InlineData("Shared", false)]

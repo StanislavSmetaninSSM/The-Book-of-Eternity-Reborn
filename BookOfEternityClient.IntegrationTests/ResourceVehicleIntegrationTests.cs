@@ -10,17 +10,9 @@ public sealed class ResourceVehicleIntegrationTests
     public async Task MetaMiscValidation_AcceptsTransientVehicleRefAndLedgerOnlyCanonicalShape()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        await context.WriteExactJsonAsync(
-            StorageTransportMoveService.VehiclesPath,
-            new JsonObject
-            {
-                ["vehicles"] = new JsonArray(
-                    CanonicalVehicle("vehicle_cart_001", "location_market")),
-                ["UpdateVehicles"] = new JsonArray(
-                    VehicleCreation(
-                        "vehicle_ref_wagon",
-                        Materialization(("health", 160m))))
-            }.ToJsonString());
+        var root = CanonicalReceiptRoot(CanonicalVehicle("vehicle_cart_001", "location_market"));
+        root["UpdateVehicles"] = new JsonArray(VehicleCreation("vehicle_ref_wagon", Materialization(("health", 160m))));
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
 
         var issues = await context.Validator.ValidateGameStateAsync(
             GameStateValidationPhase.MetaMiscStateFiles);
@@ -34,15 +26,10 @@ public sealed class ResourceVehicleIntegrationTests
     public async Task MetaMiscValidation_RejectsLegacyVehicleHealthAuthority()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        var vehicle = CanonicalVehicle("vehicle_cart_001", "location_market");
-        vehicle["maxHealth"] = "100%";
-        vehicle["currentHealth"] = "75%";
-        await context.WriteExactJsonAsync(
-            StorageTransportMoveService.VehiclesPath,
-            new JsonObject
-            {
-                ["vehicles"] = new JsonArray(vehicle)
-            }.ToJsonString());
+        var root = CanonicalReceiptRoot(CanonicalVehicle("vehicle_cart_001", "location_market"));
+        root["vehicles"]![0]!["maxHealth"] = "100%";
+        root["vehicles"]![0]!["currentHealth"] = "75%";
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
 
         var issues = await context.Validator.ValidateGameStateAsync(
             GameStateValidationPhase.MetaMiscStateFiles);
@@ -71,6 +58,7 @@ public sealed class ResourceVehicleIntegrationTests
             new JsonObject
             {
                 ["vehicles"] = new JsonArray(),
+                ["birthReceipts"] = new JsonArray(),
                 ["UpdateVehicles"] = new JsonArray(forgedCreation)
             }.ToJsonString());
 
@@ -93,7 +81,7 @@ public sealed class ResourceVehicleIntegrationTests
             context.FileSystem);
         await context.WriteExactJsonAsync(
             StorageTransportMoveService.VehiclesPath,
-            new JsonObject { ["vehicles"] = new JsonArray() }.ToJsonString());
+            MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         var parkingLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             "location_market", "Market");
         await context.WriteExactJsonAsync(MortalLocationMaterializationContract.WorldMapPath,
@@ -108,6 +96,7 @@ public sealed class ResourceVehicleIntegrationTests
             new JsonObject
             {
                 ["vehicles"] = new JsonArray(),
+                ["birthReceipts"] = new JsonArray(),
                 ["UpdateVehicles"] = new JsonArray(
                     VehicleCreation(
                         "vehicle_ref_cart",
@@ -153,6 +142,7 @@ public sealed class ResourceVehicleIntegrationTests
         Assert.Equal(vehicleId, canonicalVehicle["vehicleId"]!.GetValue<string>());
         Assert.False(canonicalVehicle.ContainsKey("resourceMaterialization"));
 
+        var birthReceipt = Assert.Single(canonicalVehicleRoot["birthReceipts"]!.AsArray())!.DeepClone();
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         canonicalVehicleRoot["removeVehicles"] = new JsonArray(vehicleId);
         await context.WriteExactJsonAsync(
@@ -199,6 +189,9 @@ public sealed class ResourceVehicleIntegrationTests
             StorageTransportMoveService.VehiclesPath));
         Assert.Empty(removedVehicleRoot["vehicles"]!.AsArray());
         Assert.False(removedVehicleRoot.ContainsKey("removeVehicles"));
+        Assert.True(JsonNode.DeepEquals(birthReceipt, Assert.Single(removedVehicleRoot["birthReceipts"]!.AsArray())));
+        Assert.Empty(MortalVehicleBirthReceiptState.ValidateResourceAgreement(
+            removedVehicleRoot, retiredState.Ledger, retiredHistory.History));
     }
 
     [Fact]
@@ -374,8 +367,42 @@ public sealed class ResourceVehicleIntegrationTests
             ["speedBonus"] = 0,
             ["actions"] = new JsonArray(),
             ["resistances"] = new JsonArray(),
-            ["inventory"] = new JsonArray()
+            ["inventory"] = new JsonArray(),
+            ["capacity"] = 4, ["volume"] = 20,
+            ["owner"] = null, ["controller"] = null, ["authorizedUsers"] = new JsonArray(), ["hasFullAccess"] = true
         };
+
+    /// <summary>Produces detached current receipt DATA via the real pure owner and cargo composers.</summary>
+    private static JsonObject CanonicalReceiptRoot(JsonObject vehicle)
+    {
+        var id = vehicle["vehicleId"]!.GetValue<string>();
+        var birth = vehicle.DeepClone().AsObject();
+        birth.Remove("vehicleId");
+        birth["vehicleRef"] = "fixture_cart";
+        birth["resourceMaterialization"] = Materialization(("health", 100m));
+        var raw = MortalVehicleBirthReceiptState.CreateEmptyRoot();
+        raw["UpdateVehicles"] = new JsonArray(birth);
+        var composition = MortalResourceOwnerComposer.Compose(new MortalResourceOwnerCompositionInput(
+            ResourceDefinitionCatalog.CreateBuiltIn(), Roots(MortalVehicleBirthReceiptState.CreateEmptyRoot()), Roots(raw)),
+            new CombatantIdentityFactory(), new FixtureVehicleIdentityFactory(id));
+        Assert.True(composition.IsValid, string.Join(Environment.NewLine, composition.Issues));
+        var root = composition.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath];
+        var canonical = root["vehicles"]![0]!.AsObject();
+        var catalog = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(null, null, null, null,
+            root, new Dictionary<string, JsonObject>()));
+        var cargo = MortalCargoBirthCapacity.Validate(id, canonical, catalog,
+            new Dictionary<string, string>(), 41, "fixture");
+        Assert.True(cargo.IsValid, string.Join(Environment.NewLine, cargo.Issues));
+        canonical["cargoBirthEvidence"] = cargo.Evidence;
+        root["birthReceipts"] = new JsonArray(MortalVehicleBirthReceiptState.CreateReceipt(canonical,
+            "fixture_cart", 41, "fixture_session", "fixture_request", "fixture_snapshot", composition.CapacityDrafts));
+        return root;
+    }
+
+    private sealed class FixtureVehicleIdentityFactory(string id) : VehicleIdentityFactory
+    {
+        internal override string CreateVehicleId() => id;
+    }
 
     private static JsonObject Materialization(params (string Key, decimal Maximum)[] values) =>
         new()

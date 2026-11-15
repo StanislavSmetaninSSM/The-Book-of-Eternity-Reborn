@@ -29,7 +29,7 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
-            new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
+            MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         var issues = await context.Validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
@@ -40,7 +40,7 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(context.FileSystem);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
-            new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
+            MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, RawCreation().ToJsonString());
         var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
@@ -57,6 +57,7 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         Assert.False(canonical.ContainsKey("activeVehicleChange"));
         Assert.False(canonical.ContainsKey("UpdateVehicles"));
 
+        var birthReceipt = Assert.Single(canonical["birthReceipts"]!.AsArray())!.DeepClone();
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
         canonical["removeVehicles"] = new JsonArray(owner.Key.ResourceOwnerId);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, canonical.ToJsonString());
@@ -68,6 +69,7 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         Assert.Null(removed["activeVehicleId"]);
         Assert.Empty(removed["vehicles"]!.AsArray());
         Assert.False(removed.ContainsKey("removeVehicles"));
+        Assert.True(JsonNode.DeepEquals(birthReceipt, Assert.Single(removed["birthReceipts"]!.AsArray())));
     }
 
     [Fact]
@@ -82,7 +84,7 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(context.FileSystem);
         await context.WriteExactJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
-            new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
+            MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, RawCreation().ToJsonString());
         var itemIssues = await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
@@ -106,11 +108,13 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         var published = publishedDocument.RootElement;
         Assert.Equal(published.GetProperty("vehicles")[0].GetProperty("vehicleId").GetString(),
             published.GetProperty("activeVehicleId").GetString());
+        Assert.Equal(published.GetProperty("vehicles")[0].GetProperty("vehicleId").GetString(),
+            Assert.Single(published.GetProperty("birthReceipts").EnumerateArray()).GetProperty("vehicleId").GetString());
     }
 
     private static JsonObject RawCreation() => new()
     {
-        ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null,
+        ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null, ["birthReceipts"] = new JsonArray(),
         ["activeVehicleChange"] = "new_cart",
         ["UpdateVehicles"] = new JsonArray(new JsonObject
         {

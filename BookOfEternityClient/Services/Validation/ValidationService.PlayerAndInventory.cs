@@ -6554,7 +6554,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateRequiredNullableStringField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void ValidateRequiredNullableStringField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
         {

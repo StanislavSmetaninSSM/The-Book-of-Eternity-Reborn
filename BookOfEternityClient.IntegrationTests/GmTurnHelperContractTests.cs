@@ -5038,6 +5038,9 @@ public sealed class GmTurnHelperContractTests
             Assert.Contains("Never author or repair schemaVersion/entries", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("Do not infer faction access from membership", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("\"storageId\":\"storage_locked\"", storageTemplate, StringComparison.Ordinal);
+            Assert.Contains("mortal_existing_storage_birth_v1", storageTemplate, StringComparison.Ordinal);
+            Assert.Contains("contents: []", storageTemplate, StringComparison.Ordinal);
+            Assert.Contains("same-turn new-location targets are not supported", storageTemplate, StringComparison.Ordinal);
             Assert.Contains("\"hasFullAccess\":false,\"contents\":[]", storageTemplate, StringComparison.Ordinal);
 
 

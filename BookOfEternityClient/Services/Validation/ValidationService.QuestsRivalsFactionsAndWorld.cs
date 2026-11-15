@@ -1134,7 +1134,7 @@ public partial class ValidationService
     }
 
 
-    private void RequireObjectArrayField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    private static void RequireObjectArrayField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
         {

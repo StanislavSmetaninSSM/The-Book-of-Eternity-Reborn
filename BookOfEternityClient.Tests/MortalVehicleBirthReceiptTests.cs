@@ -84,6 +84,45 @@ public sealed class MortalVehicleBirthReceiptTests
         Assert.NotEmpty(MortalVehicleBirthReceiptState.ValidateContinuity(before, after));
     }
 
+    [Theory]
+    [InlineData("vehicle_cart")]
+    [InlineData("VEHICLE_CART")]
+    public void Preparation_ReservesRetiredExactAndConfusableBirthIdentity(string allocated)
+    {
+        var before = Root();
+        before["vehicles"] = new JsonArray();
+        before["activeVehicleId"] = null;
+        var raw = before.DeepClone().AsObject();
+        var birth = before["birthReceipts"]![0]!["birthState"]!.DeepClone().AsObject();
+        birth.Remove("vehicleId"); birth.Remove("cargoBirthEvidence");
+        birth["vehicleRef"] = "new_cart";
+        raw["UpdateVehicles"] = new JsonArray(birth);
+        var source = raw.ToJsonString();
+        var result = MortalVehicleBirthPreparation.Prepare(before, raw, new FixedIdentity(allocated));
+        Assert.False(result.IsValid);
+        Assert.Null(result.Preparation);
+        Assert.Equal(source, raw.ToJsonString());
+    }
+
+    [Fact]
+    public void Guidance_DeclaresClientOwnedHistoricalReceiptsAndWorkedExample()
+    {
+        foreach (var path in new[] { "Rules/Block_10.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("vehicles.json.birthReceipts is client-owned immutable creation evidence.", text, StringComparison.Ordinal);
+            Assert.Contains("including receipts for removed vehicles", text, StringComparison.Ordinal);
+            Assert.Contains("Later legitimate vehicle, cargo or access changes do not rewrite historical birth facts.", text, StringComparison.Ordinal);
+        }
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_Block_10.V.txt"));
+        Assert.Contains("Do not write birthReceipts: the client supplies the resolved historical receipt", example, StringComparison.Ordinal);
+    }
+
+    private sealed class FixedIdentity(string id) : VehicleIdentityFactory
+    {
+        internal override string CreateVehicleId() => id;
+    }
+
     private static JsonObject Root()
     {
         var vehicle = JsonNode.Parse("""
@@ -91,7 +130,7 @@ public sealed class MortalVehicleBirthReceiptTests
              "type":"Vehicle","isSentient":false,"availability":"Active","currentLocationId":null,
              "speedBonus":0,"actions":[],"resistances":[],"inventory":[],"capacity":12,"volume":100,
              "owner":null,"controller":null,"authorizedUsers":[],"hasFullAccess":true,
-             "cargoBirthEvidence":{"vehicleId":"vehicle_cart","sourceTurn":42}}
+             "cargoBirthEvidence":{"schemaVersion":1,"vehicleId":"vehicle_cart","sourceTurn":42,"cargoMeasurements":[]}}
             """)!.AsObject();
         var receipt = new JsonObject
         {

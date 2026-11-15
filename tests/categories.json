@@ -305,7 +305,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment"
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment",
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.ExistingStorageBirthGuidanceUsesCompleteEmptySourceLocalOperation"
           ]
         }
       ]

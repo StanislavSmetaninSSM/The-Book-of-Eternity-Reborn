@@ -8,6 +8,41 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Storage bounded-repair review findings, WIP 2026-11-15
+
+Independent review of the empty-storage slice found missing storagesToAdd repair
+route descriptors and an incorrect owner diagnostic suffix containing synthetic
+locationStorages[0]. Added real invalid-name bounded-repair and exact Faction-path
+regressions (UNRUN). Do not accept the whole storage slice until both findings
+are causally checked, fixed and re-reviewed. The earlier malformed-original fix
+remains separately accepted; its 30-case evidence predates these new assertions.
+
+## Receipt policy and existing storage publication, WIP 2026-11-15
+
+At e431bebce71a8ad800b27d8544127643cffe9c98, fresh unit/integration builds
+completed with 0 errors in 35.84/59.35 seconds. Official combined execution
+completed all 27 cases: storage publication 4/4 PASS; receipt policy 13 PASS and
+10 causal missing-core FAIL. Runner 25.536 seconds, no duplicates/timeouts,
+complete owned cleanup. The earlier predicted receipt count of 24 was wrong:
+actual discovery selected 23. Source reuses the same original frozen fixture.
+
+Storage evidence now covers actual common publication with denied/allowed access,
+child history and immutable original location evidence, repeated birth refusal,
+nonempty raw refusal, and reached access-sidecar cut with complete restoration.
+New primary rules, daemon guidance and worked E_CLI_Storage_Birth example describe
+ONLY empty existing-location births. Updated source/render guards are UNRUN;
+independent review is in progress. Nonempty storage cargo remains unfinished.
+
+Receipt core-shape fix is WIP: shared existing full-vehicle shape validator now
+also checks historical birthState; explicit speedBonus is required for full
+objects, while partial updates retain optional behavior. Current test roots were
+migrated to explicit receipt arrays, with real removal/rollback assertions.
+Expanded 26-case policy and related publication/current-owner controls are UNRUN.
+The extraction shares existing pure checks with no source reads, cache, duplicate
+receipt writer or legacy promotion. Nested historical semantic/resource coverage
+and whole feature acceptance remain open. Primary receipt guidance says to
+preserve client-owned creation evidence, including removed vehicles.
+
 ## Safe publication restored and malformed-original regression, 2026-11-15
 
 The exact 47-file WIP was saved at `dcf35e11b88efdeb3682a31da74fd87b42fff265`
