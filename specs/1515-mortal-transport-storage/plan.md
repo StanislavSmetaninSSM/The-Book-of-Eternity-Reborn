@@ -8,6 +8,26 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Receipt focused GREEN, 2026-11-15
+
+Source b18ed5a9714bdbfa09f566a2908c20f957c1d91c is remotely verified and
+restored cleanly from GitHub. Fresh unit93.18s/integration61.89s builds have zero
+errors. Official isolated categories all complete with owned cleanup and no
+skips, duplicates or timeouts: receipt-policy72/72PASS10.715s; allocation-interop
+2/2PASS12.478s; receipt-publication9/9PASS22.780s; cargo-capacity4/4PASS15.081s
+(two methods, four cases); active-publication17/17PASS14.302s; early-shape6/6PASS
+16.854s. Original/current fixture continuity is fixed without changing spiritual
+payload semantics or runtime realm rules. Focused source re-review by independent
+Sol6.1 XHigh found no new issue; final read-only evidence review accepted all110/110 cases across six categories,
+matching log/summary/TRX counters and a common source fingerprint. All three
+Important findings and the Minor duplicate parse are closed.
+
+No performance speedup is claimed. One existing parse replaces redundant parsing;
+historical integrity reuses pure validators over detached operation DATA without
+new reads or permission reuse. The remaining required next block is FR5 populated
+storage capacity followed by actual offscreen storage birth, not more empty-route
+checks. Full task reconciliation and whole-change review remain outstanding.
+
 ## Receipt review correction ready for GREEN, WIP 2026-11-15
 
 The six causal receipt failures now have a bounded correction: existing pure
