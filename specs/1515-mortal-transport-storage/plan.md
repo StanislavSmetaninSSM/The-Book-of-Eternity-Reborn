@@ -298,3 +298,30 @@ Source corrections distinguish absent from explicit-null canonical collections a
 clear preparation on ordinary observed no-birth input. Reuse remains scoped to
 observed preparation input/full invalidation; unrelated earlier failures do not
 confer authority and still require fresh source fences. No spiritual branch changes.
+
+### Next bounded block: same-turn new-item cargo (test SOURCE)
+
+Two genuine integration leaves use the existing item/bootstrap/common-plan helper:
+vehicle birth with sealed new cargo and exact permanent carrier/health; foreign
+vehicle-ref source authority rejects without raw mutation. No result exists yet.
+
+Implementation sequence after causal RED:
+1. Prepare ordinary vehicle allocation from signed original plus current raw roots
+   before raw item cataloging, reusing the reads and registry owner already present.
+2. Explicit birth-command cargo scanning consumes trusted ref/ID preparation, and
+   `new_vehicle_inventory` / `new_vehicle` resolves to its exact parent birth ref.
+   Do not broadly enable other item routes for vehicles.
+3. Frozen route evidence already binds exact ref to permanent carrier and raw roots.
+   Derive a local checked ref/ID index from it during projection; reject conflicting
+   mappings, wrong parent commands and nonempty unmapped cargo. No new cache or
+   full preparation field in the normalization snapshot is needed.
+4. Collect/seal cargo through existing item projection and reference rewriting.
+   Compare frozen raw vehicle input and route IDs with current preparation before
+   passing the item-phase vehicle after-image to the resource owner composer.
+   Prepare from raw, never from projected JSON. Keep raw item resource proposals.
+5. Verify physical common publication preserves the item receipts/index/carrier and
+   owner health. Then add a reached-cut rollback leaf and targeted impact tests.
+
+Existing-only cargo relocation is not authorized by a new-item route. Keep it
+fail-closed unless the existing transition machinery is explicitly integrated;
+this bounded block does not claim it, capacity, or whole-issue completeness.

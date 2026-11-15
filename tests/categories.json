@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-cargo",
+      "responsibility": "#1515 genuine same-turn vehicle birth cargo sealing and exact birth-ref route refusal.",
+      "excludes": "Existing-item loading, capacity measurement, full vehicle semantics and broader issue qualification.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.*"] }]
+    },
+    {
       "id": "mortal-vehicle-birth-preparation",
       "responsibility": "#1515 ordinary pending-turn vehicle identity preparation and exact-source repetition before publication.",
       "excludes": "Cargo projection, specialized spiritual capture, full birth authority and publication receipt remain separate.",
