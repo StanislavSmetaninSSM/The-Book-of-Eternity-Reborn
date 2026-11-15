@@ -2,6 +2,55 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-receipt-policy",
+      "responsibility": "#1515 detached historical vehicle receipt completeness, continuity and malformed-input refusal.",
+      "excludes": "Actual publication, resource-history agreement and whole lifecycle qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalVehicleBirthReceiptTests.cs",
+        "BookOfEternityClient/Services/MortalVehicleBirthReceiptState.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthReceiptTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-existing-storage-birth-publication",
+      "responsibility": "#1515 empty storage birth in an existing accepted location: common publication, child history/access, repeated-birth refusal and reached access-write rollback.",
+      "excludes": "Nonempty cargo, capacity, whole issue acceptance and ordinary grant/revoke redesign.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageAdditionPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageAdditionPublication_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-receipt-publication",
       "responsibility": "#1515 full resolved vehicle creation evidence bound to accepted source turn and health initialization in existing atomic publication.",
       "excludes": "Ordinary travel, afterlife semantics, whole vehicle receipt lifecycle and whole issue acceptance.",

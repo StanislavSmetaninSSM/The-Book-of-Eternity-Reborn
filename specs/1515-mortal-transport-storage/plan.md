@@ -21,7 +21,7 @@ no timeout/duplicates, complete owned cleanup. Missing/null/scalar storage array
 missing storage ID, and null/scalar history arrays reached unchecked casts or
 null dereferences in ReadStorageAdditions, despite prior canonical diagnostics.
 The minimal fix now returns those existing diagnostics before command readers
-consume an invalid original. GREEN and independent review are pending.
+consume an invalid original. GREEN completed 30/30 PASS in 10.006 seconds after a 52.47-second build (0 errors). Independent fresh-context GPT-6.1 Sol XHigh review found no Critical/Important issue and accepted this bounded fix.
 
 Fresh integration build of the preserved receipt code plus regression tests:
 0 errors, 160 warnings, 115.50 seconds. Official receipt-publication category
@@ -33,6 +33,21 @@ Optimization: the early failure gate reuses existing canonical validation and
 its issue list, with no new parse, read, cache or mutable fixture. It avoids
 unsafe and unnecessary command scans after failed original validation. New
 regressions use the existing cheap detached pure-planner baseline.
+
+## Vehicle receipt policy tests WIP, 2026-11-15
+
+New cheap typed `MortalVehicleBirthReceiptTests` target historical full core-shape
+completeness, continuity and malformed receipt refusal: 24 cases UNRUN, including
+ten missing-core cases predicted RED. No production fix yet. Dedicated category
+`mortal-vehicle-birth-receipt-policy`; actual publication remains separate.
+
+## Existing-location storage publication tests WIP, 2026-11-15
+
+Four new official integration cases are UNRUN: explicit denied/allowed access with
+child history and repeated-birth refusal, reached access-write rollback, and
+nonempty creation refusal. They use the existing local publication context and
+backup/cut helpers, no separate writer or mutable shared fixture. Dedicated category
+`mortal-existing-storage-birth-publication`; no broad suite or hosted CI.
 
 ## WIP recovery boundary, 2026-11-15
 
