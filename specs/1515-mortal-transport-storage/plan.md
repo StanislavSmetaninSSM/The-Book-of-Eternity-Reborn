@@ -700,3 +700,10 @@ companion for a no-command composition; it is a test expectation error, not a
 capacity rejection. The fixture now requests an ordinary name update to actually
 emit the companion whose unchanged evidence is checked. Integration was not run
 because the serial command stopped at this unit failure.
+
+Storage identity GREEN at 45649e42: 9/9 unit cases PASS, runner 8.5897839s,
+complete cleanup, no skips/duplicates/timeouts. Independent SOURCE review found
+three preparation issues before integration execution: list-return API used as
+result object, Rules2 prose outside XML root, and missing direct rendered-location
+assertions. Corrected these without production change; integration and revised
+delivery are still UNRUN. No feature-wide acceptance.

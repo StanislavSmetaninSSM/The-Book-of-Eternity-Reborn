@@ -20,7 +20,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
             context.FileSystem, context.Normalizer, context.Validator, backups);
 
-        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(result, issue => issue.Severity == IssueSeverity.Error);
         var map = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!;
         var location = Assert.Single(map["locations"]!.AsArray())!;
         var current = (await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath))!;
