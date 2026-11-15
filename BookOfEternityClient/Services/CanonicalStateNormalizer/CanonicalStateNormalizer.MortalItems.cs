@@ -1344,7 +1344,8 @@ public partial class CanonicalStateNormalizer
                 {
                     if (property.Key is
                         MortalItemMaterializationContract.EnvelopeProperty or
-                        MortalItemMaterializationContract.ReceiptProperty)
+                        MortalItemMaterializationContract.ReceiptProperty or
+                        "birthReceipts" or "cargoBirthEvidence")
                     {
                         continue;
                     }

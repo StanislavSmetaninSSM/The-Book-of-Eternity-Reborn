@@ -8,6 +8,47 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Receipt review correction ready for GREEN, WIP 2026-11-15
+
+The six causal receipt failures now have a bounded correction: existing pure
+container-path admission is reused before measurement reconstruction; embedded
+item acceptance must equal vehicle birth turn; current reference rewriting skips
+client-owned birthReceipts and historical cargoBirthEvidence. One valid nested
+container control retains legitimate measured ancestry. The shared composer uses
+its existing strict object parser once rather than parsing/cloning the same root
+twice; six malformed/current-empty root controls preserve classification. No new
+cache, source read, authority reuse or measured speedup claim is introduced.
+
+The two shared allocation failures were signed-original continuity: the original
+fixture vehicle file was absent while raw input inserted birthReceipts:[]. Each
+current fixture now seeds the canonical empty vehicle root before original capture
+through the existing seed callback. No runtime continuity or realm rule is relaxed.
+New policy72 and relevant publication/consumer GREEN remain UNRUN. This is not
+whole-feature acceptance; storage populated capacity/offscreen work remains open.
+
+## Focused storage GREEN and receipt review RED, WIP 2026-11-15
+
+Source f7a3c375 was verified remotely and fetched into the clean GitHub restore;
+review test bytes agree. Fresh unit/integration builds passed with zero errors,
+92.05/59.87 seconds. Official isolated categories completed with owned cleanup,
+no duplicate IDs or timeouts: bounded location repair83/83PASS18.262s and real
+existing-storage publication6/6PASS18.218s. Independent Sol6.1 XHigh focused outcome review accepted this bounded
+empty-storage/repair slice with no remaining actionable findings, matching source
+restore and TRX; retained unchanged policy31/31 and guidance3/3 evidence. Receipt policy completed65 cases59PASS/6causalFAIL10.451s: all three
+invalid containment graphs, future split acceptance and both historical rewrite
+subtrees demonstrate the review gaps. The positive current rewrite control passes.
+Shared allocation interop2/2FAIL11.090s with vehicle receipt continuity rejection;
+adding explicit empty current arrays alone did not repair those fixture sources.
+This is investigated separately without weakening the canonical contract.
+
+Next: fix the three demonstrated receipt gaps and redundant parse, repair current
+allocation fixtures, then fresh relevant GREEN and focused independent outcome.
+The existing two-case mortal-vehicle-cargo-capacity category is selected to retain
+real measured-stack publication and unproved-load refusal, without duplicate
+selectors. Storage graph/capacity and genuine offscreen birth remain required FR5
+work, not satisfied by empty storage birth or later travel parking. No raw logs,
+main merge, issue closure, hosted CI or spiritual combat work is included.
+
 ## Receipt focused review regressions, WIP 2026-11-15
 
 Independent review of the complete receipt slice found three concrete remaining

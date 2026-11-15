@@ -11,19 +11,20 @@ public sealed partial class MortalVehicleBirthReceiptTests
     [InlineData("orphan", "mortal_item_materialization_container_parent_missing")]
     [InlineData("noncontainer", "mortal_item_materialization_container_parent_invalid")]
     [InlineData("chain", "mortal_item_materialization_container_path_chain_mismatch")]
-    public void HistoricalCargo_RequiresAdmittedContainerGraph(string shape, string expectedCode)
+    [InlineData("valid_chain", null)]
+    public void HistoricalCargo_RequiresAdmittedContainerGraph(string shape, string? expectedCode)
     {
         var root = RootWithCargo();
         var receipt = root["birthReceipts"]![0]!.AsObject();
         var birth = receipt["birthState"]!.AsObject();
         var outer = birth["inventory"]![0]!.AsObject();
-        if (shape == "chain")
+        if (shape is "chain" or "valid_chain")
         {
             MakeContainer(outer);
             var parent = BirthItem("parent_item", "cargo_item");
             MakeContainer(parent);
-            // All parents exist and are containers; the leaf omits its outer ancestor.
-            var leaf = BirthItem("leaf_item", "parent_item");
+            // All parents exist and are containers; only the negative leaf omits its outer ancestor.
+            var leaf = shape == "chain" ? BirthItem("leaf_item", "parent_item") : BirthItem("leaf_item", "cargo_item", "parent_item");
             birth["inventory"]!.AsArray().Add(parent);
             birth["inventory"]!.AsArray().Add(leaf);
             birth["cargoMeasurements"] = new JsonArray(new JsonObject
@@ -42,7 +43,8 @@ public sealed partial class MortalVehicleBirthReceiptTests
                 item.JsonPath, MortalItemMaterializationPhase.CanonicalPostSeal));
         var containerIssues = new List<ValidationIssue>();
         ValidationService.ValidateCanonicalContainerPaths(catalog, containerIssues);
-        Assert.Contains(containerIssues, issue => issue.Code == expectedCode);
+        if (expectedCode is null) Assert.Empty(containerIssues);
+        else Assert.Contains(containerIssues, issue => issue.Code == expectedCode);
         // The capacity algorithm intentionally assumes an admitted graph. Capture its
         // output to isolate that missing precondition from unrelated seal/shape errors.
         var capacity = MortalCargoBirthCapacity.Validate("vehicle_cart", birth, catalog,
@@ -52,7 +54,27 @@ public sealed partial class MortalVehicleBirthReceiptTests
         birth.Remove("cargoMeasurements");
         Reseal(receipt);
 
-        Assert.NotEmpty(MortalVehicleBirthReceiptState.ValidateLocal(root));
+        if (expectedCode is null) Assert.Empty(MortalVehicleBirthReceiptState.ValidateLocal(root));
+        else Assert.NotEmpty(MortalVehicleBirthReceiptState.ValidateLocal(root));
+    }
+
+    [Theory]
+    [InlineData("[]", false)]
+    [InlineData("null", false)]
+    [InlineData("false", false)]
+    [InlineData(" ", false)]
+    [InlineData("{\"vehicles\":[],\"birthReceipts\":[],\"birthReceipts\":[]}", false)]
+    [InlineData("{\"vehicles\":[],\"birthReceipts\":[],\"activeVehicleId\":null}", true)]
+    public async Task CanonicalOwnerReader_PreservesStrictVehicleRootClassification(string json, bool validRoot)
+    {
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var history = ResourceHistoryState.ParseCanonical(null, definitions, allowMissingPristine: true);
+        Assert.True(history.IsValid);
+        var result = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(definitions,
+            path => Task.FromResult(path == StorageTransportMoveService.VehiclesPath ? json : null),
+            new ResourceStateLedger([]), history.History, CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap);
+        Assert.Equal(!validRoot, result.Issues.Any(issue => issue.FilePath == StorageTransportMoveService.VehiclesPath &&
+            issue.Code == "resource_owner_canonical_root_invalid"));
     }
 
     [Fact]

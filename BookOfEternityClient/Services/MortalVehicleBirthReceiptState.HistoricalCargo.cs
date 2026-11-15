@@ -29,10 +29,15 @@ internal static partial class MortalVehicleBirthReceiptState
         var catalog = MortalItemCarrierCatalog.Build(new(null, null, null, null, historical,
             new Dictionary<string, JsonObject>()));
         if (catalog.Issues.Count != 0) return false;
+        var containerIssues = new List<ValidationIssue>();
+        ValidationService.ValidateCanonicalContainerPaths(catalog, containerIssues);
+        if (containerIssues.Count != 0) return false;
         foreach (var occurrence in catalog.Occurrences)
         {
             if (MortalItemMaterializationContract.Validate(JsonSerializer.SerializeToElement(occurrence.Item),
                     occurrence.JsonPath, MortalItemMaterializationPhase.CanonicalPostSeal).Count != 0 ||
+                occurrence.Item[MortalItemMaterializationContract.ReceiptProperty] is not JsonObject itemReceipt ||
+                !Integer(itemReceipt["acceptedAtTurn"], out var acceptedTurn) || acceptedTurn != turn ||
                 occurrence.Item["materialization"] is not JsonObject envelope ||
                 Exact(envelope["route"]) != "new_vehicle_inventory" ||
                 !Integer(envelope["sourceTurn"], out var itemTurn) || itemTurn != turn ||

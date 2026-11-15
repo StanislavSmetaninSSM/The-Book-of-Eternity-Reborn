@@ -118,7 +118,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     [Fact]
     public async Task OriginalSpiritualCapture_ReplaysOwnedAllocationsThroughExchange()
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync();
+        await using var context = await CreateCompleteConflictFrameContextAsync(
+            seedOriginalInputs: fixture => fixture.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
+                MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString()));
         await WriteCompleteConflictFrameExchangeAsync(context);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, new JsonObject
         {

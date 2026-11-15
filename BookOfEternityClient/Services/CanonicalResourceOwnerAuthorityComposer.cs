@@ -93,10 +93,8 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             StorageTransportMoveService.CurrentLocationPath,
             issues);
         var vehicleJson = await ReadAsync(StorageTransportMoveService.VehiclesPath);
-        var vehicles = ParseOptionalVehicles(vehicleJson, StorageTransportMoveService.VehiclesPath, issues);
-        if (vehicleJson is not null && !TryParseStrictObject(vehicleJson, out _))
-            AddInvalidRoot(StorageTransportMoveService.VehiclesPath, issues);
-        else
+        var vehicles = ParseOptionalObject(vehicleJson, StorageTransportMoveService.VehiclesPath, issues);
+        if (vehicleJson is null || vehicles is not null)
             issues.AddRange(MortalVehicleBirthReceiptState.ValidateResourceAgreement(vehicles, state, history));
         var offscreenStorage = ParseOptionalObject(
             await ReadAsync(MortalLocationStorageContentsState.StatePath),
@@ -542,19 +540,6 @@ internal static class CanonicalResourceOwnerAuthorityComposer
         return TryParseStrictObject(json, out var root)
             ? root
             : AddInvalidRoot(path, issues);
-    }
-
-    private static JsonObject? ParseOptionalVehicles(
-        string? json,
-        string path,
-        List<ValidationIssue> issues)
-    {
-        var parsed = MortalItemProjectionRootParser.Parse(json, path);
-        if (!parsed.IsValid)
-            return AddInvalidRoot(path, issues);
-        return MortalItemProjectionRootParser.ToCarrierCatalogObject(
-            parsed.Root,
-            path);
     }
 
     private static JsonObject ParseOwnerRoot(
