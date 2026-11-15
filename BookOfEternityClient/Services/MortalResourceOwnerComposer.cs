@@ -47,8 +47,10 @@ internal sealed class MortalResourceOwnerCompositionInput
         MortalResourceOwnerRoots accepted,
         IReadOnlyDictionary<ResourceOwnerKind, IReadOnlyList<string>>? sameTurnCapabilities = null,
         IReadOnlyList<MortalItemAcceptedTurnOwner>? acceptedItems = null,
-        IReadOnlySet<string>? missingGovernedItemIds = null)
+        IReadOnlySet<string>? missingGovernedItemIds = null,
+        MortalVehicleBirthPreparation? preparedVehicles = null)
     {
+        PreparedVehicles = preparedVehicles;
         Definitions = definitions ?? throw new ArgumentNullException(nameof(definitions));
         PreTurn = preTurn ?? throw new ArgumentNullException(nameof(preTurn));
         Accepted = accepted ?? throw new ArgumentNullException(nameof(accepted));
@@ -71,6 +73,8 @@ internal sealed class MortalResourceOwnerCompositionInput
             ? new HashSet<string>(StringComparer.Ordinal)
             : new HashSet<string>(missingGovernedItemIds, StringComparer.Ordinal);
     }
+
+    internal MortalVehicleBirthPreparation? PreparedVehicles { get; }
 
     internal ResourceDefinitionCatalog Definitions { get; }
 
@@ -254,6 +258,7 @@ internal static class MortalResourceOwnerComposer
             historicalOwners,
             companionAfterImages,
             vehicleIdentityFactory,
+            input.PreparedVehicles,
             materializationCandidates,
             issues);
         if (issues.Count != 0)
@@ -431,6 +436,9 @@ internal static class MortalResourceOwnerComposer
     /// <param name="identityFactory">
     /// Allocation policy receiving each admitted exact vehicle reference.
     /// </param>
+    /// <param name="preparedVehicles">
+    /// Optional ordinary source-bound allocation DATA; does not grant publication authority.
+    /// </param>
     /// <param name="materializationCandidates">
     /// Destination for new owners' resource initialization proposals.
     /// </param>
@@ -446,6 +454,7 @@ internal static class MortalResourceOwnerComposer
         List<ResourceOwnerKey> historicalOwners,
         Dictionary<string, JsonObject> companionAfterImages,
         VehicleIdentityFactory identityFactory,
+        MortalVehicleBirthPreparation? preparedVehicles,
         List<ResourceOwnerMaterializationCandidate> materializationCandidates,
         List<ValidationIssue> issues)
     {
@@ -669,7 +678,18 @@ internal static class MortalResourceOwnerComposer
                 if (birthIssues.Count != 0)
                     continue;
 
-                var vehicleId = identityFactory.CreateVehicleId(vehicleRef);
+                string vehicleId;
+                if (preparedVehicles is not null)
+                {
+                    if (!preparedVehicles.TryResolve(vehicleRef, out vehicleId))
+                    {
+                        Add(issues, path + ".vehicleRef", "resource_owner_vehicle_preparation_invalid",
+                            "exact admitted vehicle birth allocation", vehicleRef);
+                        continue;
+                    }
+                }
+                else
+                    vehicleId = identityFactory.CreateVehicleId(vehicleRef);
                 if (!ResourceMaterializationContract.IsExactIdentifier(vehicleId) ||
                     !exact.Add(vehicleId) ||
                     !confusable.Add(ResourceMaterializationContract.BuildConfusableKey(vehicleId)))

@@ -24,6 +24,78 @@ public sealed class MortalVehicleBirthPreparationTests
         Assert.Equal(raw, (await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!.ToJsonString());
     }
 
+    [Theory]
+    [InlineData("raw")]
+    [InlineData("snapshot")]
+    [InlineData("session")]
+    [InlineData("invalidate")]
+    [InlineData("generation")]
+    [InlineData("before")]
+    [InlineData("failed")]
+    public async Task Preparation_ChangedBindingDoesNotReuseAllocation(string change)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var before = new JsonObject { ["vehicles"] = new JsonArray() };
+        var raw = BirthRoot();
+        var first = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(context.FileSystem, lease,
+            "session-a", "snapshot-a", before, raw);
+        Assert.True(first.IsValid);
+        var same = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(context.FileSystem, lease,
+            "session-a", "snapshot-a", before, raw);
+        Assert.Same(first, same);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+        if (change == "raw") raw["UpdateVehicles"]![0]!["name"] = "Changed cart";
+        if (change == "invalidate") AcceptedTurnAuthorityRegistry.InvalidateAcceptedTurnValidated(context.FileSystem, lease);
+        if (change == "generation") context.FileSystem.RotateSessionGeneration(lease);
+        if (change == "before")
+        {
+            var existing = new JsonObject { ["vehicleId"] = "vehicle_existing" };
+            before["vehicles"]!.AsArray().Add(existing);
+            raw["vehicles"]!.AsArray().Add(existing.DeepClone());
+        }
+        if (change == "failed")
+        {
+            raw["UpdateVehicles"]![0]!["capacity"] = -1;
+            var failure = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(context.FileSystem, lease,
+                "session-a", "snapshot-a", before, raw);
+            Assert.False(failure.IsValid);
+            Assert.Null(failure.Preparation);
+            raw["UpdateVehicles"]![0]!["capacity"] = 12;
+        }
+        var next = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(context.FileSystem, lease,
+            change == "session" ? "session-b" : "session-a",
+            change == "snapshot" ? "snapshot-b" : "snapshot-a", before, raw);
+        Assert.True(next.IsValid);
+        Assert.True(first.Preparation!.TryResolve("new_cart", out var previousId));
+        Assert.True(next.Preparation!.TryResolve("new_cart", out var nextId));
+        Assert.NotEqual(previousId, nextId);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+    }
+
+    [Fact]
+    public void Preparation_RejectsAllMalformedBirthsBeforeAnyAllocation()
+    {
+        var raw = BirthRoot();
+        var second = raw["UpdateVehicles"]![0]!.DeepClone().AsObject();
+        second["vehicleRef"] = "another_cart";
+        second.Remove("capacity");
+        raw["UpdateVehicles"]!.AsArray().Add(second);
+        var serialized = raw.ToJsonString();
+        var factory = new CountingFactory();
+        var result = MortalVehicleBirthPreparation.Prepare(new JsonObject { ["vehicles"] = new JsonArray() }, raw, factory);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Preparation);
+        Assert.Equal(0, factory.Calls);
+        Assert.Equal(serialized, raw.ToJsonString());
+    }
+
+    private sealed class CountingFactory : VehicleIdentityFactory
+    {
+        internal int Calls { get; private set; }
+        internal override string CreateVehicleId() => "vehicle_count_" + ++Calls;
+    }
+
     private static async Task<(string Id, string Companion)> Admit(ResourceMaterializationTestContext context)
     {
         var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();

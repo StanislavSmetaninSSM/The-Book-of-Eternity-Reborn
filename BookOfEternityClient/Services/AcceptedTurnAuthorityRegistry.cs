@@ -6029,6 +6029,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
         private void InvalidateAllCore()
         {
+            _vehicleBirthInputFingerprint = null;
+            _vehicleBirthPreparation = null;
             _commonPlan.InvalidateAll();
             ClearValidatedTreatmentPublicationCore();
             _effectPlan.InvalidateAll();

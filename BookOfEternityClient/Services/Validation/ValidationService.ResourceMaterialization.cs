@@ -431,13 +431,24 @@ public partial class ValidationService
                 writeLease,
                 manifest.SessionId,
                 manifest.ManifestPayloadHash, spiritualCapture?.Allocations.Items);
+        var previousMortalRoots = await ReadMortalResourceOwnerRootsAsync(manifest, issues, writeLease);
+        var currentMortalRoots = await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs);
+        MortalVehicleBirthPreparation? preparedVehicles = null;
+        var currentVehicleBirthInput = currentMortalRoots.Vehicles;
+        if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
+        {
+            var preparation = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(
+                _fs, writeLease, manifest.SessionId, manifest.ManifestPayloadHash,
+                previousMortalRoots.Vehicles, currentVehicleBirthInput);
+            issues.AddRange(preparation.Issues);
+            if (!preparation.IsValid)
+                return issues;
+            preparedVehicles = preparation.Preparation;
+        }
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
-                definitions,
-                await ReadMortalResourceOwnerRootsAsync(manifest, issues, writeLease),
-                await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs),
+                definitions, previousMortalRoots, currentMortalRoots,
                 BuildSameTurnResourceOwnerCapabilities(commands),
-                acceptedItemOwners,
-                missingGovernedItemIds);
+                acceptedItemOwners, missingGovernedItemIds, preparedVehicles);
         var mortalOwnerComposition = spiritualCapture is null
             ? MortalResourceOwnerComposer.Compose(mortalOwnerInput)
             : MortalResourceOwnerComposer.Compose(mortalOwnerInput,

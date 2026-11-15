@@ -62,6 +62,16 @@ The complete map input/source/factory identity and invalidation must be tested;
 identity DATA is never permission to publish. See spec for historical quantity/shape
 measurement binding. Receipt/access/storage and bounded repair remain subsequent work.
 
+### WIP ordinary allocation preparation
+
+At `10e1ddd07`, repeated ordinary admission produced causal RED: both admissions
+succeeded but returned different vehicle IDs. Official category 1/1 FAIL, 11.133s,
+complete cleanup, no duplicate/skip/timeout; build119.31s,0errors234warnings.
+The narrow preparation and existing-registry DATA reuse are now implemented but
+uncompiled/unrun. Added source/session/token/full-invalidation and no-authority
+regressions plus all-candidate validation before allocation. Spiritual original
+capture remains on its existing factory path. No cargo integration claim yet.
+
 ### Next implementation step: ordinary allocation preparation
 
 Clean restore of checkpoint `627eac3f7772cf63b4332ba940eb04bc7a2f7931` verified
