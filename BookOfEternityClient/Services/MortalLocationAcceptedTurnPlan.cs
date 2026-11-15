@@ -43,7 +43,8 @@ internal sealed record MortalLocationRepairContext(
     string? ExistingId = null,
     int? ExpectedSourceTurn = null,
     string? ExpectedSourceAuthorityKind = null,
-    string? ExpectedSourceAuthorityId = null);
+    string? ExpectedSourceAuthorityId = null,
+    string? ExpectedStorageId = null);
 
 internal sealed class MortalLocationAcceptedTurnPlan
 {

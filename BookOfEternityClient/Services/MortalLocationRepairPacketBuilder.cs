@@ -123,13 +123,13 @@ internal static class MortalLocationRepairPacketBuilder
             return true;
         }
 
-        var packetActors = Build(locationIssues)
-            .SelectMany(packet => packet.CanonicalActorNames)
-            .ToHashSet(StringComparer.Ordinal);
+        var packetCoordinates = Build(locationIssues)
+            .SelectMany(packet => packet.CanonicalActorNames.Select(actor => new CandidateKey(actor, packet.RawCoordinate)))
+            .ToHashSet(CandidateKeyComparer.Instance);
         return locationIssues.Any(issue =>
         {
             var candidate = TryCreateCandidate(issue);
-            return candidate == null || !packetActors.Contains(candidate.Actor);
+            return candidate == null || !packetCoordinates.Contains(new CandidateKey(candidate.Actor, candidate.RawCoordinate));
         });
     }
 
@@ -191,6 +191,10 @@ internal static class MortalLocationRepairPacketBuilder
             .ToArray();
 
         var transitionClass = transitionClasses[0];
+        var storageIds = candidates.Select(candidate => candidate.Issue.MortalLocationRepairContext?.ExpectedStorageId)
+            .Where(MortalItemIdentityRules.IsExactIdentity).Distinct(StringComparer.Ordinal).Take(2).ToArray();
+        if (transitionClass == "storage_addition" && storageIds.Length != 1)
+            return null;
         var expectedInitialIds = candidates
             .Select(candidate => candidate.Issue.MortalLocationRepairContext?.InitialId)
             .Where(MortalItemIdentityRules.IsExactIdentity)
@@ -233,6 +237,8 @@ internal static class MortalLocationRepairPacketBuilder
             "route=" + transitionClass,
             "actor=" + key.Actor
         };
+        if (transitionClass == "storage_addition")
+            expectedAuthority.Add("storageId=" + storageIds[0]);
         if (isCreation)
         {
             expectedAuthority.Add("initialId=" + expectedInitialIds[0]);
@@ -258,6 +264,7 @@ internal static class MortalLocationRepairPacketBuilder
             RawCarrier = rawCarriers[0],
             RawCoordinate = key.RawCoordinate,
             ExpectedMaterializationId = isCreation ? expectedMaterializationIds[0] : null,
+            ExpectedStorageId = transitionClass == "storage_addition" ? storageIds[0] : null,
             TargetFiles = targetFiles,
             MissingFields = missing,
             InvalidFields = invalid,
@@ -317,7 +324,9 @@ internal static class MortalLocationRepairPacketBuilder
                 $"Do not author or edit {MortalLocationIdentityState.StatePath}, locationId/linkId creation results, materializationReceipt, seal, snapshots, or transitions.",
                 "Do not replace canonical locations/links or repair another same-name or same-coordinate entity.",
                 "Do not add knownExits, adjacencyMap, reverse links, display-name aliases, or coordinate aliases.",
-                "Do not repair item, actor, faction, lore, threat, storage, or afterlife authority through this packet."
+                transitionClass == "storage_addition"
+                    ? "Repair only listed raw declared storage metadata. Never rewrite accepted storage metadata/history, item, actor, faction, lore, threat or afterlife authority."
+                    : "Do not repair item, actor, faction, lore, threat, storage, or afterlife authority through this packet."
             }
         };
     }
@@ -335,6 +344,7 @@ internal static class MortalLocationRepairPacketBuilder
         var route = ResolveRepairRoute(context.CarrierPath, actor!);
         return route == null ||
                !string.Equals(context.EntityKind, route.EntityKind, StringComparison.Ordinal) ||
+               route.TransitionClass == "storage_addition" && !MortalItemIdentityRules.IsExactIdentity(context.ExpectedStorageId) ||
                !IssueMatchesRawCoordinate(issue.FilePath, context.CarrierPath, route.TargetFile) ||
                !IssueMatchesExplicitRepairableField(issue, context, route.TargetFile) ||
                !HasExpectedRouteTarget(issue, route.TargetFile)

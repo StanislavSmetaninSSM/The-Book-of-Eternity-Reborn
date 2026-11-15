@@ -8,6 +8,26 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Verified receipt core and downstream storage retry correction, WIP 2026-11-15
+
+At bccf9ee5, receipt policy58/58PASS9.768s, real publication9/9PASS22.675s,
+active consumers17/17PASS14.404s and actual early shape6/6PASS17.742s. Build
+integration0errors59.89s reused matching unit build; all completed with cleanup.
+Independent receipt review nevertheless found two concrete remaining gaps:
+historical malformed containment topology and creation-reference rewriting through
+client-owned historical evidence. These remain open pending causal tests/fixes.
+Repeated canonical vehicle root parsing is also being eliminated in that block.
+
+Storage downstream retry causal evidence:75 unit cases72PASS/3FAIL15.166s,
+with planned5integration controls not executed after fail-fast; real pipeline6
+cases4PASS/2FAIL16.944s. Single/two-child corrected retry returned false and
+Capture collapsed2children to1. These are behavioral failures, unlike the earlier
+compile-only argument error. Now obligations retain exact raw index and childID;
+the same engine matcher checks targetLocationId/childID/index and duplicate pairs.
+One local index over already-read raw DATA avoids repeated child scans; no new
+I/O, retained cache or authority. Original route semantics remain unchanged.
+Current-scene old-route controls are added; GREEN and focused re-review pending.
+
 ## Receipt integrity correction, WIP 2026-11-15
 
 The exact 20 causal detached failures at f72d437e now have a bounded source fix:

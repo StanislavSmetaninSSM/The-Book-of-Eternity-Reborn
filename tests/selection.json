@@ -56,6 +56,13 @@
       "contracts": [
         "#1515 first vehicle birth structural cargo limits and explicit owner/controller/access; exact existing single-player identity."
       ]
+    },
+    {
+      "category": "mortal-vehicle-birth-early-shape",
+      "reason": "Shared enum, action, resource and location shape helpers were extracted for historical evidence; retain actual raw and partial-update consumers.",
+      "contracts": [
+        "#1515 current full shape and existing partial-update compatibility."
+      ]
     }
   ]
 }

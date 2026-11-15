@@ -345,6 +345,7 @@ public partial class ValidationService
                             ? rawContext with
                             {
                                 ExistingId = plannerContext.ExistingId ?? rawContext.ExistingId,
+                                ExpectedStorageId = plannerContext.ExpectedStorageId ?? rawContext.ExpectedStorageId,
                                 ExpectedSourceTurn = plannerContext.ExpectedSourceTurn,
                                 ExpectedSourceAuthorityKind = plannerContext.ExpectedSourceAuthorityKind,
                                 ExpectedSourceAuthorityId = plannerContext.ExpectedSourceAuthorityId
@@ -538,7 +539,9 @@ public partial class ValidationService
             existingId,
             expectedSourceTurn,
             expectedSourceAuthorityKind,
-            expectedSourceAuthorityId);
+            expectedSourceAuthorityId,
+            carrierPath.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal) &&
+                candidate["storage"] is JsonObject child ? ReadExactLocationNodeString(child, "storageId") : null);
         return contextual;
     }
 

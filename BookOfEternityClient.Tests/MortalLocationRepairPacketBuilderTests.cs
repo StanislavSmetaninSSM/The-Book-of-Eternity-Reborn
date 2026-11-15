@@ -752,6 +752,22 @@ public sealed class MortalLocationRepairPacketBuilderTests
         Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(new[] { issue }));
     }
 
+    [Fact]
+    public void Build_StorageBirthMissingChildIdentityCannotBorrowSiblingPacket()
+    {
+        var issues = Enumerable.Range(0, 2).Select(i =>
+        {
+            var coordinate = $"worldMapUpdates.storagesToAdd[{i}]";
+            var context = CreateContext(coordinate, "mortal_location", null, new[] { "storage.name" }, "loc_parent")
+                with { ExpectedStorageId = i == 0 ? "storage_first" : null };
+            return CreateIssue(MortalLocationMaterializationContract.WorldMapPath + "." + coordinate + ".storage.name",
+                "mortal_location_storage_semantic_invalid", "mortal_location:existing:loc_parent", "name", "missing",
+                new[] { MortalLocationMaterializationContract.WorldMapPath }, context);
+        }).ToArray();
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(issues));
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(issues));
+    }
+
     private static MortalLocationRepairContext CreateContext(
         string carrierPath,
         string entityKind,

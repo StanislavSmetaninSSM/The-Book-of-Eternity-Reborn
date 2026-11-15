@@ -40,7 +40,7 @@
     {
       "id": "mortal-vehicle-birth-receipt-policy",
       "responsibility": "#1515 detached historical vehicle receipt completeness, continuity and malformed-input refusal.",
-      "excludes": "Actual publication, resource-history agreement and whole lifecycle qualification.",
+      "excludes": "Actual filesystem publication and whole lifecycle qualification; typed resource-history agreement is included.",
       "changeHints": [
         "BookOfEternityClient.Tests/MortalVehicleBirthReceiptTests.cs",
         "BookOfEternityClient/Services/MortalVehicleBirthReceiptState.cs"

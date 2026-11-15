@@ -71,6 +71,27 @@ public sealed class MortalLocationRepairRetryPolicyTests
         Assert.False(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, root));
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ExistingCurrentRoutesRetainIdentityAndCreationEvidence(bool creation)
+    {
+        var current = new JsonObject
+        {
+            [creation ? "initialId" : "locationId"] = "current_exact",
+            ["materialization"] = new JsonObject { ["materializationId"] = "origin_exact" }
+        };
+        var root = new JsonObject { ["currentLocationData"] = current };
+        var obligations = new[] { new MortalLocationRepairRetryObligation(
+            creation ? "mortal_location:new:current_exact" : "mortal_location:existing:current_exact",
+            creation ? "current_scene_creation" : "current_selection", "origin_exact") };
+        Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, root, null));
+        current["materialization"]!["materializationId"] = "changed";
+        Assert.Equal(!creation, MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, root, null));
+        current[creation ? "initialId" : "locationId"] = "CURRENT_EXACT";
+        Assert.False(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, root, null));
+    }
+
     private static (MortalLocationRepairRetryObligation[], JsonObject) StorageRequest(int count)
     {
         var rows = new JsonArray();

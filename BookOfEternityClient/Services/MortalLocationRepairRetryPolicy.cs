@@ -13,13 +13,24 @@ internal static class MortalLocationRepairRetryPolicy
     internal static IReadOnlyList<MortalLocationRepairRetryObligation> Capture(
         IReadOnlyList<MortalLocationRepairPacket> packets) => packets
         .Select(packet => new MortalLocationRepairRetryObligation(
-            packet.CanonicalActorNames.Single(), packet.Route, packet.ExpectedMaterializationId))
+            packet.CanonicalActorNames.Single(), packet.Route, packet.ExpectedMaterializationId,
+            packet.Route == "storage_addition" ? packet.RawCoordinate : null,
+            packet.Route == "storage_addition" ? packet.ExpectedStorageId : null))
         .Distinct().ToArray();
 
     internal static bool HasExactResubmission(
         IReadOnlyList<MortalLocationRepairRetryObligation> obligations,
         JsonObject? currentRoot, JsonObject? mapRoot)
     {
+        // One operation-local index over already-read raw DATA, not retained rights.
+        var storageRows = (mapRoot?["worldMapUpdates"] as JsonObject)?["storagesToAdd"] as JsonArray;
+        var storageCounts = new Dictionary<(string Parent, string Child), int>();
+        if (obligations.Any(o => o.Route == "storage_addition") && storageRows is not null)
+            foreach (var row in storageRows.OfType<JsonObject>())
+                if (ReadExactMortalLocationRepairString(row, "targetLocationId") is { } parent &&
+                    row["storage"] is JsonObject child &&
+                    ReadExactMortalLocationRepairString(child, "storageId") is { } id)
+                    storageCounts[(parent, id)] = storageCounts.GetValueOrDefault((parent, id)) + 1;
         foreach (var obligation in obligations)
         {
             if (!TryParseMortalLocationRepairActor(
@@ -29,6 +40,25 @@ internal static class MortalLocationRepairRetryPolicy
                     out var identity))
             {
                 return false;
+            }
+
+            if (obligation.Route == "storage_addition")
+            {
+                const string prefix = "worldMapUpdates.storagesToAdd[";
+                var coordinate = obligation.RawCoordinate;
+                if (isCreation || entityKind != "mortal_location" || storageRows is null ||
+                    !MortalItemIdentityRules.IsExactIdentity(obligation.StorageId) || coordinate is null ||
+                    !coordinate.StartsWith(prefix, StringComparison.Ordinal) || !coordinate.EndsWith(']') ||
+                    !int.TryParse(coordinate.AsSpan(prefix.Length, coordinate.Length - prefix.Length - 1),
+                        System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var index) ||
+                    coordinate != prefix + index.ToString(System.Globalization.CultureInfo.InvariantCulture) + "]" ||
+                    index < 0 || index >= storageRows.Count || storageRows[index] is not JsonObject row ||
+                    ReadExactMortalLocationRepairString(row, "targetLocationId") != identity ||
+                    row["storage"] is not JsonObject child ||
+                    ReadExactMortalLocationRepairString(child, "storageId") != obligation.StorageId ||
+                    storageCounts.GetValueOrDefault((identity, obligation.StorageId!)) != 1)
+                    return false;
+                continue;
             }
 
             var candidates = EnumerateMortalLocationRepairRouteCandidates(
