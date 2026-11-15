@@ -5,7 +5,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Detached receipt DATA policy. No world setup or publication authority.</summary>
-public sealed class MortalVehicleBirthReceiptTests
+public sealed partial class MortalVehicleBirthReceiptTests
 {
     [Fact]
     public void CompleteReceipt_IsDetachedAndDoesNotTrackLiveUpdates()
@@ -137,7 +137,7 @@ public sealed class MortalVehicleBirthReceiptTests
             ["schemaVersion"] = 1, ["vehicleId"] = "vehicle_cart", ["vehicleRef"] = "new_cart", ["sourceTurn"] = 42,
             ["sourceAuthority"] = new JsonObject { ["sessionId"] = "session", ["requestId"] = "request", ["snapshotToken"] = "snapshot" },
             ["birthState"] = vehicle.DeepClone(),
-            ["resourceInitialization"] = JsonNode.Parse("""[{"resourceKey":"health","maximum":100,"sourceKind":"owner_materialization","sourceId":"new_cart","authorityFingerprint":"fingerprint"}]""")
+            ["resourceInitialization"] = JsonNode.Parse("""[{"resourceKey":"health","maximum":100,"sourceKind":"owner_materialization","sourceId":"new_cart","authorityFingerprint":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]""")
         };
         receipt["seal"] = MortalVehicleBirthReceiptState.ComputeSeal(receipt);
         return new JsonObject { ["vehicles"] = new JsonArray(vehicle), ["activeVehicleId"] = "vehicle_cart", ["birthReceipts"] = new JsonArray(receipt) };

@@ -674,50 +674,57 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             return issues;
 
         for (var index = 0; index < storages.Count; index++)
+            if (storages[index] is JsonObject storage)
+                issues.AddRange(ValidateCanonicalStorageOwner(storage,
+                    $"{context}.locationStorages[{index}]", factionAuthority, allowTemporaryFactionOwners));
+        return issues;
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateCanonicalStorageOwner(
+        JsonObject storage, string context, FactionControlAuthority factionAuthority,
+        bool allowTemporaryFactionOwners)
+    {
+        var issues = new List<ValidationIssue>();
+        if (storage["owner"] is not JsonObject owner ||
+            !string.Equals(ReadExactString(owner, "ownerType"), "Faction", StringComparison.Ordinal) ||
+            ReadExactString(owner, "ownerId") is not { } ownerId ||
+            ReadExactString(owner, "ownerName") is not { } ownerName)
         {
-            if (storages[index] is not JsonObject storage ||
-                storage["owner"] is not JsonObject owner ||
-                !string.Equals(ReadExactString(owner, "ownerType"), "Faction", StringComparison.Ordinal) ||
-                ReadExactString(owner, "ownerId") is not { } ownerId ||
-                ReadExactString(owner, "ownerName") is not { } ownerName)
-            {
-                continue;
-            }
-
-            var resolution = factionAuthority.ResolveOwner(
-                ownerId,
-                allowTemporaryFactionOwners,
-                out var canonicalName);
-            if (resolution != MortalLocationReferenceResolution.Exact)
-            {
-                var code = resolution switch
-                {
-                    MortalLocationReferenceResolution.Confusable =>
-                        "mortal_location_storage_owner_target_confusable",
-                    MortalLocationReferenceResolution.Ambiguous =>
-                        "mortal_location_storage_owner_target_ambiguous",
-                    _ => "mortal_location_storage_owner_target_unknown"
-                };
-                issues.Add(Issue(
-                    $"{context}.locationStorages[{index}].owner.ownerId",
-                    code,
-                    "Faction-owned storage must resolve to one exact accepted permanent Mortal faction.",
-                    "one exact permanent factionId",
-                    ownerId));
-                continue;
-            }
-
-            if (!string.Equals(ownerName, canonicalName, StringComparison.Ordinal))
-            {
-                issues.Add(Issue(
-                    $"{context}.locationStorages[{index}].owner.ownerName",
-                    "mortal_location_storage_owner_name_mismatch",
-                    "Faction-owned storage must preserve the exact canonical faction name.",
-                    canonicalName ?? "one exact canonical faction name",
-                    ownerName));
-            }
+            return issues;
         }
 
+        var resolution = factionAuthority.ResolveOwner(
+            ownerId,
+            allowTemporaryFactionOwners,
+            out var canonicalName);
+        if (resolution != MortalLocationReferenceResolution.Exact)
+        {
+            var code = resolution switch
+            {
+                MortalLocationReferenceResolution.Confusable =>
+                    "mortal_location_storage_owner_target_confusable",
+                MortalLocationReferenceResolution.Ambiguous =>
+                    "mortal_location_storage_owner_target_ambiguous",
+                _ => "mortal_location_storage_owner_target_unknown"
+            };
+            issues.Add(Issue(
+                $"{context}.owner.ownerId",
+                code,
+                "Faction-owned storage must resolve to one exact accepted permanent Mortal faction.",
+                "one exact permanent factionId",
+                ownerId));
+            return issues;
+        }
+
+        if (!string.Equals(ownerName, canonicalName, StringComparison.Ordinal))
+        {
+            issues.Add(Issue(
+                $"{context}.owner.ownerName",
+                "mortal_location_storage_owner_name_mismatch",
+                "Faction-owned storage must preserve the exact canonical faction name.",
+                canonicalName ?? "one exact canonical faction name",
+                ownerName));
+        }
         return issues;
     }
 

@@ -578,6 +578,7 @@ public partial class ValidationService
                      new PlannerCarrierDescriptor("newLocations", "mortal_location", "locationId"),
                      new PlannerCarrierDescriptor("newLinks", "mortal_location_link", "linkId"),
                      new PlannerCarrierDescriptor("locationUpdates", "mortal_location", "locationId"),
+                     new PlannerCarrierDescriptor("storagesToAdd", "mortal_location", "targetLocationId"),
                      new PlannerCarrierDescriptor("locationDiscoveryTransitions", "mortal_location", "locationId"),
                      new PlannerCarrierDescriptor("linkUpdates", "mortal_location_link", "linkId"),
                      new PlannerCarrierDescriptor("linkRemovals", "mortal_location_link", "linkId")

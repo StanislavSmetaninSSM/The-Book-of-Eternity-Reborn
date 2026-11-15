@@ -84,8 +84,11 @@ public sealed class ResourceVehicleIntegrationTests
             MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         var parkingLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             "location_market", "Market");
-        await context.WriteExactJsonAsync(MortalLocationMaterializationContract.WorldMapPath,
-            MortalLocationTestFixture.CreateWorldMap(parkingLocation).ToJsonString());
+        var parkingMap = MortalLocationTestFixture.CreateWorldMap(parkingLocation);
+        await context.WriteExactJsonAsync(MortalLocationMaterializationContract.WorldMapPath, parkingMap.ToJsonString());
+        var parkingAccess = MortalStorageAccessProjection.Build(parkingMap, null);
+        Assert.True(parkingAccess.IsValid, string.Join(Environment.NewLine, parkingAccess.Issues));
+        await context.WriteExactJsonAsync(MortalStorageAccessProjection.StatePath, parkingAccess.Root!.ToJsonString());
         await context.WriteExactJsonAsync(MortalLocationIdentityState.StatePath,
             MortalLocationTestFixture.CreateIdentityIndex(parkingLocation).ToJsonString());
         await context.WriteExactJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath,

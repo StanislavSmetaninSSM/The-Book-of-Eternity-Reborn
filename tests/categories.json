@@ -2,6 +2,41 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-location-bounded-repair-policy",
+      "responsibility": "#1515 affected indexed storage-addition repair routes and existing protected identity, parent, envelope and route boundaries.",
+      "excludes": "No complete location suite or broader lifecycle qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLocationRepairPacketBuilder.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationRepairPacketBuilderTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ChangedExistingEnvelopeFailsClosed",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_DuplicateCreationRouteIsFailClosedBeforeNormalization",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_RunsPlannerAndBuildsExactCoordinateConflictRepair",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_LinkUpdateRemovalConflictCannotRepairLinkIdentity",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ExactExistingFullResendIsReducible"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-receipt-policy",
       "responsibility": "#1515 detached historical vehicle receipt completeness, continuity and malformed-input refusal.",
       "excludes": "Actual publication, resource-history agreement and whole lifecycle qualification.",
@@ -69,7 +104,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReceipt_*"
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReceipt_*",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.SameTurnVehicleCargo_HistoryPublicationCutRestoresExactRawInputs"
           ]
         }
       ]
@@ -38724,17 +38760,12 @@
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Topology_RetiredParentOriginFailsClosedWithoutRepairPacket",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Topology_RetiredPermanentEndpointFailsClosedWithoutRepairPacket",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_AmbiguousPhysicalShapeFailsClosed",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ChangedExistingEnvelopeFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_DanglingLinkEndpointRepairsExactSelectorField",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_DuplicateCreationRouteIsFailClosedBeforeNormalization",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ExactExistingFullResendIsReducible",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ExactHistoricalEnvelopeResendFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ExistingResendClientProtocolFieldFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_ForgedTurnAuthorityFailsClosedWithoutRepairPacket",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_InvalidEnvelopeParentFailsClosedWithoutBroadRepair",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_LinkUpdateRemovalConflictCannotRepairLinkIdentity",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_PhysicalShapeRepairNamesEveryExactLeaf",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_RunsPlannerAndBuildsExactCoordinateConflictRepair",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_SelfParentRepairsOnlyExactParentSelector",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateAcceptedTurnRawState_UsesLocationContractBeforeNormalization",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.ValidateCrossReferences_ExistingCoordinateMismatchBuildsOnlyBoundedLocationPacket"
@@ -38746,7 +38777,6 @@
             "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.*",
             "BookOfEternityClient.Tests.MortalLocationMaterializationContractTests.*",
             "BookOfEternityClient.Tests.MortalLocationPlayerProjectionTests.*",
-            "BookOfEternityClient.Tests.MortalLocationRepairPacketBuilderTests.*",
             "BookOfEternityClient.Tests.MortalLocationStorageContentsStateTests.*"
           ]
         }

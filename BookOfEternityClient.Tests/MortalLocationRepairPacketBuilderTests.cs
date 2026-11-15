@@ -737,6 +737,21 @@ public sealed class MortalLocationRepairPacketBuilderTests
         Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(new[] { issue }));
     }
 
+    [Theory]
+    [InlineData("mortal_location_storage_addition_identity_reused", "storage.storageId")]
+    [InlineData("mortal_location_storage_addition_target_unresolved", "targetLocationId")]
+    [InlineData("mortal_location_materialization_client_owned_state_invalid", "storage.name")]
+    public void Build_StorageBirthCannotRepairProtectedAuthority(string code, string field)
+    {
+        const string coordinate = "worldMapUpdates.storagesToAdd[0]";
+        var issue = CreateIssue(MortalLocationMaterializationContract.WorldMapPath + "." + coordinate + "." + field,
+            code, "mortal_location:existing:loc_parent", "valid", "invalid",
+            new[] { MortalLocationMaterializationContract.WorldMapPath },
+            CreateContext(coordinate, "mortal_location", null, new[] { field }, "loc_parent"));
+        Assert.Empty(MortalLocationRepairPacketBuilder.Build(new[] { issue }));
+        Assert.True(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(new[] { issue }));
+    }
+
     private static MortalLocationRepairContext CreateContext(
         string carrierPath,
         string entityKind,

@@ -92,25 +92,42 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var issues = await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
 
         Assert.Contains(issues, issue => issue.Code == "mortal_location_storage_addition_contents_invalid" &&
-            issue.FilePath == "worldMapUpdates.storagesToAdd[0].storage.contents");
+            issue.FilePath == MortalLocationMaterializationContract.WorldMapPath + ".worldMapUpdates.storagesToAdd[0].storage.contents");
         var after = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
         foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
     }
 
-    [Fact]
-    public async Task StorageAdditionPublication_InvalidRawNameHasBoundedIndexedRepair()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task StorageAdditionPublication_InvalidRawNameHasBoundedIndexedRepair(int count)
     {
         await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
         await ArrangeStorageAdditionPublicationAsync(context, access: false);
         var raw = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!;
-        raw["worldMapUpdates"]!["storagesToAdd"]![0]!["storage"]!["name"] = "";
+        var operations = raw["worldMapUpdates"]!["storagesToAdd"]!.AsArray();
+        operations[0]!["storage"]!["name"] = "";
+        if (count == 2)
+        {
+            var second = operations[0]!.DeepClone();
+            second["storage"]!["storageId"] = "storage_second";
+            operations.Add(second);
+        }
         await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, raw);
         var issues = await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
         Assert.Contains(issues, issue => issue.Code == "mortal_location_storage_semantic_invalid");
         Assert.False(MortalLocationRepairPacketBuilder.RequiresFailClosedRollback(issues));
-        var packet = Assert.Single(MortalLocationRepairPacketBuilder.Build(issues));
-        Assert.Equal("worldMapUpdates.storagesToAdd[0]", packet.RawCoordinate);
-        Assert.Equal(new[] { MortalLocationMaterializationContract.WorldMapPath }, packet.TargetFiles);
+        var packets = MortalLocationRepairPacketBuilder.Build(issues);
+        Assert.Equal(count, packets.Count);
+        for (var i = 0; i < count; i++)
+        {
+            Assert.Equal($"worldMapUpdates.storagesToAdd[{i}]", packets[i].RawCoordinate);
+            Assert.Equal("storage_addition", packets[i].TransitionClass);
+            Assert.Equal(new[] { MortalLocationMaterializationContract.WorldMapPath }, packets[i].TargetFiles);
+            Assert.Contains("Examples/E_CLI_Storage_Birth.txt", packets[i].TemplateRefs);
+            Assert.All(packets[i].ExactFieldCorrections, correction =>
+                Assert.Equal($"{MortalLocationMaterializationContract.WorldMapPath}.worldMapUpdates.storagesToAdd[{i}].storage.name", correction.Path));
+        }
     }
 
     private static async Task<(JsonObject Location, Dictionary<string, string> Backups)> ArrangeStorageAdditionPublicationAsync(

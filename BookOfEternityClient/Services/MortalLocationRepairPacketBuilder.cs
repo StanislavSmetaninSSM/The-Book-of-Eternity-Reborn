@@ -82,7 +82,10 @@ internal static class MortalLocationRepairPacketBuilder
         if (candidates.Length == 0)
             return Array.Empty<MortalLocationRepairPacket>();
 
+        // Distinct child births may share a validated parent, but are repaired only
+        // at their own indexed raw coordinates. Other route ambiguity stays closed.
         var ambiguousActors = candidates
+            .Where(candidate => candidate.TransitionClass != "storage_addition")
             .GroupBy(candidate => candidate.Actor, StringComparer.Ordinal)
             .Where(group => group
                 .Select(candidate => candidate.RawCoordinate)
@@ -276,17 +279,23 @@ internal static class MortalLocationRepairPacketBuilder
                 .Distinct(StringComparer.Ordinal)
                 .OrderBy(value => value, StringComparer.Ordinal)
                 .ToArray(),
-            TemplateRefs = new[]
+            TemplateRefs = transitionClass == "storage_addition"
+                ? new[] { "Examples/E_CLI_Storage_Birth.txt", "specs/1515-mortal-transport-storage/spec.md" }
+                : new[]
             {
                 "specs/1520-complete-location-materialization/contracts/mortal-location-materialization-envelope.md",
                 "specs/1520-complete-location-materialization/contracts/mortal-location-repair-packet.md"
             },
             ExpectedShape = new[]
             {
-                "One complete GM-authored location or link package for the exact raw coordinate.",
+                transitionClass == "storage_addition"
+                    ? "One complete empty storage birth at the exact indexed raw coordinate and validated PRE-TURN targetLocationId."
+                    : "One complete GM-authored location or link package for the exact raw coordinate.",
                 "One exact route and one unambiguous temporary or permanent identity.",
                 "Every governed section agrees with its semantic evidence.",
-                "No GM-authored permanent ID, receipt, seal, index entry, snapshot, or transition."
+                transitionClass == "storage_addition"
+                    ? "Preserve targetLocationId and the fresh storageId; contents must remain empty. Never edit canonical parent or child history."
+                    : "No GM-authored permanent ID, receipt, seal, index entry, snapshot, or transition."
             },
             SafeCorrectionRules = new[]
             {
@@ -482,6 +491,13 @@ internal static class MortalLocationRepairPacketBuilder
         {
             return actor.StartsWith("mortal_location_link:new:", StringComparison.Ordinal)
                 ? WorldMapRoute("world_map_link_creation", "mortal_location_link")
+                : null;
+        }
+
+        if (IsExactIndexedCoordinate(coordinate, "storagesToAdd"))
+        {
+            return actor.StartsWith("mortal_location:existing:", StringComparison.Ordinal)
+                ? WorldMapRoute("storage_addition", "mortal_location")
                 : null;
         }
 

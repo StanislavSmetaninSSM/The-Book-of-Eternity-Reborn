@@ -2,263 +2,59 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-npc-progression-policy-parsing",
-      "reason": "Bounded declared policy/creation input contract impact.",
+      "category": "mortal-location-bounded-repair-policy",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "#1538 exact explicit consequence and current-world policy parsing."
+        "#1515 affected indexed storage-addition repair routes and existing protected identity, parent, envelope and route boundaries."
       ]
     },
     {
-      "category": "mortal-npc-progression-creation-fixtures",
-      "reason": "Bounded declared policy/creation input contract impact.",
+      "category": "mortal-existing-location-empty-storage-birth",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "#1538 scoped current initial-ID creation fixture compatibility after explicit numeric profile requirement."
+        "#1515 empty storagesToAdd birth in exact pre-turn locations: metadata, immutable original receipt and existing child history."
       ]
     },
     {
-      "category": "mortal-npc-progression-creation",
-      "reason": "Public new actor creation must not evade numeric progression contract.",
+      "category": "mortal-existing-storage-birth-publication",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "New explicit initial-ID actor profile+tuple; permanent unrelated actor unchanged."
+        "#1515 empty storage birth in an existing accepted location: common publication, child history/access, repeated-birth refusal and reached access-write rollback."
       ]
     },
     {
-      "category": "mortal-npc-progression-consequences",
-      "reason": "Pure declared consequence contract before runtime integration.",
+      "category": "mortal-storage-birth-guidance",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "Actual cadence discharges and setting-authorized characteristic changes."
+        "#1515 Actual full-daemon rendering and complete source-local restricted owner storage guidance."
       ]
     },
     {
-      "category": "mortal-npc-skill-common-publication",
-      "reason": "Bounded next ordinary common publication integration; unchanged unrelated suites excluded.",
+      "category": "mortal-vehicle-birth-receipt-policy",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "Accepted skill + ordinary effect publication, actual late cut restores both command sources and outputs."
+        "#1515 detached historical vehicle receipt completeness, continuity and malformed-input refusal."
       ]
     },
     {
-      "category": "mortal-npc-skill-original-presence",
-      "reason": "Real producer must establish signed absence before first skill publication.",
+      "category": "mortal-vehicle-birth-receipt-publication",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "Exact original presence and original reader result; baseline membership unchanged."
+        "#1515 full resolved vehicle creation evidence bound to accepted source turn and health initialization in existing atomic publication."
       ]
     },
     {
-      "category": "mortal-npc-skill-effect-regression",
-      "reason": "Shared raw effect input/cache changes need existing focused-scope preservation without unrelated afterlife tests.",
+      "category": "mortal-vehicle-active-publication",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "Ordinary published focused authority, changed selector refusal, cache invalidation."
+        "#1515 exact same-turn active selection admission and existing common vehicle/health publication plus removal; related existing vehicle owners."
       ]
     },
     {
-      "category": "mortal-npc-skill-effect-source",
-      "reason": "Same-turn skill command source must reach existing effect source owner before publication.",
+      "category": "mortal-vehicle-birth-contract",
+      "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [
-        "Current scope/source and immutable original offered fence; full raw sidecar binding."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-publication",
-      "reason": "Bounded #1538 integration causal gate.",
-      "contracts": [
-        "Core and sidecar atomic publication and current output agreement."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-candidate-request-authority",
-      "reason": "Bounded #1538 integration causal gate.",
-      "contracts": [
-        "Preserve existing exact request-bound authority."
-      ]
-    },
-    {
-      "category": "mortal-skill-ui-exact-mastery-unit",
-      "reason": "Bounded #1538 integration causal gate.",
-      "contracts": [
-        "Canonical accepted identity/kind visibility without sidecar fallback."
-      ]
-    },
-    {
-      "category": "mortal-npc-accepted-mechanics-display",
-      "reason": "Shared public mechanics and real console/browser privacy, including all six browser profile cases; separate browser category is fully subsumed to avoid duplicate execution.",
-      "contracts": [
-        "Accepted core-only mastery/XP visibility, exact public fields and private sentinel exclusion."
-      ]
-    },
-    {
-      "category": "mortal-npc-accepted-skill-candidate",
-      "reason": "#1538 P2b pure ordinary candidate owner before physical integration.",
-      "contracts": [
-        "Original pending rejection, exact canonical core/skill composition and sidecar consumption."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-mastery-composition",
-      "reason": "#1538 P2b causal pure mastery foundation, before publication integration.",
-      "contracts": [
-        "Exact actor/kind/skill mastery after profile/removal; mirrors and immutable input."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-numeric",
-      "reason": "#1538 P1 pure numeric contract and existing command admission; later blocks remain unqualified.",
-      "contracts": [
-        "Explicit profile, deterministic within-level XP, exact threshold, cap/loss/overflow."
-      ]
-    },
-    {
-      "category": "npc-core-changes",
-      "reason": "#1538 P1 changes the shared progression command validator; retain existing NPC identity, mirror, normalization and trade refusal contracts.",
-      "contracts": [
-        "Existing bounded NPCCoreChanges validation and atomic normalization."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-guidance",
-      "reason": "Render the changed actual daemon NPC template with installed native shell.",
-      "contracts": [
-        "Explicit progression profile and bounded repair guidance."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-source",
-      "reason": "P2a exact current Mortal source context and command correlation.",
-      "contracts": [
-        "Authenticated source, realm, stale-command refusal and consume idempotence."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-consumer-freshness",
-      "reason": "Verify existing downstream freshness rather than inventing regeneration or duplicate cache invalidation.",
-      "contracts": [
-        "Merchant current slot contract; teacher canonical source hash and no stale purchase."
-      ]
-    },
-    {
-      "category": "mortal-npc-skill-composer-extraction",
-      "reason": "Prove the moved exact-owner adapter preserves existing roots/refusals and real treatment callers.",
-      "contracts": [
-        "Shared pure NPC skill composition, exact ID fallback, mirror consistency."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-self-effect",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 ordinary same-NPC awarded-skill effect publication, accepted-repeat stability and reached late rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-profile-publication",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 real profile-only replacement through current-turn coordinator and reached post-write all-canonical rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-profile-change-source",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 explicit profile change through actual core evaluator, mirror application, same-turn Mortal source and direct-mutation refusal."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-item-transfer",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 real existing-item transfer plus progression/skill/effect common publication and reached late rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-profile-change",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 pure explicit profile installation/replacement preserves level and stored XP while validating the new derived threshold."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-retained-policy",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 real issued publication source compares retained reduction policy and allowed-key authority to its current semantic witness."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-world-policy-data",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 closed world-policy text decoding and detached deterministic policy/allowed-key fingerprints."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-combined-publication",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 real raw validation and publication of two-level gain with matching pending skill award."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-world-policy-freshness",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 real core-only publication refuses malformed world policy and late policy-input drift with canonical rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-profile-policy",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 Closed explicit consequence policy at canonical numeric profile admission."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-consequence-integration",
-      "reason": "Final #1538 declared-contract impact selection; evidence is retained per checkpoint, not an instruction to rerun unchanged cases.",
-      "contracts": [
-        "#1538 Core-only and composed skill candidate consequence completion with explicit world policy."
-      ]
-    },
-    {
-      "category": "mortal-npc-common-item-empty-fate-cards",
-      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
-      "contracts": [
-        "Required empty canonical Common item section; nonempty/malformed remain forbidden."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-item-creation",
-      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
-      "contracts": [
-        "Existing player/NPC creation, optional effect, owner allocations, repeat and rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-wound-companion",
-      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
-      "contracts": [
-        "Original-turn player wound plus NPC progression and skill; real late rollback."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-treatment",
-      "reason": "#1538 completeness audit actual companion contract; discovery inventory, not a request to replay unchanged categories.",
-      "contracts": [
-        "Existing treatment result plus NPC progression/skill/item; late rollback and settlement sidecar/policy drift."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-treatment-natural-intake",
-      "reason": "#1538 actual producer must admit supported NPC commands without a preissued plan and reject unrelated direct mutation/deletion.",
-      "contracts": [
-        "Fresh authenticated core/sidecar intake through existing Guaranteed/Guided shared reader; real Guaranteed execution."
-      ]
-    },
-    {
-      "category": "mortal-npc-progression-treatment-mastery",
-      "reason": "Documented NPC mastery delta during treatment must discharge the two-level progression award.",
-      "contracts": [
-        "#1538 FR4/FR6",
-        "Mortal treatment skill publication"
+        "#1515 first vehicle birth structural cargo limits and explicit owner/controller/access; exact existing single-player identity."
       ]
     }
   ]

@@ -198,7 +198,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     "This empty storage birth requires explicit contents: []; nonempty cargo and measurement are not admitted by this route.", "empty array", storage["contents"]?.ToJsonString() ?? "missing"));
             using var document = JsonDocument.Parse(storage.ToJsonString());
             issues.AddRange(MortalLocationStorageMetadataContract.Validate(document.RootElement, context + ".storage"));
-            issues.AddRange(ValidateCanonicalStorageOwners(new JsonObject { ["locationStorages"] = new JsonArray(storage.DeepClone()) }, context + ".storage", factionAuthority, allowTemporaryFactionOwners: true));
+            issues.AddRange(ValidateCanonicalStorageOwner(storage, context + ".storage", factionAuthority, allowTemporaryFactionOwners: true));
             if (target is null || ReadExactString(storage, "storageId") is not { } storageId) continue;
             var locationId = ReadExactString(target, "locationId")!;
             var key = Key(locationId, storageId);

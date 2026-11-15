@@ -45,6 +45,22 @@ public sealed partial class MortalLocationMaterializationValidationTests
         Assert.DoesNotContain(MortalLocationStorageContentsState.StatePath, plan.TouchedPaths);
         Assert.Equal(beforeMap, map.ToJsonString()); Assert.Equal(beforeIndex, index.ToJsonString()); Assert.Equal(beforeUpdates, updates.ToJsonString());
     }
+    [Fact]
+    public void StorageAddition_FactionNameMismatchNamesExactRawOwnerField()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var updates = EmptyStorageAddition(MortalLocationTestFixture.LocationId);
+        updates["storagesToAdd"]![0]!["storage"]!["owner"] = new JsonObject
+        { ["ownerType"] = "Faction", ["ownerId"] = "faction_road_wardens", ["ownerName"] = "Wrong" };
+        var result = Build(MortalLocationTestFixture.CreateWorldMap(location),
+            MortalLocationTestFixture.CreateCurrentProjection(location),
+            MortalLocationTestFixture.CreateIdentityIndex(location), rawWorldMapUpdates: updates,
+            rawFactionCore: CreateFactionAuthorityRoot(), turn: 43);
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_location_storage_owner_name_mismatch" &&
+            issue.FilePath == "worldMapUpdates.storagesToAdd[0].storage.owner.ownerName");
+    }
+
     [Theory]
     [InlineData("unknown", "mortal_location_storage_addition_target_unresolved")]
     [InlineData("case", "mortal_location_storage_addition_target_unresolved")]

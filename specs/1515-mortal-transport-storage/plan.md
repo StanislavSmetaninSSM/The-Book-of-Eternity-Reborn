@@ -8,6 +8,35 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Bounded repair fixes and receipt integrity RED batch, WIP 2026-11-15
+
+Remote 1ff91bbd is verified and restored cleanly from GitHub. Its isolated
+receipt core policy passed 26/26 (10.171s), receipt publication 2/2 (13.005s),
+existing birth contract 36/36 (8.754s). Active publication was 16/17: the remaining
+fixture replaced the canonical parking map but retained bootstrap storage access.
+That fixture now derives matching access before snapshot; no production bypass.
+Builds were zero-error (unit 90.20s); official runners cleaned owned trees.
+
+Storage owner-path RED was 29/30; actual diagnostic contained the synthetic
+locationStorages[0] suffix. Storage publication was 4/5 with causal invalid-name
+repair RED (rollback required instead of one bounded packet). Fix now reuses one
+per-storage Faction validator at the genuine raw coordinate, removes the needless
+clone, adds exact storagesToAdd route context and child-coordinate grouping.
+Two distinct child births may share one validated parent; all protected identity,
+source, original, replay and duplicate checks remain. No new cache: one detached
+metadata check and existing issue DATA, with no additional reads or authority.
+New two-child and protected repair controls plus actual ownerName path are UNRUN.
+The narrow repair category moves existing ownership rather than duplicates it.
+Current tests/selection.json is replaced with this eight-category impact slice,
+not inherited NPC work and not a whole-branch qualification. Entire PR selection
+reconciliation remains mandatory before integration.
+
+Receipt adds 32 detached integrity cases and six real publication/consumer cases,
+all UNRUN before this checkpoint. Expected causal historical semantic/cargo
+failures must be separated from existing green core checks; no integrity fix yet.
+The pending official selection includes the reached nonempty-history cut.
+No raw diagnostics, hosted CI, main merge, issue closure or whole-feature claim.
+
 ## Storage bounded-repair review findings, WIP 2026-11-15
 
 Independent review of the empty-storage slice found missing storagesToAdd repair
