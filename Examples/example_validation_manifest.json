@@ -1372,6 +1372,26 @@
   ],
   "mortalItemMaterializationCoverage": [
     {
+      "contractId": "mortal_item_new_vehicle_cargo_v1",
+      "file": "E_CLI_New_Vehicle_Cargo_Materialization.txt",
+      "statePath": "game_state/misc/vehicles.json",
+      "responseSurface": "UpdateVehicles[].inventory complete raw item creation",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Complete new item cargo binds to its exact containing transient vehicle reference.",
+      "validationKind": "production-validator",
+      "validationRoute": "MortalVehicleBirthContractTests.CargoGuidance_DeclaresExactBirthRouteAndCompleteExample -> MortalItemMaterializationContract.Validate(RawPreSeal)",
+      "coverageLimit": "Extracted raw item contract plus exact parent reference; actual common sealing and rollback are separately covered by MortalVehicleBirthCargoTests. No existing-item loading, capacity or effective access qualification.",
+      "requiredText": [
+        "mortal_item_new_vehicle_cargo_v1",
+        "new_vehicle_inventory",
+        "new_vehicle",
+        "cargo_birth_item",
+        "new_cart"
+      ]
+    },
+    {
       "contractId": "mortal_item_player_acquisition_empty_sections_v1",
       "file": "E_CLI_Mortal_Item_Materialization.txt",
       "statePath": "game_state/inventory/items.json",

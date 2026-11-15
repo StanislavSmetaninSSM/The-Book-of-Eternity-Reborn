@@ -383,3 +383,11 @@ rollback or cut-time item publication claim is added. New route guidance across
 Block_2/19.A/CLI/daemon, full raw cargo example and source guard now follow; one more
 unit active-selection birth fixture gains inventory:[]. Five exact existing item
 interop controls are selected separately. Their fresh build/results are pending.
+
+At 239f1058: **55/55 unit PASS** (12.759s, 2 complete descriptors) and **5/5 exact
+item interop PASS** (17.931s, 2 complete descriptors), no skips/duplicates/timeouts,
+complete cleanup. Serial builds 92.95s/63.92s, 0 errors. Review additionally found
+the new example needed actual context-pack delivery and the main-step/manifest
+inventories. Those are now synchronized with a genuine existing full-daemon render
+assertion and a 3-case guidance selection. Parameter XML comments are completed;
+no runtime logic change. Fresh guidance build/execution is pending.

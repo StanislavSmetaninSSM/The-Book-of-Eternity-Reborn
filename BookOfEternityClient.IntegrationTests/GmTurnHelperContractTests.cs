@@ -5022,6 +5022,15 @@ public sealed class GmTurnHelperContractTests
                 process.HasExited ? (await stdout) + (await stderr) : "The real daemon did not finish rendering its context pack within 20 seconds.");
 
             using var manifest = JsonDocument.Parse(File.ReadAllText(manifestPath, Encoding.UTF8));
+            var cargoDoc = Assert.Single(manifest.RootElement.GetProperty("docs").EnumerateArray(),
+                item => item.GetProperty("role").GetString() == "mortal_vehicle_birth_cargo_example");
+            Assert.Equal("Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt", cargoDoc.GetProperty("relativePath").GetString());
+            Assert.Equal(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt")),
+                File.ReadAllText(cargoDoc.GetProperty("sessionPath").GetString()!));
+            var itemTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md"));
+            Assert.Contains("new_vehicle_inventory", itemTemplate, StringComparison.Ordinal);
+            Assert.Contains("UpdateVehicles[i].vehicleRef", itemTemplate, StringComparison.Ordinal);
+
             var skillTemplate = Assert.Single(manifest.RootElement.GetProperty("templates").EnumerateArray(),
                 item => item.GetProperty("role").GetString() == "compact_mortal_skill_progression_template");
             Assert.Equal("Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md", skillTemplate.GetProperty("relativePath").GetString());

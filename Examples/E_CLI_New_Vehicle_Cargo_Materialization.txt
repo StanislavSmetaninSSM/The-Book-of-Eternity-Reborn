@@ -1,4 +1,5 @@
 INITIAL CARGO OF A NEW MORTAL VEHICLE
+Contract: mortal_item_new_vehicle_cargo_v1
 
 Precondition: an otherwise valid pending Mortal turn 42; no existing vehicle or
 item is being transferred. This is a complete raw vehicles.json proposal, not a

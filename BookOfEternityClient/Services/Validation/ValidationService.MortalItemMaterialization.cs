@@ -986,6 +986,9 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained current view, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="prepareVehicleBirths">
+    /// Optional preparation using the already parsed raw vehicle root before catalog scanning.
+    /// </param>
     /// <returns>
     /// Current catalog, identity-index text and detached projection inputs.
     /// </returns>

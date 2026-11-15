@@ -95,6 +95,9 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Detached current draft for private original intake, or <see langword="null"/> for physical current reads.
     /// </param>
+    /// <param name="currentObservations">
+    /// Optional ordinary current images; selected text and existence use these same immutable observations.
+    /// </param>
     /// <returns>
     /// The accepted location plan, or <see langword="null"/> when absent or invalid.
     /// </returns>

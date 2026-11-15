@@ -2,6 +2,23 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-cargo-guidance",
+      "responsibility": "#1515 cargo route source guard, exact example manifest inventory, and actual full daemon template/example delivery through the existing context-pack test.",
+      "excludes": "Provider dispatch, Windows PowerShell qualification, capacity/access and whole issue acceptance. Linux uses installed PowerShell 7.",
+      "changeHints": ["BookOfEternityClient/game_master_daemon.ps1", "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt", "Examples/example_validation_manifest.json"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        { "project": "integration", "tests": [
+          "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
+          "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
+        ] },
+        { "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.CargoGuidance_DeclaresExactBirthRouteAndCompleteExample"] }
+      ]
+    },
+    {
       "id": "mortal-vehicle-cargo-item-interop",
       "responsibility": "#1515 exact existing player birth, parent-container and same-turn location storage item paths after shared cargo intake/projection changes; two existing route-contract controls.",
       "excludes": "Whole item suite, transfer matrix, capacity/access policy and whole issue qualification.",

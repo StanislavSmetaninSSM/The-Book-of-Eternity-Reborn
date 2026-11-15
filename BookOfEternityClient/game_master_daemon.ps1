@@ -1347,6 +1347,7 @@ function Write-GmContextPack {
         @("Examples\E_CLI_Mortal_Npc_Progression_Consequences.txt", "mortal_npc_progression_consequence_examples"),
         @("Examples\E_CLI_Mortal_Npc_Profile_Change.txt", "mortal_npc_profile_change_example"),
         @("Examples\E_CLI_Mortal_Item_Materialization.txt", "mortal_item_materialization_examples"),
+        @("Examples\E_CLI_New_Vehicle_Cargo_Materialization.txt", "mortal_vehicle_birth_cargo_example"),
         @("Examples\E_CLI_Mortal_Resources.txt", "mortal_resource_materialization_examples"),
         @("OtherGuides\Effect_Materialization_Contract.md", "effect_materialization_contract"),
         @("Examples\E_CLI_Effect_Materialization.txt", "effect_materialization_examples"),

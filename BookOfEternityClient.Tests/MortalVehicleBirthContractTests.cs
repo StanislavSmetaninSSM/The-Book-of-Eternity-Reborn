@@ -144,13 +144,15 @@ public sealed class MortalVehicleBirthContractTests
     [Fact]
     public void CargoGuidance_DeclaresExactBirthRouteAndCompleteExample()
     {
-        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_19.A.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_19.A.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1", "Examples/E_CLI_Step_Main.txt" })
         {
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
             Assert.Contains("new_vehicle_inventory", text, StringComparison.Ordinal);
             Assert.Contains("UpdateVehicles[i].vehicleRef", text, StringComparison.Ordinal);
             Assert.Contains("does not authorize existing-item transfers", text, StringComparison.Ordinal);
         }
+        var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
+        Assert.Contains("mortal_vehicle_birth_cargo_example", daemon, StringComparison.Ordinal);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt"));
         var root = JsonNode.Parse(example[example.IndexOf("\n{", StringComparison.Ordinal)..])!.AsObject();
         var vehicle = Assert.Single(root["UpdateVehicles"]!.AsArray())!.AsObject();

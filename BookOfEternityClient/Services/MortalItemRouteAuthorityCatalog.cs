@@ -93,6 +93,9 @@ internal sealed class MortalItemRouteAuthorityCatalog
     /// <param name="currentInputs">
     /// Retained current carriers for private original intake, or <see langword="null"/> for physical current reads.
     /// </param>
+    /// <param name="vehicleBirthIds">
+    /// Optional ordinary prepared birth reference/ID DATA for explicit vehicle cargo scanning.
+    /// </param>
     /// <returns>
     /// Route authorities and issues derived from the selected current carriers and physical pre-turn data.
     /// </returns>

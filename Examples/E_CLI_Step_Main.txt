@@ -34,9 +34,13 @@ Before returning a durable Mortal item, open
 `Examples/E_CLI_Mortal_Item_Materialization.txt` and the compact daemon
 template. Creation route/kind pairs are `player_acquisition/turn_outcome`,
 `npc_acquisition/npc_inventory_add`, `new_npc_inventory/new_npc`,
+`new_vehicle_inventory/new_vehicle`,
 `loot_acquisition/loot_template`, `craft_output/craft_request`,
 `trade_output/npc_trade_receipt`, `quest_reward/quest_reward`, and
 `storage_placement/location_storage`.
+Initial vehicle cargo uses the exact containing UpdateVehicles[i].vehicleRef as
+authorityId; see `Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt`. This route
+does not authorize existing-item transfers.
 
 A new root uses `existedId = null`, turn-unique `creationRef`, the full semantic
 shape, and all twelve `materialization.sections`. Не создавай itemId; не
