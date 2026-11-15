@@ -8,6 +8,40 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Current checkpoint — active selection verified, 2026-11-15
+
+Verified source: `633ce3d774ae8a422c8ac914366f34f058e669d2` on this task branch.
+This is a completed **narrow active-selection block**, not completion of #1515.
+
+- Existing owner composer now consumes exact activeVehicleChange into client-owned
+  activeVehicleId; same-turn refs reuse the allocated identity, selection-only writes
+  survive, removal/clear/replacement and final Active agreement are enforced.
+- Canonical shape, transient cross-reference admission, protected repair routing,
+  primary GM rules, existing worked example and daemon guidance are synchronized.
+- Fresh official categories, Linux x64: `mortal-vehicle-active-selection -NoBuild`
+  **22/22 PASS**, 9.375s runner; `mortal-vehicle-active-publication -NoBuild`
+  **17/17 PASS**, 14.318s runner. No skips/duplicates/timeouts; owned cleanup complete.
+  Fresh serial unit/integration builds: 91.72s/58.83s, 0 errors, 156/126 existing warnings.
+- The rollback leaf reached one real physical vehicle-member write (member index 0),
+  observed canonical active identity, and restored tracked bytes/absence, generation
+  and journal absence. This is not a claim of a later all-resources-written cut.
+  Real successful birth/removal and existing vehicle health-owner regressions pass.
+- Independent fresh-context GPT-6.1 Sol XHigh review accepted final code/routing,
+  documentation and scoped selection, with no remaining Critical/Important findings.
+  Optional extra non-null rollback-oracle assertion is redundant with the dedicated
+  successful birth oracle and is not required for this bounded acceptance.
+- Optimization: reuse already loaded detached arrays/owner exports; no extra source
+  readers, expensive reconstruction, permission cache or alternate writer. The new
+  transient-ref set is a per-pass identity index only. No speedup claim.
+- SDK 10.0.404 targets net8.0; .NET/ASP.NET runtime 8.0.34; pwsh 7.7.0. Source environment
+  `/workspace/shared/boe-tools/1515-env.sh`; serial build flags are recorded below.
+  Raw logs/TRX stay outside Git. No hosted CI, Windows qualification or main merge.
+- Next: complete first-birth semantic vehicle/cargo/access contract and evidence,
+  then governed storage birth (including an existing location) and bounded repair.
+  Existing location birth receipts already cover storage metadata born with that
+  location; do not create a duplicate receipt. Vehicle health history is not a full
+  semantic vehicle receipt. Ordinary post-birth movement/access redesign is excluded.
+
 ## Global constraints
 
 Mortal world only; no legacy save promotion, new travel simulation, hosted CI, full-suite run, main merge or issue closure. Preserve complete source/lease/generation and item/resource identity checks. Raw diagnostics stay outside Git in `/workspace/shared/BoeDiagnostics/1515`; active bootstrap/templates/fixtures follow the current schema.

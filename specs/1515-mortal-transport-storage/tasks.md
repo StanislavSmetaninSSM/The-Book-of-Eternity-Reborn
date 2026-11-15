@@ -11,7 +11,8 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 ## US1: Vehicle completeness and selection (FR1–FR3)
 - [ ] T004 Add causal RED typed semantic tests in `BookOfEternityClient.Tests/MortalTransportStorageContractTests.cs` with category owner.
 - [ ] T005 Implement pure contract in `BookOfEternityClient/Services/MortalTransportStorageContract.cs` and integrate `ValidationService.MetaCodexAndAchievements.cs` and `MortalResourceOwnerComposer.cs`.
-- [ ] T006 Test and implement exact active selection, same-turn reference resolution, removal/replacement and versioned creation evidence in existing composer/publication.
+- [x] T006a Exact active selection, transient resolution, removal/replacement, canonical admission, protected repair routing and physical publication rollback (22 unit + 17 integration PASS; independent review).
+- [ ] T006b Versioned full vehicle creation evidence in existing composer/publication (health history alone is insufficient).
 - [ ] T007 Update vehicle current fixtures, GM schema/examples/daemon and narrow guards; verify/review/publish bounded block.
 
 ## US2: Storage/access completeness (FR4–FR6)
