@@ -8,6 +8,32 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Safe publication restored and malformed-original regression, 2026-11-15
+
+The exact 47-file WIP was saved at `dcf35e11b88efdeb3682a31da74fd87b42fff265`
+on the task branch. Remote readback and a new clean GitHub clone verified the
+commit/tree and identical bytes for every saved file. No raw diagnostics,
+main merge, or issue closure. Earlier paused/unpublished notes below are historical.
+
+Six new pure-planner malformed-original cases at `7007673786af7c02ce7b85ea50beefdd81abaea1`
+produced causal RED: 24 existing PASS / 6 new FAIL, 30/30 completed, 11.081 seconds,
+no timeout/duplicates, complete owned cleanup. Missing/null/scalar storage arrays,
+missing storage ID, and null/scalar history arrays reached unchecked casts or
+null dereferences in ReadStorageAdditions, despite prior canonical diagnostics.
+The minimal fix now returns those existing diagnostics before command readers
+consume an invalid original. GREEN and independent review are pending.
+
+Fresh integration build of the preserved receipt code plus regression tests:
+0 errors, 160 warnings, 115.50 seconds. Official receipt-publication category
+then passed 2/2 in 14.071 seconds with complete owned cleanup. This replaces
+UNCOMPILED for that exact source only; comprehensive receipt integrity/consumer
+coverage and independent review remain unfinished. No whole-feature claim.
+
+Optimization: the early failure gate reuses existing canonical validation and
+its issue list, with no new parse, read, cache or mutable fixture. It avoids
+unsafe and unnecessary command scans after failed original validation. New
+regressions use the existing cheap detached pure-planner baseline.
+
 ## WIP recovery boundary, 2026-11-15
 
 Branch `1515-mortal-transport-storage`; verified remote base remains

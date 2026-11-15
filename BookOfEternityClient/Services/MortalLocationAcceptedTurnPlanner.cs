@@ -156,6 +156,10 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         ValidatePreTurnCanonicalState(preTurnWorldMap, preTurnLocations, preTurnLinks, preTurnIndex, issues);
         var preTurnLocationsById = BuildExactObjectIndex(preTurnLocations, "locationId", issues);
         var preTurnLinksById = BuildExactObjectIndex(preTurnLinks, "linkId", issues);
+        // Governed commands consume validated canonical arrays and history. Reject a
+        // malformed original before their identity scans, never repair it implicitly.
+        if (issues.Count != 0)
+            return Failed(issues);
         var locationCandidates = new List<LocationCandidate>();
         ExistingSelection? existingSelection = null;
 
