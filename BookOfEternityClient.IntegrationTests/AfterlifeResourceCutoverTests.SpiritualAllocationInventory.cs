@@ -17,6 +17,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, new JsonObject
         {
             ["vehicles"] = new JsonArray(),
+            ["birthReceipts"] = new JsonArray(),
             ["UpdateVehicles"] = new JsonArray(new JsonObject
             {
                 ["vehicleRef"] = "vehicle_ref_inventory_probe",

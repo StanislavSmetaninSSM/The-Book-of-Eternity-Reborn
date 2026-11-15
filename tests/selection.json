@@ -63,6 +63,13 @@
       "contracts": [
         "#1515 current full shape and existing partial-update compatibility."
       ]
+    },
+    {
+      "category": "mortal-vehicle-birth-allocation-interop",
+      "reason": "Two existing shared allocation fixtures now retain explicit current birthReceipts arrays; verify vehicle identity capture interoperability only.",
+      "contracts": [
+        "#1515 shared vehicle allocation stability; no spiritual combat or afterlife publication qualification."
+      ]
     }
   ]
 }

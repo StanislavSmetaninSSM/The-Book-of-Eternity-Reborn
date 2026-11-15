@@ -8,6 +8,23 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Receipt focused review regressions, WIP 2026-11-15
+
+Independent review of the complete receipt slice found three concrete remaining
+integrity gaps: historical containment graph admission, later creation-reference
+rewriting of historical subtrees, and split-derived item receipt acceptance after
+the vehicle birth turn. Seven narrow new typed cases isolate these boundaries,
+including one positive current-reference rewrite control; all are UNRUN. No
+production fix for these findings is included yet. Reviewer also identified
+redundant strict vehicle parsing; the correction must reuse one existing parse.
+
+Two current shared-allocation fixtures now retain explicit birthReceipts:[];
+only their existing two-case mortal-vehicle-birth-allocation-interop category is
+selected. Its two duplicate wider historical selector entries are removed, not
+the tests. This is shared vehicle identity compatibility, not spiritual combat
+or afterlife publication qualification. Runtime early-shape consumer is retained
+in the current selection. Whole-branch selection reconciliation remains open.
+
 ## Verified receipt core and downstream storage retry correction, WIP 2026-11-15
 
 At bccf9ee5, receipt policy58/58PASS9.768s, real publication9/9PASS22.675s,
