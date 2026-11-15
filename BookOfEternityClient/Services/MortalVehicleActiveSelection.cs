@@ -36,7 +36,7 @@ internal static class MortalVehicleActiveSelection
             return Invalid(issues, "exact vehicleId or same-turn vehicleRef", selection.ToJsonString());
 
         var refs = sameTurnOwners.Where(owner => owner.Key.OwnerKind == ResourceOwnerKind.Vehicle &&
-            string.Equals(owner.SameTurnRef, identity, StringComparison.Ordinal)).ToArray();
+            string.Equals(owner.OwnerRef, identity, StringComparison.Ordinal)).ToArray();
         var ids = vehicles.OfType<JsonObject>().Where(v =>
             v["vehicleId"] is JsonValue id && id.TryGetValue<string>(out var text) &&
             string.Equals(text, identity, StringComparison.Ordinal)).ToArray();
