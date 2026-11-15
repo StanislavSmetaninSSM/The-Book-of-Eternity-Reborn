@@ -74,3 +74,7 @@ At source c041c92 the official category selected/executed 6 cases, all 6 failed 
 First reduction implementation now consumes explicit selection using existing allocated exports and validates final Active agreement. It is WIP: GREEN, direct-field protection, removal/null/replacement coverage, canonical validators, GM guidance and independent review pending. No complete FR2 or issue acceptance is claimed.
 
 First GREEN build exposed a compile-only API name mismatch (`ResourceOwnerExport.OwnerRef`, not `SameTurnRef`); corrected before rerun. This compile failure is not behavioral RED.
+
+### Explicit selection GREEN; next continuity cases
+
+At d1cbc787 the fresh build passed (0 errors, 156 warnings, 93.09s); official `mortal-vehicle-active-selection -NoBuild` passed 6/6, 0 skips/duplicates, complete cleanup, 8.954s runner / 84ms tests. This proves explicit selection only. Seven additional cases now cover direct canonical spoofing, removal, parking/clear/replacement and duplicate Active state. These new cases are UNRUN; independent review and integration remain pending.

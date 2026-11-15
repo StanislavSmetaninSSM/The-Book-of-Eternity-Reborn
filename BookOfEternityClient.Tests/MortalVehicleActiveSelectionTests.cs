@@ -64,8 +64,100 @@ public sealed class MortalVehicleActiveSelectionTests
         var result = Compose(before, current);
         Assert.Empty(result.Issues);
         var after = result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath];
+        Assert.NotNull(after["activeVehicleId"]);
         Assert.Equal(after["vehicles"]![0]!["vehicleId"]!.GetValue<string>(), after["activeVehicleId"]!.GetValue<string>());
         Assert.False(after.ContainsKey("activeVehicleChange"));
+    }
+
+    [Fact]
+    public void Compose_RejectsDirectCanonicalSelectionChange()
+    {
+        var before = Root(Vehicle("vehicle_cart", "Parked"));
+        before["activeVehicleId"] = null;
+        var current = before.DeepClone().AsObject();
+        current["activeVehicleId"] = "vehicle_cart";
+        var result = Compose(before, current);
+        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_client_owned");
+        Assert.Empty(result.OwnerCompanionAfterImages);
+    }
+
+    [Fact]
+    public void Compose_RemovingSelectedVehicleClearsCanonicalSelection()
+    {
+        var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        current["removeVehicles"] = new JsonArray("vehicle_cart");
+        var result = Compose(before, current);
+        Assert.Empty(result.Issues);
+        var after = result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath];
+        Assert.Null(after["activeVehicleId"]);
+        Assert.Empty(after["vehicles"]!.AsArray());
+    }
+
+    [Fact]
+    public void Compose_RejectsParkingSelectedVehicleWithoutClearingSelection()
+    {
+        var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_cart", "Parked"));
+        var result = Compose(before, current);
+        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+    }
+
+    [Fact]
+    public void Compose_ExplicitClearWithParkingConsumesCommand()
+    {
+        var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_cart", "Parked"));
+        current["activeVehicleChange"] = null;
+        var result = Compose(before, current);
+        Assert.Empty(result.Issues);
+        var after = result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath];
+        Assert.True(after.ContainsKey("activeVehicleId"));
+        Assert.Null(after["activeVehicleId"]);
+        Assert.False(after.ContainsKey("activeVehicleChange"));
+    }
+
+    [Fact]
+    public void Compose_RejectsClearWhileVehicleStillActive()
+    {
+        var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
+        var current = before.DeepClone().AsObject();
+        current["activeVehicleChange"] = null;
+        var result = Compose(before, current);
+        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+    }
+
+    [Fact]
+    public void Compose_ExplicitReplacementPreservesBothPermanentIds()
+    {
+        var before = Root(Vehicle("vehicle_old", "Active"), Vehicle("vehicle_new", "Parked"));
+        before["activeVehicleId"] = "vehicle_old";
+        var current = before.DeepClone().AsObject();
+        current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_old", "Parked"), Vehicle("vehicle_new", "Active"));
+        current["activeVehicleChange"] = "vehicle_new";
+        var result = Compose(before, current);
+        Assert.Empty(result.Issues);
+        var after = result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath];
+        Assert.Equal("vehicle_new", after["activeVehicleId"]!.GetValue<string>());
+        Assert.Equal(new[] { "vehicle_old", "vehicle_new" }, after["vehicles"]!.AsArray().Select(v => v!["vehicleId"]!.GetValue<string>()));
+    }
+
+    [Fact]
+    public void Compose_RejectsTwoActiveVehicles()
+    {
+        var before = Root(Vehicle("vehicle_old", "Active"), Vehicle("vehicle_new", "Parked"));
+        before["activeVehicleId"] = "vehicle_old";
+        var current = before.DeepClone().AsObject();
+        current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_new", "Active"));
+        current["activeVehicleChange"] = "vehicle_new";
+        var result = Compose(before, current);
+        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
     }
 
     private static ResourceOwnerCompositionResult Compose(JsonObject before, JsonObject current) =>
