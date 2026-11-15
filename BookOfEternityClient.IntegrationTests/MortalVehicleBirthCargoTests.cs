@@ -6,6 +6,39 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalVehicleBirthCargoTests
 {
+    [Theory]
+    [InlineData("faction", false)]
+    [InlineData("faction", true)]
+    [InlineData("npc", false)]
+    [InlineData("npc", true)]
+    public async Task BirthReferences_RejectUnknownOwnerOrController(string kind, bool withCargo)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var root = withCargo ? CargoBirth("new_cart") : BirthRoot();
+        var vehicle = root["UpdateVehicles"]![0]!.AsObject();
+        if (kind == "faction")
+            vehicle["owner"] = new JsonObject
+            { ["ownerType"] = "Faction", ["ownerId"] = "missing_faction", ["ownerName"] = "Missing faction" };
+        else
+            vehicle["controller"] = new JsonObject
+            { ["actorType"] = "npc", ["actorId"] = "missing_npc" };
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureExactBytesAsync(new[]
+        { StorageTransportMoveService.VehiclesPath, ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath, MortalItemIdentityState.StatePath });
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        var field = kind == "faction" ? "owner.ownerId" : "controller.actorId";
+        Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "mortal_vehicle_birth_reference_unknown" &&
+            issue.FilePath == StorageTransportMoveService.VehiclesPath + ".UpdateVehicles[0]." + field);
+        await context.AssertExactBytesAsync(before);
+    }
+
     [Fact]
     public async Task SameTurnVehicleBirth_SealsCargoWithPermanentCarrierAndHealth()
     {

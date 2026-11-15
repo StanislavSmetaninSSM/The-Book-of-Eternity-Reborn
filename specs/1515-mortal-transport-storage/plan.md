@@ -8,6 +8,19 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## In progress — exact actor references, 2026-11-15
+
+Bounded next deliverable: new vehicle Faction owner and NPC controller must resolve
+through existing Mortal location actor/faction authority using exact accepted
+current roots. Reuse cargo's captured current observations when present; otherwise
+capture only the needed roots once and retain those same before-images through
+common publication. No extra persistent cache or authority registry. Existing
+actor/faction admission remains responsible for complete entity semantics; vehicle
+binding is not a replacement for their validation. Player stays player_current.
+Location selectors and full vehicle semantics are examined separately, not claimed
+by this block. Four real admission refusals (cargo/empty × Faction/NPC) are added;
+execution is UNRUN before source publication. No production behavior changed yet.
+
 ## Current checkpoint — birth cargo capacity verified, 2026-11-15
 
 Verified source `0ce1cdad516d1735cc03088d5d06e5f6020f2746`:

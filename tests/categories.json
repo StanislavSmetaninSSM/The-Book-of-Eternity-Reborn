@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-actor-references",
+      "responsibility": "#1515 first vehicle birth exact Faction owner and Mortal NPC controller references at resource admission, with and without cargo.",
+      "excludes": "Location selector, full vehicle semantics, ordinary lifecycle access and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthReferences_RejectUnknownOwnerOrController"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-cargo-capacity-policy",
       "responsibility": "#1515 pure historical birth cargo measurement, exact finite-double roundtrip arithmetic, shape and containment binding, and immutable historical evidence boundary.",
       "excludes": "Real publication, storage creation, post-birth movement policy and whole issue completion.",
