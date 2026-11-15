@@ -2209,6 +2209,21 @@ artifacts use their afterlife contracts instead.
 | storage_placement | location_storage | exact existing location/storage authority |
 
 Initial cargo in a genuinely new vehicle uses new_vehicle_inventory with sourceAuthority.kind new_vehicle and authorityId exactly equal to the containing UpdateVehicles[i].vehicleRef. Put complete new item roots in that entry's inventory. The client allocates the permanent vehicle ID before sealing cargo receipts and binding the vehicle_inventory carrier. This route creates new items only; it does not authorize existing-item transfers. Do not author permanent vehicle/item IDs, receipts or identity-index records. See Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt.
+First-birth cargo counts direct stacks, not units, and sums their whole-stack outer footprints once; container internal capacity and descendant volume are not added. Limits allow equality. Each direct container or multi-unit stack requires one cargoMeasurements row on the new vehicle with its exact creationRef, count, finite nonnegative externalVolumeDm3 and measuredConfiguration. A single noncontainer uses physical volume and rejects redundant measurement. Descendant, extra and stale rows are invalid. Explicitly replace a changed quantity/configuration/containment basis even when reconfirmed volume stays equal. Never author cargoBirthEvidence or fingerprints; preserve the client's immutable birth evidence unchanged on existing vehicles, without treating it as live capacity/access authority. Follow the full measuredConfiguration schema in Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md and the complete two-unit Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt.
+A cargoMeasurements row is closed: exactly one itemId or same-turn creationRef,
+count, externalVolumeDm3, measuredConfiguration. For new_vehicle_inventory use
+the cargo creationRef, not an invented permanent itemId. measuredConfiguration
+is closed {schemaVersion:1,item,contents}; each descendant is closed with exactly
+one itemId/creationRef, count, item and contents. The item assertion copies every
+actual semantic field except these TOP-LEVEL fields: itemId, id, initialId,
+existedId, creationRef, materializationReceipt, materialization,
+resourceMaterialization, count, quantity, contentsPath, isCarried,
+currentLocationId, currentLocationName. Do not strip nested custom fields. Keep
+semantic-array order; descendant sibling order does not matter. Assert the real
+complete containment graph; an assertion never creates or repairs inventory.
+The client resolves temporary references before comparison. Allocation/receipt
+normalization is not a shape change. Historical birth evidence is not reevaluated
+against later live contents or reused for another carrier's birth.
 
 ## Complete raw new root
 

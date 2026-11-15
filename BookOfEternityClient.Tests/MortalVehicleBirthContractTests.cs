@@ -153,6 +153,12 @@ public sealed class MortalVehicleBirthContractTests
         }
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         Assert.Contains("mortal_vehicle_birth_cargo_example", daemon, StringComparison.Ordinal);
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_10.txt", "Rules/Block_19.A.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var instructions = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("measuredConfiguration", instructions, StringComparison.Ordinal);
+            Assert.Contains("immutable birth evidence", instructions, StringComparison.Ordinal);
+        }
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt"));
         var root = JsonNode.Parse(example[example.IndexOf("\n{", StringComparison.Ordinal)..])!.AsObject();
         var vehicle = Assert.Single(root["UpdateVehicles"]!.AsArray())!.AsObject();
@@ -161,6 +167,17 @@ public sealed class MortalVehicleBirthContractTests
         using var document = System.Text.Json.JsonDocument.Parse(item.ToJsonString());
         Assert.Empty(MortalItemMaterializationContract.Validate(document.RootElement,
             "vehicles.UpdateVehicles[0].inventory[0]", MortalItemMaterializationPhase.RawPreSeal));
+        var canonical = item.DeepClone().AsObject();
+        canonical.Remove("creationRef");
+        canonical["itemId"] = "doc_item";
+        var catalog = MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(null, null, null, null,
+            new JsonObject { ["vehicles"] = new JsonArray(new JsonObject
+            { ["vehicleId"] = "doc_vehicle", ["inventory"] = new JsonArray(canonical) }) },
+            new Dictionary<string, JsonObject>()));
+        var measurement = MortalCargoBirthCapacity.Validate("doc_vehicle", vehicle, catalog,
+            new Dictionary<string, string> { [item["creationRef"]!.GetValue<string>()] = "doc_item" }, 42, "example");
+        Assert.Empty(measurement.Issues);
+        Assert.Equal(2, measurement.Evidence!["cargoMeasurements"]![0]!["count"]!.GetValue<int>());
     }
 
     [Theory]
@@ -201,6 +218,8 @@ public sealed class MortalVehicleBirthContractTests
         vehicle["inventory"] = new JsonArray(new JsonObject { ["itemId"] = "existing_item", ["count"] = 2 });
         var current = before.DeepClone().AsObject();
         current["vehicles"]![0]!["inventory"]![0]!["count"] = 1;
+        current["UpdateVehicles"] = new JsonArray(new JsonObject
+        { ["vehicleId"] = vehicle["vehicleId"]!.DeepClone(), ["name"] = "Renamed cart" });
         var result = Compose(before, current);
         Assert.Empty(result.Issues);
         Assert.True(JsonNode.DeepEquals(vehicle["cargoBirthEvidence"],

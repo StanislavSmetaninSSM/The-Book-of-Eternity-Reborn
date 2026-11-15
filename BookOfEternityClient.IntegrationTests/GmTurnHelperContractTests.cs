@@ -5030,6 +5030,8 @@ public sealed class GmTurnHelperContractTests
             var itemTemplate = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md"));
             Assert.Contains("new_vehicle_inventory", itemTemplate, StringComparison.Ordinal);
             Assert.Contains("UpdateVehicles[i].vehicleRef", itemTemplate, StringComparison.Ordinal);
+            Assert.Contains("measuredConfiguration", itemTemplate, StringComparison.Ordinal);
+            Assert.Contains("Do not strip nested custom fields", itemTemplate, StringComparison.Ordinal);
 
             var skillTemplate = Assert.Single(manifest.RootElement.GetProperty("templates").EnumerateArray(),
                 item => item.GetProperty("role").GetString() == "compact_mortal_skill_progression_template");

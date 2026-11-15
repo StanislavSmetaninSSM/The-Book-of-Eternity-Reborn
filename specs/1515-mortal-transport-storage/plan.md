@@ -465,3 +465,10 @@ compared with signed pre-turn vehicle facts, and birth evidence/measurement fiel
 are forbidden ordinary updates. A cheap positive explicitly avoids re-evaluating
 historical configuration after a later cargo quantity change; it does not claim
 item-consumption authorization. New source verification is pending.
+
+At385380f9 the policy run gives28 PASS/1 FAIL in9.430s. Both historical refusal
+guards now pass. The sole new positive incorrectly indexed a nonexistent owner
+companion for a no-command composition; it is a test expectation error, not a
+capacity rejection. The fixture now requests an ordinary name update to actually
+emit the companion whose unchanged evidence is checked. Integration was not run
+because the serial command stopped at this unit failure.

@@ -4,12 +4,23 @@ Contract: mortal_item_new_vehicle_cargo_v1
 Precondition: an otherwise valid pending Mortal turn 42; no existing vehicle or
 item is being transferred. This is a complete raw vehicles.json proposal, not a
 complete GM response and not canonical saved state. The neutral item deliberately
-matches the current complete test fixture, including all twelve sections.
+uses the current complete test-fixture shape, including all twelve sections;
+its count is explicitly changed to two units for this measured-stack example.
 
 The cargo authorityId equals its containing vehicleRef, new_cart. The client
 allocates the permanent vehicle ID before sealing the cargo receipt and binding
 its vehicle_inventory carrier. Do not supply permanent vehicle/item IDs, a receipt,
 seal, or item identity-index record. Existing-item transfers are outside this route.
+
+This one direct stack has two units and occupies one cargo slot. Its supplied
+whole-stack outer measurement is 0.1 dm3. This is an explicit measurement, not a
+rule deriving stack volume from count. The measuredConfiguration.item below is
+the full semantic basis with only the contract's top-level exclusions removed;
+contents is empty because this noncontainer has no descendants. Changing the
+count or configuration requires a newly asserted basis and explicit measurement.
+No cargoBirthEvidence or fingerprint is supplied: those belong to the client.
+After accepted birth, that evidence remains historical and unchanged even when
+ordinary inventory changes later.
 
 {
   "vehicles": [],
@@ -39,7 +50,7 @@ seal, or item identity-index record. Existing-item transfers are outside this ro
           "quality": "Common",
           "rarity": "Common",
           "price": 10,
-          "count": 1,
+          "count": 2,
           "weight": 0.1,
           "volume": 0.05,
           "bonuses": [],
@@ -154,7 +165,56 @@ seal, or item identity-index record. Existing-item transfers are outside this ro
             "maximum": 100
           }
         ]
-      }
+      },
+      "cargoMeasurements": [
+        {
+          "creationRef": "cargo_birth_item",
+          "count": 2,
+          "externalVolumeDm3": 0.1,
+          "measuredConfiguration": {
+            "schemaVersion": 1,
+            "item": {
+              "name": "Тестовый предмет",
+              "description": "Полный нейтральный предмет для проверки materialization-контракта.",
+              "image_prompt": "small neutral fantasy test object on dark cloth, realistic lighting",
+              "type": "Test item",
+              "group": "Test fixtures",
+              "quality": "Common",
+              "rarity": "Common",
+              "price": 10,
+              "weight": 0.1,
+              "volume": 0.05,
+              "bonuses": [],
+              "effects": [],
+              "structuredBonuses": [],
+              "combatEffect": [],
+              "customProperties": [],
+              "mechanicalSummaryAuthority": null,
+              "mechanicalSummaryUnresolvedReason": null,
+              "equipmentSlot": null,
+              "accessoryForSlot": null,
+              "requiresTwoHands": false,
+              "isContainer": false,
+              "capacity": null,
+              "containerWeight": null,
+              "weightReduction": null,
+              "isConsumption": false,
+              "textContent": null,
+              "journalEntries": [],
+              "isSentient": false,
+              "unreadableReason": null,
+              "sealedReason": null,
+              "lockedReason": null,
+              "disassembleTo": null,
+              "ownerBondLevelCurrent": null,
+              "ownerBondLevelMax": null,
+              "fateCards": [],
+              "questLinks": []
+            },
+            "contents": []
+          }
+        }
+      ]
     }
   ]
 }
