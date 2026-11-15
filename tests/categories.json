@@ -2,6 +2,39 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-birth-history",
+      "responsibility": "#1515 detached storage birth history and existing location transition/parser/client-owned index controls.",
+      "excludes": "Whole location system, live storage movement and full publication qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLocationIdentityState.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsIncompleteLifecycleTransitionEvidence",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsDuplicateLifecycleTransitionIdentityAcrossEntries",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsMalformedLifecycleTransitionEvidence",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.ValidateCanonicalState_AcceptsExactMapReceiptAndIndexAgreement"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.RawAuthority_DirectValidShapedIdentityTransitionMutationFailsClosed"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-current-birth-capacity",
       "responsibility": "#1515 current-scene populated storage birth: actual raw capacity refusal without mutation and exact-limit common publication.",
       "excludes": "Offscreen birth, whole-stack measurement graph, storage additions and whole issue qualification.",
@@ -38772,7 +38805,6 @@
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.RawAuthority_CurrentStorageContentsRemainOwnedByItemTransitions",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.RawAuthority_DirectCanonicalMutationBesideCommandFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.RawAuthority_DirectCanonicalSemanticMutationFailsClosed",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.RawAuthority_DirectValidShapedIdentityTransitionMutationFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.StorageUpdate_FactionOwnerWithoutExactAuthorityFailsClosed",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Topology_ConfusableActivePermanentEndpointFailsClosedWithoutRepairPacket",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Topology_ConfusableSameTurnParentSelectorFailsClosedWithoutRepairPacket",
@@ -38799,7 +38831,17 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.*",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_EmptyCurrentRoot_ReturnsDeterministicShape",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsUnknownAndMalformedClientState",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RawJsonRejectsDuplicateProperty",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsLifecycleTransitionEndpointMismatch",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsDuplicateLocationIdentityEvidence",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.ContainsHistoricalLocationOrigin_MatchesFieldsIndependentlyAndRejectsConfusables",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.ContainsHistoricalLocationOrigin_MatchesNfcAndNfdVariants",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.ContainsHistoricalLinkOrigin_IncludesRetiredHistory",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.ValidateCanonicalState_RejectsReceiptIndexMismatch",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_IndexingWorkScalesLinearly",
+            "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.IdentityFactory_UsesOneInjectedGuidPerClientIdentity",
             "BookOfEternityClient.Tests.MortalLocationMaterializationContractTests.*",
             "BookOfEternityClient.Tests.MortalLocationPlayerProjectionTests.*",
             "BookOfEternityClient.Tests.MortalLocationStorageContentsStateTests.*"

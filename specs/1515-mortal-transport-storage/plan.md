@@ -8,6 +8,64 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 current-scene storage capacity implementation steps
+
+Architecture consultation: fresh Astra High, read-only. Ruling: finalize only new
+current-scene drafts, including empty; strict present historical evidence but no
+retroactive coverage marker/migration for unrelated storage paths. Existing trusted
+signed-original index continuity remains authority. The cost of this narrow choice
+is no standalone cold proof that a wholly removed historical record once existed.
+
+- [ ] Share `MortalCargoBirthCapacity` core using actual carrier coordinates;
+  preserve vehicle `Validate` API/evidence and add `ValidateStorage(locationId,
+  storageId,birthStorage,catalog,creationIds,turn,context)`.
+- [ ] Add detached `MortalLocationStorageBirthDraft(LocationId,StorageId,
+  TransitionId,OperationRef,RawStorage,SourceTurn)` and plan `StorageBirthDrafts`.
+  First metadata Build allocates exact current-scene child transition IDs once.
+  Raw contents/measurements remain in drafts, not live metadata.
+- [ ] Add pure `MortalLocationStorageBirthEvidence.Finalize(preparedPlan,itemPhase,
+  catalog,creationIds,sourceBinding)` returning typed completion with a detached
+  completed plan. No cached-plan mutation, reallocation or changed-input GetOrBuild.
+  Only FinalIdentityIndex changes; projected current/offscreen roots stay identical.
+- [ ] Persist in storage_addition.afterState only: birth metadata plus closed v1
+  cargoBirthEvidence `{schemaVersion,carrierKind,locationId,storageId,sourceTurn,
+  sourceAuthority:{sessionId,requestId,snapshotToken},cargoMeasurements}`. Actual
+  location_storage coordinate, turn/source and expected slot must agree exactly.
+- [ ] Strictly validate each PRESENT historical payload through the existing
+  identity parser and shared detached graph/measurement arithmetic. No live-content
+  lookup and no global requirement for unaffected historical storage paths.
+- [ ] After raw item registration, reuse one exact snapshot/projected phase/catalog
+  for graph admission and finalization; failure invalidates candidate admission.
+  Existing normalizer must obtain matching completed plan before the first location
+  write, feed the same item-phase DATA to existing item writer, and reject drafts.
+- [ ] Contextual readback checks expected coordinates/transition IDs/operationRefs;
+  existing signed-original continuity protects later history. Keep source/lease/
+  generation and publication guards unchanged, no new read cache or writer.
+- [ ] Add cheap real-coordinate arithmetic/measurement/history/finalization controls;
+  prove base-plan detachment and stable IDs. Extend current integration positives
+  with exact birth history/source, reached history-write rollback and later movement
+  retaining evidence. Run impact-selected official categories only after checkpoint.
+- [ ] Synchronize storage measurements/authority guidance, example and real daemon;
+  obtain fresh independent complete-block review, correct findings and save evidence.
+
+Files: shared cargo core; location plan/planner; new focused evidence helper;
+identity validator; raw item admission and existing normalizer/item-phase seams;
+narrow typed tests and current-storage integration partial. Existing metadata
+writer owns location/index/access, item writer owns contents/identity. No spiritual
+policy, offscreen addition implementation or broad suite belongs to this block.
+The next block remains true populated offscreen birth using these accepted seams.
+
+## FR5 current-storage admission causal result, 2026-11-15
+
+Source35b5222c700368b125e11581f9487007045c51c4 was verified on the remote.
+Fresh integration build passed0errors59.20s. Official isolated
+mortal-storage-current-birth-capacity completed3cases: exact-limit positivePASS,
+zero-slot and insufficient-volume2FAIL15.214s. Both fail at the expected admission
+assertion with an empty issue collection, after unchanged tracked bytes/absence;
+not a compile or fixture failure. Cleanup complete, no duplicate IDs/timeouts.
+The existing capacity algorithm is vehicle-only and storage capacity is not yet
+checked at this accepted-turn boundary. Production fix remains pending.
+
 ## Next FR5 current-storage capacity causal slice, WIP 2026-11-15
 
 Three new independent integration cases reuse the existing current-scene storage

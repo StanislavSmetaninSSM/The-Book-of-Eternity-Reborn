@@ -9,6 +9,13 @@
       ]
     },
     {
+      "category": "mortal-storage-birth-history",
+      "reason": "#1515 new current-scene storage evidence extends existing immutable location child transitions; keep narrow parser and raw-history controls.",
+      "contracts": [
+        "Exact child history and signed-original client-owned index continuity."
+      ]
+    },
+    {
       "category": "mortal-location-bounded-repair-policy",
       "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [

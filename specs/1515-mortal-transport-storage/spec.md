@@ -161,3 +161,29 @@ an active, historical or same-turn confusable storage ID, or combine birth with
 update/removal. Equal storage IDs in different locations remain independent.
 Empty offscreen births create no contents carrier. Existing travel reconciliation
 and effective-access projection consume the resulting accepted map.
+
+## Storage cargo birth evidence (implementation decision, FR5–FR7)
+
+For the supported current-scene storage birth, finalize detached version-1 cargo
+capacity evidence in the existing location identity index's `storage_addition`
+transition `afterState`. The parent location receipt remains unchanged. Allocate
+one exact child transition during preparation, including for empty new storages;
+finalization uses admitted projected item DATA and allocates nothing. The expected
+birth coordinates and transition IDs belong to the prepared plan. The existing
+writer and readback must require every expected draft to be finalized before the
+accepted transaction succeeds. Mutable current contents are not birth evidence.
+
+The capacity core uses real `location_storage` location/storage coordinates and the
+same first-birth stack/volume semantics and measurement basis as vehicles; vehicle
+persisted format remains unchanged. Evidence binds exact child/location/source turn,
+validated session/request/snapshot and detached historical measurement/configuration
+rows. No new inventory writer, receipt file, cache or independent authority exists.
+
+Every present historical evidence object is strictly validated. Untouched canonical
+storage paths are not retroactively required to acquire new records. Current-turn
+raw index mutation/deletion is refused by existing signed-original continuity;
+standalone cold detection of a wholly removed record without the trusted expected
+birth context is not claimed. No new coverage marker or legacy-save promotion is
+introduced. Later accepted movement/consumption must preserve historical evidence
+without rechecking birth capacity against changed live contents. Actual populated
+offscreen birth remains a separate required follow-on in this same task.
