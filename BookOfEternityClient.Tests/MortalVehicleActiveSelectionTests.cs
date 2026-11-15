@@ -227,6 +227,20 @@ public sealed class MortalVehicleActiveSelectionTests
             Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
     }
 
+    [Fact]
+    public void AuthoringGuidance_PreservesCanonicalSelectionAndExplainsExactTransientSelection()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt",
+                     "Examples/E_Block_10.V.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("activeVehicleId is client-owned", text, StringComparison.Ordinal);
+            Assert.Contains("same-turn vehicleRef", text, StringComparison.Ordinal);
+            Assert.Contains("null requires no Active vehicle", text, StringComparison.Ordinal);
+            Assert.Contains("does not implicitly activate or park", text, StringComparison.Ordinal);
+        }
+    }
+
     private static ResourceOwnerCompositionResult Compose(JsonObject before, JsonObject current) =>
         MortalResourceOwnerComposer.Compose(new MortalResourceOwnerCompositionInput(
             ResourceDefinitionCatalog.CreateBuiltIn(), Roots(before), Roots(current)));

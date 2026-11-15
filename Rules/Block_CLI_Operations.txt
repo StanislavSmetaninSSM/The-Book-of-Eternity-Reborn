@@ -329,6 +329,7 @@
 
                     **MISCELLANEOUS:**
                     - game_state/misc/vehicles.json ← UpdateVehicles, removeVehicles, activeVehicleChange
+                    - Mortal active selection: activeVehicleId is client-owned; preserve it unchanged. activeVehicleChange accepts one exact permanent vehicleId or same-turn vehicleRef, never a case/whitespace alias. It does not implicitly activate or park a vehicle: update availability/currentLocationId coherently. Exactly one final Active vehicle must match the selection; null requires no Active vehicle. Removing the selected vehicle clears selection unless an explicit surviving replacement is selected. The client resolves and consumes the command atomically with vehicle and health state.
                     - UpdateVehicles accepts partial updates for existing vehicles, but availability/location invariant remains mandatory:
                       - Active or Pocket vehicle => currentLocationId = null
                       - Parked vehicle => non-null currentLocationId

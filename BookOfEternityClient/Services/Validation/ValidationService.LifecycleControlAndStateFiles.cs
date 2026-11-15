@@ -757,7 +757,7 @@ public partial class ValidationService
         await ValidateFlexibleStateFile("game_state/misc/vehicles.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "UpdateVehicles", "removeVehicles", "activeVehicleChange", "vehicles"
+                "UpdateVehicles", "removeVehicles", "activeVehicleChange", "activeVehicleId", "vehicles"
             }, issues, ValidateMetaMiscContract);
         await ValidateFlexibleStateFile("game_state/misc/storage_access.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

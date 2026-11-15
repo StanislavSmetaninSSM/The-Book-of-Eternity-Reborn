@@ -1,11 +1,13 @@
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Core;
+using Xunit.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Exercises existing admission and common publication, not a parallel vehicle writer.</summary>
-public sealed class MortalVehicleActiveSelectionIntegrationTests
+public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData("new_cart", false)]
@@ -66,6 +68,39 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests
         Assert.Null(removed["activeVehicleId"]);
         Assert.Empty(removed["vehicles"]!.AsArray());
         Assert.False(removed.ContainsKey("removeVehicles"));
+    }
+
+    [Fact]
+    public async Task ActiveBirth_LatePhysicalVehicleWriteRestoresExactBeforeImages()
+    {
+        KnownRollbackPublicationCut? cut = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, index) => cut?.Hooks.LocalPublicationObserver?.Invoke(phase, index)
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(context.FileSystem);
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
+            new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, RawCreation().ToJsonString());
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        var paths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Distinct(StringComparer.Ordinal).ToArray();
+        var captured = await context.CaptureAsync(paths);
+        var before = captured.ToDictionary(pair => pair.Key, pair => pair.Value.Bytes, StringComparer.Ordinal);
+        var generation = CleanupPublicationCut.ReadOptional(context.FileSystem.SessionGenerationPath);
+        cut = new KnownRollbackPublicationCut(context.FileSystem.ResolvePath(StorageTransportMoveService.VehiclesPath));
+        cut.Attach(context.FileSystem);
+        var failure = await Record.ExceptionAsync(() => AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
+            context.FileSystem, context.Normalizer, context.Validator, new Dictionary<string, string>(StringComparer.Ordinal)));
+        cut.AssertRestored(before, generation, failure, output.WriteLine);
+        var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
+        Assert.Equal(StorageTransportMoveService.VehiclesPath, writeFailure.RelativePath);
+        Assert.Same(cut.Failure, writeFailure.InnerException);
+        var published = JsonNode.Parse(cut.PublishedBytes!)!.AsObject();
+        Assert.NotNull(published["activeVehicleId"]);
+        Assert.Equal(published["vehicles"]![0]!["vehicleId"]!.GetValue<string>(), published["activeVehicleId"]!.GetValue<string>());
     }
 
     private static JsonObject RawCreation() => new()
