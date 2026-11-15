@@ -818,7 +818,6 @@ internal static class MortalResourceOwnerComposer
             return;
 
         var hasActiveSelection = root.TryGetPropertyValue("activeVehicleChange", out var activeSelection);
-        var hasCanonicalSelection = preTurnRoot.ContainsKey("activeVehicleId");
         if (!hasActiveSelection)
         {
             activeSelection = preTurnRoot["activeVehicleId"];
@@ -826,7 +825,7 @@ internal static class MortalResourceOwnerComposer
                 activeSelection = null;
         }
         string? selectedVehicleId = null;
-        if ((hasActiveSelection || hasCanonicalSelection) && !MortalVehicleActiveSelection.TryResolve(
+        if (!MortalVehicleActiveSelection.TryResolve(
                 activeSelection, finalVehicles, sameTurnExports, issues, out selectedVehicleId))
             return;
 
@@ -836,11 +835,8 @@ internal static class MortalResourceOwnerComposer
         var afterImage = root.DeepClone().AsObject();
         afterImage.Remove("UpdateVehicles");
         afterImage.Remove("removeVehicles");
-        if (hasActiveSelection || hasCanonicalSelection)
-        {
-            afterImage.Remove("activeVehicleChange");
-            afterImage["activeVehicleId"] = selectedVehicleId;
-        }
+        afterImage.Remove("activeVehicleChange");
+        afterImage["activeVehicleId"] = selectedVehicleId;
         afterImage["vehicles"] = finalVehicles;
         companionAfterImages[StorageTransportMoveService.VehiclesPath] = afterImage;
     }

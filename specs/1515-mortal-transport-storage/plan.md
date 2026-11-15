@@ -82,3 +82,5 @@ At d1cbc787 the fresh build passed (0 errors, 156 warnings, 93.09s); official `m
 Continuity RED at dae28787: 13 planned/executed, 10 PASS and exactly 3 expected failures (direct canonical change accepted, selected removal left ID, parking without clearing accepted); 9.864s runner, clean ownership cleanup. Fresh build 86.53s / 0 errors / 156 warnings. Added client-owned comparison and retained-selection validation, clearing a removed selected identity. GREEN and complete active-flow integration still pending.
 
 Added one further pending case: a new Active vehicle without an explicit selection must not leave canonical selection absent. Next run expects this remaining RED while verifying the three continuity fixes.
+
+At a464fcda, all 13 prior cases passed and only the new missing-selection case failed as expected (14/14 executed, 9.061s runner, 90.51s build). Selection agreement is now checked even without a command, and every published vehicle after-image emits activeVehicleId (null when no vehicle is Active). Final GREEN and review pending.
