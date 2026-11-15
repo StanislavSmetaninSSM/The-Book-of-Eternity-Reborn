@@ -8,7 +8,36 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
-## Current checkpoint — vehicle birth structural slice verified, 2026-11-15
+## Current checkpoint — ordinary vehicle preparation verified, 2026-11-15
+
+Source `ad9e5bf7d575a27850c90db87da1e56b83d43e52` passes the official
+preparation, active-publication and exact allocation-interoperability categories:
+**30/30 PASS**, 3 complete descriptors, 27.100s, no skips/duplicates/timeouts,
+owned cleanup complete. Serial integration build: 124.15s, 0 errors, 234 warnings.
+The new preparation contributes 11 cases. Independent fresh-context review accepts
+the narrow result with no remaining Critical/Important finding or refinement.
+Raw evidence remains external: `20261115-062343-774-260-1f4327b9796948f6b139185938d87c87-categories`.
+
+Preparation reuses allocation DATA only, keyed by the exact observed original/current
+vehicle roots, signed session/snapshot and fresh existing registry generation. It
+adds no vehicle/owner file reread, but registry access intentionally observes the
+physical generation. No performance speedup claim. All candidates validate before
+allocation; explicit-null canonical collections fail; observed no-birth input and
+full invalidation clear preparation. Real repeated admission preserves exact ID and
+companion, while input/session/snapshot/generation changes and failed preparation
+cannot reuse it. Specialized original allocation/replay remains unchanged.
+
+During the build a next-block test file briefly appeared then was removed. The
+produced portable PDB contains the current preparation test document and no cargo
+test document; the working tree remained exact for the selected verified source.
+No cargo test execution or cargo readiness is inferred from these 30 cases.
+
+Next is same-turn cargo admission/sealing in the existing item pipeline. Current
+code does not scan `UpdateVehicles[].inventory` and cannot yet qualify full vehicle
+birth. Effective access/location/Faction/NPC authority, full semantic birth evidence,
+storage and remaining issue requirements are still open.
+
+## Previous checkpoint — vehicle birth structural slice verified, 2026-11-15
 
 Verified source `0f0cbafe4c7719e7c9ee9465b87553dde9efdb08` adds the shared
 `MortalTransportStorageContract` at actual raw MetaMisc admission and before
