@@ -8,7 +8,61 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
-## Current checkpoint — active selection verified, 2026-11-15
+## Current checkpoint — vehicle birth structural slice verified, 2026-11-15
+
+Verified source `0f0cbafe4c7719e7c9ee9465b87553dde9efdb08` adds the shared
+`MortalTransportStorageContract` at actual raw MetaMisc admission and before
+vehicle ID allocation in the existing owner composer. It rejects missing/malformed
+capacity, volume, explicit owner/controller/access and unsupported player IDs.
+Explicit null owner/controller is not actor inference. It does **not** establish
+Faction/NPC authority, effective permission, full cargo or semantic birth evidence.
+
+- Causal RED: owner composition 1 PASS / 20 expected missing-diagnostic FAIL;
+  actual MetaMisc admission 1 PASS / 6 expected missing-diagnostic FAIL. Build/fixture
+  errors were not counted as these behavioral RED results.
+- Final Linux official unit categories `mortal-vehicle-birth-contract` and
+  `mortal-vehicle-active-selection`: **54/54 PASS**, 13.116s, 2 complete descriptors.
+- Final integration `mortal-vehicle-birth-admission`, `mortal-vehicle-active-publication`,
+  `mortal-vehicle-birth-allocation-interop`: **26/26 PASS**, 25.829s, 3 complete descriptors.
+  No skips/duplicates/timeouts; owned cleanup complete in both runs.
+- Serial unit/integration builds: 93.03s/59.03s, 0 errors, 156/126 preexisting warnings.
+  A prior malformed shell category-array argument caused a pre-workload refusal;
+  it was corrected, not reported as a production/test failure.
+- Primary Block_10 schema, Block_2, CLI rules, daemon guidance and two vehicle examples
+  now declare these fields. The source guard includes the primary schema.
+- Independent fresh-context GPT-6.1 Sol XHigh review found no Critical issue. Its two
+  Important findings (primary schema and two shared allocation fixtures) are fixed
+  and statically rechecked. The exact two existing allocation/replay leaves pass;
+  only their ordinary Mortal vehicle fixture facts changed, not spiritual logic.
+- Optimization: cheap checks reuse parsed/detached roots, perform no I/O or cache,
+  and run before minting an ID. Composer serializes its one candidate to JsonElement
+  for the shared contract; no demonstrated expensive repeated path or speedup claim.
+- Raw evidence remains outside Git. Final TRX directories end in
+  `20261115-055813-193-326-c4dcc31fcfe842c1b8ef80f90ef21846-categories` (unit) and
+  `20261115-055926-871-616-8bd88ba95d7f4d39bcaad0df1af52075-categories` (integration).
+  No hosted CI/main merge/issue closure; whole #1515 remains incomplete.
+
+### Next required prerequisite: real same-turn vehicle cargo
+
+Read-only tracing confirmed that current item catalog scans canonical vehicles[]
+only, the item collector ignores UpdateVehicles inventories, every item route
+excludes vehicle_inventory and the final resource companion copies raw cargo.
+AcceptedItems exports resource owners; it is not a sealed cargo after-image.
+Thus empty-cargo positives do not prove a complete vehicle with new cargo.
+
+Use a narrow vehicle identity preparation entry beside the existing composer,
+retain its DATA in the existing AcceptedTurnAuthorityRegistry, and pass its exact
+vehicleRef-to-ID map into item catalog/route/snapshot. Add `new_vehicle_inventory`
+as a birth-specific route and the existing item collector/rewrite path. Reuse
+TryProjectItemPhase, then supply its sealed raw-command vehicle root to the existing
+vehicle reducer with the same allocation map. Verify the final effect/owner companion
+winner cannot replace that cargo. Do not introduce a second writer or inventory,
+reuse the treatment-only final-baseline API, or copy NPC initialId-as-ID behavior.
+The complete map input/source/factory identity and invalidation must be tested;
+identity DATA is never permission to publish. See spec for historical quantity/shape
+measurement binding. Receipt/access/storage and bounded repair remain subsequent work.
+
+## Earlier checkpoint — active selection verified, 2026-11-15
 
 Verified source: `633ce3d774ae8a422c8ac914366f34f058e669d2` on this task branch.
 This is a completed **narrow active-selection block**, not completion of #1515.

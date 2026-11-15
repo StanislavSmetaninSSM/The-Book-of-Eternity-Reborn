@@ -10,7 +10,8 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 
 ## US1: Vehicle completeness and selection (FR1–FR3)
 - [ ] T004 Add causal RED typed semantic tests in `BookOfEternityClient.Tests/MortalTransportStorageContractTests.cs` with category owner.
-- [ ] T005 Implement pure contract in `BookOfEternityClient/Services/MortalTransportStorageContract.cs` and integrate `ValidationService.MetaCodexAndAchievements.cs` and `MortalResourceOwnerComposer.cs`.
+- [x] T005a Structural birth contract at real shape/composer boundaries, player identity, current fixtures and primary guidance; causal RED then 54 unit/26 integration PASS, independent review.
+- [ ] T005b Complete accepted Faction/NPC/location authority and effective access plus same-turn cargo allocation/projection; structural checks alone do not satisfy full FR1.
 - [x] T006a Exact active selection, transient resolution, removal/replacement, canonical admission, protected repair routing and physical publication rollback (22 unit + 17 integration PASS; independent review).
 - [ ] T006b Versioned full vehicle creation evidence in existing composer/publication (health history alone is insufficient).
 - [ ] T007 Update vehicle current fixtures, GM schema/examples/daemon and narrow guards; verify/review/publish bounded block.
