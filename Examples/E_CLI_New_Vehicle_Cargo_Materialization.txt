@@ -7,6 +7,18 @@ complete GM response and not canonical saved state. The neutral item deliberatel
 uses the current complete test-fixture shape, including all twelve sections;
 its count is explicitly changed to two units for this measured-stack example.
 
+Worked owner/controller substitution (all other fields below stay unchanged):
+Assume faction_caravan, named Caravan Guild, and NPC npc_driver independently
+pass their current Mortal admission, including the NPC's complete materialization
+evidence. Replace only the two corresponding fields in the proposal below:
+owner = {"ownerType":"Faction","ownerId":"faction_caravan","ownerName":"Caravan Guild"}
+controller = {"actorType":"npc","actorId":"npc_driver"}
+This does not create either entity or grant access. If a valid same-turn
+factionCoreChanges rename changes Caravan Guild to New Caravan Guild, ownerName
+must be New Caravan Guild. If these are newly admitted actors/factions, their
+exact initialId bytes serve as the reference and remain their canonical identity;
+never invent a permanent reference to bypass their separate materialization.
+
 The cargo authorityId equals its containing vehicleRef, new_cart. The client
 allocates the permanent vehicle ID before sealing the cargo receipt and binding
 its vehicle_inventory carrier. Do not supply permanent vehicle/item IDs, a receipt,

@@ -86,6 +86,49 @@ public sealed class MortalVehicleBirthCargoTests
         }
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BirthFactionRename_UsesAcceptedName(bool useAcceptedName)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var faction = EffectMaterializationTestFixture.CreateSameTurnMortalFaction("faction_cart");
+        faction["factionId"] = "faction_cart";
+        faction.Remove("initialId"); faction.Remove("isNewFaction"); faction.Remove("activeEffectDefinitions");
+        var oldName = faction["name"]!.GetValue<string>();
+        var factions = new JsonObject { ["factions"] = new JsonArray(faction) };
+        await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
+        await context.CaptureValidatedPendingSnapshotAsync();
+        factions["factionCoreChanges"] = new JsonArray(new JsonObject
+        {
+            ["factionId"] = "faction_cart", ["reason"] = "The guild has adopted a new public name.",
+            ["profile"] = new JsonObject { ["name"] = "Renamed caravan guild" }
+        });
+        await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
+        Assert.DoesNotContain(await context.Validator.ValidateFactionCoreChangesBeforeNormalizationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var root = BirthRoot();
+        root["UpdateVehicles"]![0]!["owner"] = new JsonObject
+        { ["ownerType"] = "Faction", ["ownerId"] = "faction_cart",
+            ["ownerName"] = useAcceptedName ? "Renamed caravan guild" : oldName };
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        if (!useAcceptedName)
+        {
+            Assert.Contains(issues, issue => issue.Code == "resource_owner_vehicle_birth_reference_name_mismatch");
+            return;
+        }
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        await context.NormalizeAcceptedTurnAsync();
+        var afterVehicle = Assert.Single((await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!["vehicles"]!.AsArray())!;
+        var afterFaction = Assert.Single((await context.ReadJsonAsync(FactionCoreChangesContract.FactionCorePath))!["factions"]!.AsArray())!;
+        Assert.Equal("Renamed caravan guild", afterFaction["name"]!.GetValue<string>());
+        Assert.Equal(afterFaction["name"]!.GetValue<string>(), afterVehicle["owner"]!["ownerName"]!.GetValue<string>());
+    }
+
     [Fact]
     public async Task SameTurnVehicleBirth_SealsCargoWithPermanentCarrierAndHealth()
     {

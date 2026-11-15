@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-faction-rename",
+      "responsibility": "#1515 same-turn admitted faction rename and vehicle birth use the effective exact owner name; old name rejected.",
+      "excludes": "General faction lifecycle and whole transport/storage qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.BirthFactionRename_UsesAcceptedName"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-birth-actor-reference-policy",
       "responsibility": "#1515 pure exact Faction/NPC birth binding, accepted composition identities, Mortal evidence, legitimate mirrors and protected failure routing.",
       "excludes": "Filesystem admission, publication, location and effective access.",

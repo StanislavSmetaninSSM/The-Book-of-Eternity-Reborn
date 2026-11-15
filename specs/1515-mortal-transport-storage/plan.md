@@ -10,6 +10,15 @@
 
 ## In progress — exact actor references, 2026-11-15
 
+Source22cc918:14/14 pure PASS9.318s; combined actor/cargo/guidance23/24PASS,
+47.852s. The sole failure is a source-guard capitalization mismatch (same-turn
+versus Same-turn), corrected in guidance without changing behavior. Builds93.08s
+and60.66s,0 errors. Independent review found a real effective-name gap: raw faction
+index ignores valid factionCoreChanges rename. Added a two-case actual admitted
+rename+birth control, not yet executed; production projection is not fixed yet.
+Worked Faction/NPC substitution now lives in the already-delivered cargo example.
+
+
 Source4837d5ba7f5a53968c3b1aadebd6f8f9ad842d85 proved4/4 causal RED:
 unknown Faction/NPC × cargo/empty produced no resource-admission issue. Official
 mortal-vehicle-birth-actor-references completed4 cases,0 PASS/4 FAIL,15.333s,
