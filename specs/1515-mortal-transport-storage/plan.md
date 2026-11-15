@@ -334,3 +334,12 @@ Initial SOURCE now adds explicit birth scanning, route binding, projection colle
 and guarded resource-companion substitution described above. Not compiled/verified;
 independent source review and narrow GREEN are next. Existing-only cargo remains
 outside this new-item route; issue completeness and guidance are not claimed.
+
+Cargo first implementation: foreign-ref rejection passes; positive admission rejects
+its own inconsistent prepared identity (1 PASS / 1 FAIL, 12.556s, complete cleanup).
+Root cause is the two existing readers representing authenticated pristine vehicle
+absence differently: item reader null fallback became {}, resource reader supplies
+{vehicles:[]}. Item preparation now uses the same explicit empty collection only
+for that proven absence, not for present malformed/null content. Four malformed
+inventory and one inter-phase index-drift regressions are added before their fixes;
+independent review identified these new consumer boundaries. No GREEN claim yet.

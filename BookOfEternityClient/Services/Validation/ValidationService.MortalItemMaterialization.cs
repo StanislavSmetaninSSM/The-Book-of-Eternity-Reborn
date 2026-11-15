@@ -121,7 +121,7 @@ public partial class ValidationService
                 var preparation = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(
                     _fs, writeLease, snapshotLookup.Manifest.SessionId,
                     snapshotLookup.Manifest.ManifestPayloadHash,
-                    previous.Roots.Vehicles ?? new JsonObject(), raw);
+                    previous.Roots.Vehicles ?? new JsonObject { ["vehicles"] = new JsonArray() }, raw);
                 issues.AddRange(preparation.Issues);
                 preparedVehicleBirths = preparation.Preparation;
                 return preparedVehicleBirths;

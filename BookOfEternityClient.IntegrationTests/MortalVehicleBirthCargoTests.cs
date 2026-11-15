@@ -79,6 +79,77 @@ public sealed class MortalVehicleBirthCargoTests
         await context.AssertExactBytesAsync(before);
     }
 
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("null")]
+    [InlineData("string")]
+    [InlineData("mixedScalar")]
+    public async Task RawVehicleCargoAdmission_RejectsMalformedInventoryWithoutMutation(string shape)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var root = CargoBirth("new_cart");
+        var vehicle = root["UpdateVehicles"]![0]!.AsObject();
+        switch (shape)
+        {
+            case "missing":
+                vehicle.Remove("inventory");
+                break;
+            case "null":
+                vehicle["inventory"] = null;
+                break;
+            case "string":
+                vehicle["inventory"] = "not an inventory array";
+                break;
+            case "mixedScalar":
+                vehicle["inventory"]!.AsArray().Add(17);
+                break;
+            default:
+                throw new InvalidOperationException("Unknown inventory-shape case.");
+        }
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        var before = await context.CaptureExactBytesAsync(new[]
+        {
+            StorageTransportMoveService.VehiclesPath,
+            MortalItemIdentityState.StatePath,
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+        });
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        var expectedPath = StorageTransportMoveService.VehiclesPath +
+            ".UpdateVehicles[0].inventory" + (shape == "mixedScalar" ? "[1]" : string.Empty);
+        Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "resource_owner_vehicle_birth_invalid" &&
+            string.Equals(issue.FilePath, expectedPath, StringComparison.Ordinal));
+        await context.AssertExactBytesAsync(before);
+    }
+
+    [Fact]
+    public async Task CargoResourceAdmission_RejectsItemIndexDriftAfterItemAdmission()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, CargoBirth("new_cart"));
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var index = (await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!.AsObject();
+        index["unacceptedDrift"] = true;
+        await context.WriteJsonAsync(MortalItemIdentityState.StatePath, index);
+        var before = await context.CaptureExactBytesAsync(new[]
+        {
+            StorageTransportMoveService.VehiclesPath, MortalItemIdentityState.StatePath,
+            ResourceMaterializationContract.StatePath
+        });
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "resource_owner_vehicle_cargo_projection_invalid");
+        await context.AssertExactBytesAsync(before);
+    }
+
     private static JsonObject CargoBirth(string authorityId)
     {
         var root = BirthRoot();
