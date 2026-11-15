@@ -716,3 +716,36 @@ oracle NullReference: empty new-location storage metadata intentionally has no
 contents field (CreateStorage fixture, planner projection and move reader's empty
 fallback agree). Corrected only that oracle to exact absence and added actual
 consumer empty-contents assertion; production is unchanged. Final6 rerun pending.
+
+## Accepted bounded storage identity/access slice, 2026-11-15
+
+Source85281c02764725180b67c3e73d886e07284a0b54: final real publication6/6 PASS,
+runner16.1662974s, no skips/duplicates/timeouts and complete owned cleanup.
+Integration build124.77s,0errors/237warnings. Restricted Player/Faction birth and
+accessible Player birth persist exact metadata; actual move consumer succeeds,
+excludes restricted targets and exposes the accessible empty target. Unknown
+recipient/Faction refusal preserves bytes; reached common publication cut restores
+all tracked paths and generation. Prior unit9/9 and unchanged existing controls5
+plus actual-rendered guidance2 remain independently recorded above. SOURCE review
+accepted all corrections; its final six-case GREEN condition is now satisfied.
+Fresh remote clone at85281c02 is clean, fsck succeeds. No raw logs committed.
+This closes only exact single-player recipient authority and explicit-denial
+preservation at existing new-location storage birth, not all T008–T011 or #1515.
+
+### Next bounded design: effective storage access projection
+
+Current storage_access.json has grant/revoke/share commands but no observed
+reducer; UI presently labels those commands as effective grants. Keep accepted
+location storage metadata as the sole authority. Derive schemaVersion1 entries
+keyed by exact(locationId,storageId), copying owner/authorizedUsers/hasFullAccess
+without inference, contents duplication or grant/revoke engine. Extend the
+existing detached location plan and common publication, with signed-original/raw
+projection continuity, path freshness, rollback and protected repair coverage.
+Preserve recognized command fields as pending commands, never as granted rights;
+client-owned entries cannot be repaired by GM. CLI/web render effective entries.
+Use existing location receipt for storage born with that location; do not invent
+a second provenance claim. First tests must cover exact coordinates, explicit
+false, metadata changes/removal, command preservation and forged projection,
+then real atomic acceptance/refusal/reached rollback and consumer display.
+No spiritual combat path or ordinary access policy is added. Separate storage
+birth in an existing location, capacity and vehicle receipt remain future blocks.
