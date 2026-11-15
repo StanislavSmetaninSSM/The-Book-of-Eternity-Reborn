@@ -46,11 +46,16 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         var evidenceValid = new Dictionary<string, bool>(StringComparer.Ordinal);
         foreach (var id in selected)
         {
-            if (!acceptedNpcs.TryGetValue(id, out var entry) || !actors.TryGetValue(id, out var row)) continue;
+            if (!acceptedNpcs.ContainsKey(id) || !actors.TryGetValue(id, out var row)) continue;
             var element = JsonSerializer.SerializeToElement(row.Actor);
-            var diagnostics = entry.SameTurn
-                ? ActorMaterializationContract.ValidateMortalNpc(element, row.Path, "NPCs")
-                : ActorMaterializationContract.ValidateHistoricalMortalNpc(element, row.Path);
+            // This boundary binds the complete closed envelope, not raw item semantics.
+            // Item creationRefs/equipment aliases are resolved by the independent item
+            // phase before full canonical actor admission. Never reinterpret them here.
+            var diagnostics = ActorMaterializationContract.Validate(
+                element, row.Path, ActorMaterializationFamily.Mortal,
+                new ActorMaterializationEvidence("mortal_npc", id,
+                    new Dictionary<string, bool>(), new Dictionary<string, bool>()),
+                requireEnvelope: true, deferEvidenceConsistency: true);
             var envelope = row.Actor[ActorMaterializationContract.PropertyName] as JsonObject;
             evidenceValid[id] = ReadExactString(envelope, "actorType") == "mortal_npc" &&
                 ReadExactString(envelope, "actorId") == id &&

@@ -17,7 +17,11 @@ clean and fsck0 (source recovery only). A final phase audit found one concrete
 remaining risk: selected same-turn NPC with raw new_npc_inventory creationRefs
 is checked with canonical inventory semantics too early. Added real NPC/item/
 vehicle interop and two cheap envelope-binding controls before changing behavior.
-These checks are UNRUN; approval is pending the phase correction. Full actor
+At8725bded the real interop is causal RED0/1: successful item admission, then
+controller.actorId reference error before normalization;11.117s, complete cleanup.
+The two cheap controls remain unrun. WIP now uses the existing generic complete
+closed Mortal envelope validator with evidence consistency deferred, without
+raw inventory/equipment alias validation. No actor admission is bypassed. Full actor
 semantics must remain in its independent admission, not be approximated here.
 
 
