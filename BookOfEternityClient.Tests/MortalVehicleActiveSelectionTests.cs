@@ -227,6 +227,21 @@ public sealed class MortalVehicleActiveSelectionTests
             Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SelectionAuthorityFailure_UsesProtectedRollbackInsteadOfBroadGmRepair(bool directCanonicalWrite)
+    {
+        var before = Root(Vehicle("vehicle_cart", "Parked"));
+        before["activeVehicleId"] = null;
+        var current = before.DeepClone().AsObject();
+        current[directCanonicalWrite ? "activeVehicleId" : "activeVehicleChange"] = "vehicle_cart";
+        var result = Compose(before, current);
+        Assert.NotEmpty(result.Issues);
+        Assert.Empty(ResourceRepairPacketBuilder.Build(result.Issues));
+        Assert.True(ResourceRepairPacketBuilder.RequiresFailClosedRollback(result.Issues));
+    }
+
     [Fact]
     public void AuthoringGuidance_PreservesCanonicalSelectionAndExplainsExactTransientSelection()
     {
