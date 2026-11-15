@@ -150,6 +150,27 @@ public sealed class MortalVehicleBirthCargoTests
         await context.AssertExactBytesAsync(before);
     }
 
+    [Fact]
+    public async Task CargoPublication_RejectsItemIndexDriftAfterResourceAdmissionBeforeWrites()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, CargoBirth("new_cart"));
+        Assert.DoesNotContain(await context.ValidateAcceptedTurnRawMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var index = (await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!.AsObject();
+        index["unacceptedDrift"] = true;
+        await context.WriteJsonAsync(MortalItemIdentityState.StatePath, index);
+        var before = await context.CaptureExactBytesAsync(new[]
+        {
+            StorageTransportMoveService.VehiclesPath, MortalItemIdentityState.StatePath,
+            ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+        });
+        await Assert.ThrowsAnyAsync<InvalidDataException>(() => context.NormalizeAcceptedTurnWithIssuesAsync());
+        await context.AssertExactBytesAsync(before);
+    }
+
     private static JsonObject CargoBirth(string authorityId)
     {
         var root = BirthRoot();

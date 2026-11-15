@@ -343,3 +343,11 @@ absence differently: item reader null fallback became {}, resource reader suppli
 for that proven absence, not for present malformed/null content. Four malformed
 inventory and one inter-phase index-drift regressions are added before their fixes;
 independent review identified these new consumer boundaries. No GREEN claim yet.
+
+At 5f8b1446 the positive cargo and foreign-ref leaves pass; 4 malformed inventory
+cases and the item→index-drift→resource leaf fail with an empty diagnostic list.
+Total 2 PASS / 5 causal FAIL, 17.050s, complete cleanup. Build 122.39s, 0 errors.
+A follow-through regression now checks drift after resource admission but before
+normalization. Common source before-images must preserve the actual observed item
+dependencies, not merely check a stale projection once. No production fixes for
+these review findings have been applied yet.
