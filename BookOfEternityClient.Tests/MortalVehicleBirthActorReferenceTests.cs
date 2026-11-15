@@ -81,6 +81,23 @@ public sealed class MortalVehicleBirthActorReferenceTests
         Assert.Contains(issues, i => i.FilePath == "game_state/misc/vehicles.json.UpdateVehicles[1].controller.actorId");
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void RawCreationReferencesDoNotBecomeActorEnvelopeErrors(bool equipped)
+    {
+        var npc = Npc(true);
+        var actor = npc["UpdateNPCs"]![0]!.AsObject();
+        actor["inventory"] = new JsonArray(MortalItemTestFixture.CreateRawRoot(
+            route: "new_npc_inventory", authorityKind: "new_npc", authorityId: "npc_driver",
+            sourceTurn: 42, creationRef: "driver_item", materializationId: "driver_item_birth"));
+        actor["materialization"]!["capabilities"]!["ownsItems"] = true;
+        actor["materialization"]!["sections"]!["inventory"] = new JsonObject { ["state"] = "populated" };
+        if (equipped) actor["equippedItems"] = new JsonObject { ["mainHand"] = "driver_item" };
+        Assert.Empty(MortalLocationAcceptedTurnPlanner.ValidateVehicleBirthActorReferences(
+            Vehicles(), npc, Factions(false), Compose(npc, true)));
+    }
+
     private static JsonObject Npc(bool fresh)
     {
         var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor("npc_driver");

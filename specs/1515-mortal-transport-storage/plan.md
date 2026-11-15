@@ -10,6 +10,17 @@
 
 ## In progress — exact actor references, 2026-11-15
 
+Source2062371a:50/50unitPASS15.491s and26/26combinedPASS59.208s,
+complete descriptors/cleanup, no skips/duplicates/timeouts; independent rename/
+guidance review closed. Fresh clone actor-references-restore matches2062371a,
+clean and fsck0 (source recovery only). A final phase audit found one concrete
+remaining risk: selected same-turn NPC with raw new_npc_inventory creationRefs
+is checked with canonical inventory semantics too early. Added real NPC/item/
+vehicle interop and two cheap envelope-binding controls before changing behavior.
+These checks are UNRUN; approval is pending the phase correction. Full actor
+semantics must remain in its independent admission, not be approximated here.
+
+
 Source2e9326f7 then proved the real rename bug: valid upstream faction command,
 0/2PASS (old name wrongly accepted, new name rejected),13.698s, complete cleanup,
 no skip/duplicate/timeout; build125.01s,0 errors. WIP now projects the captured

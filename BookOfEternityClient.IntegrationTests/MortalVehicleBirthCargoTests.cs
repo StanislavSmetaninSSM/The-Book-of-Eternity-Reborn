@@ -134,6 +134,41 @@ public sealed class MortalVehicleBirthCargoTests
     }
 
     [Fact]
+    public async Task NewNpcWithNewItem_CanControlVehicleAtSameBirth()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor("npc_driver");
+        actor["resourceMaterialization"] = new JsonObject
+        { ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "health", ["maximum"] = 100 }) };
+        actor["inventory"] = new JsonArray(MortalItemTestFixture.CreateRawRoot(
+            route: "new_npc_inventory", authorityKind: "new_npc", authorityId: "npc_driver",
+            sourceTurn: 42, creationRef: "driver_item", materializationId: "driver_item_birth"));
+        actor["materialization"]!["capabilities"]!["ownsItems"] = true;
+        actor["materialization"]!["sections"]!["inventory"] = new JsonObject { ["state"] = "populated" };
+        await context.WriteJsonAsync(NpcCoreChangesContract.NpcCorePath,
+            new JsonObject { ["UpdateNPCs"] = new JsonArray(actor) });
+        var root = BirthRoot();
+        root["UpdateVehicles"]![0]!["controller"] = new JsonObject
+        { ["actorType"] = "npc", ["actorId"] = "npc_driver" };
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        await context.NormalizeAcceptedTurnAsync();
+        var npcRoot = (await context.ReadJsonAsync(NpcCoreChangesContract.NpcCorePath))!.AsObject();
+        var acceptedActor = npcRoot["UpdateNPCs"]!.AsArray().OfType<JsonObject>().Single(npc => npc["NPCId"]?.GetValue<string>() == "npc_driver");
+        var item = Assert.Single(acceptedActor["inventory"]!.AsArray())!;
+        Assert.NotNull(item["materializationReceipt"]);
+        Assert.False(item.AsObject().ContainsKey("creationRef"));
+        using var actorDocument = System.Text.Json.JsonDocument.Parse(acceptedActor.ToJsonString());
+        Assert.Empty(ActorMaterializationContract.ValidateCanonicalMortalNpc(actorDocument.RootElement, "acceptedNpc", requireEnvelope: true));
+        var vehicle = Assert.Single((await context.ReadJsonAsync(StorageTransportMoveService.VehiclesPath))!["vehicles"]!.AsArray())!;
+        Assert.Equal("npc_driver", vehicle["controller"]!["actorId"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task SameTurnVehicleBirth_SealsCargoWithPermanentCarrierAndHealth()
     {
         await using var context = await MortalItemMaterializationTestContext.CreateAsync();
