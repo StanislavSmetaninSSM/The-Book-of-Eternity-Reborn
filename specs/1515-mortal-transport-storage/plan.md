@@ -258,3 +258,14 @@ At 123fe7dd the current 20 unit/source cases pass (8.952s runner, 91.75s build).
 Targeted repair-route tracing found an additional genuine gap before acceptance: new vehicle_active_selection_* errors with section Vehicles are not recognized by ResourceRepairPacketBuilder and could fall into broad repair. Two new tests bind actual composer failures to the existing fail-closed classifier (UNRUN); production unchanged pending causal RED. Planned narrow fix is the existing resource_owner_vehicle_* prefix, not a wider resource repair allowlist. A complete bounded first-birth packet remains future scope, not claimed by a repairHint alone.
 
 Routing RED at bf5b444f:22 planned/executed,20 PASS/2 exact expected failures in protected-rollback classification,9.061s runner/88.45s build. Changed only the two new issue codes to resource_owner_vehicle_active_selection_* so the existing classifier rejects protected/ambiguous selection instead of broad GM repair; bounded allowlist untouched. Rollback fixture at acdf30b reached the real vehicle cut once and passed exact byte/generation/journal restoration, then its final semantic oracle failed on UTF-8 BOM. The oracle now decodes UTF-8 and strips the file preamble before parsing, preserving raw byte assertions; no production change. Integration17 had16 PASS/1 oracle failure,14.366s runner/120.21s build. Final two-category GREEN remains pending.
+
+### Preparation review refinements, 2026-11-15 (SOURCE, not yet GREEN)
+
+At c4e5576d, the official preparation category yielded 9 PASS / 2 causal FAIL
+(11.611s, complete cleanup): explicit-null canonical vehicles incorrectly admitted
+preparation, and an observed no-birth input retained the previous allocation DATA.
+The generation test fixture now uses the required replacement lease and passes.
+Source corrections distinguish absent from explicit-null canonical collections and
+clear preparation on ordinary observed no-birth input. Reuse remains scoped to
+observed preparation input/full invalidation; unrelated earlier failures do not
+confer authority and still require fresh source fences. No spiritual branch changes.

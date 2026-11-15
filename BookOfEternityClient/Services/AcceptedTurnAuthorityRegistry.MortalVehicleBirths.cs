@@ -13,11 +13,24 @@ internal static partial class AcceptedTurnAuthorityRegistry
         string sessionId, string snapshotToken, JsonObject before, JsonObject raw) =>
         GetState(fs, lease).PrepareMortalVehicleBirths(sessionId, snapshotToken, before, raw);
 
+    internal static void ClearMortalVehicleBirths(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease) =>
+        GetState(fs, lease).ClearMortalVehicleBirths();
+
     private sealed partial class AcceptedTurnAuthorityState
     {
         private string? _vehicleBirthInputFingerprint;
         private MortalVehicleBirthPreparationResult? _vehicleBirthPreparation;
         private readonly VehicleIdentityFactory _ordinaryVehicleFactory = new();
+
+        internal void ClearMortalVehicleBirths()
+        {
+            lock (_gate)
+            {
+                _vehicleBirthPreparation = null;
+                _vehicleBirthInputFingerprint = null;
+            }
+        }
 
         internal MortalVehicleBirthPreparationResult PrepareMortalVehicleBirths(
             string sessionId, string snapshotToken, JsonObject before, JsonObject raw)

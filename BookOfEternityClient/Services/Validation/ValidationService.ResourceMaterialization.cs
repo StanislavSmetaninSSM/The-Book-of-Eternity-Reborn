@@ -445,6 +445,10 @@ public partial class ValidationService
                 return issues;
             preparedVehicles = preparation.Preparation;
         }
+        else if (spiritualCapture is null)
+        {
+            AcceptedTurnAuthorityRegistry.ClearMortalVehicleBirths(_fs, writeLease);
+        }
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions, previousMortalRoots, currentMortalRoots,
                 BuildSameTurnResourceOwnerCapabilities(commands),

@@ -91,7 +91,7 @@ internal sealed class MortalVehicleBirthPreparation
 
         void ReadVehicles(JsonObject root, string label, HashSet<string> ids, HashSet<string> seenAliases, bool requireOriginal)
         {
-            if (root["vehicles"] is null)
+            if (!root.ContainsKey("vehicles"))
                 return;
             if (root["vehicles"] is not JsonArray vehicles)
             {
