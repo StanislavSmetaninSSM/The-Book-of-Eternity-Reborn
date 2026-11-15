@@ -8,6 +8,14 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Location binding WIP, 2026-11-15
+
+Fresh clean clone early-shape-restore matches checkpoint d61fb99e; fsck0.
+New pure resolver and13 cheap cases reuse ExactIdentityIndex and existing caller
+mapping; no IO or allocator. Eight real location publication/refusal/drift cases
+are added before wiring runtime behavior. All are UNRUN. Existing early shape
+acceptance remains bounded; no location acceptance claim yet.
+
 ## Early complete-shape checkpoint, 2026-11-15
 
 Source a88444dc:54/54 integration PASS55.278s,4 descriptors, complete cleanup,

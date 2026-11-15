@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class MortalVehicleBirthCargoTests
+public sealed partial class MortalVehicleBirthCargoTests
 {
     [Theory]
     [InlineData("faction", false)]
