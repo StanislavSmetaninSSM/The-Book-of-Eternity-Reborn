@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-active-selection",
+      "responsibility": "#1515 exact active vehicle selection reduction through existing vehicle owner composer; existing and same-turn identity.",
+      "excludes": "Full vehicle semantics, storage access, live publication and UI.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleActiveSelectionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-treatment-mastery",
       "responsibility": "#1538 documented natural treatment NPC mastery delta with required two-level award; exact acceptance and missing mastery refusal.",
       "excludes": "No broad Guided/QTE runtime, afterlife, or full suite.",

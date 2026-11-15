@@ -62,3 +62,7 @@ Reuse detached JSON/accepted plans already read by resource/location owners with
 Remote task branch created and verified at base `f3d0bc668481d1b648381a83dfc39d425fec8bde`. Fresh public GitHub clone provided the complete source; no earlier local WIP assumed. #1511/#1513 live issues are completed and explicitly leave capacity/entity work to #1515; #1514 does not technically block this Mortal implementation. Read-only mapping confirmed the gaps above. Production/tests unchanged. Spec Kit clarify paths validated; design schema details, all implementation and tests/reviews remain UNRUN. Next: complete bounded policy schema and start causal RED tests, not a broad audit.
 
 Linux x64 tool restoration: PowerShell 7.7.0 from official release runs with writable HOME/XDG_CACHE_HOME; SDK 10.0.404 installed in `/workspace/shared/boe-tools/dotnet`, .NET 8 runtime installation pending verification. No hosted Actions dispatched. Current status is not implementation completion or acceptance.
+
+### Ruling: start with the isolated active-selection defect
+
+The existing vehicle composer already provides a pure entry point. Verify its missing active command reduction first while completing ownership schema discovery; this avoids changing broad storage metadata before its identity authority is known. Selection must match one final Active vehicle exactly; same-turn refs resolve only via the existing allocated owner export. This is a partial FR2 block, not full semantics or whole-task completion. Added 6 expected unit cases; compile/execution are UNRUN, production unchanged.
