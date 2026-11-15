@@ -33,11 +33,13 @@ public sealed partial class MortalLocationMaterializationValidationTests
         Assert.True(JsonNode.DeepEquals(metadata["owner"], projected["owner"]));
         Assert.Equal(42, location["materializationReceipt"]!["sourceTurn"]!.GetValue<int>());
         Assert.Null(metadata["contents"]);
-        Assert.Empty(projected["contents"]!.AsArray());
+        // Empty newly born metadata has no contents field; the existing move reader treats absence as empty.
+        Assert.Null(projected["contents"]);
 
         var moves = await StorageTransportMoveService.ReadStorageMoveContextAsync(context.FileSystem);
         Assert.True(moves.Success, moves.Message);
         Assert.Equal(access, moves.Storages.Any(storage => storage.StorageId == "storage_birth"));
+        if (access) Assert.Empty(Assert.Single(moves.Storages, storage => storage.StorageId == "storage_birth").Contents);
     }
 
     [Theory]

@@ -707,3 +707,12 @@ three preparation issues before integration execution: list-return API used as
 result object, Rules2 prose outside XML root, and missing direct rendered-location
 assertions. Corrected these without production change; integration and revised
 delivery are still UNRUN. No feature-wide acceptance.
+
+At a4943de5 integration build completed 0 errors/237 warnings in122.65s.
+Combined official13 cases produced10PASS/3FAIL in34.902s, complete cleanup:
+existing controls5, actual rendered guidance2, unknown-reference rejection2 and
+reached physical rollback1 passed. Three successful publication cases hit a test
+oracle NullReference: empty new-location storage metadata intentionally has no
+contents field (CreateStorage fixture, planner projection and move reader's empty
+fallback agree). Corrected only that oracle to exact absence and added actual
+consumer empty-contents assertion; production is unchanged. Final6 rerun pending.
