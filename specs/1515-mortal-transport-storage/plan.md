@@ -44,6 +44,18 @@ This is a completed **narrow active-selection block**, not completion of #1515.
 
 Clean restoration of checkpoint `9e951bb6c7626378f86a2b5dcb8615c6a9f92e0d` was independently fetched into a new shallow directory; exact HEAD, clean status and `git fsck --connectivity-only` all verified. The next source block remains unimplemented/unrun.
 
+## WIP birth shape progress, 2026-11-15
+
+At `34497969d`, the official unit category produced causal RED: 1 positive PASS,
+20 negative FAIL, all expected missing diagnostics with empty issue collections.
+21 planned/executed, no timeout/duplicates, cleanup complete, 9.667s runner;
+unit build 89.59s, 0 errors and 156 preexisting warnings. The new structural
+contract is now implemented in owner composition but GREEN is unrun. Actual
+MetaMisc admission tests are added but still need their separate causal RED;
+that production entry is not yet connected. Faction/NPC resolution, effective
+access, complete receipt/cargo evidence and storage birth remain incomplete.
+No publication qualification or complete #1515 acceptance follows from this slice.
+
 ## Next bounded block: complete vehicle birth shape
 
 - [ ] Add typed causal RED tests against the existing owner composer for missing/invalid cargo limits, ownership/controller/access and unknown single-player IDs; add one valid positive fixture.

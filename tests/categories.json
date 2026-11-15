@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-admission",
+      "responsibility": "#1515 full raw vehicle birth enters the actual MetaMiscStateFiles validator; required cargo/owner/controller/access fields.",
+      "excludes": "Accepted publication, cargo graph and authority source resolution; no whole feature claim.",
+      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthAdmissionTests.*"] }]
+    },
+    {
       "id": "mortal-vehicle-birth-contract",
       "responsibility": "#1515 first vehicle birth structural cargo limits and explicit owner/controller/access; exact existing single-player identity.",
       "excludes": "Faction/NPC resolution, location binding, cargo measurements, receipt/publication and ordinary lifecycle policy remain separate.",
@@ -10,7 +21,7 @@
       "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.*"] }]
+      "selectors": [{ "project": "unit", "tests": ["BookOfEternityClient.Tests.MortalVehicleBirthContractTests.*", "BookOfEternityClient.Tests.SpiritualWoundVehicleIdentityTests.*"] }]
     },
     {
       "id": "mortal-vehicle-active-publication",

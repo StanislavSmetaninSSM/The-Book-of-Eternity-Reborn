@@ -273,6 +273,12 @@ public sealed class MortalVehicleActiveSelectionTests
     private static JsonObject Vehicle(string id, string availability) => new()
     {
         ["vehicleId"] = id, ["name"] = "Cart", ["availability"] = availability,
+        ["capacity"] = 4,
+        ["volume"] = 20,
+        ["owner"] = new JsonObject { ["ownerType"] = "Player", ["ownerId"] = "player_current", ["ownerName"] = "Current player" },
+        ["controller"] = new JsonObject { ["actorType"] = "player", ["actorId"] = "player_current" },
+        ["authorizedUsers"] = new JsonArray(),
+        ["hasFullAccess"] = true,
         ["currentLocationId"] = availability == "Parked" ? "location_market" : null
     };
 }

@@ -343,6 +343,12 @@ public sealed class ResourceVehicleIntegrationTests
             ["actions"] = new JsonArray(),
             ["resistances"] = new JsonArray(),
             ["inventory"] = new JsonArray(),
+            ["capacity"] = 4,
+            ["volume"] = 20,
+            ["owner"] = new JsonObject { ["ownerType"] = "Player", ["ownerId"] = "player_current", ["ownerName"] = "Current player" },
+            ["controller"] = new JsonObject { ["actorType"] = "player", ["actorId"] = "player_current" },
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = true,
             ["resourceMaterialization"] = materialization
         };
 

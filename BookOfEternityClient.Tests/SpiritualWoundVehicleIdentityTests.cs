@@ -76,6 +76,12 @@ public sealed class SpiritualWoundVehicleIdentityTests
         {
             ["vehicleRef"] = reference, ["name"] = "Телега", ["availability"] = "Parked",
             ["currentLocationId"] = "location_market",
+            ["capacity"] = 4,
+            ["volume"] = 20,
+            ["owner"] = new JsonObject { ["ownerType"] = "Player", ["ownerId"] = "player_current", ["ownerName"] = "Current player" },
+            ["controller"] = new JsonObject { ["actorType"] = "player", ["actorId"] = "player_current" },
+            ["authorizedUsers"] = new JsonArray(),
+            ["hasFullAccess"] = true,
             ["resourceMaterialization"] = new JsonObject
             {
                 ["resources"] = new JsonArray(new JsonObject

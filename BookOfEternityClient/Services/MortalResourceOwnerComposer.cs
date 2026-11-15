@@ -663,6 +663,12 @@ internal static class MortalResourceOwnerComposer
                     continue;
                 }
 
+                var birthIssues = MortalTransportStorageContract.ValidateVehicleBirth(
+                    JsonSerializer.SerializeToElement(update), path);
+                issues.AddRange(birthIssues);
+                if (birthIssues.Count != 0)
+                    continue;
+
                 var vehicleId = identityFactory.CreateVehicleId(vehicleRef);
                 if (!ResourceMaterializationContract.IsExactIdentifier(vehicleId) ||
                     !exact.Add(vehicleId) ||
