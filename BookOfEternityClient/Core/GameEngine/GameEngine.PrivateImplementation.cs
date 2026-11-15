@@ -115,11 +115,6 @@ public partial class GameEngine
         public string RawCarrier { get; set; } = "";
     }
 
-    private sealed record MortalLocationRepairRetryObligation(
-        string Actor,
-        string Route,
-        string? MaterializationId);
-
     private sealed record EffectRepairRetryObligation(
         string Actor,
         string RawCoordinate,

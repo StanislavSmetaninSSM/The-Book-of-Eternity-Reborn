@@ -8,6 +8,27 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Downstream retry consumer finding and causal tests, WIP 2026-11-15
+
+At f72d437e, zero-error builds took 95.50s unit and 59.13s integration.
+Official isolated results: storage pure31/31 PASS9.694s, real publication6/6
+PASS17.710s, existing bounded repair66/66 PASS17.200s, actual daemon/source
+checks3/3 PASS20.236s. Receipt policy58 completed38PASS/20causal integrityFAIL
+8.968s; receipt publication9/9PASS23.571s and active publication17/17PASS15.137s.
+All selections completed with cleanup and no duplicates/timeouts. These are
+bounded results, not full acceptance. Clean GitHub restore of f72d437e verified.
+
+Focused review found the newly reachable downstream engine retry matcher lacked
+storage_addition and used parent locationId, while Distinct collapsed same-parent
+children. That is a real unfinished consumer despite passing packet tests.
+Mechanical extraction of the unchanged matcher into the internal typed
+MortalLocationRepairRetryPolicy (called by engine) now supports cheap causal
+single/two-child corrected, dropped/replaced/reordered child and old-route tests.
+Actual validator-to-packet-to-obligation corrected retry assertions are also
+added. These new tests are UNRUN; extraction does not fix the missing route yet.
+No reflection, extra source read, new writer or retained cache. Retry DATA remains
+operation-local and never replaces subsequent raw/canonical validation.
+
 ## Bounded repair fixes and receipt integrity RED batch, WIP 2026-11-15
 
 Remote 1ff91bbd is verified and restored cleanly from GitHub. Its isolated

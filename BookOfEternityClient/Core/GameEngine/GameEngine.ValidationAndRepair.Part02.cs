@@ -308,13 +308,7 @@ public partial class GameEngine
                 var actionableLocationPackets = MortalLocationRepairPacketBuilder.Build(rawErrors);
                 if (actionableLocationPackets.Count > 0 && mortalLocationRetryObligations == null)
                 {
-                    mortalLocationRetryObligations = actionableLocationPackets
-                        .Select(packet => new MortalLocationRepairRetryObligation(
-                            packet.CanonicalActorNames.Single(),
-                            packet.Route,
-                            packet.ExpectedMaterializationId))
-                        .Distinct()
-                        .ToArray();
+                    mortalLocationRetryObligations = MortalLocationRepairRetryPolicy.Capture(actionableLocationPackets);
                     mortalLocationRetryErrors = rawErrors.ToList();
                     if (HasRollbackCapability(rollbackSnapshot))
                     {

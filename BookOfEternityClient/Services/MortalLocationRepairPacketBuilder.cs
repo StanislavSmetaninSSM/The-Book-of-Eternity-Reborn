@@ -20,6 +20,7 @@ internal sealed class MortalLocationRepairPacket
     internal string RawCarrier { get; init; } = "unresolved";
     internal string RawCoordinate { get; init; } = "unresolved";
     internal string? ExpectedMaterializationId { get; init; }
+    internal string? ExpectedStorageId { get; init; }
     internal IReadOnlyList<string> MissingFields { get; init; } = Array.Empty<string>();
     internal IReadOnlyList<string> InvalidFields { get; init; } = Array.Empty<string>();
     internal IReadOnlyList<string> Conflicts { get; init; } = Array.Empty<string>();

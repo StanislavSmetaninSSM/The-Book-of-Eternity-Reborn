@@ -21,7 +21,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLocationRepairPacketBuilderTests.*"
+            "BookOfEternityClient.Tests.MortalLocationRepairPacketBuilderTests.*",
+            "BookOfEternityClient.Tests.MortalLocationRepairRetryPolicyTests.*"
           ]
         },
         {

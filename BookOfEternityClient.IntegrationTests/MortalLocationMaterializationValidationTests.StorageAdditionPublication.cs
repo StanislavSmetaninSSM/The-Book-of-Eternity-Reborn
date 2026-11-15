@@ -128,6 +128,13 @@ public sealed partial class MortalLocationMaterializationValidationTests
             Assert.All(packets[i].ExactFieldCorrections, correction =>
                 Assert.Equal($"{MortalLocationMaterializationContract.WorldMapPath}.worldMapUpdates.storagesToAdd[{i}].storage.name", correction.Path));
         }
+        var obligations = MortalLocationRepairRetryPolicy.Capture(packets);
+        Assert.Equal(count, obligations.Count);
+        foreach (var op in operations.OfType<JsonObject>()) op["storage"]!["name"] = "Corrected";
+        Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, raw));
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, raw);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
     }
 
     private static async Task<(JsonObject Location, Dictionary<string, string> Backups)> ArrangeStorageAdditionPublicationAsync(
