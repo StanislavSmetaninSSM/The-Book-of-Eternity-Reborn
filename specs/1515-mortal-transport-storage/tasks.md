@@ -11,7 +11,7 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 ## US1: Vehicle completeness and selection (FR1–FR3)
 - [ ] T004 Add causal RED typed semantic tests in `BookOfEternityClient.Tests/MortalTransportStorageContractTests.cs` with category owner.
 - [x] T005a Structural birth contract at real shape/composer boundaries, player identity, current fixtures and primary guidance; causal RED then 54 unit/26 integration PASS, independent review.
-- [ ] T005b Complete accepted Faction/NPC/location authority, full existing birth semantics and effective access; structural checks alone do not satisfy full FR1.
+- [ ] T005b Complete accepted Faction/NPC/location authority, full existing birth semantics and effective access; exact Faction/NPC binding and early full shape are verified at e276d562/a88444dc, while exact location and effective access remain open.
 - [x] T005c Same-turn new cargo allocation/projection, fresh dependency fences and real publication/rollback.
 - [x] T005d First-birth stack/volume measurement, recoverable shape binding, immutable historical evidence and delivered GM guidance; source0ce1cdad,62unit+16combined PASS, independent review.
 - [x] T006a Exact active selection, transient resolution, removal/replacement, canonical admission, protected repair routing and physical publication rollback (22 unit + 17 integration PASS; independent review).

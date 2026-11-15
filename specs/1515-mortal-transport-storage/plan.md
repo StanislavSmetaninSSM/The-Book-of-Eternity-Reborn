@@ -8,6 +8,23 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Early complete-shape checkpoint, 2026-11-15
+
+Source a88444dc:54/54 integration PASS55.278s,4 descriptors, complete cleanup,
+no skips/duplicates/timeouts. Build123.78s,0errors/234warnings. This includes all
+six causal shape/control cases, full vehicle cargo phase, Meta admission and
+existing active/resource lifecycle/rollback. Independent source review found no
+Critical/Important findings, including RawPreSeal cargo and no extra snapshot
+read. No speedup claim. Full location identity/access and creation receipt remain
+open; this result is not full FR1 or issue acceptance.
+
+Next bounded work: exact parked birth location membership and same-turn initialId
+resolution. Reuse the existing MortalLocationAcceptedTurnPlanAuthority full-input
+cache and the location plan already obtained in fresh cargo capture. Preserve the
+whole raw observation set as publication fences; resolve only the detached final
+vehicle companion, never the prepared raw source. Empty cargo needs the same
+fresh location context once. No new allocator or registry.
+
 ## Actor reference checkpoint and next bounded shape gate, 2026-11-15
 
 At e276d5624, 52/52 unit PASS12.646s and27/27 combined PASS64.252s;
