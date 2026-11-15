@@ -59,7 +59,7 @@ internal static class MortalVehicleActiveSelection
             StorageTransportMoveService.VehiclesPath + ".activeVehicleChange",
             IssueSeverity.Error,
             "Active vehicle selection must agree with the accepted vehicle state.",
-            code: "vehicle_active_selection_invalid", section: "Vehicles",
+            code: "resource_owner_vehicle_active_selection_invalid", section: "Vehicles",
             expected: expected, actual: actual,
             repairHint: "Choose one exact existing vehicleId or same-turn vehicleRef and explicitly set its availability to Active. Park the previous vehicle with its exact location; null requires no Active vehicle."));
         return false;

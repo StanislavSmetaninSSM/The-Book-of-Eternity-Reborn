@@ -101,9 +101,11 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
         Assert.Equal(StorageTransportMoveService.VehiclesPath, writeFailure.RelativePath);
         Assert.Same(cut.Failure, writeFailure.InnerException);
-        var published = JsonNode.Parse(cut.PublishedBytes!)!.AsObject();
-        Assert.NotNull(published["activeVehicleId"]);
-        Assert.Equal(published["vehicles"]![0]!["vehicleId"]!.GetValue<string>(), published["activeVehicleId"]!.GetValue<string>());
+        using var publishedDocument = System.Text.Json.JsonDocument.Parse(
+            System.Text.Encoding.UTF8.GetString(cut.PublishedBytes!).TrimStart('\uFEFF'));
+        var published = publishedDocument.RootElement;
+        Assert.Equal(published.GetProperty("vehicles")[0].GetProperty("vehicleId").GetString(),
+            published.GetProperty("activeVehicleId").GetString());
     }
 
     private static JsonObject RawCreation() => new()

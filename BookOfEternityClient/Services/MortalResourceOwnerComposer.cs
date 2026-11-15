@@ -455,7 +455,7 @@ internal static class MortalResourceOwnerComposer
                 StorageTransportMoveService.VehiclesPath + ".activeVehicleId",
                 IssueSeverity.Error,
                 "Canonical active selection is client-owned.",
-                code: "vehicle_active_selection_client_owned", section: "Vehicles",
+                code: "resource_owner_vehicle_active_selection_client_owned", section: "Vehicles",
                 expected: "unchanged pre-turn activeVehicleId",
                 actual: Describe(root["activeVehicleId"]),
                 repairHint: "Preserve activeVehicleId and request the change through activeVehicleChange with coherent vehicle availability updates."));

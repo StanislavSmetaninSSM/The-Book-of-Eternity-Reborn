@@ -33,7 +33,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = before.DeepClone().AsObject();
         current["activeVehicleChange"] = selected;
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
         Assert.Empty(result.OwnerCompanionAfterImages);
     }
 
@@ -44,7 +44,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = before.DeepClone().AsObject();
         current["activeVehicleChange"] = "vehicle_cart";
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = before.DeepClone().AsObject();
         current["activeVehicleId"] = "vehicle_cart";
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_client_owned");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_client_owned");
         Assert.Empty(result.OwnerCompanionAfterImages);
     }
 
@@ -103,7 +103,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = before.DeepClone().AsObject();
         current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_cart", "Parked"));
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = before.DeepClone().AsObject();
         current["activeVehicleChange"] = null;
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
     }
 
     [Fact]
@@ -157,7 +157,7 @@ public sealed class MortalVehicleActiveSelectionTests
         current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_new", "Active"));
         current["activeVehicleChange"] = "vehicle_new";
         var result = Compose(before, current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public sealed class MortalVehicleActiveSelectionTests
         var current = Root();
         current["UpdateVehicles"] = new JsonArray(created);
         var result = Compose(Root(), current);
-        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
         Assert.Empty(result.OwnerCompanionAfterImages);
     }
 
@@ -196,7 +196,7 @@ public sealed class MortalVehicleActiveSelectionTests
         if (explicitCommand) current["activeVehicleChange"] = "vehicle_cart";
         var result = Compose(before, current);
         if (explicitCommand)
-            Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+            Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
         else
         {
             Assert.Empty(result.Issues);
@@ -224,7 +224,7 @@ public sealed class MortalVehicleActiveSelectionTests
         if (scenario == "selected")
             Assert.Empty(result.Issues);
         else
-            Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+            Assert.Contains(result.Issues, issue => issue.Code == "resource_owner_vehicle_active_selection_invalid");
     }
 
     [Theory]
