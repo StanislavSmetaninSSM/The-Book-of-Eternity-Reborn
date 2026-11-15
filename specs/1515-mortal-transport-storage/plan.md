@@ -8,7 +8,58 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
-## Current checkpoint — vehicle cargo birth verified, 2026-11-15
+## Current checkpoint — birth cargo capacity verified, 2026-11-15
+
+Verified source `0ce1cdad516d1735cc03088d5d06e5f6020f2746`:
+- Official `mortal-cargo-capacity-policy,mortal-vehicle-birth-contract`:
+  **62/62 PASS**, 2 complete descriptors, 12.677s.
+- Official `mortal-vehicle-birth-cargo,mortal-vehicle-cargo-capacity,mortal-vehicle-cargo-guidance`:
+  **16/16 PASS**, 3 complete descriptors, 35.921s. Overlapping selectors are
+  assigned once by the official runner, with combined provenance retained.
+- Both runs: no skips, duplicate test IDs or timeout; owned cleanup complete.
+- Serial unit/integration builds:97.32s/62.66s,0 errors,156/126 warnings.
+- Independent GPT-6.1 Sol XHigh review accepts this bounded source with no
+  remaining Critical/Important finding; all selected verification conditions pass.
+
+The existing projected item graph supplies exact birth cargo identities and
+containment. Direct stacks consume slots; external whole-stack footprints consume
+volume once. Single noncontainers use their physical volume; containers and
+multi-unit stacks require explicit recoverable measuredConfiguration. The client
+compares complete semantic/descendant facts, resolves frozen creation references,
+and emits detached historical evidence in the same final vehicle companion.
+Raw evidence injection and later mutation fail; later live cargo changes are not
+compared to historical geometry. Arithmetic is exact over invariant finite-double
+roundtrip decimal representations, not raw JSON tokens or epsilon comparisons.
+
+Causal history below preserves initial3capacity refusals and2history refusals;
+a separate new positive fixture expected a companion with no update command and
+was corrected by requesting a normal name update. No production failure or speedup
+is inferred from that fixture mistake. Real accepted-turn measured-stack creation,
+canonical item validation, indexed refusals, freshness and reached history-write
+cut rollback all pass. Actual daemon delivery carries the new full worked example.
+No claim of authorized later consumption follows from the cheap composition test.
+
+Optimization: one projected catalog construction, no new source reads/cache or
+inventory writer. Per-vehicle filtering/indexing is still O(vehicles × items);
+review notes optional scaling only, with no measured regression/speedup claim.
+Source/lease/before-image/publication checks stay fresh. Existing operation DATA
+is reused, never authority. Historical records are not live access/capacity caches.
+
+Raw evidence remains outside Git: unit run ends
+`20261115-073035-648-260-fef74cf02393438a91fa57817231b711-categories`, combined run
+`20261115-073152-738-550-0dd6f6a22b374a6c8c642859243bd69e-categories`.
+Fresh GitHub clone `/workspace/shared/1515-capacity-restore` restores exact0ce1cdad,
+clean checkout and new helper; `git fsck --no-dangling` completed with exit0.
+This is source restoration, not a build in that clone.
+
+Next bounded work: strict birth Faction/NPC/location references, including a
+specified same-turn location selector and complete existing vehicle shape at the
+real admission boundary. Reuse accepted location/actor/faction resolvers rather
+than add a registry or access subsystem. Full vehicle creation evidence, effective
+storage/access, consumer interoperability and whole-change review remain open.
+No hosted CI, main merge or issue closure; #1515 is not complete.
+
+## Previous checkpoint — vehicle cargo birth verified, 2026-11-15
 
 Runtime source `9b860a08937c41c20827410173245074384f0cdb` passes 39/39 integration
 cases; follow-up `239f1058daefad8ae8f4a8774f749afabecc916c` passes 55/55 unit and
