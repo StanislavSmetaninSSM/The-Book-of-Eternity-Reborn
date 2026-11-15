@@ -157,6 +157,8 @@ public sealed class MortalVehicleBirthContractTests
             Assert.Contains("exact accepted Mortal faction", references, StringComparison.Ordinal);
             Assert.Contains("complete Mortal NPC materialization evidence", references, StringComparison.Ordinal);
             Assert.Contains("same-turn initialId", references, StringComparison.Ordinal);
+            Assert.Contains("exact accepted Mortal locationId", references, StringComparison.Ordinal);
+            Assert.Contains("new location initialId is rewritten by the client", references, StringComparison.Ordinal);
         }
         var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
         Assert.Contains("mortal_vehicle_birth_cargo_example", daemon, StringComparison.Ordinal);
@@ -170,6 +172,8 @@ public sealed class MortalVehicleBirthContractTests
         Assert.Contains("owner = {\"ownerType\":\"Faction\",\"ownerId\":\"faction_caravan\",\"ownerName\":\"Caravan Guild\"}", example, StringComparison.Ordinal);
         Assert.Contains("controller = {\"actorType\":\"npc\",\"actorId\":\"npc_driver\"}", example, StringComparison.Ordinal);
         Assert.Contains("independently", example, StringComparison.Ordinal);
+        Assert.Contains("currentLocationId = \"locref_camp\"", example, StringComparison.Ordinal);
+        Assert.Contains("Remove activeVehicleChange", example, StringComparison.Ordinal);
         var root = JsonNode.Parse(example[example.IndexOf("\n{", StringComparison.Ordinal)..])!.AsObject();
         var vehicle = Assert.Single(root["UpdateVehicles"]!.AsArray())!.AsObject();
         var item = Assert.Single(vehicle["inventory"]!.AsArray())!.AsObject();

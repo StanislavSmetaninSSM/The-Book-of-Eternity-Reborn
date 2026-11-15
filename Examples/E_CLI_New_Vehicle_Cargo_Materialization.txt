@@ -19,6 +19,15 @@ must be New Caravan Guild. If these are newly admitted actors/factions, their
 exact initialId bytes serve as the reference and remain their canonical identity;
 never invent a permanent reference to bypass their separate materialization.
 
+Worked parked-location substitution:
+Assume an independently admitted new Mortal location with initialId locref_camp.
+Remove activeVehicleChange, set availability = "Parked", and set
+currentLocationId = "locref_camp" in the new vehicle below. The client resolves
+that exact initialId to the accepted permanent locationId; the GM must not guess
+the allocated ID. For an existing location, use its exact canonical locationId.
+Active/Pocket births instead keep currentLocationId null. This substitution does
+not create a location, travel the player or alter its materialization receipt.
+
 The cargo authorityId equals its containing vehicleRef, new_cart. The client
 allocates the permanent vehicle ID before sealing the cargo receipt and binding
 its vehicle_inventory carrier. Do not supply permanent vehicle/item IDs, a receipt,

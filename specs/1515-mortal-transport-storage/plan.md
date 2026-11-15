@@ -8,6 +8,18 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Location runtime verification, 2026-11-15
+
+At7b3c9f28:16/16 pure PASS9.815s and55/55 integration PASS56.621s;
+1/3 descriptors complete, cleanup complete, no skips/duplicates/timeouts.
+Builds97.31s/61.64s,0errors. All eight real location cases now pass, including
+same-turn allocated IDs, canonical targets, empty/cargo refusal and map drift.
+No alias allocation or new location writer was introduced. Existing full cargo
+and active/resource publication coverage also passes. Independent final wiring
+review and delivered guidance verification are pending; do not claim full issue.
+The existing cargo example now includes an explicit parked/same-turn substitution;
+Rules10 and actual daemon template state the same identity/phase distinction.
+
 ## Location causal evidence and wiring WIP, 2026-11-15
 
 At6a2d67ab:1PASS/7FAIL21.126s,8 completed cases, cleanup complete,

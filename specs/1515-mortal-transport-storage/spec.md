@@ -103,3 +103,12 @@ materialization evidence, not unrelated actors. Existing identity bytes are reta
 for same-turn NPC/faction initialId after normalization. No registry or inferred actor
 is introduced. Birth reference observations remain fenced through common publication.
 This is separate from location resolution and effective access.
+
+
+### Exact location at vehicle birth
+A nonnull birth currentLocationId must resolve to one exact Mortal map location
+or the existing accepted same-turn location initialId mapping. Unlike NPC/Faction
+stable IDs, location initialIds become newly allocated permanent IDs. Resolve only
+the detached final vehicle companion; never mutate the raw prepared birth. Empty
+cargo is not an exemption from fresh location source fences. Existing post-birth
+vehicle updates and travel remain outside this binding change.
