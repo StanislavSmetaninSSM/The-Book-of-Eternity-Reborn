@@ -439,3 +439,11 @@ The spec now defines a recoverable measuredConfiguration v1, recommended by the
 bounded architectural consultation. No runtime measurement implementation exists
 yet. First causal tests will cover slot overflow, volume overflow and missing
 explicit multi-unit measurement at the existing actual admission boundary.
+
+Cargo restoration completed: the fresh clone of exact f5e460f1 is clean and
+`git fsck --no-dangling` exited 0. Source retrieval only; no build in that clone.
+
+Capacity WIP adds three actual admission refusal cases (slot overflow, physical
+volume overflow, and missing explicit multi-unit measurement). Production is
+unchanged; behavioral RED is expected but unrun. Each case proves item admission
+first, then checks the capacity diagnostic and six unchanged raw paths.

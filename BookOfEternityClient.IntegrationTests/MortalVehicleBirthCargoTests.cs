@@ -56,6 +56,37 @@ public sealed class MortalVehicleBirthCargoTests
         Assert.Equal(100m, health.Maximum);
     }
 
+    [Theory]
+    [InlineData("slots")]
+    [InlineData("volume")]
+    [InlineData("measurement")]
+    public async Task CargoCapacityAdmission_RejectsUnprovedBirthLoadWithoutMutation(string defect)
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        var root = CargoBirth("new_cart");
+        var vehicle = root["UpdateVehicles"]![0]!.AsObject();
+        var item = vehicle["inventory"]![0]!.AsObject();
+        if (defect == "slots") vehicle["capacity"] = 0;
+        else if (defect == "volume") vehicle["volume"] = 0;
+        else item["count"] = 2;
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, root);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var before = await context.CaptureExactBytesAsync(new[]
+        {
+            StorageTransportMoveService.VehiclesPath, MortalItemIdentityState.StatePath,
+            ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+        });
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+
+        Assert.Contains(issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "resource_owner_vehicle_cargo_capacity_invalid");
+        await context.AssertExactBytesAsync(before);
+    }
+
     [Fact]
     public async Task SameTurnVehicleCargo_ForeignSourceRefIsRejectedWithoutRawMutation()
     {

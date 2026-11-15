@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-cargo-capacity",
+      "responsibility": "#1515 first-birth vehicle load refuses slot/volume overflow and unmeasured multi-unit cargo through actual ordinary admission.",
+      "excludes": "Full measurement shape/graph, storage, post-birth movement and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalVehicleBirthCargoTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.CargoCapacityAdmission_RejectsUnprovedBirthLoadWithoutMutation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-cargo-guidance",
       "responsibility": "#1515 cargo route source guard, exact example manifest inventory, and actual full daemon template/example delivery through the existing context-pack test.",
       "excludes": "Provider dispatch, Windows PowerShell qualification, capacity/access and whole issue acceptance. Linux uses installed PowerShell 7.",
