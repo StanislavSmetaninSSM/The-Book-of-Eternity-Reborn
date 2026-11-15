@@ -80,10 +80,13 @@ public sealed class MortalVehicleActiveSelectionIntegrationTests(ITestOutputHelp
         };
         await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(context.FileSystem);
+        await context.WriteExactJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
             new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
         await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, RawCreation().ToJsonString());
+        var itemIssues = await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
         var issues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
         Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
         var paths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Distinct(StringComparer.Ordinal).ToArray();
