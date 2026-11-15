@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-vehicle-birth-allocation-interop",
+      "responsibility": "#1515 migrate ordinary Mortal vehicle birth fixtures used by the existing original allocation capture/replay paths; preserve those paths unchanged.",
+      "excludes": "No new spiritual combat behavior, broad afterlife suite or feature qualification.",
+      "changeHints": ["BookOfEternityClient/Services/MortalResourceOwnerComposer.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_AllocationInventoryIncludesOrdinaryVehicleCreation",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualCapture_ReplaysOwnedAllocationsThroughExchange"
+      ] }]
+    },
+    {
       "id": "mortal-vehicle-birth-admission",
       "responsibility": "#1515 full raw vehicle birth enters the actual MetaMiscStateFiles validator; required cargo/owner/controller/access fields.",
       "excludes": "Accepted publication, cargo graph and authority source resolution; no whole feature claim.",

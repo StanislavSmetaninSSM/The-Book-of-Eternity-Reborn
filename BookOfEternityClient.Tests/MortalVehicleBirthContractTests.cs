@@ -130,7 +130,7 @@ public sealed class MortalVehicleBirthContractTests
     [Fact]
     public void BirthGuidance_DeclaresLimitsAndExistingPlayerAuthority()
     {
-        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_10.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
         {
             var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
             Assert.Contains("Mortal vehicle birth requires capacity", text, StringComparison.Ordinal);

@@ -56,6 +56,15 @@ the observed result was 1 positive PASS / 6 causal missing-field FAIL, all empty
 access, complete receipt/cargo evidence and storage birth remain incomplete.
 No publication qualification or complete #1515 acceptance follows from this slice.
 
+Review caught the primary Block_10 vehicle schema still missing the six fields;
+it is corrected and included in the source guard. Two existing original-allocation
+integration leaves also needed the same Mortal fixture-only six-field migration;
+their production logic and assertions stay unchanged. A dedicated two-test category
+covers this shared-composer interoperability, not spiritual-combat feature work.
+The first GREEN unit build succeeded (97.86s, 0 errors, 156 warnings), but a Bash
+comma argument was passed as one category string and the runner refused before
+workloads. Correct PowerShell array invocation follows; this is not a test failure.
+
 ## Next bounded block: complete vehicle birth shape
 
 - [ ] Add typed causal RED tests against the existing owner composer for missing/invalid cargo limits, ownership/controller/access and unknown single-player IDs; add one valid positive fixture.
