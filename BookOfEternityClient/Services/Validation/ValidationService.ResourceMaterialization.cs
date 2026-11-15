@@ -440,6 +440,9 @@ public partial class ValidationService
         var currentVehicleBirthInput = currentMortalRoots.Vehicles;
         if (spiritualCapture is null && MortalVehicleBirthPreparation.HasBirthCommands(currentVehicleBirthInput))
         {
+            ValidateMortalVehicleBirthShape(previousMortalRoots.Vehicles, currentVehicleBirthInput!, issues);
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                return issues;
             var preparation = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(
                 _fs, writeLease, manifest.SessionId, manifest.ManifestPayloadHash,
                 previousMortalRoots.Vehicles, currentVehicleBirthInput);

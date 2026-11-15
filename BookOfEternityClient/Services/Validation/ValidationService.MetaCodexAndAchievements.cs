@@ -1198,14 +1198,15 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateVehicleArray(JsonElement value, string context, List<ValidationIssue> issues, bool requireCanonicalStoredShape)
+    private void ValidateVehicleArray(JsonElement value, string context, List<ValidationIssue> issues, bool requireCanonicalStoredShape,
+        Dictionary<string, VehicleStateSnapshot>? preTurnVehicleStates = null)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)
             return;
 
         var simulatedVehicleStates = !requireCanonicalStoredShape
-            ? TryResolvePreTurnVehicleStateMapSync() ?? new Dictionary<string, VehicleStateSnapshot>(StringComparer.OrdinalIgnoreCase)
+            ? preTurnVehicleStates ?? TryResolvePreTurnVehicleStateMapSync() ?? new Dictionary<string, VehicleStateSnapshot>(StringComparer.OrdinalIgnoreCase)
             : null;
         var index = 0;
         foreach (var item in value.EnumerateArray())

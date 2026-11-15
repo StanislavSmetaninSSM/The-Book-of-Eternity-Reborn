@@ -22,9 +22,13 @@ before publication. Existing MetaMisc validation remains after canonical publica
 and before final acceptance; do not describe this as successful malformed turns.
 Pass the raw whole UpdateVehicles array and already-read original vehicle state
 to preserve partial-update simulation and indexes without another snapshot read.
-Six new real boundary cases are UNRUN: four malformed full births and a valid/
-invalid birth after a genuine published existing vehicle's partial update.
-No production shape behavior changed yet.
+At29d123f3 six real boundary cases yield1PASS/5causalFAIL18.231s: each
+required shape diagnostic is absent; the positive partial-update/birth control passes.
+Build120.38s/0errors; cleanup complete, no skips/duplicates/timeouts. WIP reuses
+ValidateVehicleArray with an explicit operation-local state map derived from the
+already-read original scalar fields only, avoiding cargo reserialization and extra
+signed-original reads. Raw whole-array coordinates and existing item phase remain.
+Post-publication MetaMisc remains independent; no speedup claim. GREEN/review pending.
 
 ## In progress — exact actor references, 2026-11-15
 
