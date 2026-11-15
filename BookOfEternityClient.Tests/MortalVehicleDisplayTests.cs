@@ -68,6 +68,30 @@ public sealed class MortalVehicleDisplayTests : IDisposable
     }
 
     [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" vehicle_alias")]
+    public async Task Overview_ExcludesVehicleWithoutExactCanonicalIdentity(string? vehicleId)
+    {
+        var root = CanonicalRoot();
+        var legacy = Vehicle("vehicle_alias", "PRIVATE_ID_ALIAS_VEHICLE");
+        if (vehicleId is null)
+            legacy.Remove("vehicleId");
+        else
+            legacy["vehicleId"] = vehicleId;
+        legacy["id"] = "vehicle_alias";
+        root["vehicles"]!.AsArray().Add(legacy);
+        await WriteVehiclesAsync(root);
+
+        var result = await BuildAsync("/transport");
+
+        Assert.Equal("Каноническая телега", Assert.Single(Dossiers(result.Blocks).Where(d => d.EntityType == "transport-summary")).Title);
+        Assert.Equal("/transport vehicle vehicle_canonical", Assert.Single(result.Actions).Command);
+        Assert.Equal("1", Assert.Single(Facts(result.Blocks).Where(f => f.Key == "Транспорта")).Value);
+        Assert.DoesNotContain("PRIVATE_ID_ALIAS_VEHICLE", Payload(result), StringComparison.Ordinal);
+    }
+
+    [Theory]
     [InlineData("vehicle_canonical", true, "Active")]
     [InlineData("VEHICLE_CANONICAL", false, "Parked")]
     [InlineData(null, false, "Parked")]

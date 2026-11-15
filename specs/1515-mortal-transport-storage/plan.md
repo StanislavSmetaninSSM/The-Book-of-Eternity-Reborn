@@ -8,6 +8,18 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Vehicle display causal RED established, 2026-11-15
+
+Saved 65b570326379300588012a83db3efb3e1339943a. Fresh integration build passed
+0 errors, 123 warnings, 58.99s; unit binaries remain current from the unchanged
+7559f84e test source. Separate official category runs completed:
+- mortal-vehicle-canonical-display: 12 cases, 3 PASS and 9 causal FAIL, 12.551s.
+- mortal-vehicle-canonical-cli-display: 6 cases, 1 PASS and 5 causal FAIL, 9.941s.
+All expected positive controls passed. Failures demonstrate pending/root-array
+cards, missing exact selection and legacy availability/location fallback. Both
+runs completed owned cleanup without skips, duplicates or timeouts. Production
+correction is now released; no GREEN claim yet.
+
 ## Vehicle display fixture correction, test-only WIP 2026-11-15
 
 Source 7559f84e built with 0 errors (unit 28.34s, integration 59.71s). The combined

@@ -46,6 +46,33 @@ public sealed partial class ExplorerModeCommandTests
         Assert.Contains("Транспорта нет", ExtractRenderedText(), StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" vehicle_alias")]
+    public async Task TryProcessCommand_VehicleDisplay_ExcludesVehicleWithoutExactCanonicalIdentity(string? vehicleId)
+    {
+        await SeedMortalStateAsync();
+        var root = VehicleDisplayRoot();
+        var legacy = VehicleDisplayVehicle("PRIVATE_ID_ALIAS_VEHICLE");
+        if (vehicleId is null)
+            legacy.Remove("vehicleId");
+        else
+            legacy["vehicleId"] = vehicleId;
+        legacy["id"] = "vehicle_alias";
+        root["vehicles"]!.AsArray().Add(legacy);
+        await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
+
+        await ExecuteVehicleDisplayCommandAsync();
+
+        AssertNoHiddenExplorerErrors("vehicle_display_identity");
+        var choices = _console.SelectionChoicesHistory.First(p => p.Title.Contains("Транспорт", StringComparison.Ordinal)).Choices;
+        Assert.Equal(2, choices.Count);
+        Assert.Contains(choices, c => c.Contains("Каноническая телега", StringComparison.Ordinal));
+        Assert.DoesNotContain(choices, c => c.Contains("PRIVATE_ID_ALIAS_VEHICLE", StringComparison.Ordinal));
+        Assert.Contains("Припаркован", ExtractRenderedText(), StringComparison.Ordinal);
+    }
+
     [Fact]
     public async Task TryProcessCommand_VehicleDisplay_IgnoresPendingAndHistoricalVehicles()
     {

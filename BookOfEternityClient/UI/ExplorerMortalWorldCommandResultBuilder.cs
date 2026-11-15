@@ -6310,16 +6310,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Specs: []);
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var vehiclesRead = await ReadJson(fs, "game_state/misc/vehicles.json");
-        var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
-        var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var activeVehicleId = GetNodeString(vehiclesRead.Node, "activeVehicleId");
         var blocks = new List<UiBlock>();
         var entries = EnumerateVehicleObjects(vehiclesRead.Node)
-            .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle))
+            .Select((vehicle, index) => CreateVehicleSnapshot(index + 1, vehicle, activeVehicleId))
             .ToList();
         entries = await AttachVehicleResourceRowsAsync(fs, entries);
         var request = ParseReferenceDetailRequest(ExtractCommandRemainder(command), definition);
         if (request.Kind != ReferenceDetailKind.Overview)
-            return BuildTransportDetail(command, commandToken, definition, [vehiclesRead, mapRead, currentRead], entries, request);
+            return BuildTransportDetail(command, commandToken, definition, [vehiclesRead], entries, request);
 
         var sections = new List<UiEntityDossierSection>();
         if (entries.Count > 0)
@@ -6337,16 +6336,15 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         var summaryItems = new List<UiKeyValueItem>();
-        AddTransportSummaryItem(summaryItems, vehiclesRead, "vehicles|UpdateVehicles", "Транспорта");
-        AddTransportSummaryItem(summaryItems, mapRead, "transportRoutes", "Маршрутов");
-        AddTransportSummaryItem(summaryItems, currentRead, "availableTransport", "Доступного транспорта");
+        if (vehiclesRead.Node is JsonObject vehiclesRoot && vehiclesRoot["vehicles"] is JsonArray)
+            summaryItems.Add(new UiKeyValueItem { Key = "Транспорта", Value = entries.Count.ToString(CultureInfo.InvariantCulture) });
         if (summaryItems.Count > 0)
         {
             sections.Insert(0, new UiEntityDossierSection
             {
                 Id = "summary",
                 Title = "Сводка транспорта",
-                Summary = "Короткая сводка по транспорту и маршрутам.",
+                Summary = "Короткая сводка по транспорту.",
                 Icon = "transport",
                 Collapsible = true,
                 InitiallyExpanded = true,
@@ -6383,7 +6381,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Message(UiNotificationSeverity.Info, title, "Транспорт пока не обнаружен."));
         }
 
-        AddReferenceReadWarnings(blocks, title, [vehiclesRead, mapRead, currentRead]);
+        AddReferenceReadWarnings(blocks, title, [vehiclesRead]);
         return Completed(command, blocks, BuildReferenceDetailActions(commandToken, definition, entries));
     }
 
@@ -6395,11 +6393,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var facts = new List<UiKeyValueItem>();
         AddReferenceDetailItem(facts, "Тип", type);
         AddReferenceDetailItem(facts, "Состояние", DescribeVehicleAvailability(vehicle));
-        AddReferenceDetailItem(facts, "Местоположение", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
-        AddReferenceDetailItem(facts, "Маршрут", FirstReferenceNodeString(vehicle, "route", "currentRoute"));
+        AddReferenceDetailItem(facts, "Выбран", entry.IsSelectedVehicle ? "да" : "нет");
+        AddReferenceDetailItem(facts, "Местоположение", GetNodeString(vehicle, "currentLocationId"));
+        AddReferenceDetailItem(facts, "Маршрут", GetNodeString(vehicle, "route"));
         AddReferenceDetailItem(facts, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
         AddProjectedResourceFact(facts, entry.Resources, "health", "Состояние корпуса");
-        AddReferenceDetailItem(facts, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
+        AddReferenceDetailItem(facts, "Описание", GetNodeString(vehicle, "description"));
 
         return new UiEntityDossierBlock
         {
@@ -6407,7 +6406,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Title = title,
             Subtitle = FirstNonEmpty(type, "Транспорт"),
             Summary = FirstNonEmpty(
-                FirstReferenceNodeString(vehicle, "description", "summary", "notes"),
+                GetNodeString(vehicle, "description"),
                 DescribeVehicleAvailability(vehicle),
                 "Подробности доступны в карточке транспорта."),
             Badges =
@@ -6472,11 +6471,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
         ]);
     }
 
-    private static ReferenceEntrySnapshot CreateVehicleSnapshot(int index, JsonObject vehicle)
+    private static ReferenceEntrySnapshot CreateVehicleSnapshot(int index, JsonObject vehicle, string? activeVehicleId)
     {
-        var title = FirstNonEmpty(GetNodeString(vehicle, "name"), GetNodeString(vehicle, "vehicleName"), "Безымянный транспорт");
+        var title = FirstNonEmpty(GetNodeString(vehicle, "name"), "Безымянный транспорт");
         var selector = NormalizeCombatSelector(FirstNonEmpty(
-            FirstReferenceNodeString(vehicle, "vehicleId", "id", "key"),
+            GetNodeString(vehicle, "vehicleId"),
             NormalizeReferenceSelector(title),
             index.ToString()));
 
@@ -6486,7 +6485,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             Title: title,
             Section: "Транспорт",
             Summary: DescribeVehicleNode(vehicle),
-            Node: vehicle);
+            Node: vehicle,
+            IsSelectedVehicle: MortalVehicleDisplay.IsSelected(activeVehicleId, GetNodeString(vehicle, "vehicleId")));
     }
 
     private static async Task<List<ReferenceEntrySnapshot>> AttachVehicleResourceRowsAsync(
@@ -6497,7 +6497,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             .Select(entry => new
             {
                 Entry = entry,
-                OwnerId = FirstReferenceNodeString(entry.Node, "vehicleId", "id", "key"),
+                OwnerId = GetNodeString(entry.Node, "vehicleId") ?? string.Empty,
                 ViewSelector = $"транспорт №{entry.Index}"
             })
             .Where(static candidate => !string.IsNullOrWhiteSpace(candidate.OwnerId))
@@ -6559,13 +6559,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var items = new List<UiKeyValueItem>
         {
             new() { Key = "Тип", Value = DescribeVehicleType(vehicle) },
-            new() { Key = "Доступность", Value = EmptyFallback(DescribeVehicleAvailability(vehicle)) }
+            new() { Key = "Доступность", Value = DescribeVehicleAvailability(vehicle) },
+            new() { Key = "Выбран", Value = entry.IsSelectedVehicle ? "да" : "нет" }
         };
 
-        AddReferenceDetailItem(items, "Где", FirstReferenceNodeString(vehicle, "currentLocation", "currentLocationId", "locationName"));
+        AddReferenceDetailItem(items, "Где", GetNodeString(vehicle, "currentLocationId"));
         AddReferenceDetailItem(items, "Вместимость", FirstReferenceNodeString(vehicle, "capacity"));
         AddProjectedResourceFact(items, entry.Resources, "health", "Состояние корпуса");
-        AddReferenceDetailItem(items, "Описание", FirstReferenceNodeString(vehicle, "description", "summary", "notes"));
+        AddReferenceDetailItem(items, "Описание", GetNodeString(vehicle, "description"));
 
         var blocks = new List<UiBlock>
         {
@@ -6621,7 +6622,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             EntityType = "transport-detail",
             Title = $"Транспорт: {entry.Title}",
             Subtitle = DescribeVehicleType(vehicle),
-            Summary = FirstNonEmpty(DescribeVehicleNode(vehicle), FirstReferenceNodeString(vehicle, "description", "summary", "notes")),
+            Summary = FirstNonEmpty(DescribeVehicleNode(vehicle), GetNodeString(vehicle, "description")),
             Badges =
             [
                 new UiEntityBadge
@@ -6649,24 +6650,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static IEnumerable<JsonObject> EnumerateVehicleObjects(JsonNode? node)
     {
-        if (node is JsonArray array)
-        {
-            foreach (var vehicle in array.OfType<JsonObject>())
-                yield return vehicle;
-            yield break;
-        }
-
-        if (node is not JsonObject root)
+        if (node is not JsonObject root || root["vehicles"] is not JsonArray vehicles)
             yield break;
 
-        foreach (var propertyName in new[] { "vehicles", "UpdateVehicles" })
-        {
-            if (root[propertyName] is not JsonArray vehicles)
-                continue;
-
-            foreach (var vehicle in vehicles.OfType<JsonObject>())
-                yield return vehicle;
-        }
+        foreach (var vehicle in vehicles.OfType<JsonObject>())
+            yield return vehicle;
     }
 
     private static string DescribeVehicleNode(JsonObject vehicle)
@@ -6674,7 +6662,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         var parts = new[]
         {
             DescribeVehicleAvailability(vehicle),
-            FirstNonEmpty(GetNodeString(vehicle, "currentLocationId"), GetNodeString(vehicle, "currentLocation")),
+            GetNodeString(vehicle, "currentLocationId") ?? string.Empty,
             GetNodeString(vehicle, "description") ?? string.Empty,
             GetNodeString(vehicle, "capacity") ?? string.Empty
         };
@@ -6684,7 +6672,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string DescribeVehicleType(JsonObject vehicle)
     {
-        var type = FirstNonEmpty(GetNodeString(vehicle, "type"), GetNodeString(vehicle, "vehicleType"));
+        var type = GetNodeString(vehicle, "type") ?? string.Empty;
         return type.Trim().ToLowerInvariant() switch
         {
             "" => "не указано",
@@ -6695,38 +6683,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
-    private static string DescribeVehicleAvailability(JsonObject vehicle)
-    {
-        var availability = FirstNonEmpty(GetNodeString(vehicle, "availability"), GetNodeString(vehicle, "status"));
-        if (!string.IsNullOrWhiteSpace(availability))
-        {
-            return availability.Trim().ToLowerInvariant() switch
-            {
-                "active" => "Активен (оседлан/управляется)",
-                "parked" => "Припаркован",
-                "pocket" => "В кармане (призываемый)",
-                _ => availability.Trim()
-            };
-        }
-
-        if (TryGetNodeBool(vehicle, "isActive", out var isActive))
-            return isActive ? "Активен" : "Неактивен";
-
-        return string.Empty;
-    }
-
-    private static void AddTransportSummaryItem(
-        List<UiKeyValueItem> items,
-        JsonReadResult read,
-        string propertyName,
-        string label)
-    {
-        var status = DescribeSpec(read, propertyName);
-        if (status == "отсутствует")
-            return;
-
-        items.Add(new UiKeyValueItem { Key = label, Value = status });
-    }
+    private static string DescribeVehicleAvailability(JsonObject vehicle) =>
+        MortalVehicleDisplay.DescribeAvailability(GetNodeString(vehicle, "availability"));
 
     private static async Task<ExplorerCommandResult> BuildInteractions(string command, FileSystemManager fs)
     {
@@ -11551,7 +11509,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
         string Summary,
         JsonObject Node,
         IReadOnlyList<ResourceProjectionRow>? Resources = null,
-        JsonObject? SkillMastery = null);
+        JsonObject? SkillMastery = null,
+        bool IsSelectedVehicle = false);
 
     private sealed record ReferenceDetailRequest(
         ReferenceDetailKind Kind,

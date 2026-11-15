@@ -30,7 +30,7 @@
     },
     {
       "id": "mortal-vehicle-canonical-cli-display",
-      "responsibility": "#1515 FR8 actual CLI transport command canonical selection, availability and pending/legacy exclusion.",
+      "responsibility": "#1515 FR8 actual CLI transport command canonical selection, availability and pending/legacy exclusion. Existing shared web translation and real inventory move remain intact.",
       "excludes": "Vehicle birth admission, resource authority, movement policy and UI redesign.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs",
@@ -50,7 +50,9 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_VehicleDisplay_*"
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_VehicleDisplay_*",
+            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells",
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_TransportInventoryMove_MovesItemIntoVehicle"
           ]
         }
       ]
@@ -37052,7 +37054,6 @@
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Npcs_UsesSharedRelationshipLabelsInChoices",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Quests_PlannedRewardsAndStructuredLogHideItemAuthorityRecursively",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_StorageAccess_RendersWithoutHiddenErrors",
-            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_TransportInventoryMove_MovesItemIntoVehicle",
             "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_Weather_RendersWithoutHiddenErrors"
           ]
         },
@@ -37520,7 +37521,6 @@
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Status_LocalizesWorldTimeForPlayer",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Status_UsesPlayerFacingRealmLabel",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Story_RendersReadableEntriesWithoutStoryFileNames",
-            "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Transport_TranslatesCanonicalTypeAndAvailabilityInTableCells",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_UnknownSubcommand_ReturnsRussianParserError",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_Validate_RendersIssueDossierWithoutTechnicalPathsOrCodes",
             "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests.ExecuteAsync_WhereAmI_FailsClosedWhenCurrentProjectionDiffersFromMap",

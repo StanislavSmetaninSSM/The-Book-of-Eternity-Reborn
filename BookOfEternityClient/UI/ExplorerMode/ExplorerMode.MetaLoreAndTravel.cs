@@ -606,28 +606,21 @@ public partial class ExplorerMode
     private async Task ShowTransport()
     {
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/misc/vehicles.json");
-        if (doc == null) { ShowEmptyPanel(_loc.T("transport"), "Транспорта нет"); return; }
+        if (doc == null || doc.RootElement.ValueKind != JsonValueKind.Object)
+        { ShowEmptyPanel(_loc.T("transport"), "Транспорта нет"); return; }
 
+        var activeVehicleId = GetStr(doc.RootElement, "activeVehicleId", "");
         var vehicles = new List<(string name, string type, bool active, string id, JsonElement el)>();
         EnumerateArray(doc.RootElement, "vehicles", item =>
         {
+            if (item.ValueKind != JsonValueKind.Object)
+                return;
             var name = GetStr(item, "name", "???");
             var vtype = GetStr(item, "type", "");
-            var active = item.TryGetProperty("isActive", out var ia) && ia.ValueKind == JsonValueKind.True;
-            var id = GetStr(item, "vehicleId", GetStr(item, "id", ""));
+            var id = GetStr(item, "vehicleId", "");
+            var active = MortalVehicleDisplay.IsSelected(activeVehicleId, id);
             vehicles.Add((name, vtype, active, id, item));
         });
-        // Also try root-level array
-        if (vehicles.Count == 0)
-            EnumerateJsonItems(doc.RootElement, item =>
-            {
-                vehicles.Add((
-                    GetStr(item, "name", "???"),
-                    GetStr(item, "type", ""),
-                    false,
-                    GetStr(item, "vehicleId", GetStr(item, "id", "")),
-                    item));
-            });
 
         if (vehicles.Count == 0)
         {
@@ -696,14 +689,13 @@ public partial class ExplorerMode
             }
             // Availability (translated)
             var availability = GetStr(v.el, "availability", "");
-            var availLabel = availability.ToLower() switch
+            var availabilityLabel = MortalVehicleDisplay.DescribeAvailability(availability);
+            var availLabel = availability.Trim().ToLowerInvariant() switch
             {
-                "active" => "[green]Активен (оседлан/управляется)[/]",
-                "parked" => "[yellow]Припаркован[/]",
-                "pocket" => "[cyan]В кармане (призываемый)[/]",
-                _ when v.active => "[green]Активен[/]",
-                _ when !string.IsNullOrEmpty(availability) => Markup.Escape(availability),
-                _ => "[dim]Неактивен[/]"
+                "active" => $"[green]{Markup.Escape(availabilityLabel)}[/]",
+                "parked" => $"[yellow]{Markup.Escape(availabilityLabel)}[/]",
+                "pocket" => $"[cyan]{Markup.Escape(availabilityLabel)}[/]",
+                _ => $"[dim]{Markup.Escape(availabilityLabel)}[/]"
             };
             lines.Add($"  Статус: {availLabel}");
 
@@ -758,7 +750,7 @@ public partial class ExplorerMode
             if (!string.IsNullOrEmpty(cap))
                 lines.Add($"  📦 Вместимость: [white]{Markup.Escape(cap)}[/]");
 
-            var curLoc = GetStr(v.el, "currentLocationId", GetStr(v.el, "currentLocation", ""));
+            var curLoc = GetStr(v.el, "currentLocationId", "");
             if (!string.IsNullOrEmpty(curLoc))
                 lines.Add($"  📍 Местоположение: [white]{Markup.Escape(curLoc)}[/]");
 
@@ -865,7 +857,8 @@ public partial class ExplorerMode
             var known = new HashSet<string> { "name", "type", "isActive", "description", "speed", "speedBonus",
                 "capacity", "currentHealth", "maxHealth", "health", "specialAbilities", "id", "image_prompt",
                 "availability", "isSentient", "currentLocationId", "currentLocation", "resistances",
-                "actions", "inventory", "vehicleId", "actionName" };
+                "actions", "inventory", "vehicleId", "actionName", "status", "vehicleName",
+                "vehicleType", "locationName", "summary", "notes", "key" };
             foreach (var prop in v.el.EnumerateObject())
             {
                 if (known.Contains(prop.Name)) continue;
