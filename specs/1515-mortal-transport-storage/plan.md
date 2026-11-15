@@ -18,6 +18,9 @@ algorithm. Exact historical cargo identity/configuration/count/source and eviden
 must agree, without consulting later live cargo or current actor/location state.
 No ResourceAgreement algorithm change, new cache, writer or archive. The matching
 58-case policy and9actual-publication controls need fresh GREEN; source is UNRUN.
+Unit build passed93.72s; integration51.33s stopped on a test-only JsonNode to
+JsonObject argument mismatch in the new retry regression. Fixed with AsObject;
+this is not behavioral RED and no category ran from that failed sequence.
 
 ## Downstream retry consumer finding and causal tests, WIP 2026-11-15
 

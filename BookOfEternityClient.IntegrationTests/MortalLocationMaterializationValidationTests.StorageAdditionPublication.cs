@@ -131,7 +131,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         var obligations = MortalLocationRepairRetryPolicy.Capture(packets);
         Assert.Equal(count, obligations.Count);
         foreach (var op in operations.OfType<JsonObject>()) op["storage"]!["name"] = "Corrected";
-        Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, raw));
+        Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, raw.AsObject()));
         await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, raw);
         Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(),
             issue => issue.Severity == IssueSeverity.Error);
