@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-storage-current-normalization-control",
-      "responsibility": "#1515 affected current-scene location metadata normalization control; no incomplete cargo publication bypass.",
+      "responsibility": "#1515 affected current-scene metadata normalization and existing-destination storage parking/hydration; no incomplete cargo publication bypass.",
       "excludes": "Whole canonical normalization and offscreen storage births.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.MortalLocations.cs"
@@ -20,7 +20,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_CurrentCreationWritesCanonicalMapProjectionReceiptAndIndex"
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_CurrentCreationWritesCanonicalMapProjectionReceiptAndIndex",
+            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ChangedLocationAtomicallyParksSourceAndHydratesTargetStorageItems"
           ]
         }
       ]
@@ -38852,7 +38853,6 @@
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_NarrowLocationUpdateRejectsNestedClientOwnedCustomStateFields",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_SameLocationOperationalRefreshDoesNotRequireTraversalLink",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_CanonicalOffscreenCoordinateMustResolveOutsideCurrentLocation",
-            "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ChangedLocationAtomicallyParksSourceAndHydratesTargetStorageItems",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ChangedLocationPublishesOnePhysicalOccurrenceAndPreservesIndexCarrier",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ExistingMovementPayloadCannotEchoClientOwnedContents",
             "BookOfEternityClient.Tests.MortalLocationMaterializationValidationTests.Lifecycle_StorageItems_ExistingMovementPayloadCannotEchoStorageMetadata",

@@ -68,15 +68,18 @@ internal static partial class MortalLocationStorageBirthEvidence
         return rebuilt.IsValid && MortalItemMaterializationContract.ImmutableEvidenceEquals(rebuilt.Evidence!, captured)
             ? Array.Empty<ValidationIssue>() : Invalid();
 
-        void Capture(JsonObject basis, string id, int count, string materializationId, IReadOnlyList<string> parents)
+        void Capture(JsonObject basis, string id, int count, string? materializationId, IReadOnlyList<string> parents)
         {
             var item = basis["item"]!.DeepClone().AsObject();
             item["itemId"] = id; item["count"] = count;
             item["contentsPath"] = parents.Count == 0 ? null : new JsonArray(parents.Select(p => (JsonNode)JsonValue.Create(p)!).ToArray());
-            item["materialization"] = new JsonObject { ["materializationId"] = materializationId };
+            // Only direct rows capture provenance. Descendants retain semantic/identity
+            // DATA, not invented envelopes that collide or pretend to be live authority.
+            if (materializationId is not null)
+                item["materialization"] = new JsonObject { ["materializationId"] = materializationId };
             items.Add(item);
             foreach (var child in basis["contents"]!.AsArray().OfType<JsonObject>())
-                Capture(child, Text(child["itemId"])!, child["count"]!.GetValue<int>(), "historical_nested", parents.Append(id).ToArray());
+                Capture(child, Text(child["itemId"])!, child["count"]!.GetValue<int>(), null, parents.Append(id).ToArray());
         }
 
         bool Observe(string? id) => Exact(id) && ids.Add(id!) && aliases.Add(ResourceMaterializationContract.BuildConfusableKey(id!));

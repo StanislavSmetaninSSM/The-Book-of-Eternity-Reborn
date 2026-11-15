@@ -5,7 +5,8 @@
       "category": "mortal-storage-current-normalization-control",
       "reason": "Independent review identified an existing populated location test calling the metadata-only normalizer without required accepted item/source binding.",
       "contracts": [
-        "Preserve map/current/receipt/index assertions without bypassing finalized cargo admission."
+        "Preserve map/current/receipt/index assertions without bypassing finalized cargo admission.",
+        "Existing destination hydration and source parking remain unchanged by newborn-scene exception."
       ]
     },
     {

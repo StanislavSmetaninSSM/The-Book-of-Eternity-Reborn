@@ -35,32 +35,11 @@ public sealed partial class CanonicalStateNormalizerTests
     [Fact]
     public async Task MortalLocations_CurrentCreationWritesCanonicalMapProjectionReceiptAndIndex()
     {
-        await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
-        var emptyMap = EmptyMortalWorldMap();
-        var emptyIndex = MortalLocationIdentityState.CreateEmptyRoot();
-        var backups = await WriteMortalLocationBaselineAsync(context, emptyMap, null, emptyIndex);
-        await WriteAcceptedTurnAsync(context);
-        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, emptyMap);
-        await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, emptyIndex);
-
-        var raw = MortalLocationTestFixture.CreateRawLocation("current_scene_creation");
-        var rawContents = new JsonArray(
-            new JsonObject
-            {
-                ["creationRef"] = "itemref_storage_marker",
-                ["marker"] = "RAW_STORAGE_CONTENT"
-            });
-        raw["locationStorages"] = new JsonArray(
-            MortalLocationTestFixture.CreateStorageMetadata(
-                "storage_black_ford_chest",
-                "Сундук у брода",
-                hasFullAccess: true,
-                contents: rawContents));
-        raw["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
-        {
-            ["disposition"] = "populated",
-            ["reason"] = null
-        };
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        var rawItem = MortalItemTestFixture.CreateRawRoot("storage_placement", "location_storage");
+        await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(rawItem);
+        var raw = (await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath))!
+            ["currentLocationData"]!.DeepClone().AsObject();
         raw["currentWeather"] = new JsonObject
         {
             ["summary"] = "Холодная морось",
@@ -72,10 +51,20 @@ public sealed partial class CanonicalStateNormalizerTests
             MortalLocationMaterializationContract.CurrentLocationPath,
             new JsonObject { ["currentLocationData"] = raw });
 
-        await using var writeLease = await context.FileSystem
-            .AcquireCanonicalWriteLeaseAsync();
-        await context.Normalizer.BindTo(writeLease)
-            .NormalizeMortalLocationsAsync(backups);
+        var beforeUnboundCall = await context.CaptureExactBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        var snapshotFiles = (await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"))!["files"]!
+            .AsObject().ToDictionary(pair => pair.Key, pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
+        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            var unbound = await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer.BindTo(lease)
+                .NormalizeMortalLocationsAsync(snapshotFiles));
+            Assert.Contains("requires its admitted empty or populated item snapshot", unbound.Message, StringComparison.Ordinal);
+        }
+        await context.AssertExactBytesAsync(beforeUnboundCall);
+
+        // The old fixture bypassed signed storage-access and admitted item authority.
+        // Use the real common publication path, never relax the draft gate for tests.
+        await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
 
         var map = (await context.ReadJsonAsync(
             MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
@@ -108,7 +97,10 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.True(JsonNode.DeepEquals(raw["currentInteractions"], current["currentInteractions"]));
         Assert.True(JsonNode.DeepEquals(raw["currentChronology"], current["currentChronology"]));
         var currentStorage = Assert.Single(current["locationStorages"]!.AsArray().OfType<JsonObject>());
-        Assert.True(JsonNode.DeepEquals(rawContents, currentStorage["contents"]));
+        var sealedItem = Assert.Single(currentStorage["contents"]!.AsArray().OfType<JsonObject>());
+        Assert.NotEmpty(sealedItem["itemId"]!.GetValue<string>());
+        Assert.NotNull(sealedItem[MortalItemMaterializationContract.ReceiptProperty]);
+        Assert.Equal(rawItem["name"]!.GetValue<string>(), sealedItem["name"]!.GetValue<string>());
 
         var index = (await context.ReadJsonAsync(MortalLocationIdentityState.StatePath))!.AsObject();
         var entry = Assert.Single(index["locationEntries"]!.AsArray().OfType<JsonObject>());

@@ -8,6 +8,40 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 targeted review corrections, WIP 2026-11-15
+
+Base7148dc8. Descendant reconstruction now retains captured semantic/identity
+DATA without invented provenance; direct measured rows retain original provenance.
+New current-scene selection skips old-destination hydration only, preserving its
+raw intake; prior-source parking and existing-target hydration are unchanged.
+One legacy normalization test now uses full admitted item publication, preserving
+its metadata/receipt/index assertions and adding unbound-call byte-exact refusal.
+A real non-bootstrap scene publication case is added; current-birth category now8.
+Its independent previous map/index/access is prepared before signed capture.
+The narrow normalization category also owns the preexisting parking/hydration
+control removed from broad mortal-locations; no test is dropped or duplicated.
+
+Fresh builds, history35, normalization2, actualbirth8 and impacted consumers remain
+UNRUN on this correction. Independent targeted re-review follows source save.
+Same cheap DATA/reuse model; no cache, authority relaxation or speedup claim.
+
+## FR5 review regressions reproduced, WIP 2026-11-15
+
+Saved7148dc8b7535435373351fa009a46cf661f49891 restored clean. Fresh unit build
+passed0errors34warnings28.85s. Official -NoBuild history run planned35, completed
+34unit cases31PASS/3FAIL14.846s; the existing integration descriptor was cancelled
+by fail-fast. The two multi-descendant configurations fail historical evidence;
+non-bootstrap A-to-new-B fails because its projected storage contents are empty.
+These are causal production REDs after the fixture spelling correction.
+
+The original single normalizer control completed0PASS/1FAIL9.918s at earlier
+mortal_location_storage_access_client_owned_mutation (line60), not at the later
+missing-item-binding guard predicted by static review. Preserve both guards and
+migrate this obsolete partial fixture to actual admitted complete-item publication.
+Both commands completed owned cleanup, no skips, duplicates or timeouts. Production
+fixes and test migration are next; no bounded acceptance yet. No fresh cache needed
+for these cheap deterministic graph/selection corrections; authority stays fresh.
+
 ## FR5 review regressions, test-only WIP 2026-11-15
 
 Base835e145c. Correct the malformed disposition fixture and add two valid

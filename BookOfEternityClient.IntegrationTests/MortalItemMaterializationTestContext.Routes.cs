@@ -90,11 +90,22 @@ internal sealed partial class MortalItemMaterializationTestContext
     }
 
     internal async Task<MortalItemRouteArrangement>
-        ArrangeSameTurnCurrentLocationStorageRouteAsync(JsonObject rawItem)
+        ArrangeSameTurnCurrentLocationStorageRouteAsync(JsonObject rawItem, bool existingScene = false)
     {
         ArgumentNullException.ThrowIfNull(rawItem);
 
         await BuildMortalBootstrapAsync();
+        if (existingScene)
+        {
+            var previous = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_before_storage_birth", "Previous scene", x: 0, y: 0);
+            var previousMap = MortalLocationTestFixture.CreateWorldMap(previous);
+            var access = MortalStorageAccessProjection.Build(previousMap, null);
+            if (!access.IsValid) throw new InvalidOperationException("Previous-scene fixture requires matching canonical storage access.");
+            await WriteJsonAsync(MortalStorageAccessProjection.StatePath, access.Root!);
+            await WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, previousMap);
+            await WriteJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath, MortalLocationTestFixture.CreateCurrentProjection(previous));
+            await WriteJsonAsync(MortalLocationIdentityState.StatePath, MortalLocationTestFixture.CreateIdentityIndex(previous));
+        }
         await CaptureValidatedPendingSnapshotAsync(RouteTurn);
 
         var item = rawItem.DeepClone().AsObject();

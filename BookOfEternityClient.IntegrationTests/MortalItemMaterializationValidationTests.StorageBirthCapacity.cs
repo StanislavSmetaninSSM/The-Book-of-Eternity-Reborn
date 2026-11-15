@@ -51,6 +51,25 @@ public sealed partial class MortalItemMaterializationValidationTests
         }
 
         [Fact]
+        public async Task StorageBirthCapacity_NonBootstrapScenePublishesCargoAndPreservesOriginalLocation()
+        {
+            await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+            await ArrangeCapacityAsync(context, 1, 1, existingScene: true);
+            var originalMap = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
+            var original = Assert.Single(originalMap["locations"]!.AsArray()).DeepClone();
+            await context.NormalizeAcceptedTurnWithValidatedCommonPlanAsync();
+            var current = (await context.ReadJsonAsync(StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+            Assert.NotEqual("loc_before_storage_birth", current["locationId"]!.GetValue<string>());
+            var item = Assert.Single(current["locationStorages"]![0]!["contents"]!.AsArray())!;
+            Assert.NotNull(item[MortalItemMaterializationContract.ReceiptProperty]);
+            await AssertBirthHistoryAsync(context, current["locationId"]!.GetValue<string>(), item["itemId"]!.GetValue<string>());
+            var map = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
+            Assert.True(JsonNode.DeepEquals(original, map["locations"]!.AsArray().OfType<JsonObject>()
+                .Single(location => location["locationId"]!.GetValue<string>() == "loc_before_storage_birth")));
+            Assert.Empty((await context.ReadJsonAsync(MortalLocationStorageContentsState.StatePath))!["entries"]!.AsArray());
+        }
+
+        [Fact]
         public async Task StorageBirthCapacity_EmptyBirthFinalizesWithoutItemCreations()
         {
             await using var context = await MortalItemMaterializationTestContext.CreateAsync();
@@ -162,11 +181,11 @@ public sealed partial class MortalItemMaterializationValidationTests
         }
 
         private static async Task ArrangeCapacityAsync(
-            MortalItemMaterializationTestContext context, int capacity, double volume)
+            MortalItemMaterializationTestContext context, int capacity, double volume, bool existingScene = false)
         {
             var item = MortalItemTestFixture.CreateRawRoot("storage_placement", "location_storage");
             item["volume"] = 1d;
-            await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(item);
+            await context.ArrangeSameTurnCurrentLocationStorageRouteAsync(item, existingScene);
             var raw = (await context.ReadJsonAsync(StorageTransportMoveService.CurrentLocationPath))!.AsObject();
             var storage = raw["currentLocationData"]!["locationStorages"]![0]!.AsObject();
             storage["capacity"] = capacity;

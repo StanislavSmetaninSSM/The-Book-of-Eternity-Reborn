@@ -488,6 +488,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             input.PreTurnStorageContents,
             ReadExactString(finalCurrent, "locationId"),
             finalCurrent,
+            locationCandidates.Any(candidate => candidate.SelectCurrent),
             issues);
         if (issues.Count != 0)
             return Failed(issues);
@@ -3354,6 +3355,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         JsonObject? preTurnOffscreen,
         string? selectedLocationId,
         JsonObject? finalCurrent,
+        bool selectedLocationIsBirth,
         List<ValidationIssue> issues)
     {
         var parsed = MortalLocationStorageContentsState.Parse(preTurnOffscreen);
@@ -3426,7 +3428,9 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             }
         }
 
-        if (selectionChanged &&
+        // An allocated current-scene birth already owns its raw item intake.
+        // Only an existing destination is hydrated from prior offscreen contents.
+        if (selectionChanged && !selectedLocationIsBirth &&
             selectedLocationId != null &&
             finalCurrent?["locationStorages"] is JsonArray targetStorages)
         {
