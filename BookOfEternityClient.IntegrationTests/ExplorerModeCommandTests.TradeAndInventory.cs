@@ -1302,6 +1302,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             MortalItemTestFixture.CreateIndex(rope).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await WriteJsonAsync("game_state/misc/vehicles.json", new
         {
+            activeVehicleId = (string?)null,
             vehicles = new[]
             {
                 new
@@ -1309,7 +1310,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     vehicleId = "vehicle_cart_001",
                     name = "Телега",
                     type = "vehicle",
-                    isActive = true,
+                    availability = "Parked",
+                    hasFullAccess = true,
                     inventory = Array.Empty<object>()
                 }
             }

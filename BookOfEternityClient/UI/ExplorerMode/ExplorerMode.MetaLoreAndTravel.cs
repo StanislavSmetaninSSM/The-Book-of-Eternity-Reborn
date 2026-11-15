@@ -613,13 +613,16 @@ public partial class ExplorerMode
         var vehicles = new List<(string name, string type, bool active, string id, JsonElement el)>();
         EnumerateArray(doc.RootElement, "vehicles", item =>
         {
-            if (item.ValueKind != JsonValueKind.Object)
+            if (item.ValueKind != JsonValueKind.Object ||
+                !item.TryGetProperty("vehicleId", out var identity) || identity.ValueKind != JsonValueKind.String)
+                return;
+            var id = identity.GetString();
+            if (!ResourceMaterializationContract.IsExactIdentifier(id))
                 return;
             var name = GetStr(item, "name", "???");
             var vtype = GetStr(item, "type", "");
-            var id = GetStr(item, "vehicleId", "");
             var active = MortalVehicleDisplay.IsSelected(activeVehicleId, id);
-            vehicles.Add((name, vtype, active, id, item));
+            vehicles.Add((name, vtype, active, id!, item));
         });
 
         if (vehicles.Count == 0)

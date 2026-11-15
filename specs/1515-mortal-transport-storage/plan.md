@@ -8,6 +8,27 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Canonical display correction and exact-identity RED, 2026-11-15
+
+Saved source fce11b6b9139041fdb7cb74b537274dd2fc73497. Corrected rendering
+passes the previous twelve unit cases. Three additional exact vehicleId eligibility
+cases fail causally (missing, empty, whitespace identity still produces a card).
+Actual CLI selection completed eleven cases: seven PASS, three matching identity
+failures, plus the retained transport inventory move control failed because the
+item stayed with the player. Its cause is an obsolete fixture without explicit hasFullAccess=true: the unchanged
+vehicle inventory service excludes the target before transfer. The fixture is
+updated to explicit access and canonical Parked/no-selection; transfer assertions
+remain unchanged. The exact-ID listing gate is implemented after these causal failures.
+Both official runs completed every planned case, no duplicates/timeouts, full
+owned cleanup. CLI runner 11.813s. Fresh serial builds: unit30.01s/39warnings,
+integration59.36s/123warnings, zero errors. Initial parallel build failed before
+execution with zero diagnostics; missing BuildInParallel=false caused a hung
+retry, cancelled before returning to the established serial build flags. These
+are environment invocation failures, not behavioral test evidence. The two
+existing translation/move controls now have a single owner in the CLI category.
+No acceptance or performance speedup is claimed; exact identity gate and move
+control investigation precede final GREEN and independent review.
+
 ## Vehicle display causal RED established, 2026-11-15
 
 Saved 65b570326379300588012a83db3efb3e1339943a. Fresh integration build passed

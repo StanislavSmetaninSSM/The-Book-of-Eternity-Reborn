@@ -6474,10 +6474,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
     private static ReferenceEntrySnapshot CreateVehicleSnapshot(int index, JsonObject vehicle, string? activeVehicleId)
     {
         var title = FirstNonEmpty(GetNodeString(vehicle, "name"), "Безымянный транспорт");
-        var selector = NormalizeCombatSelector(FirstNonEmpty(
-            GetNodeString(vehicle, "vehicleId"),
-            NormalizeReferenceSelector(title),
-            index.ToString()));
+        var selector = GetNodeString(vehicle, "vehicleId")!;
 
         return new ReferenceEntrySnapshot(
             Index: index,
@@ -6654,7 +6651,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             yield break;
 
         foreach (var vehicle in vehicles.OfType<JsonObject>())
-            yield return vehicle;
+        {
+            if (vehicle["vehicleId"] is JsonValue identity && identity.TryGetValue<string>(out var id) &&
+                ResourceMaterializationContract.IsExactIdentifier(id))
+                yield return vehicle;
+        }
     }
 
     private static string DescribeVehicleNode(JsonObject vehicle)
