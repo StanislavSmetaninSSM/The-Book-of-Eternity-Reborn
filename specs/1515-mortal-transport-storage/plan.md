@@ -8,6 +8,48 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Current-scene storage birth accepted, 2026-11-15
+
+Verified saved source: 819ef456f1bc0a832957510fddc609f5c6bf381b on
+1515-mortal-transport-storage. Independent GPT-6 Astra High reviewed the bounded
+source, all three corrections, actual logs/summaries/TRX and source joins, and
+accepted current-scene storage birth with no unresolved blocking finding.
+
+Final corrected integration build: 0 errors, 122 warnings, 60.28 seconds.
+Official `scripts/test-csharp.ps1 -Category <id> -NoBuild` results:
+
+- mortal-storage-current-birth-capacity: 8/8 PASS, 20.727s.
+- mortal-storage-birth-publication: 6/6 PASS, 17.632s.
+- mortal-vehicle-cargo-capacity: 4/4 PASS, 15.400s.
+- mortal-vehicle-birth-receipt-policy: 72/72 PASS, 9.376s.
+- mortal-vehicle-birth-receipt-publication: 9/9 PASS, 24.350s.
+
+Retained corrected-source controls at 18399d00 (unchanged by the two fixture edits):
+history 35/35, normalization/parking 2/2, existing storage addition 6/6 and guidance
+4/4. Unchanged pure storage/shared capacity controls at 835e145c: 10/10 and 29/29.
+The reviewer verified 185 passing executions across these 11 selected categories,
+not a whole suite or one simultaneous run. No skips, duplicates, timeouts or
+incomplete cleanup in these final selections. Earlier causal and fixture failures
+remain recorded below, not reclassified as success.
+
+`-ValidateCatalog -NoBuild` passed in 12.734s: 1,750 categories and 14,368 methods/
+files, zero tests executed. This proves inventory, not runtime correctness.
+The working checkout matches saved 819ef456 for all remotely tracked files.
+Linux SDK 10.0.404, net8 runtime and PowerShell 7.7 remain the verified environment;
+Windows and hosted CI were not run. Raw diagnostics remain outside Git.
+
+Optimization: existing normalized item phase is reused by the subsequent writer;
+completion owns detached DATA, allocations are not repeated, exact source and
+closing readback remain fresh. Historical captured graph checks never consult live
+item authority. No new cache or writer and no measured speedup claim.
+
+Next required work: true populated offscreen storage birth, then canonical-only
+vehicle display (pending UpdateVehicles/legacy array display and missing canonical
+activeVehicleId are still FR8 gaps), and whole-intended-change reconciliation.
+Vehicle access T005b2 was already independently accepted in the saved access block;
+its checkbox is corrected without rerunning unrelated controls. Storage view is
+accepted, but T013 remains open for the vehicle display gap. No merge or closure.
+
 ## FR5 first integration outcome and fixture correction, WIP 2026-11-15
 
 Source 18399d00eb062ed1fd6f8d7d578eb312fabe8d9e: fresh builds passed with
