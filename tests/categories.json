@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-current-birth-capacity",
+      "responsibility": "#1515 current-scene populated storage birth: actual raw capacity refusal without mutation and exact-limit common publication.",
+      "excludes": "Offscreen birth, whole-stack measurement graph, storage additions and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.StorageBirthCapacity.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests+StorageBirthCapacity.StorageBirthCapacity_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-location-bounded-repair-policy",
       "responsibility": "#1515 affected indexed storage-addition repair routes and existing protected identity, parent, envelope and route boundaries.",
       "excludes": "No complete location suite or broader lifecycle qualification.",

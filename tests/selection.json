@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-storage-current-birth-capacity",
+      "reason": "#1515 FR5 current-scene populated storage capacity causal admission and publication boundary.",
+      "contracts": [
+        "Actual current-scene storage birth refuses slot/volume overflow; exact limit publishes existing item identities."
+      ]
+    },
+    {
       "category": "mortal-location-bounded-repair-policy",
       "reason": "#1515 current bounded receipt integrity and storage repair block; not whole-branch qualification.",
       "contracts": [

@@ -8,6 +8,25 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Next FR5 current-storage capacity causal slice, WIP 2026-11-15
+
+Three new independent integration cases reuse the existing current-scene storage
+route and common accepted-turn publication: zero slots must reject without tracked
+byte/absence mutation; volume below the admitted single item must reject likewise;
+one slot with exact volume must publish the permanent item carrier. New narrow
+mortal-storage-current-birth-capacity category owns this partial class. These cases
+are UNRUN; no capacity production fix is included in this checkpoint.
+
+The pure capacity algorithm will be shared using real location_storage coordinates,
+not fabricated vehicle IDs. Birth scope must come from the held location plan,
+never every later live storage. The existing item catalog/creation map and graph
+admission remain authoritative DATA. A narrow architectural consultation is resolving
+how final projected evidence reaches existing location identity/history before common
+publication; no new evidence file, writer, cache or mutable fixture is permitted.
+Current-location birth is a first slice only; actual populated offscreen birth remains
+required separately. Existing receipt110/110 and storageempty89/89 evidence is not
+rerun merely for these new tests. Source freeze/build/run will be coordinated.
+
 ## Receipt focused GREEN, 2026-11-15
 
 Source b18ed5a9714bdbfa09f566a2908c20f957c1d91c is remotely verified and
