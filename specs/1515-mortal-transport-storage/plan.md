@@ -8,6 +8,37 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 review regressions, test-only WIP 2026-11-15
+
+Base835e145c. Correct the malformed disposition fixture and add two valid
+multi-descendant/depth cases plus a non-bootstrap A-to-new-B cargo preservation
+case. Production is unchanged. History now expects35cases including existing
+controls; the newly extracted current-normalization control retains its original
+body and has not been executed. Independent Astra High source review found its
+metadata-only wrapper cannot admit populated cargo without source binding; keep
+that guard and migrate the test after demonstrating the refusal.
+
+Next: fresh unit build, history causal run, and the one existing normalization
+control against unchanged integration binaries. No outcome yet. Three Important
+findings remain open. Cheap isolated DATA fixtures avoid rebuilding a whole world;
+no caching or speedup claim. Raw evidence stays outside Git. No merge or closure.
+
+## FR5 first build and cheap checks, WIP 2026-11-15
+
+Source835e145c89e1144325fcc1e21c40ac04f8fdfec9 saved and restored from GitHub.
+Fresh unit/integration builds passed0errors99.16/57.85s. Storage capacity policy
+10/10PASS9.828s and unchanged shared cargo policy29/29PASS9.638s complete with
+cleanup. History planned32 but completed31unit cases16PASS/15FAIL15.359s; its
+integration control was suppressed by fail-fast. The failures are a test-fixture
+spelling error (storageMetadata.state instead of disposition), not causal production
+RED. Runtime integration and guidance remain UNRUN pending cheap correction.
+
+Independent Astra High review found a concrete historical reconstruction defect:
+every descendant was given the same fabricated historical_nested materializationId,
+so valid containers with two descendants fail catalog uniqueness. Add a cheap
+multi-descendant success regression before the fix; avoid invented provenance in
+a detached reconstruction. Review is ongoing; neither this block nor #1515 is done.
+
 ## FR5 current-storage runtime and tests ready, WIP 2026-11-15
 
 Raw item admission now checks current-scene storage capacity after one exact item

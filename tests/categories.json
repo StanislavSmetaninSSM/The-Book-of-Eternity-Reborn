@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-current-normalization-control",
+      "responsibility": "#1515 affected current-scene location metadata normalization control; no incomplete cargo publication bypass.",
+      "excludes": "Whole canonical normalization and offscreen storage births.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.MortalLocations.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_CurrentCreationWritesCanonicalMapProjectionReceiptAndIndex"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-cargo-capacity-policy",
       "responsibility": "#1515 pure current-storage birth direct-stack/whole-volume capacity, exact real carrier coordinates and measurements through shared vehicle/storage core.",
       "excludes": "Runtime source/lease admission, history persistence, offscreen birth and whole issue qualification.",
@@ -35510,7 +35534,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_CanonicalPathsAreRegisteredBeforeMortalItems",
-            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_CurrentCreationWritesCanonicalMapProjectionReceiptAndIndex",
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_InvalidPlanLeavesEveryLocationSurfaceByteExact",
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_NewLinkRefreshesDerivedCurrentTopology",
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.MortalLocations_RemoteCreationsAndLinkRewriteExactTemporaryEndpoints",

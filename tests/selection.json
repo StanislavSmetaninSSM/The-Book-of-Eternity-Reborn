@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-storage-current-normalization-control",
+      "reason": "Independent review identified an existing populated location test calling the metadata-only normalizer without required accepted item/source binding.",
+      "contracts": [
+        "Preserve map/current/receipt/index assertions without bypassing finalized cargo admission."
+      ]
+    },
+    {
       "category": "mortal-storage-cargo-capacity-policy",
       "reason": "New storage wrapper reuses shared capacity core over exact location/storage coordinates.",
       "contracts": [

@@ -85,31 +85,62 @@ public sealed class MortalStorageBirthHistoryTests
         Assert.Empty(MortalLocationIdentityState.Parse(detached.FinalIdentityIndex).Issues);
     }
 
-    [Fact]
-    public void CapturedContainerRebuildsNestedGraphWithoutLiveItemAuthority()
+    [Theory]
+    [InlineData(1, false)]
+    [InlineData(2, false)]
+    [InlineData(2, true)]
+    public void CapturedContainerRebuildsNestedGraphWithoutLiveItemAuthority(int descendants, bool nested)
     {
         var raw = Raw(false);
         var storage = raw["locationStorages"]![0]!.AsObject();
         var parent = storage["contents"]![0]!.AsObject();
         parent["isContainer"] = true; parent["capacity"] = 2;
-        var child = MortalItemTestFixture.CreateRawRoot(creationRef: "new_nested", materializationId: "mat_nested");
-        child["itemId"] = "item_nested"; child.Remove("creationRef");
-        child["contentsPath"] = new JsonArray("item_historical");
-        storage["contents"]!.AsArray().Add(child);
         JsonObject Shape(JsonObject item)
         {
             var shape = item.DeepClone().AsObject();
             foreach (var key in shape.Select(p => p.Key).Where(MortalCargoBirthCapacity.IsIdentityShapeField).ToArray()) shape.Remove(key);
             return shape;
         }
-        var basis = new JsonObject { ["schemaVersion"] = 1, ["item"] = Shape(parent), ["contents"] = new JsonArray(
-            new JsonObject { ["itemId"] = "item_nested", ["count"] = 1, ["item"] = Shape(child), ["contents"] = new JsonArray() }) };
+        var basis = new JsonObject { ["schemaVersion"] = 1, ["item"] = Shape(parent), ["contents"] = new JsonArray() };
+        var parentBasis = basis;
+        var parents = new List<string> { "item_historical" };
+        for (var ordinal = 0; ordinal < descendants; ordinal++)
+        {
+            var id = "item_nested_" + ordinal;
+            var child = MortalItemTestFixture.CreateRawRoot(creationRef: "new_nested_" + ordinal, materializationId: "mat_nested_" + ordinal);
+            child["itemId"] = id; child.Remove("creationRef");
+            child["contentsPath"] = new JsonArray(parents.Select(p => (JsonNode)JsonValue.Create(p)!).ToArray());
+            if (nested && ordinal < descendants - 1) { child["isContainer"] = true; child["capacity"] = 2; }
+            storage["contents"]!.AsArray().Add(child);
+            var captured = new JsonObject { ["itemId"] = id, ["count"] = 1, ["item"] = Shape(child), ["contents"] = new JsonArray() };
+            parentBasis["contents"]!.AsArray().Add(captured);
+            if (nested) { parentBasis = captured; parents.Add(id); }
+        }
         storage["cargoMeasurements"] = new JsonArray(new JsonObject { ["itemId"] = "item_historical", ["count"] = 1,
             ["externalVolumeDm3"] = 1d, ["measuredConfiguration"] = basis });
         var (prepared, phase, catalog) = Arrange(raw);
         var finalized = MortalLocationStorageBirthEvidence.Finalize(prepared, phase, catalog, new Dictionary<string, string>(), Source);
         Assert.True(finalized.IsValid, string.Join(";", finalized.Issues.Select(i => i.Code + ":" + i.FilePath)));
         Assert.Empty(MortalLocationIdentityState.Parse(finalized.Completion!.Plan.FinalIdentityIndex).Issues);
+    }
+
+    [Fact]
+    public void NonBootstrapCurrentSceneBirthRetainsItsDeclaredCargoAcrossSelectionChange()
+    {
+        var original = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_before_storage_birth", "Original scene", x: 0, y: 0);
+        var raw = Raw(false);
+        var planning = MortalLocationAcceptedTurnPlanner.Build(new(
+            MortalLocationTestFixture.CreateWorldMap(original), MortalLocationTestFixture.CreateCurrentProjection(original),
+            MortalLocationTestFixture.CreateIdentityIndex(original), raw, null, 42));
+        Assert.True(planning.Success, string.Join(";", planning.Issues.Select(i => i.Code + ":" + i.FilePath)));
+        var plan = planning.Plan!;
+        var draft = Assert.Single(plan.StorageBirthDrafts);
+        Assert.Single(draft.CloneRawStorage()["contents"]!.AsArray());
+        Assert.NotEqual(original["locationId"]!.GetValue<string>(), plan.FinalCurrentLocation!["locationId"]!.GetValue<string>());
+        Assert.Single(plan.FinalCurrentLocation["locationStorages"]![0]!["contents"]!.AsArray());
+        Assert.True(JsonNode.DeepEquals(original, plan.FinalWorldMap["locations"]!.AsArray().OfType<JsonObject>()
+            .Single(location => location["locationId"]!.GetValue<string>() == original["locationId"]!.GetValue<string>())));
+        Assert.Empty(plan.FinalStorageContents["entries"]!.AsArray());
     }
 
     [Fact]
@@ -161,7 +192,7 @@ public sealed class MortalStorageBirthHistoryTests
             ["contents"] = empty ? new JsonArray() : new JsonArray(MortalItemTestFixture.CreateRawRoot())
         });
         if (!empty) raw["locationStorages"]![0]!["contents"]![0]!["volume"] = 1;
-        raw["materialization"]!["sections"]!["storageMetadata"]!["state"] = "populated";
+        raw["materialization"]!["sections"]!["storageMetadata"]!["disposition"] = "populated";
         raw["materialization"]!["sections"]!["storageMetadata"]!["reason"] = null;
         return raw;
     }
