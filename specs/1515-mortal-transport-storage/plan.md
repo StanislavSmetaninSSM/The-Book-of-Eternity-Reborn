@@ -17,6 +17,10 @@ and60.66s,0 errors. Independent review found a real effective-name gap: raw fact
 index ignores valid factionCoreChanges rename. Added a two-case actual admitted
 rename+birth control, not yet executed; production projection is not fixed yet.
 Worked Faction/NPC substitution now lives in the already-delivered cargo example.
+Source94c063 rename control first gave2fixtureFAIL, not causal RED: existing
+profile command requires name/description/image_prompt/factionColor together.
+The test now carries all four fields from baseline with changed name; production
+projection is still unchanged. Prior build124.64s,0 errors; run11.931s complete.
 
 
 Source4837d5ba7f5a53968c3b1aadebd6f8f9ad842d85 proved4/4 causal RED:

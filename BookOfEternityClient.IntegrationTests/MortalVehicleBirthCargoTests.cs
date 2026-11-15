@@ -103,7 +103,11 @@ public sealed class MortalVehicleBirthCargoTests
         factions["factionCoreChanges"] = new JsonArray(new JsonObject
         {
             ["factionId"] = "faction_cart", ["reason"] = "The guild has adopted a new public name.",
-            ["profile"] = new JsonObject { ["name"] = "Renamed caravan guild" }
+            ["profile"] = new JsonObject
+            {
+                ["name"] = "Renamed caravan guild", ["description"] = faction["description"]!.DeepClone(),
+                ["image_prompt"] = faction["image_prompt"]!.DeepClone(), ["factionColor"] = faction["factionColor"]!.DeepClone()
+            }
         });
         await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath, factions);
         Assert.DoesNotContain(await context.Validator.ValidateFactionCoreChangesBeforeNormalizationAsync(),
