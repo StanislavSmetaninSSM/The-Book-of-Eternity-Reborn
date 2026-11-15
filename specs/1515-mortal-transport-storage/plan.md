@@ -8,7 +8,41 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
-## Current checkpoint — ordinary vehicle preparation verified, 2026-11-15
+## Current checkpoint — vehicle cargo birth verified, 2026-11-15
+
+Runtime source `9b860a08937c41c20827410173245074384f0cdb` passes 39/39 integration
+cases; follow-up `239f1058daefad8ae8f4a8774f749afabecc916c` passes 55/55 unit and
+5/5 exact item interoperability controls. Final guidance/comment source
+`f5e460f1de5525ad90078a1c358a45b71d3006d9` passes the official
+`mortal-vehicle-cargo-guidance`: **3/3 PASS**, 2/2 complete descriptors, 25.144s,
+no skips/duplicates/timeouts and complete owned cleanup. Serial unit/integration
+builds took 92.10s/62.57s, 0 errors, 156/126 warnings. Actual Linux PowerShell 7
+daemon delivery includes the exact cargo example and rendered template route;
+this is not Windows qualification. Raw evidence stays outside Git, final run
+`20261115-070630-076-356-631248623a8748ef8375c397239f987d-categories`.
+
+Independent GPT-6.1 Sol XHigh review accepts this bounded cargo block with no
+remaining Critical/Important finding. The final three tests satisfy its remaining
+verification condition. See the causal RED/refinement history below. Same-turn
+new item cargo is sealed through the existing item/resource transaction; foreign
+refs, malformed inventories and source-index drift fail closed. A reached committed
+history-member fault restores the six checked raw paths; no generation-rollback
+or cut-time item-publication claim is made.
+
+Optimization: operation-local frozen routes reuse prepared allocation DATA, not
+permission. Exact current projection dependencies and location observations remain
+fresh and feed the same plan before-images. No second inventory writer or new
+persistent cache. Projection is performed for admission and normalization; no
+speedup claim. Guidance tests reuse the existing full-daemon harness.
+
+Next is first-birth capacity/measurement and historical configuration binding.
+Faction/NPC/location authority, full vehicle birth evidence, effective access,
+storage and whole-change selection/review remain open. No hosted CI, main merge
+or issue closure. Fresh GitHub clone at `/workspace/shared/1515-cargo-delivery-restore`
+restored exact f5e460f1 with clean checkout and cargo source present; Git fsck is
+still running. This verifies source retrieval only, not a build in that clone.
+
+## Previous checkpoint — ordinary vehicle preparation verified, 2026-11-15
 
 Source `ad9e5bf7d575a27850c90db87da1e56b83d43e52` passes the official
 preparation, active-publication and exact allocation-interoperability categories:
@@ -391,3 +425,17 @@ the new example needed actual context-pack delivery and the main-step/manifest
 inventories. Those are now synchronized with a genuine existing full-daemon render
 assertion and a 3-case guidance selection. Parameter XML comments are completed;
 no runtime logic change. Fresh guidance build/execution is pending.
+
+## Next bounded block — historical first-birth cargo capacity
+
+Use the existing projected item phase before the ordinary resource composer.
+One projected catalog scan serves all birth vehicles; no new file read or cache.
+Reuse the existing canonical container-path check rather than duplicate graph
+validation. A pure helper receives detached catalog facts, limits and asserted
+measurement basis; stack counting and volume arithmetic have cheap typed tests.
+Empty cargo handles zero load and rejects orphan measurement rows without an
+unnecessary item snapshot. Fresh source/lease/publication fences remain unchanged.
+The spec now defines a recoverable measuredConfiguration v1, recommended by the
+bounded architectural consultation. No runtime measurement implementation exists
+yet. First causal tests will cover slot overflow, volume overflow and missing
+explicit multi-unit measurement at the existing actual admission boundary.

@@ -50,8 +50,34 @@ Ownership decision: the existing strict single-player authority is `player_curre
 
 Count direct cargo stacks, not units. Sum their whole-stack external volumes; a loaded container contributes its measured outer footprint once, not its internal capacity plus descendants. The complete containment graph still passes existing item authority. Equality with capacity passes. There is no added weight rule.
 
-Carrier birth evidence contains `cargoMeasurements` rows with exactly one `itemId` or same-turn `creationRef`, exact `count`, and finite nonnegative `externalVolumeDm3` for the whole stack. Explicit measurement is required for containers and multi-unit stacks. A single noncontainer uses its existing physical `volume`; redundant explicit measurement is rejected. Missing, extra, duplicate, wrong-carrier and unresolved rows fail.
+Carrier birth evidence contains `cargoMeasurements` rows with exactly one `itemId` or same-turn `creationRef`, exact `count`, finite nonnegative `externalVolumeDm3` for the whole stack, and a submitted `measuredConfiguration` basis. Explicit measurement is required for containers and multi-unit stacks. A single noncontainer uses its existing physical `volume`; redundant explicit measurement is rejected. Missing, extra, duplicate, wrong-carrier and unresolved rows fail.
 
 The client binds each admitted row to the resolved identity, exact count, existing item birth identity where applicable, versioned semantic shape/contained-configuration fingerprint and carrier/source-turn capture. The GM supplies neither hash nor authority. Quantity/configuration/containment edits during birth invalidate the measurement; bounded repair must explicitly resubmit the affected row against the new packet. Existing source freshness invalidates stale prepared publication. Reference allocation alone is not a shape edit.
 
 After accepted birth this evidence is immutable history, not current capacity authority. Do not compare it with later live contents or reuse it for ordinary movement, consumption or a different carrier's birth. No measurement field is added to the item itself and no second inventory writer is introduced.
+
+### Recoverable measurement basis v1
+
+For explicit measurements, `measuredConfiguration` is a closed object with
+`schemaVersion: 1`, `item` (semantic object) and `contents` (descendant nodes).
+Each descendant has exactly one itemId/creationRef, count, item and contents.
+The client compares this assertion with the actual governed projected catalog;
+it never creates or repairs actual inventory from this assertion. Sibling sets
+compare by resolved exact identity; semantic arrays inside item properties retain
+their order. Parent/child count and containment must agree with the real catalog.
+
+Semantic projection clones all admitted item fields, removing only top-level
+itemId, id, initialId, existedId, creationRef, materializationReceipt, materialization,
+resourceMaterialization, count, quantity, contentsPath, isCarried, currentLocationId
+and currentLocationName. No nested custom fields are removed. This conservative
+v1 also requires reconfirmation after presentation/price/journal/bond changes at
+birth; it does not guess which such edits can never affect configuration.
+
+The supplied basis survives a fresh process and is not silently refreshed. Any
+count/shape/membership change requires replacement of the affected asserted basis
+and explicit volume, even when the reconfirmed numeric volume remains equal.
+Client-owned fingerprints are calculated only after exact basis equality.
+Allocation and receipt/resource normalization alone do not change the basis.
+After birth the evidence remains immutable historical DATA, never current capacity
+or access authority. This representation implements the approved historical
+quantity/shape binding without inventing container exterior from interior volume.
