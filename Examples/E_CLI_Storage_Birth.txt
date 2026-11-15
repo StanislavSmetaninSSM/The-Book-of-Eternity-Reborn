@@ -40,3 +40,162 @@ or same-turn newly created location. Use an independently admitted new location'
 own complete locationStorages declaration for storage born with that location.
 An invalid field is repaired only in the indexed raw operation; never rewrite
 canonical originals to make it pass.
+
+CURRENT-SCENE POPULATED STORAGE BIRTH
+Contract: mortal_current_storage_cargo_birth_v1
+
+This complete storage object belongs only in locationStorages of an independently
+admitted currentLocationData declaration with initialId locref_current, route
+current_scene_creation, source turn 42 and populated storageMetadata section.
+It is not a complete location or GM response. It does not authorize a remote birth
+or a nonempty storagesToAdd operation. The exact source coordinate is
+locref_current:storage_supply. No permanent item or location ID is authored.
+
+One direct single-unit noncontainer occupies one slot. Its physical volume 0.01 dm3
+exactly equals this storage's volume limit, so no cargoMeasurements row is needed
+or allowed. A container or multi-unit stack instead requires a complete explicit
+whole-stack measurement with the existing measuredConfiguration schema; the complete
+measured vehicle example demonstrates that shared schema. A changed shape/count/
+containment needs a new basis, not an invented automatic multiplication rule.
+
+```json
+{
+  "storageId": "storage_supply",
+  "name": "Сундук с мелом",
+  "description": "Небольшой закрытый сундук с одним кусочком мела.",
+  "image_prompt": "A small wooden chest containing one piece of white chalk",
+  "capacity": 1,
+  "volume": 0.01,
+  "owner": {
+    "ownerType": "Player",
+    "ownerId": "player_current",
+    "ownerName": "Герой"
+  },
+  "authorizedUsers": [],
+  "hasFullAccess": true,
+  "contents": [
+    {
+      "existedId": null,
+      "creationRef": "new_storage_chalk",
+      "name": "Кусочек белого мела",
+      "description": "Небольшой сухой кусочек мела для коротких отметок на камне.",
+      "image_prompt": "small worn piece of white chalk on dark stone, realistic low fantasy item",
+      "type": "Бытовой предмет",
+      "group": "Инструменты",
+      "quality": "Common",
+      "rarity": "Common",
+      "price": 1,
+      "count": 1,
+      "weight": 0.02,
+      "volume": 0.01,
+      "resourceMaterialization": {
+        "resources": [
+          {
+            "resourceKey": "durability",
+            "maximum": 100
+          }
+        ]
+      },
+      "bonuses": [],
+      "effects": [],
+      "structuredBonuses": [],
+      "combatEffect": [],
+      "customProperties": [],
+      "mechanicalSummaryAuthority": null,
+      "mechanicalSummaryUnresolvedReason": null,
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "isContainer": false,
+      "capacity": null,
+      "containerWeight": null,
+      "weightReduction": null,
+      "contentsPath": null,
+      "isConsumption": false,
+      "textContent": null,
+      "journalEntries": [],
+      "isSentient": false,
+      "unreadableReason": null,
+      "sealedReason": null,
+      "lockedReason": null,
+      "disassembleTo": null,
+      "ownerBondLevelCurrent": null,
+      "ownerBondLevelMax": null,
+      "fateCards": [],
+      "questLinks": [],
+      "materialization": {
+        "schemaVersion": 1,
+        "materializationId": "mat_storage_chalk_turn_42",
+        "realm": "Mortal",
+        "route": "storage_placement",
+        "sourceTurn": 42,
+        "sourceAuthority": {
+          "kind": "location_storage",
+          "authorityId": "locref_current:storage_supply"
+        },
+        "creationRef": "new_storage_chalk",
+        "state": "complete",
+        "sections": {
+          "presentation": {
+            "state": "populated",
+            "reason": null
+          },
+          "physical": {
+            "state": "populated",
+            "reason": null
+          },
+          "mechanics": {
+            "state": "empty_by_design",
+            "reason": "Мел не даёт самостоятельного механического бонуса."
+          },
+          "equipment": {
+            "state": "empty_by_design",
+            "reason": "Мел не является экипировкой."
+          },
+          "container": {
+            "state": "empty_by_design",
+            "reason": "Кусочек мела ничего не вмещает."
+          },
+          "consumption": {
+            "state": "empty_by_design",
+            "reason": "Мел не является расходником с самостоятельным эффектом."
+          },
+          "readableOrSentient": {
+            "state": "empty_by_design",
+            "reason": "На самом кусочке нет читаемого текста и собственного голоса."
+          },
+          "craftingAndDisassembly": {
+            "state": "empty_by_design",
+            "reason": "Этот кусочек не задаёт рецепта или полезной разборки."
+          },
+          "bondsAndFateCards": {
+            "state": "empty_by_design",
+            "reason": "Обычный мел не образует связь и не имеет Карт Судьбы."
+          },
+          "questRole": {
+            "state": "empty_by_design",
+            "reason": "Мел не связан с заданием."
+          },
+          "provenance": {
+            "state": "populated",
+            "reason": null
+          },
+          "ownershipAndPlacement": {
+            "state": "populated",
+            "reason": null
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+The client resolves item/location identities through their existing authorities,
+validates the complete graph and capacity, and atomically records the detached
+birth facts in storage_addition.afterState.cargoBirthEvidence inside the existing
+location identity index. The GM must not create or repair that evidence. Current
+contents stay in their existing item carrier, not in a new inventory file. Later
+legal movement or consumption preserves this historical snapshot; it is not a
+new live inventory limit or access grant. Rejected or rolled-back birth publishes
+neither the storage's accepted child history nor its item/access after-images.

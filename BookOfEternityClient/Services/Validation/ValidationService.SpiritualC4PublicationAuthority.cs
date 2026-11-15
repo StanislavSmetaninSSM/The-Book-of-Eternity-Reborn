@@ -206,7 +206,7 @@ public partial class ValidationService
                     plan.AcceptedStorageCoordinates.ToArray(), plan.GovernedRewrites.ToArray(),
                     plan.TouchedPaths.ToArray(), plan.RepairContexts.Select(context => context with
                     { RepairableFields = context.RepairableFields.ToArray() }).ToArray(),
-                    plan.FinalBootstrapScaffold?.DeepClone().AsObject(), plan.FinalStorageAccess?.DeepClone().AsObject());
+                    plan.FinalBootstrapScaffold?.DeepClone().AsObject(), plan.FinalStorageAccess?.DeepClone().AsObject(), plan.StorageBirthDrafts);
 
             /// <summary>
             /// Gets a detached original planning binding, distinct from current physical publication inputs.

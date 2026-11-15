@@ -60,7 +60,8 @@ internal sealed class MortalLocationAcceptedTurnPlan
         IReadOnlyList<string> touchedPaths,
         IReadOnlyList<MortalLocationRepairContext> repairContexts,
         JsonObject? finalBootstrapScaffold = null,
-        JsonObject? finalStorageAccess = null)
+        JsonObject? finalStorageAccess = null,
+        IReadOnlyList<MortalLocationStorageBirthDraft>? storageBirthDrafts = null)
     {
         FinalWorldMap = finalWorldMap ?? throw new ArgumentNullException(nameof(finalWorldMap));
         FinalCurrentLocation = finalCurrentLocation;
@@ -74,7 +75,21 @@ internal sealed class MortalLocationAcceptedTurnPlan
         RepairContexts = repairContexts ?? throw new ArgumentNullException(nameof(repairContexts));
         FinalBootstrapScaffold = finalBootstrapScaffold;
         FinalStorageAccess = finalStorageAccess;
+        StorageBirthDrafts = Array.AsReadOnly((storageBirthDrafts ?? Array.Empty<MortalLocationStorageBirthDraft>()).ToArray());
     }
+
+    /// <summary>Expected immutable birth slots, never permission to publish an unfinalized plan.</summary>
+    internal IReadOnlyList<MortalLocationStorageBirthDraft> StorageBirthDrafts { get; }
+
+    /// <summary>Detaches every mutable output while retaining the same already allocated identities.</summary>
+    /// <param name="index">Completed detached identity history.</param>
+    /// <returns>A copy, never mutation of the cached metadata plan.</returns>
+    internal MortalLocationAcceptedTurnPlan WithFinalIdentityIndex(JsonObject index) => new(
+        FinalWorldMap.DeepClone().AsObject(), FinalCurrentLocation?.DeepClone().AsObject(), index.DeepClone().AsObject(),
+        FinalStorageContents.DeepClone().AsObject(), new Dictionary<string, string>(LocationIdsByInitialId, StringComparer.Ordinal),
+        new Dictionary<string, string>(LinkIdsByInitialId, StringComparer.Ordinal), AcceptedStorageCoordinates.ToArray(),
+        GovernedRewrites.ToArray(), TouchedPaths.ToArray(), RepairContexts.ToArray(), FinalBootstrapScaffold?.DeepClone().AsObject(),
+        FinalStorageAccess?.DeepClone().AsObject(), StorageBirthDrafts);
 
     internal JsonObject? FinalStorageAccess { get; }
 

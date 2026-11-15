@@ -356,6 +356,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         var finalLinkEntries = finalIdentityIndex["linkEntries"]!.AsArray();
         var canonicalByInitialId = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         JsonObject? finalCurrent = input.PreTurnCurrentLocation?.DeepClone().AsObject();
+        var storageBirthDrafts = new List<MortalLocationStorageBirthDraft>();
 
         foreach (var candidate in locationCandidates)
         {
@@ -368,6 +369,23 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             canonicalByInitialId.Add(initialId, canonical);
             finalLocations.Add(canonical.DeepClone());
             finalLocationEntries.Add(CreateLocationIndexEntry(canonical));
+            if (candidate.SelectCurrent && candidate.Raw["locationStorages"] is JsonArray bornStorages)
+            {
+                for (var storageIndex = 0; storageIndex < bornStorages.Count; storageIndex++)
+                {
+                    if (bornStorages[storageIndex] is not JsonObject storage) continue;
+                    var storageId = ReadExactString(storage, "storageId")!;
+                    var context = candidate.Context + $".locationStorages[{storageIndex}]";
+                    var metadata = storage.DeepClone().AsObject();
+                    metadata.Remove("contents"); metadata.Remove("cargoMeasurements"); metadata.Remove("cargoBirthEvidence");
+                    AppendLocationChildTransition(finalLocationEntries, locationIdsByInitialId[initialId], "storage_addition",
+                        storageId, new JsonObject { ["state"] = "absent" }, metadata, context, input.Turn, identityFactory);
+                    var transition = finalLocationEntries.OfType<JsonObject>().Single(e => ReadExactString(e, "locationId") == locationIdsByInitialId[initialId])
+                        ["transitions"]!.AsArray().Last()!.AsObject();
+                    storageBirthDrafts.Add(new(locationIdsByInitialId[initialId], storageId,
+                        ReadExactString(transition, "transitionId")!, context, storage, input.Turn));
+                }
+            }
             if (candidate.SelectCurrent)
                 finalCurrent = CreateCurrentProjection(canonical, candidate.Raw);
         }
@@ -551,7 +569,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             governedRewrites,
             touchedPaths.Distinct(StringComparer.Ordinal).ToArray(),
             Array.Empty<MortalLocationRepairContext>(),
-            finalBootstrapScaffold, finalStorageAccess);
+            finalBootstrapScaffold, finalStorageAccess, storageBirthDrafts);
         return new MortalLocationAcceptedTurnPlanningResult(plan, Array.Empty<ValidationIssue>());
     }
 
@@ -3424,7 +3442,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         if (location["locationStorages"] is not JsonArray storages)
             return;
         foreach (var storage in storages.OfType<JsonObject>())
+        {
             storage.Remove("contents");
+            storage.Remove("cargoMeasurements");
+            storage.Remove("cargoBirthEvidence");
+        }
     }
 
     private static void PreserveRawCurrentItemContents(

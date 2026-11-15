@@ -375,11 +375,15 @@
     },
     {
       "id": "mortal-storage-birth-guidance",
-      "responsibility": "#1515 Actual full-daemon rendering and complete source-local restricted owner storage guidance.",
-      "excludes": "New grant/revoke engine, later storage addition, nonempty capacity and whole issue acceptance.",
+      "responsibility": "#1515 actual full-daemon rendering and complete restricted-owner/empty-addition/current-scene populated storage guidance.",
+      "excludes": "Runtime capacity/publication qualification, nonempty existing-location additions, offscreen cargo and new grant/revoke engine.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageBirthAccess.cs",
-        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs"
+        "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs",
+        "Examples/E_CLI_Storage_Birth.txt",
+        "Rules/Block_2.txt",
+        "Rules/Block_CLI_Operations.txt",
+        "BookOfEternityClient/game_master_daemon.ps1"
       ],
       "related": [],
       "requirements": {

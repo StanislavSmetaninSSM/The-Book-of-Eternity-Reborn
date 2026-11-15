@@ -20,27 +20,53 @@ internal static class MortalCargoBirthCapacity
     ["itemId", "id", "initialId", "existedId", "creationRef", "materializationReceipt", "materialization",
      "resourceMaterialization", "count", "quantity", "contentsPath", "isCarried", "currentLocationId", "currentLocationName"];
 
+    /// <summary>Validates vehicle cargo using the unchanged vehicle carrier and evidence shape.</summary>
     internal static MortalCargoBirthCapacityResult Validate(string vehicleId, JsonObject birth,
-        MortalItemCarrierCatalog catalog, IReadOnlyDictionary<string, string> creationIds, int sourceTurn, string context)
+        MortalItemCarrierCatalog catalog, IReadOnlyDictionary<string, string> creationIds, int sourceTurn, string context) =>
+        ValidateCore(new("vehicle_inventory", vehicleId, null, Array.Empty<string>()), birth, "inventory", catalog,
+            creationIds, sourceTurn, context, "resource_owner_vehicle_cargo_capacity_invalid", "Vehicles", new JsonObject
+            { ["schemaVersion"] = 1, ["vehicleId"] = vehicleId, ["sourceTurn"] = sourceTurn });
+
+    /// <summary>Validates first-birth storage contents at one exact real location/storage coordinate.
+    /// The supplied graph must already be admitted; this pure operation grants no publication permission.</summary>
+    /// <param name="locationId">Permanent accepted location identity.</param>
+    /// <param name="storageId">Exact storage identity within that location.</param>
+    /// <param name="birth">Detached birth declaration, including contents and optional measurements.</param>
+    /// <param name="catalog">The operation's already projected item catalog.</param>
+    /// <param name="creationIds">Frozen current item allocations.</param>
+    /// <param name="sourceTurn">Validated birth turn.</param>
+    /// <param name="context">Exact raw storage diagnostic path.</param>
+    /// <returns>Detached historical measurements, never current authority.</returns>
+    internal static MortalCargoBirthCapacityResult ValidateStorage(string locationId, string storageId, JsonObject birth,
+        MortalItemCarrierCatalog catalog, IReadOnlyDictionary<string, string> creationIds, int sourceTurn, string context) =>
+        ValidateCore(new("location_storage", locationId, storageId, Array.Empty<string>()), birth, "contents", catalog,
+            creationIds, sourceTurn, context, "mortal_location_storage_cargo_capacity_invalid", "mortal_location_materialization", new JsonObject
+            { ["schemaVersion"] = 1, ["carrierKind"] = "location_storage", ["locationId"] = locationId,
+              ["storageId"] = storageId, ["sourceTurn"] = sourceTurn });
+
+    private static MortalCargoBirthCapacityResult ValidateCore(MortalItemCarrierCoordinate coordinate, JsonObject birth,
+        string contentsField, MortalItemCarrierCatalog catalog, IReadOnlyDictionary<string, string> creationIds,
+        int sourceTurn, string context, string code, string section, JsonObject evidenceRoot)
     {
         var issues = new List<ValidationIssue>();
         void Error(string field, string expected) => issues.Add(new ValidationIssue(context + field,
             IssueSeverity.Error, "Invalid first-birth cargo capacity or measurement.",
-            code: "resource_owner_vehicle_cargo_capacity_invalid", section: "Vehicles",
+            code: code, section: section,
             expected: expected, actual: "invalid birth cargo"));
         MortalCargoBirthCapacityResult Invalid() => new(issues.ToArray(), null);
         if (catalog.Issues.Count != 0)
-        { Error(".inventory", "already admitted unambiguous projected item graph"); return Invalid(); }
-        var cargo = catalog.Occurrences.Where(o => o.Carrier.Kind == "vehicle_inventory" && o.Carrier.OwnerId == vehicleId).ToArray();
-        if (birth["inventory"] is not JsonArray inventory || inventory.Count != cargo.Length || inventory.Any(n => n is not JsonObject))
-        { Error(".inventory", "complete projected coverage of every birth cargo object"); return Invalid(); }
+        { Error("." + contentsField, "already admitted unambiguous projected item graph"); return Invalid(); }
+        var cargo = catalog.Occurrences.Where(o => o.Carrier.Kind == coordinate.Kind &&
+            o.Carrier.OwnerId == coordinate.OwnerId && o.Carrier.ContainerId == coordinate.ContainerId).ToArray();
+        if (birth[contentsField] is not JsonArray inventory || inventory.Count != cargo.Length || inventory.Any(n => n is not JsonObject))
+        { Error("." + contentsField, "complete projected coverage of every birth cargo object"); return Invalid(); }
         var byId = new Dictionary<string, MortalItemCarrierOccurrence>(StringComparer.Ordinal);
         var children = new Dictionary<string, List<MortalItemCarrierOccurrence>>(StringComparer.Ordinal);
         var roots = new List<MortalItemCarrierOccurrence>();
         foreach (var item in cargo)
         {
             if (item.ItemId is null || !byId.TryAdd(item.ItemId, item))
-            { Error(".inventory", "unique resolved item IDs"); continue; }
+            { Error("." + contentsField, "unique resolved item IDs"); continue; }
             if (item.Carrier.ContainerPath.Count == 0) roots.Add(item);
             else
             {
@@ -49,7 +75,7 @@ internal static class MortalCargoBirthCapacity
                 list.Add(item);
             }
         }
-        if (cargo.Length > 0 && roots.Count == 0) Error(".inventory", "at least one direct root for nonempty cargo");
+        if (cargo.Length > 0 && roots.Count == 0) Error("." + contentsField, "at least one direct root for nonempty cargo");
         if (!Integer(birth["capacity"], out var slots) || slots < 0 || roots.Count > slots)
             Error(".capacity", "nonnegative direct-stack limit covering all direct roots");
         if (!Number(birth["volume"], out var limit, out _)) Error(".volume", "finite nonnegative cargo limit");
@@ -70,7 +96,7 @@ internal static class MortalCargoBirthCapacity
         {
             var id = root.ItemId!;
             if (!Integer(root.Item["count"], out var count) || count <= 0 || root.Item["isContainer"] is not JsonValue flag || !flag.TryGetValue<bool>(out var container))
-            { Error(".inventory", "admitted positive item count and container flag"); continue; }
+            { Error("." + contentsField, "admitted positive item count and container flag"); continue; }
             var requiresRow = container || count != 1;
             var hasRow = rows.TryGetValue(id, out var provided);
             if (requiresRow != hasRow)
@@ -81,7 +107,7 @@ internal static class MortalCargoBirthCapacity
             if (!requiresRow)
             {
                 if (!Number(root.Item["volume"], out volume, out physical))
-                { Error(".inventory", "finite nonnegative physical volume"); continue; }
+                { Error("." + contentsField, "finite nonnegative physical volume"); continue; }
             }
             else
             {
@@ -110,14 +136,14 @@ internal static class MortalCargoBirthCapacity
             if (basis is not null)
             {
                 evidence["measuredConfiguration"] = basis;
-                evidence["configurationFingerprint"] = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Canonical(basis).ToJsonString())));
+                evidence["configurationFingerprint"] = ConfigurationFingerprint(basis);
             }
             evidenceRows.Add(evidence);
         }
         if (sum > limit) Error(".volume", "whole-stack outer volume no greater than cargo limit");
         if (issues.Count != 0) return Invalid();
-        return new(Array.Empty<ValidationIssue>(), new JsonObject { ["schemaVersion"] = 1,
-            ["vehicleId"] = vehicleId, ["sourceTurn"] = sourceTurn, ["cargoMeasurements"] = evidenceRows });
+        evidenceRoot["cargoMeasurements"] = evidenceRows;
+        return new(Array.Empty<ValidationIssue>(), evidenceRoot);
 
         string? Resolve(JsonObject node)
         {
@@ -170,7 +196,8 @@ internal static class MortalCargoBirthCapacity
 
     // Exact arithmetic over finite double roundtrip strings, NOT raw JSON token arithmetic.
     // 10^-324 is a common integer unit covering every finite double roundtrip value.
-    private static bool Number(JsonNode? node, out BigInteger units, out double value)
+    /// <summary>Converts one finite nonnegative double to the shared exact round-trip integer units.</summary>
+    internal static bool Number(JsonNode? node, out BigInteger units, out double value)
     {
         units = BigInteger.Zero; value = 0;
         if (node is not JsonValue scalar || scalar.GetValueKind() != JsonValueKind.Number ||
@@ -186,6 +213,10 @@ internal static class MortalCargoBirthCapacity
         units = BigInteger.Parse(digits, CultureInfo.InvariantCulture) * BigInteger.Pow(10, 324 + exponent - fraction);
         return true;
     }
+
+    /// <summary>Fingerprints the exact detached configuration using the established cargo convention.</summary>
+    internal static string ConfigurationFingerprint(JsonObject basis) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Canonical(basis).ToJsonString())));
 
     private static JsonNode Canonical(JsonNode node) => node switch
     {

@@ -8,6 +8,17 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 intermediate source preservation, WIP 2026-11-15
+
+Current-scene capacity core adapter, typed capacity cases, prepared draft slots,
+detached plan copying and historical completion/validation are implemented but
+UNCOMPILED/UNRUN. Runtime raw-admission and normalizer wiring are NOT complete;
+this checkpoint is not ready for a build, test, acceptance or publication claim.
+SpiritualC4PublicationAuthority only copies the new draft DATA alongside existing
+plan fields; no spiritual policy is added. Next: finish the two Mortal runtime
+entrypoints, exact completion/readback and integration/history tests, then checkpoint
+before fresh builds. Guidance/example changes are also WIP until that verification.
+
 ## FR5 current-scene storage capacity implementation steps
 
 Architecture consultation: fresh Astra High, read-only. Ruling: finalize only new

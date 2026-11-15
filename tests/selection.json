@@ -91,6 +91,20 @@
       "contracts": [
         "#1515 first-birth measured cargo and immutable historical configuration through actual publication."
       ]
+    },
+    {
+      "category": "mortal-cargo-capacity-policy",
+      "reason": "Shared capacity arithmetic is extracted without changing vehicle API or persisted evidence.",
+      "contracts": [
+        "Vehicle/storage exact whole-stack arithmetic and configuration freshness."
+      ]
+    },
+    {
+      "category": "mortal-storage-birth-publication",
+      "reason": "Current-scene storage drafts affect existing empty new-location storage publication and rollback.",
+      "contracts": [
+        "Empty current-scene storage birth must finalize through the same existing writer without a cargo-only shortcut."
+      ]
     }
   ]
 }

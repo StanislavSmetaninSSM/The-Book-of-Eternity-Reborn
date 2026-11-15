@@ -876,6 +876,10 @@ internal sealed class MortalLocationIdentityState
                         transition["targetLocationId"] == null;
             }
 
+            if (!isLink && transition["afterState"] is JsonObject storageAfter && storageAfter.ContainsKey("cargoBirthEvidence"))
+                issues.AddRange(MortalLocationStorageBirthEvidence.ValidateHistorical(transition, entityId,
+                    ReadExactString(transition, "childId") ?? string.Empty, path));
+
             if (!valid)
             {
                 issues.Add(InvalidEntry(
