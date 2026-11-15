@@ -8,6 +8,21 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Vehicle display fixture correction, test-only WIP 2026-11-15
+
+Source 7559f84e built with 0 errors (unit 28.34s, integration 59.71s). The combined
+18-case category completed only 6 CLI failures in 16.610s; unit execution was
+cancelled after visible causal selection/root-array failures. CLI did not reach
+its screen because the fixture omitted StateManager refresh after writing Mortal
+state. This is not causal production RED. Correct only the fixture: refresh and
+assert Mortal mode, assert handled command, let the harness select actual decorated
+choices rather than unmatched plain strings. Production remains unchanged.
+
+Split unit display (12 cases) and actual CLI display (6 cases) into separately
+owned categories so fail-fast cannot cancel the other evidence. Next: rebuild
+integration only, execute both explicit categories, then implement against observed
+causal failures. No new feature or authority layer.
+
 ## Remaining blocks: canonical vehicle display first, 2026-11-15
 
 Base c1eac5c74a95a02769ee6a210ab3f53002204bcc. The user delegated both remaining

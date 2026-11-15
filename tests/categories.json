@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-vehicle-canonical-display",
-      "responsibility": "#1515 FR8 actual shared browser result and CLI transport command display only canonical vehicles, availability and exact activeVehicleId.",
+      "responsibility": "#1515 FR8 shared browser transport result displays only canonical vehicles, availability and exact activeVehicleId.",
       "excludes": "Vehicle birth admission, resource authority, movement policy and UI redesign.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs",
@@ -25,7 +25,28 @@
           "tests": [
             "BookOfEternityClient.Tests.MortalVehicleDisplayTests.*"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "mortal-vehicle-canonical-cli-display",
+      "responsibility": "#1515 FR8 actual CLI transport command canonical selection, availability and pending/legacy exclusion.",
+      "excludes": "Vehicle birth admission, resource authority, movement policy and UI redesign.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMortalWorldCommandResultBuilder.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaLoreAndTravel.cs",
+        "BookOfEternityClient.Tests/MortalVehicleDisplayTests.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.VehicleDisplay.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
         {
           "project": "integration",
           "tests": [

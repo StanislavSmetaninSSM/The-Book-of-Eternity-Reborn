@@ -20,9 +20,8 @@ public sealed partial class ExplorerModeCommandTests
         root["vehicles"]![0]!["isActive"] = legacyActive;
         await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
         var before = await _fs.ReadFileBytesAsync(StorageTransportMoveService.VehiclesPath);
-        _console.QueueSelection("Транспорт", "Каноническая телега", "← Назад");
 
-        await _explorer.TryProcessCommand("/транспорт");
+        await ExecuteVehicleDisplayCommandAsync();
 
         AssertNoHiddenExplorerErrors("vehicle_display_selection");
         var choices = _console.SelectionChoicesHistory.First(p => p.Title.Contains("Транспорт", StringComparison.Ordinal)).Choices;
@@ -39,7 +38,7 @@ public sealed partial class ExplorerModeCommandTests
         await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath,
             new JsonArray(VehicleDisplayVehicle("PRIVATE_ROOT_ARRAY")).ToJsonString());
 
-        await _explorer.TryProcessCommand("/транспорт");
+        await ExecuteVehicleDisplayCommandAsync();
 
         AssertNoHiddenExplorerErrors("vehicle_display_root_array");
         Assert.Empty(_console.SelectionChoicesHistory);
@@ -56,9 +55,8 @@ public sealed partial class ExplorerModeCommandTests
         root["pendingUpdateVehicles"] = new JsonArray(VehicleDisplayVehicle("PRIVATE_PENDING_LOWER"));
         root["birthReceipts"] = new JsonArray(new JsonObject { ["birthState"] = VehicleDisplayVehicle("PRIVATE_HISTORY") });
         await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
-        _console.QueueSelection("Транспорт", "Каноническая телега", "← Назад");
 
-        await _explorer.TryProcessCommand("/транспорт");
+        await ExecuteVehicleDisplayCommandAsync();
 
         AssertNoHiddenExplorerErrors("vehicle_display_pending");
         var choices = _console.SelectionChoicesHistory.First(p => p.Title.Contains("Транспорт", StringComparison.Ordinal)).Choices;
@@ -78,14 +76,20 @@ public sealed partial class ExplorerModeCommandTests
         vehicle["isActive"] = true;
         vehicle["status"] = "PRIVATE_LEGACY_STATUS";
         await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, root.ToJsonString());
-        _console.QueueSelection("Транспорт", "Каноническая телега", "← Назад");
 
-        await _explorer.TryProcessCommand("/транспорт");
+        await ExecuteVehicleDisplayCommandAsync();
 
         AssertNoHiddenExplorerErrors("vehicle_display_legacy_availability");
         Assert.DoesNotContain("Активен", ExtractRenderedText(), StringComparison.Ordinal);
         Assert.Contains("не указано", ExtractRenderedText(), StringComparison.Ordinal);
         Assert.DoesNotContain("PRIVATE_LEGACY_STATUS", ExtractRenderedText(), StringComparison.Ordinal);
+    }
+
+    private async Task ExecuteVehicleDisplayCommandAsync()
+    {
+        await _stateManager.RefreshGameStateAsync();
+        Assert.True(RealmSemantics.IsMortalRealm(_stateManager.CurrentState.CurrentRealm));
+        Assert.Equal(string.Empty, await _explorer.TryProcessCommand("/транспорт"));
     }
 
     private static JsonObject VehicleDisplayRoot() => new()
