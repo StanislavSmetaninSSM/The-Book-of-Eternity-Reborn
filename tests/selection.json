@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-storage-cargo-capacity-policy",
+      "reason": "New storage wrapper reuses shared capacity core over exact location/storage coordinates.",
+      "contracts": [
+        "#1515 pure current-storage birth direct-stack/whole-volume capacity, exact real carrier coordinates and measurements through shared vehicle/storage core."
+      ]
+    },
+    {
       "category": "mortal-storage-current-birth-capacity",
       "reason": "#1515 FR5 current-scene populated storage capacity causal admission and publication boundary.",
       "contracts": [

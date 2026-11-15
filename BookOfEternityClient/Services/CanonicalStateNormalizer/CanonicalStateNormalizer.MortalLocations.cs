@@ -20,7 +20,15 @@ public partial class CanonicalStateNormalizer
     /// </returns>
     internal async Task<MortalLocationAcceptedTurnPlan?> NormalizeMortalLocationsAsync(
         IReadOnlyDictionary<string, string>? backups,
-        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null) =>
+        (await NormalizeMortalLocationsWithStorageBirthsAsync(backups, spiritualPublicationReceipt, null, null)).Plan;
+
+    private sealed record MortalLocationNormalizationResult(MortalLocationAcceptedTurnPlan? Plan,
+        MortalItemCanonicalProjectionResult? ItemPhase, string? ProjectionProof);
+
+    private async Task<MortalLocationNormalizationResult> NormalizeMortalLocationsWithStorageBirthsAsync(
+        IReadOnlyDictionary<string, string>? backups, SpiritualPublicationReceipt? spiritualPublicationReceipt,
+        MortalItemAcceptedTurnNormalizationSnapshot? itemSnapshot, AcceptedMechanicsPlanBinding? sourceBinding)
     {
         MortalLocationAcceptedTurnPlan? completedLocationPlan = null;
         if (spiritualPublicationReceipt is not null)
@@ -57,7 +65,7 @@ public partial class CanonicalStateNormalizer
             }
         }
         if (!hasCurrentCommand && !hasMapCommand)
-            return null;
+            return new(null, null, null);
 
         var preTurnMap = await ReadRequiredMortalLocationBackupAsync(
             MortalLocationMaterializationContract.WorldMapPath,
@@ -149,7 +157,29 @@ public partial class CanonicalStateNormalizer
                     : $"Mortal location normalization failed: {issue.Code} at {issue.FilePath}.");
         }
 
-        var plan = result.Plan;
+        var prepared = result.Plan;
+        var plan = prepared;
+        MortalLocationStorageBirthCompletion? storageCompletion = null;
+        MortalItemCanonicalProjectionResult? storageItemPhase = null;
+        if (prepared.StorageBirthDrafts.Count > 0)
+        {
+            if (itemSnapshot is null || sourceBinding is null || itemSnapshot.SessionId != sourceBinding.SessionId ||
+                itemSnapshot.SnapshotToken != sourceBinding.SnapshotToken || itemSnapshot.Turn != sourceBinding.Turn)
+                throw new InvalidDataException("Current storage birth requires its admitted empty or populated item snapshot before the first write.");
+            if (!itemSnapshot.TryProjectItemPhase(out storageItemPhase, out var phaseIssues) || storageItemPhase is null)
+                throw new InvalidDataException("Storage birth lost its admitted item phase: " + phaseIssues.FirstOrDefault()?.Code);
+            var catalog = MortalItemCanonicalProjectionPlanner.BuildCatalog(storageItemPhase.ItemPhaseAfterImages, true,
+                MortalVehicleCargoProjection.BirthIds(itemSnapshot.CloneRouteCatalog()));
+            var source = new MortalStorageBirthSourceBinding(sourceBinding.SessionId, sourceBinding.RequestId,
+                sourceBinding.SnapshotToken, sourceBinding.Turn, itemSnapshot.ProjectionProofFingerprint);
+            var finalized = MortalLocationStorageBirthEvidence.Finalize(prepared, storageItemPhase, catalog,
+                itemSnapshot.CloneItemIdsByCreationRef(), source);
+            if (!finalized.IsValid) throw new InvalidDataException("Storage birth finalization failed: " + finalized.Issues[0].Code);
+            storageCompletion = finalized.Completion!;
+            var publicationIssues = storageCompletion.ValidateForPublication(prepared, source);
+            if (publicationIssues.Count != 0) throw new InvalidDataException(publicationIssues[0].Code);
+            plan = storageCompletion.Plan;
+        }
         if (plan.TouchedPaths.Contains(
                 MortalLocationMaterializationContract.WorldMapPath,
                 StringComparer.Ordinal))
@@ -198,8 +228,14 @@ public partial class CanonicalStateNormalizer
         }
         if (plan.FinalStorageAccess is not null && plan.TouchedPaths.Contains(MortalStorageAccessProjection.StatePath, StringComparer.Ordinal))
             await WriteCanonicalFileAtomicAsync(MortalStorageAccessProjection.StatePath, plan.FinalStorageAccess.ToJsonString(JsonOpts));
+        if (storageCompletion is not null)
+        {
+            var history = await ReadMortalLocationObjectRootAsync(MortalLocationIdentityState.StatePath);
+            var readbackIssues = storageCompletion.ValidateReadback(history);
+            if (readbackIssues.Count != 0) throw new InvalidDataException(readbackIssues[0].Code);
+        }
         await ApplyMortalLocationGovernedRewritesAsync(plan, rawNpcCore);
-        return plan;
+        return new(plan, storageItemPhase, itemSnapshot?.ProjectionProofFingerprint);
     }
 
     private async Task ApplyMortalLocationGovernedRewritesAsync(

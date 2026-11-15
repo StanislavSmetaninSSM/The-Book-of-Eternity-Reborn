@@ -6,10 +6,6 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class MortalLocationStorageBirthEvidence
 {
-    private static readonly string[] IdentityShapeFields =
-    ["itemId", "id", "initialId", "existedId", "creationRef", "materializationReceipt", "materialization",
-     "resourceMaterialization", "count", "quantity", "contentsPath", "isCarried", "currentLocationId", "currentLocationName"];
-
     /// <summary>Strictly checks a present historical storage payload using only its captured DATA.
     /// Absence on unrelated old paths is not a request to fabricate a birth record.</summary>
     /// <param name="transition">One existing location child history record.</param>
@@ -39,7 +35,8 @@ internal static partial class MortalLocationStorageBirthEvidence
             return Invalid();
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var aliases = new HashSet<string>(StringComparer.Ordinal);
-        var total = BigInteger.Zero;
+        var items = new JsonArray();
+        var measurements = new JsonArray();
         foreach (var node in rows)
         {
             if (node is not JsonObject row || !Closed(row, "itemId", "count", "externalVolumeDm3", "materializationId", "measuredConfiguration", "configurationFingerprint") ||
@@ -52,18 +49,45 @@ internal static partial class MortalLocationStorageBirthEvidence
                 !ValidateNode(basis, count, out var physical, out var container) ||
                 count == 1 && !container && outer != physical)
                 return Invalid();
-            total += outer;
+            Capture(basis, Text(row["itemId"])!, count, Text(row["materializationId"])!, Array.Empty<string>());
+            if (container || count != 1)
+                measurements.Add(new JsonObject { ["itemId"] = row["itemId"]!.DeepClone(), ["count"] = count,
+                    ["externalVolumeDm3"] = row["externalVolumeDm3"]!.DeepClone(), ["measuredConfiguration"] = basis.DeepClone() });
         }
-        return total <= volumeLimit ? Array.Empty<ValidationIssue>() : Invalid();
+        var storage = Metadata(after);
+        storage["contents"] = items;
+        storage["cargoMeasurements"] = measurements;
+        var current = new JsonObject { ["locationId"] = locationId, ["locationStorages"] = new JsonArray(storage.DeepClone()) };
+        var catalog = MortalItemCarrierCatalog.Build(new(null, null, null, current, null, new Dictionary<string, JsonObject>()));
+        var graphIssues = new List<ValidationIssue>();
+        ValidationService.ValidateCanonicalContainerPaths(catalog, graphIssues);
+        if (catalog.Issues.Count != 0 || graphIssues.Count != 0) return Invalid();
+        var rebuilt = MortalCargoBirthCapacity.ValidateStorage(locationId, storageId, storage, catalog,
+            new Dictionary<string, string>(), turn, context);
+        var captured = evidence.DeepClone().AsObject(); captured.Remove("sourceAuthority");
+        return rebuilt.IsValid && MortalItemMaterializationContract.ImmutableEvidenceEquals(rebuilt.Evidence!, captured)
+            ? Array.Empty<ValidationIssue>() : Invalid();
+
+        void Capture(JsonObject basis, string id, int count, string materializationId, IReadOnlyList<string> parents)
+        {
+            var item = basis["item"]!.DeepClone().AsObject();
+            item["itemId"] = id; item["count"] = count;
+            item["contentsPath"] = parents.Count == 0 ? null : new JsonArray(parents.Select(p => (JsonNode)JsonValue.Create(p)!).ToArray());
+            item["materialization"] = new JsonObject { ["materializationId"] = materializationId };
+            items.Add(item);
+            foreach (var child in basis["contents"]!.AsArray().OfType<JsonObject>())
+                Capture(child, Text(child["itemId"])!, child["count"]!.GetValue<int>(), "historical_nested", parents.Append(id).ToArray());
+        }
 
         bool Observe(string? id) => Exact(id) && ids.Add(id!) && aliases.Add(ResourceMaterializationContract.BuildConfusableKey(id!));
         bool ValidateNode(JsonObject node, int count, out BigInteger physical, out bool container)
         {
             physical = BigInteger.Zero; container = false;
             if (node["item"] is not JsonObject item || node["contents"] is not JsonArray children ||
-                item.Any(pair => IdentityShapeFields.Contains(pair.Key, StringComparer.Ordinal)) ||
+                item.Any(pair => MortalCargoBirthCapacity.IsIdentityShapeField(pair.Key)) ||
                 item["isContainer"] is not JsonValue flag || !flag.TryGetValue(out container) ||
-                !MortalCargoBirthCapacity.Number(item["volume"], out physical, out _) || children.Count != 0 && !container)
+                !MortalCargoBirthCapacity.Number(item["volume"], out physical, out _) || children.Count != 0 && !container ||
+                MortalItemMaterializationContract.ValidateCapturedConfiguration(item, count, context).Count != 0)
                 return false;
             foreach (var childNode in children)
             {

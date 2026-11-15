@@ -45,6 +45,26 @@ public sealed class MortalStorageBirthAccessTests
         Assert.Empty(MortalLocationStorageMetadataContract.Validate(JsonSerializer.SerializeToElement(storage), "storage"));
     }
 
+    [Fact]
+    public void CurrentStorageCargoBirthGuidanceUsesCompleteSourceLocalExample()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains("mortal_current_storage_cargo_birth_v1", File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path)), StringComparison.Ordinal);
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_Storage_Birth.txt"));
+        var json = example.Split("```json", StringSplitOptions.None)[2].Split("```", StringSplitOptions.None)[0];
+        var storage = JsonNode.Parse(json)!.AsObject();
+        Assert.Empty(MortalLocationStorageMetadataContract.Validate(JsonSerializer.SerializeToElement(storage), "storage"));
+        Assert.Equal(1, storage["capacity"]!.GetValue<int>());
+        Assert.Equal(0.01d, storage["volume"]!.GetValue<double>());
+        Assert.Null(storage["cargoMeasurements"]); Assert.Null(storage["cargoBirthEvidence"]);
+        var item = Assert.Single(storage["contents"]!.AsArray())!.AsObject();
+        Assert.Empty(MortalItemMaterializationContract.Validate(JsonSerializer.SerializeToElement(item), "storage.contents[0]", MortalItemMaterializationPhase.RawPreSeal));
+        Assert.Equal("locref_current:storage_supply", item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
+        Assert.Equal(1, item["count"]!.GetValue<int>());
+        Assert.False(item["isContainer"]!.GetValue<bool>());
+        Assert.Equal(storage["volume"]!.GetValue<double>(), item["volume"]!.GetValue<double>());
+    }
+
     [Theory]
     [InlineData("Player", false)]
     [InlineData("Shared", false)]

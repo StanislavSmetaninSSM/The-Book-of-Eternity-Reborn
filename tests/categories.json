@@ -2,11 +2,39 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-cargo-capacity-policy",
+      "responsibility": "#1515 pure current-storage birth direct-stack/whole-volume capacity, exact real carrier coordinates and measurements through shared vehicle/storage core.",
+      "excludes": "Runtime source/lease admission, history persistence, offscreen birth and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalCargoBirthCapacity.cs",
+        "BookOfEternityClient.Tests/MortalStorageCargoCapacityTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalStorageCargoCapacityTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-birth-history",
       "responsibility": "#1515 detached storage birth history and existing location transition/parser/client-owned index controls.",
       "excludes": "Whole location system, live storage movement and full publication qualification.",
       "changeHints": [
-        "BookOfEternityClient/Services/MortalLocationIdentityState.cs"
+        "BookOfEternityClient/Services/MortalLocationIdentityState.cs",
+        "BookOfEternityClient/Services/MortalLocationStorageBirthEvidence.cs",
+        "BookOfEternityClient/Services/MortalLocationStorageBirthEvidence.History.cs",
+        "BookOfEternityClient.Tests/MortalStorageBirthHistoryTests.cs"
       ],
       "related": [],
       "requirements": {
@@ -20,6 +48,7 @@
         {
           "project": "unit",
           "tests": [
+            "BookOfEternityClient.Tests.MortalStorageBirthHistoryTests.*",
             "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsIncompleteLifecycleTransitionEvidence",
             "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsDuplicateLifecycleTransitionIdentityAcrossEntries",
             "BookOfEternityClient.Tests.MortalLocationIdentityStateTests.Parse_RejectsMalformedLifecycleTransitionEvidence",
@@ -36,8 +65,8 @@
     },
     {
       "id": "mortal-storage-current-birth-capacity",
-      "responsibility": "#1515 current-scene populated storage birth: actual raw capacity refusal without mutation and exact-limit common publication.",
-      "excludes": "Offscreen birth, whole-stack measurement graph, storage additions and whole issue qualification.",
+      "responsibility": "#1515 current-scene populated/empty storage birth: real capacity refusal, exact-limit publication, immutable child history, actual move preservation, reached rollback and source drift refusal.",
+      "excludes": "Offscreen birth, existing-location populated additions and whole issue qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.StorageBirthCapacity.cs"
       ],
@@ -47,7 +76,7 @@
         "exclusive": false,
         "ciRunner": "ubuntu-24.04"
       },
-      "timeoutMinutes": 3,
+      "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
         {
@@ -404,7 +433,8 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment",
-            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.ExistingStorageBirthGuidanceUsesCompleteEmptySourceLocalOperation"
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.ExistingStorageBirthGuidanceUsesCompleteEmptySourceLocalOperation",
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.CurrentStorageCargoBirthGuidanceUsesCompleteSourceLocalExample"
           ]
         }
       ]

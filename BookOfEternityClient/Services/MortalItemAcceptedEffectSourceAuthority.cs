@@ -240,8 +240,15 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
     internal IReadOnlyList<MortalItemAcceptedTransfer> Transfers =>
         _transfers.Select(CloneTransfer).ToArray();
 
+    /// <summary>Detaches the admitted allocation map for the same operation's pure birth validators.</summary>
+    internal IReadOnlyDictionary<string, string> CloneItemIdsByCreationRef() =>
+        new Dictionary<string, string>(_itemIdsByCreationRef, StringComparer.Ordinal);
+
     internal MortalItemRouteAuthorityCatalog CloneRouteCatalog() =>
         MortalItemRouteAuthorityCatalog.CreateFrozen(_routesByCreationRef);
+
+    /// <summary>Detaches one frozen carrier for bounded consumers without cloning unrelated projection roots.</summary>
+    internal JsonNode? CloneCurrentProjectionRoot(string path) => _currentRoots.GetValueOrDefault(path)?.DeepClone();
 
     internal IReadOnlyDictionary<string, JsonNode?> CloneCurrentProjectionRoots() =>
         CloneRoots(_currentRoots);

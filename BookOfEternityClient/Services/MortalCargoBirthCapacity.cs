@@ -20,6 +20,9 @@ internal static class MortalCargoBirthCapacity
     ["itemId", "id", "initialId", "existedId", "creationRef", "materializationReceipt", "materialization",
      "resourceMaterialization", "count", "quantity", "contentsPath", "isCarried", "currentLocationId", "currentLocationName"];
 
+    /// <summary>Identity/placement fields excluded by the existing detached measurement format.</summary>
+    internal static bool IsIdentityShapeField(string name) => Excluded.Contains(name, StringComparer.Ordinal);
+
     /// <summary>Validates vehicle cargo using the unchanged vehicle carrier and evidence shape.</summary>
     internal static MortalCargoBirthCapacityResult Validate(string vehicleId, JsonObject birth,
         MortalItemCarrierCatalog catalog, IReadOnlyDictionary<string, string> creationIds, int sourceTurn, string context) =>

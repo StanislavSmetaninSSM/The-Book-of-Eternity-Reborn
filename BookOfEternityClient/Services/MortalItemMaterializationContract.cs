@@ -607,6 +607,25 @@ internal static class MortalItemMaterializationContract
         }
     }
 
+    /// <summary>Validates retained semantic configuration without inventing an item envelope or live identity.
+    /// Measurement count is supplied separately because the shared basis deliberately excludes it.</summary>
+    internal static IReadOnlyList<ValidationIssue> ValidateCapturedConfiguration(JsonObject configuration, int count, string context)
+    {
+        var issues = new List<ValidationIssue>();
+        foreach (var field in GovernedFields.Values.SelectMany(fields => fields).Distinct(StringComparer.Ordinal))
+            if (!MortalCargoBirthCapacity.IsIdentityShapeField(field) && !configuration.ContainsKey(field))
+                issues.Add(Issue(context + "." + field, "mortal_item_materialization_complete_field_missing",
+                    "Captured item configuration retains every semantic field.", "field present", "missing", null));
+        var detached = configuration.DeepClone().AsObject();
+        detached["count"] = count;
+        var element = JsonSerializer.SerializeToElement(detached);
+        ValidatePresentation(element, context, issues);
+        ValidatePhysical(element, context, issues);
+        if (element.TryGetProperty("activeEffectDefinitions", out var effects))
+            issues.AddRange(EffectSourceDefinitionContract.ValidateArray(effects, context + ".activeEffectDefinitions", "mortal_world"));
+        return issues;
+    }
+
     private static void ValidateGovernedFields(
         JsonElement item,
         string context,

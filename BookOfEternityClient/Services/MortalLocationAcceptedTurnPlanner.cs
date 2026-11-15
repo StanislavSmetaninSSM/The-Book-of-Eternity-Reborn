@@ -1749,6 +1749,16 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 candidate.Context,
                 candidate.ExpectedRoute));
 
+            if (candidate.Raw["locationStorages"] is JsonArray birthStorages)
+                for (var storageIndex = 0; storageIndex < birthStorages.Count; storageIndex++)
+                    if (birthStorages[storageIndex] is JsonObject storage &&
+                        (storage.ContainsKey("cargoBirthEvidence") || storage.ContainsKey("cargoMeasurements") &&
+                            (!candidate.SelectCurrent || storage["cargoMeasurements"] is not JsonArray)))
+                        issues.Add(MortalLocationStorageBirthEvidence.Issue(
+                            candidate.Context + $".locationStorages[{storageIndex}]",
+                            "mortal_location_storage_birth_raw_evidence_forbidden",
+                            "client-owned historical evidence absent; measurement array only on current-scene births"));
+
             var initialId = ReadExactString(candidate.Raw, "initialId");
             var materializationId = ReadExactString(
                 candidate.Raw["materialization"] as JsonObject,

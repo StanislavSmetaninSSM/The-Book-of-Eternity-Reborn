@@ -459,6 +459,20 @@ public partial class ValidationService
         {
             AcceptedTurnAuthorityRegistry.ClearMortalVehicleBirths(_fs, writeLease);
         }
+        if (spiritualCapture is null && MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                _fs, writeLease, manifest.SessionId, manifest.ManifestPayloadHash, manifest.TurnNumber, out var storageSnapshot) &&
+            MortalLocationStorageBirthEvidence.HasCurrentSceneBirths(storageSnapshot))
+        {
+            vehicleLocationInputs = await CaptureFreshVehicleCargoInputsAsync(storageSnapshot, writeLease, issues,
+                StorageTransportMoveService.CurrentLocationPath, "mortal_location_storage_birth_source_changed");
+            if (vehicleLocationInputs?.LocationPlan?.StorageBirthDrafts.Count is not > 0)
+            {
+                issues.Add(MortalLocationStorageBirthEvidence.Issue(StorageTransportMoveService.CurrentLocationPath,
+                    "mortal_location_storage_birth_source_changed", "the same exact prepared current-scene birth slots"));
+                return issues;
+            }
+            cargoBeforeImages = vehicleLocationInputs.Observations;
+        }
         if (spiritualCapture is null && MortalVehicleCargoProjection.HasCargo(currentVehicleBirthInput))
         {
             try
@@ -470,7 +484,7 @@ public partial class ValidationService
                     !JsonNode.DeepEquals(itemSnapshot.CloneCurrentProjectionRoots()
                         .GetValueOrDefault(StorageTransportMoveService.VehiclesPath), currentVehicleBirthInput))
                     throw new InvalidDataException("Cargo requires the exact current raw vehicle item snapshot.");
-                vehicleLocationInputs = await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
+                vehicleLocationInputs ??= await CaptureFreshVehicleCargoInputsAsync(itemSnapshot, writeLease, issues);
                 if (vehicleLocationInputs is null)
                     return issues;
                 cargoBeforeImages = vehicleLocationInputs.Observations;
@@ -956,6 +970,7 @@ public partial class ValidationService
             ownerComposition.TerminalOwners.Count == 0 &&
             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
             ownerComposition.OwnerTransitions.Count == 0 &&
+            vehicleLocationInputs?.LocationPlan?.StorageBirthDrafts.Count is not > 0 &&
             !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
             woundHandoff is null && mortalReceipt is null && spiritualCapture == null && mortalCapture == null)
         {

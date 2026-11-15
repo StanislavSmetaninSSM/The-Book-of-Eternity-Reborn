@@ -21,7 +21,9 @@ public partial class ValidationService
     private async Task<VehicleBirthLocationInputs?> CaptureFreshVehicleCargoInputsAsync(
         MortalItemAcceptedTurnNormalizationSnapshot? snapshot,
         FileSystemManager.CanonicalWriteLease lease,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        string issuePath = StorageTransportMoveService.VehiclesPath,
+        string issueCode = "resource_owner_vehicle_cargo_projection_invalid")
     {
         // Location projections also depend on these four current roots. Other location
         // companions are signed pre-turn inputs, not mutable current planning sources.
@@ -55,8 +57,8 @@ public partial class ValidationService
             snapshot is not null && !snapshot.MatchesProjectionRoots(current, snapshot.CloneBackupProjectionRoots()))
         {
             issues.AddRange(localIssues);
-            issues.Add(ResourceIssue(StorageTransportMoveService.VehiclesPath,
-                "resource_owner_vehicle_cargo_projection_invalid",
+            issues.Add(ResourceIssue(issuePath,
+                issueCode,
                 "unchanged accepted item projection dependencies", "current source drift or invalid input"));
             return null;
         }

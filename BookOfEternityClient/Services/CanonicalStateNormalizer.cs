@@ -473,11 +473,12 @@ public partial class CanonicalStateNormalizer
             (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
-        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);
-        await NormalizeMortalItemsAsync(
-            backups,
-            mortalLocationPlan?.AcceptedStorageCoordinates,
-            mortalItemMode);
+        var normalizedLocations = await NormalizeMortalLocationsWithStorageBirthsAsync(backups, spiritualPublicationReceipt,
+            (mortalItemMode as MortalItemAcceptedTurnNormalizationMode.Validated)?.Snapshot,
+            (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Binding);
+        var mortalLocationPlan = normalizedLocations.Plan;
+        await NormalizeMortalItemsAsync(backups, mortalLocationPlan?.AcceptedStorageCoordinates, mortalItemMode,
+            normalizedLocations.ItemPhase, normalizedLocations.ProjectionProof);
         await NormalizeGuardiansAsync(
             backups,
             (acceptedMechanicsPreflight as

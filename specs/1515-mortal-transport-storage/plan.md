@@ -8,6 +8,24 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 current-storage runtime and tests ready, WIP 2026-11-15
+
+Raw item admission now checks current-scene storage capacity after one exact item
+projection; existing common before-images include storage-only observations, reused
+when vehicle births coexist. Before any location write, the normalizer requires a
+matching detached completed index and reuses the same phase in the item writer.
+Completion owns detached prepared roots and exposes no mutable retained aliases.
+Historical configuration reconstructs through existing item semantic/graph/capacity
+contracts without live reads; the trigger uses a narrow root accessor, not a clone
+of every projection root. No new cache, writer, marker or retained permission.
+
+Source and tests are coherent but UNCOMPILED/UNRUN: current-storage integration7,
+new history16 and storage capacity10 cases, plus narrow existing controls. Empty
+current-scene birth, later move, reached history-write rollback and source drift
+are covered in source. Guidance/example guard and actual daemon rendering marker
+are updated. Next: fresh builds, official bounded categories, independent review.
+Populated offscreen birth and whole #1515 acceptance remain outside this checkpoint.
+
 ## FR5 intermediate source preservation, WIP 2026-11-15
 
 Current-scene capacity core adapter, typed capacity cases, prepared draft slots,

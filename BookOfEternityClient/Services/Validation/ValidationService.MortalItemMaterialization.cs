@@ -320,6 +320,8 @@ public partial class ValidationService
                                 currentProjectionRoots,
                                 backupProjectionRoots,
                                 spiritualAllocations?.Items, validatedManifest.RequestId, validatedManifest.TurnNumber);
+                            if (currentInputs is null && locationPlan?.StorageBirthDrafts.Count > 0)
+                                ValidateAdmittedCurrentStorageBirths(locationPlan, validatedManifest, writeLease, issues);
                         }
                         else if (routeAuthorities is not null &&
                                  transferCatalog is not null &&

@@ -65,14 +65,24 @@ public partial class CanonicalStateNormalizer
     private async Task NormalizeMortalItemsAsync(
         IReadOnlyDictionary<string, string>? backups,
         IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
-        MortalItemAcceptedTurnNormalizationMode mode)
+        MortalItemAcceptedTurnNormalizationMode mode,
+        MortalItemCanonicalProjectionResult? reusedPhase = null,
+        string? reusedProjectionProof = null)
     {
         ArgumentNullException.ThrowIfNull(mode);
         if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
         {
             var currentRoots = validated.Snapshot.CloneCurrentProjectionRoots();
             IReadOnlyDictionary<string, JsonNode?> projectedRoots;
-            if (validated.Snapshot.CloneFinalBaseline() is { } finalBaseline)
+            if (reusedPhase is not null)
+            {
+                if (!reusedPhase.IsValid || reusedProjectionProof != validated.Snapshot.ProjectionProofFingerprint ||
+                    validated.Snapshot.HasFinalPublicationBaseline && (!validated.Snapshot.RecomputesFinalPublicationBaseline() ||
+                        validated.Snapshot.CloneItemPhase()?.Fingerprint != reusedPhase.Fingerprint))
+                    throw new InvalidDataException("Storage birth item phase lost its exact admitted projection binding.");
+                projectedRoots = reusedPhase.ItemPhaseAfterImages;
+            }
+            else if (validated.Snapshot.CloneFinalBaseline() is { } finalBaseline)
             {
                 var itemPhase = validated.Snapshot.CloneItemPhase();
                 if (finalBaseline.Issues.Count != 0 ||

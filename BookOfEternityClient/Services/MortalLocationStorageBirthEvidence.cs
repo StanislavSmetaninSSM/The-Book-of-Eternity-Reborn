@@ -10,7 +10,9 @@ internal sealed class MortalLocationStorageBirthDraft
     internal MortalLocationStorageBirthDraft(string locationId, string storageId, string transitionId,
         string operationRef, JsonObject rawStorage, int sourceTurn)
     { LocationId = locationId; StorageId = storageId; TransitionId = transitionId; OperationRef = operationRef;
-      _storage = rawStorage.DeepClone().AsObject(); SourceTurn = sourceTurn; }
+      _storage = rawStorage.DeepClone().AsObject();
+      if (!_storage.ContainsKey("contents")) _storage["contents"] = new JsonArray();
+      SourceTurn = sourceTurn; }
     internal string LocationId { get; }
     internal string StorageId { get; }
     internal string TransitionId { get; }
@@ -31,36 +33,46 @@ internal sealed record MortalStorageBirthFinalizationResult(MortalLocationStorag
 /// <summary>Detached completion tied to exact prepared slots and one item phase. Still requires live publication fences.</summary>
 internal sealed class MortalLocationStorageBirthCompletion
 {
+    private readonly MortalLocationAcceptedTurnPlan _plan;
     private readonly string _preparedIndex;
     private readonly string _completedIndex;
-    internal MortalLocationStorageBirthCompletion(MortalLocationAcceptedTurnPlan prepared, MortalLocationAcceptedTurnPlan completed,
+    internal MortalLocationStorageBirthCompletion(MortalLocationAcceptedTurnPlan prepared, JsonObject completedIndex,
         MortalStorageBirthSourceBinding source, string phaseFingerprint)
-    { Plan = completed; Source = source; PhaseFingerprint = phaseFingerprint;
+    { _plan = prepared.WithFinalIdentityIndex(completedIndex); Source = source; PhaseFingerprint = phaseFingerprint;
       _preparedIndex = SpiritualWoundStateJson.Hash(prepared.FinalIdentityIndex, "storage_birth_prepared_index");
-      _completedIndex = SpiritualWoundStateJson.Hash(completed.FinalIdentityIndex, "storage_birth_completed_index"); }
-    internal MortalLocationAcceptedTurnPlan Plan { get; }
+      _completedIndex = SpiritualWoundStateJson.Hash(_plan.FinalIdentityIndex, "storage_birth_completed_index"); }
+    internal MortalLocationAcceptedTurnPlan Plan => _plan.WithFinalIdentityIndex(_plan.FinalIdentityIndex);
     internal MortalStorageBirthSourceBinding Source { get; }
     internal string PhaseFingerprint { get; }
     /// <summary>Checks completion DATA before the existing writer; never grants a write lease.</summary>
     internal IReadOnlyList<ValidationIssue> ValidateForPublication(MortalLocationAcceptedTurnPlan prepared, MortalStorageBirthSourceBinding source)
     {
         if (source != Source || _preparedIndex != SpiritualWoundStateJson.Hash(prepared.FinalIdentityIndex, "storage_birth_prepared_index") ||
-            _completedIndex != SpiritualWoundStateJson.Hash(Plan.FinalIdentityIndex, "storage_birth_completed_index"))
+            _completedIndex != SpiritualWoundStateJson.Hash(_plan.FinalIdentityIndex, "storage_birth_completed_index"))
             return new[] { MortalLocationStorageBirthEvidence.Issue(MortalLocationIdentityState.StatePath,
                 "mortal_location_storage_birth_completion_changed", "matching source and unchanged prepared/completed history") };
-        return MortalLocationStorageBirthEvidence.ValidateExpectedCoverage(prepared, Plan.FinalIdentityIndex, Source);
+        return MortalLocationStorageBirthEvidence.ValidateExpectedCoverage(prepared, _plan.FinalIdentityIndex, Source);
     }
     /// <summary>Confirms the actual existing writer's closing read contains precisely the completed index.</summary>
     internal IReadOnlyList<ValidationIssue> ValidateReadback(JsonObject? index) => index is null ||
         _completedIndex != SpiritualWoundStateJson.Hash(index, "storage_birth_completed_index")
             ? new[] { MortalLocationStorageBirthEvidence.Issue(MortalLocationIdentityState.StatePath,
                 "mortal_location_storage_birth_readback_changed", "exact complete published history") }
-            : MortalLocationStorageBirthEvidence.ValidateExpectedCoverage(Plan, index, Source);
+            : MortalLocationStorageBirthEvidence.ValidateExpectedCoverage(_plan, index, Source);
 }
 
 /// <summary>Pure first-birth completion. Reuses the held plan/catalog and allocates no identities or permissions.</summary>
 internal static partial class MortalLocationStorageBirthEvidence
 {
+    /// <summary>Recognizes only frozen same-turn current-scene declarations, including empty storage births.</summary>
+    internal static bool HasCurrentSceneBirths(MortalItemAcceptedTurnNormalizationSnapshot snapshot)
+    {
+        var root = snapshot.CloneCurrentProjectionRoot(StorageTransportMoveService.CurrentLocationPath);
+        return root is JsonObject location && location["materialization"] is JsonObject birth &&
+            Text(birth["route"]) == "current_scene_creation" && Integer(birth["sourceTurn"], out var turn) &&
+            turn == snapshot.Turn && location["locationStorages"] is JsonArray { Count: > 0 };
+    }
+
     /// <summary>Finalizes only detached index slots; current/map/item roots and cached plan remain unchanged.</summary>
     internal static MortalStorageBirthFinalizationResult Finalize(MortalLocationAcceptedTurnPlan prepared,
         MortalItemCanonicalProjectionResult itemPhase, MortalItemCarrierCatalog catalog,
@@ -104,13 +116,14 @@ internal static partial class MortalLocationStorageBirthEvidence
         issues.AddRange(MortalLocationIdentityState.Parse(index).Issues);
         issues.AddRange(ValidateExpectedCoverage(prepared, index, source));
         if (issues.Count != 0) return new(null, issues.ToArray());
-        var completed = prepared.WithFinalIdentityIndex(index);
-        return new(new(prepared, completed, source, itemPhase.Fingerprint), Array.Empty<ValidationIssue>());
+        return new(new(prepared, index, source, itemPhase.Fingerprint), Array.Empty<ValidationIssue>());
 
         MortalStorageBirthFinalizationResult Invalid(string expected) => new(null,
             new[] { Issue(MortalLocationIdentityState.StatePath, "mortal_location_storage_birth_finalization_invalid", expected) });
     }
 
+    /// <summary>Checks contextual expected slots/source. Payload integrity is validated once by the canonical parser;
+    /// immutable completion hashes retain that result through writer/readback without repeating historical graph reconstruction.</summary>
     internal static IReadOnlyList<ValidationIssue> ValidateExpectedCoverage(MortalLocationAcceptedTurnPlan prepared,
         JsonObject index, MortalStorageBirthSourceBinding source)
     {
@@ -123,7 +136,6 @@ internal static partial class MortalLocationStorageBirthEvidence
                 Text(authority["sessionId"]) != source.SessionId || Text(authority["requestId"]) != source.RequestId ||
                 Text(authority["snapshotToken"]) != source.SnapshotToken)
                 issues.Add(Issue(draft.OperationRef, "mortal_location_storage_birth_completion_missing", "every exact expected birth finalized"));
-            else issues.AddRange(ValidateHistorical(slot!, draft.LocationId, draft.StorageId, draft.OperationRef));
         }
         return issues;
     }
