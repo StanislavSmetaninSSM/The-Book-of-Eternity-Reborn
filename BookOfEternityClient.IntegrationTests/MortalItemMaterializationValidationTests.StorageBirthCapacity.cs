@@ -66,7 +66,10 @@ public sealed partial class MortalItemMaterializationValidationTests
             var map = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
             Assert.True(JsonNode.DeepEquals(original, map["locations"]!.AsArray().OfType<JsonObject>()
                 .Single(location => location["locationId"]!.GetValue<string>() == "loc_before_storage_birth")));
-            Assert.Empty((await context.ReadJsonAsync(MortalLocationStorageContentsState.StatePath))!["entries"]!.AsArray());
+            var offscreen = MortalLocationStorageContentsState.Parse(
+                (await context.ReadJsonAsync(MortalLocationStorageContentsState.StatePath)) as JsonObject);
+            Assert.Empty(offscreen.Issues);
+            Assert.Empty(offscreen.Entries);
         }
 
         [Fact]
@@ -132,10 +135,20 @@ public sealed partial class MortalItemMaterializationValidationTests
         public async Task StorageBirthCapacity_StorageOnlySourceDriftFailsBeforePublication()
         {
             await using var context = await MortalItemMaterializationTestContext.CreateAsync();
-            await ArrangeCapacityAsync(context, 1, 1);
+            await ArrangeCapacityAsync(context, 0, 0, existingScene: true);
+            var raw = (await context.ReadJsonAsync(StorageTransportMoveService.CurrentLocationPath))!.AsObject();
+            raw["currentLocationData"]!["locationStorages"]![0]!["contents"] = new JsonArray();
+            await context.WriteJsonAsync(StorageTransportMoveService.CurrentLocationPath, raw);
             Assert.DoesNotContain(await context.ValidateAcceptedTurnRawMaterializationAsync(), i => i.Severity == IssueSeverity.Error);
+            Assert.Empty((await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!["entries"]!.AsArray());
+            var common = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem);
+            Assert.NotNull(common);
+            var sources = common.Binding.BeforeImages;
+            Assert.Contains(MortalLocationMaterializationContract.WorldMapPath, sources.Keys);
+            Assert.Contains(MortalLocationIdentityState.StatePath, sources.Keys);
+            Assert.Contains(MortalStorageAccessProjection.StatePath, sources.Keys);
             var map = (await context.ReadJsonAsync(MortalLocationMaterializationContract.WorldMapPath))!.AsObject();
-            map["locations"]![0]!["name"] = "Changed after storage admission";
+            Assert.Single(map["locations"]!.AsArray())["name"] = "Changed after storage admission";
             await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
             var before = await context.CaptureExactBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
             await Assert.ThrowsAnyAsync<InvalidDataException>(() => context.NormalizeAcceptedTurnWithIssuesAsync());

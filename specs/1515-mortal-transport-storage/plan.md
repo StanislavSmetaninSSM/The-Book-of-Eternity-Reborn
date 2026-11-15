@@ -8,6 +8,31 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## FR5 first integration outcome and fixture correction, WIP 2026-11-15
+
+Source 18399d00eb062ed1fd6f8d7d578eb312fabe8d9e: fresh builds passed with
+0 errors, 88/121 warnings, 100.62/64.77 seconds. History 35/35 PASS (18.632s),
+normalization and existing parking/hydration 2/2 PASS (13.144s), existing storage
+addition 6/6 PASS (17.728s), actual daemon/source guidance 4/4 PASS (20.976s).
+Independent Astra High targeted source review approved all three corrections,
+pending remaining runtime evidence. All runs completed owned cleanup.
+
+Current birth completed 8 cases: 6 PASS, 2 fixture failures (21.174s). Non-bootstrap
+publication/history assertions passed before dereferencing an optional absent
+storage-contents root. Source-drift setup indexed an empty bootstrap map before
+mutation. Correct the first using the canonical optional-root parser; prepare the
+second with existing A and genuinely empty new storage, assert common source fences,
+then mutate A. These failures are not production regressions.
+
+Existing initial empty-storage publication completed 6 cases: 2 PASS, 4 FAIL
+(16.426s), because its old fixture omitted ordinary item/resource admission.
+Independent review traced the engine's location → item (including empty catalogs)
+→ resource → publication sequence. The coordinator consumes handoffs rather than
+creating them. Correct only those fixtures: full signed backup map, explicit
+upstream admission and retained item/common assertions, preserving all access and
+reached-cut checks. Do not weaken the new guard. Production remains byte-identical
+to 18399d00; rebuild only integration and rerun the two affected categories next.
+
 ## FR5 targeted review corrections, WIP 2026-11-15
 
 Base7148dc8. Descendant reconstruction now retains captured semantic/identity

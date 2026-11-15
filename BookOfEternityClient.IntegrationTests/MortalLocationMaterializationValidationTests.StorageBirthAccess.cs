@@ -14,8 +14,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
     {
         await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
         var backups = await ArrangeStorageBirthAccessAsync(context, ownerType, access);
-        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync(),
-            issue => issue.Severity == IssueSeverity.Error);
+        await AdmitEmptyStorageBirthAsync(context);
 
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
             context.FileSystem, context.Normalizer, context.Validator, backups);
@@ -71,6 +70,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
         using var owned = new CleanupOwnedFixture(context.RootPath, output.WriteLine);
         var backups = await ArrangeStorageBirthAccessAsync(context, "Faction", access: false);
+        await AdmitEmptyStorageBirthAsync(context);
         var captured = await context.CaptureBytesAsync(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
         var before = captured.ToDictionary(pair => pair.Key,
             pair => pair.Value == null ? null : Convert.FromBase64String(pair.Value), StringComparer.Ordinal);
@@ -88,6 +88,19 @@ public sealed partial class MortalLocationMaterializationValidationTests
         Assert.Same(cut.Failure, writeFailure.InnerException);
     }
 
+    private static async Task AdmitEmptyStorageBirthAsync(MortalLocationMaterializationTestContext context)
+    {
+        // Match the ordinary engine upstream pipeline, even without item creations.
+        var locationIssues = await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+        Assert.DoesNotContain(locationIssues, issue => issue.Severity == IssueSeverity.Error);
+        var itemIssues = await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(itemIssues, issue => issue.Severity == IssueSeverity.Error);
+        var resourceIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(resourceIssues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasItemsAsync(context.FileSystem));
+        Assert.True(await AcceptedMechanicsAuthorityTestProbe.HasCommonAsync(context.FileSystem));
+    }
+
     private static async Task<Dictionary<string, string>> ArrangeStorageBirthAccessAsync(
         MortalLocationMaterializationTestContext context, string ownerType, bool access)
     {
@@ -102,6 +115,7 @@ public sealed partial class MortalLocationMaterializationValidationTests
         faction.Remove("initialId"); faction.Remove("isNewFaction"); faction.Remove("activeEffectDefinitions");
         await context.WriteJsonAsync(FactionCoreChangesContract.FactionCorePath,
             new JsonObject { ["factions"] = new JsonArray(faction) });
+        await context.WriteJsonAsync(StorageTransportMoveService.VehiclesPath, MortalVehicleBirthReceiptState.CreateEmptyRoot());
         await context.CaptureValidatedPendingSnapshotAsync();
         var raw = MortalLocationTestFixture.CreateRawLocation("current_scene_creation");
         var storage = CreateStorage("storage_birth", "Birth storage");
@@ -115,7 +129,8 @@ public sealed partial class MortalLocationMaterializationValidationTests
         raw["locationStorages"] = new JsonArray(storage);
         SetSectionPopulated(raw, "storageMetadata");
         await context.WriteRawTurnStateAsync(raw, worldMapUpdates: null);
-        return new[] { MortalLocationMaterializationContract.WorldMapPath, MortalLocationIdentityState.StatePath, MortalStorageAccessProjection.StatePath }
-            .ToDictionary(path => path, path => "game_state/control/pending_turn_snapshot/" + path, StringComparer.Ordinal);
+        var manifest = (await context.ReadJsonAsync("game_state/control/pending_turn_snapshot.json"))!.AsObject();
+        return manifest["files"]!.AsObject().ToDictionary(pair => pair.Key,
+            pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
     }
 }
