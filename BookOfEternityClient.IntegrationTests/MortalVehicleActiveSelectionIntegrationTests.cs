@@ -7,13 +7,29 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Exercises existing admission and common publication, not a parallel vehicle writer.</summary>
 public sealed class MortalVehicleActiveSelectionIntegrationTests
 {
-    [Fact]
-    public async Task CrossReferences_AllowExactSameTurnVehicleRefSelection()
+    [Theory]
+    [InlineData("new_cart", false)]
+    [InlineData("NEW_CART", true)]
+    [InlineData(" new_cart ", true)]
+    public async Task CrossReferences_AllowExactSameTurnVehicleRefSelection(string selected, bool rejected)
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, RawCreation().ToJsonString());
+        var raw = RawCreation();
+        raw["activeVehicleChange"] = selected;
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, raw.ToJsonString());
         var issues = await context.Validator.ValidateGameStateAsync(GameStateValidationPhase.CrossReferences);
-        Assert.DoesNotContain(issues, issue => issue.Code is "vehicle_active_change_unknown_target" or "resource_owner_vehicle_preassigned_id_forbidden");
+        Assert.Equal(rejected, issues.Any(issue => issue.Code == "vehicle_active_change_unknown_target"));
+        Assert.DoesNotContain(issues, issue => issue.Code == "resource_owner_vehicle_preassigned_id_forbidden");
+    }
+
+    [Fact]
+    public async Task MetaMisc_AcceptsCanonicalEmptySelection()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath,
+            new JsonObject { ["vehicles"] = new JsonArray(), ["activeVehicleId"] = null }.ToJsonString());
+        var issues = await context.Validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 
     [Fact]

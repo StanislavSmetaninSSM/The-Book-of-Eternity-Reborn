@@ -1580,6 +1580,7 @@ public partial class ValidationService
             using var doc = JsonDocument.Parse(json);
             var resolvableVehicleIds = new HashSet<string>(knownVehicleIds, StringComparer.OrdinalIgnoreCase);
             var sameTurnRemovedVehicleIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var sameTurnVehicleRefs = new HashSet<string>(StringComparer.Ordinal);
             if (doc.RootElement.TryGetProperty("UpdateVehicles", out var updates) && updates.ValueKind == JsonValueKind.Array)
             {
                 var updateIndex = 0;
@@ -1590,6 +1591,11 @@ public partial class ValidationService
                         continue;
 
                     var vehicleId = GetFirstNonEmptyString(vehicle, "vehicleId");
+                    if (!vehicle.TryGetProperty("vehicleId", out _) &&
+                        vehicle.TryGetProperty("vehicleRef", out var refNode) &&
+                        refNode.ValueKind == JsonValueKind.String &&
+                        ResourceMaterializationContract.IsExactIdentifier(refNode.GetString()))
+                        sameTurnVehicleRefs.Add(refNode.GetString()!);
                     if (string.IsNullOrWhiteSpace(vehicleId) || knownVehicleIds.Contains(vehicleId))
                         continue;
 
@@ -1656,7 +1662,8 @@ public partial class ValidationService
                         repairHint: "Если транспорт удаляется в removeVehicles, не назначай его active в этом же ходе. Для destroyed/sold active vehicle сбрось activeVehicleChange в null или выбери другой surviving vehicleId."));
                 }
                 else
-                if (!string.IsNullOrWhiteSpace(vehicleId) && !resolvableVehicleIds.Contains(vehicleId))
+                if (!string.IsNullOrWhiteSpace(vehicleId) && !resolvableVehicleIds.Contains(vehicleId) &&
+                    !sameTurnVehicleRefs.Contains(vehicleId))
                 {
                     issues.Add(new ValidationIssue(
                         "game_state/misc/vehicles.json.activeVehicleChange",

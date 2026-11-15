@@ -22,7 +22,7 @@ internal static class MortalVehicleActiveSelection
         selectedVehicleId = null;
         var active = vehicles.OfType<JsonObject>()
             .Where(v => v["availability"] is JsonValue value &&
-                        value.TryGetValue<string>(out var text) && text == "Active")
+                        value.TryGetValue<string>(out var text) && string.Equals(text, "Active", StringComparison.OrdinalIgnoreCase))
             .ToArray();
         if (selection is null)
         {

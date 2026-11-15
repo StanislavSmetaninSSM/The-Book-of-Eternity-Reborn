@@ -210,14 +210,15 @@ public sealed class MortalVehicleActiveSelectionTests
     [InlineData("duplicate")]
     public void Compose_UsesAdmittedCaseInsensitiveAvailability(string scenario)
     {
-        var before = Root(Vehicle("vehicle_cart", "active"));
+        var before = Root(Vehicle("vehicle_cart", scenario == "duplicate" ? "Active" : "active"));
         before["activeVehicleId"] = "vehicle_cart";
         var current = before.DeepClone().AsObject();
         current["activeVehicleChange"] = scenario == "clear" ? null : "vehicle_cart";
         if (scenario == "duplicate")
         {
             before["vehicles"]!.AsArray().Add(Vehicle("vehicle_other", "Parked"));
-            current["vehicles"]!.AsArray().Add(Vehicle("vehicle_other", "Active"));
+            current["vehicles"]!.AsArray().Add(Vehicle("vehicle_other", "Parked"));
+            current["UpdateVehicles"] = new JsonArray(Vehicle("vehicle_other", "active"));
         }
         var result = Compose(before, current);
         if (scenario == "selected")

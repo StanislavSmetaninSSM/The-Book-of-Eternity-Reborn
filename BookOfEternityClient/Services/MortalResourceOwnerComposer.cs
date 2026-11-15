@@ -826,7 +826,8 @@ internal static class MortalResourceOwnerComposer
         }
         string? selectedVehicleId = null;
         if (!MortalVehicleActiveSelection.TryResolve(
-                activeSelection, finalVehicles, sameTurnExports, issues, out selectedVehicleId))
+                activeSelection, finalVehicles, hasActiveSelection ? sameTurnExports : Array.Empty<ResourceOwnerExport>(),
+                issues, out selectedVehicleId))
             return;
 
         if (updates == null && removalsNode == null && !hasActiveSelection)
