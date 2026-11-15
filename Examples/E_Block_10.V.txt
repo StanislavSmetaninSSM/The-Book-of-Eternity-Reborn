@@ -16,6 +16,12 @@
     "UpdateVehicles": [
         {
             "vehicleRef": "vehicle_ref_azure_wind_blade",
+            "capacity": 0,
+            "volume": 0,
+            "owner": { "ownerType": "Player", "ownerId": "player_current", "ownerName": "Current player" },
+            "controller": { "actorType": "player", "actorId": "player_current" },
+            "authorizedUsers": [],
+            "hasFullAccess": true,
             "name": "Azure Wind Blade",
             "description": "A gleaming spiritual sword wreathed in azure wind energy. Ancient runes pulse along its fuller, and it hums with contained power. When summoned, it expands to accommodate a rider, floating silently above the ground.",
             "image_prompt": "A mystical floating sword with azure wind currents swirling around it, glowing with spiritual energy, large enough for a person to ride, hovering in mid-air with ancient cultivation runes",
@@ -76,6 +82,12 @@
     "UpdateVehicles": [
         {
             "vehicleRef": "vehicle_ref_rust_runner",
+            "capacity": 12,
+            "volume": 100,
+            "owner": { "ownerType": "Player", "ownerId": "player_current", "ownerName": "Current player" },
+            "controller": { "actorType": "player", "actorId": "player_current" },
+            "authorizedUsers": [],
+            "hasFullAccess": true,
             "name": "Rust Runner",
             "description": "A heavily modified dune buggy cobbled together from scavenged parts. Reinforced steel plates cover vital areas, and twin exhaust pipes belch black smoke. A mounted machine gun sits ready on a swivel mount.",
             "image_prompt": "Post-apocalyptic armored dune buggy with rusted metal plating, exposed engine, twin exhaust pipes, mounted machine gun, oversized tires with spikes, mad max style vehicle in wasteland setting",

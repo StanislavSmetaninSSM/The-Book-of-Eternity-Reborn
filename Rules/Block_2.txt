@@ -867,7 +867,7 @@
                 The atomic command to flag one or more faction projects as finished.
                 See Rule id='19.F.3.2' for details.",
 
-                "UpdateVehicles": "(array of vehicle_objects or null) Used to grant new vehicles or update the properties of existing ones (health, location, stats).",
+                "UpdateVehicles": "(array of vehicle_objects or null) Used to grant new vehicles or update the properties of existing ones (health, location, stats). Mortal vehicle birth requires capacity (nonnegative integer direct cargo stacks), volume (finite nonnegative dm3 cargo capacity), owner, controller, authorizedUsers and hasFullAccess. owner is null for unowned or {ownerType: Player|Shared|Faction, ownerId, ownerName}; controller is null for uncontrolled or {actorType: player|npc, actorId}. Player identities must be exactly player_current, never an invented GUID. authorizedUsers is null or unique {playerId, playerName} rows; unknown players are unsupported. hasFullAccess is an explicit boolean declaration, not permission to bypass accepted ownership/access checks. These fields do not replace health resourceMaterialization, source evidence or item authority.",
 
                 "removeVehicles": "(array of strings or null) Array of vehicleId strings. Used when a vehicle is permanently destroyed or sold.",
 

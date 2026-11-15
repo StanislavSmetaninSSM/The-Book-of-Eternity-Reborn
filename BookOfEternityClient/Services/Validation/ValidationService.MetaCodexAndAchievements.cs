@@ -1302,6 +1302,9 @@ public partial class ValidationService
                     repairHint: "Для нового транспорта передай только vehicleRef. Для существующего — только permanent vehicleId."));
             }
 
+            if (isNewVehicleCommand)
+                issues.AddRange(MortalTransportStorageContract.ValidateVehicleBirth(item, itemContext));
+
             var mustLookLikeFullVehicleObject = requireCanonicalStoredShape || isNewVehicleCommand;
             if (isExistingVehicleUpdate && item.EnumerateObject().Count() == 1)
             {

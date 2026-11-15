@@ -52,7 +52,7 @@ At `34497969d`, the official unit category produced causal RED: 1 positive PASS,
 unit build 89.59s, 0 errors and 156 preexisting warnings. The new structural
 contract is now implemented in owner composition but GREEN is unrun. Actual
 MetaMisc admission tests are added but still need their separate causal RED;
-that production entry is not yet connected. Faction/NPC resolution, effective
+the observed result was 1 positive PASS / 6 causal missing-field FAIL, all empty diagnostics (7/7 completed, 12.503s runner, complete cleanup). That production entry is now connected; GREEN remains unrun. Integration RED build: 124.65s, 0 errors, 234 warnings across rebuilt projects. Faction/NPC resolution, effective
 access, complete receipt/cargo evidence and storage birth remain incomplete.
 No publication qualification or complete #1515 acceptance follows from this slice.
 

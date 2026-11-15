@@ -97,6 +97,50 @@ public sealed class MortalVehicleBirthContractTests
         AssertRejectedWithoutMutation(current);
     }
 
+    [Theory]
+    [InlineData("owner", "true")]
+    [InlineData("owner", "{\"ownerType\":\"Unknown\",\"ownerId\":\"player_current\",\"ownerName\":\"Player\"}")]
+    [InlineData("controller", "{\"actorType\":\"player\",\"actorId\":\" player_current\"}")]
+    [InlineData("controller", "{\"actorType\":\"player\",\"actorId\":\"player_current\",\"permission\":true}")]
+    [InlineData("authorizedUsers", "[{\"playerId\":\"player_current\",\"playerName\":\"Player\"},{\"playerId\":\"player_current\",\"playerName\":\"Player\"}]")]
+    [InlineData("hasFullAccess", "\"true\"")]
+    public void Compose_RejectsMalformedExplicitBirthFacts(string field, string json)
+    {
+        var current = BirthRoot();
+        current["UpdateVehicles"]![0]![field] = JsonNode.Parse(json);
+        AssertRejectedWithoutMutation(current);
+    }
+
+    [Fact]
+    public void Compose_ExplicitUnownedUncontrolledBirthDoesNotInferActors()
+    {
+        var current = BirthRoot();
+        var vehicle = current["UpdateVehicles"]![0]!;
+        vehicle["owner"] = null;
+        vehicle["controller"] = null;
+        vehicle["authorizedUsers"] = null;
+        var result = Compose(EmptyRoot(), current);
+        Assert.Empty(result.Issues);
+        var after = Assert.Single(result.OwnerCompanionAfterImages[StorageTransportMoveService.VehiclesPath]["vehicles"]!.AsArray())!;
+        Assert.Null(after["owner"]);
+        Assert.Null(after["controller"]);
+        Assert.Null(after["authorizedUsers"]);
+    }
+
+    [Fact]
+    public void BirthGuidance_DeclaresLimitsAndExistingPlayerAuthority()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+            Assert.Contains("Mortal vehicle birth requires capacity", text, StringComparison.Ordinal);
+            Assert.Contains("Player identities must be exactly player_current", text, StringComparison.Ordinal);
+            Assert.Contains("not permission to bypass accepted ownership/access checks", text, StringComparison.Ordinal);
+        }
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_Block_10.V.txt"));
+        Assert.Contains("player_current", example, StringComparison.Ordinal);
+    }
+
     private static void AssertRejectedWithoutMutation(JsonObject current)
     {
         var before = EmptyRoot();
