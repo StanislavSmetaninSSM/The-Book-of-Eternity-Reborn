@@ -72,6 +72,16 @@ uncompiled/unrun. Added source/session/token/full-invalidation and no-authority
 regressions plus all-candidate validation before allocation. Spiritual original
 capture remains on its existing factory path. No cargo integration claim yet.
 
+First preparation verification at `d87b58cd`: 27/28 PASS, one **fixture** failure:
+the generation case used an ordinary lease for RotateSessionGeneration, which
+correctly requires a lifecycle/replacement lease. Fixture now uses that existing
+capability; production generation rules are not weakened. Build124.21s0errors234warnings,
+runner25.368s complete. Review adds two behavior regressions before fixes:
+explicit-null canonical array must reject before allocation, and observed ordinary
+A→no-birth B→A must discard preparation. Exact restored input across unrelated
+unobserved failures is safe DATA only; fresh full-source acceptance remains required.
+These two new regressions are unrun; no claim of complete GREEN.
+
 ### Next implementation step: ordinary allocation preparation
 
 Clean restore of checkpoint `627eac3f7772cf63b4332ba940eb04bc7a2f7931` verified

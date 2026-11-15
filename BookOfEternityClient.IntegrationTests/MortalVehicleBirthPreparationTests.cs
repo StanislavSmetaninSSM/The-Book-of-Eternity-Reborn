@@ -35,7 +35,11 @@ public sealed class MortalVehicleBirthPreparationTests
     public async Task Preparation_ChangedBindingDoesNotReuseAllocation(string change)
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();
-        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        await using var lifecycle = change == "generation"
+            ? await context.FileSystem.AcquireSessionLifecycleLeaseAsync() : null;
+        await using var lease = change == "generation"
+            ? await context.FileSystem.AcquireSessionReplacementWriteLeaseAsync(lifecycle!)
+            : await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var before = new JsonObject { ["vehicles"] = new JsonArray() };
         var raw = BirthRoot();
         var first = AcceptedTurnAuthorityRegistry.PrepareMortalVehicleBirths(context.FileSystem, lease,
@@ -88,6 +92,36 @@ public sealed class MortalVehicleBirthPreparationTests
         Assert.Null(result.Preparation);
         Assert.Equal(0, factory.Calls);
         Assert.Equal(serialized, raw.ToJsonString());
+    }
+
+    [Fact]
+    public void Preparation_ExplicitNullCanonicalCollectionDoesNotAllocate()
+    {
+        var raw = BirthRoot();
+        raw["vehicles"] = null;
+        var factory = new CountingFactory();
+        var result = MortalVehicleBirthPreparation.Prepare(new JsonObject { ["vehicles"] = new JsonArray() }, raw, factory);
+        Assert.False(result.IsValid);
+        Assert.Equal(0, factory.Calls);
+    }
+
+    [Fact]
+    public async Task OrdinaryAdmission_NoBirthInputDiscardsPreviousPreparation()
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(context.FileSystem);
+        var empty = new JsonObject { ["vehicles"] = new JsonArray() }.ToJsonString();
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, empty);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42);
+        var raw = BirthRoot().ToJsonString();
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, raw);
+        var first = await Admit(context);
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, empty);
+        var emptyIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.DoesNotContain(emptyIssues, issue => issue.Severity == IssueSeverity.Error);
+        await context.WriteExactJsonAsync(StorageTransportMoveService.VehiclesPath, raw);
+        var restored = await Admit(context);
+        Assert.NotEqual(first.Id, restored.Id);
     }
 
     private sealed class CountingFactory : VehicleIdentityFactory
