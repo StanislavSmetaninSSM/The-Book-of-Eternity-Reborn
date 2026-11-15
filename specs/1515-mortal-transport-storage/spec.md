@@ -94,7 +94,8 @@ epsilon-based over-capacity acceptance, including fractional equality.
 ## Vehicle birth actor references
 
 Faction owners resolve through the existing exact Mortal faction authority,
-including independently admitted same-turn creation, and retain the exact name.
+including independently admitted same-turn creation, and retain the exact name
+after the existing accepted factionCoreChanges projection (including profile rename).
 NPC controllers must belong to successful current Mortal resource owner composition;
 that existing composer rejects duplicate/divergent identities and permits legitimate
 identical cross-section mirrors. Validate the selected NPC's existing complete Mortal

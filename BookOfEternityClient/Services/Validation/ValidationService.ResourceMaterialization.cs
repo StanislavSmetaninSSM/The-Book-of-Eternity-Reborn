@@ -505,7 +505,8 @@ public partial class ValidationService
             HasVehicleBirthActorReferences(currentVehicleBirthInput))
         {
             vehicleActorInputs = await CaptureVehicleBirthActorInputsAsync(currentVehicleBirthInput,
-                currentMortalRoots.NpcCore, cargoBeforeImages, writeLease, issues);
+                currentMortalRoots.NpcCore, previousMortalRoots.NpcCore, manifest,
+                cargoBeforeImages, writeLease, issues);
             if (vehicleActorInputs is null)
                 return issues;
             cargoBeforeImages = vehicleActorInputs.Observations;

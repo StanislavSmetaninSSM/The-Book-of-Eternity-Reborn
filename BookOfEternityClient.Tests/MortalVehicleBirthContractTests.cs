@@ -167,6 +167,9 @@ public sealed class MortalVehicleBirthContractTests
             Assert.Contains("immutable birth evidence", instructions, StringComparison.Ordinal);
         }
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt"));
+        Assert.Contains("owner = {\"ownerType\":\"Faction\",\"ownerId\":\"faction_caravan\",\"ownerName\":\"Caravan Guild\"}", example, StringComparison.Ordinal);
+        Assert.Contains("controller = {\"actorType\":\"npc\",\"actorId\":\"npc_driver\"}", example, StringComparison.Ordinal);
+        Assert.Contains("independently", example, StringComparison.Ordinal);
         var root = JsonNode.Parse(example[example.IndexOf("\n{", StringComparison.Ordinal)..])!.AsObject();
         var vehicle = Assert.Single(root["UpdateVehicles"]!.AsArray())!.AsObject();
         var item = Assert.Single(vehicle["inventory"]!.AsArray())!.AsObject();

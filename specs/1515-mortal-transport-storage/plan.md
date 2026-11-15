@@ -10,6 +10,15 @@
 
 ## In progress — exact actor references, 2026-11-15
 
+Source2e9326f7 then proved the real rename bug: valid upstream faction command,
+0/2PASS (old name wrongly accepted, new name rejected),13.698s, complete cleanup,
+no skip/duplicate/timeout; build125.01s,0 errors. WIP now projects the captured
+faction root with the existing FactionCoreChangesContract Evaluate/Apply and signed
+original, reusing captured current and already-read preturn NPC DATA. Only pending
+faction changes need one signed-original read. Raw observations remain unchanged
+publication fences. Final verification/re-review remains pending.
+
+
 Source22cc918:14/14 pure PASS9.318s; combined actor/cargo/guidance23/24PASS,
 47.852s. The sole failure is a source-guard capitalization mismatch (same-turn
 versus Same-turn), corrected in guidance without changing behavior. Builds93.08s

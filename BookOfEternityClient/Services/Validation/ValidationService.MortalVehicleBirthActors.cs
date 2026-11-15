@@ -18,6 +18,8 @@ public partial class ValidationService
     private async Task<VehicleBirthActorInputs?> CaptureVehicleBirthActorInputsAsync(
         JsonObject vehicles,
         JsonObject npcCore,
+        JsonObject preTurnNpcCore,
+        ValidationPendingTurnSnapshotManifest manifest,
         IReadOnlyDictionary<string, CanonicalBeforeImage>? cargoObservations,
         FileSystemManager.CanonicalWriteLease lease,
         List<ValidationIssue> issues)
@@ -38,6 +40,37 @@ public partial class ValidationService
                 "resource_owner_vehicle_birth_reference_source_changed",
                 "the same vehicle and NPC inputs used by current owner composition",
                 "source differs from its captured before-image"));
+        if (observedFactions is not null && FactionCoreChangesContract.HasCommandLikeProperty(observedFactions))
+        {
+            // Same existing reducer as normalization; a valid profile rename must already
+            // be visible to the vehicle binding. No current root is reread or mutated.
+            var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                manifest, FactionCoreChangesContract.FactionCorePath, lease);
+            if (preTurnJson is null || !TryParseStrictResourceObject(preTurnJson, out var preTurnFactions))
+            {
+                issues.Add(ResourceIssue(FactionCoreChangesContract.FactionCorePath,
+                    "resource_owner_vehicle_birth_reference_original_invalid",
+                    "authenticated faction original for pending faction changes", "missing or malformed original"));
+            }
+            else
+            {
+                var factionIds = new HashSet<string>(StringComparer.Ordinal);
+                CollectFactionCoreChangesFactionIds(observedFactions, factionIds);
+                CollectFactionCoreChangesFactionIds(preTurnFactions, factionIds);
+                var npcIds = new HashSet<string>(StringComparer.Ordinal);
+                FactionCoreChangesContract.CollectKnownMortalNpcIds(observedNpc, npcIds);
+                FactionCoreChangesContract.CollectKnownMortalNpcIds(preTurnNpcCore, npcIds);
+                var evaluation = FactionCoreChangesContract.Evaluate(observedFactions, preTurnFactions,
+                    new FactionCoreChangesContract.Authority(factionIds, npcIds));
+                issues.AddRange(evaluation.Issues);
+                if (evaluation.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                    issues.Add(ResourceIssue(FactionCoreChangesContract.FactionCorePath,
+                        "resource_owner_vehicle_birth_reference_projection_invalid",
+                        "valid existing faction changes before vehicle birth binding", "faction projection refused"));
+                else
+                    FactionCoreChangesContract.Apply(observedFactions, evaluation);
+            }
+        }
         return issues.Any(issue => issue.Severity == IssueSeverity.Error)
             ? null : new VehicleBirthActorInputs(observations, observedFactions);
 
