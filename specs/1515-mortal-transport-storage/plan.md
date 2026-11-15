@@ -66,3 +66,9 @@ Linux x64 tool restoration: PowerShell 7.7.0 from official release runs with wri
 ### Ruling: start with the isolated active-selection defect
 
 The existing vehicle composer already provides a pure entry point. Verify its missing active command reduction first while completing ownership schema discovery; this avoids changing broad storage metadata before its identity authority is known. Selection must match one final Active vehicle exactly; same-turn refs resolve only via the existing allocated owner export. This is a partial FR2 block, not full semantics or whole-task completion. Added 6 expected unit cases; compile/execution are UNRUN, production unchanged.
+
+### Active-selection causal RED and first implementation
+
+At source c041c92 the official category selected/executed 6 cases, all 6 failed causally: missing companion for selection-only, absent active ID for same-turn birth, unresolved/Parked selection accepted. No skips/duplicates, cleanup complete; 9.439s runner, 80ms tests. First fresh serial unit build: 0 errors, 156 existing warnings, 88.69s. Ordinary parallel MSBuild failed before tests because this sandbox blocks Unix sockets, including after escalation; serial `-m:1 -p:BuildInParallel=false -p:UseSharedCompilation=false` build followed by official `-NoBuild` category works. Set all XDG directories and DOTNET_CLI_HOME under writable tool home. ASP.NET Core 8 runtime also installed.
+
+First reduction implementation now consumes explicit selection using existing allocated exports and validates final Active agreement. It is WIP: GREEN, direct-field protection, removal/null/replacement coverage, canonical validators, GM guidance and independent review pending. No complete FR2 or issue acceptance is claimed.

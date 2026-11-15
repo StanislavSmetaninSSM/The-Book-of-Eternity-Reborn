@@ -804,12 +804,23 @@ internal static class MortalResourceOwnerComposer
         if (issues.Count != 0)
             return;
 
-        if (updates == null && removalsNode == null)
+        var hasActiveSelection = root.TryGetPropertyValue("activeVehicleChange", out var activeSelection);
+        string? selectedVehicleId = null;
+        if (hasActiveSelection && !MortalVehicleActiveSelection.TryResolve(
+                activeSelection, finalVehicles, sameTurnExports, issues, out selectedVehicleId))
+            return;
+
+        if (updates == null && removalsNode == null && !hasActiveSelection)
             return;
 
         var afterImage = root.DeepClone().AsObject();
         afterImage.Remove("UpdateVehicles");
         afterImage.Remove("removeVehicles");
+        if (hasActiveSelection)
+        {
+            afterImage.Remove("activeVehicleChange");
+            afterImage["activeVehicleId"] = selectedVehicleId;
+        }
         afterImage["vehicles"] = finalVehicles;
         companionAfterImages[StorageTransportMoveService.VehiclesPath] = afterImage;
     }
