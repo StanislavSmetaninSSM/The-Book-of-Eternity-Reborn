@@ -449,6 +449,19 @@ internal static class MortalResourceOwnerComposer
         List<ResourceOwnerMaterializationCandidate> materializationCandidates,
         List<ValidationIssue> issues)
     {
+        if (!JsonNode.DeepEquals(preTurnRoot["activeVehicleId"], root["activeVehicleId"]))
+        {
+            issues.Add(new ValidationIssue(
+                StorageTransportMoveService.VehiclesPath + ".activeVehicleId",
+                IssueSeverity.Error,
+                "Canonical active selection is client-owned.",
+                code: "vehicle_active_selection_client_owned", section: "Vehicles",
+                expected: "unchanged pre-turn activeVehicleId",
+                actual: Describe(root["activeVehicleId"]),
+                repairHint: "Preserve activeVehicleId and request the change through activeVehicleChange with coherent vehicle availability updates."));
+            return;
+        }
+
         if (preTurnRoot.TryGetPropertyValue("vehicles", out var preTurnVehiclesNode) &&
             preTurnVehiclesNode is not JsonArray)
         {
@@ -805,8 +818,15 @@ internal static class MortalResourceOwnerComposer
             return;
 
         var hasActiveSelection = root.TryGetPropertyValue("activeVehicleChange", out var activeSelection);
+        var hasCanonicalSelection = preTurnRoot.ContainsKey("activeVehicleId");
+        if (!hasActiveSelection)
+        {
+            activeSelection = preTurnRoot["activeVehicleId"];
+            if (TryReadExact(activeSelection, out var previousSelected) && removed.Contains(previousSelected))
+                activeSelection = null;
+        }
         string? selectedVehicleId = null;
-        if (hasActiveSelection && !MortalVehicleActiveSelection.TryResolve(
+        if ((hasActiveSelection || hasCanonicalSelection) && !MortalVehicleActiveSelection.TryResolve(
                 activeSelection, finalVehicles, sameTurnExports, issues, out selectedVehicleId))
             return;
 
@@ -816,7 +836,7 @@ internal static class MortalResourceOwnerComposer
         var afterImage = root.DeepClone().AsObject();
         afterImage.Remove("UpdateVehicles");
         afterImage.Remove("removeVehicles");
-        if (hasActiveSelection)
+        if (hasActiveSelection || hasCanonicalSelection)
         {
             afterImage.Remove("activeVehicleChange");
             afterImage["activeVehicleId"] = selectedVehicleId;

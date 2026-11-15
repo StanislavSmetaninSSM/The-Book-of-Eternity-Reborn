@@ -78,3 +78,7 @@ First GREEN build exposed a compile-only API name mismatch (`ResourceOwnerExport
 ### Explicit selection GREEN; next continuity cases
 
 At d1cbc787 the fresh build passed (0 errors, 156 warnings, 93.09s); official `mortal-vehicle-active-selection -NoBuild` passed 6/6, 0 skips/duplicates, complete cleanup, 8.954s runner / 84ms tests. This proves explicit selection only. Seven additional cases now cover direct canonical spoofing, removal, parking/clear/replacement and duplicate Active state. These new cases are UNRUN; independent review and integration remain pending.
+
+Continuity RED at dae28787: 13 planned/executed, 10 PASS and exactly 3 expected failures (direct canonical change accepted, selected removal left ID, parking without clearing accepted); 9.864s runner, clean ownership cleanup. Fresh build 86.53s / 0 errors / 156 warnings. Added client-owned comparison and retained-selection validation, clearing a removed selected identity. GREEN and complete active-flow integration still pending.
+
+Added one further pending case: a new Active vehicle without an explicit selection must not leave canonical selection absent. Next run expects this remaining RED while verifying the three continuity fixes.

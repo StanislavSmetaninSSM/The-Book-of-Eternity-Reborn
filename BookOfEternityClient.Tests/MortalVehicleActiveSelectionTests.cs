@@ -160,6 +160,23 @@ public sealed class MortalVehicleActiveSelectionTests
         Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
     }
 
+    [Fact]
+    public void Compose_RejectsNewActiveVehicleWithoutSelectionCommand()
+    {
+        var created = Vehicle("unused", "Active");
+        created.Remove("vehicleId");
+        created["vehicleRef"] = "new_cart";
+        created["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "health", ["maximum"] = 100 })
+        };
+        var current = Root();
+        current["UpdateVehicles"] = new JsonArray(created);
+        var result = Compose(Root(), current);
+        Assert.Contains(result.Issues, issue => issue.Code == "vehicle_active_selection_invalid");
+        Assert.Empty(result.OwnerCompanionAfterImages);
+    }
+
     private static ResourceOwnerCompositionResult Compose(JsonObject before, JsonObject current) =>
         MortalResourceOwnerComposer.Compose(new MortalResourceOwnerCompositionInput(
             ResourceDefinitionCatalog.CreateBuiltIn(), Roots(before), Roots(current)));
