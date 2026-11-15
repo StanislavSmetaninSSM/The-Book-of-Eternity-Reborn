@@ -11,6 +11,7 @@ public sealed class MortalVehicleActiveSelectionTests
     public void Compose_ConsumesSelectionOnlyWithoutReallocatingVehicle()
     {
         var before = Root(Vehicle("vehicle_cart", "Active"));
+        before["activeVehicleId"] = "vehicle_cart";
         var current = before.DeepClone().AsObject();
         current["activeVehicleChange"] = "vehicle_cart";
         var result = Compose(before, current);

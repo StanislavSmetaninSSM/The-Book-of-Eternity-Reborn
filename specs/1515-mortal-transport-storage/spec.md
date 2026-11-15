@@ -35,3 +35,13 @@ A GM creates storage within its governed location, with stable exact identity, p
 ## Success boundary
 
 All FR1–FR9 require concrete implementation and impact-selected evidence. Cheap pure policy tests precede real accepted-turn creation, moves and rollback checks. Source-only or PlanOnly results are not PASS. No whole-suite or hosted CI. No main merge or issue closure is authorized in this task. Optional capabilities and historical fixtures do not indefinitely expand this boundary.
+
+## Concrete contract decisions (existing vocabulary)
+
+Purpose and descriptive condition use the existing visual/functional `description`; no new purpose or condition enum. Vehicle mechanical condition remains the health resource and availability, not duplicate HP. Vehicle cargo reuses `capacity` (nonnegative integer distinct item stacks) and `volume` (nonnegative finite dm³), like storage. Quantity is not stack count; no new weight limit is introduced. Vehicle ownership/access reuses storage's closed owner/authorizedUsers/hasFullAccess vocabulary. Exact controller identity must resolve through existing accepted actor authority, not an invented actor registry.
+
+Storage retains its existing complete metadata and location materialization receipt plus exact storageId. It does not receive a second location identity/receipt. Its contents remain the existing current/offscreen companion authority; travel parking/hydration does not change item identities or receipt history.
+
+Active selection reduction uses client-owned `vehicles.json.activeVehicleId` (exact permanent ID or null). `activeVehicleChange` selects an existing permanent ID or an exact same-turn vehicleRef; the composer resolves the latter through its already allocated owner export. The selected final vehicle must have availability Active; Parked/Pocket cannot be silently activated. A null selection requires no Active final vehicle. Parking/replacement must be explicit coherent updates, not an inferred currentLocationId. Commands are consumed atomically. Client-owned activeVehicleId cannot be directly changed by GM input.
+
+Ownership decision: the existing strict single-player authority is `player_current` (resource/effect/wound owners). Player and Shared primary ownership must use that exact identifier; Faction references resolve through existing faction authority. No old GUID is implicitly converted and no multiplayer registry is invented. Unknown recipient players fail closed with bounded guidance. Shared is not public. Issue #1515 explicitly requests a worked shared-storage example: successful sharing to a distinct player cannot be claimed until a real participant authority exists. Preserve that explicit limitation instead of marking the entire issue done.
