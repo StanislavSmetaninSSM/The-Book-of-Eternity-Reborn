@@ -1,6 +1,6 @@
 # Mortal living-world DATA and ownership model
 
-Issue #1516. Working contract, not acceptance evidence.
+Issue #1516. Implemented bounded contract; runtime verification is recorded separately in plan.md.
 
 ## Private candidate report
 
@@ -104,8 +104,9 @@ This does not claim a general NLP privacy audit or complete #1540 remediation.
   source/output checks. Autonomous changes cannot be relabeled no-change to pass.
 - Joint publication contributes report consumption/history before seal/take to the
   existing common owner and reuses its one stable calculation, never an after-seal
-  sidecar. Real joint-consumer runtime qualification remains pending; this model
-  records architecture, not GREEN evidence or whole-feature acceptance.
+  sidecar. Real joint-consumer publication, rollback and phase recovery are qualified by
+  the targeted evidence in plan.md; this model records architecture, not a claim
+  of full-suite, Windows or live-provider acceptance.
 - Local QTE cannot consume a living-world report or introduce an additional
   world/faction cycle. Such work belongs to an ordinary assessed turn. Already due
   backlog alone does not prohibit a short local action crossing no additional cycle.

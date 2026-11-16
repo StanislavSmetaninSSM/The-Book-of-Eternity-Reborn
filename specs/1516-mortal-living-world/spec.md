@@ -2,7 +2,7 @@
 
 **Feature Branch**: `1516-mortal-living-world`  
 **Created**: 2026-11-16  
-**Status**: Implementation design, not feature acceptance
+**Status**: Bounded implementation and selected verification complete; not merged
 
 ## Source Issues & Scope
 

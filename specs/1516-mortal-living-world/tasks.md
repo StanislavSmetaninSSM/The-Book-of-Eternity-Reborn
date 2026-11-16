@@ -4,7 +4,7 @@ Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 
 ## Setup
 - [x] T001 Inspect live issue/main, governance, existing owners and publish task branch; record in plan.md.
-- [ ] T002 Finalize contract data model and independent risk review of owner joins in data-model.md.
+- [x] T002 Finalize contract data model and independent risk review of owner joins in data-model.md.
 
 ## US1 — Meaningful elapsed time and legitimate no-change
 - [x] T003 [US1] Add failing minimal typed tests in BookOfEternityClient.Tests/MortalLivingWorldAssessmentTests.cs for first time skip, already pending cycles, exact boundary and missing/stale/incomplete report.
@@ -18,12 +18,12 @@ Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 
 ## US3 — Atomic consumers and privacy
 - [x] T009 [US3] Add reached late-failure rollback, exact absence and retry tests in MortalLivingWorldPublicationTests.cs.
-- [ ] T010 [US3] Join private report/history to Mortal joint plan before seal/take and verify real joint consumer; cover or explicitly reject unsupported clock paths in QteSceneService without a bypass.
+- [x] T010 [US3] Join private report/history to Mortal joint plan before seal/take and verify real joint consumer; cover or explicitly reject unsupported clock paths in QteSceneService without a bypass.
 - [x] T011 [US3] Verify the bounded new-evidence/public-news projection and undiscovered-reference refusals used by common console/browser consumers; no NLP privacy audit or complete #1540 remediation is claimed.
 
 ## Delivery
 - [x] T012 Update TaskGuides/OtherGuides, daemon prompt, Examples and validation manifest plus documentation/source guards for autonomous and no-change authoring.
 - [x] T013 Update active test fixtures for the supported schema. No bootstrap narrative update: the opening worldEventsLog row is created before original capture, not retroactive autonomous effect evidence; a dispatched bootstrap still owns a real original and actual elapsed cycles remain assessed. Afterlife and unrelated UI need no update because this contract is Mortal-only and preserves the common public-news projection. This source trace does not claim a new live bootstrap acceptance run.
-- [ ] T014 Reconcile tests/selection.json and catalog discovery with intended diff; independent final review, selected checks and fresh remote recovery.
+- [x] T014 Reconcile tests/selection.json and catalog discovery with intended diff; independent final review, selected checks and fresh remote recovery.
 
 Dependencies: T003–T005 precede T006–T008; T009–T011 require actual publication owner. T012 can run alongside runtime work after contract is fixed. No test helper alone satisfies T007–T011. Do not merge or close issue in this assignment.

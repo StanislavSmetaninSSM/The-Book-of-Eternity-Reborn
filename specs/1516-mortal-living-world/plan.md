@@ -4,6 +4,56 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
+## Current completion checkpoint, 2026-11-16
+
+The bounded #1516 implementation and selected verification are complete. No
+merge, pull-request merge, or issue closure is performed by this assignment.
+Runtime/test source is frozen at `acd4cf382ac950156168296d48c39c27b22f7731`,
+verified remotely and restored into a separate clean checkout. This final
+documentation closeout does not change executable source or test selection.
+Earlier WIP/UNRUN/FAIL entries below are chronological evidence, not current status.
+
+The corrected actual joint rollback packet passed 2/2 in 308.477 seconds runner
+wall, with complete cleanup and no skips, duplicates or timeout. It now reaches
+RetryableHeld and exact restoration checks after real post-commit receipt loss,
+as well as reached common-member failure and one owning retry. The observer-only
+fix distinguishes forward publication from compensation by actual journal images;
+production rollback and validation guards are unchanged.
+
+Final fresh builds: Integration 0 errors / 167 warnings / 109.66 seconds; Unit
+0 errors / 54 warnings / 31.83 seconds. Official `-NoBuild -ValidateCatalog`
+passed in 13.128 seconds: 1,776 categories and 14,526 methods/files. Official
+`-NoBuild -SelectionFile tests/selection.json -PlanOnly` passed in 11.177 seconds:
+21 descriptors, 245 planned cases, no selected duplicates. Both metadata runs
+executed zero tests and completed owned cleanup.
+
+Retained TRX evidence reconciles all 245 unique selected cases to their latest
+passing targeted runs: assessment 57; events 47; receipt DATA 26; original source
+20 plus existing NPC-source controls 6; ordinary publication 7; lifecycle 4;
+engine repair 5; diagnosis 13; pure QTE 29; QTE runtime 10; news privacy 4; guidance
+4; held-lease controls 2; actual delivery 2; joint baseline 1; joint admission 3;
+valid publication 1; short publication 1; rollback 2; cold recovery 1. This is
+cumulative impact-selected evidence, not a single full-suite or all-245 rerun.
+Unchanged successful cases were not repeated merely to repackage selection.
+
+Independent implementation/owner reviews and final requirements/selection reviews
+found no unresolved blocking issue. Source-level findings included genuine owner
+lease propagation and preseal QTE ordering; fixture omissions and observer
+misclassification were corrected without weakening production guards. Performance
+uses existing operation-owned immutable DATA, batched QTE reads and the existing
+single joint calculation; live lease/source/effect and recovery checks remain
+fresh. No new parallel cache or cached publication permission was introduced.
+Measured joint costs are not advertised as a speedup.
+
+Boundaries remain explicit: Mortal only; no new simulation AI or forced events,
+no old-save migration, no afterlife/spiritual-combat work, no hosted CI, Windows
+PowerShell 5.1/live-provider qualification or broad suite. Diagnosis is bounded to
+its existing planned T1 no-significant-change route; local QTE refuses a report
+or newly crossed autonomous cycle before durable handoff. The two-witness
+portable-local rewrite limit in spec/data-model remains visible. Private reports
+and history are not public news; this is not completion of #1540 or the closed
+not_planned #1368. Raw diagnostics remain local and are not committed.
+
 ## Goal and architecture
 
 Enforce explicit time-correlated autonomous-world assessments backed by canonical effects, without simulating or inventing events. Existing domain reducers remain the only mutation owners. A pure typed contract validates detached original/current DATA. Runtime adapters authenticate source, prepare this data under existing leases, verify completed effects and publish private receipt/history with the same transaction.
