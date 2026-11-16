@@ -326,7 +326,7 @@ public sealed partial class JointBundleComponentTests
         }
 
         private static JsonArray WrongEffectEvent(long from, long to) => new(JsonNode.Parse($$"""
-            {"eventId":"invented_flag","fromMinute":{{from}},"toMinute":{{to}},
+            {"eventId":"invented_flag","fromMinute":{{{{from}}}},"toMinute":{{{{to}}}},
              "actors":[{"kind":"system","id":"worldCycle"}],
              "targets":[{"kind":"worldFlag","id":"not_materialized"}],
              "cause":{"summary":"A flag was allegedly created","references":[{"kind":"system","id":"worldCycle"}]},
