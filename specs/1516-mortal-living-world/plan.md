@@ -400,3 +400,37 @@ constructor equality or perform a second full calculation. The lossless gzip
 capture closed completely (188,506,330 stored bytes, 1,964,017,508 decoded bytes,
 5,456,150 rows); no raw artifact was uploaded. This newly reached failure is not
 evidence of a comparable speedup. Fresh GREEN remains pending for these fixes.
+
+## Verified continuation blocks, 2026-11-16
+
+At 479ccb98, integration build passed (0 errors, 167 warnings, 111.22 s),
+then engine repair completed 5/5 including the real omitted-report refusal and
+repaired publication boundary. Diagnosis compensation/retry representative
+passed; the subsequent full selected diagnosis packet passed 13/13 in 104.696 s
+runner wall, covering direct completion drift and retained resource-cost
+completion. These are bounded noSignificantChange diagnosis results.
+Unit build passed (0 errors, 54 warnings, 32.64 s); documentation guards passed
+4/4, pure QTE DATA and batched read-count guards 29/29, and actual daemon-render
+plus existing worked-example coverage 2/2. All owned cleanup completed with no
+duplicates, skips or timeouts. No unchanged broad suites were run.
+
+QTE runtime passed 9/10: offer and Begin now refuse before handoff. The final
+reached regression shows that a late malformed report is refused only after
+terminal selection persisted its continuation fingerprint/state. The final
+correction must check the selected terminal before that first durable mutation,
+not rely on rollback from the later shared distributor guard.
+
+Joint now reaches sealed publication and compensates back to RetryableHeld.
+The representative completed in 143 seconds, not a timeout. Passive timings
+locate failure inside existing canonical item validation, before resource and
+final readback validation. Its assertion previously discarded the returned
+issues; improve that diagnostic assertion before one further representative
+run rather than changing production on speculation. No joint completion GREEN
+is claimed. Latest full captures remain local-only.
+
+Bootstrap source inspection found no contract update required: the actual
+Mortal opening builds narrative worldEventsLog before authenticated baseline
+snapshot and writes turn_request afterward. It is not the bare-maintenance
+exception. Unreferenced opening narrative is not retroactively an autonomous
+report event; real elapsed cycles during that turn still require assessment.
+This is a traced no-update rationale, not a new full bootstrap runtime result.

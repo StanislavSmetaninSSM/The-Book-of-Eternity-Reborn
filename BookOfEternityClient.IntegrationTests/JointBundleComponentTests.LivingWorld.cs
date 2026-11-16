@@ -56,7 +56,8 @@ public sealed partial class JointBundleComponentTests
         Assert.Equal(fixture.JointOriginal.Turn, receipt["turn"]!.GetValue<int>());
 
         var published = await fixture.PublishLivingWorldJointCommonAsync();
-        Assert.Equal(MortalJointRepairPublicationDisposition.Committed, published.Disposition);
+        Assert.True(published.Disposition == MortalJointRepairPublicationDisposition.Committed,
+            $"Expected Committed, got {published.Disposition}: {JsonSerializer.Serialize(published.Issues)}");
         Assert.Empty(published.Issues);
         Assert.Contains(fixture.LivingWorldCommittedCommonMembers,
             paths => paths.Contains(MortalLivingWorldSource.HistoryPath, StringComparer.Ordinal) &&
@@ -180,7 +181,8 @@ public sealed partial class JointBundleComponentTests
         Assert.Null(await fixture.Files.ReadFileBytesAsync(fixture.Lease, MortalQteDecisionPublication.StatePath));
 
         var retried = await fixture.PublishLivingWorldJointCommonAsync();
-        Assert.Equal(MortalJointRepairPublicationDisposition.Committed, retried.Disposition);
+        Assert.True(retried.Disposition == MortalJointRepairPublicationDisposition.Committed,
+            $"Expected Committed, got {retried.Disposition}: {JsonSerializer.Serialize(retried.Issues)}");
         Assert.Equal(1, fixture.LivingWorldFaults);
         var history = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(
             (await fixture.Files.ReadFileBytesAsync(fixture.Lease, MortalLivingWorldSource.HistoryPath))!))!.AsObject();
@@ -205,7 +207,8 @@ public sealed partial class JointBundleComponentTests
             fixture.Files, fixture.Lease, bound);
         Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
         var result = await fixture.PublishLivingWorldJointCommonAsync();
-        Assert.Equal(MortalJointRepairPublicationDisposition.Committed, result.Disposition);
+        Assert.True(result.Disposition == MortalJointRepairPublicationDisposition.Committed,
+            $"Expected Committed, got {result.Disposition}: {JsonSerializer.Serialize(result.Issues)}");
         var accepted = (await fixture.Files.ReadFileBytesAsync(fixture.Lease, MortalLivingWorldSource.HistoryPath))!;
         report["audit"]![0]!["reason"] = "Different internally valid assessment after acceptance.";
         var forged = MortalLivingWorldReceipt.Build(source.SnapshotToken, source.Context, report, null);
@@ -241,7 +244,8 @@ public sealed partial class JointBundleComponentTests
         Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
         Assert.False(common.Plan!.OwnerCompanionAfterImages.ContainsKey(MortalLivingWorldSource.HistoryPath));
         var published = await fixture.PublishLivingWorldJointCommonAsync();
-        Assert.Equal(MortalJointRepairPublicationDisposition.Committed, published.Disposition);
+        Assert.True(published.Disposition == MortalJointRepairPublicationDisposition.Committed,
+            $"Expected Committed, got {published.Disposition}: {JsonSerializer.Serialize(published.Issues)}");
         Assert.Null(await fixture.Files.ReadFileBytesAsync(fixture.Lease, MortalLivingWorldSource.HistoryPath));
         var original = fixture.JointOriginal;
         var phase = await MortalQteDecisionPublication.ReadJointProgressionPhaseAsync(fixture.Files, fixture.Lease,

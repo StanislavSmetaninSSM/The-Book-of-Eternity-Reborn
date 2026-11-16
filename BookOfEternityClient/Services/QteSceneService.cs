@@ -1803,6 +1803,9 @@ public sealed partial class QteSceneService
             outcome.OutcomeId,
             outcome.ResponseFragment,
             outcome.PhysicalInjury);
+        // Refuse before the write-once selected continuation or a receipt wave can publish.
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, selection.ResponseFragment is { } fragment ? [fragment] : []));
         QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null;
         QteDeferredEffectReceiptResume? receiptResume = null;
         if (!string.IsNullOrWhiteSpace(

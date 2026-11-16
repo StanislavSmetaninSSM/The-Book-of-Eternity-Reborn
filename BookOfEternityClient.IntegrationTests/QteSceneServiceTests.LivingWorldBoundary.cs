@@ -76,6 +76,8 @@ public sealed partial class QteSceneServiceTests
             "open_gate", null, 21, allowPreexistingStateIssues: true));
 
         Assert.Contains("mortal_living_world_qte_report_unsupported", failure.Message);
+        var afterRuntime = JsonNode.Parse((await _fs.ReadFileAsync(QteSceneService.QteRuntimePath))!)!.AsObject();
+        Assert.Equal("armed", afterRuntime["activeScene"]!["effectResolutionState"]!.GetValue<string>());
         await AssertLivingWorldQteBytesAsync(before);
         AssertNoQteBackupArtifacts();
     }
@@ -194,6 +196,11 @@ public sealed partial class QteSceneServiceTests
 
     private async Task AssertLivingWorldQteBytesAsync(Dictionary<string, byte[]?> expected)
     {
-        foreach (var pair in expected) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        foreach (var pair in expected)
+        {
+            var actual = await _fs.ReadFileBytesAsync(pair.Key);
+            Assert.True(pair.Value is null ? actual is null : actual is not null && pair.Value.AsSpan().SequenceEqual(actual),
+                "QTE boundary changed exact protected bytes or absence: " + pair.Key);
+        }
     }
 }
