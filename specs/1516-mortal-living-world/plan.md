@@ -434,3 +434,17 @@ snapshot and writes turn_request afterward. It is not the bare-maintenance
 exception. Unreferenced opening narrative is not retroactively an autonomous
 report event; real elapsed cycles during that turn still require assessment.
 This is a traced no-update rationale, not a new full bootstrap runtime result.
+
+## Canonical item held-lease finding, 2026-11-16
+
+Final QTE runtime passed 10/10 after the preseal ordering correction; integration
+build passed with 0 errors, 167 warnings in 110.49 s. The single diagnostic joint
+rerun exposed the exact refusal: canonical item validation tried to acquire
+`gm-main-owner.lock` while its genuine caller already held that lease. Its
+canonical branch dropped the supplied writeLease at both original-snapshot and
+pre-turn-item-catalog reads, unlike the existing raw item/location/resource paths.
+The current minimal fix forwards the same actual lease through those two existing
+APIs, without a new cache, lock bypass, catch/retry or weaker physical guard.
+A narrow category selects the existing actual-held-lease positive test and a
+new foreign-lease rejection control before the next genuine joint representative.
+Joint completion remains unqualified until that run succeeds.

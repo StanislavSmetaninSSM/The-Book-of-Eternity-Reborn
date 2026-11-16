@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-canonical-item-held-lease",
+      "responsibility": "#1516 impacted canonical item validator propagates its genuine held write lease through original snapshot and pre-turn catalog reads without nested acquisition.",
+      "excludes": "Whole item lifecycle, joint publication acceptance, cache-framework or lock-bypass changes.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.CanonicalLeaseAwareEntryPoint_UsesTheBoundCurrentState",
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.CanonicalLeaseAwareEntryPoint_RejectsForeignLease"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-diagnosis-representative",
       "responsibility": "#1516 genuine diagnosis receipt publication late-cut rollback and same-original retry, selected before full completion-drift packet.",
       "excludes": "Other diagnosis completion/tamper cases; do not select together with diagnosis-publication.",
