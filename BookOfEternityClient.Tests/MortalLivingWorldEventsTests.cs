@@ -198,6 +198,56 @@ public sealed class MortalLivingWorldEventsTests
         Assert.NotEmpty(MortalLivingWorldEvents.Validate(report, Documents(false), Documents(true)));
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void ThreatActivityEvidenceRejectsRenameButAcceptsProgress(bool aggregate, bool progress)
+    {
+        JsonObject Activity(string label, int spent) => new()
+        { ["activityName"] = label, ["description"] = "Existing work", ["totalTimeCostMinutes"] = 60,
+          ["timeSpentMinutes"] = spent, ["currentStepNumber"] = 1, ["totalStepsInActivity"] = 3 };
+        JsonObject Threat(JsonObject activity) => new()
+        { ["threatId"] = "raiders", ["name"] = "Raiders", ["intensity"] = 2,
+          ["longTermGoal"] = "Take the bridge", ["currentActivity"] = activity.DeepClone() };
+        var beforeActivity = Activity("Watch bridge", 10);
+        var afterActivity = Activity(progress ? "Watch bridge" : "Renamed watch", progress ? 20 : 10);
+        var beforeThreats = new JsonArray(Threat(beforeActivity));
+        var afterThreats = new JsonArray(Threat(afterActivity));
+        var report = TargetReport(aggregate ? "location" : "threat", aggregate ? "town" : "raiders",
+            aggregate ? "activeThreats" : "currentActivity", aggregate ? beforeThreats : beforeActivity, aggregate ? afterThreats : afterActivity);
+        if (!aggregate)
+            foreach (var reference in new[] { Event(report)["targets"]![0], Event(report)["cause"]!["references"]![0], Effect(report)["target"] })
+                reference!["ownerId"] = "town";
+        var issues = MortalLivingWorldEvents.Validate(report, Map("locations", "locationId", "town", "activeThreats", beforeThreats),
+            Map("locations", "locationId", "town", "activeThreats", afterThreats));
+        if (progress) Assert.Empty(issues);
+        else Assert.Contains(issues, issue => issue.Code == "mortal_living_world_effect_not_meaningful");
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void FactionLabelsAreNotAuthorityEvidence(bool location, bool authorityChange)
+    {
+        var field = location ? "factionControl" : "factionAffiliations";
+        JsonArray Value(string name, string factionId) => new(location
+            ? new JsonObject { ["factionId"] = factionId, ["factionName"] = name, ["controlType"] = "Military", ["controlLevel"] = 50 }
+            : new JsonObject { ["factionId"] = factionId, ["factionName"] = name, ["rank"] = "Member", ["branch"] = null, ["membershipStatus"] = "Active" });
+        var before = Value("Guild", "guild");
+        var after = Value(authorityChange ? "Guild" : "New label", authorityChange ? "council" : "guild");
+        var report = TargetReport(location ? "location" : "npc", "subject", field, before, after);
+        Dictionary<string, JsonObject> Docs(JsonNode value) => location
+            ? Map("locations", "locationId", "subject", field, value)
+            : new() { ["game_state/npcs/npc_core.json"] = new JsonObject { ["UpdateNPCs"] = new JsonArray(new JsonObject { ["NPCId"] = "subject", [field] = value.DeepClone() }) } };
+        var issues = MortalLivingWorldEvents.Validate(report, Docs(before), Docs(after));
+        if (authorityChange) Assert.Empty(issues);
+        else Assert.Contains(issues, issue => issue.Code == "mortal_living_world_effect_not_meaningful");
+    }
+
     private static (JsonObject Report, Dictionary<string, JsonObject> Current, JsonObject News) KnownNews()
     {
         var report = Report(); Event(report)["knowledge"]!["player"] = "known";
