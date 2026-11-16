@@ -1554,6 +1554,7 @@ public sealed partial class ExampleDocumentationValidationTests
         var entries = manifest.MortalItemMaterializationCoverage;
         var requiredEntries = new Dictionary<string, string>(StringComparer.Ordinal)
         {
+            ["mortal_storage_offscreen_birth_v1"] = "E_CLI_Storage_Birth.txt",
             ["mortal_item_new_vehicle_cargo_v1"] = "E_CLI_New_Vehicle_Cargo_Materialization.txt",
             ["mortal_item_player_acquisition_empty_sections_v1"] = "E_CLI_Mortal_Item_Materialization.txt",
             ["mortal_item_mechanic_trade_output_v1"] = "E_CLI_Mortal_Item_Materialization.txt",

@@ -65,6 +65,57 @@ public sealed class MortalStorageBirthAccessTests
         Assert.Equal(storage["volume"]!.GetValue<double>(), item["volume"]!.GetValue<double>());
     }
 
+    [Fact]
+    public void OffscreenStorageBirthExampleMatchesManifestAndExactSourceCoordinate()
+    {
+        foreach (var path in new[] { "Rules/Block_2.txt", "Rules/Block_CLI_Operations.txt", "BookOfEternityClient/game_master_daemon.ps1" })
+            Assert.Contains("mortal_offscreen_storage_cargo_birth_v1", File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path)), StringComparison.Ordinal);
+        var entry = Assert.Single(ExampleValidationManifest.Load().MortalItemMaterializationCoverage,
+            e => e.ContractId == "mortal_storage_offscreen_birth_v1");
+        Assert.Equal("E_CLI_Storage_Birth.txt", entry.File);
+        Assert.Equal("focused-fragment", entry.ValidationKind);
+        Assert.Equal("MortalStorageBirthAccessTests." + nameof(OffscreenStorageBirthExampleMatchesManifestAndExactSourceCoordinate), entry.ValidationRoute);
+        Assert.False(string.IsNullOrWhiteSpace(entry.FocusedFragmentReason));
+        Assert.Contains("Does not establish accepted-turn", entry.CoverageLimit, StringComparison.Ordinal);
+        var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, example, StringComparison.Ordinal));
+        var json = example.Split("```json", StringSplitOptions.None)[3].Split("```", StringSplitOptions.None)[0];
+        var rawMap = JsonNode.Parse(json)!.AsObject();
+        Assert.Single(rawMap);
+        var updates = rawMap["worldMapUpdates"]!.AsObject();
+        Assert.Single(updates);
+        var operation = Assert.Single(updates["storagesToAdd"]!.AsArray())!.AsObject();
+        Assert.Equal(2, operation.Count);
+        Assert.Equal("loc_warehouse", operation["targetLocationId"]!.GetValue<string>());
+        var storage = operation["storage"]!.AsObject();
+        Assert.Equal("storage_offscreen_supplies", storage["storageId"]!.GetValue<string>());
+        Assert.Empty(MortalLocationStorageMetadataContract.Validate(JsonSerializer.SerializeToElement(storage), "storage"));
+        Assert.Equal(1, storage["capacity"]!.GetValue<int>());
+        Assert.Equal(0.01d, storage["volume"]!.GetValue<double>());
+        Assert.Null(storage["cargoMeasurements"]); Assert.Null(storage["cargoBirthEvidence"]);
+        var item = Assert.Single(storage["contents"]!.AsArray())!.AsObject();
+        Assert.Empty(MortalItemMaterializationContract.Validate(JsonSerializer.SerializeToElement(item), "storage.contents[0]", MortalItemMaterializationPhase.RawPreSeal));
+        Assert.Equal("storage_placement", item["materialization"]!["route"]!.GetValue<string>());
+        Assert.Equal("location_storage", item["materialization"]!["sourceAuthority"]!["kind"]!.GetValue<string>());
+        Assert.Equal("loc_warehouse:storage_offscreen_supplies", item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
+        Assert.Equal(1, item["count"]!.GetValue<int>());
+        Assert.False(item["isContainer"]!.GetValue<bool>());
+        Assert.Equal(storage["volume"]!.GetValue<double>(), item["volume"]!.GetValue<double>());
+        var a = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_road", "Current road", x: 0);
+        var b = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_warehouse", "Accepted warehouse", x: 1);
+        var index = MortalLocationTestFixture.CreateIdentityIndex(a);
+        index["locationEntries"]!.AsArray().Add(MortalLocationTestFixture.CreateIdentityIndex(b)["locationEntries"]![0]!.DeepClone());
+        var planning = MortalLocationAcceptedTurnPlanner.Build(new(MortalLocationTestFixture.CreateWorldMap(a, b),
+            MortalLocationTestFixture.CreateCurrentProjection(a), index, null, updates, 42));
+        Assert.True(planning.Success, string.Join(";", planning.Issues.Select(i => i.Code + ":" + i.FilePath)));
+        Assert.Equal("loc_road", planning.Plan!.FinalCurrentLocation!["locationId"]!.GetValue<string>());
+        var draft = Assert.Single(planning.Plan.StorageBirthDrafts);
+        Assert.Equal("loc_warehouse:storage_offscreen_supplies", draft.ItemSourceAuthorityId);
+        var projected = Assert.Single(planning.Plan.FinalStorageContents["entries"]!.AsArray())!;
+        Assert.Equal("loc_warehouse", projected["locationId"]!.GetValue<string>());
+        Assert.Equal(item["creationRef"]!.GetValue<string>(), Assert.Single(projected["contents"]!.AsArray())!["creationRef"]!.GetValue<string>());
+    }
+
     [Theory]
     [InlineData("Player", false)]
     [InlineData("Shared", false)]

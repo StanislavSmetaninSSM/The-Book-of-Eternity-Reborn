@@ -1,4 +1,5 @@
 MORTAL EMPTY STORAGE BIRTH IN AN EXISTING LOCATION
+Contract: mortal_existing_storage_birth_v1
 
 Source-local worldMapUpdates fragment, not a complete GM response. The location
 loc_warehouse must already exist in accepted PRE-TURN Mortal state. Replace it
@@ -35,9 +36,11 @@ one storage_addition transition, and updates effective access in the same accept
 publication. Original location materialization/receipt remain immutable.
 Do not author history, receipts, seals or storage_access.json entries. Do not
 combine this birth with storageUpdates/storagesToRemove for the same coordinate.
-This route currently accepts empty contents only: no nonempty cargo, measurements
-or same-turn newly created location. Use an independently admitted new location's
-own complete locationStorages declaration for storage born with that location.
+The empty example creates no offscreen contents entry. Same-turn newly created
+location targets remain unsupported. Populated additions at an accepted existing
+location use the complete noncurrent example below, never an implicit transfer.
+Use an independently admitted new location's own complete locationStorages
+declaration for storage born with that location.
 An invalid field is repaired only in the indexed raw operation; never rewrite
 canonical originals to make it pass.
 
@@ -199,3 +202,184 @@ contents stay in their existing item carrier, not in a new inventory file. Later
 legal movement or consumption preserves this historical snapshot; it is not a
 new live inventory limit or access grant. Rejected or rolled-back birth publishes
 neither the storage's accepted child history nor its item/access after-images.
+
+
+TRUE NONCURRENT STORAGE BIRTH
+Contract: mortal_offscreen_storage_cargo_birth_v1
+
+Assume loc_road remains the current accepted scene A and loc_warehouse is a
+different, already accepted PRE-TURN Mortal location B. This fragment births a
+fresh storage and fresh item directly at B. It does not create a current scene,
+travel first or transfer an existing item. Replace both permanent IDs only with
+the actual accepted coordinates; never use a same-turn location initialId.
+
+The exact source coordinate is loc_warehouse:storage_offscreen_supplies. The
+single noncontainer occupies one direct stack and its physical 0.01 dm3 exactly
+matches the storage volume limit. No redundant cargoMeasurements row is authored.
+Containers and multi-unit direct stacks instead require the already documented
+whole-stack measuredConfiguration basis; empty contents cannot carry nonempty
+measurements. Every item in this raw birth uses storage_placement, not another
+otherwise valid loot/craft/quest route.
+
+```json
+{
+  "worldMapUpdates": {
+    "storagesToAdd": [
+      {
+        "targetLocationId": "loc_warehouse",
+        "storage": {
+          "storageId": "storage_offscreen_supplies",
+          "name": "Складской запас мела",
+          "description": "Свежий запас мела в сундуке принятого удалённого склада.",
+          "image_prompt": "A small wooden chest containing one piece of white chalk",
+          "capacity": 1,
+          "volume": 0.01,
+          "owner": {
+            "ownerType": "Player",
+            "ownerId": "player_current",
+            "ownerName": "Герой"
+          },
+          "authorizedUsers": [],
+          "hasFullAccess": true,
+          "contents": [
+            {
+              "existedId": null,
+              "creationRef": "new_offscreen_chalk",
+              "name": "Кусочек белого мела",
+              "description": "Небольшой сухой кусочек мела для коротких отметок на камне.",
+              "image_prompt": "small worn piece of white chalk on dark stone, realistic low fantasy item",
+              "type": "Бытовой предмет",
+              "group": "Инструменты",
+              "quality": "Common",
+              "rarity": "Common",
+              "price": 1,
+              "count": 1,
+              "weight": 0.02,
+              "volume": 0.01,
+              "resourceMaterialization": {
+                "resources": [
+                  {
+                    "resourceKey": "durability",
+                    "maximum": 100
+                  }
+                ]
+              },
+              "bonuses": [],
+              "effects": [],
+              "structuredBonuses": [],
+              "combatEffect": [],
+              "customProperties": [],
+              "mechanicalSummaryAuthority": null,
+              "mechanicalSummaryUnresolvedReason": null,
+              "equipmentSlot": null,
+              "accessoryForSlot": null,
+              "requiresTwoHands": false,
+              "isContainer": false,
+              "capacity": null,
+              "containerWeight": null,
+              "weightReduction": null,
+              "contentsPath": null,
+              "isConsumption": false,
+              "textContent": null,
+              "journalEntries": [],
+              "isSentient": false,
+              "unreadableReason": null,
+              "sealedReason": null,
+              "lockedReason": null,
+              "disassembleTo": null,
+              "ownerBondLevelCurrent": null,
+              "ownerBondLevelMax": null,
+              "fateCards": [],
+              "questLinks": [],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "mat_offscreen_chalk_turn_42",
+                "realm": "Mortal",
+                "route": "storage_placement",
+                "sourceTurn": 42,
+                "sourceAuthority": {
+                  "kind": "location_storage",
+                  "authorityId": "loc_warehouse:storage_offscreen_supplies"
+                },
+                "creationRef": "new_offscreen_chalk",
+                "state": "complete",
+                "sections": {
+                  "presentation": {
+                    "state": "populated",
+                    "reason": null
+                  },
+                  "physical": {
+                    "state": "populated",
+                    "reason": null
+                  },
+                  "mechanics": {
+                    "state": "empty_by_design",
+                    "reason": "Мел не даёт самостоятельного механического бонуса."
+                  },
+                  "equipment": {
+                    "state": "empty_by_design",
+                    "reason": "Мел не является экипировкой."
+                  },
+                  "container": {
+                    "state": "empty_by_design",
+                    "reason": "Кусочек мела ничего не вмещает."
+                  },
+                  "consumption": {
+                    "state": "empty_by_design",
+                    "reason": "Мел не является расходником с самостоятельным эффектом."
+                  },
+                  "readableOrSentient": {
+                    "state": "empty_by_design",
+                    "reason": "На самом кусочке нет читаемого текста и собственного голоса."
+                  },
+                  "craftingAndDisassembly": {
+                    "state": "empty_by_design",
+                    "reason": "Этот кусочек не задаёт рецепта или полезной разборки."
+                  },
+                  "bondsAndFateCards": {
+                    "state": "empty_by_design",
+                    "reason": "Обычный мел не образует связь и не имеет Карт Судьбы."
+                  },
+                  "questRole": {
+                    "state": "empty_by_design",
+                    "reason": "Мел не связан с заданием."
+                  },
+                  "provenance": {
+                    "state": "populated",
+                    "reason": null
+                  },
+                  "ownershipAndPlacement": {
+                    "state": "populated",
+                    "reason": null
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+The client consumes this exact command, projects and seals the item only in the
+existing location_storage_contents.json carrier for B, and finalizes the existing
+child storage_addition.afterState.cargoBirthEvidence with exact source turn and
+validated session/request/snapshot. It publishes storage metadata, item identity,
+historical capacity evidence and effective access through the existing common
+atomic transaction. Never author those projected companions, records or hashes.
+A later accepted travel to B hydrates this same item identity; ordinary legal
+retrieve/deposit or consumption preserves the birth evidence. Explicit false
+hasFullAccess remains restricted even for its owner.
+
+Repair only the named field at this exact storagesToAdd ordinal. Preserve the
+parent targetLocationId, storageId and original raw item creationRef and known
+materializationId; do not replace, reorder or drop items to evade repair. If the
+reported item source is wrong, correct it to the derived coordinate above, not to
+the old erroneous value. A failed or rolled-back birth leaves neither its new
+metadata, items, child evidence nor access after-images behind.
+
+This is a complete raw operation/item fragment, not a complete accepted response.
+Focused source/example guards validate its grammar and declarations; real intake,
+publication, source drift, rollback and later move controls are separate evidence.

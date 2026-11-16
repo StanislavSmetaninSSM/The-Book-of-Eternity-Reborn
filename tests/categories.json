@@ -535,8 +535,8 @@
     },
     {
       "id": "mortal-storage-birth-guidance",
-      "responsibility": "#1515 actual full-daemon rendering and complete restricted-owner/empty-addition/current-scene populated storage guidance.",
-      "excludes": "Runtime capacity/publication qualification, nonempty existing-location additions, offscreen cargo and new grant/revoke engine.",
+      "responsibility": "#1515 actual full-daemon rendering, complete empty/current/offscreen storage examples, exact source coordinates and shared example-manifest inventory.",
+      "excludes": "Runtime capacity/publication qualification, provider dispatch, Windows qualification and new grant/revoke engine.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationValidationTests.StorageBirthAccess.cs",
         "BookOfEternityClient/Services/MortalLocationStorageMetadataContract.cs",
@@ -557,7 +557,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate"
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
           ]
         },
         {
@@ -565,7 +566,8 @@
           "tests": [
             "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.DeliveredStorageGuidanceContainsCompleteRestrictedOwnerFragment",
             "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.ExistingStorageBirthGuidanceUsesCompleteEmptySourceLocalOperation",
-            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.CurrentStorageCargoBirthGuidanceUsesCompleteSourceLocalExample"
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.CurrentStorageCargoBirthGuidanceUsesCompleteSourceLocalExample",
+            "BookOfEternityClient.Tests.MortalStorageBirthAccessTests.OffscreenStorageBirthExampleMatchesManifestAndExactSourceCoordinate"
           ]
         }
       ]
@@ -821,7 +823,7 @@
     },
     {
       "id": "mortal-vehicle-cargo-guidance",
-      "responsibility": "#1515 cargo route source guard, exact example manifest inventory, and actual full daemon template/example delivery through the existing context-pack test.",
+      "responsibility": "#1515 cargo route source guard and actual full daemon template/example delivery through the existing context-pack test; shared manifest inventory is owned by mortal-storage-birth-guidance.",
       "excludes": "Provider dispatch, Windows PowerShell qualification, capacity/access and whole issue acceptance. Linux uses installed PowerShell 7.",
       "changeHints": [
         "BookOfEternityClient/game_master_daemon.ps1",
@@ -840,8 +842,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
-            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate"
           ]
         },
         {

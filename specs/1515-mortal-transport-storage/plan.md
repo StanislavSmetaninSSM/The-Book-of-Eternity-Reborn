@@ -8,6 +8,19 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen review-regression compile correction, 2026-11-16
+
+Saved f4eeabb07bcab91ea9c00bfbdbc1343e21e96bc1 compiled production but the new
+unit helper used nonexistent NpcTradeRequestState.PendingRequestsPath instead of
+PendingRequestPath. Unit build stopped with one compile error (88.43s, 94 warnings);
+no tests executed, so this is not causal RED. Correct that test constant, add a
+cheap nested-route containment case for the third review finding, and finish the
+prepared documentation guards before the next matching build. The cheap category now has 18 cases, including
+the nested-route regression; storage guidance has the new offscreen guard and
+the shared exact manifest inventory control moved from vehicle-cargo guidance.
+Corrective runtime
+behavior for the four review findings remains unreleased pending causal evidence.
+
 ## Offscreen independent source findings and regression tests, 2026-11-16
 
 Independent Astra High review of the intermediate source identified four concrete

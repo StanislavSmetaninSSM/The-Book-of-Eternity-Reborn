@@ -1372,6 +1372,29 @@
   ],
   "mortalItemMaterializationCoverage": [
     {
+      "contractId": "mortal_storage_offscreen_birth_v1",
+      "file": "E_CLI_Storage_Birth.txt",
+      "statePath": "world_map.json metadata; location_storage_contents.json item carrier; location_identity_index.json child birth history; storage_access.json effective access",
+      "responseSurface": "worldMapUpdates.storagesToAdd[] exact existing noncurrent target with complete fresh storage_placement items",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Complete empty, current-scene and true noncurrent storage examples share governed item/storage semantics without a parallel inventory writer. The noncurrent fragment births fresh cargo directly at accepted B.",
+      "validationKind": "focused-fragment",
+      "validationRoute": "MortalStorageBirthAccessTests.OffscreenStorageBirthExampleMatchesManifestAndExactSourceCoordinate",
+      "focusedFragmentReason": "The example is a complete raw storage operation and item, not an entire GameResponse or world. The narrow typed guard checks all three source markers, raw item/storage contracts, exact derived coordinate and detached location preparation; actual publication and consumers are separate integration controls.",
+      "coverageLimit": "Focused declaration/source grammar only. Does not establish accepted-turn item allocation, source fences, atomic publication, rollback or travel/move authority. MortalItemMaterializationValidationTests.OffscreenStorageBirth owns those separate real-path controls.",
+      "requiredText": [
+        "mortal_existing_storage_birth_v1",
+        "mortal_current_storage_cargo_birth_v1",
+        "mortal_offscreen_storage_cargo_birth_v1",
+        "loc_warehouse:storage_offscreen_supplies",
+        "storage_addition.afterState.cargoBirthEvidence",
+        "preserves the birth evidence"
+      ],
+      "expectedDiagnostics": []
+    },
+    {
       "contractId": "mortal_item_new_vehicle_cargo_v1",
       "file": "E_CLI_New_Vehicle_Cargo_Materialization.txt",
       "statePath": "game_state/misc/vehicles.json",
@@ -2318,6 +2341,14 @@
     }
   ],
   "shapeExemptions": [
+    {
+      "file": "E_CLI_Storage_Birth.txt",
+      "requiredText": [
+        "\"storageId\": \"storage_supply\"",
+        "\"authorityId\": \"locref_current:storage_supply\""
+      ],
+      "reason": "Complete current-scene storage/item body fragment, not a top-level GameResponse. MortalStorageBirthAccessTests.CurrentStorageCargoBirthGuidanceUsesCompleteSourceLocalExample validates both production raw contracts; the noncurrent operation has its own focused manifest guard."
+    },
     {
       "file": "E_CLI_Afterlife_Turns.txt",
       "requiredText": [

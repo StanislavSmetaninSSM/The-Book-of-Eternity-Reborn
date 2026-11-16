@@ -49,6 +49,38 @@ public sealed class MortalOffscreenStorageRouteDataTests
     }
 
     [Fact]
+    public async Task BorrowedCatalogStorageRoutePreservesNestedOccurrenceAncestry()
+    {
+        await using var fixture = await TinyRouteFiles.CreateAsync();
+        await using var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync();
+        var input = MortalOffscreenStorageBirthTests.Input();
+        var storage = input.RawWorldMapUpdates!["storagesToAdd"]![0]!["storage"]!.AsObject();
+        var root = storage["contents"]![0]!.AsObject();
+        root["isContainer"] = true; root["capacity"] = 2;
+        root["materialization"]!["sections"]!["container"] = new JsonObject { ["state"] = "populated", ["reason"] = null };
+        var child = MortalItemTestFixture.CreateRawRoot("storage_placement", "location_storage",
+            "loc_offscreen_birth_b:storage_offscreen_birth", creationRef: "new_nested", materializationId: "mat_nested");
+        child["contentsPath"] = new JsonArray(MortalItemTestFixture.CreationRef);
+        storage["contents"]!.AsArray().Add(child);
+        var planning = MortalLocationAcceptedTurnPlanner.Build(input);
+        Assert.True(planning.Success, string.Join(";", planning.Issues.Select(i => i.Code)));
+        var plan = planning.Plan!;
+        var catalog = MortalItemCarrierCatalog.Build(new(null, null, null, plan.FinalCurrentLocation, null,
+            new Dictionary<string, JsonObject>(), plan.FinalStorageContents));
+        Assert.Empty(catalog.Issues);
+        var occurrence = Assert.Single(catalog.ByCreationRef["new_nested"]);
+        Assert.Equal(new[] { MortalItemTestFixture.CreationRef }, occurrence.Carrier.ContainerPath);
+        var routes = await MortalItemRouteAuthorityCatalog.BuildAsync(fixture.Files, lease,
+            suppliedCatalog: catalog, storageBirthDrafts: plan.StorageBirthDrafts);
+        Assert.Empty(routes.Issues);
+        var mapped = routes.ByCreationRef["new_nested"];
+        Assert.Equal("loc_offscreen_birth_b:storage_offscreen_birth", mapped.AuthorityId);
+        Assert.Equal(occurrence.Carrier.OwnerId, mapped.Destination.OwnerId);
+        Assert.Equal(occurrence.Carrier.ContainerId, mapped.Destination.ContainerId);
+        Assert.Equal(occurrence.Carrier.ContainerPath, mapped.Destination.ContainerPath);
+    }
+
+    [Fact]
     public async Task ConflictingExplicitStorageSourceMappingsFailInsteadOfChoosingFirst()
     {
         await using var fixture = await TinyRouteFiles.CreateAsync();
@@ -205,7 +237,7 @@ public sealed class MortalOffscreenStorageRouteDataTests
                         [NpcCoreChangesContract.NpcCorePath] = "game_state/control/route_baseline/npc.json",
                         [StorageTransportMoveService.CurrentLocationPath] = "game_state/control/route_baseline/location.json",
                         [CraftRequestState.PendingRequestPath] = "game_state/control/route_baseline/craft.json",
-                        [NpcTradeRequestState.PendingRequestsPath] = "game_state/control/route_baseline/trade.json"
+                        [NpcTradeRequestState.PendingRequestPath] = "game_state/control/route_baseline/trade.json"
                     } }
                 };
                 foreach (var (path, root) in roots) await fixture.Files.WriteFileAtomicAsync(path, root.ToJsonString());
