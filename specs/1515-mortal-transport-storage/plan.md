@@ -8,6 +8,20 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen optional-field gate blocks review RED, 2026-11-16
+
+At 40b237dc7aae65aedca879ba91d98b2923c81cec the corrected unit build passed
+(28.97s, 40 warnings, 0 errors). All 18 cheap cases executed in10.389s, with
+4 PASS and14 FAIL, no timeout/duplicate/skip and complete cleanup. Passed controls
+prove four catalog-only reads eliminated while fresh authority remains, detached
+returned route DATA/retry behavior, conflicting exact mappings rejected and the
+raw repair path allowlist. The other cases are blocked before the intended review
+assertions: optional cargoMeasurements was accidentally included in the generic
+required-field set. Correct that production gate only, retaining every original
+required field and the closed allowed catalog. Do not add empty measurements to
+fixtures to hide it. The four original review findings remain uncorrected until
+their causal assertions are reached; no GREEN claim is made here.
+
 ## Offscreen review-regression compile correction, 2026-11-16
 
 Saved f4eeabb07bcab91ea9c00bfbdbc1343e21e96bc1 compiled production but the new

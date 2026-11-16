@@ -27,10 +27,15 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         "targetLocationId", "storage"
     };
 
-    private static readonly HashSet<string> StorageAdditionMetadataFields = new(StringComparer.Ordinal)
+    private static readonly HashSet<string> StorageAdditionRequiredMetadataFields = new(StringComparer.Ordinal)
     {
         "storageId", "name", "description", "image_prompt", "capacity", "volume",
-        "owner", "authorizedUsers", "hasFullAccess", "contents", "cargoMeasurements"
+        "owner", "authorizedUsers", "hasFullAccess", "contents"
+    };
+
+    private static readonly HashSet<string> StorageAdditionMetadataFields = new(StorageAdditionRequiredMetadataFields, StringComparer.Ordinal)
+    {
+        "cargoMeasurements"
     };
 
     private static readonly HashSet<string> StorageUpdateFields = new(StringComparer.Ordinal)
@@ -192,7 +197,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             var target = ReadGovernedTargetLocation(operation, context, "mortal_location_storage_addition_target_unresolved", preTurnLocationsById, issues);
             if (operation["storage"] is not JsonObject storage)
             { issues.Add(InvalidLifecycleShape(context + ".storage", "mortal_location_storage_addition_invalid", operation["storage"])); continue; }
-            ValidateExactOperationFields(storage, StorageAdditionMetadataFields, context + ".storage", "mortal_location_storage_addition_invalid", issues);
+            ValidateExactOperationFields(storage, StorageAdditionMetadataFields, context + ".storage", "mortal_location_storage_addition_invalid", issues, StorageAdditionRequiredMetadataFields);
             if (storage["contents"] is not JsonArray contents || contents.Any(node => node is not JsonObject item ||
                     !CanonicalStateNormalizer.IsRawMortalItemCreation(item) || ReadExactString(item, "creationRef") is null ||
                     item["itemId"] is not null || item["existedId"] is not null))

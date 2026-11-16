@@ -2601,17 +2601,19 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         IReadOnlySet<string> expected,
         string context,
         string code,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        IReadOnlySet<string>? requiredFields = null)
     {
         ValidateAllowedOperationFields(operation, expected, context, code, issues);
-        var missing = expected.Where(field => !operation.ContainsKey(field)).ToArray();
+        var required = requiredFields ?? expected;
+        var missing = required.Where(field => !operation.ContainsKey(field)).ToArray();
         if (missing.Length == 0)
             return;
         issues.Add(Issue(
             context,
             code,
             "This lifecycle operation is missing required fields.",
-            string.Join(',', expected.OrderBy(static field => field, StringComparer.Ordinal)),
+            string.Join(',', required.OrderBy(static field => field, StringComparer.Ordinal)),
             "missing=" + string.Join(',', missing)));
     }
 
