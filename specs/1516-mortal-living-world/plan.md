@@ -102,3 +102,19 @@ the tested source. This is an explicit fixture correction, not permission to
 fabricate signed ledger DATA or weaken required originals. The six impacted
 NPC-presence controls were unrun because the runner stopped at the failed source
 category; they remain scheduled.
+
+### Reviewed DATA correction and source runtime check
+
+Remote `1fd85fb2` preserves the three review corrections. Official DATA selection
+completed 85/85 PASS (57 assessment, 28 event cases), no skips/duplicates,
+complete cleanup; run `20261116-024927-641-786-ac3b44e0b106413b85c67820177accd9-categories`.
+The review regressions had first produced 18 PASS / 10 causal FAIL. Re-review is
+pending. This does not qualify canonical publication.
+
+All eight real living-world source cases passed. The six impacted NPC-presence
+controls gave five PASS and one failure: their deliberate prior-family fixture
+removed only the former NPC extension from the now larger current family, so
+it no longer represented the exact prior base form. The fixture now explicitly
+retains exactly the prior base keys before re-signing; the strict production
+reader is unchanged. That corrected control is pending. Source independent
+review is in progress, including realm/control correlation and closing fences.
