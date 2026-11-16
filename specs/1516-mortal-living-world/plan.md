@@ -263,3 +263,78 @@ combined unit packet completed only 4/5 descriptors (82 cases, 55 pass/27 fail),
 and the combined integration packet stopped on diagnosis. Remaining receipt,
 engine, QTE and actual-render categories were run separately. No complete batch
 PASS is claimed. Raw output stays outside committed source documentation.
+
+## Receipt revision 2 and real-owner follow-up, 2026-11-16
+
+Receipt DATA passed 26/26 and pure QTE clock DATA passed 27/27 on the fresh
+Unit build (0 errors, 96 warnings, 84.94 s). Independent receipt source review
+found no blocker; repeated private history validation remains a nonblocking
+preexisting cost opportunity, not a measured regression or speedup claim.
+The original seven ordinary publication cases remain GREEN with revision 2.
+
+Runtime lifecycle executed four cases: project completion and false-birth
+rollback passed; genuine project/flag birth failed because the ordinary owner
+still called the three-argument helper without selected authenticated absence.
+This is the causal RED for the narrow runtime absence wiring. The earlier broad
+ordinary selector also selected these four cases, so their repeated execution
+is not additional distinct coverage. That selector is narrowed to its seven
+original methods before subsequent runs.
+
+Engine history exclusion passed all three original cases. The new late-health
+loop case failed before its injected stage: its minimal faction/full-resend
+fixture violates current raw faction contracts. It is being replaced with a
+legitimate no-change, no-faction scenario; no reentry behavior RED is claimed.
+QTE direct/short controls passed five cases, while both offer/Begin cases still
+stop at vehicle birth-receipt setup even after using the supported empty root.
+Their candidate/source mismatch requires diagnosis, not weaker validation.
+Diagnosis now reaches genuine common composition: missing, T0 and unsupported
+reports were wrongly admitted, and the accepted T1 plan omitted the living
+receipt/report cohort. Those are causal integration RED observations.
+
+The eight-case joint category exceeded its 300-second category budget and
+completed no TRX descriptor; official overall timeout is not a batch verdict.
+Its retained stdout nevertheless contains two reached failures: valid genuine
+common sealing omitted HistoryPath (103 seconds), and a post-commit drift probe
+could not reach a history member that was never published (175 seconds).
+The first establishes the required preseal contribution gap. Do not rerun eight
+expensive fixtures just to reproduce that RED. Subsequent verification starts
+with one genuine representative under a protective 600-second category budget.
+Use the fixture's existing scoped stable-DATA reuse and lossless gzip sink,
+without shared mutable fixtures or weakened fresh ownership/output fences.
+The old plain diagnostic capture is retained locally; none is uploaded to GitHub
+or Spaces. Cost comparisons must account for the newly reached work.
+
+Joint raw-string setup required a four-dollar interpolation delimiter. A JavaScript
+replacement initially collapsed the dollars in its published copy; the exact
+unchanged local source was then published as `50e31cf3`. The successful integration
+build used those frozen bytes (0 errors, 167 warnings, 110.39 s), not the malformed
+intermediate remote revision. This is publication/setup correction, not behavior.
+
+The joint completion marker retains the accepted post-original report declaration
+and exact receipt/history footprint. Fresh recovery recomputes the declaration
+against the authenticated original clock/domains and actual completed effects.
+When the original records report absence, the marker is the owner-issued accepted
+comparison DATA; its public hashes are not a cryptographic signature. The current
+portable snapshot authority likewise disclaims resistance to a same-user coherent
+rewrite of all payloads and hashes. The single-file rehashed-history test checks
+the supported exact footprint fence; it is not evidence of resistance to a
+coordinated rewrite of every client-owned witness. No new signing scheme or
+after-seal sidecar is introduced.
+
+## Owner contribution WIP checkpoint, 2026-11-16
+
+Diagnosis and joint living-world contributions now join the real common owner
+before sealing, rather than relying on an ordinary sidecar. Independent review
+found and corrected diagnosis persisted semantic reconstruction and exact
+same-tuple opening-guard freshness; direct and retained completion have separate
+phase-appropriate fresh checks. Thirteen diagnosis cases are now selected,
+including actual resource-cost completion and drift controls. These changes are
+UNBUILT/UNRUN at this checkpoint, not accepted GREEN.
+
+Ordinary lifecycle now forwards selected authenticated absence; the critical
+engine-loop fixture is corrected to a legitimate no-change scenario; QTE has
+focused response/canonical-vehicle controls to isolate the earlier setup failure.
+No engine reentry or QTE offer/Begin fix is claimed yet. Joint representative uses
+existing scoped stable-DATA reuse and lossless gzip captures; fresh owner/effect
+checks remain mandatory. Next: fresh integration build, bounded categories,
+then one genuine joint representative, not the timed-out eight-case batch.

@@ -45,7 +45,7 @@ An autonomous event/action identifies its time window, participating entities or
 - **FR-004** Require complete event semantics, exact cross-surface identities, explicit visibility, original/canonical effect evidence, consequence and chronicle/news proof.
 - **FR-005** Validate effects after existing reducers; do not invent IDs, actors, causes, rewards, progress or missing payloads during normalization.
 - **FR-006** Retain authenticated source and current ownership checks until publication; integrate common rollback, including new report/history paths and their absence.
-- **FR-007** Persist versioned, source-bound client-owned immutable receipt/history once per accepted package; reject history tampering and conflicting replay.
+- **FR-007** Persist versioned, source-bound client-owned immutable receipt/history once per accepted package; reject history tampering and conflicting replay. "Immutable" means the accepted owner binds and rechecks the exact declaration, history and completed-state evidence across its supported publication/recovery flow. The portable local-storage fingerprints are integrity checks, not cryptographic provenance against a coherent rewrite of every client-owned witness by the same user process.
 - **FR-008** Preserve privacy of new private evidence and existing undiscovered references. No general #1540 redesign.
 - **FR-009** Synchronize current GM entrypoints, guide, autonomous/no-change worked examples, validation manifest and source/documentation tests. Document no-update decisions.
 - **FR-010** Use independent cheap typed unit fixtures plus real canonical publication/rollback tests; impact-selected official runner only, no hosted CI or broad suite.

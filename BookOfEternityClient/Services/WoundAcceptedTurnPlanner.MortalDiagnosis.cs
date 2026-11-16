@@ -20,11 +20,12 @@ internal static partial class WoundAcceptedTurnPlanner
         private MortalDiagnosisContinuation(MortalWoundTreatmentAcceptedStateAuthority owner,
             MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
             ProgressionScheduleService.FrozenMortalCalculation progression, WoundAcceptedTurnInput input,
-            IReadOnlyDictionary<string, JsonNode?> roots, MortalDiagnosisPublicationBinding? publication)
+            IReadOnlyDictionary<string, JsonNode?> roots, MortalDiagnosisPublicationBinding? publication,
+            MortalLivingWorldDiagnosisContribution? livingWorld)
         {
             Owner = owner; Outcome = outcome; Working = working; _progression = CloneProgression(progression);
-            Publication = publication;
-            PublicationInputs = publication is null ? null : MortalDiagnosisPublicationWitness.Capture(publication);
+            Publication = publication; LivingWorld = livingWorld;
+            PublicationInputs = publication is null ? null : MortalDiagnosisPublicationWitness.Capture(publication, livingWorld);
             _input = WoundAcceptedTurnData.CloneInput(input)!;
             _roots = CloneRecoverySourceRoots(roots);
             Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
@@ -33,7 +34,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 outcome.Resolution.ResultFingerprint, progression.MutationFingerprint,
                 WoundAcceptedTurnFingerprints.ComputeInput(_input), publication?.SemanticFingerprint,
                 publication?.Finalization.FinalizationFingerprint, publication?.ItemCommands.Fingerprint,
-                publication?.CriticalReaction.Fingerprint
+                publication?.CriticalReaction.Fingerprint, livingWorld?.Fingerprint
             }.Concat(_roots.OrderBy(pair => pair.Key, StringComparer.Ordinal).SelectMany(pair =>
                 new[] { pair.Key, WoundAcceptedTurnFingerprintWriter.CanonicalJson(pair.Value) })));
             _recoveries = working.Members.Select(member => (object)new RecoveryContinuationAuthority(owner,
@@ -44,6 +45,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundDiagnosisWorkingProjection Working { get; }
         internal ProgressionScheduleService.FrozenMortalCalculation Progression => CloneProgression(_progression);
         internal string Fingerprint { get; }
+        internal MortalLivingWorldDiagnosisContribution? LivingWorld { get; }
         internal MortalDiagnosisPublicationBinding? Publication { get; }
         /// <summary>
         /// Copied comparison inputs captured from this continuation's actual frozen publication.
@@ -66,6 +68,7 @@ internal static partial class WoundAcceptedTurnPlanner
         internal void RequireCurrent() => Working.RequireCurrent(Owner);
         internal void RequireComposedClock(IReadOnlyDictionary<string, JsonObject> companions)
         {
+            LivingWorld?.RequireComposed(companions);
             if (!companions.TryGetValue(EffectAcceptedTurnInputComposer.WorldTimePath, out var clock) ||
                 !JsonNode.DeepEquals(clock, Working.ClockAfter) ||
                 !companions.TryGetValue(ProgressionScheduleService.SchedulePath, out var schedule) ||
@@ -123,7 +126,8 @@ internal static partial class WoundAcceptedTurnPlanner
 
         internal static MortalDiagnosisContinuation Admit(MortalWoundTreatmentAcceptedStateAuthority owner,
             MortalWoundDiagnosisOutcome outcome, MortalWoundDiagnosisWorkingProjection working,
-            ProgressionScheduleService.FrozenMortalCalculation progression, MortalDiagnosisPublicationBinding? publication = null)
+            ProgressionScheduleService.FrozenMortalCalculation progression, MortalDiagnosisPublicationBinding? publication = null,
+            MortalLivingWorldDiagnosisContribution? livingWorld = null)
         {
             working.RequireCurrent(owner);
             outcome.RequireCurrent(owner, new(owner.History, Array.Empty<ValidationIssue>()));
@@ -167,7 +171,8 @@ internal static partial class WoundAcceptedTurnPlanner
                         .Select(value => (value.JsonPath, WoundMaterializationContract.SerializeCanonical(value.Wound)))) ||
                 !JsonNode.DeepEquals(input.PreTurnHistory, JsonNode.Parse(WoundHistoryState.SerializeCanonical(owner.History))))
                 throw new InvalidDataException("Diagnosis preparation changed its complete signed original wound cohort or History.");
-            return new(owner, outcome, working, progression, input, roots, publication);
+            livingWorld?.RequireOwner(owner, working, progression);
+            return new(owner, outcome, working, progression, input, roots, publication, livingWorld);
         }
     }
 

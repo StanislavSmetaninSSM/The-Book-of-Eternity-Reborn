@@ -1,3 +1,5 @@
+using System.Text;
+using BookOfEternityClient.Configuration;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -65,6 +67,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         var first = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files, normalizer, validator,
             new Dictionary<string, string>(StringComparer.Ordinal));
+        Assert.DoesNotContain(first.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(first.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(first.Issues));
         var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(first.TreatmentResourcePublicationTransaction);
         try
         {
@@ -102,9 +106,135 @@ public sealed partial class MortalWoundTreatmentResolverTests
         finally { await ((IAsyncDisposable)completed).DisposeAsync(); }
     }
 
-    private static async Task<DiagnosisOwnershipFixture> CreateLivingDiagnosisFixtureAsync()
+    [Theory]
+    [InlineData("none")]
+    [InlineData("clock")]
+    [InlineData("history")]
+    [InlineData("control")]
+    [InlineData("requestAction")]
+    [InlineData("readyFiles")]
+    [InlineData("repair")]
+    public async Task LivingWorldDiagnosis_DirectCompletionChecksFinalAndOriginalAgreement(string drift)
     {
-        var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 30,
+        await using var fixture = await CreateLivingDiagnosisFixtureAsync();
+        await WriteLivingDiagnosisReportAsync(fixture);
+        var before = fixture.CaptureJson();
+        var composed = await ComposeLivingDiagnosisAsync(fixture);
+        Assert.True(composed.IsValid, JsonSerializer.Serialize(composed.Issues));
+        await fixture.ReleaseLeaseAsync();
+        var files = fixture.Files;
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
+            new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
+            new ValidationService(files, NullLogger<ValidationService>.Instance),
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(result.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(result.Issues));
+        var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(result.TreatmentResourcePublicationTransaction);
+        try
+        {
+            if (drift == "none")
+            {
+                var complete = await transaction.CompleteAsync(files);
+                Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
+                Assert.Null(await files.ReadFileBytesAsync(MortalLivingWorldSource.ReportPath));
+                var history = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(MortalLivingWorldSource.HistoryPath)))!;
+                Assert.Single(history["entries"]!.AsArray());
+                return;
+            }
+            var path = drift == "clock" ? MortalLivingWorldSource.WorldTimePath :
+                drift == "history" ? MortalLivingWorldSource.HistoryPath : drift == "readyFiles" ? "ready/turn_complete.json" :
+                drift == "repair" ? "game_state/control/validation_repair_request.json" : "input/turn_request.json";
+            var physical = files.ResolvePath(path);
+            var published = File.Exists(physical) ? File.ReadAllBytes(physical) : null;
+            var changed = published is null ? new JsonObject() : JsonNode.Parse(FileSystemManager.DecodeFileBytes(published))!.AsObject();
+            if (drift == "clock") changed["currentTimeInMinutes"] = changed["currentTimeInMinutes"]!.GetValue<long>() + 1;
+            else if (drift == "history") changed["entries"]!.AsArray().Clear();
+            else if (drift == "control") changed["progressionControl"]!["worldCycleMinutes"] = 1;
+            else if (drift == "requestAction") changed["playerAction"] = "A different action with the same original tuple and control";
+            else if (drift == "readyFiles") changed["filesModified"] = new JsonArray("game_state/world/world_flags.json");
+            else changed["issues"] = new JsonArray("foreign repair under the same original");
+            Directory.CreateDirectory(Path.GetDirectoryName(physical)!);
+            File.WriteAllText(physical, changed.ToJsonString());
+            try
+            {
+                var complete = await transaction.CompleteAsync(files);
+                Assert.False(complete.IsValid);
+            }
+            finally { if (published is null) File.Delete(physical); else File.WriteAllBytes(physical, published); }
+            // Restore only the external corruption; the transaction itself must compensate every owned output.
+            var compensation = await transaction.CompensateAsync(files);
+            Assert.True(compensation.IsValid, JsonSerializer.Serialize(compensation.Issues));
+            fixture.AssertJson(before);
+        }
+        finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+    }
+
+    [Fact]
+    public async Task LivingWorldDiagnosis_BrowserCompletionReconstructsActualSpendAndRejectsReceiptTamper()
+    {
+        await using var fixture = await CreateLivingDiagnosisFixtureAsync(resourceCost: true);
+        await WriteLivingDiagnosisReportAsync(fixture);
+        var files = fixture.Files;
+        var input = fixture.Authority.ReadDiagnosisOriginalInput();
+        var selected = MortalWoundDiagnosisInputCodec.Read(input);
+        var original = JsonSerializer.Deserialize<TurnRequest>(Assert.IsType<string>(
+            await files.ReadFileAsync(fixture.Lease, LiveTurnPreparationService.TurnRequestPath)), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        var token = fixture.Authority.Binding.SnapshotToken;
+        var generation = fixture.Authority.SessionGeneration;
+        var composed = await ComposeLivingDiagnosisAsync(fixture);
+        Assert.True(composed.IsValid, JsonSerializer.Serialize(composed.Issues));
+        var publication = Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(composed.Plan!.TreatmentResourcePublicationAuthority);
+        var semantic = publication.SemanticFingerprint;
+        var identity = publication.IdentitySeed;
+        await fixture.ReleaseLeaseAsync();
+        var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
+            new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
+            new ValidationService(files, NullLogger<ValidationService>.Instance), new Dictionary<string, string>(StringComparer.Ordinal));
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(result.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(result.Issues));
+        var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(result.TreatmentResourcePublicationTransaction);
+        try
+        {
+            var complete = await transaction.CompleteAsync(files);
+            Assert.True(complete.IsValid, JsonSerializer.Serialize(complete.Issues));
+        }
+        finally { await ((IAsyncDisposable)transaction).DisposeAsync(); }
+        await fixture.AcquireLeaseAsync();
+        var current = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        async Task<byte[]?> Read(string path)
+        {
+            var bytes = await files.ReadFileBytesAsync(fixture.Lease, path);
+            current.Add(path, bytes?.ToArray());
+            return bytes;
+        }
+        var settled = await MortalWoundDiagnosisCompletion.RequirePublishedAsync(original, token, generation,
+            selected.Selection, input, Read);
+        Assert.Equal(semantic, settled.ReconstructPublicationSemantic());
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(settled.Resolution).Finalization!;
+        Assert.Equal(identity, MortalWoundTreatmentResourcePublicationAuthority.ComputeIdentitySeed(settled.Source.AcceptedStateFingerprint,
+            settled.Request.RequestFingerprint, settled.Resolution.ResultFingerprint, finalization.FinalizationFingerprint,
+            settled.ReconstructPublicationSemantic()));
+        Assert.NotNull(settled.LivingWorldComparison);
+        foreach (var fault in new[] { "history", "report", "comparison" })
+        {
+            var changed = current.ToDictionary(pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
+            if (fault == "history") changed[MortalLivingWorldSource.HistoryPath] = null;
+            else if (fault == "report") changed[MortalLivingWorldSource.ReportPath] = Encoding.UTF8.GetBytes("{}");
+            else
+            {
+                var history = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(changed[WoundHistoryState.HistoryPath]!))!.AsObject();
+                var row = history["transitions"]!.AsArray().Single(value => value!["kind"]!.GetValue<string>() == "diagnose");
+                row!["transitionResult"]!["publicationInputs"]!["livingWorld"]!["context"]!["ResultMinute"] = 1;
+                changed[WoundHistoryState.HistoryPath] = Encoding.UTF8.GetBytes(history.ToJsonString());
+            }
+            await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
+                original, token, generation, selected.Selection, input, path => Task.FromResult(changed[path])));
+        }
+    }
+
+    private static async Task<DiagnosisOwnershipFixture> CreateLivingDiagnosisFixtureAsync(bool resourceCost = false)
+    {
+        var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 30, resourceCost: resourceCost,
             beforeResourceBootstrap: files =>
             {
                 // Complete the canonical scenario before LivePrepare signs its originals.

@@ -11,13 +11,15 @@ namespace BookOfEternityClient.Services;
 internal static partial class MortalQteDecisionPublication
 {
     private const string JointHashDomain = "T070-MORTAL-QTE-JOINT-COMMON-PUBLICATION-V2\n";
-    private static readonly string[] JointFields = Fields.Concat(new[] { "jointTreatment", "consumedPrivatePaths", "progression", "outputBinding" }).ToArray();
+    private static readonly string[] JointFields = Fields.Concat(new[] { "jointTreatment", "consumedPrivatePaths", "progression", "outputBinding", "livingWorld" }).ToArray();
     private static readonly string[] JointTreatmentFields = ["operationKey", "attemptId", "requestFingerprint",
         "persistedResultFingerprint", "resourceFinalizationFingerprint", "repairCheckpointFingerprint", "treatmentHistoryOrdinal"];
     private static readonly string[] JointFootprintPaths = FootprintPaths
         .Concat(MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
         .Concat(CanonicalResourceOwnerAuthorityComposer.SourceAuthorityPaths)
         .Concat(GameEngine.MortalJointInactiveTailPaths)
+        .Concat(MortalLivingWorldSource.DomainPaths)
+        .Concat([MortalLivingWorldSource.WorldTimePath, MortalLivingWorldSource.ReportPath, MortalLivingWorldSource.HistoryPath])
         .Append(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
         .Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal).ToArray();
     private static readonly object JointHistorySuffixIssuer = new();
@@ -209,6 +211,7 @@ internal static partial class MortalQteDecisionPublication
             ["requestFingerprint"] = expected.Request.RequestFingerprint, ["persistedResultFingerprint"] = PersistedFingerprint(expected),
             ["resourceFinalizationFingerprint"] = resource.Fingerprint,
             ["repairCheckpointFingerprint"] = taken.Authority.RepairCheckpointFingerprint, ["treatmentHistoryOrdinal"] = transition.Ordinal };
+        root["livingWorld"] = taken.Authority.LivingWorld.MarkerDeclaration;
         var footprint = new JsonObject();
         var permittedControls = MechanicalCommandPaths.Append(MortalWoundOpportunityAdapter.DecisionPath).ToHashSet(StringComparer.Ordinal);
         foreach (var change in prepared)
@@ -222,7 +225,9 @@ internal static partial class MortalQteDecisionPublication
         if (!prepared.Any(row => row.RelativePath == WoundAcceptedTurnSnapshotContract.PendingResolutionPath && row.After is null))
             throw Invalid("joint_wave_consumption");
         root["publishedFootprint"] = footprint;
-        root["consumedPrivatePaths"] = new JsonArray(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        root["consumedPrivatePaths"] = taken.Authority.LivingWorld.Receipt is null
+            ? new JsonArray(WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
+            : new JsonArray(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, MortalLivingWorldSource.ReportPath);
         root["progression"] = await CreateJointProgressionUnappliedAsync(fs, lease, taken.Authority.Progression);
         root.Remove("fingerprint"); root["fingerprint"] = JointFingerprint(root);
         return SerializePublicationRoot(root);
@@ -313,9 +318,13 @@ internal static partial class MortalQteDecisionPublication
             if (footprint[path]?.GetValue<string>() != Digest(await fs.ReadFileBytesAsync(lease, path))) throw Invalid("joint_published_footprint: " + path);
         t326Proof4?.Dispose();
         using var t326Proof5 = fs.MeasureOperation("JointProof.ValidateConsumedWaveAsync");
-        if (root["consumedPrivatePaths"] is not JsonArray privatePaths || privatePaths.Count != 1 ||
+        var livingReport = root["livingWorld"] is JsonObject living ? living["report"] : null;
+        var expectedPrivateCount = livingReport is null ? 1 : 2;
+        if (root["consumedPrivatePaths"] is not JsonArray privatePaths || privatePaths.Count != expectedPrivateCount ||
             privatePaths[0]?.GetValue<string>() != WoundAcceptedTurnSnapshotContract.PendingResolutionPath ||
-            await fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath) is not null)
+            (expectedPrivateCount == 2 && privatePaths[1]?.GetValue<string>() != MortalLivingWorldSource.ReportPath) ||
+            await fs.ReadFileBytesAsync(lease, WoundAcceptedTurnSnapshotContract.PendingResolutionPath) is not null ||
+            await fs.ReadFileBytesAsync(lease, MortalLivingWorldSource.ReportPath) is not null)
             throw Invalid("joint_wave_present");
         t326Proof5?.Dispose();
         using var t326Proof6 = fs.MeasureOperation("JointProof.ValidateConsumedCommands");
@@ -407,6 +416,7 @@ internal static partial class MortalQteDecisionPublication
         using var t326ProofTail2 = fs.MeasureOperation("JointProof.ValidateProgressionAsync");
         await ReadJointProgressionDataAsync(fs, lease, root);
         t326ProofTail2?.Dispose();
+        await MortalJointLivingWorldContribution.ValidateCompletedAsync(fs, lease, root);
         using var t326ProofTail3 = fs.MeasureOperation("JointProof.ValidatePublicOutputsAfterAsync");
         await RequireExactJointPublicOutputsAsync(fs, lease, root, basis);
         t326ProofTail3?.Dispose();

@@ -20,6 +20,7 @@ internal sealed class MortalLivingWorldPublication
     private readonly MortalLivingWorldSource _source;
     private readonly JsonObject? _report;
     private readonly Dictionary<string, JsonObject> _originalDocuments = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _originalAbsentPaths = new(StringComparer.Ordinal);
     private readonly byte[]? _reportBefore;
     private readonly byte[]? _historyBefore;
     private readonly JsonObject? _history;
@@ -37,6 +38,7 @@ internal sealed class MortalLivingWorldPublication
         _history = Root(_historyBefore, MortalLivingWorldSource.HistoryPath);
         foreach (var path in MortalLivingWorldSource.DomainPaths)
             if (source.ReadOriginalDocument(path) is { } root) _originalDocuments.Add(path, root);
+            else _originalAbsentPaths.Add(path);
     }
 
     internal IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> BeforeImages =>
@@ -113,7 +115,7 @@ internal sealed class MortalLivingWorldPublication
         { return Issue("effect_invalid", "A settled living-world domain is not valid canonical object DATA: " + error.Message); }
         if (_report is not null)
         {
-            issues = MortalLivingWorldEvents.Validate(_report, _originalDocuments, current);
+            issues = MortalLivingWorldEvents.Validate(_report, _originalDocuments, current, _originalAbsentPaths);
             if (issues.Count != 0) return issues;
             // The shared detached receipt hashes declarations, not unrelated settled world DATA.
             // Actual clock/effect proof above and exact final-image guards below remain mandatory.

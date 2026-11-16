@@ -21,6 +21,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 existing.ContinuationAuthority is MortalDiagnosisContinuation prior && prior.Publication is not null &&
                 AcceptedTurnAuthorityRegistry.CanReuseMortalDiagnosisPublication(files, lease, accepted, request, existing))
             {
+                if (prior.LivingWorld is { } retainedLiving)
+                    await retainedLiving.RequireOpeningAsync(files, lease);
                 if (!existing.HasValidSeal()) throw new InvalidDataException("The retained diagnosis common publication seal changed.");
                 return MortalWoundTreatmentPublicationResult.Valid(cached.Plan);
             }
@@ -31,6 +33,8 @@ internal static partial class WoundAcceptedTurnPlanner
             var working = MortalWoundDiagnosisWorkingProjection.Build(accepted, outcome);
             var progression = await new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance)
                 .PrepareDiagnosisOutcomeAsync(lease, working);
+            var living = await MortalLivingWorldDiagnosisContribution.PrepareAsync(files, lease, accepted, working, progression);
+            if (living.Issues.Count != 0) return MortalWoundTreatmentPublicationResult.Invalid(living.Issues);
             if (outcome.Resolution.CriticalReactionIntent is not null && response.EffectEventReports is not null)
                 return CrossSurfaceFateDuplicateFailure();
             var skill = FreezeTreatmentSkillCommands(response, ignoreLegacyFateDuplicate: false);
@@ -42,7 +46,7 @@ internal static partial class WoundAcceptedTurnPlanner
             var critical = MortalWoundCriticalReactionPublicationPlanner.Compose(accepted, request, outcome.Resolution);
             if (!critical.IsValid) return MortalWoundTreatmentPublicationResult.Invalid(critical.Issues);
             var baseFingerprint = ComputeMortalDiagnosisPublicationBaseFingerprint(accepted.AcceptedStateFingerprint,
-                request, outcome.Resolution, working.Fingerprint, progression.MutationFingerprint, critical.Fingerprint!);
+                request, outcome.Resolution, working.Fingerprint, progression.MutationFingerprint, critical.Fingerprint!, living.Contribution?.Fingerprint);
             var semantic = ComputeTreatmentPublicationEnvelopeFingerprint(baseFingerprint, skill.Envelope, items.Envelope);
             var reserved = AcceptedTurnAuthorityRegistry.ReserveMortalWoundTreatmentPublication(files, lease, accepted, semantic);
             if (reserved.Status != MortalWoundTreatmentPublicationReservationStatus.Reserved || reserved.Authority is null)
@@ -59,7 +63,7 @@ internal static partial class WoundAcceptedTurnPlanner
             }
             var publication = new MortalDiagnosisPublicationBinding(reservation, semantic, shell.Finalization,
                 items.Envelope, projection.Authority, critical);
-            var continuation = MortalDiagnosisContinuation.Admit(accepted, outcome, working, progression, publication);
+            var continuation = MortalDiagnosisContinuation.Admit(accepted, outcome, working, progression, publication, living.Contribution);
             var input = continuation.Input;
             var prepared = WoundAcceptedTurnPlanAuthority.GetOrBuildTreatmentContinuationPreparedValidated(
                 files, lease, input, continuation, reservation);
@@ -76,6 +80,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (!common.Success || common.Input is null) return MortalWoundTreatmentPublicationResult.Invalid(common.Issues);
             var result = AcceptedMechanicsPlanAuthority.GetOrBuildMortalWoundTreatmentValidated(files, lease, common.Input,
                 bundle, accepted, request, outcome.Resolution, semantic, continuation, reservation);
+            if (living.Contribution is not null) await living.Contribution.RequireOpeningAsync(files, lease);
             return result.Success && result.Plan is not null ? MortalWoundTreatmentPublicationResult.Valid(result.Plan, common.Input) :
                 MortalWoundTreatmentPublicationResult.Invalid(result.Issues);
         }

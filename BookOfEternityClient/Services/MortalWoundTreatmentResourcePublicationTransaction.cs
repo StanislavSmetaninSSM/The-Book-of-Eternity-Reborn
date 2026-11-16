@@ -801,7 +801,13 @@ internal sealed partial class MortalWoundTreatmentResourcePublicationTransaction
                 return false;
             }
         }
-        try { await RequireNpcProgressionWitnessAsync(fileSystem, writeLease); }
+        try
+        {
+            await RequireNpcProgressionWitnessAsync(fileSystem, writeLease);
+            if (_receipt.PublicationAuthority.ContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation
+                { LivingWorld: { } living })
+                await living.RequirePublishedAsync(fileSystem, writeLease);
+        }
         catch (Exception failure) when (failure is InvalidDataException or IOException or InvalidOperationException or JsonException)
         { return false; }
         return true;

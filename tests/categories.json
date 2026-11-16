@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-joint-representative",
+      "responsibility": "#1516 single genuine joint valid no-change preseal receipt and both durable progression phases, with measured fixture cost before a broader packet.",
+      "excludes": "Other seven joint cases, fault/retry coverage, diagnosis and whole issue acceptance; do not select together with joint-owner.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
+      ],
+      "related": [
+        "mortal-living-world-joint-owner"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-joint-owner",
       "responsibility": "#1516 genuine joint preseal assessment, same-cohort receipt, unapplied/applied recovery, fault rollback/retry and short control.",
       "excludes": "Ordinary publication, QTE-only and DATA-only acceptance; whole issue acceptance.",
@@ -237,7 +263,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.*"
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryPublication_*"
           ]
         }
       ]

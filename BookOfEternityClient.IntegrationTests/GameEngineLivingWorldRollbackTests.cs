@@ -88,6 +88,7 @@ public sealed partial class GameEngineLivingWorldRollbackTests
         internal required Dictionary<string, byte[]> Original { get; init; }
         internal required string Generation { get; init; }
         internal required ProgressionControl Progression { get; init; }
+        internal bool CriticalRepair { get; init; }
         internal FileSystemManager Files => Context.FileSystem;
 
         internal static async Task<Fixture> CreateAsync(FileSystemManagerHooks? hooks = null, IConsoleInputSource? input = null, bool criticalRepair = false)
@@ -100,7 +101,7 @@ public sealed partial class GameEngineLivingWorldRollbackTests
             await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
             await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
             await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 0 });
-            await context.WriteJsonAsync(Factions, new JsonObject { ["factions"] = new JsonArray(Faction("wait")) });
+            if (!criticalRepair) await context.WriteJsonAsync(Factions, new JsonObject { ["factions"] = new JsonArray(Faction("wait")) });
             foreach (var pair in new Dictionary<string, JsonObject>
             {
                 [AfterlifeEntityProfileState.StatePath] = AfterlifeEntityProfileState.CreateDefaultRoot(),
@@ -125,13 +126,13 @@ public sealed partial class GameEngineLivingWorldRollbackTests
                 JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             var backups = await runtime.Engine.CaptureOriginalValidationSnapshotAsync(request, rollback, "living-world-outer-repair");
             return new Fixture { Context = context, Runtime = runtime, Rollback = rollback, Backups = backups,
-                Original = original, Generation = generation, Progression = request.ProgressionControl! };
+                Original = original, Generation = generation, Progression = request.ProgressionControl!, CriticalRepair = criticalRepair };
         }
 
         internal async Task SubmitAsync(bool includeReport = true)
         {
             await Context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 240 });
-            await Context.WriteJsonAsync(Factions, new JsonObject { ["factionDataChanges"] = new JsonArray(Faction("defend")) });
+            if (!CriticalRepair) await Context.WriteJsonAsync(Factions, new JsonObject { ["factionDataChanges"] = new JsonArray(Faction("defend")) });
             if (!includeReport) return;
             var audit = new JsonArray();
             foreach (var scope in new[] { "npcs", "factions", "locations", "projects", "world" })

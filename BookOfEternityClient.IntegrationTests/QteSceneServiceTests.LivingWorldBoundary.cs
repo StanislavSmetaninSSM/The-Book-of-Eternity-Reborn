@@ -11,6 +11,24 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class QteSceneServiceTests
 {
     [Fact]
+    public void LivingWorldQte_ResponseCommandDoesNotRequireCanonicalVehicleReceiptCollection()
+    {
+        using var document = JsonDocument.Parse("{\"response\":\"A local scene.\",\"experienceGained\":5}");
+        var issues = new ValidationService(_fs, NullLogger<ValidationService>.Instance).ValidateResponse(document.RootElement);
+        Assert.DoesNotContain(issues, issue => issue.Code == "resource_owner_vehicle_receipt_invalid");
+    }
+
+    [Fact]
+    public async Task LivingWorldQte_CanonicalVehicleFileStillRequiresReceiptCollection()
+    {
+        await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, "{\"vehicles\":[]}");
+        var issues = await new ValidationService(_fs, NullLogger<ValidationService>.Instance)
+            .ValidateGameStateAsync(IntegrationValidationProfiles.Qte);
+        Assert.Contains(issues, issue => issue.Code == "resource_owner_vehicle_receipt_invalid" &&
+            issue.FilePath == StorageTransportMoveService.VehiclesPath + ".birthReceipts");
+    }
+
+    [Fact]
     public async Task LivingWorldQte_ActualOfferRefusesNewCycleBeforePlayerChoice()
     {
         await PrepareLivingWorldQteOfferAsync();

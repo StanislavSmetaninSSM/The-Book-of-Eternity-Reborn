@@ -26,7 +26,8 @@ internal static partial class WoundAcceptedTurnPlanner
         /// <param name="progression">
         /// The genuine progression source whose seal and frame must agree with the resource owner's bundle.
         /// </param>
-        internal MortalJointRepairCommonAuthority(object issuer, object resources, GameEngine.MortalJointProgressionSource progression)
+        internal MortalJointRepairCommonAuthority(object issuer, object resources, GameEngine.MortalJointProgressionSource progression,
+            MortalJointLivingWorldContribution livingWorld)
         {
             using var heavyConstructorTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct");
             using var heavyOwnerTiming = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct.CheckOwners");
@@ -37,6 +38,7 @@ internal static partial class WoundAcceptedTurnPlanner
             heavyOwnerTiming?.Dispose();
             _resources = actual;
             Progression = progression;
+            LivingWorld = livingWorld;
             using var heavyTimingJointCommonAuthorityConstructCaptureBeforeImages = FileSystemManager.MeasureCurrentOperation("JointCommonAuthority.Construct.CaptureBeforeImages");
             var binding = Bundle.Input.Binding;
             if (!progression.MatchesFrame(binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn))
@@ -47,6 +49,12 @@ internal static partial class WoundAcceptedTurnPlanner
             {
                 if (_before.TryGetValue(row.Key, out var existing) && existing.Fingerprint != row.Value.Fingerprint)
                     throw new InvalidDataException("Joint progression/common before-image disagreement: " + row.Key);
+                _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
+            }
+            foreach (var row in livingWorld.BeforeImages)
+            {
+                if (_before.TryGetValue(row.Key, out var existing) && existing.Fingerprint != row.Value.Fingerprint)
+                    throw new InvalidDataException("Joint living-world/common before-image disagreement: " + row.Key);
                 _before[row.Key] = new(row.Value.Existed, row.Value.Bytes?.ToArray());
             }
             heavyTimingJointCommonAuthorityConstructCaptureBeforeImages?.Dispose();
@@ -83,6 +91,7 @@ internal static partial class WoundAcceptedTurnPlanner
             Fingerprint = ComputeFingerprint();
         }
         internal GameEngine.MortalJointProgressionSource Progression { get; }
+        internal MortalJointLivingWorldContribution LivingWorld { get; }
         internal AcceptedMechanicsPlanner.CalculatedCommonArtifacts RetainedCommonCalculation =>
             _resources.RetainedCommonCalculation;
         internal AcceptedMechanicsCalculationInputs RetainedCalculationInputs => _resources.RetainedCalculationInputs;
@@ -134,7 +143,7 @@ internal static partial class WoundAcceptedTurnPlanner
             return WoundAcceptedTurnFingerprintWriter.Compute(new string?[] {
                 "book_of_eternity.mortal_joint_repair.common_authority.v1", _resources.Fingerprint,
                 Baseline.Fingerprint, GetJointRepairContinuationFingerprint(Continuation), Bundle.BundleFingerprint, Anchors.Fingerprint,
-                Progression.Fingerprint, OutputBasis.Fingerprint });
+                Progression.Fingerprint, LivingWorld.Fingerprint, OutputBasis.Fingerprint });
         }
         /// <summary>
         /// Checks the current retained resource, baseline, progression and common authority seals.
@@ -262,6 +271,7 @@ internal static partial class WoundAcceptedTurnPlanner
             innerTiming2?.Dispose();
             await ValidateJointRepairResourcePublicationAsync(files, lease, _resources);
             await Progression.ValidateCurrentAsync(files, lease);
+            await LivingWorld.ValidateOpeningAsync(files, lease);
         }
         internal async Task<IReadOnlyList<ValidationIssue>> ValidateCandidateResourceBoundsAsync(
             FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, AcceptedMechanicsPlan candidate)
@@ -331,9 +341,15 @@ internal static partial class WoundAcceptedTurnPlanner
             var expected = AcceptedMechanicsCarrierAssembler.Compose(candidate.EffectPlan, _resources.Companions, Bundle, Anchors);
             if (!expected.Success) return expected.Issues;
             var companions = candidate.OwnerCompanionAfterImages;
-            if (companions.Count != expected.OwnerCompanionAfterImages.Count ||
+            var livingHistory = LivingWorld.HistorySuccessor;
+            var expectedCount = expected.OwnerCompanionAfterImages.Count + (livingHistory is null ? 0 : 1);
+            if (companions.Count != expectedCount ||
                 expected.OwnerCompanionAfterImages.Any(row => !companions.TryGetValue(row.Key, out var actual) ||
                     !JsonNode.DeepEquals(row.Value, actual)) ||
+                (livingHistory is not null && (!companions.TryGetValue(MortalLivingWorldSource.HistoryPath, out var history) ||
+                    !JsonNode.DeepEquals(livingHistory, history) ||
+                    !candidate.TouchedPaths.Contains(MortalLivingWorldSource.HistoryPath, StringComparer.Ordinal) ||
+                    !candidate.ConsumedPaths.Contains(MortalLivingWorldSource.ReportPath, StringComparer.Ordinal))) ||
                 expected.OwnerCompanionAfterImages.Keys.Any(path => !candidate.TouchedPaths.Contains(path, StringComparer.Ordinal)))
                 return JointPreparationFailure("common_candidate_projection_changed", "Changed whole typed companion assembly.").Issues;
             // Empty supported skill commands were owner-proved; the full candidate
@@ -467,11 +483,14 @@ internal static partial class WoundAcceptedTurnPlanner
         var resources = (JointResourcePublicationAuthority)resourceAuthority;
         var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
         if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
+        var livingWorld = await MortalJointLivingWorldContribution.PrepareAsync(files, lease);
+        if (livingWorld.Contribution is null || livingWorld.Issues.Count != 0)
+            return new(null, null, livingWorld.Issues);
         using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
         MortalJointRepairCommonAuthority authority;
         using (files.EnterOperationTimingContext())
         {
-            authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression);
+            authority = resources.GetOrCreateCommonAuthority(JointCommonAuthorityIssuer, progression, livingWorld.Contribution);
             preparation.Authority = authority;
         }
         innerTiming5?.Dispose();

@@ -525,6 +525,12 @@ internal static partial class AcceptedMechanicsPlanner
             touched.UnionWith(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, ProgressionScheduleService.SchedulePath,
                 WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
             consumed.UnionWith(new[] { WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+            if (diagnosisOwner.LivingWorld is not null)
+            {
+                touched.Add(MortalLivingWorldSource.HistoryPath);
+                touched.Add(MortalLivingWorldSource.ReportPath);
+                consumed.Add(MortalLivingWorldSource.ReportPath);
+            }
             var progression = diagnosisOwner.Progression;
             if (progression.ReportBefore.Existed && !progression.ReportAfter.Existed)
             { touched.Add(ProgressionScheduleService.ReportPath); consumed.Add(ProgressionScheduleService.ReportPath); }
@@ -566,7 +572,22 @@ internal static partial class AcceptedMechanicsPlanner
         if (input.PlanningContext?.JointRepairCommonAuthority is not { } authority || !authority.MatchesInput(input) ||
             fingerprint != AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input))
             return new(null, Issue("accepted_mechanics_joint_retained_input_invalid", "the exact bound joint input", "foreign input"));
-        return AssembleCalculatedPlan(input, fingerprint, authority.RetainedCommonCalculation, null);
+        var calculated = authority.RetainedCommonCalculation;
+        if (authority.LivingWorld.HistorySuccessor is { } successor)
+        {
+            var companions = calculated.OwnerCompanionAfterImages.ToDictionary(row => row.Key, row => row.Value,
+                StringComparer.Ordinal);
+            if (!companions.TryAdd(MortalLivingWorldSource.HistoryPath, successor))
+                return new(null, Issue("accepted_mechanics_joint_living_world_overlap", "independent history member", "overlapping companion"));
+            calculated = new CalculatedCommonArtifacts(calculated.DefinitionAfterImage, calculated.StateAfterImage,
+                calculated.HistoryAfterImage, calculated.EffectCarrierAfterImages, calculated.EffectIdentityAfterImage,
+                calculated.PendingAfterImage, companions, calculated.OwnerTransitions,
+                calculated.TouchedPaths.Concat([MortalLivingWorldSource.HistoryPath, MortalLivingWorldSource.ReportPath])
+                    .Distinct(StringComparer.Ordinal).ToArray(),
+                calculated.ConsumedPaths.Append(MortalLivingWorldSource.ReportPath).Distinct(StringComparer.Ordinal).ToArray(),
+                calculated.Resources, calculated.Effects, calculated.CarrierComposition);
+        }
+        return AssembleCalculatedPlan(input, fingerprint, calculated, null);
     }
 
     private static AcceptedMechanicsPlanningResult AssembleCalculatedPlan(AcceptedMechanicsInput input,

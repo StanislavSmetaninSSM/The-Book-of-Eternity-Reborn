@@ -1800,10 +1800,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
         CoordinatedStatePublicationUncertainException? publicationUncertainty = null;
         try
         {
-            var livingPreparation = await MortalLivingWorldPublication.PrepareAsync(fs, writeLease);
-            if (livingPreparation.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
-                return new Result(livingPreparation.Issues, null);
-            var livingWorld = livingPreparation.Publication;
+            MortalLivingWorldPublication? livingWorld = null;
             var boundNormalizer = normalizer.BindTo(writeLease);
             var selfPreparationIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(writeLease);
             if (selfPreparationIssues.Any(issue => issue.Severity == IssueSeverity.Error))
@@ -1811,9 +1808,6 @@ internal static class AcceptedTurnCanonicalStateRefresh
             var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
-            if (livingWorld is not null)
-                beforeImages = beforeImages.Concat(livingWorld.BeforeImages)
-                    .GroupBy(image => image.Path, StringComparer.Ordinal).Select(group => group.First()).ToArray();
             var npcSource = await validator.PrepareNpcProgressionPublicationAsync(writeLease,
                 beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes,
                 beforeImages.FirstOrDefault(image => image.Path == MortalNpcAcceptedSkillInput.SidecarPath)?.Bytes);
@@ -1839,6 +1833,22 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 var treatmentPreflight = spiritualPreflight is null
                     ? await boundNormalizer.PrevalidateTreatmentResourcePublicationTransactionAsync()
                     : null;
+                // Select the actual read-only preflight owner before admitting its clock.
+                // A genuine diagnosis contribution already binds planned T1 and belongs to the
+                // sealed common cohort; it must not be evaluated as an ordinary raw-T0 report
+                // or published a second time by the ordinary sidecar owner.
+                var diagnosisLivingWorld = treatmentPreflight?.Plan
+                    .WoundStageBundle?.MortalDiagnosisContinuation?.LivingWorld;
+                if (diagnosisLivingWorld is null)
+                {
+                    var livingPreparation = await MortalLivingWorldPublication.PrepareAsync(fs, writeLease);
+                    if (livingPreparation.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                        return new Result(livingPreparation.Issues, null);
+                    livingWorld = livingPreparation.Publication;
+                    if (livingWorld is not null)
+                        beforeImages = beforeImages.Concat(livingWorld.BeforeImages)
+                            .GroupBy(image => image.Path, StringComparer.Ordinal).Select(group => group.First()).ToArray();
+                }
                 if (livingWorld is not null) await livingWorld.RequireOpeningAsync(fs, writeLease);
                 AcceptedMechanicsPlan? mechanicsPlan;
                 if (spiritualPreflight is not null)

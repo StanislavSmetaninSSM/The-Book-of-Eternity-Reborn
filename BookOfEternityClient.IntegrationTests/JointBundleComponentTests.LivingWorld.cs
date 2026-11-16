@@ -14,10 +14,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_DueMissingReportRefusesBeforePublicationTake()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_DueMissingReportRefusesBeforePublicationTake));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_DueMissingReportRefusesBeforePublicationTake), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("missing");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         if (!bound.Success)
             Assert.Contains(bound.Issues, issue => issue.Code == "mortal_living_world_report_required");
         else
@@ -36,10 +36,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("valid");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
             fixture.Files, fixture.Lease, bound);
@@ -80,10 +80,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_WrongWindowRefusesBeforeCommonPublication()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_WrongWindowRefusesBeforeCommonPublication));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_WrongWindowRefusesBeforeCommonPublication), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("wrongWindow");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         if (!bound.Success) Assert.Contains(bound.Issues, issue => issue.Code == "mortal_living_world_window_invalid");
         else
         {
@@ -101,10 +101,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_WrongEffectCannotCompleteOrRetainHistory()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_WrongEffectCannotCompleteOrRetainHistory));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_WrongEffectCannotCompleteOrRetainHistory), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("wrongEffect");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         if (!bound.Success)
             Assert.Contains(bound.Issues, issue => issue.Code?.StartsWith("mortal_living_world_", StringComparison.Ordinal) == true);
         else
@@ -133,10 +133,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_PostCommitReceiptDriftFailsExactFenceAndRestoresWholeCohort()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_PostCommitReceiptDriftFailsExactFenceAndRestoresWholeCohort));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_PostCommitReceiptDriftFailsExactFenceAndRestoresWholeCohort), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("valid");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
             fixture.Files, fixture.Lease, bound);
@@ -159,10 +159,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_ReachedCommonMemberFailureRestoresReceiptAndRetriesOnce()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ReachedCommonMemberFailureRestoresReceiptAndRetriesOnce));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ReachedCommonMemberFailureRestoresReceiptAndRetriesOnce), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("valid");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
             fixture.Files, fixture.Lease, bound);
@@ -191,10 +191,10 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_FreshPhaseRecoveryRejectsIndividuallyRehashedDifferentAssessment()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_FreshPhaseRecoveryRejectsIndividuallyRehashedDifferentAssessment));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_FreshPhaseRecoveryRejectsIndividuallyRehashedDifferentAssessment), gzipRecords: true);
         await fixture.InitializeAsync();
         fixture.ConfigureLivingWorldJoint("valid");
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var sourceRead = await MortalLivingWorldSource.PrepareAsync(fixture.Files, fixture.Lease);
         Assert.Empty(sourceRead.Issues);
@@ -232,9 +232,9 @@ public sealed partial class JointBundleComponentTests
     [Fact]
     public async Task LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory()
     {
-        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory));
+        await using var fixture = new Fixture(_output, nameof(LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory), gzipRecords: true);
         await fixture.InitializeAsync();
-        var bound = await fixture.PrepareBoundJointAsync();
+        var bound = await fixture.PrepareBoundJointAsync(reuseStableData: true);
         Assert.True(bound.Success, JsonSerializer.Serialize(bound.Issues));
         var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
             fixture.Files, fixture.Lease, bound);

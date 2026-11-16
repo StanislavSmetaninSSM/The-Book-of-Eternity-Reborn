@@ -41,15 +41,17 @@ internal static partial class WoundAcceptedTurnPlanner
             Fingerprint = ComputeFingerprint();
         }
         private MortalJointRepairCommonAuthority? _commonAuthority;
-        internal MortalJointRepairCommonAuthority GetOrCreateCommonAuthority(object issuer, GameEngine.MortalJointProgressionSource progression)
+        internal MortalJointRepairCommonAuthority GetOrCreateCommonAuthority(object issuer, GameEngine.MortalJointProgressionSource progression,
+            MortalJointLivingWorldContribution livingWorld)
         {
             if (!ReferenceEquals(issuer, JointCommonAuthorityIssuer))
                 throw new InvalidOperationException("Joint common authority requires its existing private resource owner.");
             if (!HasRetainedCommonCalculation)
                 throw new InvalidOperationException("Joint common authority requires its already-complete private calculation.");
-            if (_commonAuthority is not null && !ReferenceEquals(_commonAuthority.Progression, progression))
+            if (_commonAuthority is not null && (!ReferenceEquals(_commonAuthority.Progression, progression) ||
+                _commonAuthority.LivingWorld.Fingerprint != livingWorld.Fingerprint))
                 throw new InvalidDataException("The issued joint common basis cannot be replaced or appended after sealing.");
-            return _commonAuthority ??= new MortalJointRepairCommonAuthority(issuer, this, progression);
+            return _commonAuthority ??= new MortalJointRepairCommonAuthority(issuer, this, progression, livingWorld);
         }
         internal JointCommonBaselineAuthority Baseline { get; }
         internal ResourceOwnerAuthority FinalOwners { get; }

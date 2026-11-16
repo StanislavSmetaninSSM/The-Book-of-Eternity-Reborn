@@ -52,11 +52,28 @@ internal sealed class MortalLivingWorldSource
     internal byte[]? ReadOpeningBytes(string path) => _opening.TryGetValue(path, out var bytes)
         ? bytes?.ToArray() : throw new ArgumentException("Path was not captured by this source.", nameof(path));
 
+    /// <summary>Detached exact guard DATA for an enclosing owner's later fresh comparison, never a reusable lease capability.</summary>
+    internal IReadOnlyDictionary<string, byte[]?> ReadOpeningGuardData() => GuardPaths.ToDictionary(
+        path => path, path => _opening[path]?.ToArray(), StringComparer.Ordinal);
+
     internal JsonObject? ReadOriginalDocument(string path) => _original.TryGetValue(path, out var bytes)
         ? Root(bytes, path) : throw new ArgumentException("Path was not captured by this source.", nameof(path));
 
-    internal static async Task<MortalLivingWorldPreparation> PrepareAsync(FileSystemManager files,
-        FileSystemManager.CanonicalWriteLease lease)
+    internal static Task<MortalLivingWorldPreparation> PrepareAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease) => PrepareCoreAsync(files, lease, null, null, null);
+
+    internal static Task<MortalLivingWorldPreparation> PrepareForDiagnosisAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority owner,
+        MortalWoundDiagnosisWorkingProjection working, ProgressionScheduleService.FrozenMortalCalculation progression)
+    {
+        working.RequireOperation(files, lease);
+        working.RequireCurrent(owner);
+        return PrepareCoreAsync(files, lease, owner, working, progression);
+    }
+
+    private static async Task<MortalLivingWorldPreparation> PrepareCoreAsync(FileSystemManager files,
+        FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority? diagnosisOwner,
+        MortalWoundDiagnosisWorkingProjection? diagnosisWorking, ProgressionScheduleService.FrozenMortalCalculation? diagnosisProgression)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         files.VerifyCurrentSessionOperation(lease);
@@ -124,6 +141,29 @@ internal sealed class MortalLivingWorldSource
                 !ExactNumber(schedule, "worldCycleMinutes", control.WorldCycleMinutes) ||
                 !ExactNumber(schedule, "factionCycleMinutes", control.FactionCycleMinutes))
                 return Refuse("source_invalid", "Signed progression control and original schedule disagree.");
+            if (diagnosisWorking is not null)
+            {
+                diagnosisWorking.RequireOperation(files, lease);
+                diagnosisWorking.RequireCurrent(diagnosisOwner!);
+                var planned = diagnosisProgression ?? throw new InvalidDataException("Missing actual diagnosis progression.");
+                var after = Root(planned.ScheduleAfter.Bytes, ProgressionScheduleService.SchedulePath)!;
+                var preparedAt = after["lastUpdatedUtc"]?.GetValue<string>() ?? throw new InvalidDataException("Missing progression preparation time.");
+                var expected = ProgressionScheduleService.ReconstructDiagnosisOutcomeData(diagnosisWorking.OriginalControl,
+                    diagnosisWorking.ReadOriginalBytes(ProgressionScheduleService.SchedulePath),
+                    diagnosisWorking.ReadOriginalBytes(WorldTimePath), planned.ReportBefore.Bytes,
+                    original.SessionId, original.RequestId, original.TurnNumber,
+                    checked(diagnosisWorking.ResultingMinute - diagnosisWorking.OriginalMinute), preparedAt);
+                if (diagnosisOwner!.Binding.SessionId != original.SessionId || diagnosisOwner.Binding.RequestId != original.RequestId ||
+                    diagnosisOwner.Binding.Turn != original.TurnNumber || diagnosisWorking.OriginalMinute != originalMinute ||
+                    !JsonNode.DeepEquals(diagnosisWorking.OriginalControl, controlRoot) ||
+                    !Same(diagnosisWorking.ReadOriginalBytes(WorldTimePath), originals[WorldTimePath]) ||
+                    !Same(diagnosisWorking.ReadOriginalBytes(ProgressionScheduleService.SchedulePath), originals[ProgressionScheduleService.SchedulePath]) ||
+                    planned.MutationFingerprint != expected.MutationFingerprint ||
+                    !Same(planned.ScheduleBefore.Bytes, expected.ScheduleBefore.Bytes) || !Same(planned.ScheduleAfter.Bytes, expected.ScheduleAfter.Bytes) ||
+                    !Same(planned.ReportBefore.Bytes, expected.ReportBefore.Bytes) || !Same(planned.ReportAfter.Bytes, expected.ReportAfter.Bytes))
+                    return Refuse("source_invalid", "Diagnosis assessment requires its exact genuine owner, originals and reconstructed progression.");
+                resultingMinute = checked((int)diagnosisWorking.ResultingMinute);
+            }
             var context = new MortalLivingWorldAssessmentContext(original.SessionId, original.RequestId, original.TurnNumber,
                 originalClock.Minutes, resultingMinute, control.LastWorldSimulationTimeInMinutes,
                 control.LastFactionSimulationTimeInMinutes, control.WorldCycleMinutes, control.FactionCycleMinutes);
