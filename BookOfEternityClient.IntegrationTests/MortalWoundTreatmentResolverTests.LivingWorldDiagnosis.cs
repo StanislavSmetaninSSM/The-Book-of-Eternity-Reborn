@@ -107,6 +107,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, duration: 30,
             beforeResourceBootstrap: files =>
             {
+                // Complete the canonical scenario before LivePrepare signs its originals.
+                // Effective access is client-derived from the seeded location metadata.
+                var map = JsonNode.Parse(File.ReadAllText(files.ResolvePath("game_state/world/world_map.json")))!.AsObject();
+                var access = MortalStorageAccessProjection.Build(map, null);
+                Assert.True(access.IsValid, JsonSerializer.Serialize(access.Issues));
+                File.WriteAllText(files.ResolvePath(MortalStorageAccessProjection.StatePath), access.Root!.ToJsonString());
+
                 // Initial scenario only: a real scheduler baseline 230 minutes before the signed T0.
                 var path = files.ResolvePath(EffectAcceptedTurnInputComposer.WorldTimePath);
                 var current = File.ReadAllBytes(path);

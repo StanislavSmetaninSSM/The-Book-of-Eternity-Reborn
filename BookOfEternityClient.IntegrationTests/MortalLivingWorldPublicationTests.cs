@@ -7,7 +7,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Real ordinary canonical owner, genuine live original, independent per-test filesystem.</summary>
-public sealed class MortalLivingWorldPublicationTests
+public sealed partial class MortalLivingWorldPublicationTests
 {
     private const string Factions = "game_state/factions/faction_core.json";
     private const string Session = "living-publication";
@@ -38,12 +38,18 @@ public sealed class MortalLivingWorldPublicationTests
 
         Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
         var history = Assert.IsType<JsonObject>(await context.ReadJsonAsync(MortalLivingWorldSource.HistoryPath));
-        Assert.Equal(1, history["schemaVersion"]!.GetValue<int>());
+        Assert.Equal(2, history["schemaVersion"]!.GetValue<int>());
         var entry = Assert.Single(history["entries"]!.AsArray());
+        Assert.Equal(2, entry!["receiptRevision"]!.GetValue<int>());
         Assert.Equal(Session, entry!["sessionId"]!.GetValue<string>());
         Assert.Equal(Request, entry["requestId"]!.GetValue<string>());
         Assert.Equal(42, entry["turn"]!.GetValue<int>());
         Assert.Equal("noSignificantChange", entry["report"]!["resolution"]!.GetValue<string>());
+        Assert.Equal(0, entry["fromMinute"]!.GetValue<int>());
+        Assert.Equal(240, entry["toMinute"]!.GetValue<int>());
+        Assert.Null(entry["evidenceFingerprint"]);
+        Assert.StartsWith("sha256:", entry["declarationFingerprint"]!.GetValue<string>());
+        Assert.StartsWith("sha256:", entry["receiptFingerprint"]!.GetValue<string>());
         Assert.Equal((await context.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!["manifestPayloadHash"]!.GetValue<string>(),
             entry["snapshotToken"]!.GetValue<string>());
         Assert.Null(await context.ReadJsonAsync(MortalLivingWorldSource.ReportPath));

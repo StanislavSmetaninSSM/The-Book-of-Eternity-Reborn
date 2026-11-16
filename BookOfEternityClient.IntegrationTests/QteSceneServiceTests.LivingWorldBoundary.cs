@@ -110,6 +110,8 @@ public sealed partial class QteSceneServiceTests
     {
         await SeedMinimalValidatedMortalStateAsync();
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":true}");
+        // Current supported empty vehicle state is part of the genuine offer baseline, not a fabricated birth receipt.
+        await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
         var control = await SeedLivingWorldQteClockAsync();
         await new LiveTurnPreparationService(_fs).PrepareAsync(new LiveTurnPreparationOptions
         {

@@ -231,3 +231,35 @@ Integration 53.38 s/125 warnings, both zero errors), but catalog preflight
 rejected two new QTE categories with empty change hints before any tests ran.
 Those metadata hints are corrected; the same compiled sources will be used
 for the official `-NoBuild` runs. This is setup failure, not behavioral RED.
+
+## Lifecycle DATA, guidance and privacy selected results
+
+At metadata-corrected `e789df5e`, the unchanged compiled sources passed event
+DATA 47/47, authored guidance 4/4, and common player-news projection 4/4. The
+latter includes two new report/history noninterference cases plus existing
+accepted/hidden location controls. This does not claim a browser session or
+complete #1540 privacy audit. The independent review found no confirmed code
+blocker in the lifecycle/guidance scope; its stale catalog exclusion was fixed.
+
+Actual full-daemon rendering and its existing skill worked-example companion
+passed 2/2, official run `20261116-035235-515-592-49a0fc7a3a034f16b6dec6903f9abbd7`,
+19.962 s wall, complete cleanup. All compiled sources remained frozen throughout.
+
+New QTE DATA scaffold: 27/27 expected NotImplemented failures. Receipt DATA
+scaffold: 26/26 expected failures. Real QTE consumer cases: 3 pass and 4 fail,
+requiring causal inspection before implementation. Real outer engine rollback:
+2 pass and one causal failure because the repair collector incorrectly requests
+client-owned living-world history from the GM after publication. No engine
+critical-health-loop acceptance is implied by these three cases.
+
+The diagnosis test packet executed five cases but all stopped at a preexisting
+fixture omission: the canonical location/storage seed lacks the required #1515
+derived storage-access projection. This is fixture/setup failure, not diagnosis
+feature RED. Correct it through the existing production projector before
+scheduler/original capture, without weakening validation, then rerun.
+
+The official category runner stops after its first failure. Therefore the first
+combined unit packet completed only 4/5 descriptors (82 cases, 55 pass/27 fail),
+and the combined integration packet stopped on diagnosis. Remaining receipt,
+engine, QTE and actual-render categories were run separately. No complete batch
+PASS is claimed. Raw output stays outside committed source documentation.

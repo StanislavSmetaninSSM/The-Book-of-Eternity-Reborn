@@ -2555,6 +2555,10 @@ public partial class GameEngine
             StringComparison.OrdinalIgnoreCase) ||
         string.Equals(
             path,
+            MortalLivingWorldSource.HistoryPath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
             ResourceMaterializationContract.DefinitionsPath,
             StringComparison.OrdinalIgnoreCase) ||
         string.Equals(

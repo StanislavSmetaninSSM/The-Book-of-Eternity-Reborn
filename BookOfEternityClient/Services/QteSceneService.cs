@@ -2318,6 +2318,8 @@ public sealed partial class QteSceneService
         IReadOnlyDictionary<string, string> normalizerBackups)
     {
         RejectUnboundResourceSurfaces(response);
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, [JsonSerializer.SerializeToNode(response, JsonOpts)!.AsObject()]));
         await _stateDistributor.DistributeAsync(writeLease, response);
         // An accepted distribution can retain backup cleanup debt. Resolve it
         // before experience/normalizer work, preserving the existing uncertain

@@ -10,7 +10,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Real engine original/rollback owners and their repair obligation collector; not the interactive repair loop.</summary>
-public sealed class GameEngineLivingWorldRollbackTests
+public sealed partial class GameEngineLivingWorldRollbackTests
 {
     private const string Session = "living-world-engine-rollback";
     private const string Request = "living-world-engine-request";
@@ -87,11 +87,12 @@ public sealed class GameEngineLivingWorldRollbackTests
         internal required Dictionary<string, string> Backups { get; init; }
         internal required Dictionary<string, byte[]> Original { get; init; }
         internal required string Generation { get; init; }
+        internal required ProgressionControl Progression { get; init; }
         internal FileSystemManager Files => Context.FileSystem;
 
-        internal static async Task<Fixture> CreateAsync()
+        internal static async Task<Fixture> CreateAsync(FileSystemManagerHooks? hooks = null, IConsoleInputSource? input = null, bool criticalRepair = false)
         {
-            var context = await EffectMaterializationTestContext.CreateAsync();
+            var context = await EffectMaterializationTestContext.CreateAsync(hooks);
             var files = context.FileSystem;
             string generation;
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
@@ -108,13 +109,14 @@ public sealed class GameEngineLivingWorldRollbackTests
                 [AfterlifeGlobalFlagState.StatePath] = AfterlifeGlobalFlagState.CreateDefaultRoot()
             })
                 if (await files.ReadFileBytesAsync(pair.Key) is null) await context.WriteJsonAsync(pair.Key, pair.Value);
+            if (criticalRepair) await context.WriteJsonAsync("lore/codex_entries.json", new JsonObject());
             var scheduler = new ProgressionScheduleService(files, NullLogger<ProgressionScheduleService>.Instance);
             var request = new TurnRequest
             {
                 SessionId = Session, RequestId = Request, TurnNumber = 42, PlayerAction = "Wait for world activity.",
                 PreGeneratedDices1d20 = [7], ProgressionControl = await scheduler.BuildControlForNextTurnAsync("Mortal World")
             };
-            var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, configureSettings: settings =>
+            var runtime = GameEngineTurnLifecycleTests.CreateGameEngineRuntime(files, inputSource: input, configureSettings: settings =>
             { settings.GmBridgeAutoStart = false; settings.MusicEnabled = false; settings.SoundEnabled = false; });
             runtime.GameLoop.SetSession(Session, 41);
             var original = Capture(files);
@@ -123,7 +125,7 @@ public sealed class GameEngineLivingWorldRollbackTests
                 JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
             var backups = await runtime.Engine.CaptureOriginalValidationSnapshotAsync(request, rollback, "living-world-outer-repair");
             return new Fixture { Context = context, Runtime = runtime, Rollback = rollback, Backups = backups,
-                Original = original, Generation = generation };
+                Original = original, Generation = generation, Progression = request.ProgressionControl! };
         }
 
         internal async Task SubmitAsync(bool includeReport = true)

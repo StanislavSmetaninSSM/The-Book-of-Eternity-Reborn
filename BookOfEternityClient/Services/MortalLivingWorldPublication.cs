@@ -22,9 +22,10 @@ internal sealed class MortalLivingWorldPublication
     private readonly Dictionary<string, JsonObject> _originalDocuments = new(StringComparer.Ordinal);
     private readonly byte[]? _reportBefore;
     private readonly byte[]? _historyBefore;
+    private readonly JsonObject? _history;
     private Dictionary<string, byte[]?>? _finalImages;
     private byte[]? _historyAfter;
-    private string? _evidenceFingerprint;
+    private MortalLivingWorldReceiptData? _receipt;
     private bool _published;
 
     private MortalLivingWorldPublication(MortalLivingWorldSource source)
@@ -33,6 +34,7 @@ internal sealed class MortalLivingWorldPublication
         _reportBefore = source.ReadOpeningBytes(MortalLivingWorldSource.ReportPath);
         _historyBefore = source.ReadOpeningBytes(MortalLivingWorldSource.HistoryPath);
         _report = Root(_reportBefore, MortalLivingWorldSource.ReportPath);
+        _history = Root(_historyBefore, MortalLivingWorldSource.HistoryPath);
         foreach (var path in MortalLivingWorldSource.DomainPaths)
             if (source.ReadOriginalDocument(path) is { } root) _originalDocuments.Add(path, root);
     }
@@ -63,7 +65,7 @@ internal sealed class MortalLivingWorldPublication
         try
         {
             var publication = new MortalLivingWorldPublication(preparation.Source);
-            publication.ValidateHistory();
+            MortalLivingWorldReceipt.ValidateHistory(publication._history);
             return new([], publication);
         }
         catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
@@ -80,7 +82,7 @@ internal sealed class MortalLivingWorldPublication
         using var fresh = FileSystemManager.SuppressValidationReuse();
         if (_published) throw new InvalidOperationException("A published living-world operation cannot prepare a second result.");
         _finalImages = null;
-        _evidenceFingerprint = null;
+        _receipt = null;
         await _source.RequireOriginalCurrentAsync(files, lease);
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.ReportPath, _reportBefore);
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.HistoryPath, _historyBefore);
@@ -113,15 +115,11 @@ internal sealed class MortalLivingWorldPublication
         {
             issues = MortalLivingWorldEvents.Validate(_report, _originalDocuments, current);
             if (issues.Count != 0) return issues;
-            // Reuse the already parsed settled DATA; do not parse every domain again for its receipt.
-            var fields = new List<string?> { "book_of_eternity.mortal_living_world.settled_evidence.v1" };
-            foreach (var path in final.Keys.OrderBy(path => path, StringComparer.Ordinal))
-            {
-                var root = path == MortalLivingWorldSource.WorldTimePath ? clock : current.GetValueOrDefault(path);
-                fields.Add(path);
-                fields.Add(root is null ? null : WoundAcceptedTurnFingerprintWriter.CanonicalJson(root));
-            }
-            _evidenceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(fields);
+            // The shared detached receipt hashes declarations, not unrelated settled world DATA.
+            // Actual clock/effect proof above and exact final-image guards below remain mandatory.
+            try { _receipt = MortalLivingWorldReceipt.Build(_source.SnapshotToken, context, _report, _history); }
+            catch (InvalidDataException error)
+            { return Issue("history_invalid", "Living-world receipt declarations cannot append to current history: " + error.Message); }
         }
         // Closing authentication cannot be replaced by any opening parse or effect validation result.
         await _source.RequireOriginalCurrentAsync(files, lease);
@@ -136,33 +134,18 @@ internal sealed class MortalLivingWorldPublication
         if (_finalImages is null) throw new InvalidOperationException("Living-world final evidence has not been validated.");
         await RequireFinalInputsAsync(files, lease);
         if (_report is null) return;
-        var history = ValidateHistory();
-        var entries = history["entries"]!.AsArray();
-        if (entries.OfType<JsonObject>().Any(row => row["snapshotToken"]?.GetValue<string>() == _source.SnapshotToken ||
-            row["sessionId"]?.GetValue<string>() == _source.Context.SessionId &&
-            row["requestId"]?.GetValue<string>() == _source.Context.RequestId && row["turn"]?.GetValue<int>() == _source.Context.Turn))
-            throw new InvalidDataException("An assessment for this exact original already exists; serialized history grants no replay authority.");
-        var entry = new JsonObject
-        {
-            ["sessionId"] = _source.Context.SessionId, ["requestId"] = _source.Context.RequestId,
-            ["turn"] = _source.Context.Turn, ["snapshotToken"] = _source.SnapshotToken,
-            ["report"] = _report.DeepClone(),
-            ["evidenceFingerprint"] = _evidenceFingerprint ?? throw new InvalidOperationException("Missing settled evidence fingerprint.")
-        };
-        entry["receiptFingerprint"] = ReceiptFingerprint(entry);
-        entries.Add(entry);
-        var historyJson = history.ToJsonString();
+        var receipt = _receipt ?? throw new InvalidOperationException("Missing validated living-world receipt declarations.");
         var writes = _finalImages.Select(pair => CoordinatedStateWriteHelper.CreateExactGuardWrite(pair.Key,
             new CanonicalBeforeImage(pair.Value is not null, pair.Value))).Concat(new[]
         {
-            new CoordinatedStateWriteHelper.PlannedWrite(MortalLivingWorldSource.HistoryPath, null, historyJson,
+            new CoordinatedStateWriteHelper.PlannedWrite(MortalLivingWorldSource.HistoryPath, null, receipt.HistoryJson,
                 RequireCurrentBaseline: true, ExactPrevious: new(_historyBefore is not null, _historyBefore)),
             new CoordinatedStateWriteHelper.PlannedWrite(MortalLivingWorldSource.ReportPath, null, null,
                 RequireCurrentBaseline: true, ExactPrevious: new(_reportBefore is not null, _reportBefore))
         }).ToArray();
         if (!await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes))
             throw new InvalidDataException("Living-world private publication lost its exact current baseline.");
-        _historyAfter = FileSystemManager.EncodeUtf8WithPreamble(historyJson);
+        _historyAfter = receipt.HistoryBytes.ToArray();
         _published = true;
         await RequirePublishedAsync(files, lease);
     }
@@ -184,35 +167,6 @@ internal sealed class MortalLivingWorldPublication
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.ReportPath, _reportBefore);
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.HistoryPath, _historyBefore);
         foreach (var pair in _finalImages!) await RequireBytesAsync(files, lease, pair.Key, pair.Value);
-    }
-
-    private JsonObject ValidateHistory()
-    {
-        var history = Root(_historyBefore, MortalLivingWorldSource.HistoryPath) ??
-            new JsonObject { ["schemaVersion"] = 1, ["entries"] = new JsonArray() };
-        if (history.Count != 2 || history["schemaVersion"] is not JsonValue version || !version.TryGetValue<int>(out var number) ||
-            number != 1 || history["entries"] is not JsonArray entries)
-            throw new InvalidDataException("Expected exact schemaVersion=1 and entries.");
-        var sources = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var node in entries)
-        {
-            if (node is not JsonObject entry || entry.Count != 7 || entry["report"] is not JsonObject ||
-                entry["sessionId"] is not JsonValue || entry["requestId"] is not JsonValue ||
-                entry["turn"] is not JsonValue turn || !turn.TryGetValue<int>(out var ordinal) || ordinal < 0 ||
-                entry["snapshotToken"]?.GetValue<string>() is not { Length: > 0 } token || !sources.Add(token) ||
-                entry["evidenceFingerprint"]?.GetValue<string>() is not { Length: > 0 } ||
-                entry["receiptFingerprint"]?.GetValue<string>() != ReceiptFingerprint(entry))
-                throw new InvalidDataException("Invalid or duplicate immutable assessment receipt.");
-        }
-        return history;
-    }
-
-    private static string ReceiptFingerprint(JsonObject entry)
-    {
-        var body = entry.DeepClone().AsObject();
-        body.Remove("receiptFingerprint");
-        return WoundAcceptedTurnFingerprintWriter.Compute([
-            "book_of_eternity.mortal_living_world.receipt.v1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(body)]);
     }
 
     private static async Task RequireBytesAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,

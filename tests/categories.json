@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-joint-owner",
+      "responsibility": "#1516 genuine joint preseal assessment, same-cohort receipt, unapplied/applied recovery, fault rollback/retry and short control.",
+      "excludes": "Ordinary publication, QTE-only and DATA-only acceptance; whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-lifecycle-publication",
+      "responsibility": "#1516 real ordinary project birth/completion reducers, existing canonical flag creation route and false-evidence rollback.",
+      "excludes": "New simulation/lifecycle systems, special owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.Lifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryLifecycle_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-receipt-data",
       "responsibility": "#1516 deterministic source/report/window receipt DATA, immutable history validation and duplicate source refusal.",
       "excludes": "Actual world effect validation, publication permission and whole issue acceptance.",

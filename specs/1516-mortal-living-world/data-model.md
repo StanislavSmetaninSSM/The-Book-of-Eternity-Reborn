@@ -63,12 +63,12 @@ replaces reducers nor legitimizes their inputs merely because a report exists.
 
 ## Private receipt and public projection
 
-`game_state/world/mortal_living_world_history.json` is client-owned versioned
+`game_state/world/mortal_living_world_history.json` is client-owned revision-2
 append-only history relative to the authenticated original. Each receipt binds
 session/request/turn/window, the authenticated original snapshot token,
-accepted assessment/events and the exact assessed numeric window. The planned
-shared deterministic receipt hash includes the complete report and source tuple;
-it does not claim to hash unrelated settled world state. Actual final effect and
+accepted assessment/events and the exact assessed numeric window. The shared deterministic receipt hash includes the complete report and source tuple;
+its explicit `declarationFingerprint` binds DATA, not settled evidence. It does
+not claim to hash unrelated settled world state. Actual final effect and
 clock validation plus exact output guards remain separate mandatory live checks; the signed original binds the complete prior
 history. No redundant chained previous-receipt hash is required. Deterministic hashes are
 integrity DATA, not serialized rights. Exact retry must not append twice;

@@ -87,12 +87,14 @@ public sealed partial class JointBundleComponentTests
             FlushPassiveTimings();
             await Files.WriteFileAtomicAsync(Lease, "game_state/player/stat_points.json",
                 new JsonObject { ["levelUpStatPointsAwardedThroughLevel"] = 1, ["unspentStatPoints"] = 0 }.ToJsonString());
+            if (_livingWorldJointMode is not null) await AdvanceLivingWorldCycleBeforeOriginalAsync();
             var original = await PrepareOriginalAsync(44);
             FlushPassiveTimings();
             MortalJointRepairCheckpoint.RejectedCapture capture;
             try
             {
                 await PrepareHeldRepairOutputsAsync(original);
+                if (_livingWorldJointMode is not null) await AuthorLivingWorldRejectedOutputsAsync(original);
                 FlushPassiveTimings();
                 using (Files.MeasureOperation("JointBundleFixture.RotateTreatmentLease"))
                 {
