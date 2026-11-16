@@ -37,6 +37,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var map = await context.FileSystem.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath) ?? "";
         Assert.DoesNotContain("Аудитный возок", vehicle);
         Assert.DoesNotContain("Аудитный склад", location + map);
+        var validator = new ValidationService(context.FileSystem,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+        var rawLocation = await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
+        var rawItem = await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        var rawResource = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        _directGachaOutput?.WriteLine("RAW LOCATION: " + DescribeValidationIssues(rawLocation));
+        _directGachaOutput?.WriteLine("RAW ITEM: " + DescribeValidationIssues(rawItem));
+        _directGachaOutput?.WriteLine("RAW RESOURCE: " + DescribeValidationIssues(rawResource));
         var diagnostic = $"kind={kind}; disposition={disposition}; canonical audit entity absent.\n{logger.Describe()}\nRepair:\n{input.RepairBeforeEscape ?? "<absent>"}";
         _directGachaOutput?.WriteLine(diagnostic);
         if (kind == "control")
