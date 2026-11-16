@@ -9,7 +9,10 @@
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
       ],
       "related": [
-        "mortal-living-world-joint-owner"
+        {
+          "id": "mortal-living-world-joint-owner",
+          "when": "Select the full owner category only after representative cost qualification; never select both together."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
