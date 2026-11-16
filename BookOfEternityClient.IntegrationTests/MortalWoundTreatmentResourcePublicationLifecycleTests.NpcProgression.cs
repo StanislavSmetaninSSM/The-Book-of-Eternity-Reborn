@@ -32,7 +32,10 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    public async Task GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(int scenario)
+    public Task GuaranteedItemConsumption_NpcProgressionAndTreatmentSkillShareAcceptedRoot(int scenario) =>
+        RunNpcProgressionAndTreatmentSkillSharedRootAsync(scenario, null);
+
+    private async Task RunNpcProgressionAndTreatmentSkillSharedRootAsync(int scenario, string? transportAuditKind)
     {
         var lateCut = scenario is 1 or 11;
         var armed = false;
@@ -212,6 +215,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 untouchedRoots[path] = await context.ReadFileBytesAsync(path);
             // Natural intake: leave the distributed commands raw. The real engine must
             // construct and admit its own plan; do not restore or compose a held plan here.
+            if (transportAuditKind is not null)
+                await AddTransportProseAuditAsync(context, transportAuditKind);
             var naturalTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
             var naturalLogger = new SpiritualLifecycleTestLogger();
             var naturalInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
@@ -219,6 +224,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 naturalInput, fileSystem: context.FileSystem, logger: naturalLogger);
             var naturalDisposition = await naturalEngine.ValidatePreparedNpcProgressionOutcomeAsync(
                 "NPC progression treatment natural intake oracle", HeldTreatmentPipelineContext.Turn);
+            if (transportAuditKind is not null)
+                await AssertTransportProseAuditAsync(context, transportAuditKind, naturalDisposition, naturalLogger, naturalInput);
             if (scenario is 5 or 6 or 7 or 9)
             {
                 Assert.NotEqual(AcceptedTurnValidationDisposition.Accepted, naturalDisposition);

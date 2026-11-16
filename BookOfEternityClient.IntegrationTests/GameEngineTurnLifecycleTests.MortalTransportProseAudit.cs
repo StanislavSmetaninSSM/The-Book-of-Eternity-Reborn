@@ -14,13 +14,11 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("control")]
     [InlineData("vehicle")]
     [InlineData("storage")]
-    public async Task MortalTransportProseAudit_RequiresCanonicalEffectBeforeAcceptance(string kind)
+    public Task MortalTransportProseAudit_RequiresCanonicalEffectBeforeAcceptance(string kind) =>
+        RunNpcProgressionAndTreatmentSkillSharedRootAsync(4, kind);
+
+    private static async Task AddTransportProseAuditAsync(HeldTreatmentPipelineContext context, string kind)
     {
-        await using var context = await CreateHeldTreatmentPipelineContextAsync(
-            fault: null,
-            itemScenario: HeldTreatmentItemScenario.SelectedStack(publishNpcSkillChange: true),
-            composePublication: false);
-        await context.ReleaseLeaseAsync();
         const string narrativePath = "output/narrative_response.json";
         var narrative = await ReadJsonObjectAsync(context.FileSystem, narrativePath);
         var assertion = kind switch
@@ -31,11 +29,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         };
         narrative["response"] = narrative["response"]!.GetValue<string>() + assertion;
         await context.FileSystem.WriteFileAtomicAsync(narrativePath, narrative.ToJsonString());
-        var logger = new SpiritualLifecycleTestLogger();
-        var input = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
-        var engine = CreateGameEngine(input, fileSystem: context.FileSystem, logger: logger);
-        var disposition = await engine.ValidatePreparedNpcProgressionOutcomeAsync(
-            "#1515 prose-only transport/storage negative accepted-turn audit", HeldTreatmentPipelineContext.Turn);
+    }
+
+    private async Task AssertTransportProseAuditAsync(HeldTreatmentPipelineContext context, string kind,
+        AcceptedTurnValidationDisposition disposition, SpiritualLifecycleTestLogger logger,
+        NpcTreatmentRepairDiagnosticInput input)
+    {
         var vehicle = await context.FileSystem.ReadFileAsync(StorageTransportMoveService.VehiclesPath) ?? "";
         var location = await context.FileSystem.ReadFileAsync(StorageTransportMoveService.CurrentLocationPath) ?? "";
         var map = await context.FileSystem.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath) ?? "";
