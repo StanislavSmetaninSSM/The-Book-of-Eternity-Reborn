@@ -112,7 +112,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     // Initialize derived current access before the real original snapshot.
                     // The copied sample predates #1515's mandatory effective projection.
                     var map = await ReadJsonObjectAsync(files, MortalLocationMaterializationContract.WorldMapPath);
-                    var access = await ReadJsonObjectAsync(files, MortalStorageAccessProjection.StatePath);
+                    var accessText = await files.ReadFileAsync(MortalStorageAccessProjection.StatePath);
+                    var access = accessText is null ? null : JsonNode.Parse(accessText)!.AsObject();
                     var projection = MortalStorageAccessProjection.Build(map, access);
                     Assert.True(projection.IsValid, DescribeValidationIssues(projection.Issues));
                     await files.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, projection.Root!.ToJsonString());
