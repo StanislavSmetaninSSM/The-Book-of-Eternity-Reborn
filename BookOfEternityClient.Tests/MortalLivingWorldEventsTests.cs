@@ -261,6 +261,109 @@ public sealed class MortalLivingWorldEventsTests
         if (accepted) Assert.Empty(issues); else Assert.NotEmpty(issues);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CompleteFlagCreationAcceptsEmptyOrExplicitlyAuthenticatedAbsentSource(bool absent)
+    {
+        var report = CreationReport(false); var current = BirthDocuments(false);
+        var original = absent ? new Dictionary<string, JsonObject>() : EmptyBirthDocuments(false);
+        Assert.Empty(MortalLivingWorldEvents.Validate(report, original, current,
+            absent ? new HashSet<string> { "game_state/world/world_flags.json" } : new HashSet<string>()));
+    }
+
+    [Fact]
+    public void MissingSourceWithoutAbsenceEvidenceCannotProveCreation()
+    {
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(CreationReport(false), new Dictionary<string, JsonObject>(), BirthDocuments(false), new HashSet<string>()));
+    }
+
+    [Fact]
+    public void ExistingOrDuplicateOriginalCannotProveCreation()
+    {
+        var original = BirthDocuments(false);
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(CreationReport(false), original, BirthDocuments(false), new HashSet<string>()));
+        original["game_state/world/world_flags.json"]["worldStateFlags"]!.AsArray().Add(FlagBirth().DeepClone());
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(CreationReport(false), original, BirthDocuments(false), new HashSet<string>()));
+    }
+
+    [Fact]
+    public void IncompleteBirthAndCaseAliasConflictAreRejected()
+    {
+        var current = BirthDocuments(false); current["game_state/world/world_flags.json"]["worldStateFlags"]![0]!.AsObject().Remove("description");
+        var report = CreationReport(false); Effect(report)["after"]!["value"]!.AsObject().Remove("description");
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(report, EmptyBirthDocuments(false), current, new HashSet<string>()));
+        current = BirthDocuments(false); var alias = FlagBirth(); alias["flagId"] = "BRIDGE_OPEN";
+        current["game_state/world/world_flags.json"]["worldStateFlags"]!.AsArray().Add(alias);
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(CreationReport(false), EmptyBirthDocuments(false), current, new HashSet<string>()));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void FullProjectCreationRequiresRealCanonicalFactionOwner(bool absent)
+    {
+        var original = EmptyBirthDocuments(true);
+        if (absent) original.Remove("game_state/factions/faction_projects.json");
+        Assert.Empty(MortalLivingWorldEvents.Validate(CreationReport(true), original, BirthDocuments(true),
+            absent ? new HashSet<string> { "game_state/factions/faction_projects.json" } : new HashSet<string>()));
+        var current = BirthDocuments(true); current["game_state/factions/faction_core.json"]["factions"] = new JsonArray();
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(CreationReport(true), original, current,
+            absent ? new HashSet<string> { "game_state/factions/faction_projects.json" } : new HashSet<string>()));
+    }
+
+    [Fact]
+    public void ProjectCompletionRequiresActualActiveToCompletedTransition()
+    {
+        var before = ProjectBirth(); var after = ProjectBirth(); after.Remove("activeState"); after["finalState"] = "Completed"; after["completionTurn"] = 7;
+        var report = CreationReport(true); Effect(report)["operation"] = "complete";
+        Effect(report)["before"] = new JsonObject { ["present"] = true, ["value"] = before.DeepClone() };
+        Effect(report)["after"]!["value"] = after.DeepClone();
+        var original = BirthDocuments(true); var current = EmptyBirthDocuments(true);
+        current["game_state/factions/faction_projects.json"]["completedProjects"]!.AsArray().Add(after.DeepClone());
+        Assert.Empty(MortalLivingWorldEvents.Validate(report, original, current, new HashSet<string>()));
+        current["game_state/factions/faction_projects.json"]["activeProjects"]!.AsArray().Add(before.DeepClone());
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(report, original, current, new HashSet<string>()));
+        current = EmptyBirthDocuments(true);
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(report, original, current, new HashSet<string>()));
+    }
+
+    [Fact]
+    public void WholeEntityCreationCannotOverlapFieldUpdate()
+    {
+        var report = CreationReport(false); var second = Effect(report).DeepClone().AsObject();
+        second["effectId"] = "overlap"; second["operation"] = "update"; second["field"] = "value";
+        second["before"] = new JsonObject { ["present"] = false }; second["after"] = new JsonObject { ["present"] = true, ["value"] = true };
+        Event(report)["effects"]!.AsArray().Add(second);
+        Event(report)["consequences"]![0]!["effectIds"]!.AsArray().Add("overlap");
+        Assert.NotEmpty(MortalLivingWorldEvents.Validate(report, EmptyBirthDocuments(false), BirthDocuments(false), new HashSet<string>()));
+    }
+
+    private static JsonObject FlagBirth() => new() { ["flagId"] = "bridge_open", ["displayName"] = "Bridge open", ["description"] = "Crossing is available", ["value"] = true };
+    private static JsonObject ProjectBirth() => new()
+    { ["factionId"] = "guild", ["factionName"] = "Guild", ["projectId"] = "bridge", ["projectName"] = "Bridge", ["activeState"] = "Active", ["description"] = "Build bridge",
+      ["totalResourceCost"] = new JsonArray(), ["resourcesSpent"] = new JsonArray(), ["totalTimeCostMinutes"] = 240, ["timeSpentMinutes"] = 0, ["totalSteps"] = 4, ["currentStep"] = 0 };
+    private static Dictionary<string, JsonObject> EmptyBirthDocuments(bool project) => project
+        ? new() { ["game_state/factions/faction_core.json"] = new JsonObject { ["factions"] = new JsonArray(new JsonObject { ["factionId"] = "guild" }) },
+            ["game_state/factions/faction_projects.json"] = new JsonObject { ["activeProjects"] = new JsonArray(), ["completedProjects"] = new JsonArray() } }
+        : new() { ["game_state/world/world_flags.json"] = new JsonObject { ["worldStateFlags"] = new JsonArray() } };
+    private static Dictionary<string, JsonObject> BirthDocuments(bool project)
+    {
+        var docs = EmptyBirthDocuments(project);
+        docs[project ? "game_state/factions/faction_projects.json" : "game_state/world/world_flags.json"][project ? "activeProjects" : "worldStateFlags"]!.AsArray().Add(project ? ProjectBirth() : FlagBirth());
+        return docs;
+    }
+    private static JsonObject CreationReport(bool project)
+    {
+        var report = Report(); var kind = project ? "factionProject" : "worldFlag"; var id = project ? "bridge" : "bridge_open";
+        foreach (var reference in new[] { Event(report)["targets"]![0], Event(report)["cause"]!["references"]![0], Effect(report)["target"] })
+        { reference!["kind"] = kind; reference["id"] = id; if (project) reference["ownerId"] = "guild"; }
+        Effect(report)["operation"] = "create"; Effect(report)["field"] = "entity";
+        Effect(report)["before"] = new JsonObject { ["present"] = false };
+        Effect(report)["after"] = new JsonObject { ["present"] = true, ["value"] = project ? ProjectBirth() : FlagBirth() };
+        return report;
+    }
+
     private static (JsonObject Report, Dictionary<string, JsonObject> Current, JsonObject News) KnownNews()
     {
         var report = Report(); Event(report)["knowledge"]!["player"] = "known";

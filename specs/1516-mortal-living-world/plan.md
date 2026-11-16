@@ -169,3 +169,34 @@ hidden event whose exact event ID also appears in world news. All nested activit
 and faction-label regressions pass. The final small fix rejects this explicit
 identity contradiction irrespective of the news row's visibility; unrelated
 news, prose aliases and broader #1540 remain separate. GREEN/re-review pending.
+
+### Accepted bounded source/DATA/plain-owner checkpoint
+
+Remote `436500c4f742c7b7c586468a0fbcc8cf25cedbe8` was verified and restored
+into a separate clean checkout with identical HEAD. Official fresh verification:
+
+- source + impacted NPC presence + plain ordinary publication: 33/33 PASS,
+  all three descriptors complete, no skips/duplicates, owned cleanup complete,
+  wall 31.872 seconds. Source category 9.258 seconds; ordinary category 11.690.
+- DATA assessment + event evidence: 95/95 PASS, complete selection/cleanup,
+  no skips/duplicates, wall 12.656 seconds.
+- Integration build: 0 errors, 166 warnings, 109.23 seconds. Unit build:
+  0 errors, 54 warnings, 29.24 seconds. No hosted CI or broad suite.
+
+Independent fresh-context Astra High source re-review resolved all three source
+findings; Sol XHigh DATA re-review resolved semantic and hidden-news findings.
+A separate fresh Astra High ordinary-owner review found no Critical, Important
+or actionable Minor defect in the bounded adapter and seven real tests.
+These verdicts do not approve whole-issue merge/closure or unimplemented owners.
+
+The ordinary operation reuses detached original/final DATA and hashes already
+parsed settled roots once. Physical source/output fences still read freshly;
+no cross-operation cache or persisted authority is added. The source's small
+original-root parse/clone overhead remains acknowledged, not called a speedup.
+
+Remaining: real full-turn repair/resubmission/rollback boundaries, supported
+lifecycle effects, treatment/diagnosis/joint and QTE paths, new private-history
+projection proof, GM delivery/guards and full intended-diff selection. Determine
+actual successful reentry requirements before inventing a new registry: strict
+same-original refusal already prevents duplicate append, while failed-publication
+retry is demonstrated. No claim is made that a serialized receipt grants reuse.

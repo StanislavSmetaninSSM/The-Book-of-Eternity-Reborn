@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-engine-rollback",
+      "responsibility": "#1516 actual engine original rollback, private history repair obligations and strict no-duplicate same-original refusal.",
+      "excludes": "Interactive critical-health repair dispatch and special owners remain separate.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineLivingWorldRollbackTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-guidance",
+      "responsibility": "#1516 authored autonomous/no-change examples validated through actual DATA contracts and GM source/template delivery guards.",
+      "excludes": "Runtime publication, actual daemon rendering and whole feature acceptance are separate.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldDocumentationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-ordinary-publication",
       "responsibility": "#1516 real ordinary canonical owner: signed original, report admission, settled faction effect, private receipt/report consumption and reached late rollback with retry.",
       "excludes": "Joint/QTE owners, source replay registry, entity births/removals and whole issue acceptance.",

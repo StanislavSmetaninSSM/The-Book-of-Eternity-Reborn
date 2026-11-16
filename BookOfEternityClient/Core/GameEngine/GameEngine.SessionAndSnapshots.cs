@@ -2484,7 +2484,7 @@ public partial class GameEngine
     private Task RefreshRuntimeStateAfterExactRollbackAsync() =>
         _stateManager.RefreshGameStateAfterExactRollbackAsync();
 
-    private async Task<IReadOnlyList<RepairResubmissionPathObligation>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+    internal async Task<IReadOnlyList<RepairResubmissionPathObligation>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
         RollbackSnapshot snapshot,
         string expectedSessionGeneration)
     {

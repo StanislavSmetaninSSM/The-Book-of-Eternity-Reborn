@@ -140,6 +140,12 @@ internal static class MortalLivingWorldEvents
         return issues;
     }
 
+    /// <summary>Explicit absent paths are detached source DATA supplied by the owner, not authentication.</summary>
+    internal static IReadOnlyList<ValidationIssue> Validate(JsonObject report,
+        IReadOnlyDictionary<string, JsonObject> original, IReadOnlyDictionary<string, JsonObject> current,
+        IReadOnlySet<string> originalAbsentPaths) =>
+        throw new NotImplementedException("#1516 lifecycle evidence RED scaffold");
+
     private static bool Shape(JsonObject obj, params string[] keys) => obj.Count == keys.Length && keys.All(obj.ContainsKey);
     private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) &&
         !string.IsNullOrWhiteSpace(text) && text == text.Trim() ? text : null;

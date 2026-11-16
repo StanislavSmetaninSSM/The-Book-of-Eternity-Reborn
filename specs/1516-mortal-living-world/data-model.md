@@ -65,8 +65,10 @@ replaces reducers nor legitimizes their inputs merely because a report exists.
 
 `game_state/world/mortal_living_world_history.json` is client-owned versioned
 append-only history relative to the authenticated original. Each receipt binds
-session/request/turn/window, source report fingerprint, previous receipt,
-accepted assessment/events and verified effects. Deterministic hashes are
+session/request/turn/window, the authenticated original snapshot token,
+accepted assessment/events and a settled-evidence fingerprint. The receipt hash
+includes the complete report; the signed original binds the complete prior
+history. No redundant chained previous-receipt hash is required. Deterministic hashes are
 integrity DATA, not serialized rights. Exact retry must not append twice;
 conflicting reuse of a source or event identity fails closed.
 
