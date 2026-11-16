@@ -17,7 +17,7 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 - [x] T005d First-birth stack/volume measurement, recoverable shape binding, immutable historical evidence and delivered GM guidance; source0ce1cdad,62unit+16combined PASS, independent review.
 - [x] T006a Exact active selection, transient resolution, removal/replacement, canonical admission, protected repair routing and physical publication rollback (22 unit + 17 integration PASS; independent review).
 - [x] T006b Versioned full vehicle creation evidence in existing composer/publication; source b18ed5a, policy72/72 plus publication9/9, measured cargo4/4, active17/17, earlyshape6/6 and shared allocation2/2 GREEN; independent focused source and evidence review accepted the bounded receipt slice.
-- [x] T007 Vehicle current fixtures, GM schema/examples/daemon and narrow guards updated and reviewed in the accepted structural/access/cargo/receipt blocks; final cross-artifact reconciliation remains T014.
+- [x] T007 Vehicle current fixtures, GM schema/examples/daemon and narrow guards updated and reviewed in the accepted structural/access/cargo/receipt blocks; final cross-artifact reconciliation completed under T014.
 
 ## US2: Storage/access completeness (FR4–FR6)
 - [x] T008 Storage metadata/access/contents causal and retained controls cover shared/restricted ownership, duplicates, exact locations and current/offscreen capacity.
