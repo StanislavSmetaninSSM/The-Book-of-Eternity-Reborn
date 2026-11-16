@@ -124,7 +124,11 @@
       "related": [
         {
           "id": "mortal-living-world-joint-publication",
-          "when": "Select valid and short publication controls when joint assessment admission or common cohort composition changes."
+          "when": "Select valid assessed publication control when joint assessment admission or common cohort composition changes."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint admission/publication or receipt-consumption behavior changes."
         }
       ],
       "requirements": {
@@ -147,8 +151,8 @@
     },
     {
       "id": "mortal-living-world-joint-publication",
-      "responsibility": "#1516 genuine joint same-cohort no-change receipt, unapplied/applied progression phases and existing short no-report publication control.",
-      "excludes": "Admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance; do not select together with joint-representative.",
+      "responsibility": "#1516 one genuine joint same-cohort no-change receipt and both unapplied/applied durable progression phases.",
+      "excludes": "Short no-report publication control, admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance; do not select together with joint-representative.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
         "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
@@ -161,6 +165,10 @@
         {
           "id": "mortal-living-world-joint-recovery",
           "when": "Select fresh completed-history refusal when marker declaration or progression-phase recovery changes."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint publication or receipt-consumption behavior changes."
         }
       ],
       "requirements": {
@@ -168,13 +176,42 @@
         "exclusive": false,
         "ciRunner": "ubuntu-24.04"
       },
-      "timeoutMinutes": 10,
+      "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-short-publication",
+      "responsibility": "#1516 one genuine short joint turn without an autonomous report retains common publication and unapplied phase recovery without creating assessment history.",
+      "excludes": "Assessed no-change receipt publication and applied phase, admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select the assessed no-change receipt and both durable phases when shared joint publication or receipt consumption changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
             "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory"
           ]
         }
@@ -191,7 +228,11 @@
       "related": [
         {
           "id": "mortal-living-world-joint-publication",
-          "when": "Select valid/short completion controls when rollback or retry changes common publication or receipt consumption."
+          "when": "Select valid assessed completion control when rollback or retry changes common publication or receipt consumption."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint admission/publication or receipt-consumption behavior changes."
         }
       ],
       "requirements": {

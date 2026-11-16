@@ -474,3 +474,15 @@ Final intended selection replaces the prior #1515 selection; semantic joint
 buckets replace the oversized eight-case category. Representative debug gates
 are excluded from that selection. Protective budgets are not measured forecasts.
 Official final discovery/PlanOnly and runtime joint qualification remain pending.
+
+## Genuine joint publication representative GREEN, 2026-11-16
+
+At 4cda54d7, fresh Integration build passed (0 errors, 167 warnings,
+107.32 seconds). The canonical seeded baseline and exact signed-original test
+passed 1/1 (test 4.124 s; runner 15.702 s). The unchanged genuine valid joint
+representative then passed 1/1 (test 125.432 s; runner 136.155 s), including
+common-cohort history publication and both real progression phases. Both runs
+completed cleanup without duplicates, skips or timeouts. This fixes a test
+baseline, not production storage-access semantics. No comparable speedup is claimed.
+The remaining admission, rollback, recovery and short-action cases still require
+their own outcomes; one representative does not qualify the full joint contract.

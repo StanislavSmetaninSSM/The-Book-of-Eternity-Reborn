@@ -124,7 +124,14 @@
       "category": "mortal-living-world-joint-publication",
       "reason": "#1516 FR006-007: genuine joint preseal common-cohort contribution and both durable progression phases.",
       "contracts": [
-        "A legal no-change receipt and consumed report belong to the sealed common owner; unapplied/applied recovery preserves one history entry and short no-report publication remains valid."
+        "A legal no-change receipt and consumed report belong to the sealed common owner; unapplied/applied recovery preserves one accepted history entry."
+      ]
+    },
+    {
+      "category": "mortal-living-world-joint-short-publication",
+      "reason": "#1516 FR003/006-007: genuine short joint publication remains valid without a living-world assessment or history.",
+      "contracts": [
+        "The real common owner publishes a short no-report turn and retains genuine unapplied phase recovery without creating living-world history; this control is separate from the already qualified assessed receipt path."
       ]
     },
     {
