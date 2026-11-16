@@ -8,6 +8,20 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen initial causal RED, 2026-11-16
+
+At saved test source da48831703915a4a4eb97705089d91131c7d2ad2, fresh builds
+passed: unit 29.54s/40 warnings, integration 60.75s/124 warnings, zero errors.
+Five cheap cases fail at the existing populated-contents prohibition (11.033s).
+The initial integration selector used a dot instead of the nested-type plus and
+selected zero tests; that metadata typo is corrected. The unchanged binaries then
+executed all nine real-path cases (19.639s), all failing at the same empty-only
+contents gate; the measured positive also reaches the existing closed-field
+rejection for cargoMeasurements. No skip, duplicate or timeout; cleanup complete.
+These are initial causal failures, not reached rollback/lifecycle qualification.
+The bounded production extension in the saved spec is now released. Existing
+current storage, empty additions and ordinary lifecycle authority must remain.
+
 ## True offscreen birth test-first checkpoint, 2026-11-16
 
 The next bounded block implements the saved offscreen design in spec.md. Three
