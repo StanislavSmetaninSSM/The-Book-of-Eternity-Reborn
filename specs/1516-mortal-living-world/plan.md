@@ -486,3 +486,21 @@ completed cleanup without duplicates, skips or timeouts. This fixes a test
 baseline, not production storage-access semantics. No comparable speedup is claimed.
 The remaining admission, rollback, recovery and short-action cases still require
 their own outcomes; one representative does not qualify the full joint contract.
+
+## Remaining joint cases and observer finding, 2026-11-16
+
+The frozen 4cda54d7 build also passed joint admission 3/3 (172.245 s runner),
+cold phase recovery 1/1 (131.255 s), short-action publication 1/1 (129.599 s),
+and actual daemon/manifest delivery 2/2 (14.850 s). All owned cleanup completed
+without duplicate IDs, skips or timeouts. The two-case rollback packet completed
+in 309.857 s: reached common-member failure and exact owning retry passed
+(test 167.633 s); post-commit receipt disappearance failed at an early observer
+count (test 132.785 s). Its drift count was one, but the path-only common-batch
+counter also counted the compensation transaction, giving two rather than one.
+Independent source review confirms compensation uses the same publication
+mechanism and member paths. The minimal test-only correction classifies first
+history creation from the actual journal's absent-to-present image transition.
+It does not assert that restoration has a present-to-absent image: the injected
+fault already removed history. Keep the RetryableHeld and complete before-image
+restoration assertions; they were not reached in the failed test and remain
+unqualified until the corrected rollback packet passes. Production is unchanged.

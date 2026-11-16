@@ -379,10 +379,16 @@ public sealed partial class JointBundleComponentTests
             if (_livingWorldJointMode is null || phase is not (TrustedLocalPublicationPhase.Committed or TrustedLocalPublicationPhase.MemberPublished)) return;
             var journal = Path.Combine(Files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
             using var document = JsonDocument.Parse(File.ReadAllBytes(journal));
-            var members = document.RootElement.GetProperty("Members").EnumerateArray().Select(row =>
+            var journalMembers = document.RootElement.GetProperty("Members").EnumerateArray().ToArray();
+            var members = journalMembers.Select(row =>
                 Path.GetRelativePath(Files.GameSessionPath, row.GetProperty("Path").GetString()!).Replace('\\', '/')).ToArray();
+            var historyIndex = Array.IndexOf(members, MortalLivingWorldSource.HistoryPath);
+            // Compensation can commit the same member paths. Only the first real receipt's
+            // absent-to-present journal image is a forward living-world common publication.
             var common = members.Contains(MortalQteDecisionPublication.StatePath, StringComparer.Ordinal) &&
-                members.Contains(MortalLivingWorldSource.HistoryPath, StringComparer.Ordinal);
+                historyIndex >= 0 &&
+                !journalMembers[historyIndex].GetProperty("Before").GetProperty("Exists").GetBoolean() &&
+                journalMembers[historyIndex].GetProperty("After").GetProperty("Exists").GetBoolean();
             if (common && phase == TrustedLocalPublicationPhase.MemberPublished &&
                 index >= 0 && index < members.Length && members[index] == MortalLivingWorldSource.HistoryPath &&
                 _livingWorldMemberFaultArmed && _livingWorldMemberFaults == 0)
