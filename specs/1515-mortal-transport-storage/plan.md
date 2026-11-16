@@ -8,6 +8,21 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen runtime evidence and source-correction oracle, 2026-11-16
+
+At 48b0aea14dbf30e482dcc17214f5441b6fe9c30e fresh serial unit build
+94.04s/94 warnings/0 errors and integration build61.17s/124 warnings/0 errors
+completed. Cheap19/19 PASS in10.4716923s, complete selection/cleanup, no skips,
+duplicates or timeout. Real offscreen9 cases completed8PASS/1FAIL in24.1795623s.
+All publication/capacity/nested-index/source-drift/rollback/travel-access cases pass.
+The sole failure was the source-coordinate test still expecting unchanged wrong
+source to count as exact resubmission. Independent review accepted the fixture-only
+correction: wrong raw is false, corrected derived B:S is true, and parent/child
+negative copies start from that corrected root. No production relaxation occurred.
+The corrected integration source is UNRUN at this checkpoint. Independent source
+review accepts all four fixes and the bounded impact selection, contingent on
+matching GREEN execution/guidance evidence. No nested-current control is claimed.
+
 ## Offscreen coherent review corrections in SOURCE, 2026-11-16
 
 Eight source/test files now address the four identified findings: new raw births
