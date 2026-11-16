@@ -8,6 +8,20 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## True offscreen birth test-first checkpoint, 2026-11-16
+
+The next bounded block implements the saved offscreen design in spec.md. Three
+new test/helper files contain five cheap prepared-plan/finalization cases and
+nine real-path cases. Original A/current and B/noncurrent are established before
+the signed snapshot; new cargo originates directly in B through storagesToAdd.
+The measured positive includes nested contents and a counted leaf. Later cases
+cover indexed capacity/source refusal, reached common publication rollback,
+post-admission source drift and subsequent existing travel/retrieve/deposit with
+explicit access. No production implementation changed yet and no test executed.
+Expected initial RED is the current empty-only command gate; later assertions
+are not claimed reached until that gate is correctly extended. Two narrow category
+owners are added; every previous catalog entry remains textually unchanged.
+
 ## Canonical vehicle display final verification, 2026-11-16
 
 Saved source f431ad1c3d59dfedcb94f86773de74033ff0521a. Official unit category

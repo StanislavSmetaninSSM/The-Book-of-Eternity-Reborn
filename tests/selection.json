@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-storage-offscreen-birth-data",
+      "reason": "#1515 direct noncurrent storage birth: exact prepared draft, detached completion and carrier/metadata/source refusal.",
+      "contracts": [
+        "The true noncurrent birth uses existing item/location authority, preserves exact source coordinates and common atomic publication."
+      ]
+    },
+    {
+      "category": "mortal-storage-offscreen-birth-publication",
+      "reason": "#1515 actual populated noncurrent storage birth, capacity/raw repair provenance, atomic publication/rollback, source drift and subsequent existing travel/move/access.",
+      "contracts": [
+        "The true noncurrent birth uses existing item/location authority, preserves exact source coordinates and common atomic publication."
+      ]
+    },
+    {
       "category": "mortal-vehicle-canonical-display",
       "reason": "FR8 canonical-only current transport display, shared browser result and actual CLI command paths.",
       "contracts": [

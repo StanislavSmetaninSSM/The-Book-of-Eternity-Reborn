@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-storage-offscreen-birth-data",
+      "responsibility": "#1515 direct noncurrent storage birth: exact prepared draft, detached completion and carrier/metadata/source refusal.",
+      "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalOffscreenStorageBirthTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalOffscreenStorageBirthTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-storage-offscreen-birth-publication",
+      "responsibility": "#1515 actual populated noncurrent storage birth, capacity/raw repair provenance, atomic publication/rollback, source drift and subsequent existing travel/move/access.",
+      "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalItemMaterializationValidationTests.OffscreenStorageBirth.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.OffscreenStorageBirth.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-vehicle-canonical-display",
       "responsibility": "#1515 FR8 shared browser transport result displays only canonical vehicles, availability and exact activeVehicleId.",
       "excludes": "Vehicle birth admission, resource authority, movement policy and UI redesign.",
