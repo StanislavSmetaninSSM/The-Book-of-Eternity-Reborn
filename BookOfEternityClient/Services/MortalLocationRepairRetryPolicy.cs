@@ -4,7 +4,65 @@ namespace BookOfEternityClient.Services;
 
 internal sealed record MortalLocationRepairRetryObligation(
     string Actor, string Route, string? MaterializationId,
-    string? RawCoordinate = null, string? StorageId = null);
+    string? RawCoordinate = null, string? StorageId = null,
+    MortalStorageBirthItemRetryBinding? StorageItems = null);
+
+/// <summary>Immutable raw identity DATA for the existing storage-addition retry owner.
+/// The expected source is derived from the command, not copied from a possibly wrong item field.</summary>
+internal sealed class MortalStorageBirthItemRetryBinding
+{
+    private sealed record Item(int Ordinal, string CreationRef, string? MaterializationId);
+    private readonly Item[] _items;
+    private MortalStorageBirthItemRetryBinding(Item[] items, string locationId, string storageId, int turn)
+    {
+        _items = items;
+        LocationId = locationId; StorageId = storageId; SourceTurn = turn;
+        // Stable value key permits exact agreement across independently detached issue contexts.
+        ValueKey = System.Text.Json.JsonSerializer.Serialize(new { locationId, storageId, turn, items });
+    }
+    internal string LocationId { get; }
+    internal string StorageId { get; }
+    internal int SourceTurn { get; }
+    internal string ValueKey { get; }
+    internal static MortalStorageBirthItemRetryBinding? Capture(JsonObject storage, string? locationId, string? storageId, int turn)
+    {
+        if (!MortalItemIdentityRules.IsExactIdentity(locationId) || !MortalItemIdentityRules.IsExactIdentity(storageId) ||
+            storage["contents"] is not JsonArray contents) return null;
+        var items = new List<Item>();
+        var references = new HashSet<string>(StringComparer.Ordinal);
+        for (var index = 0; index < contents.Count; index++)
+        {
+            if (contents[index] is not JsonObject item || Exact(item, "creationRef") is not { } reference ||
+                !references.Add(reference) || item["itemId"] is not null || item["existedId"] is not null)
+                return null;
+            items.Add(new(index, reference, item["materialization"] is JsonObject envelope ? Exact(envelope, "materializationId") : null));
+        }
+        return new(items.ToArray(), locationId!, storageId!, turn);
+    }
+    internal bool ContainsItemPath(string path, string operationRef)
+    {
+        var prefix = MortalLocationMaterializationContract.WorldMapPath + "." + operationRef + ".storage.contents[";
+        return _items.Any(item => path == prefix + item.Ordinal + "]" || path.StartsWith(prefix + item.Ordinal + "].", StringComparison.Ordinal));
+    }
+    internal bool Matches(JsonObject storage)
+    {
+        if (storage["contents"] is not JsonArray contents || contents.Count != _items.Length) return false;
+        foreach (var binding in _items)
+        {
+            if (contents[binding.Ordinal] is not JsonObject item || Exact(item, "creationRef") != binding.CreationRef ||
+                item["materialization"] is not JsonObject envelope || Exact(envelope, "creationRef") != binding.CreationRef ||
+                binding.MaterializationId is not null && Exact(envelope, "materializationId") != binding.MaterializationId ||
+                Exact(envelope, "route") != "storage_placement" ||
+                envelope["sourceTurn"] is not JsonValue turnValue || !turnValue.TryGetValue<int>(out var turn) || turn != SourceTurn ||
+                envelope["sourceAuthority"] is not JsonObject source || Exact(source, "kind") != "location_storage" ||
+                Exact(source, "authorityId") != LocationId + ":" + StorageId)
+                return false;
+        }
+        return true;
+    }
+    private static string? Exact(JsonObject root, string field) => root[field] is JsonValue value &&
+        value.TryGetValue<string>(out var text) && MortalItemIdentityRules.IsExactIdentity(text) ? text : null;
+}
 
 // Pure existing retry decision over the two already-read raw roots. It grants no
 // publication authority; subsequent raw/canonical validation remains mandatory.
@@ -15,7 +73,8 @@ internal static class MortalLocationRepairRetryPolicy
         .Select(packet => new MortalLocationRepairRetryObligation(
             packet.CanonicalActorNames.Single(), packet.Route, packet.ExpectedMaterializationId,
             packet.Route == "storage_addition" ? packet.RawCoordinate : null,
-            packet.Route == "storage_addition" ? packet.ExpectedStorageId : null))
+            packet.Route == "storage_addition" ? packet.ExpectedStorageId : null,
+            packet.Route == "storage_addition" ? packet.StorageItemRetryBinding : null))
         .Distinct().ToArray();
 
     internal static bool HasExactResubmission(
@@ -56,7 +115,9 @@ internal static class MortalLocationRepairRetryPolicy
                     ReadExactMortalLocationRepairString(row, "targetLocationId") != identity ||
                     row["storage"] is not JsonObject child ||
                     ReadExactMortalLocationRepairString(child, "storageId") != obligation.StorageId ||
-                    storageCounts.GetValueOrDefault((identity, obligation.StorageId!)) != 1)
+                    storageCounts.GetValueOrDefault((identity, obligation.StorageId!)) != 1 ||
+                    obligation.StorageItems is { } items &&
+                        (items.LocationId != identity || items.StorageId != obligation.StorageId || !items.Matches(child)))
                     return false;
                 continue;
             }

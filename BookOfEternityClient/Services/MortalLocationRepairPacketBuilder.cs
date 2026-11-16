@@ -21,6 +21,7 @@ internal sealed class MortalLocationRepairPacket
     internal string RawCoordinate { get; init; } = "unresolved";
     internal string? ExpectedMaterializationId { get; init; }
     internal string? ExpectedStorageId { get; init; }
+    internal MortalStorageBirthItemRetryBinding? StorageItemRetryBinding { get; init; }
     internal IReadOnlyList<string> MissingFields { get; init; } = Array.Empty<string>();
     internal IReadOnlyList<string> InvalidFields { get; init; } = Array.Empty<string>();
     internal IReadOnlyList<string> Conflicts { get; init; } = Array.Empty<string>();
@@ -195,6 +196,14 @@ internal static class MortalLocationRepairPacketBuilder
             .Where(MortalItemIdentityRules.IsExactIdentity).Distinct(StringComparer.Ordinal).Take(2).ToArray();
         if (transitionClass == "storage_addition" && storageIds.Length != 1)
             return null;
+        var itemBindings = candidates.Select(candidate => candidate.Issue.MortalLocationRepairContext?.StorageItemRetryBinding)
+            .Where(binding => binding is not null).Cast<MortalStorageBirthItemRetryBinding>()
+            .GroupBy(binding => binding.ValueKey, StringComparer.Ordinal).Select(group => group.First()).Take(2).ToArray();
+        if (transitionClass == "storage_addition" &&
+            (itemBindings.Length > 1 || itemBindings.Length == 0 && candidates.Any(candidate =>
+                candidate.Issue.MortalLocationRepairContext!.RepairableFields.Any(field =>
+                    field == "storage.contents" || field.StartsWith("storage.contents[", StringComparison.Ordinal)))))
+            return null;
         var expectedInitialIds = candidates
             .Select(candidate => candidate.Issue.MortalLocationRepairContext?.InitialId)
             .Where(MortalItemIdentityRules.IsExactIdentity)
@@ -265,6 +274,7 @@ internal static class MortalLocationRepairPacketBuilder
             RawCoordinate = key.RawCoordinate,
             ExpectedMaterializationId = isCreation ? expectedMaterializationIds[0] : null,
             ExpectedStorageId = transitionClass == "storage_addition" ? storageIds[0] : null,
+            StorageItemRetryBinding = transitionClass == "storage_addition" ? itemBindings.SingleOrDefault() : null,
             TargetFiles = targetFiles,
             MissingFields = missing,
             InvalidFields = invalid,
@@ -628,6 +638,7 @@ internal static class MortalLocationRepairPacketBuilder
         }
 
         var code = issue.Code ?? string.Empty;
+        var boundRawSourceField = IsBoundRawStorageItemSourceField(issue);
         if (code.Contains("historical_replay", StringComparison.Ordinal) ||
             code.Contains("duplicate_creation_route", StringComparison.Ordinal) ||
             code.Contains("duplicate_property", StringComparison.Ordinal) ||
@@ -642,8 +653,8 @@ internal static class MortalLocationRepairPacketBuilder
             code.Contains("client_owned", StringComparison.Ordinal) ||
             code.Contains("receipt", StringComparison.Ordinal) ||
             code.Contains("seal", StringComparison.Ordinal) ||
-            code.Contains("source_authority", StringComparison.Ordinal) ||
-            code.Contains("source_turn", StringComparison.Ordinal) ||
+            !boundRawSourceField && (code.Contains("source_authority", StringComparison.Ordinal) ||
+                code.Contains("source_turn", StringComparison.Ordinal)) ||
             code.Contains("index", StringComparison.Ordinal) ||
             code.Contains("snapshot", StringComparison.Ordinal))
         {
@@ -652,12 +663,29 @@ internal static class MortalLocationRepairPacketBuilder
 
         return HasExactPropertySegment(issue.FilePath, "initialId") ||
                HasExactPropertySegment(issue.FilePath, "materializationId") ||
-               HasExactPropertySegment(issue.FilePath, "sourceAuthority") ||
-               HasExactPropertySegment(issue.FilePath, "sourceTurn") ||
+               !boundRawSourceField && (HasExactPropertySegment(issue.FilePath, "sourceAuthority") ||
+                   HasExactPropertySegment(issue.FilePath, "sourceTurn")) ||
                HasExactPropertySegment(issue.FilePath, MortalLocationMaterializationContract.ReceiptProperty) ||
                HasExactPropertySegment(issue.FilePath, "receiptId") ||
                HasExactPropertySegment(issue.FilePath, "seal") ||
                HasExactPropertySegment(issue.FilePath, "transitions");
+    }
+
+    private static bool IsBoundRawStorageItemSourceField(ValidationIssue issue)
+    {
+        var context = issue.MortalLocationRepairContext;
+        var binding = context?.StorageItemRetryBinding;
+        var path = Normalize(issue.FilePath);
+        // Only these raw source leaves are GM-owned. A source object containing
+        // receipt/seal/session/snapshot/history descendants never gains an exception.
+        return context is not null && binding is not null &&
+            binding.LocationId == context.ExistingId && binding.StorageId == context.ExpectedStorageId &&
+            IsExactIndexedCoordinate(context.CarrierPath, "storagesToAdd") &&
+            binding.ContainsItemPath(path, context.CarrierPath) &&
+            MortalItemRepairPacketBuilder.IsGmAuthorableTarget(path) &&
+            (path.EndsWith(".materialization.sourceAuthority.kind", StringComparison.Ordinal) ||
+             path.EndsWith(".materialization.sourceAuthority.authorityId", StringComparison.Ordinal) ||
+             path.EndsWith(".materialization.sourceTurn", StringComparison.Ordinal));
     }
 
     private static bool IsMissingFieldIssue(ValidationIssue issue)

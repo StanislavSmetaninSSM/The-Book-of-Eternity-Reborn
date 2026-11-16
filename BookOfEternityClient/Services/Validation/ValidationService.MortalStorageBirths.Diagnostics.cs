@@ -12,9 +12,12 @@ public partial class ValidationService
         var births = plan.StorageBirthDrafts.Where(d => d.OperationRef.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal)).ToArray();
         if (births.Length == 0) return;
         var occurrencePaths = new Dictionary<string, (string RawPath, MortalLocationStorageBirthDraft Birth)>(StringComparer.Ordinal);
+        var retryBindings = new Dictionary<MortalLocationStorageBirthDraft, MortalStorageBirthItemRetryBinding?>();
         foreach (var birth in births)
         {
-            if (birth.CloneRawStorage()["contents"] is not JsonArray contents) continue;
+            var rawStorage = birth.CloneRawStorage();
+            retryBindings[birth] = MortalStorageBirthItemRetryBinding.Capture(rawStorage, birth.LocationId, birth.StorageId, birth.SourceTurn);
+            if (rawStorage["contents"] is not JsonArray contents) continue;
             for (var itemIndex = 0; itemIndex < contents.Count; itemIndex++)
             {
                 var reference = contents[itemIndex]?["creationRef"] is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
@@ -44,7 +47,7 @@ public partial class ValidationService
                 // repair cannot silently switch parent, child identity or raw ordinal.
                 remapped.MortalLocationRepairContext = new(provenance.Birth.OperationRef, "mortal_location", null, null,
                     new[] { rawPath[(provenance.Birth.OperationRef.Length + 1)..] }, provenance.Birth.LocationId,
-                    ExpectedStorageId: provenance.Birth.StorageId);
+                    ExpectedStorageId: provenance.Birth.StorageId, StorageItemRetryBinding: retryBindings[provenance.Birth]);
                 issues[index] = remapped;
                 continue;
             }
@@ -55,7 +58,7 @@ public partial class ValidationService
                 new[] { MortalLocationMaterializationContract.WorldMapPath });
             contextual.MortalLocationRepairContext = new(birth.OperationRef, "mortal_location", null, null,
                 new[] { issue.FilePath[(birth.OperationRef.Length + 1)..] }, birth.LocationId,
-                ExpectedStorageId: birth.StorageId);
+                ExpectedStorageId: birth.StorageId, StorageItemRetryBinding: retryBindings[birth]);
             issues[index] = contextual;
         }
     }

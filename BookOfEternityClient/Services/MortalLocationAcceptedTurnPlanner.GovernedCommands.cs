@@ -206,6 +206,19 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     "fresh complete raw items or empty array", storage["contents"]?.ToJsonString() ?? "missing"));
             if (storage.ContainsKey("cargoMeasurements") && storage["cargoMeasurements"] is not JsonArray)
                 issues.Add(InvalidLifecycleShape(context + ".storage.cargoMeasurements", "mortal_location_storage_addition_invalid", storage["cargoMeasurements"]));
+            if (storage["contents"] is JsonArray rawItems)
+            {
+                for (var itemIndex = 0; itemIndex < rawItems.Count; itemIndex++)
+                    if (rawItems[itemIndex] is JsonObject item &&
+                        (item["materialization"] is not JsonObject envelope || ReadExactString(envelope, "route") != "storage_placement"))
+                        issues.Add(Issue(context + $".storage.contents[{itemIndex}].materialization.route",
+                            "mortal_location_storage_addition_item_route_invalid",
+                            "Fresh items in a new storage declaration use its exact storage-placement authority, never an unrelated creation route.",
+                            "storage_placement", item["materialization"] is JsonObject rawEnvelope ? rawEnvelope["route"]?.ToJsonString() ?? "missing" : "missing"));
+                if (rawItems.Count == 0 && storage["cargoMeasurements"] is JsonArray { Count: > 0 })
+                    issues.Add(Issue(context + ".storage.cargoMeasurements", "mortal_location_storage_addition_measurement_invalid",
+                        "An empty storage birth cannot discard measurements for cargo that is not declared.", "absent or empty array", storage["cargoMeasurements"]!.ToJsonString()));
+            }
             using var document = JsonDocument.Parse(storage.ToJsonString());
             issues.AddRange(MortalLocationStorageMetadataContract.Validate(document.RootElement, context + ".storage"));
             issues.AddRange(ValidateCanonicalStorageOwner(storage, context + ".storage", factionAuthority, allowTemporaryFactionOwners: true));

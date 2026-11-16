@@ -515,7 +515,10 @@ internal sealed class MortalItemRouteAuthorityCatalog
                                  out var sameTurnAuthority))
                     {
                         expectedAuthorityId = sameTurnAuthority.AuthorityId;
-                        destination = sameTurnAuthority.Destination;
+                        destination = sameTurnAuthority.Destination with
+                        {
+                            ContainerPath = occurrence.Carrier.ContainerPath.ToArray()
+                        };
                     }
                     else
                     {

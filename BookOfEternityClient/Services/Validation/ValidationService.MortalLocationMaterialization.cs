@@ -346,6 +346,7 @@ public partial class ValidationService
                             {
                                 ExistingId = plannerContext.ExistingId ?? rawContext.ExistingId,
                                 ExpectedStorageId = plannerContext.ExpectedStorageId ?? rawContext.ExpectedStorageId,
+                                StorageItemRetryBinding = plannerContext.StorageItemRetryBinding ?? rawContext.StorageItemRetryBinding,
                                 ExpectedSourceTurn = plannerContext.ExpectedSourceTurn,
                                 ExpectedSourceAuthorityKind = plannerContext.ExpectedSourceAuthorityKind,
                                 ExpectedSourceAuthorityId = plannerContext.ExpectedSourceAuthorityId
@@ -449,7 +450,7 @@ public partial class ValidationService
             StringComparison.Ordinal);
     }
 
-    private static ValidationIssue AttachMortalLocationPlannerRepairContext(
+    internal static ValidationIssue AttachMortalLocationPlannerRepairContext(
         ValidationIssue issue,
         JsonObject? currentRoot,
         JsonObject? mapRoot,
@@ -541,7 +542,11 @@ public partial class ValidationService
             expectedSourceAuthorityKind,
             expectedSourceAuthorityId,
             carrierPath.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal) &&
-                candidate["storage"] is JsonObject child ? ReadExactLocationNodeString(child, "storageId") : null);
+                candidate["storage"] is JsonObject child ? ReadExactLocationNodeString(child, "storageId") : null,
+            carrierPath.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal) &&
+                candidate["storage"] is JsonObject rawStorage
+                ? MortalStorageBirthItemRetryBinding.Capture(rawStorage, existingId, ReadExactLocationNodeString(rawStorage, "storageId"), acceptedTurn)
+                : null);
         return contextual;
     }
 

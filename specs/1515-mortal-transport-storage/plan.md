@@ -8,6 +8,36 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen coherent review corrections in SOURCE, 2026-11-16
+
+Eight source/test files now address the four identified findings: new raw births
+require storage_placement, empty births reject nonempty measurements, mapped
+nested destinations retain occurrence ancestry, and existing location retry DATA
+binds item ordinals, creation references, known materialization IDs and the derived
+source coordinate/turn. Early and late issue contexts carry the same detached
+binding. Only three exact bound raw source leaves gain a repair exception;
+client-owned receipt/seal/index/snapshot protections remain. One new early-context
+regression makes the cheap selection 19 cases; prior 18 assertions are unchanged.
+This checkpoint is UNCOMPILED/UNRUN, not acceptance. Next: fresh serial unit build
+and cheap gate, then integration and relevant retained impact categories.
+Optimization retains the proven borrowed catalog DATA and fresh source fences;
+retry binding is cheap invocation-local immutable DATA, not a new cache or owner.
+
+## Offscreen review findings reached after optional-field correction, 2026-11-16
+
+Saved 33ed6376cc264424797b2c91c0d6ccf8796de720 built successfully (92.03s,
+94 warnings, 0 errors). All18 cheap cases completed in11.639s:9PASS/9FAIL,
+no skips/duplicates/timeouts and complete cleanup. Original prepared/completion
+controls now pass alongside the four DATA/read/path controls. Three review
+findings fail at the intended assertions: alternate loot route accepted, nonempty
+measurements on empty storage accepted, nested mapped destination loses ancestry.
+Six retry cases instead reach an earlier bridge defect: existing packet Capture
+returns no location obligation; positive correction and mutation-refusal assertions
+are not yet reached. Trace that packet/classification bridge as part of the same
+existing retry-owner fix, then retain both positive source correction and stable
+item identity/source negatives. Coherent fixes for all four findings are released;
+no new engine, writer, cache or broader authority is authorized.
+
 ## Offscreen optional-field gate blocks review RED, 2026-11-16
 
 At 40b237dc7aae65aedca879ba91d98b2923c81cec the corrected unit build passed

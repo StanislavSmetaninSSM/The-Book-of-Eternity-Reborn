@@ -165,6 +165,56 @@ public sealed class MortalOffscreenStorageRouteDataTests
     }
 
     [Fact]
+    public void EarlyLocationRouteRepairCapturesRawItemsWithoutReopeningProtectedSourceDescendants()
+    {
+        var input = MortalOffscreenStorageBirthTests.Input();
+        var raw = input.RawWorldMapUpdates!["storagesToAdd"]![0]!["storage"]!["contents"]![0]!.AsObject();
+        raw["materialization"]!["route"] = "loot_acquisition";
+        raw["materialization"]!["sourceAuthority"]!["kind"] = "loot_template";
+        raw["materialization"]!["sourceAuthority"]!["authorityId"] = "loot_template:42:0:test";
+        var planning = MortalLocationAcceptedTurnPlanner.Build(input);
+        Assert.False(planning.Success);
+        var issue = Assert.Single(planning.Issues, i => i.Code == "mortal_location_storage_addition_item_route_invalid");
+        var map = new JsonObject { ["worldMapUpdates"] = input.RawWorldMapUpdates.DeepClone() };
+        var contextual = ValidationService.AttachMortalLocationPlannerRepairContext(issue, null, map, 42, null);
+        var context = Assert.IsType<MortalLocationRepairContext>(contextual.MortalLocationRepairContext);
+        var obligations = MortalLocationRepairRetryPolicy.Capture(MortalLocationRepairPacketBuilder.Build(new[] { contextual }));
+        Assert.Single(obligations);
+        var corrected = map.DeepClone().AsObject();
+        var item = corrected["worldMapUpdates"]!["storagesToAdd"]![0]!["storage"]!["contents"]![0]!;
+        item["materialization"]!["route"] = "storage_placement";
+        item["materialization"]!["sourceAuthority"]!["kind"] = "location_storage";
+        item["materialization"]!["sourceAuthority"]!["authorityId"] = "loc_offscreen_birth_b:storage_offscreen_birth";
+        Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, corrected));
+        item["creationRef"] = "new_substitution";
+        Assert.False(MortalLocationRepairRetryPolicy.HasExactResubmission(obligations, null, corrected));
+        const string prefix = "game_state/world/world_map.json.worldMapUpdates.storagesToAdd[0].";
+        foreach (var field in new[] { "storage.contents[0].materialization.sourceAuthority.kind",
+                     "storage.contents[0].materialization.sourceAuthority.authorityId", "storage.contents[0].materialization.sourceTurn" })
+        {
+            var sourceIssue = new ValidationIssue(prefix + field, IssueSeverity.Error, "Repair this raw source leaf.",
+                code: "mortal_item_materialization_route_authority_mismatch", section: "MortalLocationMaterialization",
+                repairTargetFiles: new[] { MortalLocationMaterializationContract.WorldMapPath })
+                { MortalLocationRepairContext = context with { RepairableFields = new[] { field } } };
+            Assert.Single(MortalLocationRepairPacketBuilder.Build(new[] { sourceIssue }));
+        }
+        foreach (var field in new[] { "storage.contents[0].materialization.sourceAuthority.seal",
+                     "storage.contents[0].materialization.sourceAuthority.sessionId",
+                     "storage.contents[0].materialization.sourceAuthority.snapshotToken",
+                     "storage.contents[0].materialization.sourceAuthority.history",
+                     "storage.contents[0].materializationReceipt.seal",
+                     "storage.contents[0].materialization.materializationId",
+                     "storage.contents[1].materialization.sourceAuthority.authorityId" })
+        {
+            var protectedIssue = new ValidationIssue(prefix + field, IssueSeverity.Error, "Must not delegate this field.",
+                code: "mortal_item_materialization_route_authority_mismatch", section: "MortalLocationMaterialization",
+                repairTargetFiles: new[] { MortalLocationMaterializationContract.WorldMapPath })
+                { MortalLocationRepairContext = context with { RepairableFields = new[] { field } } };
+            Assert.Empty(MortalLocationRepairPacketBuilder.Build(new[] { protectedIssue }));
+        }
+    }
+
+    [Fact]
     public void EmptyAdditionCannotSilentlyDiscardNonemptyCargoMeasurements()
     {
         var input = MortalOffscreenStorageBirthTests.Input();
