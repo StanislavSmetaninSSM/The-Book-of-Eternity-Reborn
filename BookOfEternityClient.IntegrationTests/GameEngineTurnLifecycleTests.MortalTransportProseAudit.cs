@@ -11,8 +11,16 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath,
             kind == "invalid_vehicle" ? "{\"vehicles\":[]}" : MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\"}");
         var validator = new ValidationService(_fs,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+        if (kind == "invalid_command")
+        {
+            var invalid = validator.ValidateResponse(System.Text.Json.JsonSerializer.SerializeToElement(new { response = "You wait quietly.", UpdateVehicles = 17 }));
+            Assert.Contains(invalid, issue => issue.FilePath.Contains("UpdateVehicles", StringComparison.Ordinal));
+            Assert.DoesNotContain(invalid, issue => issue.Code == "resource_owner_vehicle_receipt_invalid");
+            return;
+        }
         var issues = kind == "response"
             ? validator.ValidateResponse(System.Text.Json.JsonSerializer.SerializeToElement(new { response = "You wait quietly." }))
             : await validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
@@ -25,6 +33,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     // Three independent roots retain the existing genuine treatment baseline;
     // the only changed input is a specific transport/storage assertion in prose.
     [Theory]
+    [InlineData("receipt_invalid_command")]
     [InlineData("receipt_response")]
     [InlineData("receipt_valid_vehicle")]
     [InlineData("receipt_invalid_vehicle")]

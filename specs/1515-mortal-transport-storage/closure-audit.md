@@ -43,3 +43,31 @@ checkpoint. Reuse a genuinely valid full-turn baseline before interpreting
 prose-only negative outcomes. Initial after-composition text mutation was also
 removed: current diagnostic text is passed into the genuine composer and
 response distributor together, before intake.
+
+## Superseding causal result, 2026-11-16
+
+After initial inconclusive fixture work, exact diagnostics identified a real
+production regression: `ValidateVehicleData` is a shared dispatcher for raw
+responses and unrelated meta files, but unconditionally required canonical
+vehicle receipt topology from every object. A narrow raw-response case produced
+the expected RED. Commit f93f0bce restricts only immutable receipt validation to
+the canonical vehicle path; existing vehicle command shape checks remain.
+
+The unchanged six-case run then produced 4 PASS / 2 causal FAIL in 66.320 seconds:
+neutral full accepted-treatment control reached Accepted and all its original
+publication assertions; raw response/valid canonical/malformed canonical receipt
+controls passed. Both explicit prose-only vehicle/storage grants reached Accepted
+without their claimed canonical entity, so both negative tests failed for the
+intended missing behavior. This is now a demonstrated accepted-turn defect, not
+an inferred NLP claim. No whole-feature acceptance is asserted.
+
+Run: 20261116-075644-274-100-eca1ea59f20742038075d4da93134f46-categories.
+Build: 164 warnings / zero errors, 109.63 seconds. No skips, duplicates, timeout
+or incomplete cleanup. Local test commands now explicitly disable PowerShell and
+VSTest telemetry in addition to the existing dotnet opt-out. A prior launch was
+blocked before execution for a telemetry endpoint; it is not counted as a test.
+
+Next: independently reviewed proposal for mandatory private, exact structured
+transport/storage declarations, analogous to NPC skill claims. This is not yet
+implemented. Honest empty-report completeness cannot be guaranteed without an
+independent semantic audit; no universal prose understanding is claimed.
