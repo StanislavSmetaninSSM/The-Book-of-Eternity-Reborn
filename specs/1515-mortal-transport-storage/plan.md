@@ -8,6 +8,54 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Final accepted #1515 checkpoint, 2026-11-16
+
+FR1–FR9 are implemented within the Mortal-only pre-release scope. Independent
+original-issue reconciliation found no remaining gameplay requirement; prior
+accepted vehicle/current-storage/access/display blocks remain supported. The final
+independent Astra High source/outcome and metadata review accepted the offscreen
+route, its retained shared consumers and the intended-diff selection. Its only
+wording clarification is applied: cargo evidence is finalized for current-scene
+births (including empty) and populated existing-location additions, not retroactively
+for empty existing-location additions. No runtime change followed verification.
+
+Final production source is 48b0aea14dbf30e482dcc17214f5441b6fe9c30e;
+the integration oracle-only correction is eb6b4399e9ce2a4e3a2023a94cf4e3db4a1e0198.
+Metadata/source checkpoint bf5635fda8d9260c7ee1c644430469cc78e48cea is verified
+on the remote and in a fresh shallow clone: clean status, connectivity fsck exit0,
+all 76 locally changed/untracked source files byte-identical. This final closeout
+changes only spec/plan/tasks; no raw diagnostics, runtime or test bodies.
+
+Fresh matching final verification, each with complete planned/executed counts,
+owned cleanup and no skipped/duplicate/timed-out cases:
+- Offscreen cheap DATA: 19/19 PASS, 10.4716923s runner.
+- Offscreen real publication/capacity/ancestry/source/rollback/travel/access: 9/9
+  PASS, 24.9834864s runner.
+- Nine retained impact categories: 184/184 PASS, 12 descriptors, 96.0360976s.
+  Counts: current capacity8, empty-addition publication6, empty-addition policy31,
+  repair83, normalization2, history35, vehicle capacity4, vehicle receipt9, guidance6.
+- Added affected shared consumers: 13/13 PASS, 3 descriptors, 30.9615083s;
+  five cargo methods expand to8 cases, item interop contributes5.
+- Catalog discovery: 1,754 categories and14,401 methods/files, 12.5516273s;
+  zero tests executed. Final selection has39 unique contract owners.
+These four runtime selections comprise225 passing executions, not a complete suite
+or a claim that all39 categories were rerun. Earlier independently accepted
+unchanged policy/access/actor/location/display evidence remains joined through the
+historical checkpoints below; shared changed intake consumers received fresh
+checks. FR8 separately retains17+13 accepted executions at f431ad1c.
+
+Final builds: unit94.04s/94 warnings/0 errors; final integration64.10s/124 warnings/
+0 errors. Source was frozen for execution. Full diagnostics remain outside Git;
+no hosted CI, Windows qualification, legacy-save promotion, spiritual system or
+new grant/transfer framework is claimed. The user-authorized working branch is
+ready for integration; main has not been merged and the issue has not been closed.
+
+Optimization is part of the accepted result: borrowed catalog DATA eliminates four
+catalog-only reads while fresh authority reads remain; exact mappings reject
+conflicts, returned DATA is detached, mutation/freshness refusals are retained.
+Existing retry ownership carries cheap immutable identity DATA. No new cache,
+permission reuse, writer or measured general speedup is introduced.
+
 ## Final reconciliation metadata and matching offscreen GREEN, 2026-11-16
 
 Saved integration/test source eb6b4399e9ce2a4e3a2023a94cf4e3db4a1e0198 has

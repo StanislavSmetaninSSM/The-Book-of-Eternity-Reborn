@@ -6,7 +6,7 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 ## Setup
 - [x] T001 Verify live #1511/#1513 dependency closure, main base and publish isolated task branch.
 - [x] T002 Map existing vehicle/resource/location/item authorities and create this Spec Kit WIP.
-- [ ] T003 Finish concrete field schema and cross-artifact analysis before code; verify restored SDK/runtime/category runner.
+- [x] T003 Finish concrete field schema and cross-artifact analysis; restored SDK/runtime/category runner verified and final artifacts reconciled.
 
 ## US1: Vehicle completeness and selection (FR1–FR3)
 - [x] T004 Add causal RED typed vehicle semantic tests with category owners; implemented in MortalVehicleBirthContractTests and the targeted actor/location/capacity policy tests.
@@ -20,17 +20,17 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 - [x] T007 Vehicle current fixtures, GM schema/examples/daemon and narrow guards updated and reviewed in the accepted structural/access/cargo/receipt blocks; final cross-artifact reconciliation remains T014.
 
 ## US2: Storage/access completeness (FR4–FR6)
-- [ ] T008 Add RED storage metadata/access/contents tests for shared/restricted ownership, duplicates, exact locations and capacity.
-- [ ] T009 Extend `MortalLocationStorageMetadataContract.cs` and existing location planning; add effective `storage_access.json` schema/reduction and source-turn evidence without a second inventory owner.
+- [x] T008 Storage metadata/access/contents causal and retained controls cover shared/restricted ownership, duplicates, exact locations and current/offscreen capacity.
+- [x] T009 Existing metadata/location planning owns storage completeness, effective access and source-turn evidence; no second inventory authority or new grant engine.
 - [x] T009a Current-scene populated/empty storage birth capacity and immutable child evidence; 819ef456 bounded acceptance, 185 passing selected executions across joined checkpoints, independent Astra High review.
-- [ ] T009b Complete true populated offscreen storage birth through existing item/location authority; current birth followed by travel is not this coverage.
+- [x] T009b Direct populated offscreen storage birth accepted through existing item/location authority, including measured nested cargo, indexed refusals, source drift, reached rollback and subsequent existing travel/retrieve/deposit.
 - [x] T010 Access after-images bound to original source/backup sets and existing accepted-mechanics publication; accepted rejection and reached late-fault rollback evidence. Offscreen extension must retain this contour.
-- [ ] T011 Update storage bootstrap/fixtures, GM worked examples and guards; verify/review/publish bounded block.
+- [x] T011 Current storage fixtures, GM examples, manifest inventory and actual daemon delivery match supported empty/current/offscreen contracts; final guidance 6/6 PASS.
 
 ## US3: Consumer interoperability (FR7–FR9)
-- [ ] T012 Add narrow new-schema consumption/transfer interoperability tests through the existing writer; do not add ordinary post-birth movement/access policy.
+- [x] T012 Existing vehicle/current/offscreen storage retrieve/deposit preserves item/resource identities and immutable birth evidence; no ordinary lifecycle redesign.
 - [x] T013 Storage effective-access view and canonical-only vehicle display accepted; exact string identities/selection, no pending or legacy fallback. At f431ad1c, 30/30 targeted cases pass, catalog discovery and independent review accepted; no UI redesign.
-- [ ] T014 Reconcile full intended diff with `tests/selection.json`; discover category ownership, run impact-selected tests and complete independent whole-change review.
-- [ ] T015 Publish final source/checkpoint and verify clean GitHub restore; report ready without merging main or closing issue.
+- [x] T014 Entire intended diff reconciled with 39 impact-category owners; catalog discovery valid, final selected runs 19/19 + 9/9 + 184/184 + 13/13 PASS and independent outcome/metadata review accepted. Retained earlier block evidence is separate, not a whole-suite claim.
+- [x] T015 Accepted source/checkpoint bf5635fda8d9260c7ee1c644430469cc78e48cea restored into a fresh clean directory, fsck and 76 local source-file comparisons pass; final documentation closeout saved separately. No main merge or issue closure.
 
 Dependencies: Setup → US1/US2 pure contracts → combined publication → US3 → final verification. Read-only mapping or independent tests may run in parallel; shared writer/source changes remain coordinated. No unchecked task is completed by a report alone.

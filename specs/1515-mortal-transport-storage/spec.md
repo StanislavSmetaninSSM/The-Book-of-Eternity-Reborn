@@ -2,7 +2,7 @@
 
 Issue: [#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1515)
 Branch: `1515-mortal-transport-storage`; base `f3d0bc668481d1b648381a83dfc39d425fec8bde`.
-Status: Vehicle, current-scene storage and canonical display blocks accepted. Offscreen implementation has matching targeted GREEN; final catalog/consumer checks, independent outcome review and clean restore remain pending.
+Status: FR1–FR9 implemented and independently accepted with impact-selected evidence. Accepted source restored cleanly from GitHub; ready for integration without merging main or closing the issue.
 
 ## Scope and clarification
 
@@ -165,8 +165,8 @@ and effective-access projection consume the resulting accepted map.
 
 ## Storage cargo birth evidence (implementation decision, FR5–FR7)
 
-For the supported storage birth routes, finalize detached version-1 cargo
-capacity evidence in the existing location identity index's `storage_addition`
+For current-scene storage births (including empty) and populated existing-location
+additions, finalize detached version-1 cargo capacity evidence in the existing location identity index's `storage_addition`
 transition `afterState`. The parent location receipt remains unchanged. Allocate
 one exact child transition during preparation, including for empty new storages;
 finalization uses admitted projected item DATA and allocates nothing. The expected
