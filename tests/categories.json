@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-ordinary-publication",
+      "responsibility": "#1516 real ordinary canonical owner: signed original, report admission, settled faction effect, private receipt/report consumption and reached late rollback with retry.",
+      "excludes": "Joint/QTE owners, source replay registry, entity births/removals and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldPublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-original-source",
       "responsibility": "#1516 actual live signed original capture, first-crossed elapsed time, private report correlation, history ownership and source/lease freshness.",
       "excludes": "Ordinary receipt publication, rollback, joint/QTE/diagnosis integration, effect completion and whole issue acceptance.",

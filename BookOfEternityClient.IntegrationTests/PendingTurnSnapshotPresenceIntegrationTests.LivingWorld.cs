@@ -108,7 +108,139 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireUnchangedInputsAsync(context.FileSystem, second));
     }
 
-    private static async Task<ResourceMaterializationTestContext> PrepareLivingWorldOriginalAsync()
+    [Theory]
+    [InlineData("{\"currentRealm\":\"Chaos Sea\"}")]
+    [InlineData("{\"currentRealm\":12}")]
+    [InlineData("{")]
+    public async Task LivingWorldSource_CurrentSoulMustRemainMortal(string soul)
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        await context.WriteExactJsonAsync(SoulPath, soul);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_source_invalid");
+    }
+
+    [Theory]
+    [InlineData("soul")]
+    [InlineData("schedule")]
+    public async Task LivingWorldSource_SignedRealmSurfacesMustAgree(string surface)
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync(surface);
+        await WriteLivingWorldReportAsync(context);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_source_invalid");
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_CurrentRequestControlMustMatchSignedControl()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        var request = (await context.ReadJsonAsync("input/turn_request.json"))!.AsObject();
+        request["progressionControl"]!["worldCycleMinutes"] = 999;
+        await context.WriteExactJsonAsync("input/turn_request.json", request.ToJsonString());
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_source_invalid");
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_RetainedBaselineDeltaRequiresAssessment()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await context.WriteExactJsonAsync(MortalLivingWorldSource.WorldTimePath,
+            """{"currentTimeInMinutes":0,"timeChange":240}""");
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_report_required");
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_DuplicateClockCannotPassAsShortScene()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await context.WriteExactJsonAsync(MortalLivingWorldSource.WorldTimePath,
+            """{"currentTimeInMinutes":240,"currentTimeInMinutes":0}""");
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_source_invalid");
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_ClosingCheckCannotReuseCachedWorkingBytes()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        using var operation = context.FileSystem.BeginSourceDataOperationIfNeeded();
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Empty(result.Issues);
+        var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
+        _ = await context.FileSystem.ReadFileBytesAsync(lease, MortalLivingWorldSource.ReportPath);
+        await File.WriteAllTextAsync(Path.Combine(context.RootPath, MortalLivingWorldSource.ReportPath), "{}");
+        await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireUnchangedInputsAsync(context.FileSystem, lease));
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_OriginalFenceAllowsWorkingDomainNormalization()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Empty(result.Issues);
+        var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
+        await context.FileSystem.WriteFileAtomicAsync(lease, LivingFlagsPath,
+            """{"worldStateFlags":[{"flagId":"player_choice","value":2}]}""");
+        await source.RequireOriginalCurrentAsync(context.FileSystem, lease);
+        await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireUnchangedInputsAsync(context.FileSystem, lease));
+        Assert.Equal(1, source.ReadOriginalDocument(LivingFlagsPath)!["worldStateFlags"]![0]!["value"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_OriginalFenceStillRejectsGuardRewrite()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Empty(result.Issues);
+        var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
+        await context.FileSystem.WriteFileAtomicAsync(lease, "ready/turn_complete.json", "{}");
+        await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireOriginalCurrentAsync(context.FileSystem, lease));
+    }
+
+    [Fact]
+    public async Task LivingWorldSource_OpeningBytesAndTokenAreDetachedData()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+        Assert.Empty(result.Issues);
+        var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
+        var expected = await context.FileSystem.ReadFileBytesAsync(lease, LivingFlagsPath);
+        var detached = source.ReadOpeningBytes(LivingFlagsPath)!;
+        Assert.Equal(expected, detached);
+        detached[0] ^= 1;
+        Assert.Equal(expected, source.ReadOpeningBytes(LivingFlagsPath));
+        Assert.Null(source.ReadOpeningBytes(MortalLivingWorldSource.HistoryPath));
+        Assert.Throws<ArgumentException>(() => source.ReadOpeningBytes("not-captured.json"));
+        var original = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            new PendingTurnSnapshotPathSelection([SoulPath], []));
+        Assert.True(original.Success);
+        Assert.Equal(original.Snapshot!.SnapshotToken, source.SnapshotToken);
+    }
+
+    private static async Task<ResourceMaterializationTestContext> PrepareLivingWorldOriginalAsync(string? invalidSignedRealm = null)
     {
         var context = await CreateSeededContextAsync();
         await context.WriteExactJsonAsync(SoulPath, """{"currentRealm":"Mortal World"}""");
@@ -117,6 +249,14 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         var scheduler = new ProgressionScheduleService(context.FileSystem,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
         var control = await scheduler.BuildControlForNextTurnAsync("Mortal World");
+        if (invalidSignedRealm == "soul")
+            await context.WriteExactJsonAsync(SoulPath, """{"currentRealm":"Chaos Sea"}""");
+        if (invalidSignedRealm == "schedule")
+        {
+            var schedule = (await context.ReadJsonAsync(ProgressionScheduleService.SchedulePath))!.AsObject();
+            schedule["currentRealm"] = "Chaos Sea";
+            await context.WriteExactJsonAsync(ProgressionScheduleService.SchedulePath, schedule.ToJsonString());
+        }
         await new LiveTurnPreparationService(context.FileSystem).PrepareAsync(new LiveTurnPreparationOptions
         {
             SessionId = "presence-live", RequestId = "presence-live-request", TurnNumber = 42,

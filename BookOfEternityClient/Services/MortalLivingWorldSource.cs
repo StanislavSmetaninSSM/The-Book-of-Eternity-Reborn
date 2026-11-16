@@ -46,6 +46,14 @@ internal sealed class MortalLivingWorldSource
     }
 
     internal MortalLivingWorldAssessmentContext Context { get; }
+    /// <summary>Detached original binding DATA, never publication authority.</summary>
+    internal string SnapshotToken => throw new NotImplementedException("#1516 source split API RED scaffold");
+    /// <summary>Returns an independent copy of captured opening DATA for a selected path.</summary>
+    internal byte[]? ReadOpeningBytes(string path) => throw new NotImplementedException("#1516 source split API RED scaffold");
+    /// <summary>Rechecks original authority and protected guards while allowing working domain normalization.</summary>
+    internal Task RequireOriginalCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
+        throw new NotImplementedException("#1516 source split API RED scaffold");
+
     internal JsonObject? ReadOriginalDocument(string path) => _original.TryGetValue(path, out var bytes)
         ? Root(bytes, path) : throw new ArgumentException("Path was not captured by this source.", nameof(path));
 
