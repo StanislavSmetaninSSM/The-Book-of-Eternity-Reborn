@@ -807,7 +807,10 @@ public partial class ValidationService
 
     private void ValidateVehicleData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (root.ValueKind == JsonValueKind.Object)
+        // This shared dispatcher also sees raw responses and unrelated meta documents.
+        // Immutable receipt topology belongs only to the canonical vehicle document.
+        if (root.ValueKind == JsonValueKind.Object &&
+            string.Equals(contextPrefix, StorageTransportMoveService.VehiclesPath, StringComparison.Ordinal))
             issues.AddRange(MortalVehicleBirthReceiptState.ValidateLocal(JsonNode.Parse(root.GetRawText())!.AsObject()));
         if (root.TryGetProperty("UpdateVehicles", out var updates))
             ValidateVehicleArray(updates, $"{contextPrefix}.UpdateVehicles", issues, requireCanonicalStoredShape: false);
