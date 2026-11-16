@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-transport-prose-closure-audit",
+      "responsibility": "#1515 closure audit: genuine accepted-turn treatment baseline with explicit vehicle/storage prose grant but no canonical object; control plus two expected-refusal cases.",
+      "excludes": "No fix, live provider, UI, new transport mechanics or full suite.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalTransportProseAudit.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalTransportProseAudit_RequiresCanonicalEffectBeforeAcceptance"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-offscreen-birth-data",
       "responsibility": "#1515 direct noncurrent storage birth: prepared/completed DATA, exact route and repair identities, empty measurement/alternate route refusals, borrowed-catalog read counts and fresh authority checks.",
       "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
