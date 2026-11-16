@@ -314,12 +314,13 @@ The joint completion marker retains the accepted post-original report declaratio
 and exact receipt/history footprint. Fresh recovery recomputes the declaration
 against the authenticated original clock/domains and actual completed effects.
 When the original records report absence, the marker is the owner-issued accepted
-comparison DATA; its public hashes are not a cryptographic signature. The current
-portable snapshot authority likewise disclaims resistance to a same-user coherent
-rewrite of all payloads and hashes. The single-file rehashed-history test checks
-the supported exact footprint fence; it is not evidence of resistance to a
-coordinated rewrite of every client-owned witness. No new signing scheme or
-after-seal sidecar is introduced.
+comparison DATA; its public hashes are not a cryptographic signature. The
+single-file rehashed-history test checks the supported exact footprint fence;
+it does not establish resistance to a coordinated rewrite of the affected joint
+completion marker and living-world history by the same user process. These are
+the two relevant client-owned witnesses; the authenticated original and clocks
+need not change for that limitation to apply. No new signing scheme or after-seal
+sidecar is introduced.
 
 ## Owner contribution WIP checkpoint, 2026-11-16
 
@@ -338,3 +339,36 @@ No engine reentry or QTE offer/Begin fix is claimed yet. Joint representative us
 existing scoped stable-DATA reuse and lossless gzip captures; fresh owner/effect
 checks remain mandatory. Next: fresh integration build, bounded categories,
 then one genuine joint representative, not the timed-out eight-case batch.
+
+## Targeted owner checks and next correction packet, 2026-11-16
+
+Fresh integration build at e9cf3bad passed (0 errors, 167 warnings, 112.83 s).
+The first runner attempts stopped before discovery because the new representative
+category used a string instead of the required related {id,when} object. That
+metadata-only correction was independently approved and saved at d3a24e65;
+Read-TestCategoryCatalog then loaded all 1,768 entries. No behavioral RED is
+claimed for the catalog setup error.
+
+On the unchanged built sources, lifecycle publication passed 4/4, ordinary
+publication 7/7, and original-source guards 20/20. All selections completed
+with zero duplicates, no timeout and owned cleanup complete. Engine tests gave
+3 PASS and one causal late-critical failure: history publication was reached,
+but the subsequent repair did not request full original-turn resubmission.
+The current WIP fixes this through the existing rollback/repair owner, carrying
+fresh prepublication GM path obligations as DATA, not permission.
+
+QTE gave 6 PASS/3 FAIL. The new public-response control proves canonical vehicle
+receipt validation was incorrectly applied to a response fragment; canonical
+missing-receipt rejection itself passed. The minimal current correction gates
+that existing check by its canonical context, preserving raw vehicle commands.
+Offer/Begin guards are not yet implemented or behaviorally qualified.
+
+Diagnosis gave 4 PASS/9 FAIL: exact preseal contribution and three admission
+cases now pass. All runtime cases stopped at the same storage-access preimage
+mismatch because the harness passed an empty backups dictionary. New fixture
+calls use genuine LivePrepare manifest.files, including signed storage access;
+production storage validation is unchanged. Next run starts with one real
+compensation/retry representative before the full completion-drift packet.
+The forthcoming owner/fixture/docs correction packet remains WIP until rebuilt
+and selectively verified. Joint representative is still pending. No raw logs
+are published; no whole-feature or hosted-CI acceptance is claimed.

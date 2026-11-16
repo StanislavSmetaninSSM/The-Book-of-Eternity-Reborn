@@ -1786,7 +1786,7 @@ Direct-speaking or directly addressed Mortal actors must not be excluded only be
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content $actorReasoningTemplate
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_LIVING_WORLD_TEMPLATE.md" -Role "compact_mortal_living_world_template" -Content @'
 Mortal living-world assessment v1 (Mortal World only)
-A cycle already due or newly due within this turn requires a complete private
+For ordinary assessed Mortal turns, a cycle already due or newly due requires a complete private
 `game_state/control/mortal_living_world_report.json`, even if request-time
 mustEvaluate flags were false. Use the existing world/faction cycle configuration
 and the entire unprocessed original-to-result window, not a new arbitrary threshold.
@@ -1801,6 +1801,18 @@ effects, consequences and knowledge. Typed references use kind/id and ownerId
 for composite identities. Effects must match actual original and settled canonical
 semantic values; pending commands, filesModified, prose or news alone are not proof.
 Existing domain owners/reducers remain authoritative; the report is no mutation API.
+Owner-route boundaries:
+Diagnosis supports noSignificantChange only, against the actual planned diagnosis
+duration. Autonomous changes need an ordinary assessed turn; do not relabel real
+changes as no-change to bypass refusal. The client composes history and report
+consumption before sealing; the GM supplies neither a receipt nor history.
+Joint continuation uses its client-owned common contribution, never a post-seal
+sidecar. Preserve frozen accepted input and do not recreate a consumed report.
+Local QTE cannot consume a living-world report or introduce an additional
+world/faction cycle. Resolve that work through an ordinary assessed turn instead.
+Existing cycle backlog alone does not forbid a short local action crossing no
+additional cycle. Preserve original scene/history; do not clear backlog, fake
+clocks or remove authority to bypass refusal.
 These worked examples qualify updates-only detached source-local ordinary DATA,
 not full feature acceptance, creation/removal, QTE or treatment integration.
 `game_state/world/mortal_living_world_history.json` is private client-owned history:
@@ -2761,7 +2773,7 @@ Invoke-GmParticipatingConsumer $GameSessionPath {
     Write-GmTurnHelperBootstrap
     Write-GmContextPack
 }
-$script:MortalLivingWorldDirective = " Mortal living-world assessment: when a world/faction cycle is already due or newly due in this turn, read '$($script:CompactMortalLivingWorldTemplatePath)' and Examples/E_CLI_Mortal_Living_World.txt. Author the private correlated report, or complete noSignificantChange assessment; never invent events to fill a cycle. History is private client-owned; do not write it or list it in FilesModified. Updates-only worked DATA is not full feature acceptance."
+$script:MortalLivingWorldDirective = " Mortal living-world assessment: on ordinary assessed Mortal turns, when a world/faction cycle is already due or newly due, read '$($script:CompactMortalLivingWorldTemplatePath)' and Examples/E_CLI_Mortal_Living_World.txt. Author the private correlated report, or complete noSignificantChange assessment; never invent events to fill a cycle. History is private client-owned; do not write it or list it in FilesModified. Updates-only worked DATA is not full feature acceptance."
 $script:GmCompactTemplateDirective += $script:MortalLivingWorldDirective
 $script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."

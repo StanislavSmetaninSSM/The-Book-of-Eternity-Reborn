@@ -66,7 +66,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var normalizer = new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance);
         var validator = new ValidationService(files, NullLogger<ValidationService>.Instance);
         var first = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files, normalizer, validator,
-            new Dictionary<string, string>(StringComparer.Ordinal));
+            await ReadLivingDiagnosisBackupsAsync(files));
         Assert.DoesNotContain(first.Issues, issue => issue.Severity == IssueSeverity.Error);
         Assert.True(first.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(first.Issues));
         var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(first.TreatmentResourcePublicationTransaction);
@@ -89,7 +89,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(retry.IsValid, JsonSerializer.Serialize(retry.Issues));
         await fixture.ReleaseLeaseAsync();
         var second = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files, normalizer, validator,
-            new Dictionary<string, string>(StringComparer.Ordinal));
+            await ReadLivingDiagnosisBackupsAsync(files));
         var completed = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(second.TreatmentResourcePublicationTransaction);
         try
         {
@@ -126,7 +126,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
             new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
             new ValidationService(files, NullLogger<ValidationService>.Instance),
-            new Dictionary<string, string>(StringComparer.Ordinal));
+            await ReadLivingDiagnosisBackupsAsync(files));
         Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
         Assert.True(result.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(result.Issues));
         var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(result.TreatmentResourcePublicationTransaction);
@@ -189,7 +189,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         await fixture.ReleaseLeaseAsync();
         var result = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(files,
             new CanonicalStateNormalizer(files, NullLogger<CanonicalStateNormalizer>.Instance),
-            new ValidationService(files, NullLogger<ValidationService>.Instance), new Dictionary<string, string>(StringComparer.Ordinal));
+            new ValidationService(files, NullLogger<ValidationService>.Instance), await ReadLivingDiagnosisBackupsAsync(files));
         Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
         Assert.True(result.TreatmentResourcePublicationTransaction is not null, JsonSerializer.Serialize(result.Issues));
         var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(result.TreatmentResourcePublicationTransaction);
@@ -230,6 +230,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
             await Assert.ThrowsAsync<InvalidDataException>(() => MortalWoundDiagnosisCompletion.RequirePublishedAsync(
                 original, token, generation, selected.Selection, input, path => Task.FromResult(changed[path])));
         }
+    }
+
+    private static async Task<Dictionary<string, string>> ReadLivingDiagnosisBackupsAsync(FileSystemManager files)
+    {
+        var manifest = JsonNode.Parse(Assert.IsType<string>(await files.ReadFileAsync(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
+        var backups = manifest["files"]!.AsObject().ToDictionary(pair => pair.Key,
+            pair => pair.Value!.GetValue<string>(), StringComparer.Ordinal);
+        Assert.Contains(MortalStorageAccessProjection.StatePath, backups.Keys);
+        return backups;
     }
 
     private static async Task<DiagnosisOwnershipFixture> CreateLivingDiagnosisFixtureAsync(bool resourceCost = false)

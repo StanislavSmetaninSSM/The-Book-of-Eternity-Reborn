@@ -161,6 +161,7 @@ public partial class GameEngine
         List<ValidationIssue>? woundRepairRetryErrors = null;
         IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null;
         byte[]? pendingResolutionRepairCheckpoint = null;
+        IReadOnlyList<RepairResubmissionPathObligation>? livingWorldRequiredResubmissionPaths = null;
 
         while (true)
         {
@@ -288,6 +289,17 @@ public partial class GameEngine
                         rawIssues.Add(WoundAcceptedTurnData.CloneIssue(retryError));
                     }
                 }
+            }
+            if (livingWorldRequiredResubmissionPaths is { Count: > 0 })
+            {
+                using var freshLivingWorldRetry = FileSystemManager.SuppressValidationReuse();
+                if (rollbackSnapshot is null ||
+                    !await AreRollbackTrackedPathsResubmittedForRepairSessionAsync(rollbackSnapshot,
+                        livingWorldRequiredResubmissionPaths, lastCriticalRepairSessionGeneration!))
+                    rawIssues.Add(new ValidationIssue(MortalLivingWorldSource.ReportPath, IssueSeverity.Error,
+                        "The rejected assessed turn must be resubmitted from its original state before normalization can run again.",
+                        code: "mortal_living_world_repair_resubmission_required", section: "MortalLivingWorld",
+                        repairHint: "Resubmit the requested GM-owned changed paths, including the elapsed clock and living-world report. Never submit client-owned living-world history."));
             }
             var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
             retryTiming?.Dispose();
@@ -417,7 +429,8 @@ public partial class GameEngine
                         resourceRequiredResubmissionPaths,
                         woundRepairRetryObligations,
                         woundRequiredResubmissionPaths,
-                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
+                        livingWorldRequiredResubmissionPaths: livingWorldRequiredResubmissionPaths))
                 {
                     return await SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync(
                         rollbackSnapshot,
@@ -433,8 +446,21 @@ public partial class GameEngine
             }
 
             AcceptedTurnCanonicalRefreshResult canonicalRefresh;
+            var livingWorldCandidatePresent = false;
+            IReadOnlyList<RepairResubmissionPathObligation>? livingWorldCandidatePaths = null;
             try
             {
+                // Capture GM resubmission DATA before the publisher consumes its report.
+                // This does not grant publication authority or trust a serialized receipt.
+                using (FileSystemManager.SuppressValidationReuse())
+                {
+                    livingWorldCandidatePresent =
+                        RealmSemantics.IsMortalRealm(activeSnapshotContext?.ProgressionControl?.CurrentRealm) &&
+                        _fs.FileExists(MortalLivingWorldSource.ReportPath);
+                    if (livingWorldCandidatePresent && HasRollbackCapability(rollbackSnapshot))
+                        livingWorldCandidatePaths = await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                            rollbackSnapshot!, await CaptureCurrentSessionGenerationAsync());
+                }
                 using var refreshTiming = _fs.MeasureOperation("PlayerTurn.AcceptedValidation.RefreshCanonicalState");
                 canonicalRefresh = await RefreshAcceptedTurnCanonicalStateForValidationAsync(
                     expectedTurn,
@@ -697,13 +723,26 @@ public partial class GameEngine
                     var canonicalRepairStartedAtUtc = DateTime.UtcNow;
                     await CompensateTreatmentResourcePublicationBeforeRepairAsync(
                         treatmentResourcePublicationTransaction);
+                    if (livingWorldCandidatePresent)
+                    {
+                        if (!HasRollbackCapability(rollbackSnapshot) || livingWorldCandidatePaths is not { Count: > 0 })
+                        {
+                            // A completed assessment cannot be re-entered in place without
+                            // its original rollback owner. Leave terminal rollback to caller.
+                            await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                                treatmentResourcePublicationTransaction, rollbackSnapshot, "validation_failed");
+                            return AcceptedTurnValidationDisposition.TerminalRejected;
+                        }
+                        livingWorldRequiredResubmissionPaths = livingWorldCandidatePaths;
+                    }
                     if (!await WaitForContractRepairAsync(
                             source,
                             canonicalErrors,
                             criticalRepairAttempt,
                             rollbackSnapshot,
                             lastCriticalRepairSessionGeneration,
-                            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
+                            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
+                            livingWorldRequiredResubmissionPaths: livingWorldRequiredResubmissionPaths))
                     {
                         await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
                             treatmentResourcePublicationTransaction,

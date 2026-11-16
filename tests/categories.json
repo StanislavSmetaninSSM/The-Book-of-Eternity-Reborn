@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-diagnosis-representative",
+      "responsibility": "#1516 genuine diagnosis receipt publication late-cut rollback and same-original retry, selected before full completion-drift packet.",
+      "excludes": "Other diagnosis completion/tamper cases; do not select together with diagnosis-publication.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.LivingWorldDiagnosis.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-diagnosis-publication",
+          "when": "Run full packet after representative runtime fixture passes; never select both together."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.LivingWorldDiagnosis_CommonPublicationCompensatesEntireReceiptThenRetryAppendsOnce"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-joint-representative",
       "responsibility": "#1516 single genuine joint valid no-change preseal receipt and both durable progression phases, with measured fixture cost before a broader packet.",
       "excludes": "Other seven joint cases, fault/retry coverage, diagnosis and whole issue acceptance; do not select together with joint-owner.",

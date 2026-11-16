@@ -1,9 +1,14 @@
 Mortal living-world: read Examples/E_CLI_Mortal_Living_World.txt before authoring
 game_state/control/mortal_living_world_report.json for an already due or newly due
-Mortal cycle. A complete noSignificantChange assessment is legal with ordinary
+ordinary assessed Mortal cycle. A complete noSignificantChange assessment is legal with ordinary
 player-driven effects. game_state/world/mortal_living_world_history.json is private
 client-owned history; do not write it or list it in FilesModified. The worked
-updates-only ordinary DATA examples are not full feature acceptance.
+updates-only ordinary DATA examples are not full feature acceptance. Diagnosis supports
+noSignificantChange only; never mislabel autonomous changes to bypass refusal.
+Joint continuation preserves frozen input and never recreates a consumed report.
+Local QTE cannot consume a report or add another cycle; old backlog alone does not
+forbid a short local action crossing no additional cycle. Use the ordinary assessed
+route for additional cycle work, preserving the original scene and private history.
 
 CLI STEP MAIN — EXTENDED EXAMPLE FOR VALIDATION, NPC SCOPE, AND REPAIR LOOP
 

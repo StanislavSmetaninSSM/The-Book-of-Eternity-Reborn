@@ -63,7 +63,10 @@ public sealed class MortalLivingWorldDocumentationTests
         Assert.Contains("-Content @'", template, StringComparison.Ordinal);
         foreach (var token in new[] { "game_state/control/mortal_living_world_report.json", "noSignificantChange",
                      "game_state/world/mortal_living_world_history.json", "client-owned", "FilesModified", "newly due",
-                     "updates-only", "not full feature acceptance" })
+                     "updates-only", "not full feature acceptance", "For ordinary assessed Mortal turns",
+                     "Diagnosis supports noSignificantChange only", "do not relabel real",
+                     "do not recreate a consumed report", "Existing cycle backlog alone does not forbid",
+                     "Local QTE cannot consume a living-world report" })
             Assert.Contains(token, template, StringComparison.Ordinal);
         Assert.Contains("$script:CompactMortalLivingWorldTemplatePath = Join-Path", daemon, StringComparison.Ordinal);
         Assert.Contains("$script:GmCompactTemplateDirective += $script:MortalLivingWorldDirective", daemon, StringComparison.Ordinal);

@@ -5027,7 +5027,10 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal("Templates/MORTAL_LIVING_WORLD_TEMPLATE.md", livingWorldTemplate.GetProperty("relativePath").GetString());
             var livingWorldText = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_LIVING_WORLD_TEMPLATE.md"), Encoding.UTF8);
             foreach (var token in new[] { "mortal_living_world_report.json", "noSignificantChange", "newly due",
-                         "mortal_living_world_history.json", "client-owned", "FilesModified", "not full feature acceptance" })
+                         "mortal_living_world_history.json", "client-owned", "FilesModified", "not full feature acceptance",
+                         "For ordinary assessed Mortal turns", "Diagnosis supports noSignificantChange only",
+                         "do not recreate a consumed report", "Existing cycle backlog alone does not forbid",
+                         "Local QTE cannot consume a living-world report" })
                 Assert.Contains(token, livingWorldText, StringComparison.Ordinal);
             var livingWorldExample = Assert.Single(manifest.RootElement.GetProperty("docs").EnumerateArray(),
                 item => item.GetProperty("role").GetString() == "mortal_living_world_examples");

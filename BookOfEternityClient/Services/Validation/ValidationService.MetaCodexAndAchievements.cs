@@ -807,7 +807,10 @@ public partial class ValidationService
 
     private void ValidateVehicleData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (root.ValueKind == JsonValueKind.Object)
+        // Receipt completeness belongs to the canonical vehicle document, not to
+        // unrelated command objects routed through the shared meta validator.
+        if (root.ValueKind == JsonValueKind.Object &&
+            string.Equals(contextPrefix, StorageTransportMoveService.VehiclesPath, StringComparison.OrdinalIgnoreCase))
             issues.AddRange(MortalVehicleBirthReceiptState.ValidateLocal(JsonNode.Parse(root.GetRawText())!.AsObject()));
         if (root.TryGetProperty("UpdateVehicles", out var updates))
             ValidateVehicleArray(updates, $"{contextPrefix}.UpdateVehicles", issues, requireCanonicalStoredShape: false);

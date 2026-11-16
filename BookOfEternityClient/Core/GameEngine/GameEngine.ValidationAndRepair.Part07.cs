@@ -271,7 +271,8 @@ public partial class GameEngine
         IReadOnlyList<WoundRepairRetryObligation>? woundRepairRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null,
         IReadOnlyList<EffectRepairPacket>? effectRepairPackets = null,
-        bool boundedPendingResolutionResubmission = false)
+        bool boundedPendingResolutionResubmission = false,
+        IReadOnlyList<RepairResubmissionPathObligation>? livingWorldRequiredResubmissionPaths = null)
     {
         await DeleteValidationRepairFilesForSessionAsync(expectedSessionGeneration);
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
@@ -281,6 +282,7 @@ public partial class GameEngine
         var resourceRepairPackets = ResourceRepairPacketBuilder.Build(prioritizedErrors);
         var fullTurnResubmissionRequired =
             boundedPendingResolutionResubmission ||
+            livingWorldRequiredResubmissionPaths is { Count: > 0 } ||
             mortalLocationRetryObligations is { Count: > 0 } ||
             effectRetryObligations is { Count: > 0 } ||
             effectRepairPackets is { Count: > 0 } ||
@@ -350,6 +352,8 @@ public partial class GameEngine
                 .Concat(resourceRequiredResubmissionPaths ??
                         Array.Empty<RepairResubmissionPathObligation>())
                 .Concat(woundRequiredResubmissionPaths ??
+                        Array.Empty<RepairResubmissionPathObligation>())
+                .Concat(livingWorldRequiredResubmissionPaths ??
                         Array.Empty<RepairResubmissionPathObligation>())
                 .Select(static obligation => obligation.Path)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
