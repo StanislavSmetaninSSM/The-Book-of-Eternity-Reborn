@@ -109,6 +109,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                     """);
                 if (transportAuditKind is not null)
                 {
+                    // This independent clinic scenario begins with no transport; never copy
+                    // obsolete vehicle examples without current immutable birth evidence.
+                    await files.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath,
+                        MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
                     // Initialize derived current access before the real original snapshot.
                     // The copied sample predates #1515's mandatory effective projection.
                     var map = await ReadJsonObjectAsync(files, MortalLocationMaterializationContract.WorldMapPath);
