@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -13,7 +14,13 @@ internal static class MortalLivingWorldEvents
 
     /// <summary>Validates declared events against original and settled canonical documents, without reads or mutation.</summary>
     internal static IReadOnlyList<ValidationIssue> Validate(JsonObject report,
-        IReadOnlyDictionary<string, JsonObject> original, IReadOnlyDictionary<string, JsonObject> current)
+        IReadOnlyDictionary<string, JsonObject> original, IReadOnlyDictionary<string, JsonObject> current) =>
+        Validate(report, original, current, new HashSet<string>(StringComparer.Ordinal));
+
+    /// <summary>Absent paths are explicit detached source DATA, never authentication or permission.</summary>
+    internal static IReadOnlyList<ValidationIssue> Validate(JsonObject report,
+        IReadOnlyDictionary<string, JsonObject> original, IReadOnlyDictionary<string, JsonObject> current,
+        IReadOnlySet<string> originalAbsentPaths)
     {
         var issues = new List<ValidationIssue>();
         void Fail(string location, string detail, string code = "mortal_living_world_event_invalid") =>
@@ -53,7 +60,19 @@ internal static class MortalLivingWorldEvents
                     var target = ParseReference(effect["target"], false);
                     if (target is null || !targets.Contains(target)) { Fail(ep, "Effect target must be declared in the event targets."); continue; }
                     var field = Text(effect["field"]);
-                    if (Text(effect["operation"]) != "update" || field is null || !Fields(target.Kind).Contains(field, StringComparer.Ordinal))
+                    var operation = Text(effect["operation"]);
+                    if (field == "entity" && operation is "create" or "complete")
+                    {
+                        if (usedEffects.Any(key => key.StartsWith(target.Key + ":", StringComparison.Ordinal)))
+                            Fail(ep, "Whole-entity evidence overlaps another effect.", "mortal_living_world_effect_reused");
+                        usedEffects.Add(target.Key + ":entity");
+                        if (!ValidateLifecycle(target, operation, effect, report, original, current, originalAbsentPaths))
+                            Fail(ep, "Lifecycle evidence requires complete exact canonical objects and an authenticated absent-to-active or active-to-completed transition.", "mortal_living_world_lifecycle_invalid");
+                        continue;
+                    }
+                    if (usedEffects.Contains(target.Key + ":entity"))
+                        Fail(ep, "Field evidence overlaps whole-entity evidence.", "mortal_living_world_effect_reused");
+                    if (operation != "update" || field is null || !Fields(target.Kind).Contains(field, StringComparer.Ordinal))
                     { Fail(ep, "Only update of a supported semantic field is admitted."); continue; }
                     if (!usedEffects.Add(target.Key + ":" + field)) Fail(ep, "A canonical target/field cannot prove multiple effects.", "mortal_living_world_effect_reused");
                     var before = Resolve(original, target);
@@ -140,11 +159,81 @@ internal static class MortalLivingWorldEvents
         return issues;
     }
 
-    /// <summary>Explicit absent paths are detached source DATA supplied by the owner, not authentication.</summary>
-    internal static IReadOnlyList<ValidationIssue> Validate(JsonObject report,
+    private sealed record LifecycleTarget(bool Valid, JsonObject? Value, string? Collection);
+    private static LifecycleTarget ResolveLifecycle(IReadOnlyDictionary<string, JsonObject> docs, Reference target,
+        IReadOnlySet<string>? absent = null)
+    {
+        var path = target.Kind == "worldFlag" ? "game_state/world/world_flags.json" : "game_state/factions/faction_projects.json";
+        if (target.Kind is not ("worldFlag" or "factionProject")) return new(false, null, null);
+        if (!docs.TryGetValue(path, out var root)) return new(absent?.Contains(path) == true, null, null);
+        if (absent?.Contains(path) == true) return new(false, null, null);
+        var collections = target.Kind == "worldFlag" ? new[] { "worldStateFlags" } : new[] { "activeProjects", "completedProjects" };
+        var idKey = target.Kind == "worldFlag" ? "flagId" : "projectId";
+        JsonObject? found = null; string? source = null;
+        foreach (var collection in collections)
+        {
+            if (root[collection] is not JsonArray array) return new(false, null, null);
+            foreach (var node in array)
+            {
+                if (node is not JsonObject item || Text(item[idKey]) is not { } id) return new(false, null, null);
+                if (!string.Equals(id, target.Id, StringComparison.OrdinalIgnoreCase)) continue;
+                if (target.Kind == "factionProject")
+                {
+                    if (Text(item["factionId"]) is not { } owner) return new(false, null, null);
+                    if (!string.Equals(owner, target.Owner, StringComparison.OrdinalIgnoreCase)) continue;
+                    if (owner != target.Owner) return new(false, null, null);
+                }
+                if (id != target.Id || found is not null) return new(false, null, null);
+                found = item; source = collection;
+            }
+        }
+        return new(true, found, source);
+    }
+    private static bool ValidateLifecycle(Reference target, string operation, JsonObject effect, JsonObject report,
         IReadOnlyDictionary<string, JsonObject> original, IReadOnlyDictionary<string, JsonObject> current,
-        IReadOnlySet<string> originalAbsentPaths) =>
-        throw new NotImplementedException("#1516 lifecycle evidence RED scaffold");
+        IReadOnlySet<string> originalAbsentPaths)
+    {
+        var before = ResolveLifecycle(original, target, originalAbsentPaths);
+        var after = ResolveLifecycle(current, target);
+        if (!before.Valid || !after.Valid || after.Value is null ||
+            !Matches(effect["before"], before.Value is not null, before.Value) || !Matches(effect["after"], true, after.Value)) return false;
+        if (target.Kind == "worldFlag") return operation == "create" && before.Value is null && CompleteFlag(after.Value);
+        if (!current.TryGetValue("game_state/factions/faction_core.json", out var factions) || factions["factions"] is not JsonArray factionArray) return false;
+        var owners = factionArray.OfType<JsonObject>().Where(item => string.Equals(Text(item["factionId"]), target.Owner, StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (owners.Length != 1 || Text(owners[0]["factionId"]) != target.Owner) return false;
+        if (operation == "create") return before.Value is null && after.Collection == "activeProjects" && CompleteProject(after.Value, false);
+        return before.Collection == "activeProjects" && before.Value is not null && CompleteProject(before.Value, false) &&
+            after.Collection == "completedProjects" && CompleteProject(after.Value, true) &&
+            Nonnegative(after.Value["completionTurn"], out var completed) && Integer(report["turn"], out var turn) && completed == turn;
+    }
+    // Necessary completeness only. Existing domain validators and reducer ownership remain mandatory.
+    private static bool CompleteFlag(JsonObject flag)
+    {
+        var id = Text(flag["flagId"]);
+        if (id is null || !System.Text.RegularExpressions.Regex.IsMatch(id, "^[a-z0-9]+(?:_[a-z0-9]+)*$") ||
+            Text(flag["displayName"]) is null || Text(flag["description"]) is null || flag["value"] is not JsonValue value) return false;
+        return value.TryGetValue<bool>(out _) || value.TryGetValue<string>(out _) || value.TryGetValue<int>(out _);
+    }
+    private static bool CompleteProject(JsonObject project, bool completed)
+    {
+        if (Text(project["projectId"]) is null || Text(project["projectName"]) is null || Text(project["factionId"]) is null) return false;
+        if (completed) return Text(project["finalState"]) is { } final &&
+            (final.Equals("Completed", StringComparison.OrdinalIgnoreCase) || final.Equals("Abandoned", StringComparison.OrdinalIgnoreCase)) &&
+            Nonnegative(project["completionTurn"], out _);
+        if (Text(project["activeState"]) is not { } active || active.Equals("Completed", StringComparison.OrdinalIgnoreCase) ||
+            active.Equals("Abandoned", StringComparison.OrdinalIgnoreCase) || Text(project["description"]) is null) return false;
+        if (!new[] { "totalTimeCostMinutes", "timeSpentMinutes", "totalSteps", "currentStep" }.All(field => Nonnegative(project[field], out _))) return false;
+        return Costs(project["totalResourceCost"], "totalAmount") && Costs(project["resourcesSpent"], "amountSpent");
+    }
+    private static bool Costs(JsonNode? node, string amount) => node is JsonArray array && array.All(item =>
+        item is JsonObject obj && Text(obj["resourceName"]) is not null && obj[amount] is JsonValue value &&
+        value.GetValueKind() is JsonValueKind.Number or JsonValueKind.String);
+    private static bool Nonnegative(JsonNode? node, out long value)
+    {
+        var valid = Integer(node, out value) || node is JsonValue json && json.TryGetValue<string>(out var text) &&
+            long.TryParse(text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out value);
+        return valid && value >= 0 && value <= int.MaxValue;
+    }
 
     private static bool Shape(JsonObject obj, params string[] keys) => obj.Count == keys.Length && keys.All(obj.ContainsKey);
     private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) &&

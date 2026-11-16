@@ -200,3 +200,28 @@ projection proof, GM delivery/guards and full intended-diff selection. Determine
 actual successful reentry requirements before inventing a new registry: strict
 same-original refusal already prevents duplicate append, while failed-publication
 retry is demonstrated. No claim is made that a serialized receipt grants reuse.
+
+## Lifecycle and guidance RED, 2026-11-16
+
+At WIP `9918bc126f1ae187d883c2ad8dfd492ef73d46c1`, official Unit build
+completed with 0 errors and 96 warnings (83.61 s). The event category selected
+47 cases: 38 previously accepted cases passed; nine new lifecycle cases failed
+at the explicit four-argument lifecycle scaffold. The four authored-guidance
+cases failed for the missing template, guide reference and examples. These are
+bounded RED observations, not whole-feature failures or acceptance. Both runs
+completed cleanup without skipped or duplicate cases.
+
+The engine integration build then failed before execution because the new test
+omitted the `SharedJsonOptions` namespace. Adding the Configuration using fixes
+that setup issue; no engine behavioral RED is claimed yet. QTE clock/consumer
+scaffolds are separate and unexecuted.
+
+A concrete independent architecture consultation selected a common deterministic
+receipt representation over authenticated source tuple, complete report and
+assessed clock/window. Full settled-world serialization is not required by the
+receipt contract and is not the live safety gate. Actual final clock/effect
+validation, current source ownership and exact output-byte fences remain
+mandatory. Diagnosis/joint contributions must enter their genuine common plan
+before sealing, and final semantic checks must gate owner completion. A receipt
+alone never grants replay, acceptance or cross-lease authority. This design is
+not yet implemented or qualified.

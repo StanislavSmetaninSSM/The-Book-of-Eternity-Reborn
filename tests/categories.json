@@ -2,6 +2,122 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-receipt-data",
+      "responsibility": "#1516 deterministic source/report/window receipt DATA, immutable history validation and duplicate source refusal.",
+      "excludes": "Actual world effect validation, publication permission and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldReceiptTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldReceiptTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-diagnosis-publication",
+      "responsibility": "#1516 genuine diagnosis planned-clock admission, pre-seal receipt cohort, compensation and retry.",
+      "excludes": "Joint repair, QTE boundary and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.LivingWorldDiagnosis.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.LivingWorldDiagnosis_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-news-privacy",
+      "responsibility": "#1516 new private report/history excluded from common player news projection, existing exact accepted and hidden location controls retained.",
+      "excludes": "General #1540 privacy redesign, live browser qualification and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/ExplorerMortalWorldNewsCommandResultBuilderTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerMortalWorldNewsCommandResultBuilderTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-qte-clock-data",
+      "responsibility": "#1516 Strict QTE newly crossed cycle clock DATA boundary.",
+      "excludes": "Whole issue acceptance and other transaction owners.",
+      "changeHints": [],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldQteBoundaryTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-qte-boundary",
+      "responsibility": "#1516 Real offer, handoff and terminal refusal before mutation for unsupported meaningful-time QTE.",
+      "excludes": "Whole issue acceptance and other transaction owners.",
+      "changeHints": [],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteSceneServiceTests.LivingWorldQte_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-engine-rollback",
       "responsibility": "#1516 actual engine original rollback, private history repair obligations and strict no-duplicate same-original refusal.",
       "excludes": "Interactive critical-health repair dispatch and special owners remain separate.",

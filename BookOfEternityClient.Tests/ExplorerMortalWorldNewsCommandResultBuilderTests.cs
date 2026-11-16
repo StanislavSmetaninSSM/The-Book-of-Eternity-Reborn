@@ -162,6 +162,40 @@ public sealed class ExplorerMortalWorldNewsCommandResultBuilderTests : IDisposab
         Assert.DoesNotContain("LOC_NEWS_VISIBLE", payload, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("/новости_мира")]
+    [InlineData("/новости_мира событие public_living_world_news")]
+    public async Task LivingWorld_PrivateEvidenceDoesNotEnterCommonPlayerNewsProjection(string command)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", new JsonObject
+        {
+            ["worldEventsLog"] = new JsonArray(new JsonObject
+            {
+                ["eventId"] = "public_living_world_news", ["title"] = "Открытая новость",
+                ["description"] = "Мост снова открыт.", ["visibility"] = "public"
+            })
+        }.ToJsonString());
+        var before = JsonSerializer.Serialize(
+            await ExplorerMortalWorldNewsCommandResultBuilder.BuildAsync(command, _fs), PlayerJson);
+        Assert.Contains("Открытая новость", before, StringComparison.Ordinal);
+        // These client-private surfaces must not become implicit news inputs, even if
+        // their JSON resembles news or contains a matching public event identifier.
+        var privatePayload = new JsonObject
+        {
+            ["eventId"] = "public_living_world_news", ["title"] = "PRIVATE_LIVING_WORLD_CAUSE",
+            ["description"] = "PRIVATE_UNDISCOVERED_LOCATION", ["visibility"] = "public",
+            ["audit"] = "PRIVATE_AUTONOMOUS_AUDIT", ["snapshotToken"] = "PRIVATE_SOURCE_PROVENANCE"
+        }.ToJsonString();
+        await _fs.WriteFileAtomicAsync(MortalLivingWorldSource.ReportPath, privatePayload);
+        await _fs.WriteFileAtomicAsync(MortalLivingWorldSource.HistoryPath, privatePayload);
+        var after = JsonSerializer.Serialize(
+            await ExplorerMortalWorldNewsCommandResultBuilder.BuildAsync(command, _fs), PlayerJson);
+        Assert.Equal(before, after);
+        Assert.DoesNotContain("PRIVATE_", after, StringComparison.Ordinal);
+        Assert.Equal(privatePayload, await _fs.ReadFileAsync(MortalLivingWorldSource.ReportPath));
+        Assert.Equal(privatePayload, await _fs.ReadFileAsync(MortalLivingWorldSource.HistoryPath));
+    }
+
     private static JsonObject CreateLocationWithThreat(
         string locationId,
         string locationName,

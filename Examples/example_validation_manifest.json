@@ -2,6 +2,44 @@
   "version": 1,
   "effectMaterializationCoverage": [
 {
+  "contractId": "mortal_living_world_autonomous_update_v1",
+  "file": "E_CLI_Mortal_Living_World.txt",
+  "statePath": "game_state/control/mortal_living_world_report.json",
+  "responseSurface": "private candidate report; history is client-owned",
+  "realms": [
+    "Mortal World"
+  ],
+  "description": "Existing hidden worldFlag update with actual original/accepted semantic evidence.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "MortalLivingWorldDocumentationTests parses complete independently authored report and canonical document DATA through MortalLivingWorldAssessment.Validate and MortalLivingWorldEvents.Validate, with negative controls.",
+  "coverageLimit": "Updates-only source-local ordinary detached DATA, not full feature acceptance. No live authority, publication, rollback, creation/removal, QTE, treatment, Windows or UI acceptance is established by these examples.",
+  "requiredText": [
+    "mortal_living_world_autonomous_update_v1",
+    "noSignificantChange",
+    "mortal_living_world_history.json",
+    "not full feature acceptance"
+  ]
+},
+{
+  "contractId": "mortal_living_world_no_change_v1",
+  "file": "E_CLI_Mortal_Living_World.txt",
+  "statePath": "game_state/control/mortal_living_world_report.json",
+  "responseSurface": "private candidate report; history is client-owned",
+  "realms": [
+    "Mortal World"
+  ],
+  "description": "Complete five-scope assessment with no autonomous events and a separate player-driven delta.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "MortalLivingWorldDocumentationTests parses complete independently authored report and canonical document DATA through MortalLivingWorldAssessment.Validate and MortalLivingWorldEvents.Validate, with negative controls.",
+  "coverageLimit": "Updates-only source-local ordinary detached DATA, not full feature acceptance. No live authority, publication, rollback, creation/removal, QTE, treatment, Windows or UI acceptance is established by these examples.",
+  "requiredText": [
+    "mortal_living_world_no_change_v1",
+    "noSignificantChange",
+    "mortal_living_world_history.json",
+    "not full feature acceptance"
+  ]
+},
+{
   "contractId": "spiritual_existing_pressure_group_zero_v1",
   "file": "E_CLI_Afterlife_Turns.txt",
   "statePath": "complete ordinary last direct-root ordinal0 Chaos Sea player pressure/setback roots, complete retained N2 low and N3 near-cap ancestry",
