@@ -7,12 +7,12 @@ Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [ ] T002 Finalize contract data model and independent risk review of owner joins in data-model.md.
 
 ## US1 — Meaningful elapsed time and legitimate no-change
-- [ ] T003 [US1] Add failing minimal typed tests in BookOfEternityClient.Tests/MortalLivingWorldContractTests.cs for first time skip, already pending cycles, exact boundary and missing/stale/incomplete report.
-- [ ] T004 [US1] Implement pure input/report admission in BookOfEternityClient/Services/MortalLivingWorldContract.cs; validate bounded no-change assessment without invented deltas.
+- [x] T003 [US1] Add failing minimal typed tests in BookOfEternityClient.Tests/MortalLivingWorldAssessmentTests.cs for first time skip, already pending cycles, exact boundary and missing/stale/incomplete report.
+- [ ] T004 [US1] Implement pure input/report admission in BookOfEternityClient/Services/MortalLivingWorldAssessment.cs; validate bounded no-change assessment without invented deltas.
 - [ ] T005 [US1] Add category ownership and run official targeted RED/GREEN; record actual outcomes in plan.md.
 
 ## US2 — Coherent materialization
-- [ ] T006 [US2] Test and implement complete event rows, entity/target links, exact original/result effects and public news proof in MortalLivingWorldContract.cs and its typed tests.
+- [ ] T006 [US2] Test and implement complete event rows, entity/target links, exact original/result effects and public news proof in MortalLivingWorldEvents.cs and its typed tests (updates first, explicit creation/removal follow-up).
 - [ ] T007 [US2] Add authenticated source capture and identity resolution in Services/Validation/ValidationService.MortalLivingWorld.cs; real integration tests in BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.cs.
 - [ ] T008 [US2] Integrate ordinary raw gate and canonical effect/receipt publication into existing canonical refresh owner; update snapshot/absence inventories. Prove partial packages and tampered history fail.
 

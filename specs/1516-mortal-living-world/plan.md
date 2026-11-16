@@ -58,3 +58,19 @@ Branch `1516-mortal-living-world`, base `605ec71f1f9610d53f0c44f8a7ccf2c0860e3c6
 Read live issue, AGENTS, development/performance/testing policy, constitution and methodology skills. Independent read-only reconnaissance confirmed above gaps and bypass owners. No code/tests yet; no independent implementation review yet. All feature verification UNRUN. Next: publish these planning artifacts, then typed contract RED/GREEN.
 
 Environment restored from official sources: Linux x64, SDK 10.0.404, runtime 8.0.34, PowerShell 7.7.0. Toolchain under `/workspace/shared/toolchain`, source `/workspace/scratch/2f2a1767475c/boe1516`; source `env.sh` to set SDK and writable XDG/CLI caches. Initial PowerShell startup failed on read-only default cache; using explicit writable XDG directories resolves setup. Raw diagnostics stay outside repository, `/workspace/shared/diagnostics1516`. No hosted CI dispatched.
+
+### Causal DATA RED checkpoint
+
+`d911facf` was remotely verified and restored cleanly in a separate checkout
+before implementation. Official runner first completed 57/57 assessment FAIL,
+all with the explicit admission scaffold exception; its fail-first behavior
+left event tests unexecuted. A separate event category then completed 12/12 FAIL,
+all with the explicit event scaffold exception. Both had no duplicate cases,
+no timeout, complete owned cleanup. This is causal RED, not an acceptance claim.
+
+Environment-only earlier attempts selected zero tests: MSBuild Unix IPC denial,
+then missing ASP.NET Core 8 runtime. A fresh single-node build succeeded; official
+`-NoBuild` execution worked after installing ASP.NET 8.0.34. These failed setup
+attempts are not silently reclassified as red feature tests. No tests are skipped
+or budgets weakened. Current next block adds real signed-original capture tests;
+its source class is explicitly unimplemented until that block's causal RED.
