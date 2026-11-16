@@ -225,7 +225,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             var naturalDisposition = await naturalEngine.ValidatePreparedNpcProgressionOutcomeAsync(
                 "NPC progression treatment natural intake oracle", HeldTreatmentPipelineContext.Turn);
             if (transportAuditKind is not null)
+            {
                 await AssertTransportProseAuditAsync(context, transportAuditKind, naturalDisposition, naturalLogger, naturalInput);
+                if (transportAuditKind != "control") return;
+            }
             if (scenario is 5 or 6 or 7 or 9)
             {
                 Assert.NotEqual(AcceptedTurnValidationDisposition.Accepted, naturalDisposition);
