@@ -2,282 +2,143 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-storage-offscreen-birth-data",
-      "reason": "#1515 direct noncurrent storage birth: exact prepared draft, detached completion and carrier/metadata/source refusal.",
+      "category": "mortal-living-world-assessment",
+      "reason": "#1516 FR001-003: meaningful elapsed-time admission, exact source tuple and bounded legal no-change.",
       "contracts": [
-        "Exact prepared/completed offscreen drafts and real carrier coordinates preserve metadata, item/source binding and detached history.",
-        "Borrowed catalog DATA eliminates duplicate occurrence reads while route authority remains fresh; nested ancestry and canonical occurrence fingerprints are preserved.",
-        "Indexed raw diagnostics and retry preserve item ordinal, creationRef, known materializationId and the derived source coordinate/turn without reopening protected history."
+        "Existing cycle boundaries include pending backlog and newly due cycles; malformed, foreign and incomplete reports fail without invented events."
       ]
     },
     {
-      "category": "mortal-storage-offscreen-birth-publication",
-      "reason": "#1515 actual populated noncurrent storage birth, capacity/raw repair provenance, atomic publication/rollback, source drift and subsequent existing travel/move/access.",
+      "category": "mortal-living-world-event-evidence",
+      "reason": "#1516 FR004-005: complete declared event semantics and exact authenticated original/settled effect DATA.",
       "contracts": [
-        "The true noncurrent birth uses existing item/location authority, preserves exact source coordinates and common atomic publication."
+        "Typed identities, kind-aware semantic deltas, world-flag/project birth, active-to-completed project evidence, consequences and safe public news references remain coherent."
       ]
     },
     {
-      "category": "mortal-vehicle-canonical-display",
-      "reason": "FR8 canonical-only current transport display, shared browser result and actual CLI command paths.",
+      "category": "mortal-living-world-receipt-data",
+      "reason": "#1516 FR007: deterministic declaration/source-bound receipt and immutable prior-history DATA.",
       "contracts": [
-        "Pending commands/legacy aliases never appear as accepted vehicles; exact active selection and canonical availability are rendered without changing movement or resource policy."
+        "Exact session/request/turn/window/source binding rejects conflicting replay and malformed history; serialized hashes never grant publication rights."
       ]
     },
     {
-      "category": "mortal-vehicle-canonical-cli-display",
-      "reason": "Actual CLI transport prompt and panels, separate from shared result tests so causal failures do not cancel the other descriptor.",
+      "category": "mortal-living-world-original-source",
+      "reason": "#1516 FR001-002/006: genuine live original capture and fresh report/history/clock source admission.",
       "contracts": [
-        "Pending commands/legacy aliases never appear as accepted vehicles; exact active selection and canonical availability are rendered without changing movement or resource policy.",
-        "Existing web canonical type/availability translation and actual inventory move controls, extracted from broad categories without loss."
+        "Signed present/absent domain evidence, exact Mortal correlation and current original/lease checks remain mandatory before publication."
       ]
     },
     {
-      "category": "mortal-storage-current-normalization-control",
-      "reason": "FR5/FR6 source-bound location normalization requires finalized item admission while preserving existing parking and hydration.",
+      "category": "mortal-npc-skill-original-presence",
+      "reason": "#1516 extends the current Mortal observation family used by existing NPC skill original-source consumers.",
       "contracts": [
-        "The metadata-only entry point cannot bypass completed source-bound cargo admission; map/current/receipt/index assertions remain intact.",
-        "Existing destination hydration and source parking remain unchanged by the newborn-scene exception."
+        "Existing NPC skill present/absent observations and rollback membership remain valid; realm-specific forms do not gain unauthorized absence evidence."
       ]
     },
     {
-      "category": "mortal-storage-cargo-capacity-policy",
-      "reason": "New storage wrapper reuses shared capacity core over exact location/storage coordinates.",
+      "category": "mortal-living-world-ordinary-publication",
+      "reason": "#1516 FR005-007: real ordinary canonical owner, settled faction effect, report consumption and private receipt publication.",
       "contracts": [
-        "#1515 pure current-storage birth direct-stack/whole-volume capacity, exact real carrier coordinates and measurements through shared vehicle/storage core."
+        "The same owner retains exact before-images, refuses false or partial evidence, compensates reached late failure and permits one same-original retry."
       ]
     },
     {
-      "category": "mortal-storage-current-birth-capacity",
-      "reason": "#1515 FR5 current-scene populated storage capacity causal admission and publication boundary.",
+      "category": "mortal-living-world-lifecycle-publication",
+      "reason": "#1516 FR004-006: actual project birth/completion and world-flag creation through existing reducers.",
       "contracts": [
-        "Actual current-scene storage birth refuses slot/volume overflow; exact limit publishes existing item identities."
+        "Supported lifecycle evidence matches authenticated absence or active original plus complete settled canonical state; false evidence restores original state."
       ]
     },
     {
-      "category": "mortal-storage-birth-history",
-      "reason": "FR5/FR6 current and offscreen storage evidence extends existing immutable location child history.",
+      "category": "mortal-living-world-engine-rollback",
+      "reason": "#1516 FR006-007: actual engine critical-failure rollback, repair dispatch and full original-turn resubmission.",
       "contracts": [
-        "Exact source-bound child history, active/retired historical validation and signed-original index continuity; later live contents never re-evaluate birth evidence."
+        "Client-owned history is never a GM repair target; omitted reports remain refused and genuine resubmission reaches publication without duplicate history."
       ]
     },
     {
-      "category": "mortal-location-bounded-repair-policy",
-      "reason": "FR4/FR9 exact indexed storage repair and identity-bound retry; protected originals and history remain fail-closed.",
+      "category": "mortal-living-world-diagnosis-publication",
+      "reason": "#1516 FR001/006-007: genuine diagnosis planned-T1 no-change contribution joins its owner before seal.",
       "contracts": [
-        "Exact raw storage coordinates and item/source retry bindings; existing protected identity, parent, envelope and route boundaries."
+        "Direct and retained completion re-admit current source/output DATA under the actual owner; costed completion, drift, compensation and retry preserve one receipt."
       ]
     },
     {
-      "category": "mortal-existing-location-empty-storage-birth",
-      "reason": "FR4/FR6 preserve accepted empty additions and historical identity exclusion across the populated-route extension.",
+      "category": "mortal-living-world-qte-clock-data",
+      "reason": "#1516 FR001/006: local QTE cannot introduce an additional unassessed world/faction cycle.",
       "contracts": [
-        "Empty storagesToAdd birth binds exact pre-turn locations, preserves the original receipt and records one child transition without creating a contents carrier."
+        "Pure numeric clock/schedule guards distinguish old backlog from newly crossed cycles and batch physical DATA reads without retaining publication permission."
       ]
     },
     {
-      "category": "mortal-existing-storage-birth-publication",
-      "reason": "FR6 common metadata/history/access publication, repeated-birth refusal and reached rollback.",
+      "category": "mortal-living-world-qte-boundary",
+      "reason": "#1516 FR006: actual offer, Begin handoff and selected terminal guard unsupported assessment work before mutation.",
       "contracts": [
-        "Accepted empty additions preserve explicit access and publish through the existing atomic writer; rejected or repeated birth and late failure preserve tracked state."
+        "A supplied report or newly crossed cycle is refused before durable continuation sealing; valid short local actions and canonical-versus-response vehicle validation remain distinct."
       ]
     },
     {
-      "category": "mortal-storage-birth-guidance",
-      "reason": "FR9 empty/current/offscreen examples, exact source grammar, manifest inventory and actual daemon delivery.",
+      "category": "mortal-living-world-news-privacy",
+      "reason": "#1516 FR008: new private report/history stay outside the common console/browser public-news projection.",
       "contracts": [
-        "Complete restricted-owner and populated storage examples match the supported raw contracts; source/manifest guards and actual daemon rendering remain distinct from runtime qualification.",
-        "Vehicle cargo daemon delivery and shared example-manifest inventory also cover the fully subsumed mortal-vehicle-cargo-guidance selectors."
+        "Explicitly visible news and accepted discovered references remain available; private evidence and undiscovered references do not become player news."
       ]
     },
     {
-      "category": "mortal-vehicle-birth-receipt-policy",
-      "reason": "FR3 immutable complete historical creation evidence and resource agreement without live-cargo revalidation.",
+      "category": "mortal-living-world-guidance",
+      "reason": "#1516 FR009: autonomous and legal no-change worked reports plus synchronized GM source/template guards.",
       "contracts": [
-        "Detached full vehicle birth receipt semantics, historical cargo graph/configuration, resource initialization agreement, continuity and malformed-input refusal."
+        "Examples validate through the actual detached contracts and document existing reducer authority, owner limitations and client-owned history."
       ]
     },
     {
-      "category": "mortal-vehicle-birth-receipt-publication",
-      "reason": "FR3 actual source-bound receipt publication, replay/removal/consumer continuity and rollback.",
+      "category": "mortal-living-world-canonical-item-held-lease",
+      "reason": "#1516 impacted joint canonical item validation must propagate its genuine held write lease through original/catalog reads.",
       "contracts": [
-        "Full resolved vehicle creation evidence binds accepted source turn and health initialization in the common transaction; later legitimate changes retain exact historical facts."
+        "The current bound entry point succeeds without nested lock acquisition and rejects a foreign physical owner lease; no broad item-policy change is intended."
       ]
     },
     {
-      "category": "mortal-vehicle-active-publication",
-      "reason": "FR2/FR3 canonical active selection and existing vehicle/health common publication.",
+      "category": "mortal-living-world-delivery",
+      "reason": "#1516 FR009: actual daemon context-pack template/example delivery and shared validation-manifest inventory.",
       "contracts": [
-        "Exact same-turn selection, removal/replacement and coherent final availability preserve existing vehicle/resource identities and reached rollback."
+        "The real rendered living-world template and copied worked example are present; manifest inventory remains synchronized without selecting unrelated storage/vehicle guards."
       ]
     },
     {
-      "category": "mortal-vehicle-birth-contract",
-      "reason": "FR1 complete first-birth shape, capacity and explicit owner/controller/access semantics.",
+      "category": "mortal-living-world-joint-seeded-storage-access",
+      "reason": "#1516 new living-world joint fixture must begin with an accepted canonical storage-access projection before issuing its genuine original.",
       "contracts": [
-        "Full birth structural semantics and exact current single-player identity; shared allocation fixture compatibility and the vehicle cargo source/example guard remain covered."
+        "The fixture derives and immediately validates access from the accepted map, then proves exact map/access bytes in the signed original; no post-original patch or production-validation weakening supplies authority."
       ]
     },
     {
-      "category": "mortal-vehicle-birth-early-shape",
-      "reason": "Shared enum, action, resource and location shape helpers were extracted for historical evidence; retain actual raw and partial-update consumers.",
+      "category": "mortal-living-world-joint-admission",
+      "reason": "#1516 FR001-006: genuine joint missing/window/effect refusals before accepted history can survive.",
       "contracts": [
-        "#1515 current full shape and existing partial-update compatibility."
+        "Missing required assessment, wrong interval and false canonical effects cannot authorize common publication or retain private receipt history."
       ]
     },
     {
-      "category": "mortal-vehicle-birth-allocation-interop",
-      "reason": "Two existing shared allocation fixtures now retain explicit current birthReceipts arrays; verify vehicle identity capture interoperability only.",
+      "category": "mortal-living-world-joint-publication",
+      "reason": "#1516 FR006-007: genuine joint preseal common-cohort contribution and both durable progression phases.",
       "contracts": [
-        "#1515 shared vehicle allocation stability; no spiritual combat or afterlife publication qualification."
+        "A legal no-change receipt and consumed report belong to the sealed common owner; unapplied/applied recovery preserves one history entry and short no-report publication remains valid."
       ]
     },
     {
-      "category": "mortal-vehicle-cargo-capacity",
-      "reason": "Historical receipt cargo graph admission and evidence reconstruction must retain actual measured-stack publication and unproved-load refusal.",
+      "category": "mortal-living-world-joint-rollback",
+      "reason": "#1516 FR006-007: reached joint member failure and post-commit receipt drift compensate the entire common cohort.",
       "contracts": [
-        "#1515 first-birth measured cargo and immutable historical configuration through actual publication."
+        "Exact bytes/absence are restored before proof minting; an actual owning retry publishes one receipt without duplicate history."
       ]
     },
     {
-      "category": "mortal-cargo-capacity-policy",
-      "reason": "Shared capacity arithmetic is extracted without changing vehicle API or persisted evidence.",
+      "category": "mortal-living-world-joint-recovery",
+      "reason": "#1516 FR007: fresh completed joint recovery binds accepted report declaration to exact living-world history.",
       "contracts": [
-        "Vehicle/storage exact whole-stack arithmetic and configuration freshness."
-      ]
-    },
-    {
-      "category": "mortal-storage-birth-publication",
-      "reason": "Current-scene storage drafts affect existing empty new-location storage publication and rollback.",
-      "contracts": [
-        "Empty current-scene storage birth must finalize through the same existing writer without a cargo-only shortcut."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-active-selection",
-      "reason": "FR2 pure exact active selection, removal and replacement through the existing owner composer.",
-      "contracts": [
-        "Exact existing and same-turn vehicle identity, coherent Active availability, direct canonical mutation refusal and deterministic command reduction."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-admission",
-      "reason": "FR1 complete vehicle birth reaches the actual raw MetaMisc validator.",
-      "contracts": [
-        "Missing cargo, ownership, controller and explicit access semantics are refused before materialization; prose-only or partial births are not promoted."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-preparation",
-      "reason": "FR3 ordinary vehicle identity preparation remains bound to the exact pending-turn source.",
-      "contracts": [
-        "Repeated admission retains one prepared allocation; changed source, manifest or identity inputs cannot inherit earlier preparation."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-explicit-access-policy",
-      "reason": "FR1/FR7 selected vehicles require explicit true access; ownership never overrides denial.",
-      "contracts": [
-        "False, missing or malformed access remains denied; restricted Parked birth is distinct from usable Active selection."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-explicit-access",
-      "reason": "FR1/FR7 existing vehicle read/write consumers freshly enforce explicit access.",
-      "contracts": [
-        "Move-target listing, fresh write checks and actual deposit/retrieve preserve identity and refuse denied targets without mutation."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-actor-reference-policy",
-      "reason": "FR1 exact Faction/NPC birth references reuse accepted Mortal actor composition.",
-      "contracts": [
-        "Unknown, confusable or ambiguous actors fail; legitimate mirrors, current identity and complete selected-actor evidence retain existing authority."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-actor-references",
-      "reason": "FR1/FR3 actual admission binds vehicle owner/controller to accepted actors with fresh dependencies.",
-      "contracts": [
-        "Empty and cargo births reject unknown Faction/NPC references; dependency drift prevents publication."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-faction-rename",
-      "reason": "FR1 same-turn faction rename determines the exact effective vehicle owner name.",
-      "contracts": [
-        "The admitted new faction name is accepted and stale pre-update owner names are refused."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-npc-item-interop",
-      "reason": "FR1/FR3 same-turn NPC creation and item cargo interoperate with the vehicle controller.",
-      "contracts": [
-        "The selected new NPC and new_npc_inventory creationRef cargo resolve through their existing accepted item/actor authorities before vehicle publication."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-location-bindings",
-      "reason": "FR1 pure vehicle birth location binding uses exact accepted or same-turn location identity.",
-      "contracts": [
-        "Canonical and allocated same-turn location selectors resolve without mutating raw input; missing, alias and ambiguous locations fail."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-location-publication",
-      "reason": "FR1/FR3 actual parked births preserve exact location binding and fresh map fences.",
-      "contracts": [
-        "Empty/cargo birth publishes the resolved location, rejects unknown targets and refuses map dependency drift before publication."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-cargo-item-interop",
-      "reason": "FR5 shared item intake/projection changes preserve neighboring existing creation routes.",
-      "contracts": [
-        "Player acquisition, same-turn parent-container placement and current-location storage placement retain existing item authority; unchanged raw envelope/route controls remain included."
-      ]
-    },
-    {
-      "category": "mortal-vehicle-birth-cargo",
-      "reason": "FR3/FR5 original same-turn cargo sealing and source/index-drift fences remain intact after shared intake changes.",
-      "contracts": [
-        "Exact prepared vehicle carrier and health accompany permanent cargo sealing; foreign references and malformed inventories fail without mutation.",
-        "Item-index drift after item or resource admission prevents later composition/publication."
-      ]
-    },
-    {
-      "category": "mortal-storage-birth-player-access",
-      "reason": "FR4 storage Player/Shared owners and recipients resolve to the exact current single-player identity.",
-      "contracts": [
-        "Unknown recipients fail; explicit restricted access stays restricted even for the owner; Faction shape remains separate from Faction authority."
-      ]
-    },
-    {
-      "category": "mortal-storage-effective-access-policy",
-      "reason": "FR4 canonical effective storage access is derived only from accepted metadata.",
-      "contracts": [
-        "Exact location/storage coordinates, metadata copying/removal, pending-command preservation and protected signed-original continuity."
-      ]
-    },
-    {
-      "category": "mortal-storage-effective-access-publication",
-      "reason": "FR4/FR6 real publication materializes effective access with accepted storage metadata.",
-      "contracts": [
-        "Projection publication preserves pending commands as commands, refuses client-owned mutation and does not infer rights from ownership or prose."
-      ]
-    },
-    {
-      "category": "mortal-storage-effective-access-interop",
-      "reason": "FR7/FR8 accepted storage overview/detail and existing movement consume canonical effective state.",
-      "contracts": [
-        "Visible accepted names and exact composite selectors exclude unaccepted/hidden entries; current/offscreen movement and reached rollback preserve physical occurrence and history."
-      ]
-    },
-    {
-      "category": "mortal-storage-access-existing-controls",
-      "reason": "FR4 preserve exact Faction ownership and synchronized access updates in existing storage consumers.",
-      "contracts": [
-        "Same-turn Faction authority remains accepted; unknown owners and owner/authorized-user updates without synchronized explicit access fail."
+        "Individually rehashed different assessment history is refused; restoring the accepted history permits the genuine unapplied phase. No coordinated two-witness rewrite protection is claimed."
       ]
     }
   ]

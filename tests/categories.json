@@ -58,14 +58,14 @@
     {
       "id": "mortal-living-world-joint-representative",
       "responsibility": "#1516 single genuine joint valid no-change preseal receipt and both durable progression phases, with measured fixture cost before a broader packet.",
-      "excludes": "Other seven joint cases, fault/retry coverage, diagnosis and whole issue acceptance; do not select together with joint-owner.",
+      "excludes": "Other seven joint cases, fault/retry coverage, diagnosis and whole issue acceptance; do not select together with joint-publication.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
       ],
       "related": [
         {
-          "id": "mortal-living-world-joint-owner",
-          "when": "Select the full owner category only after representative cost qualification; never select both together."
+          "id": "mortal-living-world-joint-publication",
+          "when": "Use the representative only for isolated runtime diagnosis before the publication bucket; never select both together."
         }
       ],
       "requirements": {
@@ -85,25 +85,158 @@
       ]
     },
     {
-      "id": "mortal-living-world-joint-owner",
-      "responsibility": "#1516 genuine joint preseal assessment, same-cohort receipt, unapplied/applied recovery, fault rollback/retry and short control.",
-      "excludes": "Ordinary publication, QTE-only and DATA-only acceptance; whole issue acceptance.",
+      "id": "mortal-living-world-joint-seeded-storage-access",
+      "responsibility": "#1516 cheap living-world joint fixture baseline: derive and validate canonical storage access from the accepted map before original capture, then prove exact map/access bytes are covered by the genuine signed original.",
+      "excludes": "Production storage-access policy changes, post-original fixture repair, common joint publication/recovery acceptance, old joint fixtures and whole issue acceptance.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select real joint completion controls after this pre-original fixture baseline gate passes when living-world fixture initialization changes."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": false,
         "ciRunner": "ubuntu-24.04"
       },
-      "timeoutMinutes": 5,
+      "timeoutMinutes": 3,
       "expectedSeconds": null,
       "selectors": [
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_*"
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_SeededStorageAccessIsCanonicalAndSignedBeforeOriginal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-admission",
+      "responsibility": "#1516 genuine joint preseal missing-report and wrong-window refusal plus false-effect refusal without retained history.",
+      "excludes": "Valid completion, phase recovery, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select valid and short publication controls when joint assessment admission or common cohort composition changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_DueMissingReportRefusesBeforePublicationTake",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_WrongWindowRefusesBeforeCommonPublication",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_WrongEffectCannotCompleteOrRetainHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-publication",
+      "responsibility": "#1516 genuine joint same-cohort no-change receipt, unapplied/applied progression phases and existing short no-report publication control.",
+      "excludes": "Admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance; do not select together with joint-representative.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-rollback",
+          "when": "Select reached compensation and retry controls when common publication membership or final readback changes."
+        },
+        {
+          "id": "mortal-living-world-joint-recovery",
+          "when": "Select fresh completed-history refusal when marker declaration or progression-phase recovery changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-rollback",
+      "responsibility": "#1516 reached common-cohort member failure and post-commit receipt drift restore exact before-images/absence; genuine owning retry appends once.",
+      "excludes": "Admission-only and successful phase controls, fresh history tamper recovery, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select valid/short completion controls when rollback or retry changes common publication or receipt consumption."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_PostCommitReceiptDriftFailsExactFenceAndRestoresWholeCohort",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ReachedCommonMemberFailureRestoresReceiptAndRetriesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-recovery",
+      "responsibility": "#1516 fresh genuine joint phase recovery rejects individually rehashed different assessment history and accepts restored exact accepted history.",
+      "excludes": "Coordinated marker-plus-history rewrite resistance, admission-only cases, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select both durable progression phases when completed marker/history reconstruction changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_FreshPhaseRecoveryRejectsIndividuallyRehashedDifferentAssessment"
           ]
         }
       ]
@@ -254,10 +387,12 @@
     },
     {
       "id": "mortal-living-world-engine-rollback",
-      "responsibility": "#1516 actual engine original rollback, private history repair obligations and strict no-duplicate same-original refusal.",
-      "excludes": "Interactive critical-health repair dispatch and special owners remain separate.",
+      "responsibility": "#1516 actual engine original rollback, critical-failure repair dispatch, GM resubmission obligations and repaired publication without duplicate history.",
+      "excludes": "Joint, diagnosis and local-QTE owners; live external GM/provider acceptance and whole issue acceptance.",
       "changeHints": [
-        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.cs"
+        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.CriticalRepair.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.Part02.cs"
       ],
       "related": [],
       "requirements": {
@@ -283,7 +418,12 @@
       "changeHints": [
         "BookOfEternityClient.Tests/MortalLivingWorldDocumentationTests.cs"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "mortal-living-world-delivery",
+          "when": "Select actual daemon context-pack delivery and shared manifest inventory when GM templates, worked examples or manifest entries change."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": false,
@@ -296,6 +436,39 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalLivingWorldDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-delivery",
+      "responsibility": "#1516 actual full-daemon living-world template/example delivery and shared worked-example validation-manifest inventory.",
+      "excludes": "Unrelated storage/vehicle guidance guards, runtime effect/publication qualification, external GM/provider or Windows acceptance and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "Examples/E_CLI_Mortal_Living_World.txt",
+        "Examples/example_validation_manifest.json",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-guidance",
+          "when": "Select detached authored-report/example validation and source guards when the delivered living-world contract changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
           ]
         }
       ]

@@ -448,3 +448,29 @@ APIs, without a new cache, lock bypass, catch/retry or weaker physical guard.
 A narrow category selects the existing actual-held-lease positive test and a
 new foreign-lease rejection control before the next genuine joint representative.
 Joint completion remains unqualified until that run succeeds.
+
+## Held-lease proof and next reached joint refusal, 2026-11-16
+
+At 83f1aa75 the fresh Integration build passed (0 errors, 167 warnings,
+110.51 seconds). The canonical item actual-held-lease positive and foreign-lease
+negative both passed, 2/2 with complete cleanup. The genuine joint representative
+then reached the next validation boundary and failed in 132.160 seconds, without
+a timeout: accepted storage access entries did not match accepted location metadata.
+The previously observed nested lock error is absent in this run. This is not a
+joint success or a comparable speedup claim. Inspect the fixture's canonical
+map/access and authenticated original before another expensive run; preserve the
+production projection guard. The entire eight-case joint contract remains pending.
+
+Independent source inspection confirmed the next refusal is a deficient test
+baseline: the shared component seed provides accepted map metadata but omits its
+client-owned storage-access projection. The correction is confined to the eight
+new living-world joint tests: a pre-original wrapper derives the existing
+projection, writes it under the actual lease and validates readback. Older joint
+fixtures and production guards remain unchanged. A cheap ninth test proves the
+real original captures exact map/access bytes before another expensive joint run.
+That new test and the corrected joint path are UNRUN at this checkpoint.
+
+Final intended selection replaces the prior #1515 selection; semantic joint
+buckets replace the oversized eight-case category. Representative debug gates
+are excluded from that selection. Protective budgets are not measured forecasts.
+Official final discovery/PlanOnly and runtime joint qualification remain pending.
