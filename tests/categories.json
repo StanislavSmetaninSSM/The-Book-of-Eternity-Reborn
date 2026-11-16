@@ -3,10 +3,11 @@
   "categories": [
     {
       "id": "mortal-storage-offscreen-birth-data",
-      "responsibility": "#1515 direct noncurrent storage birth: exact prepared draft, detached completion and carrier/metadata/source refusal.",
+      "responsibility": "#1515 direct noncurrent storage birth: prepared/completed DATA, exact route and repair identities, empty measurement/alternate route refusals, borrowed-catalog read counts and fresh authority checks.",
       "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
       "changeHints": [
-        "BookOfEternityClient.Tests/MortalOffscreenStorageBirthTests.cs"
+        "BookOfEternityClient.Tests/MortalOffscreenStorageBirthTests.cs",
+        "BookOfEternityClient.Tests/MortalOffscreenStorageRouteDataTests.cs"
       ],
       "related": [],
       "requirements": {
@@ -20,7 +21,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalOffscreenStorageBirthTests.*"
+            "BookOfEternityClient.Tests.MortalOffscreenStorageBirthTests.*",
+            "BookOfEternityClient.Tests.MortalOffscreenStorageRouteDataTests.*"
           ]
         }
       ]

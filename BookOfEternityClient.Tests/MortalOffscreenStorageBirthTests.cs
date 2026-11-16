@@ -121,7 +121,7 @@ public sealed class MortalOffscreenStorageBirthTests
         Assert.Single(Assert.Single(plan.FinalIdentityIndex["locationEntries"]!.AsArray().OfType<JsonObject>(),
             e => e["locationId"]!.GetValue<string>() == Target)["transitions"]!.AsArray().OfType<JsonObject>());
 
-    private static MortalLocationAcceptedTurnInput Input()
+    internal static MortalLocationAcceptedTurnInput Input()
     {
         var a = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_offscreen_birth_a", "Current scene", x: 0);
         var b = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(Target, "Remote storehouse", x: 1);

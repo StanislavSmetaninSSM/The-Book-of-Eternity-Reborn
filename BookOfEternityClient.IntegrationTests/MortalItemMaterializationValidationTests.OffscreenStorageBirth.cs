@@ -46,6 +46,10 @@ public sealed partial class MortalItemMaterializationValidationTests
                 Assert.Equal("location_storage", entry["currentCarrier"]!["kind"]!.GetValue<string>());
                 Assert.Equal(B, entry["currentCarrier"]!["ownerId"]!.GetValue<string>());
                 Assert.Equal(Storage, entry["currentCarrier"]!["containerId"]!.GetValue<string>());
+                var item = items.OfType<JsonObject>().Single(i => i["itemId"]!.GetValue<string>() == entry["itemId"]!.GetValue<string>());
+                var expectedParents = item["contentsPath"] as JsonArray ?? new JsonArray();
+                Assert.True(JsonNode.DeepEquals(expectedParents, entry["currentCarrier"]!["containerPath"]),
+                    "The identity index must retain the admitted item's exact resolved container ancestry.");
             });
             var current = (await context.ReadJsonAsync(StorageTransportMoveService.CurrentLocationPath))!.AsObject();
             Assert.Equal(A, current["locationId"]!.GetValue<string>());

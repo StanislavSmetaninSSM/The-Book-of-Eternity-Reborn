@@ -8,6 +8,22 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen independent source findings and regression tests, 2026-11-16
+
+Independent Astra High review of the intermediate source identified four concrete
+Important defects: raw item identity is not bound across storage repair; nonempty
+measurements on empty additions are silently stripped; mapped nested destination
+loses containment; alternate item routes bypass the new storage-source trigger.
+None is accepted or described as fixed. Twelve new cheap cases exercise borrowed
+catalog read counts, fresh route authority, conflicting mappings, restricted raw
+repair paths, six identity/source retry variants with positive source correction,
+and the empty-measurement/alternate-route refusals. Together with the existing five
+prepared/completion cases the cheap category has seventeen cases. Existing measured
+publication additionally asserts nested indexed containment; its nine cases remain.
+One existing helper and the diagnostic mapper become internal typed test seams;
+there is no corrective production behavior change at this checkpoint. Matching
+builds and causal evidence precede the coherent fixes. Guidance remains pending.
+
 ## Offscreen intermediate implementation WIP, 2026-11-16
 
 The validated command now retains a detached raw storage draft and projects cargo

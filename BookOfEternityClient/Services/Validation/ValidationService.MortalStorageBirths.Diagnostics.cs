@@ -6,7 +6,7 @@ public partial class ValidationService
 {
     // Diagnostics alone are rebased. Occurrence paths, allocation proofs and routes
     // keep their effective canonical carrier paths throughout admission/publication.
-    private static void RemapOffscreenStorageBirthDiagnostics(List<ValidationIssue> issues,
+    internal static void RemapOffscreenStorageBirthDiagnostics(List<ValidationIssue> issues,
         MortalLocationAcceptedTurnPlan plan, MortalItemCarrierCatalog catalog)
     {
         var births = plan.StorageBirthDrafts.Where(d => d.OperationRef.StartsWith("worldMapUpdates.storagesToAdd[", StringComparison.Ordinal)).ToArray();
