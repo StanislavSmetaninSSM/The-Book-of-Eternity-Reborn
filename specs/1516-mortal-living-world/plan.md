@@ -554,3 +554,30 @@ It does not assert that restoration has a present-to-absent image: the injected
 fault already removed history. Keep the RetryableHeld and complete before-image
 restoration assertions; they were not reached in the failed test and remain
 unqualified until the corrected rollback packet passes. Production is unchanged.
+
+## Real ordinary-engine journey follow-up, 2026-11-16 — planned, not yet verified
+
+The user explicitly requested a simulation of the issue's Mortal events rather
+than more assertions of completion. Re-reading the live issue confirms meaningful
+time, autonomous NPC/faction actions, locations, projects, consequences and public
+news must remain coherent; an explicit bounded quiet audit is also legal.
+Earlier publication helpers use sparse state. The prior real-engine repair probe
+cancels after unrelated whole-state validation and does not prove a completed
+player turn. This is an evidence gap, not yet a demonstrated production defect.
+
+Use a copied complete current example session with valid canonical actors and
+faction/project/location state. Drive actual ProcessPlayerTurn with deterministic
+GM-authored outputs correlated to each real turn_request. Assert final story
+append, incremented turn, exact canonical effects and client-owned receipt, then
+reload before the next interval. Exercise scout/threat, faction/project progress,
+project completion with public news, and a legitimate quiet interval. Include a
+contradictory effect and same-request repair without permitting false acceptance.
+No real model/provider quality or NLP completeness claim follows from scripted GM
+output. No afterlife, UI redesign, legacy player migration or hosted CI is added.
+
+Ruling: complete existing canonical entities may be seeded at initial setup to
+focus on autonomous lifecycle, not unrelated birth workflows. Subsequent turns
+must use real existing reducers and authority; no resetting receipts, suppressing
+validators, resealing authoritative state or reconstructing the world per turn.
+New test-only evidence may already pass existing code; do not manufacture RED.
+A genuine production defect requires an observed focused reproducer before fix.

@@ -27,3 +27,13 @@ Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reb
 - [x] T014 Reconcile tests/selection.json and catalog discovery with intended diff; independent final review, selected checks and fresh remote recovery.
 
 Dependencies: T003–T005 precede T006–T008; T009–T011 require actual publication owner. T012 can run alongside runtime work after contract is fixed. No test helper alone satisfies T007–T011. Do not merge or close issue in this assignment.
+
+## User-requested real Mortal journey follow-up, 2026-11-16
+
+The checked tasks above describe bounded contract proofs. They are not evidence
+that an ordinary multi-turn player journey completed through GameEngine.
+
+- [ ] T015 Construct a complete current Mortal baseline and drive actual `ProcessPlayerTurn` through accepted story append and turn advance, not cancellation after validation.
+- [ ] T016 Simulate connected scout/threat, council/project, completion/news and bounded quiet-time outcomes in one retained world; assert actual canonical state, current request receipts and reload continuity after each turn.
+- [ ] T017 Submit one contradictory cross-surface package, observe genuine refusal without false accepted story/history, repair the same request through the supported route and verify acceptance.
+- [ ] T018 Run the narrowly owned official category, review fresh evidence independently, save branch and report limitations without merging or closing.
