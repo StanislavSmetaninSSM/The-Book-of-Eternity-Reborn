@@ -7,15 +7,34 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    private async Task MortalVehicleReceiptValidation_OnlyTargetsCanonicalVehicleRoot(string kind, bool expectedReceiptError)
+    {
+        await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath,
+            kind == "invalid_vehicle" ? "{\"vehicles\":[]}" : MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
+        var validator = new ValidationService(_fs,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+        var issues = kind == "response"
+            ? validator.ValidateResponse(System.Text.Json.JsonSerializer.SerializeToElement(new { response = "You wait quietly." }))
+            : await validator.ValidateGameStateAsync(GameStateValidationPhase.MetaMiscStateFiles);
+        var receipts = issues.Where(i => i.Code == "resource_owner_vehicle_receipt_invalid").ToArray();
+        if (expectedReceiptError) Assert.NotEmpty(receipts);
+        else Assert.True(receipts.Length == 0, DescribeValidationIssues(receipts));
+    }
+
     // #1515 closure audit: real accepted-turn owner, not only narrative validation.
     // Three independent roots retain the existing genuine treatment baseline;
     // the only changed input is a specific transport/storage assertion in prose.
     [Theory]
+    [InlineData("receipt_response")]
+    [InlineData("receipt_valid_vehicle")]
+    [InlineData("receipt_invalid_vehicle")]
     [InlineData("control")]
     [InlineData("vehicle")]
     [InlineData("storage")]
     public Task MortalTransportProseAudit_RequiresCanonicalEffectBeforeAcceptance(string kind) =>
-        RunNpcProgressionAndTreatmentSkillSharedRootAsync(4, kind);
+        kind.StartsWith("receipt_", StringComparison.Ordinal)
+            ? MortalVehicleReceiptValidation_OnlyTargetsCanonicalVehicleRoot(kind[8..], kind == "receipt_invalid_vehicle")
+            : RunNpcProgressionAndTreatmentSkillSharedRootAsync(4, kind);
 
     private static string TransportProseAuditText(string kind)
     {
