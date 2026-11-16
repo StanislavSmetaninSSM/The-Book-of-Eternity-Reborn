@@ -74,3 +74,21 @@ then missing ASP.NET Core 8 runtime. A fresh single-node build succeeded; offici
 attempts are not silently reclassified as red feature tests. No tests are skipped
 or budgets weakened. Current next block adds real signed-original capture tests;
 its source class is explicitly unimplemented until that block's causal RED.
+
+### DATA GREEN and independent review
+
+Official selected execution at remote `ebcee988` completed 69/69 PASS (57
+assessment + 12 event cases), no skips/duplicates, complete cleanup, wall
+12.053 seconds. The fresh independent Sol XHigh review nevertheless found three
+Important coverage defects: canonical activity label/narrative-only edits could
+count as effects; location storage/topology used section names rather than
+canonical fields; referenced known-news rows lacked a safe public projection
+check. All are accepted for regression-first correction. This checkpoint is
+therefore not accepted for integration merely because its initial tests pass.
+
+The next real-original category completed 8/8 causal RED, each failing exactly
+at the explicit source scaffold after actual live preparation/signing. Fresh
+integration build had 0 errors and 124 warnings; runner wall 12.240 seconds,
+no skips/duplicates and complete cleanup. Source capture implementation now
+replaces that scaffold and adds a current Mortal observation family; its GREEN
+and impacted NPC-original-presence control checks remain pending.

@@ -63,7 +63,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         });
         var manifest = await ReadManifestAsync(context);
         var paths = manifest["originalPathPresenceV1"]!.AsObject().Select(pair => pair.Key).Order(StringComparer.Ordinal);
-        Assert.Equal((observesSkills ? PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths :
+        Assert.Equal((observesSkills ? PendingTurnSnapshotPathPresenceV1.MortalLivingWorldLogicalPaths :
             PendingTurnSnapshotPathPresenceV1.LogicalPaths).Order(StringComparer.Ordinal), paths);
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var read = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,

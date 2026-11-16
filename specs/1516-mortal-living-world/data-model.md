@@ -23,7 +23,7 @@ A complete private event has exact unique `eventId`, `fromMinute`, `toMinute`,
 `actors`, `targets`, `cause`, `effects`, `consequences`, `knowledge`.
 References are typed exact `kind`/`id` plus `ownerId` for composite identities.
 NPC activity is a canonical NPC slot, not an invented activity identity.
-Faction projects are identified by faction and project together; threats by
+Location links use exact linkId in world_map.links. Faction projects are identified by faction and project together; threats by
 location and threat together. An actor may instead name the declared
 `worldCycle` or `factionCycle` system. Descriptions never allocate identities.
 
@@ -31,7 +31,7 @@ Cause contains `summary` and typed `references`. Each effect contains unique
 `effectId`, `target`, `operation`, `field`, `before`, `after`. Before and after
 use `{present:false}` or `{present:true,value:...}`; absence differs from null.
 Effects must match authenticated original and settled canonical values. A
-closed semantic field catalog prevents arbitrary path writes and rejects
+closed kind/field-aware semantic projection prevents arbitrary path writes and rejects
 cosmetic-only renaming or reorder-only changes as sole mechanical proof.
 The same target/field cannot justify multiple events. Consequences name actual
 effect IDs. News creation cannot prove its own mechanical consequence.
@@ -48,7 +48,7 @@ unless the existing domain owner supplies an exact authenticated mapping.
 - NPC: `npcs/npc_core.json`, exact `NPCId` in `UpdateNPCs`/`NPCsInScene`;
   duplicate projections must agree.
 - Faction: `factions/faction_core.json`, `factions[].factionId`.
-- Location: `world/world_map.json`, `locations[].locationId`; current location
+- Location: `world/world_map.json`, `locations[].locationId`; storage updates target actual `locationStorages`, not a section-name property. Existing topology updates target `links[].linkId`; current location
   is a synchronized projection, not separate authority.
 - Project: `factions/faction_projects.json`, active/completed projects with
   exact faction/project identity.
@@ -72,7 +72,11 @@ conflicting reuse of a source or event identity fails closed.
 
 Knowledge declares `player` as `hidden` or `known` and exact `newsReferences`.
 Hidden events have no public references. Known event references must resolve
-into actual safe public news. Private targets/causes/provenance are never
+into actual safe public news. A declared referenced projection has exactly
+`eventId`, `title`, `description`, `visibility:"public"`, plus optional
+`locationId` resolving to a uniquely discovered/visited canonical location.
+Unknown fields, structured private evidence and hidden/rumored location
+references are rejected; prose truth/secrecy is not inferred. Private targets/causes/provenance are never
 copied into the legacy news object that UI currently renders field-by-field.
 This does not claim a general NLP privacy audit or complete #1540 remediation.
 
