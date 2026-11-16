@@ -71,3 +71,10 @@ Next: independently reviewed proposal for mandatory private, exact structured
 transport/storage declarations, analogous to NPC skill claims. This is not yet
 implemented. Honest empty-report completeness cannot be guaranteed without an
 independent semantic audit; no universal prose understanding is claimed.
+
+Final retained scope-control run on 8ef820ea: 7 cases, 5 PASS / the same 2 causal
+prose FAIL, 65.715 seconds. Added malformed raw `UpdateVehicles` still rejects
+its command shape without demanding client-owned receipts; an actual unrelated
+soul-state document also stays free of vehicle receipt requirements. Run identity:
+20261116-080326-599-101-b6f0ab867be24999942c35f93f38bad8-categories.
+See prose-coupling-options.md for the unresolved semantic boundary and alternatives.
