@@ -112,6 +112,19 @@ public sealed partial class MortalItemMaterializationValidationTests
                 issue.FilePath.Contains("worldMapUpdates.storagesToAdd[0].storage.contents[0]", StringComparison.Ordinal));
             Assert.DoesNotContain(issues, issue => issue.Code == "mortal_item_materialization_route_authority_mismatch" &&
                 issue.FilePath.StartsWith(MortalLocationStorageContentsState.StatePath, StringComparison.Ordinal));
+            var packet = Assert.Single(MortalItemRepairPacketBuilder.Build(issues));
+            Assert.Contains(MapPath, packet.TargetFiles);
+            Assert.DoesNotContain(MortalLocationStorageContentsState.StatePath, packet.TargetFiles);
+            var locationPackets = MortalLocationRepairPacketBuilder.Build(issues);
+            var obligation = MortalLocationRepairRetryPolicy.Capture(locationPackets);
+            Assert.Single(obligation);
+            Assert.True(MortalLocationRepairRetryPolicy.HasExactResubmission(obligation, null, raw));
+            var changedParent = raw.DeepClone().AsObject();
+            changedParent["worldMapUpdates"]!["storagesToAdd"]![0]!["targetLocationId"] = A;
+            Assert.False(MortalLocationRepairRetryPolicy.HasExactResubmission(obligation, null, changedParent));
+            var changedChild = raw.DeepClone().AsObject();
+            changedChild["worldMapUpdates"]!["storagesToAdd"]![0]!["storage"]!["storageId"] = "other_storage";
+            Assert.False(MortalLocationRepairRetryPolicy.HasExactResubmission(obligation, null, changedChild));
         }
 
         [Fact]

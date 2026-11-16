@@ -8,6 +8,21 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Offscreen intermediate implementation WIP, 2026-11-16
+
+The validated command now retains a detached raw storage draft and projects cargo
+into the existing current/offscreen carrier after ordinary reconciliation. Route
+admission borrows invocation-local occurrence DATA while retaining separate fresh
+source authority reads; exact validated birth drafts supply storage coordinates.
+Completion resolves current/offscreen item-phase contents using existing capacity,
+history and common publication fences. Diagnostics remap separately to raw command
+fields; canonical occurrence fingerprints are unchanged. The raw world-map repair
+surface is narrowly indexed and uses the existing storage-addition retry binding,
+not a global authorable-map permission. An independent legal A→B fixture link is
+added for the planned subsequent travel. SOURCE ONLY: UNCOMPILED/UNRUN, not accepted.
+Read-count evidence and synchronized guidance/example manifest remain in progress;
+no further runtime claim is made at this intermediate checkpoint.
+
 ## Offscreen initial causal RED, 2026-11-16
 
 At saved test source da48831703915a4a4eb97705089d91131c7d2ad2, fresh builds

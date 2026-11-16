@@ -92,12 +92,15 @@ public partial class ValidationService
                 writeLease,
                 currentInputs != null ? spiritualAllocations?.Items : null);
         }
+        MortalLocationAcceptedTurnPlan? storageBirthPlan = null;
+        MortalItemCarrierCatalog? storageBirthCatalog = null;
         try
         {
             var locationPlanningIssues = new List<ValidationIssue>();
             var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
                 locationPlanningIssues,
                 writeLease, spiritualAllocations?.Locations, currentInputs);
+            storageBirthPlan = locationPlan;
             var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
             var previous = snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
                            snapshotLookup.Manifest is not null
@@ -134,6 +137,7 @@ public partial class ValidationService
                 ? null
                 : locationPlan,
                 currentInputs, PrepareVehicleBirths);
+            storageBirthCatalog = current.Catalog;
             MortalItemRouteAuthorityCatalog? routeAuthorities = null;
             MortalItemAcceptedTransferCatalog? transferCatalog = null;
             MortalItemIdentityParseResult? currentIndex = null;
@@ -173,7 +177,8 @@ public partial class ValidationService
                         issue.Severity == IssueSeverity.Error)
                         ? null
                 : locationPlan?.AcceptedStorageCoordinates,
-                    currentInputs: currentInputs, vehicleBirthIds: preparedVehicleBirths?.Ids);
+                    currentInputs: currentInputs, vehicleBirthIds: preparedVehicleBirths?.Ids,
+                    suppliedCatalog: current.Catalog, storageBirthDrafts: locationPlan?.StorageBirthDrafts);
                 AddRouteAuthorityIssues(routeAuthorities, issues);
 
                 currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
@@ -347,6 +352,8 @@ public partial class ValidationService
         }
         finally
         {
+            if (storageBirthPlan is not null && storageBirthCatalog is not null)
+                RemapOffscreenStorageBirthDiagnostics(issues, storageBirthPlan, storageBirthCatalog);
             if (retainedTreatment is not null && !keepRetainedTreatment)
             {
                 MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(

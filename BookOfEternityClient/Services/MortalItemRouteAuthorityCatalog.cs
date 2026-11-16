@@ -96,6 +96,9 @@ internal sealed class MortalItemRouteAuthorityCatalog
     /// <param name="vehicleBirthIds">
     /// Optional ordinary prepared birth reference/ID DATA for explicit vehicle cargo scanning.
     /// </param>
+    /// <param name="suppliedCatalog">Read-only occurrence DATA borrowed from this same raw-intake invocation.
+    /// No reference is retained; fresh route/source reads and later publication fences remain required.</param>
+    /// <param name="storageBirthDrafts">Exact storage source coordinates derived by the validated location plan.</param>
     /// <returns>
     /// Route authorities and issues derived from the selected current carriers and physical pre-turn data.
     /// </returns>
@@ -104,20 +107,14 @@ internal sealed class MortalItemRouteAuthorityCatalog
         FileSystemManager.CanonicalWriteLease? writeLease = null,
         IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null,
         SpiritualOriginalDraftInputs? currentInputs = null,
-        IReadOnlyDictionary<string, string>? vehicleBirthIds = null)
+        IReadOnlyDictionary<string, string>? vehicleBirthIds = null,
+        MortalItemCarrierCatalog? suppliedCatalog = null,
+        IReadOnlyList<MortalLocationStorageBirthDraft>? storageBirthDrafts = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
 
-        var player = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, PlayerInventoryPath));
         var npcCore = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, NpcCorePath));
         var npcCommands = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, NpcCommandsPath));
-        var currentLocation = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, CurrentLocationPath));
-        var offscreenLocationStorage = ParseObject(await ReadCurrentAsync(
-            fs,
-            writeLease,
-            currentInputs,
-            OffscreenLocationStoragePath));
-        var vehicles = ParseVehicles(await ReadCurrentAsync(fs, writeLease, currentInputs, VehiclesPath));
         var turnRequest = ParseObject(await ReadAsync(fs, writeLease, TurnRequestPath));
         var questHistory = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, QuestHistoryPath));
         var snapshotManifest = ParseObject(await ReadAsync(
@@ -145,15 +142,18 @@ internal sealed class MortalItemRouteAuthorityCatalog
             snapshotManifest,
             NpcTradeRequestState.PendingRequestPath));
 
-        var carrierCatalog = MortalItemCarrierCatalog.Build(
-            new MortalItemCarrierCatalogInput(
-                player,
-                npcCore,
-                npcCommands,
-                currentLocation,
-                vehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                offscreenLocationStorage, vehicleBirthIds));
+        var carrierCatalog = suppliedCatalog;
+        if (carrierCatalog is null)
+        {
+            // These four reads existed solely to rebuild the occurrence catalog.
+            // All route-authority reads above remain fresh even on the borrowed DATA path.
+            var player = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, PlayerInventoryPath));
+            var currentLocation = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, CurrentLocationPath));
+            var offscreenLocationStorage = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, OffscreenLocationStoragePath));
+            var vehicles = ParseVehicles(await ReadCurrentAsync(fs, writeLease, currentInputs, VehiclesPath));
+            carrierCatalog = MortalItemCarrierCatalog.Build(new(player, npcCore, npcCommands, currentLocation,
+                vehicles, new Dictionary<string, JsonObject>(StringComparer.Ordinal), offscreenLocationStorage, vehicleBirthIds));
+        }
         var builder = new Builder(
             turnRequest,
             npcCore,
@@ -163,7 +163,11 @@ internal sealed class MortalItemRouteAuthorityCatalog
             questHistory,
             baselineNpcCore,
             baselineLocation,
-            acceptedStorageCoordinates, vehicleBirthIds);
+            acceptedStorageCoordinates, vehicleBirthIds, storageBirthDrafts);
+        if (carrierCatalog.Issues.Count != 0)
+            foreach (var issue in carrierCatalog.Issues)
+                builder.Issues.Add(new(issue.Code, issue.Path, issue.Message, "unambiguous supplied occurrence DATA",
+                    issue.Identity ?? "invalid", issue.Path));
         foreach (var occurrence in carrierCatalog.Occurrences)
         {
             if (IsRawCreation(occurrence.Item))
@@ -317,7 +321,8 @@ internal sealed class MortalItemRouteAuthorityCatalog
             JsonObject? baselineNpcCore,
             JsonObject? baselineLocation,
             IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
-            IReadOnlyDictionary<string, string>? vehicleBirthIds)
+            IReadOnlyDictionary<string, string>? vehicleBirthIds,
+            IReadOnlyList<MortalLocationStorageBirthDraft>? storageBirthDrafts)
         {
             _vehicleBirthRefsById = (vehicleBirthIds ?? new Dictionary<string, string>())
                 .ToDictionary(pair => pair.Value, pair => pair.Key, StringComparer.Ordinal);
@@ -341,7 +346,7 @@ internal sealed class MortalItemRouteAuthorityCatalog
             _questAuthorityByCreationRef = BuildQuestAuthorities(questHistory);
             _baselineStorageAuthorities = BuildStorageAuthorities(baselineLocation);
             _sameTurnStorageAuthoritiesByCarrier = BuildSameTurnStorageAuthorities(
-                acceptedStorageCoordinates);
+                acceptedStorageCoordinates, storageBirthDrafts, Issues);
         }
 
         internal Dictionary<string, MortalItemRouteAuthority> ByCreationRef { get; } =
@@ -601,14 +606,14 @@ internal sealed class MortalItemRouteAuthorityCatalog
 
         private static Dictionary<string, SameTurnStorageAuthority>
             BuildSameTurnStorageAuthorities(
-                IReadOnlyList<MortalLocationStorageCoordinate>? coordinates)
+                IReadOnlyList<MortalLocationStorageCoordinate>? coordinates,
+                IReadOnlyList<MortalLocationStorageBirthDraft>? drafts,
+                List<MortalItemRouteAuthorityIssue> issues)
         {
             var result = new Dictionary<string, SameTurnStorageAuthority>(
                 StringComparer.Ordinal);
-            if (coordinates == null)
-                return result;
-
-            foreach (var coordinate in coordinates)
+            var conflicts = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var coordinate in coordinates ?? Array.Empty<MortalLocationStorageCoordinate>())
             {
                 if (coordinate.InitialLocationId == null)
                     continue;
@@ -621,13 +626,34 @@ internal sealed class MortalItemRouteAuthorityCatalog
                         coordinate.LocationId,
                         coordinate.StorageId,
                         Array.Empty<string>()));
-                result.TryAdd(authorityId, authority);
-                result.TryAdd(
-                    $"{coordinate.LocationId}:{coordinate.StorageId}",
-                    authority);
+                Add(authorityId, authority);
+                Add($"{coordinate.LocationId}:{coordinate.StorageId}", authority);
             }
-
+            // Only explicit validated birth drafts authorize new permanent coordinates.
+            // A null initialId, a final-map storage or an occurrence alone never does.
+            foreach (var draft in drafts ?? Array.Empty<MortalLocationStorageBirthDraft>())
+            {
+                var authority = new SameTurnStorageAuthority(draft.ItemSourceAuthorityId,
+                    new("location_storage", draft.LocationId, draft.StorageId, Array.Empty<string>()));
+                Add(draft.ItemSourceAuthorityId, authority);
+                Add(draft.LocationId + ":" + draft.StorageId, authority);
+            }
             return result;
+
+            void Add(string key, SameTurnStorageAuthority authority)
+            {
+                if (conflicts.Contains(key)) return;
+                if (result.TryGetValue(key, out var previous) &&
+                    (previous.AuthorityId != authority.AuthorityId || previous.Destination.Kind != authority.Destination.Kind ||
+                     previous.Destination.OwnerId != authority.Destination.OwnerId || previous.Destination.ContainerId != authority.Destination.ContainerId))
+                {
+                    result.Remove(key); conflicts.Add(key);
+                    issues.Add(new("mortal_item_materialization_route_authority_conflict", "worldMapUpdates.storagesToAdd",
+                        "Conflicting exact storage source/destination mappings are not authority.", "one exact mapping", key,
+                        MortalLocationMaterializationContract.WorldMapPath));
+                }
+                else result.TryAdd(key, authority);
+            }
         }
 
         private sealed record SameTurnStorageAuthority(

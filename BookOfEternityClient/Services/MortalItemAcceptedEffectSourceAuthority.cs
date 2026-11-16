@@ -250,6 +250,9 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
     /// <summary>Detaches one frozen carrier for bounded consumers without cloning unrelated projection roots.</summary>
     internal JsonNode? CloneCurrentProjectionRoot(string path) => _currentRoots.GetValueOrDefault(path)?.DeepClone();
 
+    /// <summary>Requests fresh storage dependency checks; this DATA query grants no storage or publication authority.</summary>
+    internal bool HasStoragePlacementRoutes => _routesByCreationRef.Values.Any(route => route.Route == "storage_placement");
+
     internal IReadOnlyDictionary<string, JsonNode?> CloneCurrentProjectionRoots() =>
         CloneRoots(_currentRoots);
 

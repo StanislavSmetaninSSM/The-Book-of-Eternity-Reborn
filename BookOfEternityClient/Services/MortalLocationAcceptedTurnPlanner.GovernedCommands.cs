@@ -30,7 +30,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
     private static readonly HashSet<string> StorageAdditionMetadataFields = new(StringComparer.Ordinal)
     {
         "storageId", "name", "description", "image_prompt", "capacity", "volume",
-        "owner", "authorizedUsers", "hasFullAccess", "contents"
+        "owner", "authorizedUsers", "hasFullAccess", "contents", "cargoMeasurements"
     };
 
     private static readonly HashSet<string> StorageUpdateFields = new(StringComparer.Ordinal)
@@ -193,9 +193,14 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             if (operation["storage"] is not JsonObject storage)
             { issues.Add(InvalidLifecycleShape(context + ".storage", "mortal_location_storage_addition_invalid", operation["storage"])); continue; }
             ValidateExactOperationFields(storage, StorageAdditionMetadataFields, context + ".storage", "mortal_location_storage_addition_invalid", issues);
-            if (storage["contents"] is not JsonArray { Count: 0 })
+            if (storage["contents"] is not JsonArray contents || contents.Any(node => node is not JsonObject item ||
+                    !CanonicalStateNormalizer.IsRawMortalItemCreation(item) || ReadExactString(item, "creationRef") is null ||
+                    item["itemId"] is not null || item["existedId"] is not null))
                 issues.Add(Issue(context + ".storage.contents", "mortal_location_storage_addition_contents_invalid",
-                    "This empty storage birth requires explicit contents: []; nonempty cargo and measurement are not admitted by this route.", "empty array", storage["contents"]?.ToJsonString() ?? "missing"));
+                    "Storage birth requires an explicit empty array or fresh item declarations; canonical items require an independently authorized transfer.",
+                    "fresh complete raw items or empty array", storage["contents"]?.ToJsonString() ?? "missing"));
+            if (storage.ContainsKey("cargoMeasurements") && storage["cargoMeasurements"] is not JsonArray)
+                issues.Add(InvalidLifecycleShape(context + ".storage.cargoMeasurements", "mortal_location_storage_addition_invalid", storage["cargoMeasurements"]));
             using var document = JsonDocument.Parse(storage.ToJsonString());
             issues.AddRange(MortalLocationStorageMetadataContract.Validate(document.RootElement, context + ".storage"));
             issues.AddRange(ValidateCanonicalStorageOwner(storage, context + ".storage", factionAuthority, allowTemporaryFactionOwners: true));
@@ -209,8 +214,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 issues.Add(Issue(context + ".storage.storageId", "mortal_location_storage_transition_conflict",
                     "A storage birth cannot be combined with update or removal at the same coordinate.", "one birth only", storageId));
             if (issues.Count != issueStart) continue;
-            var metadata = storage.DeepClone().AsObject(); metadata.Remove("contents");
-            result.Add(new StorageAdditionCommand(locationId, storageId, metadata, context));
+            var metadata = MortalLocationStorageBirthEvidence.Metadata(storage);
+            result.Add(new StorageAdditionCommand(locationId, storageId, metadata, storage.DeepClone().AsObject(), context));
         }
         return result;
     }
@@ -981,7 +986,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         GovernedLocationCommands commands,
         IReadOnlyDictionary<string, string> locationIdsByInitialId,
         int turn,
-        MortalLocationIdentityFactory identityFactory)
+        MortalLocationIdentityFactory identityFactory,
+        List<MortalLocationStorageBirthDraft> storageBirthDrafts)
     {
         foreach (var command in commands.StorageAdds)
         {
@@ -990,6 +996,13 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             location["locationStorages"]!.AsArray().Add(metadata);
             AppendLocationChildTransition(indexEntries, command.LocationId, "storage_addition", command.StorageId,
                 new JsonObject { ["state"] = "absent" }, metadata, command.Context, turn, identityFactory);
+            if (command.RawStorage["contents"] is JsonArray { Count: > 0 })
+            {
+                var transition = indexEntries.OfType<JsonObject>().Single(e => ReadExactString(e, "locationId") == command.LocationId)
+                    ["transitions"]!.AsArray().Last()!.AsObject();
+                storageBirthDrafts.Add(new(command.LocationId, command.StorageId, ReadExactString(transition, "transitionId")!,
+                    command.Context, command.RawStorage, turn, command.Context + ".storage", command.LocationId + ":" + command.StorageId));
+            }
         }
 
         foreach (var command in commands.StorageUpdates)
@@ -1156,6 +1169,42 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             transition);
     }
 
+    /// <summary>Places only admitted new-storage raw cargo after travel reconciliation.
+    /// Mutates owned after-images, never canonical input, item identity or publication authority.</summary>
+    private static void ProjectAddedStorageBirthContents(IReadOnlyList<StorageAdditionCommand> additions,
+        JsonObject? current, JsonObject offscreen, List<ValidationIssue> issues)
+    {
+        if (!additions.Any(a => a.RawStorage["contents"] is JsonArray { Count: > 0 })) return;
+        var entries = offscreen["entries"]!.AsArray();
+        var occupied = entries.OfType<JsonObject>().Select(entry =>
+            new MortalLocationStorageKey(ReadExactString(entry, "locationId")!, ReadExactString(entry, "storageId")!)).ToHashSet();
+        foreach (var addition in additions)
+        {
+            if (addition.RawStorage["contents"] is not JsonArray { Count: > 0 } contents) continue;
+            if (ReadExactString(current, "locationId") == addition.LocationId)
+            {
+                var matches = current?["locationStorages"] is JsonArray storages
+                    ? storages.OfType<JsonObject>().Where(s => ReadExactString(s, "storageId") == addition.StorageId).ToArray()
+                    : Array.Empty<JsonObject>();
+                if (matches.Length == 1 && matches[0]["contents"] is not JsonArray { Count: > 0 })
+                { matches[0]["contents"] = contents.DeepClone(); continue; }
+            }
+            else if (occupied.Add(new(addition.LocationId, addition.StorageId)))
+            {
+                entries.Add(new JsonObject { ["locationId"] = addition.LocationId, ["storageId"] = addition.StorageId,
+                    ["contents"] = contents.DeepClone() });
+                continue;
+            }
+            issues.Add(Issue(addition.Context + ".storage.contents", "mortal_location_storage_birth_projection_conflict",
+                "New cargo requires exactly one empty governed destination coordinate.", "fresh exact carrier", "conflicting carrier"));
+        }
+        // Keep the existing canonical ordering without rebuilding/cloning every retained item.
+        var ordered = entries.OfType<JsonObject>().OrderBy(e => ReadExactString(e, "locationId"), StringComparer.Ordinal)
+            .ThenBy(e => ReadExactString(e, "storageId"), StringComparer.Ordinal).ToArray();
+        entries.Clear();
+        foreach (var entry in ordered) entries.Add(entry);
+    }
+
     private sealed record GovernedLocationCommands(
         IReadOnlyList<StorageAdditionCommand> StorageAdds,
         IReadOnlyList<StorageUpdateCommand> StorageUpdates,
@@ -1170,7 +1219,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                                      ThreatRemovals.Count > 0 || ThreatCompletions.Count > 0;
     }
 
-    private sealed record StorageAdditionCommand(string LocationId, string StorageId, JsonObject Metadata, string Context);
+    private sealed record StorageAdditionCommand(string LocationId, string StorageId, JsonObject Metadata, JsonObject RawStorage, string Context);
 
     private sealed record StorageUpdateCommand(
         string LocationId,

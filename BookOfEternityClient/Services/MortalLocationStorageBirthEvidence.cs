@@ -8,16 +8,22 @@ internal sealed class MortalLocationStorageBirthDraft
 {
     private readonly JsonObject _storage;
     internal MortalLocationStorageBirthDraft(string locationId, string storageId, string transitionId,
-        string operationRef, JsonObject rawStorage, int sourceTurn)
+        string operationRef, JsonObject rawStorage, int sourceTurn,
+        string? rawStoragePath = null, string? itemSourceAuthorityId = null)
     { LocationId = locationId; StorageId = storageId; TransitionId = transitionId; OperationRef = operationRef;
       _storage = rawStorage.DeepClone().AsObject();
       if (!_storage.ContainsKey("contents")) _storage["contents"] = new JsonArray();
-      SourceTurn = sourceTurn; }
+      SourceTurn = sourceTurn; RawStoragePath = rawStoragePath ?? operationRef;
+      ItemSourceAuthorityId = itemSourceAuthorityId ?? locationId + ":" + storageId; }
     internal string LocationId { get; }
     internal string StorageId { get; }
     internal string TransitionId { get; }
     internal string OperationRef { get; }
     internal int SourceTurn { get; }
+    /// <summary>Exact GM-authored storage path for diagnostics, never an occurrence fingerprint path.</summary>
+    internal string RawStoragePath { get; }
+    /// <summary>Exact item source coordinate derived from the validated location command, never catalog presence.</summary>
+    internal string ItemSourceAuthorityId { get; }
     /// <summary>Returns detached input; callers cannot mutate a cached plan's declaration.</summary>
     internal JsonObject CloneRawStorage() => _storage.DeepClone().AsObject();
 }
@@ -85,6 +91,19 @@ internal static partial class MortalLocationStorageBirthEvidence
         ValidationService.ValidateCanonicalContainerPaths(catalog, issues);
         if (catalog.Issues.Count != 0 || issues.Count != 0) return Invalid("one admitted exact container graph");
         var index = prepared.FinalIdentityIndex.DeepClone().AsObject();
+        var current = itemPhase.ItemPhaseAfterImages.GetValueOrDefault(StorageTransportMoveService.CurrentLocationPath) as JsonObject;
+        var offscreen = prepared.StorageBirthDrafts.Any(d => d.LocationId != Text(current?["locationId"]))
+            ? MortalLocationStorageContentsState.Parse(
+                itemPhase.ItemPhaseAfterImages.GetValueOrDefault(MortalLocationStorageContentsState.StatePath) as JsonObject)
+            : null;
+        if (offscreen?.Issues.Count > 0) return Invalid("one valid projected offscreen contents root");
+        var metadataByCoordinate = new Dictionary<MortalLocationStorageKey, JsonObject>();
+        if (prepared.FinalWorldMap["locations"] is not JsonArray locations) return Invalid("the same accepted map");
+        foreach (var location in locations.OfType<JsonObject>())
+            if (Text(location["locationId"]) is { } locationId && location["locationStorages"] is JsonArray storages)
+                foreach (var storage in storages.OfType<JsonObject>())
+                    if (Text(storage["storageId"]) is not { } storageId || !metadataByCoordinate.TryAdd(new(locationId, storageId), storage))
+                        return Invalid("unique exact prepared storage metadata coordinates");
         var seen = new HashSet<(string, string)>();
         foreach (var draft in prepared.StorageBirthDrafts)
         {
@@ -97,15 +116,24 @@ internal static partial class MortalLocationStorageBirthEvidence
             var metadata = Metadata(raw);
             if (!MortalItemMaterializationContract.ImmutableEvidenceEquals(metadata, after))
                 return Invalid("exact originally planned storage metadata");
-            if (itemPhase.ItemPhaseAfterImages.GetValueOrDefault(StorageTransportMoveService.CurrentLocationPath) is not JsonObject current ||
-                Text(current["locationId"]) != draft.LocationId || current["locationStorages"] is not JsonArray storages ||
-                storages.OfType<JsonObject>().Count(s => Text(s["storageId"]) == draft.StorageId) != 1)
-                return Invalid("the same permanent current-scene storage in admitted item projection");
-            var projected = storages.OfType<JsonObject>().Single(s => Text(s["storageId"]) == draft.StorageId);
-            if (!MortalItemMaterializationContract.ImmutableEvidenceEquals(metadata, Metadata(projected)))
-                return Invalid("unchanged birth limits and metadata in admitted item projection");
+            if (!metadataByCoordinate.TryGetValue(new(draft.LocationId, draft.StorageId), out var mapStorage) ||
+                !MortalItemMaterializationContract.ImmutableEvidenceEquals(metadata, Metadata(mapStorage)))
+                return Invalid("unchanged exact birth metadata in the same prepared accepted map");
+            if (Text(current?["locationId"]) == draft.LocationId)
+            {
+                var matches = current?["locationStorages"] is JsonArray storages
+                    ? storages.OfType<JsonObject>().Where(s => Text(s["storageId"]) == draft.StorageId).ToArray()
+                    : Array.Empty<JsonObject>();
+                if (matches.Length != 1 || !MortalItemMaterializationContract.ImmutableEvidenceEquals(metadata, Metadata(matches[0])))
+                    return Invalid("the exact current projected storage and its unchanged metadata");
+            }
+            else
+            {
+                if (offscreen is null || !offscreen.Entries.ContainsKey(new(draft.LocationId, draft.StorageId)))
+                    return Invalid("the exact noncurrent projected storage contents coordinate");
+            }
             var capacity = MortalCargoBirthCapacity.ValidateStorage(draft.LocationId, draft.StorageId, raw, catalog,
-                creationIds, source.Turn, draft.OperationRef);
+                creationIds, source.Turn, draft.RawStoragePath);
             issues.AddRange(capacity.Issues);
             if (!capacity.IsValid) return new(null, issues.ToArray());
             var evidence = capacity.Evidence!;

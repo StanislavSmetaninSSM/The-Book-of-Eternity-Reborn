@@ -383,7 +383,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                     var transition = finalLocationEntries.OfType<JsonObject>().Single(e => ReadExactString(e, "locationId") == locationIdsByInitialId[initialId])
                         ["transitions"]!.AsArray().Last()!.AsObject();
                     storageBirthDrafts.Add(new(locationIdsByInitialId[initialId], storageId,
-                        ReadExactString(transition, "transitionId")!, context, storage, input.Turn));
+                        ReadExactString(transition, "transitionId")!, context, storage, input.Turn,
+                        context, initialId + ":" + storageId));
                 }
             }
             if (candidate.SelectCurrent)
@@ -448,7 +449,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             governedCommands,
             locationIdsByInitialId,
             input.Turn,
-            identityFactory);
+            identityFactory,
+            storageBirthDrafts);
 
         JsonObject? currentProjectionSource = finalCurrent?.DeepClone().AsObject();
         if (existingSelection != null)
@@ -490,6 +492,10 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             finalCurrent,
             locationCandidates.Any(candidate => candidate.SelectCurrent),
             issues);
+        if (issues.Count != 0)
+            return Failed(issues);
+
+        ProjectAddedStorageBirthContents(governedCommands.StorageAdds, finalCurrent, finalStorageContents, issues);
         if (issues.Count != 0)
             return Failed(issues);
 

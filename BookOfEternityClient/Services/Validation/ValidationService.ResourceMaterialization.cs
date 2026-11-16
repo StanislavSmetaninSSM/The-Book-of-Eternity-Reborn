@@ -461,11 +461,13 @@ public partial class ValidationService
         }
         if (spiritualCapture is null && MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
                 _fs, writeLease, manifest.SessionId, manifest.ManifestPayloadHash, manifest.TurnNumber, out var storageSnapshot) &&
-            MortalLocationStorageBirthEvidence.HasCurrentSceneBirths(storageSnapshot))
+            (MortalLocationStorageBirthEvidence.HasCurrentSceneBirths(storageSnapshot) || storageSnapshot.HasStoragePlacementRoutes))
         {
             vehicleLocationInputs = await CaptureFreshVehicleCargoInputsAsync(storageSnapshot, writeLease, issues,
                 StorageTransportMoveService.CurrentLocationPath, "mortal_location_storage_birth_source_changed");
-            if (vehicleLocationInputs?.LocationPlan?.StorageBirthDrafts.Count is not > 0)
+            if (vehicleLocationInputs is null) return issues;
+            if (MortalLocationStorageBirthEvidence.HasCurrentSceneBirths(storageSnapshot) &&
+                vehicleLocationInputs.LocationPlan?.StorageBirthDrafts.Count is not > 0)
             {
                 issues.Add(MortalLocationStorageBirthEvidence.Issue(StorageTransportMoveService.CurrentLocationPath,
                     "mortal_location_storage_birth_source_changed", "the same exact prepared current-scene birth slots"));

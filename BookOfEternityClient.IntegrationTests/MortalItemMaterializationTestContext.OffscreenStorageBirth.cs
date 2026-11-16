@@ -17,8 +17,10 @@ internal sealed partial class MortalItemMaterializationTestContext
         await BuildMortalBootstrapAsync();
         var a = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(OffscreenBirthCurrentId, "Current scene", x: 0);
         var b = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(OffscreenBirthTargetId, "Remote storehouse", x: 1);
+        var link = MortalLocationTestFixture.CreateCanonicalLink(OffscreenBirthCurrentId, OffscreenBirthTargetId);
         var map = MortalLocationTestFixture.CreateWorldMap(a, b);
-        var index = MortalLocationTestFixture.CreateIdentityIndex(a);
+        map["links"]!.AsArray().Add(link.DeepClone());
+        var index = MortalLocationTestFixture.CreateIdentityIndex(a, link);
         index["locationEntries"]!.AsArray().Add(MortalLocationTestFixture.CreateIdentityIndex(b)["locationEntries"]![0]!.DeepClone());
         var accessState = MortalStorageAccessProjection.Build(map, null);
         if (!accessState.IsValid) throw new InvalidDataException("Offscreen birth fixture has invalid original access.");

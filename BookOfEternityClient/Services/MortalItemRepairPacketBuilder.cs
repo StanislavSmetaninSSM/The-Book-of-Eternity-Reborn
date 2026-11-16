@@ -461,8 +461,35 @@ internal static class MortalItemRepairPacketBuilder
         var normalized = Normalize(path);
         if (IsProtectedClientOwnedTarget(normalized))
             return null;
+        if (IsExactOffscreenBirthItemPath(normalized))
+            return MortalLocationMaterializationContract.WorldMapPath;
         return GmAuthorableTargetRoots.FirstOrDefault(root =>
             IsRootOrDescendant(normalized, root));
+    }
+
+    // Only a named item inside one exact raw storage-addition operation is an
+    // item-repair surface. The canonical map, parent/child target identities and
+    // history are not made authorable merely because the file contains commands.
+    private static bool IsExactOffscreenBirthItemPath(string path)
+    {
+        const string start = "game_state/world/world_map.json.worldMapUpdates.storagesToAdd[";
+        if (!path.StartsWith(start, StringComparison.Ordinal)) return false;
+        var tail = path[start.Length..];
+        if (!ReadIndex(ref tail) || !tail.StartsWith(".storage.contents[", StringComparison.Ordinal)) return false;
+        tail = tail[".storage.contents[".Length..];
+        if (!ReadIndex(ref tail) || tail.Length > 0 && !tail.StartsWith(".", StringComparison.Ordinal)) return false;
+        return !new[] { "materializationReceipt", "receiptId", "seal", "transitions", "itemId" }
+            .Any(field => HasExactPropertySegment(path, field));
+
+        static bool ReadIndex(ref string text)
+        {
+            var close = text.IndexOf(']');
+            if (close < 1 || !int.TryParse(text.AsSpan(0, close), System.Globalization.NumberStyles.None,
+                    System.Globalization.CultureInfo.InvariantCulture, out var ordinal) || ordinal < 0 ||
+                text[..close] != ordinal.ToString(System.Globalization.CultureInfo.InvariantCulture)) return false;
+            text = text[(close + 1)..];
+            return true;
+        }
     }
 
     private static string Normalize(string path) =>

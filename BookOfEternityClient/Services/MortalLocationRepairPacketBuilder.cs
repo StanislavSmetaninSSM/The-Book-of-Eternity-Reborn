@@ -297,12 +297,12 @@ internal static class MortalLocationRepairPacketBuilder
             ExpectedShape = new[]
             {
                 transitionClass == "storage_addition"
-                    ? "One complete empty storage birth at the exact indexed raw coordinate and validated PRE-TURN targetLocationId."
+                    ? "One complete storage birth at the exact indexed raw coordinate and validated PRE-TURN targetLocationId."
                     : "One complete GM-authored location or link package for the exact raw coordinate.",
                 "One exact route and one unambiguous temporary or permanent identity.",
                 "Every governed section agrees with its semantic evidence.",
                 transitionClass == "storage_addition"
-                    ? "Preserve targetLocationId and the fresh storageId; contents must remain empty. Never edit canonical parent or child history."
+                    ? "Preserve targetLocationId and the fresh storageId; contents must be empty or independently admitted fresh item declarations. Never edit canonical parent or child history."
                     : "No GM-authored permanent ID, receipt, seal, index entry, snapshot, or transition."
             },
             SafeCorrectionRules = new[]
@@ -325,7 +325,7 @@ internal static class MortalLocationRepairPacketBuilder
                 "Do not replace canonical locations/links or repair another same-name or same-coordinate entity.",
                 "Do not add knownExits, adjacencyMap, reverse links, display-name aliases, or coordinate aliases.",
                 transitionClass == "storage_addition"
-                    ? "Repair only listed raw declared storage metadata. Never rewrite accepted storage metadata/history, item, actor, faction, lore, threat or afterlife authority."
+                    ? "Repair only listed raw storage metadata or fresh contents item fields at this exact operation. Never rewrite accepted storage metadata/history, existing item, actor, faction, lore, threat or afterlife authority."
                     : "Do not repair item, actor, faction, lore, threat, storage, or afterlife authority through this packet."
             }
         };
