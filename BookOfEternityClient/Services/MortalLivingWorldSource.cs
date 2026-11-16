@@ -47,12 +47,10 @@ internal sealed class MortalLivingWorldSource
 
     internal MortalLivingWorldAssessmentContext Context { get; }
     /// <summary>Detached original binding DATA, never publication authority.</summary>
-    internal string SnapshotToken => throw new NotImplementedException("#1516 source split API RED scaffold");
+    internal string SnapshotToken => _snapshotToken;
     /// <summary>Returns an independent copy of captured opening DATA for a selected path.</summary>
-    internal byte[]? ReadOpeningBytes(string path) => throw new NotImplementedException("#1516 source split API RED scaffold");
-    /// <summary>Rechecks original authority and protected guards while allowing working domain normalization.</summary>
-    internal Task RequireOriginalCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
-        throw new NotImplementedException("#1516 source split API RED scaffold");
+    internal byte[]? ReadOpeningBytes(string path) => _opening.TryGetValue(path, out var bytes)
+        ? bytes?.ToArray() : throw new ArgumentException("Path was not captured by this source.", nameof(path));
 
     internal JsonObject? ReadOriginalDocument(string path) => _original.TryGetValue(path, out var bytes)
         ? Root(bytes, path) : throw new ArgumentException("Path was not captured by this source.", nameof(path));
@@ -82,22 +80,50 @@ internal sealed class MortalLivingWorldSource
             if (!Same(originals[ProgressionScheduleService.SchedulePath], opening[ProgressionScheduleService.SchedulePath]))
                 return Refuse("source_invalid", "The prepared progression schedule was changed before source capture.");
             var controlRoot = original.ReadOriginalControl() ?? throw new InvalidDataException("Missing signed original progression control.");
+            var request = Root(opening["input/turn_request.json"], "input/turn_request.json");
+            RequireMortalSoul(originals["game_state/meta/soul_state.json"]);
+            RequireMortalSoul(opening["game_state/meta/soul_state.json"]);
+            if (!RealmSemantics.IsMortalRealm(controlRoot["currentRealm"]?.GetValue<string>()) ||
+                !JsonNode.DeepEquals(controlRoot, request?["progressionControl"]))
+                return Refuse("source_invalid", "Current progression control differs from the signed Mortal control.");
             var control = controlRoot.Deserialize<ProgressionControl>() ?? throw new InvalidDataException("Malformed signed progression control.");
+            var baseline = Root(originals[WorldTimePath], WorldTimePath)
+                ?? throw new InvalidDataException("Missing original clock.");
+            var command = Root(opening[WorldTimePath], WorldTimePath)
+                ?? throw new InvalidDataException("Missing current clock.");
+            if (baseline.ContainsKey("timeChange") || baseline.ContainsKey("setWorldTime") ||
+                baseline["currentTimeInMinutes"] is not JsonValue originalTime ||
+                !originalTime.TryGetValue<int>(out var originalMinute) || originalMinute < 0 ||
+                originalMinute != control.CurrentWorldTimeInMinutes)
+                return Refuse("source_invalid", "Original clock must be canonical numeric time matching its signed control.");
             var originalClock = ProgressionScheduleService.ResolveFrozenWorldTime(originals[WorldTimePath],
                 control.CurrentWorldTimeInMinutes, allowIncrementalTimeChange: false);
             var currentClock = ProgressionScheduleService.ResolveFrozenWorldTime(opening[WorldTimePath], control.CurrentWorldTimeInMinutes);
+            var resultingMinute = currentClock.Minutes;
+            if (command.ContainsKey("timeChange"))
+            {
+                // Same retained-baseline command contract as the ordinary clock owner, not absolute-first resolution.
+                if (command["timeChange"] is not JsonValue delta || !delta.TryGetValue<int>(out var elapsed) ||
+                    elapsed < 0 || command.ContainsKey("setWorldTime"))
+                    return Refuse("clock_unresolved", "A clock delta requires a nonnegative integer without an absolute override.");
+                foreach (var field in new[] { "year", "monthName", "dayOfMonth", "timeOfDay", "currentTimeInMinutes" })
+                    if (command.ContainsKey(field) && !JsonNode.DeepEquals(command[field], baseline[field]))
+                        return Refuse("clock_unresolved", "Clock delta has a competing absolute field: " + field);
+                resultingMinute = checked(originalMinute + elapsed);
+            }
             if (originalClock.HasUnresolvedAbsoluteOverride || currentClock.HasUnresolvedAbsoluteOverride ||
                 originalClock.Minutes != control.CurrentWorldTimeInMinutes)
                 return Refuse("clock_unresolved", "Provide comparable numeric original and resulting Mortal clock values; calendar prose is not elapsed-time evidence.");
             var schedule = Root(originals[ProgressionScheduleService.SchedulePath], ProgressionScheduleService.SchedulePath)!;
-            if (!ExactNumber(schedule, "currentWorldTimeInMinutes", control.CurrentWorldTimeInMinutes) ||
+            if (!RealmSemantics.IsMortalRealm(schedule["currentRealm"]?.GetValue<string>()) ||
+                !ExactNumber(schedule, "currentWorldTimeInMinutes", control.CurrentWorldTimeInMinutes) ||
                 !ExactNumber(schedule, "lastWorldSimulationTimeInMinutes", control.LastWorldSimulationTimeInMinutes) ||
                 !ExactNumber(schedule, "lastFactionSimulationTimeInMinutes", control.LastFactionSimulationTimeInMinutes) ||
                 !ExactNumber(schedule, "worldCycleMinutes", control.WorldCycleMinutes) ||
                 !ExactNumber(schedule, "factionCycleMinutes", control.FactionCycleMinutes))
                 return Refuse("source_invalid", "Signed progression control and original schedule disagree.");
             var context = new MortalLivingWorldAssessmentContext(original.SessionId, original.RequestId, original.TurnNumber,
-                originalClock.Minutes, currentClock.Minutes, control.LastWorldSimulationTimeInMinutes,
+                originalClock.Minutes, resultingMinute, control.LastWorldSimulationTimeInMinutes,
                 control.LastFactionSimulationTimeInMinutes, control.WorldCycleMinutes, control.FactionCycleMinutes);
             JsonObject? report;
             try { report = Root(opening[ReportPath], ReportPath); }
@@ -111,11 +137,21 @@ internal sealed class MortalLivingWorldSource
             await source.RequireUnchangedInputsAsync(files, lease);
             return new([], source);
         }
-        catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
+        catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException or OverflowException)
         { return Refuse("source_invalid", "Current authenticated living-world source cannot be established: " + error.Message); }
     }
 
+    /// <summary>Rechecks both original authority and every opening input before any owner mutation.</summary>
     internal async Task RequireUnchangedInputsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+    {
+        await RequireOriginalCurrentAsync(files, lease);
+        foreach (var pair in _opening)
+            if (!Same(pair.Value, await files.ReadFileBytesAsync(lease, pair.Key)))
+                throw new InvalidDataException("Living-world opening input changed: " + pair.Key);
+    }
+
+    /// <summary>Rechecks original authority and protected guards, not legitimate working-domain or owner output changes.</summary>
+    internal async Task RequireOriginalCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
         if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease))
             throw new InvalidDataException("Living-world source cannot cross physical owner or lease.");
@@ -134,9 +170,18 @@ internal sealed class MortalLivingWorldSource
                 ? null : original.ReadRequiredBytes(pair.Key);
             if (!Same(pair.Value, bytes)) throw new InvalidDataException("Living-world original changed: " + pair.Key);
         }
-        foreach (var pair in _opening)
-            if (!Same(pair.Value, await files.ReadFileBytesAsync(lease, pair.Key)))
-                throw new InvalidDataException("Living-world opening input changed: " + pair.Key);
+        foreach (var path in GuardPaths)
+            if (!Same(_opening[path], await files.ReadFileBytesAsync(lease, path)))
+                throw new InvalidDataException("Living-world guard changed: " + path);
+        RequireMortalSoul(await files.ReadFileBytesAsync(lease, "game_state/meta/soul_state.json"));
+    }
+
+    private static void RequireMortalSoul(byte[]? bytes)
+    {
+        var soul = Root(bytes, "game_state/meta/soul_state.json");
+        if (soul?["currentRealm"] is not JsonValue realm || !realm.TryGetValue<string>(out var value) ||
+            !RealmSemantics.IsMortalRealm(value))
+            throw new InvalidDataException("Living-world source requires a canonical Mortal soul.");
     }
 
     private static bool ExactNumber(JsonObject root, string field, int expected) =>

@@ -205,15 +205,32 @@ internal static class MortalLivingWorldEvents
     // Evidence still compares the entire original/settled value; this projection only decides meaningfulness.
     private static string SemanticField(string kind, string field, JsonNode? node)
     {
-        if (kind == "npcActivity")
-            return field == "currentActivity"
-                ? Project(node, "totalTimeCostMinutes", "timeSpentMinutes", "currentStepNumber", "totalStepsInActivity", "linkedQuestId", "linkedPlotOutlineNode")
-                : ProjectEach(node, "finalOutcome");
+        if (kind is "npcActivity" or "threat" && field == "currentActivity")
+            return Activity(node);
+        if (kind == "npcActivity" && field == "completedActivities")
+            return ProjectEach(node, "finalOutcome");
+        if (kind == "npc" && field == "factionAffiliations")
+            return ProjectEach(node, "factionId", "rank", "branch", "membershipStatus");
+        if (kind == "location" && field == "factionControl")
+            return ProjectEach(node, "factionId", "controlType", "controlLevel");
+        if (kind == "location" && field == "activeThreats")
+            return node is JsonArray threats
+                ? "[" + string.Join(",", threats.Select(Threat).OrderBy(value => value, StringComparer.Ordinal)) + "]"
+                : Threat(node);
         if (kind == "location" && field == "locationStorages")
             return ProjectEach(node, "storageId", "capacity", "volume", "owner", "authorizedUsers", "hasFullAccess", "contents");
         if (kind == "locationLink" && field == "access")
             return Project(node, "state", "requirements");
         return Semantic(node);
+    }
+    private static string Activity(JsonNode? node) => Project(node,
+        "totalTimeCostMinutes", "timeSpentMinutes", "currentStepNumber", "totalStepsInActivity", "linkedQuestId", "linkedPlotOutlineNode");
+    private static string Threat(JsonNode? node)
+    {
+        if (node is not JsonObject threat) return Semantic(node);
+        // Same canonical activity contract as NPCs; do not count labels inside the aggregate route.
+        return "[" + Project(threat, "threatId", "intensity", "longTermGoal", "threatArchetype") + "," +
+            (threat.ContainsKey("currentActivity") ? Activity(threat["currentActivity"]) : "absent") + "]";
     }
     private static string ProjectEach(JsonNode? node, params string[] fields) => node is JsonArray array
         ? "[" + string.Join(",", array.Select(item => Project(item, fields)).OrderBy(value => value, StringComparer.Ordinal)) + "]"

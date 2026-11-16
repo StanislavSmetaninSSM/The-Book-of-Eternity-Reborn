@@ -185,7 +185,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         Assert.Empty(result.Issues);
         var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
         _ = await context.FileSystem.ReadFileBytesAsync(lease, MortalLivingWorldSource.ReportPath);
-        await File.WriteAllTextAsync(Path.Combine(context.RootPath, MortalLivingWorldSource.ReportPath), "{}");
+        await File.WriteAllTextAsync(context.FileSystem.ResolvePath(MortalLivingWorldSource.ReportPath), "{}");
         await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireUnchangedInputsAsync(context.FileSystem, lease));
     }
 

@@ -118,3 +118,29 @@ it no longer represented the exact prior base form. The fixture now explicitly
 retains exactly the prior base keys before re-signing; the strict production
 reader is unchanged. That corrected control is pending. Source independent
 review is in progress, including realm/control correlation and closing fences.
+
+### Further causal safety checks
+
+DATA re-review accepted canonical field and public-news fixes but found the
+same cosmetic-evidence defect through nested threat activities and faction
+labels. Eight new cases produced 32 PASS / 4 expected FAIL out of 36 event
+cases, complete cleanup, no duplicates, wall 9.561 seconds. Typed projections
+now cover those admitted fields; GREEN and targeted re-review remain pending.
+
+Independent source review found three Important issues: ambient cached working
+bytes could defeat a physical closing fence; retained baseline plus timeChange
+was undercounted; soul/schedule/current-control correlation was incomplete.
+Twelve added source cases produced eight old PASS and twelve FAIL. Eleven new
+failures were causal behavior/API-scaffold failures; the cache test instead
+used a wrong physical fixture path and must be corrected and rerun before its
+freshness fix is credited. Do not describe that setup error as causal RED.
+The unchanged reader-family controls remain pending due fail-first execution.
+
+Six real ordinary-owner tests then produced six causal FAIL: missing gates,
+missing private receipts, missing effect refusal and unreachable late cut.
+Each reached the actual coordinator and scheduler/live-original preparation.
+Run `20261116-025804-991-593-06a0344a976a4d79ab42bcb4abba1a6e-categories`,
+wall 13.382 seconds, complete cleanup, no skips/duplicates. Ordinary implementation
+is next. This first owner block proves failed-publication rollback/retry only;
+successful same-original reentry, durable treatment/diagnosis plan contributions,
+joint and QTE remain explicit later gates, not inferred from plain normalization.
