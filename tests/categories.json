@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-assessment",
+      "responsibility": "#1516 admission-only elapsed Mortal time and exact bounded assessment shape, correlation and five-scope audit.",
+      "excludes": "Canonical event effects, source authentication, runtime integration, publication, privacy and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldAssessment.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldAssessmentTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldAssessmentTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-offscreen-birth-data",
       "responsibility": "#1515 direct noncurrent storage birth: prepared/completed DATA, exact route and repair identities, empty measurement/alternate route refusals, borrowed-catalog read counts and fresh authority checks.",
       "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
