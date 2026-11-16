@@ -79,7 +79,7 @@ internal static class MortalLivingWorldEvents
                         else covered.Add(key);
                 }
                 if (!covered.SetEquals(effectIds)) Fail(path + ".consequences", "Every effect must support an explicit consequence.");
-                ValidateKnowledge(ev["knowledge"], path);
+                ValidateKnowledge(ev["knowledge"], Text(ev["eventId"]), path);
             }
             return issues;
 
@@ -96,12 +96,19 @@ internal static class MortalLivingWorldEvents
                 }
                 return result;
             }
-            void ValidateKnowledge(JsonNode? node, string path)
+            void ValidateKnowledge(JsonNode? node, string? eventId, string path)
             {
                 if (node is not JsonObject knowledge || !Shape(knowledge, "player", "newsReferences") || knowledge["newsReferences"] is not JsonArray refs)
                 { Fail(path + ".knowledge", "Expected explicit knowledge and news references."); return; }
                 var player = Text(knowledge["player"]);
-                if (player == "hidden" && refs.Count == 0) return;
+                if (player == "hidden" && refs.Count == 0)
+                {
+                    if (eventId is not null && current.TryGetValue("game_state/world/world_events.json", out var publicWorld) &&
+                        publicWorld["worldEventsLog"] is JsonArray publicEvents &&
+                        publicEvents.OfType<JsonObject>().Any(entry => Text(entry["eventId"]) == eventId))
+                        Fail(path + ".knowledge", "A hidden event cannot also appear in world news under the same identity, regardless of its visibility label.");
+                    return;
+                }
                 if (player != "known" || refs.Count == 0) { Fail(path + ".knowledge", "Hidden events cannot reference news; known events require news."); return; }
                 var seen = new HashSet<string>(StringComparer.Ordinal);
                 current.TryGetValue("game_state/world/world_events.json", out var news);

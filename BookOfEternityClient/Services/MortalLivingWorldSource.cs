@@ -62,6 +62,8 @@ internal sealed class MortalLivingWorldSource
         files.VerifyCurrentSessionOperation(lease);
         try
         {
+            // Authority capture must not borrow provisional working bytes from an ambient DATA owner.
+            using var fresh = FileSystemManager.SuppressValidationReuse();
             var selection = PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths,
                 DomainPaths.Concat([ReportPath, HistoryPath]));
             var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, selection);
@@ -144,6 +146,7 @@ internal sealed class MortalLivingWorldSource
     /// <summary>Rechecks both original authority and every opening input before any owner mutation.</summary>
     internal async Task RequireUnchangedInputsAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
+        using var fresh = FileSystemManager.SuppressValidationReuse();
         await RequireOriginalCurrentAsync(files, lease);
         foreach (var pair in _opening)
             if (!Same(pair.Value, await files.ReadFileBytesAsync(lease, pair.Key)))
@@ -153,6 +156,7 @@ internal sealed class MortalLivingWorldSource
     /// <summary>Rechecks original authority and protected guards, not legitimate working-domain or owner output changes.</summary>
     internal async Task RequireOriginalCurrentAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
+        using var fresh = FileSystemManager.SuppressValidationReuse();
         if (!ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease))
             throw new InvalidDataException("Living-world source cannot cross physical owner or lease.");
         files.EnsureCanonicalWriteLeaseActive(lease);

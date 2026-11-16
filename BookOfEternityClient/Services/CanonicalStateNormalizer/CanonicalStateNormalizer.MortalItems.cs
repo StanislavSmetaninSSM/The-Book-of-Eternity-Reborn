@@ -1800,6 +1800,10 @@ internal static class AcceptedTurnCanonicalStateRefresh
         CoordinatedStatePublicationUncertainException? publicationUncertainty = null;
         try
         {
+            var livingPreparation = await MortalLivingWorldPublication.PrepareAsync(fs, writeLease);
+            if (livingPreparation.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                return new Result(livingPreparation.Issues, null);
+            var livingWorld = livingPreparation.Publication;
             var boundNormalizer = normalizer.BindTo(writeLease);
             var selfPreparationIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(writeLease);
             if (selfPreparationIssues.Any(issue => issue.Severity == IssueSeverity.Error))
@@ -1807,6 +1811,9 @@ internal static class AcceptedTurnCanonicalStateRefresh
             var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+            if (livingWorld is not null)
+                beforeImages = beforeImages.Concat(livingWorld.BeforeImages)
+                    .GroupBy(image => image.Path, StringComparer.Ordinal).Select(group => group.First()).ToArray();
             var npcSource = await validator.PrepareNpcProgressionPublicationAsync(writeLease,
                 beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes,
                 beforeImages.FirstOrDefault(image => image.Path == MortalNpcAcceptedSkillInput.SidecarPath)?.Bytes);
@@ -1832,6 +1839,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 var treatmentPreflight = spiritualPreflight is null
                     ? await boundNormalizer.PrevalidateTreatmentResourcePublicationTransactionAsync()
                     : null;
+                if (livingWorld is not null) await livingWorld.RequireOpeningAsync(fs, writeLease);
                 AcceptedMechanicsPlan? mechanicsPlan;
                 if (spiritualPreflight is not null)
                 {
@@ -1890,6 +1898,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 }
                 await npcSource.RequirePublishedSkillsAsync(fs, writeLease, npcTreatmentReceipt);
                 var issues = new List<ValidationIssue>();
+                if (livingWorld is not null)
+                    issues.AddRange(await livingWorld.ValidateFinalAsync(fs, writeLease,
+                        supportsPublication: treatmentTransaction is null &&
+                            mechanicsPlan?.WoundStageBundle?.PreparedPlan.MortalDiagnosisAuthority is null &&
+                            mechanicsPlan?.AwaitsPendingResolution != true));
                 issues.AddRange(await validator.ValidateAcceptedTurnCanonicalSkillMasteryAsync(writeLease));
                 issues.AddRange(await validator
                     .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
@@ -1928,6 +1941,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                         fs,
                         writeLease);
                 }
+                if (!issues.Any(issue => issue.Severity == IssueSeverity.Error) && livingWorld is not null)
+                    await livingWorld.PublishAsync(fs, writeLease);
                 if (mechanicsPlan is not null && spiritualReceipt is not null &&
                     !AcceptedMechanicsPlanAuthority.CompleteSpiritualPublication(fs, writeLease, spiritualReceipt))
                     throw new InvalidDataException("Spiritual transaction ownership changed before acceptance.");
@@ -1938,6 +1953,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     await npcSource.RequirePublishedSkillsAsync(fs, writeLease, npcTreatmentReceipt);
                 else
                     await npcSource.RequireCurrentAsync(fs, writeLease);
+                if (!issues.Any(issue => issue.Severity == IssueSeverity.Error) && livingWorld is not null)
+                    await livingWorld.RequirePublishedAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation);

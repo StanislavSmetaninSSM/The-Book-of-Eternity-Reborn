@@ -144,3 +144,28 @@ wall 13.382 seconds, complete cleanup, no skips/duplicates. Ordinary implementat
 is next. This first owner block proves failed-publication rollback/retry only;
 successful same-original reentry, durable treatment/diagnosis plan contributions,
 joint and QTE remain explicit later gates, not inferred from plain normalization.
+
+### Physical fence reproduction and ordinary implementation WIP
+
+The cache fixture's second attempt exposed a lease-close refusal that masked
+its body result. The corrected observation records both separately. At
+`8ce70048`, source returned successfully on stale report bytes while independent
+lease close rejected `Operation source changed`; this is now causal evidence
+of a too-late fence, not a claimed successful publication. Nineteen other source
+cases passed. Existing fresh-read suppression now surrounds source preparation
+and both closing APIs. GREEN remains pending. One earlier interrupted build
+failed CS2001 while a concurrent uncommitted owner file was moved back to held
+scratch; no test executed and it is not a feature RED. Subsequent builds used an
+explicit source freeze.
+
+Seven real ordinary tests now give seven causal FAIL, including a reached
+faction-reducer boundary clock change that opening-only admission missed. The
+plain-owner adapter and exact rollback cohort are implemented next, not yet
+verified. Same-original successful replay and special transaction owners remain
+outside this bounded first implementation; they are not marked complete.
+
+The combined DATA check completed 95 cases: 94 PASS, one expected FAIL for a
+hidden event whose exact event ID also appears in world news. All nested activity
+and faction-label regressions pass. The final small fix rejects this explicit
+identity contradiction irrespective of the news row's visibility; unrelated
+news, prose aliases and broader #1540 remain separate. GREEN/re-review pending.
