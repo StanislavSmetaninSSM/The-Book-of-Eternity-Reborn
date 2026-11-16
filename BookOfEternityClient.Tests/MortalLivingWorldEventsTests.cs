@@ -248,6 +248,19 @@ public sealed class MortalLivingWorldEventsTests
         else Assert.Contains(issues, issue => issue.Code == "mortal_living_world_effect_not_meaningful");
     }
 
+    [Theory]
+    [InlineData("bridge_completed", false)]
+    [InlineData("other_news", true)]
+    public void HiddenEventCannotAlsoExistInNewsUnderSameIdentity(string newsId, bool accepted)
+    {
+        var report = Report(); var current = Documents(true);
+        current["game_state/world/world_events.json"] = new JsonObject
+        { ["worldEventsLog"] = new JsonArray(new JsonObject
+            { ["eventId"] = newsId, ["title"] = "Result", ["description"] = "Public result", ["visibility"] = "public" }) };
+        var issues = MortalLivingWorldEvents.Validate(report, Documents(false), current);
+        if (accepted) Assert.Empty(issues); else Assert.NotEmpty(issues);
+    }
+
     private static (JsonObject Report, Dictionary<string, JsonObject> Current, JsonObject News) KnownNews()
     {
         var report = Report(); Event(report)["knowledge"]!["player"] = "known";

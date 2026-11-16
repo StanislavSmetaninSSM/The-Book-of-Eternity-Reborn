@@ -180,13 +180,28 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await PrepareLivingWorldOriginalAsync();
         await WriteLivingWorldReportAsync(context);
         using var operation = context.FileSystem.BeginSourceDataOperationIfNeeded();
-        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
-        Assert.Empty(result.Issues);
-        var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
-        _ = await context.FileSystem.ReadFileBytesAsync(lease, MortalLivingWorldSource.ReportPath);
-        await File.WriteAllTextAsync(context.FileSystem.ResolvePath(MortalLivingWorldSource.ReportPath), "{}");
-        await Assert.ThrowsAsync<InvalidDataException>(() => source.RequireUnchangedInputsAsync(context.FileSystem, lease));
+        var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        Exception? bodyFailure = null;
+        Exception? closeFailure = null;
+        try
+        {
+            var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+            Assert.Empty(result.Issues);
+            var source = Assert.IsType<MortalLivingWorldSource>(result.Source);
+            _ = await context.FileSystem.ReadFileBytesAsync(lease, MortalLivingWorldSource.ReportPath);
+            await File.WriteAllTextAsync(context.FileSystem.ResolvePath(MortalLivingWorldSource.ReportPath), "{}");
+            bodyFailure = await Record.ExceptionAsync(() => source.RequireUnchangedInputsAsync(context.FileSystem, lease));
+        }
+        finally
+        {
+            // The independent ambient owner's final fence must not mask the source method's own outcome.
+            closeFailure = await Record.ExceptionAsync(async () => await lease.DisposeAsync());
+        }
+        Assert.True(bodyFailure is InvalidDataException,
+            $"Source body: {bodyFailure?.ToString() ?? "returned successfully"}; independent lease close: {closeFailure?.ToString() ?? "returned successfully"}");
+        Assert.Contains(MortalLivingWorldSource.ReportPath, bodyFailure!.Message, StringComparison.Ordinal);
+        Assert.IsType<InvalidDataException>(closeFailure);
+        Assert.Contains("Operation source changed: " + MortalLivingWorldSource.ReportPath, closeFailure!.Message, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -142,6 +142,38 @@ public sealed class MortalLivingWorldPublicationTests
         await AssertBytesAsync(context, before);
     }
 
+    [Fact]
+    public async Task OrdinaryPublication_ClockChangingAtReducerBoundaryCannotUseOpeningTimeAssessment()
+    {
+        var armed = false;
+        var reached = false;
+        EffectMaterializationTestContext? current = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationBoundaryAsync = path =>
+            {
+                if (!armed || reached || path != Factions) return Task.CompletedTask;
+                reached = true;
+                File.WriteAllText(current!.FileSystem.ResolvePath(MortalLivingWorldSource.WorldTimePath),
+                    "{\"currentTimeInMinutes\":480}");
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await PrepareAsync(hooks);
+        current = context;
+        var backups = await BackupsAsync(context);
+        await SubmitAsync(context, Report(changes: true));
+        var before = await CaptureAsync(context);
+
+        armed = true;
+        var result = await PublishAsync(context, backups);
+        armed = false;
+
+        Assert.True(reached, "The actual faction reducer must be reached before evaluating settled time.");
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_window_invalid");
+        await AssertBytesAsync(context, before);
+    }
+
     private static async Task<EffectMaterializationTestContext> PrepareAsync(FileSystemManagerHooks? hooks = null)
     {
         var context = await EffectMaterializationTestContext.CreateAsync(hooks);
