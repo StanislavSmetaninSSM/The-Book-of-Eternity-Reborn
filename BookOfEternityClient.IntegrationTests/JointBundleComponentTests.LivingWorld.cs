@@ -325,7 +325,7 @@ public sealed partial class JointBundleComponentTests
             await Files.WriteFileAtomicAsync(Lease, "ready/turn_complete.json", ready.ToJsonString());
         }
 
-        private static JsonArray WrongEffectEvent(long from, long to) => new(JsonNode.Parse($$"""
+        private static JsonArray WrongEffectEvent(long from, long to) => new(JsonNode.Parse($$$$"""
             {"eventId":"invented_flag","fromMinute":{{{{from}}}},"toMinute":{{{{to}}}},
              "actors":[{"kind":"system","id":"worldCycle"}],
              "targets":[{"kind":"worldFlag","id":"not_materialized"}],
