@@ -8,6 +8,31 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Canonical vehicle display final verification, 2026-11-16
+
+Saved source f431ad1c3d59dfedcb94f86773de74033ff0521a. Official unit category
+passed 17/17 in 10.305s; actual CLI category passed 13/13 in 11.185s, including the
+existing browser translation and real vehicle inventory transfer. TRX totals
+agree; no failures, skips, duplicate IDs or timeouts; owned cleanup complete.
+Current matching unit build: 54.74s, 17 warnings, 0 errors; integration incremental
+build: 1.32s, 0 warnings, 0 errors after the updated production dependency (its unchanged
+test source previously compiled in 58.46s). Catalog discovery passed: 1,752 categories,
+14,382 methods/files in 12.389s, zero execution. Independent Sol XHigh review accepted this bounded block with no unresolved
+findings after reading source, logs and TRX.
+
+Both readers now enumerate only canonical object-root vehicles with exact string
+vehicleId, use strict string activeVehicleId and ordinal selection, and render
+canonical type/availability/location without pending, historical or legacy
+fallback. Malformed selection does not hide a legitimate card. Existing resource
+projection stays one batched exact-ID join; mutations use unchanged services.
+Optimization: builder eliminates two unused map/current reads and both paths
+reuse their native DOM plus a pure scalar formatter, with no extra cache or
+reparse. No speedup claim; fresh resource authority is unchanged.
+Raw diagnostics remain local. Final run identities are 20261115-185854-016-96 and
+20261115-185907-258-494 under the local test-categories root. This is bounded FR8
+verification, not whole #1515 acceptance. Next: direct populated offscreen storage
+birth as specified, then full intended-diff reconciliation and independent review.
+
 ## Independent display review: strict selected-ID type, 2026-11-15
 
 The independent reviewer identified JSON scalar coercion: numeric/bool

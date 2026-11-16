@@ -29,7 +29,7 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 
 ## US3: Consumer interoperability (FR7–FR9)
 - [ ] T012 Add narrow new-schema consumption/transfer interoperability tests through the existing writer; do not add ordinary post-birth movement/access policy.
-- [ ] T013 Storage effective-access view is accepted; finish canonical-only vehicle display, excluding pending UpdateVehicles/legacy arrays and reading canonical activeVehicleId, without UI redesign.
+- [x] T013 Storage effective-access view and canonical-only vehicle display accepted; exact string identities/selection, no pending or legacy fallback. At f431ad1c, 30/30 targeted cases pass, catalog discovery and independent review accepted; no UI redesign.
 - [ ] T014 Reconcile full intended diff with `tests/selection.json`; discover category ownership, run impact-selected tests and complete independent whole-change review.
 - [ ] T015 Publish final source/checkpoint and verify clean GitHub restore; report ready without merging main or closing issue.
 
