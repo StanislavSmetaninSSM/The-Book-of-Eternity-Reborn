@@ -17,18 +17,15 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task MortalTransportProseAudit_RequiresCanonicalEffectBeforeAcceptance(string kind) =>
         RunNpcProgressionAndTreatmentSkillSharedRootAsync(4, kind);
 
-    private static async Task AddTransportProseAuditAsync(HeldTreatmentPipelineContext context, string kind)
+    private static string TransportProseAuditText(string kind)
     {
-        const string narrativePath = "output/narrative_response.json";
-        var narrative = await ReadJsonObjectAsync(context.FileSystem, narrativePath);
         var assertion = kind switch
         {
             "vehicle" => " После лечения вы получили в собственность новую повозку «Аудитный возок». Она стоит рядом с вами, исправна, доступна для поездок и перевозки ваших вещей.",
             "storage" => " После лечения вам предоставили новое личное хранилище «Аудитный склад» здесь, у лечебницы. Оно уже открыто для вас: можно складывать и забирать свои вещи.",
             _ => " После лечения вы спокойно осматриваетесь."
         };
-        narrative["response"] = narrative["response"]!.GetValue<string>() + assertion;
-        await context.FileSystem.WriteFileAtomicAsync(narrativePath, narrative.ToJsonString());
+        return HeldTreatmentPipelineContext.FinalSceneText + assertion;
     }
 
     private async Task AssertTransportProseAuditAsync(HeldTreatmentPipelineContext context, string kind,

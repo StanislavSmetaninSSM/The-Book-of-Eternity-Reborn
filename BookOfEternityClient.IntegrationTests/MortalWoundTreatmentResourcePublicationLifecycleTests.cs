@@ -3077,7 +3077,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         FileSystemManagerHooks? hooks = null,
         MortalItemPublicationBaselineFixture baselineFixture =
             MortalItemPublicationBaselineFixture.None,
-        Func<FileSystemManager, Task>? configureBeforePreparation = null)
+        Func<FileSystemManager, Task>? configureBeforePreparation = null,
+        string? finalSceneText = null)
     {
         Assert.True(
             fault is null || hooks is null,
@@ -3193,7 +3194,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 .ComposeMortalWoundTreatmentCommandRoot(
                     acceptedState.Binding,
                     resolution,
-                    HeldTreatmentPipelineContext.FinalSceneText);
+                    finalSceneText ?? HeldTreatmentPipelineContext.FinalSceneText);
             var parsedCommand = WoundResponseInputComposer.ParseCommandRoot(
                 JsonSerializer.SerializeToElement(commandRoot));
             Assert.True(
@@ -3213,7 +3214,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var treatmentProposal = itemScenario?.CreateTreatmentProposal() ??
                                     new GameResponse();
             Assert.Null(treatmentProposal.Response);
-            treatmentProposal.Response = HeldTreatmentPipelineContext.FinalSceneText;
+            treatmentProposal.Response = finalSceneText ?? HeldTreatmentPipelineContext.FinalSceneText;
             await context.ReleaseLeaseAsync();
             await new StateDistributor(
                     fileSystem,

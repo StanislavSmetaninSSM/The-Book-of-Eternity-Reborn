@@ -76,6 +76,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             itemScenario: HeldTreatmentItemScenario.SelectedStack(publishNpcSkillChange: true),
             composePublication: false,
             hooks: hooks,
+            finalSceneText: transportAuditKind is null ? null : TransportProseAuditText(transportAuditKind),
             configureBeforePreparation: async files =>
             {
                 var core = await ReadJsonObjectAsync(files, NpcCoreChangesContract.NpcCorePath);
@@ -215,8 +216,6 @@ public sealed partial class GameEngineTurnLifecycleTests
                 untouchedRoots[path] = await context.ReadFileBytesAsync(path);
             // Natural intake: leave the distributed commands raw. The real engine must
             // construct and admit its own plan; do not restore or compose a held plan here.
-            if (transportAuditKind is not null)
-                await AddTransportProseAuditAsync(context, transportAuditKind);
             var naturalTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
             var naturalLogger = new SpiritualLifecycleTestLogger();
             var naturalInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
