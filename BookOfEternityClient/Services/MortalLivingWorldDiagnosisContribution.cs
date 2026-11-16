@@ -24,6 +24,7 @@ internal sealed class MortalLivingWorldDiagnosisContribution
     private readonly MortalLivingWorldAssessmentContext _context;
     private readonly string _snapshotToken;
     private readonly IReadOnlyDictionary<string, byte[]?> _openingGuards;
+    private readonly IReadOnlyDictionary<string, byte[]?> _opening;
     private readonly Dictionary<string, JsonObject> _original = new(StringComparer.Ordinal);
     private readonly HashSet<string> _absent = new(StringComparer.Ordinal);
 
@@ -33,7 +34,7 @@ internal sealed class MortalLivingWorldDiagnosisContribution
     {
         _files = files; _source = source; _owner = owner; _working = working;
         _context = source.Context; _snapshotToken = source.SnapshotToken; _clockAfter = working.ClockAfter;
-        _openingGuards = source.ReadOpeningGuardData();
+        _openingGuards = source.ReadOpeningGuardData(); _opening = source.ReadOpeningData();
         _progressionFingerprint = progression.MutationFingerprint; _control = working.OriginalControl;
         _report = report.DeepClone().AsObject();
         _reportBefore = source.ReadOpeningBytes(MortalLivingWorldSource.ReportPath);
@@ -82,6 +83,31 @@ internal sealed class MortalLivingWorldDiagnosisContribution
     internal string Fingerprint { get; }
     internal Task RequireOpeningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>
         _source.RequireUnchangedInputsAsync(files, lease);
+    /// <summary>Readmits source under a genuine retained-plan owner; copied opening DATA cannot authorize this transition.</summary>
+    internal async Task RequireRetainedOpeningAsync(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+        MortalWoundTreatmentAcceptedStateAuthority accepted, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourcePublicationAuthority publication)
+    {
+        using var fresh = FileSystemManager.SuppressValidationReuse();
+        if (!ReferenceEquals(files, _files) ||
+            publication.ContinuationAuthority is not WoundAcceptedTurnPlanner.MortalDiagnosisContinuation continuation ||
+            !ReferenceEquals(continuation.LivingWorld, this) ||
+            !AcceptedTurnAuthorityRegistry.CanReuseMortalDiagnosisPublication(files, lease, accepted, request, publication))
+            throw new InvalidDataException("Living-world retained opening requires the actual current diagnosis handoff.");
+        var outcome = MortalWoundDiagnosisOutcome.Resolve(accepted,
+            new WoundHistoryParseResult(accepted.History, Array.Empty<ValidationIssue>()), request);
+        var working = MortalWoundDiagnosisWorkingProjection.Build(accepted, outcome);
+        var prepared = await MortalLivingWorldSource.PrepareForDiagnosisAsync(files, lease, accepted, working, continuation.Progression);
+        if (prepared.Issues.Count != 0 || prepared.Source is not { } current ||
+            current.Context != _context || current.SnapshotToken != _snapshotToken || working.Fingerprint != _working.Fingerprint)
+            throw new InvalidDataException("Living-world retained source no longer matches its actual original working calculation.");
+        var opening = current.ReadOpeningData();
+        if (opening.Count != _opening.Count || _opening.Any(pair =>
+                !opening.TryGetValue(pair.Key, out var bytes) || !Same(pair.Value, bytes)))
+            throw new InvalidDataException("Living-world retained opening DATA changed across the genuine lease handoff.");
+        await current.RequireUnchangedInputsAsync(files, lease);
+    }
+
     internal JsonObject HistoryAfter => JsonNode.Parse(_historyJson)!.AsObject();
     internal static async Task<MortalLivingWorldDiagnosisPreparation> PrepareAsync(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease, MortalWoundTreatmentAcceptedStateAuthority owner,

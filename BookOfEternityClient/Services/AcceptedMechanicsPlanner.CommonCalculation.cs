@@ -547,6 +547,11 @@ internal static partial class AcceptedMechanicsPlanner
         {
             touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             consumed.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            if (ownerCompanionAfterImages.ContainsKey(MortalLivingWorldSource.HistoryPath))
+            {
+                touched.Add(MortalLivingWorldSource.ReportPath);
+                consumed.Add(MortalLivingWorldSource.ReportPath);
+            }
         }
 
         return new(new CalculatedCommonArtifacts(definitionAfterImage, stateAfterImage, historyAfterImage,
@@ -572,22 +577,7 @@ internal static partial class AcceptedMechanicsPlanner
         if (input.PlanningContext?.JointRepairCommonAuthority is not { } authority || !authority.MatchesInput(input) ||
             fingerprint != AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input))
             return new(null, Issue("accepted_mechanics_joint_retained_input_invalid", "the exact bound joint input", "foreign input"));
-        var calculated = authority.RetainedCommonCalculation;
-        if (authority.LivingWorld.HistorySuccessor is { } successor)
-        {
-            var companions = calculated.OwnerCompanionAfterImages.ToDictionary(row => row.Key, row => row.Value,
-                StringComparer.Ordinal);
-            if (!companions.TryAdd(MortalLivingWorldSource.HistoryPath, successor))
-                return new(null, Issue("accepted_mechanics_joint_living_world_overlap", "independent history member", "overlapping companion"));
-            calculated = new CalculatedCommonArtifacts(calculated.DefinitionAfterImage, calculated.StateAfterImage,
-                calculated.HistoryAfterImage, calculated.EffectCarrierAfterImages, calculated.EffectIdentityAfterImage,
-                calculated.PendingAfterImage, companions, calculated.OwnerTransitions,
-                calculated.TouchedPaths.Concat([MortalLivingWorldSource.HistoryPath, MortalLivingWorldSource.ReportPath])
-                    .Distinct(StringComparer.Ordinal).ToArray(),
-                calculated.ConsumedPaths.Append(MortalLivingWorldSource.ReportPath).Distinct(StringComparer.Ordinal).ToArray(),
-                calculated.Resources, calculated.Effects, calculated.CarrierComposition);
-        }
-        return AssembleCalculatedPlan(input, fingerprint, calculated, null);
+        return AssembleCalculatedPlan(input, fingerprint, authority.RetainedCommonCalculation, null);
     }
 
     private static AcceptedMechanicsPlanningResult AssembleCalculatedPlan(AcceptedMechanicsInput input,

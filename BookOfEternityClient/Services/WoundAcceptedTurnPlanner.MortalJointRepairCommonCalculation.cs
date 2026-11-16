@@ -10,7 +10,8 @@ internal static partial class WoundAcceptedTurnPlanner
     private sealed partial class JointResourcePublicationAuthority
     {
         private sealed record RetainedCalculation(JointResourcePublicationAuthority Owner,
-            AcceptedMechanicsCalculationInputs Inputs, AcceptedMechanicsPlanner.CalculatedCommonArtifacts Artifacts);
+            AcceptedMechanicsCalculationInputs Inputs, AcceptedMechanicsPlanner.CalculatedCommonArtifacts Artifacts,
+            string LivingWorldFingerprint);
         private RetainedCalculation? _retainedCalculation;
         private int _calculationAttempted;
 
@@ -42,20 +43,26 @@ internal static partial class WoundAcceptedTurnPlanner
         /// The original capture/calculation issues, or an empty issue list after successful retention.
         /// </returns>
         internal async Task<IReadOnlyList<ValidationIssue>> EnsureCommonCalculationAsync(object issuer,
-            FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+            FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
+            MortalJointLivingWorldContribution livingWorld)
         {
             using var innerTiming1 = files.MeasureOperation("JointCalculation.EnsureAsync");
             if (!ReferenceEquals(issuer, JointCommonCalculationIssuer))
                 throw new InvalidOperationException("Joint calculation requires its private resource owner.");
             await ValidateJointRepairResourcePublicationAsync(files, lease, this);
-            if (HasRetainedCommonCalculation) return Array.Empty<ValidationIssue>();
+            if (HasRetainedCommonCalculation)
+            {
+                if (RequireRetainedCalculation().LivingWorldFingerprint != livingWorld.Fingerprint)
+                    throw new InvalidDataException("The retained joint calculation belongs to another living-world contribution.");
+                return Array.Empty<ValidationIssue>();
+            }
             if (Interlocked.CompareExchange(ref _calculationAttempted, 1, 0) != 0)
                 throw new InvalidDataException("The existing joint calculation attempt cannot be replaced or repeated.");
             var bundle = Baseline.Bundle;
             using var innerTiming2 = files.MeasureOperation("JointCalculation.CaptureInputsAsync");
             var captured = await AcceptedMechanicsWoundCommonInputComposer.CaptureJointRepairCalculationInputsAsync(
                 files, lease, bundle, Baseline.Anchors, Baseline.Mechanical.BeforeImages,
-                Definitions, State, History, FinalOwners, this, TerminalOwners, CreateIdentityFactory());
+                Definitions, State, History, FinalOwners, this, TerminalOwners, CreateIdentityFactory(), livingWorld);
             innerTiming2?.Dispose();
             if (captured.Inputs is not { } inputs) return captured.Issues;
             var binding = bundle.Input.Binding;
@@ -68,7 +75,7 @@ internal static partial class WoundAcceptedTurnPlanner
             if (calculated.Calculation is not { } artifacts) return calculated.Issues;
             await ValidateJointRepairResourcePublicationAsync(files, lease, this);
             using var innerTiming4 = files.MeasureOperation("JointCalculation.RetainArtifacts");
-            Volatile.Write(ref _retainedCalculation, new RetainedCalculation(this, inputs, artifacts));
+            Volatile.Write(ref _retainedCalculation, new RetainedCalculation(this, inputs, artifacts, livingWorld.Fingerprint));
             innerTiming4?.Dispose();
             return Array.Empty<ValidationIssue>();
         }

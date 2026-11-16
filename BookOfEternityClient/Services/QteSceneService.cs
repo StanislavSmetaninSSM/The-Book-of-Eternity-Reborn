@@ -722,6 +722,8 @@ public sealed partial class QteSceneService
             throw new InvalidOperationException(
                 "qte_deferred_continuation_active_scene_conflict: another QTE scene is already active.");
         }
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, offer.TerminalOutcomes.Select(outcome => outcome.ResponseFragment).OfType<JsonObject>().ToArray()));
         var capture = await QteDeferredEffectContinuation.CaptureAsync(
             _fs,
             writeLease,

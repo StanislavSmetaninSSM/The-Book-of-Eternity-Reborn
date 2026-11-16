@@ -57,10 +57,10 @@ internal static class MortalLivingWorldQteBoundary
     {
         using var fresh = FileSystemManager.SuppressValidationReuse();
         var report = await readCurrent(MortalLivingWorldSource.ReportPath);
-        var hasClockCommand = fragments.Any(fragment => fragment["timeChange"] is not null || fragment["setWorldTime"] is not null);
-        if (report is null && !hasClockCommand) return [];
         try
         {
+            var hasClockCommand = fragments.Any(fragment => fragment["timeChange"] is not null || fragment["setWorldTime"] is not null);
+            if (report is null && !hasClockCommand) return [];
             var soul = Root(await readCurrent("game_state/meta/soul_state.json"), "QTE current soul");
             if (soul is not null && !RealmSemantics.IsMortalRealm(soul["currentRealm"]?.GetValue<string>())) return [];
             if (report is not null)

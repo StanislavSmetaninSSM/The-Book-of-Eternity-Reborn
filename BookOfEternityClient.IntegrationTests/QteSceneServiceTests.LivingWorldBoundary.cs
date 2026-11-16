@@ -60,6 +60,27 @@ public sealed partial class QteSceneServiceTests
     }
 
     [Fact]
+    public async Task LivingWorldQte_SelectedTerminalRefusesReportBeforeSealingArmedContinuation()
+    {
+        await PrepareLivingWorldQteOfferAsync();
+        var offer = BuildUnscoredBranchChoiceOffer();
+        Assert.Single(offer.TerminalOutcomes).ResponseFragment!["timeChange"] = 1;
+        var service = CreateRuntimeCapableService();
+        await service.BeginAcceptedSceneAsync(offer, 20);
+        await _fs.WriteFileAtomicAsync(MortalLivingWorldSource.ReportPath, "{ malformed late report");
+        var before = await CaptureLivingWorldQteBytesAsync();
+        var armed = JsonNode.Parse((await _fs.ReadFileAsync(QteSceneService.QteRuntimePath))!)!.AsObject();
+        Assert.Equal("armed", armed["activeScene"]!["effectResolutionState"]!.GetValue<string>());
+
+        var failure = await Assert.ThrowsAsync<InvalidDataException>(() => service.ResolveActiveActionAsync(
+            "open_gate", null, 21, allowPreexistingStateIssues: true));
+
+        Assert.Contains("mortal_living_world_qte_report_unsupported", failure.Message);
+        await AssertLivingWorldQteBytesAsync(before);
+        AssertNoQteBackupArtifacts();
+    }
+
+    [Fact]
     public async Task LivingWorldQte_DirectTerminalRefusesBeforeStateDistribution()
     {
         await SeedMinimalValidatedMortalStateAsync();

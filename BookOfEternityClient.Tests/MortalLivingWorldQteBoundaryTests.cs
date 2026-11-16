@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -87,6 +88,50 @@ public sealed class MortalLivingWorldQteBoundaryTests
         var issue = Assert.Single(MortalLivingWorldQteBoundary.Validate(Clock(int.MaxValue), Schedule(int.MaxValue),
             new JsonObject { ["timeChange"] = 1 }));
         Assert.Equal("mortal_living_world_qte_clock_invalid", issue.Code);
+    }
+
+    [Fact]
+    public async Task ClockBoundary_CurrentReaderChecksLaterCandidateAndReadsEachSourceOnce()
+    {
+        var requests = new Dictionary<string, int>(StringComparer.Ordinal);
+        var sources = new Dictionary<string, byte[]?>(StringComparer.Ordinal)
+        {
+            [MortalLivingWorldSource.ReportPath] = null,
+            ["game_state/meta/soul_state.json"] = Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"),
+            [MortalLivingWorldSource.WorldTimePath] = Encoding.UTF8.GetBytes(Clock(0).ToJsonString()),
+            [ProgressionScheduleService.SchedulePath] = Encoding.UTF8.GetBytes(Schedule(0).ToJsonString())
+        };
+        Task<byte[]?> Read(string path)
+        {
+            requests[path] = requests.GetValueOrDefault(path) + 1;
+            return Task.FromResult(sources[path]);
+        }
+
+        var issues = await MortalLivingWorldQteBoundary.ValidateCurrentAsync(Read,
+            [new JsonObject { ["timeChange"] = 1 }, new JsonObject { ["timeChange"] = 240 }]);
+
+        Assert.Equal("mortal_living_world_qte_time_unsupported", Assert.Single(issues).Code);
+        Assert.Equal(sources.Keys.OrderBy(path => path, StringComparer.Ordinal),
+            requests.Keys.OrderBy(path => path, StringComparer.Ordinal));
+        Assert.All(requests.Values, count => Assert.Equal(1, count));
+    }
+
+    [Fact]
+    public async Task ClockBoundary_CurrentReaderReturnsIssueForDeferredDuplicateFragmentProperties()
+    {
+        var requests = new List<string>();
+        Task<byte[]?> Read(string path)
+        {
+            requests.Add(path);
+            Assert.Equal(MortalLivingWorldSource.ReportPath, path);
+            return Task.FromResult<byte[]?>(null);
+        }
+        var fragment = JsonNode.Parse("{\"timeChange\":1,\"timeChange\":240}")!.AsObject();
+
+        var issues = await MortalLivingWorldQteBoundary.ValidateCurrentAsync(Read, [fragment]);
+
+        Assert.Equal("mortal_living_world_qte_clock_invalid", Assert.Single(issues).Code);
+        Assert.Equal(MortalLivingWorldSource.ReportPath, Assert.Single(requests));
     }
 
     private static JsonObject Clock(int minute) => new() { ["currentTimeInMinutes"] = minute };

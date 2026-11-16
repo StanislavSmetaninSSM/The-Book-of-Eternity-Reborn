@@ -72,7 +72,7 @@ public sealed class MortalLivingWorldDocumentationTests
         Assert.Contains("$script:GmCompactTemplateDirective += $script:MortalLivingWorldDirective", daemon, StringComparison.Ordinal);
         var directive = Between(daemon, "$script:MortalLivingWorldDirective =", "\n");
         Assert.Contains("$($script:CompactMortalLivingWorldTemplatePath)", directive, StringComparison.Ordinal);
-        Assert.Contains("Mortal", directive, StringComparison.Ordinal);
+        Assert.Contains("on ordinary assessed Mortal turns", directive, StringComparison.Ordinal);
         foreach (var prefix in new[] { "$message = \"Process turn #", "$message = \"REPAIR MODE for rejected turn #" })
             Assert.Contains("$($script:GmCompactTemplateDirective)", Between(daemon, prefix, "\n"), StringComparison.Ordinal);
         var helperRule = daemon.Split('\n').Single(line => line.StartsWith("$script:GmTurnHelperDirective +=", StringComparison.Ordinal)
@@ -92,6 +92,21 @@ public sealed class MortalLivingWorldDocumentationTests
             Assert.Contains("noSignificantChange", text, StringComparison.Ordinal);
             Assert.Contains("mortal_living_world_history.json", text, StringComparison.Ordinal);
             Assert.Contains("E_CLI_Mortal_Living_World.txt", text, StringComparison.Ordinal);
+            var prose = System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
+            Assert.Contains("ordinary assessed Mortal", prose, StringComparison.Ordinal);
+            Assert.Contains("Diagnosis supports noSignificantChange only", prose, StringComparison.Ordinal);
+            if (path == "Examples/E_CLI_Step_Main.txt")
+            {
+                Assert.Contains("Local QTE cannot consume a report or add another cycle", prose, StringComparison.Ordinal);
+                Assert.Contains("old backlog alone does not forbid a short local action crossing no additional cycle", prose, StringComparison.Ordinal);
+                Assert.Contains("never mislabel autonomous changes to bypass refusal", prose, StringComparison.Ordinal);
+            }
+            else
+            {
+                Assert.Contains("Local QTE cannot consume a living-world report or introduce an additional world/faction cycle", prose, StringComparison.Ordinal);
+                Assert.Contains("Existing cycle backlog alone does not forbid a short local action crossing no additional cycle", prose, StringComparison.Ordinal);
+                Assert.Contains("do not relabel real changes as no-change to bypass refusal", prose, StringComparison.Ordinal);
+            }
         }
         var coverage = JsonNode.Parse(Read("Examples/example_validation_manifest.json"))!["effectMaterializationCoverage"]!.AsArray();
         foreach (var id in new[] { "mortal_living_world_autonomous_update_v1", "mortal_living_world_no_change_v1" })

@@ -55,6 +55,8 @@ internal sealed class MortalLivingWorldSource
     /// <summary>Detached exact guard DATA for an enclosing owner's later fresh comparison, never a reusable lease capability.</summary>
     internal IReadOnlyDictionary<string, byte[]?> ReadOpeningGuardData() => GuardPaths.ToDictionary(
         path => path, path => _opening[path]?.ToArray(), StringComparer.Ordinal);
+    internal IReadOnlyDictionary<string, byte[]?> ReadOpeningData() => _opening.ToDictionary(
+        pair => pair.Key, pair => pair.Value?.ToArray(), StringComparer.Ordinal);
 
     internal JsonObject? ReadOriginalDocument(string path) => _original.TryGetValue(path, out var bytes)
         ? Root(bytes, path) : throw new ArgumentException("Path was not captured by this source.", nameof(path));

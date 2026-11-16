@@ -123,7 +123,8 @@ internal sealed class MortalJointLivingWorldContribution
             ? null : signed.ReadRequiredBytes(path);
         // A post-original GM report is client-issued comparison DATA retained by the accepted
         // joint marker, not cryptographic provenance. Portable storage does not resist a coherent
-        // rewrite of every client-owned witness; this check binds the report when the original had it.
+        // rewrite of the affected joint marker and living history with their public hashes;
+        // original, clock and domains can stay unchanged. This binds a signed report when present.
         var signedReport = Parse(Original(MortalLivingWorldSource.ReportPath), MortalLivingWorldSource.ReportPath);
         if (signedReport is not null && !JsonNode.DeepEquals(signedReport, report))
             throw new InvalidDataException("Joint living-world report differs from signed original evidence.");

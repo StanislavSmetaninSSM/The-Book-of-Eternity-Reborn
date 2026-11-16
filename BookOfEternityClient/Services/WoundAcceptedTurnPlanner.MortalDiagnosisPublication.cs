@@ -22,7 +22,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 AcceptedTurnAuthorityRegistry.CanReuseMortalDiagnosisPublication(files, lease, accepted, request, existing))
             {
                 if (prior.LivingWorld is { } retainedLiving)
-                    await retainedLiving.RequireOpeningAsync(files, lease);
+                    await retainedLiving.RequireRetainedOpeningAsync(files, lease, accepted, request, existing);
                 if (!existing.HasValidSeal()) throw new InvalidDataException("The retained diagnosis common publication seal changed.");
                 return MortalWoundTreatmentPublicationResult.Valid(cached.Plan);
             }

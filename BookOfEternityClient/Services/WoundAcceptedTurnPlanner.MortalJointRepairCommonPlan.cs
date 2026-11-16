@@ -481,11 +481,12 @@ internal static partial class WoundAcceptedTurnPlanner
         await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
         await progression.ValidateCurrentAsync(files, lease);
         var resources = (JointResourcePublicationAuthority)resourceAuthority;
-        var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease);
-        if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
         var livingWorld = await MortalJointLivingWorldContribution.PrepareAsync(files, lease);
         if (livingWorld.Contribution is null || livingWorld.Issues.Count != 0)
             return new(null, null, livingWorld.Issues);
+        var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease,
+            livingWorld.Contribution);
+        if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
         using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
         MortalJointRepairCommonAuthority authority;
         using (files.EnterOperationTimingContext())

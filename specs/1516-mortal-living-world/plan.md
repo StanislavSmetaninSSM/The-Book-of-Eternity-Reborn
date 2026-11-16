@@ -372,3 +372,31 @@ compensation/retry representative before the full completion-drift packet.
 The forthcoming owner/fixture/docs correction packet remains WIP until rebuilt
 and selectively verified. Joint representative is still pending. No raw logs
 are published; no whole-feature or hosted-CI acceptance is claimed.
+
+## Current-owner continuation follow-up, 2026-11-16
+
+The next fresh integration build passed (0 errors, 167 warnings, 111.79 s).
+The canonical vehicle-context control is now GREEN; QTE completed 7/9 PASS,
+with causal offer and Begin failures (no required refusal). Their guards are
+being added before capture/handoff, with a separate exact armed-continuation
+preseal regression rather than claiming the later shared guard is sufficient.
+Engine rollback now passes 4/4, including actual late-critical rollback before
+dispatch. A bounded follow-through test is added separately to exercise omitted
+report refusal and genuine resubmitted publication; no full accepted-turn result
+is inferred from a fixture that cancels after unrelated later validation.
+
+Diagnosis representative reached publication after correcting actual backup
+mapping, then failed because retained Compose rechecked its old physical source
+lease. The correction readmits source through the genuine current diagnosis
+owner and registry, compares exact old opening DATA, and preserves the old lease
+fence. This is not recovery permission derived from a serialized receipt.
+
+Joint representative completed one genuine test in 51 seconds, not a timeout.
+Its common candidate failed the existing exact carrier-composition equality:
+living history had been appended after the typed carrier proof was built. Move
+that contribution into the existing single retained calculation before carrier
+assembly, binding its identity under the same resource owner. Do not relax the
+constructor equality or perform a second full calculation. The lossless gzip
+capture closed completely (188,506,330 stored bytes, 1,964,017,508 decoded bytes,
+5,456,150 rows); no raw artifact was uploaded. This newly reached failure is not
+evidence of a comparable speedup. Fresh GREEN remains pending for these fixes.
