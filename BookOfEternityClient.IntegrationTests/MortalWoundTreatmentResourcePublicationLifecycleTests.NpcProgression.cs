@@ -231,6 +231,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 untouchedRoots[path] = await context.ReadFileBytesAsync(path);
             // Natural intake: leave the distributed commands raw. The real engine must
             // construct and admit its own plan; do not restore or compose a held plan here.
+            if (transportAuditKind is not null)
+            {
+                var auditVehicles = await ReadJsonObjectAsync(context.FileSystem, StorageTransportMoveService.VehiclesPath);
+                Assert.Empty(auditVehicles["vehicles"]!.AsArray());
+                Assert.Empty(auditVehicles["birthReceipts"]!.AsArray());
+            }
             var naturalTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
             var naturalLogger = new SpiritualLifecycleTestLogger();
             var naturalInput = new NpcTreatmentRepairDiagnosticInput(context.FileSystem);
