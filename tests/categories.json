@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-event-evidence",
+      "responsibility": "#1516 detached canonical before/after event update evidence, semantic deltas, typed identities and declared news references.",
+      "excludes": "Creation/removal, source authentication, runtime wiring, receipt publication, NLP privacy and whole feature acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldEvents.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldEventsTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldEventsTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-assessment",
       "responsibility": "#1516 admission-only elapsed Mortal time and exact bounded assessment shape, correlation and five-scope audit.",
       "excludes": "Canonical event effects, source authentication, runtime integration, publication, privacy and whole issue acceptance.",
