@@ -63,7 +63,7 @@ internal static class MortalLivingWorldEvents
                     var afterPresent = after.TryGetPropertyValue(field, out var afterValue);
                     if (!Matches(effect["before"], beforePresent, beforeValue) || !Matches(effect["after"], afterPresent, afterValue))
                         Fail(ep, "Declared before/after evidence does not match canonical state.", "mortal_living_world_effect_mismatch");
-                    if (beforePresent == afterPresent && Semantic(beforeValue) == Semantic(afterValue))
+                    if (beforePresent == afterPresent && SemanticField(target.Kind, field, beforeValue) == SemanticField(target.Kind, field, afterValue))
                         Fail(ep, "Cosmetic edits, array order or unchanged values are not semantic effects.", "mortal_living_world_effect_not_meaningful");
                 }
                 var covered = new HashSet<string>(StringComparer.Ordinal);
@@ -108,9 +108,23 @@ internal static class MortalLivingWorldEvents
                 foreach (var item in refs)
                 {
                     var id = Text(item);
-                    if (id is null || !seen.Add(id) || news?["worldEventsLog"] is not JsonArray entries ||
-                        entries.OfType<JsonObject>().Count(entry => Text(entry["eventId"]) == id) != 1)
-                        Fail(path + ".knowledge", "Public news reference must identify exactly one canonical event.");
+                    var matches = news?["worldEventsLog"] is JsonArray entries
+                        ? entries.OfType<JsonObject>().Where(entry => Text(entry["eventId"]) == id).ToArray() : [];
+                    if (id is null || !seen.Add(id) || matches.Length != 1)
+                    { Fail(path + ".knowledge", "Public news reference must identify exactly one canonical event."); continue; }
+                    var entry = matches[0];
+                    if (!(Shape(entry, "eventId", "title", "description", "visibility") ||
+                          Shape(entry, "eventId", "title", "description", "visibility", "locationId")) ||
+                        Text(entry["title"]) is null || Text(entry["description"]) is null || Text(entry["visibility"]) != "public")
+                    { Fail(path + ".knowledge", "Referenced news must be a closed public projection, without private causes, provenance or payloads."); continue; }
+                    if (entry.ContainsKey("locationId"))
+                    {
+                        var locationId = Text(entry["locationId"]);
+                        var location = locationId is null ? null : Resolve(current, new Reference("location", locationId, null));
+                        if (location?["discovery"] is not JsonObject discovery ||
+                            Text(discovery["tier"]) is not ("discovered" or "visited") || Text(discovery["audience"]) != "player_known")
+                            Fail(path + ".knowledge", "News location must resolve uniquely to a discovered or visited player-known location.");
+                    }
                 }
             }
         }
@@ -134,7 +148,7 @@ internal static class MortalLivingWorldEvents
             return Shape(obj, "kind", "id", "ownerId") && Text(obj["ownerId"]) is { } owner ? new(kind, id, owner) : null;
         if (!Shape(obj, "kind", "id")) return null;
         if (kind == "system") return systems && id is "worldCycle" or "factionCycle" ? new(kind, id, null) : null;
-        return kind is "npc" or "npcActivity" or "faction" or "location" or "worldFlag" ? new(kind, id, null) : null;
+        return kind is "npc" or "npcActivity" or "faction" or "location" or "locationLink" or "worldFlag" ? new(kind, id, null) : null;
     }
     private static string[] Fields(string kind) => kind switch
     {
@@ -142,7 +156,8 @@ internal static class MortalLivingWorldEvents
         "npcActivity" => ["currentActivity", "completedActivities"],
         "faction" => ["currentAgenda", "principles", "level", "experience", "powerProfile", "governance", "leadership", "relations"],
         "factionProject" => ["activeState", "finalState", "resourcesSpent", "timeSpentMinutes", "currentStep", "completionTurn"],
-        "location" => ["factionControl", "actorBindings", "storageMetadata", "activeThreats", "customStates", "topology"],
+        "location" => ["factionControl", "actorBindings", "locationStorages", "activeThreats", "customStates"],
+        "locationLink" => ["access"],
         "threat" => ["intensity", "longTermGoal", "currentActivity"],
         "worldFlag" => ["value"],
         _ => []
@@ -167,6 +182,7 @@ internal static class MortalLivingWorldEvents
                 return candidates.Count > 0 && candidates.All(item => JsonNode.DeepEquals(item, candidates[0])) && candidates.Count <= 2 ? candidates[0] : null;
             case "faction": Collect("game_state/factions/faction_core.json", "factions", "factionId", reference.Id); break;
             case "location": Collect("game_state/world/world_map.json", "locations", "locationId", reference.Id); break;
+            case "locationLink": Collect("game_state/world/world_map.json", "links", "linkId", reference.Id); break;
             case "worldFlag": Collect("game_state/world/world_flags.json", "worldStateFlags", "flagId", reference.Id); break;
             case "factionProject":
                 Collect("game_state/factions/faction_projects.json", "activeProjects", "projectId", reference.Id);
@@ -184,6 +200,29 @@ internal static class MortalLivingWorldEvents
     {
         if (node is not JsonObject evidence || evidence["present"] is not JsonValue value || !value.TryGetValue<bool>(out var declared) || declared != present) return false;
         return declared ? Shape(evidence, "present", "value") && JsonNode.DeepEquals(evidence["value"], actual) : Shape(evidence, "present");
+    }
+    // Domain-specific projections distinguish activity outcome/progress from its narrative label.
+    // Evidence still compares the entire original/settled value; this projection only decides meaningfulness.
+    private static string SemanticField(string kind, string field, JsonNode? node)
+    {
+        if (kind == "npcActivity")
+            return field == "currentActivity"
+                ? Project(node, "totalTimeCostMinutes", "timeSpentMinutes", "currentStepNumber", "totalStepsInActivity", "linkedQuestId", "linkedPlotOutlineNode")
+                : ProjectEach(node, "finalOutcome");
+        if (kind == "location" && field == "locationStorages")
+            return ProjectEach(node, "storageId", "capacity", "volume", "owner", "authorizedUsers", "hasFullAccess", "contents");
+        if (kind == "locationLink" && field == "access")
+            return Project(node, "state", "requirements");
+        return Semantic(node);
+    }
+    private static string ProjectEach(JsonNode? node, params string[] fields) => node is JsonArray array
+        ? "[" + string.Join(",", array.Select(item => Project(item, fields)).OrderBy(value => value, StringComparer.Ordinal)) + "]"
+        : Project(node, fields);
+    private static string Project(JsonNode? node, params string[] fields)
+    {
+        if (node is not JsonObject obj) return Semantic(node);
+        return "{" + string.Join(",", fields.Where(obj.ContainsKey).OrderBy(field => field, StringComparer.Ordinal)
+            .Select(field => System.Text.Json.JsonSerializer.Serialize(field) + ":" + Semantic(obj[field]))) + "}";
     }
     // Sort array representations as multisets; reordering alone is not evidence. Preserve multiplicity.
     private static string Semantic(JsonNode? node) => node switch

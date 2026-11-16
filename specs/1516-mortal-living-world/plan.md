@@ -92,3 +92,13 @@ integration build had 0 errors and 124 warnings; runner wall 12.240 seconds,
 no skips/duplicates and complete cleanup. Source capture implementation now
 replaces that scaffold and adds a current Mortal observation family; its GREEN
 and impacted NPC-original-presence control checks remain pending.
+
+Source GREEN attempt correctly refused all eight fixtures before report
+validation: the generic live presence fixture had not created a progression
+ledger. Its default supplied control was not a real scheduler preparation.
+The source guard is retained. The fixture now calls the real scheduler before
+live signing and asserts authenticated clock/schedule coverage before invoking
+the tested source. This is an explicit fixture correction, not permission to
+fabricate signed ledger DATA or weaken required originals. The six impacted
+NPC-presence controls were unrun because the runner stopped at the failed source
+category; they remain scheduled.

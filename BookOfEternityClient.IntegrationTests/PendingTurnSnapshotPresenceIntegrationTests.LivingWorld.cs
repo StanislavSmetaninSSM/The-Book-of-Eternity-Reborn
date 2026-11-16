@@ -114,7 +114,23 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await context.WriteExactJsonAsync(SoulPath, """{"currentRealm":"Mortal World"}""");
         await context.WriteExactJsonAsync(MortalLivingWorldSource.WorldTimePath, """{"currentTimeInMinutes":0}""");
         await context.WriteExactJsonAsync(LivingFlagsPath, """{"worldStateFlags":[{"flagId":"player_choice","value":1}]}""");
-        await PrepareLiveAsync(context);
+        var scheduler = new ProgressionScheduleService(context.FileSystem,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance);
+        var control = await scheduler.BuildControlForNextTurnAsync("Mortal World");
+        await new LiveTurnPreparationService(context.FileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "presence-live", RequestId = "presence-live-request", TurnNumber = 42,
+            CurrentRealm = "Mortal World", PlayerAction = "Evaluate elapsed living-world time.",
+            ProgressionControl = control, PreGeneratedDices1d20 = [7]
+        });
+        // The fixture must genuinely own its prepared schedule, not merely supply matching strings.
+        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            var original = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+                new PendingTurnSnapshotPathSelection([SoulPath, MortalLivingWorldSource.WorldTimePath,
+                    ProgressionScheduleService.SchedulePath], []));
+            Assert.True(original.Success, string.Join("; ", original.Issues.Select(issue => issue.Code)));
+        }
         return context;
     }
 
