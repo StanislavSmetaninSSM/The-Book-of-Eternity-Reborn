@@ -107,6 +107,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await files.WriteFileAtomicAsync("game_state/npcs/npc_skills.json", """
                     {"NPCActiveSkillChanges":[],"NPCPassiveSkillChanges":[],"NPCSkillMasteryChanges":[],"NPCPassiveSkillMasteryChanges":[]}
                     """);
+                if (transportAuditKind is not null)
+                {
+                    // Initialize derived current access before the real original snapshot.
+                    // The copied sample predates #1515's mandatory effective projection.
+                    var map = await ReadJsonObjectAsync(files, MortalLocationMaterializationContract.WorldMapPath);
+                    var access = await ReadJsonObjectAsync(files, MortalStorageAccessProjection.StatePath);
+                    var projection = MortalStorageAccessProjection.Build(map, access);
+                    Assert.True(projection.IsValid, DescribeValidationIssues(projection.Issues));
+                    await files.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, projection.Root!.ToJsonString());
+                }
             });
 
         await context.ReleaseLeaseAsync();
