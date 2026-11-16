@@ -906,7 +906,11 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.*"
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.SameTurnVehicleBirth_SealsCargoWithPermanentCarrierAndHealth",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.SameTurnVehicleCargo_ForeignSourceRefIsRejectedWithoutRawMutation",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.RawVehicleCargoAdmission_RejectsMalformedInventoryWithoutMutation",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.CargoResourceAdmission_RejectsItemIndexDriftAfterItemAdmission",
+            "BookOfEternityClient.Tests.MortalVehicleBirthCargoTests.CargoPublication_RejectsItemIndexDriftAfterResourceAdmissionBeforeWrites"
           ]
         }
       ]

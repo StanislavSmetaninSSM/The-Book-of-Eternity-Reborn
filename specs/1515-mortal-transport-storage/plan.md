@@ -8,6 +8,44 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Final reconciliation metadata and matching offscreen GREEN, 2026-11-16
+
+Saved integration/test source eb6b4399e9ce2a4e3a2023a94cf4e3db4a1e0198 has
+matching offscreen publication 9/9 PASS in 24.9834864s after the approved wrong-source
+oracle correction. Fresh integration build: 64.10s, 124 warnings, 0 errors.
+The corrected test requires the wrong source to fail and the exact derived source
+to pass; production remains unchanged from 48b0aea14dbf30e482dcc17214f5441b6fe9c30e.
+Cheap DATA controls retain matching 19/19 PASS in 10.4716923s at that production
+source; no unit rerun is implied by the integration-only fixture correction.
+
+Nine retained-impact categories were freshly checked against the matching source:
+current birth, existing empty publication/additions, bounded repair, current
+normalization, storage history, vehicle capacity, vehicle receipts publication and
+storage guidance. All 184/184 selected executions passed in 96.0360976s across
+12 complete descriptors. Both final runtime selections have complete cleanup,
+no skips, duplicate test IDs or timeouts. These are named bounded runs, not one
+whole-suite result. Raw logs/TRX remain outside Git.
+
+Final intended-diff metadata now includes 39 categories: the prior 21 plus 18
+restored earlier vehicle/access/consumer owners with exact contract reasons.
+The vehicle cargo owner is narrowed from its partial-class wildcard to five exact
+core sealing/source/index methods (eight parameterized cases before fresh discovery);
+other vehicle families retain their narrow owners. Vehicle cargo guidance is fully
+subsumed by selected vehicle birth contract and storage guidance selectors. Existing
+accepted evidence may be reused only when source/input/consumer joins remain valid;
+selection metadata itself is not new execution evidence or acceptance.
+
+The original issue/spec reconciliation finds no additional gameplay block beyond
+the implemented offscreen route. This is not final acceptance: remaining gates are
+fresh catalog discovery after these metadata edits, the two added affected consumer
+categories mortal-vehicle-birth-cargo and mortal-vehicle-cargo-item-interop,
+independent outcome/whole-change review and final saved-source clean restoration.
+T003/T008/T009/T009b/T011/T012/T014/T015 remain unchecked until their respective
+gates are verified; prior accepted vehicle/current-storage/display blocks stand.
+No production/test body, writer, authority, cache, merge or issue state is changed.
+Optimization assessment is unchanged: reuse admitted operation DATA and preserve
+fresh source/closing fences; no performance speedup is claimed.
+
 ## Offscreen runtime evidence and source-correction oracle, 2026-11-16
 
 At 48b0aea14dbf30e482dcc17214f5441b6fe9c30e fresh serial unit build

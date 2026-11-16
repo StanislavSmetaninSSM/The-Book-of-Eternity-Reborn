@@ -2,7 +2,7 @@
 
 Issue: [#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1515)
 Branch: `1515-mortal-transport-storage`; base `f3d0bc668481d1b648381a83dfc39d425fec8bde`.
-Status: WIP design, implementation and verification pending.
+Status: Vehicle, current-scene storage and canonical display blocks accepted. Offscreen implementation has matching targeted GREEN; final catalog/consumer checks, independent outcome review and clean restore remain pending.
 
 ## Scope and clarification
 
@@ -121,7 +121,7 @@ does not override explicit hasFullAccess=false: a closed owned object remains
 unavailable to the existing storage move consumer. Do not infer access from faction
 membership or silently widen permission while materializing the entity.
 
-### Planned full vehicle creation evidence v1
+### Full vehicle creation evidence v1
 The existing `vehicles.json` companion owns append-only client-authored
 `birthReceipts`. Each receipt has exactly `schemaVersion: 1`, `vehicleId`,
 `vehicleRef`, `sourceTurn`, `sourceAuthority` (sessionId, requestId, snapshotToken),
@@ -140,18 +140,19 @@ Raw receipt injection/deletion, duplicate or reused historical identity and miss
 required evidence fail closed. Canonical receipt reads must not enumerate historical
 cargo as active items. Current bootstrap/fixtures use the declared schema; no
 production migration or fabricated old receipts. Full-entity validation is separate
-from cheap partial resource-owner composition. Exact canonical boundary and
-historical-resource cross-checks are being verified before runtime wiring.
+from cheap partial resource-owner composition. Canonical boundary and historical-resource
+cross-checks are enforced by the accepted receipt implementation.
 
-### Bounded existing-location empty storage admission
+### Existing-location storage admission
 
 `worldMapUpdates.storagesToAdd[]` contains closed `{targetLocationId, storage}`
 operations. The target is an exact active pre-turn permanent Mortal location,
-not a same-turn initialId. `storage` declares all existing metadata fields and
-explicit `contents: []`; this checkpoint rejects nonempty contents, transfers
-and measurement fields rather than silently discarding them. Zero capacity and
-volume are valid for an empty declaration. Ordinary access remains explicit;
-ownership does not override false. Faction owners reuse existing exact authority.
+not a same-turn initialId. `storage` declares complete existing metadata and
+explicit `contents`. Empty declarations allow zero capacity/volume and do not
+permit nonempty `cargoMeasurements`. Populated births follow the exact route below.
+This operation does not authorize existing-item transfers or same-turn new-location
+targets. Ordinary access remains explicit; ownership does not override false.
+Faction owners reuse existing exact authority.
 
 The metadata is inserted through the existing detached location plan. The
 original location envelope/receipt is immutable; an existing-index child
@@ -164,7 +165,7 @@ and effective-access projection consume the resulting accepted map.
 
 ## Storage cargo birth evidence (implementation decision, FR5–FR7)
 
-For the supported current-scene storage birth, finalize detached version-1 cargo
+For the supported storage birth routes, finalize detached version-1 cargo
 capacity evidence in the existing location identity index's `storage_addition`
 transition `afterState`. The parent location receipt remains unchanged. Allocate
 one exact child transition during preparation, including for empty new storages;
@@ -185,8 +186,8 @@ raw index mutation/deletion is refused by existing signed-original continuity;
 standalone cold detection of a wholly removed record without the trusted expected
 birth context is not claimed. No new coverage marker or legacy-save promotion is
 introduced. Later accepted movement/consumption must preserve historical evidence
-without rechecking birth capacity against changed live contents. Actual populated
-offscreen birth remains a separate required follow-on in this same task.
+without rechecking birth capacity against changed live contents. The populated
+offscreen route is specified below.
 
 ## Canonical vehicle display (FR8 implementation decision)
 
@@ -200,12 +201,11 @@ and movement commands. Do not add semantic validation or permission caching to U
 Each consumer reuses its existing native parsed DOM; trivial scalar presentation
 can share policy without converting/reparsing whole roots.
 
-## Populated offscreen storage birth (next bounded FR5–FR7 block)
+## Populated offscreen storage birth (FR5–FR7)
 
-This approved design extends the accepted empty `storagesToAdd` checkpoint; it is
-not an implementation or verification claim. The required new case creates a
+This route extends the accepted empty `storagesToAdd` contract. It creates a
 fresh storage directly at an exact active pre-turn Mortal location B while A
-remains current. Its fresh items are born at B in that same accepted turn.
+remains current, with fresh items born at B in the same accepted turn.
 Creating a current-scene storage and subsequently parking it is not a substitute.
 The accepted current-scene creation path and existing empty additions remain
 supported without a retroactive evidence migration.
