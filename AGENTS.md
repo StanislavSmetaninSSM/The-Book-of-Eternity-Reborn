@@ -275,5 +275,5 @@ needed. Do not run all validation matrices for a documentation change.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/1553-portable-local-storage/plan.md
+at specs/1516-mortal-living-world/plan.md
 <!-- SPECKIT END -->
