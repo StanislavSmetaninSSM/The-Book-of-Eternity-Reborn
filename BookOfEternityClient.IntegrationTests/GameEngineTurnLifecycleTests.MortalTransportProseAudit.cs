@@ -39,6 +39,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.DoesNotContain("Аудитный склад", location + map);
         var validator = new ValidationService(context.FileSystem,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+        var stateIssues = await validator.ValidateGameStateAsync();
+        _directGachaOutput?.WriteLine("FULL STATE: " + DescribeValidationIssues(stateIssues));
         var rawLocation = await validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync();
         var rawItem = await validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync();
         var rawResource = await validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
