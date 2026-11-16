@@ -225,3 +225,9 @@ mandatory. Diagnosis/joint contributions must enter their genuine common plan
 before sealing, and final semantic checks must gate owner completion. A receipt
 alone never grants replay, acceptance or cross-lease authority. This design is
 not yet implemented or qualified.
+
+The next WIP batch built both projects successfully (Unit 82.19 s/96 warnings;
+Integration 53.38 s/125 warnings, both zero errors), but catalog preflight
+rejected two new QTE categories with empty change hints before any tests ran.
+Those metadata hints are corrected; the same compiled sources will be used
+for the official `-NoBuild` runs. This is setup failure, not behavioral RED.

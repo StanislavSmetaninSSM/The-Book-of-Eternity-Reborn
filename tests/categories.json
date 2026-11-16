@@ -77,7 +77,9 @@
       "id": "mortal-living-world-qte-clock-data",
       "responsibility": "#1516 Strict QTE newly crossed cycle clock DATA boundary.",
       "excludes": "Whole issue acceptance and other transaction owners.",
-      "changeHints": [],
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldQteBoundaryTests.cs"
+      ],
       "related": [],
       "requirements": {
         "frontendBuild": false,
@@ -99,7 +101,9 @@
       "id": "mortal-living-world-qte-boundary",
       "responsibility": "#1516 Real offer, handoff and terminal refusal before mutation for unsupported meaningful-time QTE.",
       "excludes": "Whole issue acceptance and other transaction owners.",
-      "changeHints": [],
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.LivingWorldBoundary.cs"
+      ],
       "related": [],
       "requirements": {
         "frontendBuild": false,
@@ -217,8 +221,8 @@
     },
     {
       "id": "mortal-living-world-event-evidence",
-      "responsibility": "#1516 detached canonical before/after event update evidence, semantic deltas, typed identities and declared news references.",
-      "excludes": "Creation/removal, source authentication, runtime wiring, receipt publication, NLP privacy and whole feature acceptance.",
+      "responsibility": "#1516 detached canonical before/after event update, explicit flag/project creation and project completion evidence, semantic deltas, typed identities and declared news references.",
+      "excludes": "Generic removal, source authentication, runtime wiring, receipt publication, NLP privacy and whole feature acceptance.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalLivingWorldEvents.cs",
         "BookOfEternityClient.Tests/MortalLivingWorldEventsTests.cs"
