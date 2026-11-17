@@ -5754,7 +5754,7 @@ public sealed class GmTurnHelperContractTests
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
         var processingHeartbeatBlock = ExtractFunctionBlock(daemon, "function Update-DaemonProcessingHeartbeat");
-        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-TurnCore {");
 
         Assert.Contains("Write-DaemonStatus -Status \"processing\" -Reason \"turn_processing_waiting\"", processingHeartbeatBlock, StringComparison.Ordinal);
         Assert.Contains("-CurrentTurnNumber $TurnNumber", processingHeartbeatBlock, StringComparison.Ordinal);
@@ -5771,11 +5771,11 @@ public sealed class GmTurnHelperContractTests
     public void DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
-        var turnBlock = ExtractFunctionBlock(daemon, "function Process-Turn");
+        var turnBlock = ExtractFunctionBlock(daemon, "function Process-TurnCore {");
 
         var counterIndex = turnBlock.IndexOf("$script:TurnCount++", StringComparison.Ordinal);
         var duplicateGuardIndex = turnBlock.IndexOf("if (Test-ObservedTerminalRequestKey -Key $turnRequestKey)", StringComparison.Ordinal);
-        var staleSnapshotGuardIndex = turnBlock.IndexOf("if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest))", StringComparison.Ordinal);
+        var staleSnapshotGuardIndex = turnBlock.IndexOf("if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -SamplingMismatch ([ref]$samplingMismatch)))", StringComparison.Ordinal);
         var turnLogIndex = turnBlock.IndexOf("Write-Log \"Turn #${turnNumber}:", StringComparison.Ordinal);
 
         Assert.True(counterIndex >= 0, "Expected Process-Turn to increment the daemon turn counter.");
@@ -5817,9 +5817,17 @@ public sealed class GmTurnHelperContractTests
         var guardedStart = daemon.LastIndexOf("try {", acquisition, StringComparison.Ordinal);
         Assert.True(guardedStart > daemon.IndexOf("Assert-SingleDaemonInstance\n", StringComparison.Ordinal));
         Assert.Contains("$daemonWatcherSubscriptions.Add([pscustomobject]", daemon, StringComparison.Ordinal);
-        var cleanup = ExtractFunctionBlock(daemon, "function Stop-GmDaemonWatcherResources");
-        Assert.True(cleanup.IndexOf("EnableRaisingEvents = $false", StringComparison.Ordinal) < cleanup.IndexOf("Unregister-Event", StringComparison.Ordinal));
-        Assert.True(cleanup.IndexOf("Remove-Job", StringComparison.Ordinal) < cleanup.IndexOf("$Signal.Dispose()", StringComparison.Ordinal));
+        var cleanupStart = daemon.IndexOf("\nfunction Stop-GmDaemonWatcherResources {", StringComparison.Ordinal);
+        Assert.True(cleanupStart >= 0);
+        var cleanupEnd = daemon.IndexOf("\n}\n\nAssert-SingleDaemonInstance", cleanupStart, StringComparison.Ordinal);
+        Assert.True(cleanupEnd > cleanupStart, "Expected the final cleanup function to end before daemon startup.");
+        var cleanup = daemon[cleanupStart..(cleanupEnd + 2)];
+        var disableIndex = cleanup.IndexOf("EnableRaisingEvents = $false", StringComparison.Ordinal);
+        var unregisterIndex = cleanup.IndexOf("Unregister-Event", StringComparison.Ordinal);
+        var removeJobIndex = cleanup.IndexOf("Remove-Job", StringComparison.Ordinal);
+        var disposeSignalIndex = cleanup.IndexOf("$Signal.Dispose()", StringComparison.Ordinal);
+        Assert.True(disableIndex >= 0 && unregisterIndex > disableIndex);
+        Assert.True(removeJobIndex > unregisterIndex && disposeSignalIndex > removeJobIndex);
         Assert.Contains("$failures.Add", cleanup, StringComparison.Ordinal);
 
     }
