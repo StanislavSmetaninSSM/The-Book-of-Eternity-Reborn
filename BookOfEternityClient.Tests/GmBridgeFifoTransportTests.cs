@@ -163,4 +163,188 @@ public sealed class GmBridgeFifoTransportTests
             Directory.Delete(root, recursive: true);
         }
     }
+
+    [Fact]
+    public async Task ConcurrentPeers_LargePayloadsRemainSeparate_AndPathsAreRemoved()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var server = Task.Run(async () =>
+            {
+                var replies = new List<Task>();
+                for (var i = 0; i < 4; i++)
+                {
+                    var peer = await listener.AcceptAsync(deadline.Token);
+                    replies.Add(Echo(peer));
+                }
+                await Task.WhenAll(replies);
+            });
+            async Task Echo(Stream peer)
+            {
+                await using (peer)
+                {
+                    var bytes = new byte[131072];
+                    await peer.ReadExactlyAsync(bytes, deadline.Token);
+                    await peer.WriteAsync(bytes, deadline.Token);
+                }
+            }
+            await Task.WhenAll(Enumerable.Range(1, 4).Select(async id =>
+            {
+                await using var client = await LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint, deadline.Token);
+                var sent = Enumerable.Repeat((byte)id, 131072).ToArray();
+                await client.WriteAsync(sent, deadline.Token);
+                var received = new byte[sent.Length];
+                await client.ReadExactlyAsync(received, deadline.Token);
+                Assert.Equal(sent, received);
+            }));
+            await server;
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task Disposal_JoinsPendingReadBlockedWriteAndWriteGateWaiter()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var accept = listener.AcceptAsync(deadline.Token);
+            await using var client = await LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint, deadline.Token);
+            await using var server = await accept;
+            var writer = client.WriteAsync(new byte[1048576], deadline.Token).AsTask();
+            Assert.Equal(1, await server.ReadAsync(new byte[1], deadline.Token));
+            Assert.False(writer.IsCompleted);
+            var queuedWriter = client.WriteAsync(new byte[1], deadline.Token).AsTask();
+            var reader = client.ReadAsync(new byte[1], deadline.Token).AsTask();
+            await client.DisposeAsync();
+            Assert.True(reader.IsCompleted);
+            Assert.True(writer.IsCompleted);
+            Assert.True(queuedWriter.IsCompleted);
+            foreach (var operation in new Task[] { reader, writer, queuedWriter })
+            {
+                var error = await Record.ExceptionAsync(() => operation);
+                Assert.True(error is OperationCanceledException or ObjectDisposedException);
+            }
+            await server.DisposeAsync();
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task BrokenReader_ReportsEpipeWithoutTerminatingCurrentTestHost()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var accept = listener.AcceptAsync(deadline.Token);
+            await using var client = await LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint, deadline.Token);
+            await using var server = await accept;
+            await server.DisposeAsync();
+            var error = await Assert.ThrowsAsync<LinuxBridgeFifoNative.NativeFailure>(() => client.WriteAsync(new byte[1], deadline.Token).AsTask());
+            Assert.Equal(32, error.ErrorNumber);
+            await client.DisposeAsync();
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task WrongRunSymlinkAndStaleEndpoint_AreRefused()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            await Assert.ThrowsAnyAsync<IOException>(() => LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint with { RunId = new string('0', 32) }));
+            var otherRun = Guid.NewGuid().ToString("N");
+            var alias = Path.Combine(root, "boe-bridge-" + otherRun);
+            Directory.CreateSymbolicLink(alias, listener.Endpoint.DirectoryPath);
+            try { await Assert.ThrowsAnyAsync<IOException>(() => LinuxBridgeFifoClient.ConnectAsync(new(alias, otherRun))); }
+            finally { Directory.Delete(alias); }
+            await listener.DisposeAsync();
+            await Assert.ThrowsAnyAsync<IOException>(() => LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint));
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task LostClientBeforeHello_CleansPeer_AndReplayCannotRecreateIt()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var nonce = Guid.NewGuid().ToString("N");
+            var peerPath = Path.Combine(listener.Endpoint.DirectoryPath, "peer-" + nonce);
+            SendTicket(listener.Endpoint, nonce);
+            await Until(() => Directory.Exists(peerPath), deadline.Token);
+            await Until(() => !Directory.Exists(peerPath), deadline.Token);
+            SendTicket(listener.Endpoint, nonce);
+            // Following valid ticket provides an ordering witness that replay was consumed.
+            var accept = listener.AcceptAsync(deadline.Token);
+            await using var client = await LinuxBridgeFifoClient.ConnectAsync(listener.Endpoint, deadline.Token);
+            await using var server = await accept;
+            Assert.False(Directory.Exists(peerPath));
+            await client.DisposeAsync(); await server.DisposeAsync();
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task PendingHandshakeCapacity_IsBounded_AndShutdownCleansAllAdmittedPeers()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(4));
+            for (var i = 0; i < 49; i++) SendTicket(listener.Endpoint, Guid.NewGuid().ToString("N"));
+            await Until(() => Directory.EnumerateDirectories(listener.Endpoint.DirectoryPath).Count() == 48, deadline.Token);
+            Assert.Equal(48, Directory.EnumerateDirectories(listener.Endpoint.DirectoryPath).Count());
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    [Fact]
+    public async Task MalformedTicket_FailsClosed_AndDisposalRemovesRun()
+    {
+        await InPrivateRoot(async root =>
+        {
+            await using var listener = LinuxBridgeFifoListener.Create(root);
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            using (var run = LinuxBridgeFifoNative.OpenDirectory(listener.Endpoint.DirectoryPath))
+            using (var ticket = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.WriteOnly))
+            {
+                Assert.Equal(2, LinuxBridgeFifoNative.Write(ticket, [0, 10], 2, out _));
+            }
+            await Assert.ThrowsAsync<System.Threading.Channels.ChannelClosedException>(() => listener.AcceptAsync(deadline.Token));
+            await listener.DisposeAsync();
+            Assert.Empty(Directory.EnumerateFileSystemEntries(root));
+        });
+    }
+
+    private static void SendTicket(LinuxBridgeFifoEndpoint endpoint, string nonce)
+    {
+        using var run = LinuxBridgeFifoNative.OpenDirectory(endpoint.DirectoryPath);
+        using var ticket = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.WriteOnly);
+        var bytes = Encoding.ASCII.GetBytes($"TICKET 1 {endpoint.RunId} {nonce}\n");
+        Assert.Equal(bytes.Length, LinuxBridgeFifoNative.Write(ticket, bytes, bytes.Length, out _));
+    }
+    private static async Task Until(Func<bool> condition, CancellationToken token)
+    {
+        while (!condition()) await Task.Delay(5, token);
+    }
+    private static async Task InPrivateRoot(Func<string, Task> body)
+    {
+        var root = Path.Combine(TestDiagnosticPaths.Root, "bridge-fifo", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try { await body(root); }
+        finally { Directory.Delete(root, recursive: true); }
+    }
 }

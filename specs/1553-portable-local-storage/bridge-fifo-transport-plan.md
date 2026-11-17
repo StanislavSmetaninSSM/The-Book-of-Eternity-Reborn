@@ -133,3 +133,20 @@ share a disposal completion that includes both closed FDs and joined operations.
 Synchronous stream disposal also joins. Unverifiable or changed cleanup targets
 remain refused, not recursively deleted. These corrections are UNCOMPILED/UNRUN;
 tests are unchanged. Further negative and independent-client controls remain.
+
+## Bounded lifecycle GREEN and next controls
+
+The unchanged seven-case selection passed 7/7 after fresh serial build (zero
+errors, 96 warnings, 101.90 seconds). Test duration 319ms; official runner wall
+17.6728101 seconds, exact seven cases, no skips/duplicates, complete cleanup.
+Thus the five newly demonstrated cleanup defects/assertions are RED→GREEN; this
+is not whole transport or live-relay acceptance.
+
+Seven further real-FIFO controls are now prepared: four concurrent 128KiB peers,
+pending-read/backpressured-write/write-gate disposal, broken-reader EPIPE in the
+current test host, wrong/stale/symlink endpoints, a client lost before HELLO plus
+retired-ticket replay, 48 pending handshakes with a 49th ticket, and malformed
+rendezvous input. Each explicitly checks path cleanup before fixture deletion.
+These additions are UNCOMPILED/UNRUN, with production unchanged. Independent
+client-process proof and application pin/launcher/live-GM integration remain open;
+the EPIPE case is not claimed as independent-process qualification.
