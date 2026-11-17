@@ -52,10 +52,12 @@ public partial class GameEngine
                     await preflight.Preparation.ValidateInventoryCurrentAsync(_fs, lease);
                     await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
                     await attempt.RecheckPreflightDebugPrefixAsync(JointAttemptIssuer, preflight);
-                    if (sourceOperation is not null) await sourceOperation.CompleteAsync();
+                    // Closing the unattempted reservation performs fresh source reads.
+                    // Complete the source operation only after that owner has closed.
                     CloseCurrentJointAttempt(attempt, lease);
                     if (attempt.CloseDisposition != "ClosedNoNativeAttempt" || attempt.Delegated)
-                        throw new InvalidDataException("joint_audit_preview_unattempted_close_unavailable");
+                        throw new InvalidDataException("joint_audit_preview_unattempted_close_unavailable: " + attempt.CloseDisposition);
+                    if (sourceOperation is not null) await sourceOperation.CompleteAsync();
                     lease.EnsureNoPendingLocalDecision();
                 }
                 catch

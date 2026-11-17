@@ -362,3 +362,19 @@ run once at each entry; common context fences remain identical. New terminal
 negative coverage is still required (Common-only, foreign preflight, closed or
 delegated owner and source drift); existing early-consumption negatives do not
 claim this coverage. No test result is inferred from source review.
+
+## Preview source-operation completion ordering WIP
+
+At d4ed557b integration build passed0errors/172warnings/131.52s. Preview executed
+1/1FAIL79.0148770s, complete owned cleanup/no skips/duplicates/timeout. It passed
+the new terminal prefix fence, then first unattempted close was unavailable.
+The implementation incorrectly completed SourceDataOperation BEFORE registry
+close, although close performs fresh source reads and Complete makes RequireOpen
+throw. Existing publisher closes before completion. Minimal correction moves
+source completion after verified ClosedNoNativeAttempt and before lease release;
+a completion failure still prevents returning preview DATA. Refusal diagnostics
+now include the actual close disposition rather than hiding it. No registry
+condition, rollback or close guarantee changed. This ordering correction is
+UNBUILT/UNRUN; independent review is checking the source explanation. Repeated
+clock capture is still a separate unimplemented issue, not a reached second
+preview failure yet.
