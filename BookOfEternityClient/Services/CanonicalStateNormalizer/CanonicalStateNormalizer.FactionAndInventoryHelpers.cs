@@ -753,13 +753,17 @@ public partial class CanonicalStateNormalizer
                 string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase) &&
                 FactionEntriesShareIdentity(project, command));
 
+            if (command["completionTurn"] is not JsonValue turnValue ||
+                !turnValue.TryGetValue<int>(out var completionTurn) || completionTurn < 0)
+                throw new InvalidDataException("Faction project completion requires an explicit nonnegative Int32 completionTurn.");
+
             var completed = existing != null ? CloneObject(existing) : new JsonObject();
             completed["factionId"] = effectiveFactionId;
             completed["factionName"] = factionName;
             completed["projectId"] = projectId;
             completed["projectName"] = GetNodeString(command["projectName"]) ?? GetNodeString(completed["projectName"]) ?? projectId;
             completed["finalState"] = GetNodeString(command["finalState"]) ?? "Completed";
-            completed["completionTurn"] = GetNodeString(command["completionTurn"]) ?? GetNodeString(completed["completionTurn"]) ?? "";
+            completed["completionTurn"] = completionTurn;
             completed.Remove("activeState");
             completed.Remove("initialFactionId");
 

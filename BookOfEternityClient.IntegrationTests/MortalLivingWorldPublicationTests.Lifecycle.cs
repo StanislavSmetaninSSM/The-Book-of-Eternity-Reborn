@@ -34,7 +34,7 @@ public sealed partial class MortalLivingWorldPublicationTests
         await using var context = await PrepareLifecycleAsync(true);
         var backups = await BackupsAsync(context);
         var before = LifecycleProject(); var after = LifecycleProject();
-        after.Remove("activeState"); after["finalState"] = "Completed"; after["completionTurn"] = "42";
+        after.Remove("activeState"); after["finalState"] = "Completed"; after["completionTurn"] = 42;
         await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 240 });
         await context.WriteJsonAsync(Projects, new JsonObject { ["completeFactionProjects"] = new JsonArray(new JsonObject
         { ["factionId"] = "council", ["factionName"] = "Council", ["projectId"] = "bridge", ["projectName"] = "Bridge", ["finalState"] = "Completed", ["completionTurn"] = 42 }) });

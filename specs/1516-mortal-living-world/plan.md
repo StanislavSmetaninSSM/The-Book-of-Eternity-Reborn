@@ -230,6 +230,26 @@ Split independent category owners into project-evidence-type (one unit case) and
 project-completion-type (nine integration cases) so fail-fast does not obscure
 causal outcomes. No tests or source behavior changed; integration RED is next.
 
+## Typed completion correction after complete causal RED — WIP
+
+The separated official project-completion-type run executed all9cases: 0PASS/9FAIL,
+11.322s, complete cleanup, no skips/duplicates/timeouts. Eight invalid commands
+failed because no exception was thrown; the positive failed at the Int32 assertion
+because the output was string. Together with the distinct one-case evidence RED,
+these demonstrate both faults without a full-world fixture.
+
+Draft source requires an explicit nonnegative Int32 command completionTurn before
+changing the tracker, then retains that numeric value. No parse, fallback turn,
+legacy save conversion or guessed completion is added. Living-world project
+completeness no longer accepts numeric strings. Existing lifecycle and journey
+expected canonical output now use integers, matching the existing domain contract.
+No new GM syntax or afterlife system: this corrects the already numeric Mortal
+completion command; canonical state validation is not weakened. No cache is useful
+for this scalar type check; existing cloned tracker and original reads are reused.
+Independent source review is pending. This correction is UNCOMPILED/UNRUN.
+Next: fresh builds, separate type gates, existing event/lifecycle consumers, then
+the real-engine journey. All acceptance and live-GM gaps remain explicit.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No

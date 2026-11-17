@@ -86,7 +86,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (stage == 2)
             {
                 var before = (await Read("game_state/factions/faction_projects.json"))["activeProjects"]![0]!;
-                var after = before.DeepClone().AsObject(); after.Remove("activeState"); after["finalState"] = "Completed"; after["completionTurn"] = request.TurnNumber.ToString(); after["timeSpentMinutes"] = 480; after["currentStep"] = 2;
+                var after = before.DeepClone().AsObject(); after.Remove("activeState"); after["finalState"] = "Completed"; after["completionTurn"] = request.TurnNumber; after["timeSpentMinutes"] = 480; after["currentStep"] = 2;
                 var completion = JourneyEffect("bridge-completed", JourneyReference("factionProject", JourneyProjectId, JourneyFactionId), "entity", before, after);
                 completion["operation"] = "complete"; effects.Add(completion);
                 await Write("game_state/factions/faction_projects.json", new JsonObject { ["factionProjectUpdates"] = new JsonArray(new JsonObject { ["factionId"] = JourneyFactionId, ["factionName"] = "Crossing Council", ["projectUpdate"] = new JsonObject { ["projectId"] = JourneyProjectId, ["projectName"] = "Repair the crossing", ["timeSpentMinutes"] = 480, ["currentStep"] = 2 } }), ["completeFactionProjects"] = new JsonArray(new JsonObject

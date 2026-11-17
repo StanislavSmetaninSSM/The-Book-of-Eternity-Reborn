@@ -230,8 +230,7 @@ internal static class MortalLivingWorldEvents
         value.GetValueKind() is JsonValueKind.Number or JsonValueKind.String);
     private static bool Nonnegative(JsonNode? node, out long value)
     {
-        var valid = Integer(node, out value) || node is JsonValue json && json.TryGetValue<string>(out var text) &&
-            long.TryParse(text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out value);
+        var valid = Integer(node, out value);
         return valid && value >= 0 && value <= int.MaxValue;
     }
 
