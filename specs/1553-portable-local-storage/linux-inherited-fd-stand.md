@@ -166,3 +166,32 @@ with an explicit typed gate lease that cannot mutate phase/deadlines, plus typed
 command/capability observations. Expiry probes now wait the real held deadline,
 not a shortened reflected field. Source review and a deterministic interrupted
 write/abort control remain pending; no runtime success is claimed.
+
+## First managed inherited run, 2026-11-17
+
+Saved source ac6d71414cef54579517aa314f237d995a46c426 (independent recovery
+branch 1589-relay-frozen-recovery-20261117) built with zero errors, 96 warnings
+in 106.55 seconds. Fresh offline restore and builds did not reuse bin/obj from
+another checkout. Official PlanOnly selected exactly two methods/five cases,
+zero execution, 8.196 seconds. The official NoBuild run completed 5/5 PASS,
+zero skips/duplicates, 47.183 seconds runner wall and complete runner cleanup.
+
+The actual original terminal used inherited bootstrap, exchanged two Unicode
+inputs, resized to 31x93, observed canonical EOF while root remained alive and
+returned StoppedWithinScope. Four actual-held-root control gate cases (L/A,
+cancel/expiry) cancelled before releasing the control gate, preserved held
+phase, did not create the exec marker and retained uncertainty while proving
+native cleanup. Every independent guardian reported ECHILD, driver exit zero,
+zero emergency signals/failures and no deadline. Expiry also exercises the real
+native five-second held timeout; it is not an isolated managed-timer proof.
+L is blocked-writer coverage, not a second lawful native launch admission.
+
+Raw diagnostics stay external under managed-first. TRX identity:
+20261117-104851-884-5-c87f37b33c2f476cb74143f30975fe0b-categories.
+This is the first passing managed observation, not final source/outcome
+acceptance. Earlier socket-creation RED remains distinct. These four gate tests
+have no claimed prior boundedness RED. Raw full-pipe cancellation/nonflushing
+abort, failed transfer/partial admission, independent review, bridge transport
+and actual maintained live-GM/game acceptance remain outstanding. No speedup
+claim: each actual root/guardian is deliberately fresh and cannot be cached;
+immutable toolchain/package DATA is reused, never ownership or authority.
