@@ -75,9 +75,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         faction["materialization"]!["sections"]!["projects"] = new JsonObject { ["state"] = "populated" };
         var structure = JourneyFactionCompanion();
         foreach (var key in new[] { "governance", "leadership", "ranks", "structuredBonuses" })
-        { structure[key] = faction[key]!.DeepClone(); if (key != "ranks") faction.Remove(key); }
-        // Initial full-state validation currently requires these duplicated carriers. The ordinary
-        // normalizer strips them; the journey must expose (not conceal) any resulting contract gap.
+        { structure[key] = faction[key]!.DeepClone(); faction.Remove(key); }
+        // Canonical resources and structure live in their exact sidecars.
+        faction.Remove("resources");
         foreach (var key in new[] { "playerBranch", "playerRank", "playerStrategyDirective", "reputationDescription" })
             faction[key] = null;
         var resources = JourneyFactionCompanion();

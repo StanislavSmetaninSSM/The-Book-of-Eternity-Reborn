@@ -61,6 +61,27 @@ raw nonmember materialization also requires null, so nullable handling must cove
 both Mortal forms while embedded resource/rank requirements stay raw-only.
 The existing narrow selector owns all fifteen rows; production remains unchanged.
 
+## Fifteen-case RED and minimal correction — WIP, GREEN unrun
+
+Official focused run: 13 PASS / 2 FAIL in 13.403 seconds; no skips, duplicates or
+timeout; complete cleanup. The raw positive has exactly eight null-as-string
+errors (four file-shape and four public response errors), while raw materialization
+accepts the same complete payload. Canonical positive exposes split resources/ranks
+plus four nullable fields. Integration build: 0 errors, 171 warnings, 123.27 seconds.
+
+The minimal production correction routes exact canonical faction-core state
+separately: embedded resources/ranks are not required there but supplied objects
+remain checked and mandatory sidecar completeness remains intact. Four membership
+fields use the existing nullable-string validator for both Mortal raw creation
+and canonical core. Raw embedded carriers, commands and the shared generic string
+validator remain unchanged. No new reads, parsing, cache or authority reuse.
+Journey seed now uses only canonical split resource/structure carriers. Fresh
+build, focused GREEN and next actual journey remain UNRUN at this checkpoint.
+
+Recovery note: a86c85a0 transferred one test file incompletely. 8b3c5957 repairs it
+and its full tree matches local verified 811645fd exactly; the 15-case RED ran from
+the complete source, not the damaged transfer. Use repaired or later checkpoints.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
