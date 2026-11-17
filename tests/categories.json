@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-mixed-mechanics-labels",
+      "responsibility": "#1538 mixed public NPC mechanics labels distinguish progression profiles from actual skills without changing accepted data.",
+      "excludes": "Live GM relay, browser layout and whole feature qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/NpcDetailSectionProjection.cs",
+        "BookOfEternityClient.Tests/MortalNpcAcceptedMechanicsDisplayTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcAcceptedMechanicsDisplayTests.SharedDrilldown_MixedMechanicsDoesNotLabelProfileAsSkill"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-console-skill-single-render",
       "responsibility": "#1538 actual Explorer console renders canonical active/passive names once, preserving mastery and privacy in normal/debug modes.",
       "excludes": "Browser rendering, live GM relay, purchases and whole issue qualification.",

@@ -1,3 +1,24 @@
+## Actual Firefox confirms progression and exposes mixed-label defect WIP, 2026-11-17
+
+Local official Firefox 160 rendered the real accepted turn-42 export through the
+built browser client: level 16, XP 1/102400, Standard profile and canonical skill
+are visible; the four checked private markers are absent. Screenshots inspected.
+However the actual profile card shows "Название навыка" above "Стандартный";
+reward and item rows also receive skill labels. This is a confirmed public-view
+consumer defect, not a progression calculation failure. No browser-wide PASS.
+
+Root authorized narrow correction after causal reproduction. Current hypothesis:
+NpcDetailSectionProjection classifies every row using the mixed section title
+which includes "Навыки". One cheap typed regression combines a real profile and
+canonical active skill, requires no skill label on the profile while preserving
+actual skill name/mastery labels and unchanged input bytes. Production unchanged;
+RED UNRUN. The similarly named browser normalizer is only a hypothesis until
+shown to participate; do not change it preemptively.
+
+Optimization: reuse the existing invocation-local projection and structured facts;
+no extra reads, cache or authority changes. Next: checkpoint, one-case RED, minimal
+context fix, GREEN and actual Firefox recheck. Live GM relay remains separate.
+
 ## Console fix GREEN and accepted export recovered, 2026-11-17
 
 Verified source 3d7d67a985f0e5a6f7caf90767cdeefc540fe34c. Fresh incremental
