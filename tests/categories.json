@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-independent-audit-contract",
+      "responsibility": "#1515/#1516 immutable audit packet and strict bound response DATA validation.",
+      "excludes": "No model inference, transport isolation, engine acceptance or completeness guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalTurnAuditContract.cs",
+        "BookOfEternityClient.Tests/MortalTurnAuditContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalTurnAuditContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-declared-effect-repair",
       "responsibility": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
       "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
