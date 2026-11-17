@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-bridge-fifo-linux",
+      "responsibility": "#1589 real Linux per-peer FIFO bridge transport: duplex bytes, EOF, cancellation and owned cleanup; no game preparation.",
+      "excludes": "Bridge dispatcher/launcher integration, worker PID authentication, Windows, hostile same-UID protection and live GM acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxBridgeFifoTransport.cs",
+        "BookOfEternityClient.Tests/GmBridgeFifoTransportTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-declared-effect-repair",
       "responsibility": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
       "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
