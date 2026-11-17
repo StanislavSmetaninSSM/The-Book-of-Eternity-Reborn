@@ -46,18 +46,24 @@ internal static class GmBridgeConsumerScenarioDriver
                 if (running.IsCompleted)
                     throw new IOException($"Actual bridge ended before publication (exit {await running}).");
                 var candidate = await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json");
-                var recordBytes = GmSessionRunPersistence.Read(root);
-                if (candidate != null && recordBytes != null)
+                if (candidate != null)
                 {
                     using var document = JsonDocument.Parse(candidate);
-                    var record = GmSessionRunRecordCodec.Decode(recordBytes);
-                    if (record.Disposition == GmSessionRunDisposition.Running &&
-                        document.RootElement.TryGetProperty("terminalRunId", out var run) &&
-                        run.GetString() == record.Identity.RunId)
+                    // First canonical terminal status is published only after the
+                    // original launch reaches Running. Before it, metadata may be
+                    // legitimately staged by admission and is not an observer input.
+                    if (document.RootElement.TryGetProperty("terminalRunId", out var run) &&
+                        run.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(run.GetString()))
                     {
-                        original = record;
-                        status = candidate;
-                        break;
+                        var recordBytes = GmSessionRunPersistence.Read(root)
+                            ?? throw new IOException("Published terminal has no original run record.");
+                        var record = GmSessionRunRecordCodec.Decode(recordBytes);
+                        if (record.Disposition == GmSessionRunDisposition.Running && run.GetString() == record.Identity.RunId)
+                        {
+                            original = record;
+                            status = candidate;
+                            break;
+                        }
                     }
                 }
                 await Task.Delay(10, startupDeadline.Token);

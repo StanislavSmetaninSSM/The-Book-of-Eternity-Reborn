@@ -365,3 +365,13 @@ on first fatal before waiting for handlers; a separate prepared-listener watcher
 starts before terminal startup and is canceled/joined at shutdown. Natural app
 shutdown still writes its original stop response before cancellation; no guarantee
 of concurrent unobserved close ACK delivery is added. Fresh GREEN pending.
+
+Fatal handoff implementation run:53completed52PASS/1FAIL,including new host-token
+regression PASS and Load PASS. Main-only driver failed during premature metadata
+observation before any canonical terminal status; it read the legitimate staged
+startup namespace, then its cleanup interrupted startup. Guardian still confirmed
+ECHILD/no emergencies. This is fixture ordering, not a relaxation request for
+metadata admission. Driver now waits for canonical terminalRunId publication
+before fresh original record admission; invalid published records still refuse,
+without catch/retry. Second requested input-lifetime descriptor was not executed
+because the first descriptor failed. Both require the next fresh verification.
