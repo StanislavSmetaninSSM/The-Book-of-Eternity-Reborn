@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-inherited-terminal-linux",
+      "responsibility": "#1589 actual managed original-owner inherited bootstrap, Unicode terminal I/O, resize, canonical EOF and scoped cleanup under independent guardian.",
+      "excludes": "Bridge FIFO, live GM/game acceptance, Windows, and positive old Unix-socket qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmInheritedTerminalLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-declared-effect-repair",
       "responsibility": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
       "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
