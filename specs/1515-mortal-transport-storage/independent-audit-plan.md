@@ -378,3 +378,30 @@ condition, rollback or close guarantee changed. This ordering correction is
 UNBUILT/UNRUN; independent review is checking the source explanation. Repeated
 clock capture is still a separate unimplemented issue, not a reached second
 preview failure yet.
+
+## First completed preview and deterministic replay WIP
+
+At883bcc89 build passed0errors/172warnings/131.56s. Real lifecycle executed1/1FAIL
+109.1811091s, complete cleanup/no skips/duplicates/timeout. The FIRST preview now
+returned after its actual close/release/expiry; the SECOND invocation failed
+`joint_audit_candidate_changed_before_preview_close` at test line18. This is the
+causal unchanged-input rebuild RED, no longer a first-close or phase refusal.
+
+The current correction retains the actual progression calculation JSON and its
+generation-bound fingerprint as detached preview DATA. Existing progression
+service freshly matches all calculation-source bytes/absence and exact control/
+request tuple, recomposes via its existing deterministic raw-input calculation,
+and constructs NEW lease-bound inputs. Engine then constructs NEW original-bound
+progression authority and keeps all original/source fences. No old lease-bound
+inputs are reused; frozen timestamps are calculation DATA, not fresh clock samples.
+The cache owner is the one pending preview; full source/control/tuple/generation
+identity invalidates reuse, and existing success/new-checkpoint reset clears it.
+No new global cache, scheduler algorithm or weaker timestamp comparison.
+
+Added seven cheap typed cases in a separate narrow integration category for
+cross-lease equality/old-object refusal and source/absence/control/tuple/fingerprint/
+body drift. They do not qualify generation replacement or the whole lifecycle.
+They are UNBUILT/UNRUN; causal engine RED above precedes this implementation.
+Fresh matching/recomposition still costs work and no speedup is claimed. Next:
+cheap category before one expensive lifecycle rerun, then required negatives and
+independent review. Model transport remains blocked and no audit gate activated.

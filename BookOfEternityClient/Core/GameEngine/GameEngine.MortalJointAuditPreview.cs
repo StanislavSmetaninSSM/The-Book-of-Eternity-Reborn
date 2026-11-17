@@ -9,7 +9,8 @@ public partial class GameEngine
     // Detached comparison DATA only. Never grants publication authority.
     internal sealed record MortalJointAuditPreview(string InputFingerprint,
         string PreparedPlanFingerprint, string InventoryFingerprint,
-        string SemanticCandidateJson, string NarrativeSourcesJson);
+        string SemanticCandidateJson, string NarrativeSourcesJson,
+        string ProgressionBasisJson, string ProgressionInputFingerprint);
 
     private MortalJointAuditPreview? _mortalJointAuditExpected;
 
@@ -146,6 +147,8 @@ public partial class GameEngine
         return new(plan.InputFingerprint, plan.PreparedPlanFingerprint, preflight.Preparation.InventoryFingerprint,
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(semantic),
             (_mortalJointNarrativeInvocation ?? throw new InvalidDataException("joint_audit_actual_n_missing"))
-                .CaptureAuditSourceData(JointNarrativeIssuer));
+                .CaptureAuditSourceData(JointNarrativeIssuer),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(plan.JointRepairCommonAuthority!.Progression.Inputs.ToDiagnosticJson()),
+            plan.JointRepairCommonAuthority.Progression.Inputs.Fingerprint);
     }
 }

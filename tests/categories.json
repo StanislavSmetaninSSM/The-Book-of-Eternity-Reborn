@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-joint-audit-progression-replay",
+      "responsibility": "#1515/#1516 detached progression DATA replay under a new lease; exact sources/control/tuple/calculation and old-lease refusal.",
+      "excludes": "No full engine lifecycle, live model, generation replacement or publication acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointProgressionReplayTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-joint-audit-preview-lifecycle",
       "responsibility": "#1515/#1516 genuine live joint preview unattempted close, fresh narrative recapture, deterministic rebuild and one actual publication.",
       "excludes": "No live model transport, whole Mortal audit acceptance, cold resume or browser owner qualification.",
