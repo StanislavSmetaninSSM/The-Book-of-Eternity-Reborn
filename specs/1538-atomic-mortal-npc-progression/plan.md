@@ -1,3 +1,27 @@
+## Row-local label GREEN and actual Firefox recheck, 2026-11-17
+
+Verified source 6a7e959ff35a49ba8129aecfcea50533a314ce9a. Fresh unit build:
+0 errors, 17 warnings, 77.83 seconds. Unchanged focused label test passed 1/1 in
+10.9092695 seconds; complete selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-080134-699-5-4ee1db908d974d5295d5e02788934870-categories.
+Independent Sol 6.1 XHigh reviewed actual diff and verified RED/GREEN summary/TRX;
+accepted only this bounded row-classification fix.
+
+A newly started real browser host and local Firefox 160 inspected the same
+accepted turn-42 world without new GM turns/purchases. Visible DOM confirms
+level 16, XP 1/102400, Standard profile and absence of the four private markers.
+Profile/reward/item facts no longer claim to be skill names: they retain generic
+'Sведения' labels, not newly invented semantic labels. Actual passive skill keeps
+its skill-name label, name, mastery 2/max 2 and progress 0/100. Skill screenshot
+visually inspected. The first fixed profile screenshot showed its corrected label
+but did not visibly show the value; a settled value screenshot is being requested,
+so DOM evidence is not overstated as that screenshot. Browser/host exited 0.
+
+No new cache/read, gameplay inference or GM contract change. Raw screenshots and
+logs remain outside Git. Live GM-relay and full negative/repair acceptance remain
+open; neither the UI checks nor scripted journeys replace live GM gameplay.
+No merge or closure.
+
 ## Mixed-label causal RED and row-local fix WIP, 2026-11-17
 
 Source fc66d03050e22fca901c3e1133b5c4cc21fe7734 built successfully: 0 errors,
