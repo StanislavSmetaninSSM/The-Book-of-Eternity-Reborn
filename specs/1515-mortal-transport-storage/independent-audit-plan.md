@@ -417,3 +417,44 @@ A typed mismatch exception now names differing components and retains detached
 expected/actual DATA; the test logs that exact pair locally. This diagnostic-only
 change preserves the strict comparison and every refusal. Next is one bounded
 diagnostic rerun, then root-cause decision. Raw pairs are never committed.
+
+## Paused checkpoint: exact allocation replay blocker
+
+Parent paused further lifecycle changes to prioritize requested GM relay #1589.
+Do not describe independent AI audit as implemented; T2/T3/T4 remain incomplete.
+
+At03f6bf66 diagnostic build passed0errors/173warnings/122.88s. The one real preview
+case executed1/1FAIL133.2518326s, complete owned cleanup/no skips/duplicates/timeout.
+Exact detached expected/actual comparison establishes:
+- NarrativeSourcesJson, ProgressionBasisJson and ProgressionInputFingerprint are
+  identical. The fresh-lease progression replay is working in the real journey.
+- InputFingerprint, PreparedPlanFingerprint, InventoryFingerprint and semantic
+  candidate differ. Actual differences are newly allocated effectId and effect
+  transition IDs, derived resource operation/transition IDs, their chronology,
+  wound fingerprints and links. Gameplay values did not justify erasing identity.
+- First preview returned only after its real unattempted close, lease release and
+  expiry. Second fresh preparation correctly refuses this different candidate.
+
+Current EffectIdentityFactory uses ordinary random GUID allocation. Closing the
+first reservation and rebuilding through fresh authority must also replay its
+causally addressed immutable allocation DATA if byte-identical audit acceptance
+is desired. Existing QTE identity ledger and SpiritualWoundReplayJournal/effect
+factory are reuse candidates to study, NOT already integrated here. No old
+lease-bound planner/authority may survive the model wait; IDs/fingerprints must
+not be ignored or normalized to force equality. A future bounded block needs
+capture/replay via the existing factory, exact event/role/subject and complete
+sequence checks, source/owner/generation invalidation, and no extra allocations.
+No implementation of that block was started before this pause.
+
+Saved source includes the verified narrow prepared-schedule correction, the
+first-preview close/order fixes, detached progression replay with7/7 cheap proof,
+and exact mismatch diagnostics. The entire lifecycle is NOT passing or accepted.
+New terminal-fence negatives, generation-replacement proof, independent final
+review, live model call/transport, final engine gate and physical publication
+readback are pending. No merge/issue closure/hosted CI/raw upload occurred.
+All owned test/build sessions have ended. Existing raw is local under
+/workspace/shared/diagnostics-mortal-audit and ignored TestResults. A historical
+interrupted run remains explicitly incomplete; this checkpoint does not certify
+its cleanup. Last complete mismatch run used TMPDIR on the workspace overlay,
+not the previously transiently full /tmp. Sources were restored from GitHub into
+an independent clean checkout through03f6bf66; no local-only code remains.
