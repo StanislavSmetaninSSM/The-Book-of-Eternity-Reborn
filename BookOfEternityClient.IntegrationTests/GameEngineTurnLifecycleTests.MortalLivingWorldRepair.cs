@@ -50,7 +50,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(originalRequest, File.ReadAllBytes(_fs.ResolvePath("input/turn_request.json")));
             Assert.Equal(originalManifest, File.ReadAllBytes(_fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)));
             var coreBytes = File.ReadAllBytes(_fs.ResolvePath("game_state/npcs/npc_core.json"));
-            var core = JsonNode.Parse(coreBytes)!;
+            var core = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(coreBytes).TrimStart('\uFEFF'))!;
             Assert.Equal(repairCount == 1 ? 0 : 240, core["NPCsInScene"]![0]!["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
             var storyPath = _fs.ResolvePath("stories/mortal_life_2.jsonl");
             Assert.True(!File.Exists(storyPath) || string.IsNullOrWhiteSpace(File.ReadAllText(storyPath)));
@@ -144,7 +144,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var receipt = Assert.Single(history["entries"]!.AsArray())!;
         Assert.Equal(dispatched!.RequestId, receipt["requestId"]!.GetValue<string>());
         Assert.Equal(dispatched.SessionId, receipt["sessionId"]!.GetValue<string>());
-        Assert.Equal(JsonNode.Parse(originalManifest!)!["manifestPayloadHash"]!.GetValue<string>(),
+        Assert.Equal(JsonNode.Parse(System.Text.Encoding.UTF8.GetString(originalManifest!).TrimStart('\uFEFF'))!["manifestPayloadHash"]!.GetValue<string>(),
             receipt["snapshotToken"]!.GetValue<string>());
         Assert.True(JsonNode.DeepEquals(declaredReport, receipt["report"]));
         Assert.Equal(42, receipt["turn"]!.GetValue<int>());

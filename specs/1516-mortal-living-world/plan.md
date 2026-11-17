@@ -348,6 +348,13 @@ excludes NLP; no new audit system or weakened assertion is introduced here. Pare
 was notified of this verified acceptance limitation. The red probe remains owned
 by its separate category; no completion/merge/live-GM qualification is claimed.
 
+The two-phase test atc84a49b4 compiled (0 errors,129 warnings,59.69s) but its
+run failed1/1 in16.579s before repair completion: new test byte-based JsonNode
+parsing rejected the existing UTF-8 BOM in npc_core. This is a fixture reader
+error, not a game rejection. Preserve byte arrays for equality; decode UTF-8 and
+remove only the BOM before JSON parsing for core and captured manifest. The
+source-only correction is UNRUN. No production behavior or assertion is weakened.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
