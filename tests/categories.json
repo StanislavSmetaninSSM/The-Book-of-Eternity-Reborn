@@ -21,7 +21,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn"
+            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn",
+            "BookOfEternityClient.Tests.MortalFactionProjectCompletionGuidanceTests.MortalFactionProjectCompletionGuidance_UsesExplicitIntegerTurn"
           ]
         }
       ]

@@ -4,6 +4,7 @@
       "factionId": "faction_silver_circle",
       "projectId": "proj_unknown",
       "projectName": "Unknown Project",
+      "completionTurn": 42,
       "finalState": "Completed"
     }
   ]

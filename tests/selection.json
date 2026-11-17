@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-living-world-project-completion-type",
+      "reason": "#1516 reopened verification: Actual project completion retains nonnegative Int32 and rejects invalid commands without tracker mutation.",
+      "contracts": [
+        "Actual project completion retains nonnegative Int32 and rejects invalid commands without tracker mutation."
+      ]
+    },
+    {
+      "category": "mortal-living-world-project-evidence-type",
+      "reason": "#1516 reopened verification: Evidence rejects numeric-string project completion; GM rules and examples teach explicit numeric turns.",
+      "contracts": [
+        "Evidence rejects numeric-string project completion; GM rules and examples teach explicit numeric turns."
+      ]
+    },
+    {
+      "category": "mortal-living-world-real-turn-journey",
+      "reason": "#1516 reopened verification: Reopened actual GameEngine multi-turn regression remains mandatory and is separate from required live GM relay acceptance.",
+      "contracts": [
+        "Reopened actual GameEngine multi-turn regression remains mandatory and is separate from required live GM relay acceptance."
+      ]
+    },
+    {
+      "category": "mortal-living-world-npc-activity-normalization",
+      "reason": "#1516 reopened verification: Actual activity command consumption preserves core changes, mirrors, receipts and preflight refusal boundaries.",
+      "contracts": [
+        "Actual activity command consumption preserves core changes, mirrors, receipts and preflight refusal boundaries."
+      ]
+    },
+    {
       "category": "mortal-living-world-assessment",
       "reason": "#1516 FR001-003: meaningful elapsed-time admission, exact source tuple and bounded legal no-change.",
       "contracts": [

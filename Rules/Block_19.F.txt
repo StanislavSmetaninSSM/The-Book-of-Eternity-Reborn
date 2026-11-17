@@ -133,11 +133,13 @@
       <![CDATA[
 
                             // Structure for each object in the 'completeFactionProjects' array:
+                            // completionTurn is the actual completion turn as a nonnegative JSON integer, never a string or an inferred default.
                             {
                                 "factionId": "guid_of_the_target_faction",
                                 "factionName": "name_of_the_target_faction",
                                 "projectId": "guid_of_the_project_that_was_completed",
                                 "projectName": "name_of_the_project",
+                                "completionTurn": 184,
                                 "finalState": "'Completed' | 'Abandoned'"
                             }
 

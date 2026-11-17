@@ -246,7 +246,13 @@ expected canonical output now use integers, matching the existing domain contrac
 No new GM syntax or afterlife system: this corrects the already numeric Mortal
 completion command; canonical state validation is not weakened. No cache is useful
 for this scalar type check; existing cloned tracker and original reads are reused.
-Independent source review is pending. This correction is UNCOMPILED/UNRUN.
+Independent source review accepts the bounded code and five impact categories.
+Its documentation findings are corrected: Rule19.F explicitly requires the actual
+nonnegative JSON integer completionTurn; E_Block_21 uses integer184; both existing
+project-ID fixtures include integer42 without changing their intended identity
+negative. A narrow source/fixture guard accompanies these updates. The saved
+selection adds the new type categories and reopened engine/activity checks; no
+aggregate selection is dispatched. This correction is UNCOMPILED/UNRUN.
 Next: fresh builds, separate type gates, existing event/lifecycle consumers, then
 the real-engine journey. All acceptance and live-GM gaps remain explicit.
 
