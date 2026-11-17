@@ -26,10 +26,10 @@ internal static partial class OwnedTerminalScenarioDriver
             gateLease = await owner.HoldInheritedControlForTestAsync();
             if (mode == "terminal-inherited-control-abort-timeout")
             {
-                using var cancelled = new CancellationTokenSource();
-                cancelled.Cancel();
+                using var cancelledRelease = new CancellationTokenSource();
+                cancelledRelease.Cancel();
                 var timer = Stopwatch.StartNew();
-                try { await owner.ReleaseTerminalAsync(cancelled.Token); throw new InvalidOperationException("Cancelled release unexpectedly succeeded."); }
+                try { await owner.ReleaseTerminalAsync(cancelledRelease.Token); throw new InvalidOperationException("Cancelled release unexpectedly succeeded."); }
                 catch (OperationCanceledException) { }
                 if (timer.Elapsed < TimeSpan.FromSeconds(1.5) || timer.Elapsed > TimeSpan.FromSeconds(4))
                     throw new InvalidOperationException("Original abort did not take its bounded gate-timeout path.");
