@@ -1,3 +1,35 @@
+## Whole-turn rejection and two-phase repair GREEN, 2026-11-17
+
+Verified source 30cd3f13b6ccb3cb33e55d9c5ebb2980083c6be1. Fresh integration build:
+0 errors, 126 warnings, 103.54 seconds. Official one-case repair journey passed
+1/1 in 29.1318382 seconds, full selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-082316-171-5-cd60253381e14e8d803059ad7323553f-categories.
+
+Actual ProcessPlayerTurn rejected the deliberately wrong XP result with exact
+npc_core_changes_progression_invalid at the experience path. Original actor bytes,
+turn 41 and absence of accepted story were verified before repair. Correcting the
+pending result under the same session/request/turn triggered the genuine second
+output-freshness request. Only narrative/interface were refreshed; canonical bytes
+were unchanged. After both Ready signals the engine accepted one XP grant and one
+story row, consumed the command and reloaded level 2 / XP 1/565 through a fresh
+public consumer. This is scripted full repair/resubmission evidence, not live GM.
+
+Because the shared journey helper changed, reran only its two existing affected
+ordinary/merchant-teacher leaves: 2/2 PASS in 30.9849286 seconds, full selection and
+owned cleanup, no skips/duplicates/timeouts. Run identity:
+20261117-082402-231-5-0842e2613b99463e90fb874f8eb85ce8-categories.
+No unchanged broad categories were replayed. Independent Sol 6.1 XHigh source and
+outcome reviews accepted this bounded two-phase repair block after checking the
+exact diagnostic refusal, summary/TRX, fixture cleanup and remote source identity.
+A nonblocking stale comment says "second refusal" where the watchdog now rejects
+a third unexpected request; behavior and source used by these runs are unchanged.
+
+Optimization: one preparation per real leaf, reused helper/output architecture,
+fresh external-GM packet reads required by the protocol, no new production cache
+or authority bypass. No production changes in this repair block. Post-accept stale
+replay is not newly qualified here. Live GM-relay remains mandatory; no merge or
+issue closure.
+
 ## Repair protocol source review refinement WIP, 2026-11-17
 
 Source re-review of e7ae3f39 found the maintained canonical-repair freshness rule:
