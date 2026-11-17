@@ -317,6 +317,10 @@ is NOT proof of that stronger coverage. The latter is expected to expose the
 current explicit-report/NLP boundary, not authorize a new audit system. Both
 checks are UNCOMPILED/UNRUN. No live-GM acceptance or closure is claimed.
 
+Preparation build at399ec712 failed in5.97s with CS0246: the new repair
+partial lacked the Core namespace import for IConsoleInputSource. Added only that
+import; this is compile setup, not a causal runtime RED. Both new tests remain UNRUN.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
