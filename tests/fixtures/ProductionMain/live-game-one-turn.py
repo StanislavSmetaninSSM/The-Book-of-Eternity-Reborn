@@ -8,6 +8,142 @@ GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 import errno, fcntl, hashlib, json, os, pty, re, select, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 
+class IncrementalEvidence:
+    """Each observed chunk survives loss of the driver before finally.
+
+    Flush/close gives process-loss persistence, not a power-loss durability claim.
+    No diagnostic quota or final rewrite. Protocol reply bounds stay separate.
+    """
+    def __init__(self, root): self.root=Path(root)
+    def raw(self, name, data):
+        with (self.root/(name+'.raw')).open('ab') as stream:
+            stream.write(data);stream.flush()
+    def event(self, entry):
+        with (self.root/'rpc-journal.jsonl').open('a',encoding='utf-8') as stream:
+            stream.write(json.dumps(entry,ensure_ascii=False)+'\n');stream.flush()
+
+class EvidenceJournal(list):
+    def __init__(self, evidence): super().__init__();self.evidence=evidence
+    def append(self, entry):
+        self.evidence.event(entry);super().append(entry)
+
+def observed_rpc(journal, payload, invoke, now):
+    identity=uuid.uuid4().hex
+    entry={'At':now(),'RPC':payload,'Attempted':True,'RequestId':identity};journal.append(entry)
+    try:response=invoke(identity)
+    except Exception as failure:
+        journal.append({'At':now(),'RequestId':identity,'RPCOutcome':'failed-or-unknown',
+            'Failure':type(failure).__name__+': '+str(failure)})
+        raise
+    journal.append({'At':now(),'RequestId':identity,'RPCOutcome':'completed','Response':response})
+    return response
+
+class OwnedProcessSnapshots:
+    """Read-only sample, never exit/cleanup authority; no argv or environment.
+
+    Roots are Popen identities; descendants must have a freshly checked parent.
+    A racing observation is explicitly incomplete, not an exit.
+    """
+    def __init__(self, proc_root=Path('/proc')): self.proc=Path(proc_root)
+    def _read(self, pid):
+        text=(self.proc/str(pid)/'stat').read_text()
+        fields=text[text.rindex(')')+2:].split()
+        if int(text.split(' ',1)[0])!=pid:raise ValueError('PID changed')
+        return {'Pid':pid,'ParentPid':int(fields[1]),'StartTicks':int(fields[19]),'State':fields[0]}
+    def register(self, pid):
+        try:return {'Pid':pid,'StartTicks':self._read(pid)['StartTicks']}
+        except (OSError,ValueError,IndexError):return {'Pid':pid,'StartTicks':None}
+    def collect(self, roots):
+        result={'Processes':[],'Unavailable':[],'Incomplete':False}
+        pending=list(roots);seen=set()
+        def unavailable(identity,reason):
+            result['Incomplete']=True;result['Unavailable'].append(dict(identity,Reason=reason))
+        while pending:
+            identity=pending.pop(0);pid=identity['Pid']
+            if pid in seen:continue
+            seen.add(pid)
+            try:
+                current=self._read(pid)
+                if identity['StartTicks'] is None:
+                    unavailable(identity,'unavailable');continue
+                if current['StartTicks']!=identity['StartTicks']:
+                    unavailable(identity,'identity-changed');continue
+                if 'ExpectedParent' in identity and (current['ParentPid']!=identity['ExpectedParent'] or
+                        self._read(identity['ExpectedParent'])['StartTicks']!=identity['ExpectedParentStartTicks']):
+                    unavailable(identity,'parent-changed');continue
+                try:current['WaitChannel']=(self.proc/str(pid)/'wchan').read_text().strip()
+                except OSError:current['WaitChannel']=None
+                children=set()
+                for task in sorted((self.proc/str(pid)/'task').iterdir()):
+                    if task.name.isdecimal():children.update(int(c) for c in (task/'children').read_text().split())
+                if self._read(pid)['StartTicks']!=identity['StartTicks']:
+                    unavailable(identity,'identity-changed');continue
+                result['Processes'].append(current)
+                for child in sorted(children):
+                    candidate=self.register(child)
+                    candidate['ExpectedParent']=pid;candidate['ExpectedParentStartTicks']=current['StartTicks'];pending.append(candidate)
+            except (OSError,ValueError,IndexError):unavailable(identity,'unavailable')
+        return result
+
+if len(sys.argv)==2 and sys.argv[1] in ('--check-incremental-evidence','--check-owned-process-snapshots'):
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='boe-driver-inert-') as directory:
+        root=Path(directory)
+        if sys.argv[1]=='--check-incremental-evidence':
+            evidence=IncrementalEvidence(root);events=EvidenceJournal(evidence)
+            evidence.raw('client',b'first\x00');events.append({'Phase':'first'})
+            assert (root/'client.raw').exists(), 'Raw evidence must exist before final cleanup'
+            assert (root/'client.raw').read_bytes()==b'first\x00'
+            assert json.loads((root/'rpc-journal.jsonl').read_text())=={'Phase':'first'}
+            evidence.raw('client',b'next');evidence.raw('client-echo',b'echo')
+            events.append({'Phase':'next'})
+            assert len(events)==2
+            assert (root/'client.raw').read_bytes()==b'first\x00next'
+            assert (root/'client-echo.raw').read_bytes()==b'echo'
+            assert [json.loads(x)['Phase'] for x in (root/'rpc-journal.jsonl').read_text().splitlines()]==['first','next']
+        else:
+            def proc(pid,ppid,start,children=''):
+                target=root/str(pid);(target/'task'/str(pid)).mkdir(parents=True,exist_ok=True)
+                fields=['S',str(ppid)]+['0']*17+[str(start)]
+                (target/'stat').write_text(str(pid)+' (name with ) paren) '+' '.join(fields))
+                (target/'wchan').write_text('pipe_read')
+                (target/'task'/str(pid)/'children').write_text(children)
+            proc(10,1,100,'11 12');proc(11,10,110,'13');proc(12,99,120);proc(13,11,130)
+            snapshot=OwnedProcessSnapshots(root);identity=snapshot.register(10)
+            observed=snapshot.collect([identity])
+            assert [r['Pid'] for r in observed['Processes']]==[10,11,13], 'Only original roots and verified descendants'
+            assert observed['Processes'][0]['StartTicks']==100
+            assert observed['Processes'][0]['WaitChannel']=='pipe_read'
+            proc(10,1,999,'11')
+            reused=snapshot.collect([identity])
+            assert not reused['Processes'] and reused['Incomplete']
+            assert reused['Unavailable'][0]['Reason']=='identity-changed'
+            (root/'10'/'stat').unlink()
+            missing=snapshot.collect([identity])
+            assert not missing['Processes'] and missing['Unavailable'][0]['Reason']=='unavailable'
+    print(json.dumps({'InertEvidenceChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-incremental-rpc':
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='boe-rpc-evidence-') as directory:
+        events=EvidenceJournal(IncrementalEvidence(directory));seen=[]
+        def success(identity):seen.append(identity);return {'ok':True}
+        assert observed_rpc(events,{'command':'status'},success,lambda:1)=={'ok':True}
+        rows=[json.loads(x) for x in (Path(directory)/'rpc-journal.jsonl').read_text().splitlines()]
+        assert len(rows)==2, 'Completed RPC must persist separately before final cleanup'
+        assert rows[0]['RequestId']==rows[1]['RequestId']==seen[0]
+        assert rows[1]['RPCOutcome']=='completed' and rows[1]['Response']=={'ok':True}
+        def failure(identity):seen.append(identity);raise TimeoutError('original reply unknown')
+        try:observed_rpc(events,{'command':'shutdown'},failure,lambda:2)
+        except TimeoutError as error:assert str(error)=='original reply unknown'
+        else:raise AssertionError('Lost response must remain a failure')
+        rows=[json.loads(x) for x in (Path(directory)/'rpc-journal.jsonl').read_text().splitlines()]
+        assert len(rows)==4 and len(seen)==2, 'No retry or missing failure evidence'
+        assert rows[2]['RequestId']==rows[3]['RequestId']==seen[1] and seen[0]!=seen[1]
+        assert rows[3]['RPCOutcome']=='failed-or-unknown' and 'Response' not in rows[3]
+        assert 'Response' not in rows[0], 'Attempt evidence stays immutable'
+    print(json.dumps({'InertRpcEvidenceChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
 def rpc_helper_arguments(script, shipped, current_session):
     # All code locations derive from the source fixture and explicit shipped package.
     return ['pwsh','-NoLogo','-NoProfile','-File',str(Path(script).with_name('bridge-request.ps1')),
@@ -165,7 +301,8 @@ if controlled_refusal or relay_mode:
     settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
     if relay_mode:settings['GmCliInputProfile'].update(PromptPrefix='RELAY> ',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)
     (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
-start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
+evidence=IncrementalEvidence(out);process_observer=OwnedProcessSnapshots();observed_processes=[];last_process_sample=-5.0
+start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
@@ -181,6 +318,9 @@ class Terminal:
         self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,
             stdout=subprocess.PIPE if captured_output else self.slave,
             stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
+        evidence.raw(name,b'')
+        if captured_output:evidence.raw(name+'-echo',b'')
+        observed_processes.append((name,self.process,process_observer.register(self.process.pid)))
         self.streams={self.master:'echo' if captured_output else 'output'}
         if captured_output:self.streams[self.process.stdout.fileno()]='output'
         self.closed_streams=set()
@@ -195,6 +335,12 @@ class Terminal:
         return re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',self.capture[offset:].decode('utf-8',errors='replace'))
 def elapsed():return round(time.monotonic()-start,3)
 def pump(delay=.02):
+    global last_process_sample
+    if elapsed()-last_process_sample>=5:
+        last_process_sample=elapsed()
+        sample=process_observer.collect([identity for _,_,identity in observed_processes])
+        journal.append({'At':elapsed(),'OwnedProcessSnapshot':sample,'OriginalProcessPolls':[
+            {'Name':name,'Identity':identity,'ExitCode':process.poll()} for name,process,identity in observed_processes]})
     fds=[fd for p in peers for fd in p.streams if fd not in p.closed_streams]
     readable=select.select(fds,[],[],delay)[0] if fds else []
     for p in peers:
@@ -206,9 +352,10 @@ def pump(delay=.02):
                 b=b''
             if not b:p.closed_streams.add(fd)
             target=p.echo if kind=='echo' else p.capture
-            if b:journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
+            if b:
+                evidence.raw(p.name+('-echo' if kind=='echo' else ''),b)
+                journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
             target.extend(b)
-            if len(target)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
         p.eof=len(p.closed_streams)==len(p.streams)
     if elapsed()>total_seconds:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
@@ -236,6 +383,7 @@ class ShippedRpc:
         except BaseException:
             for log in self.logs.values():log.close()
             raise
+        observed_processes.append(('shipped-rpc-fixture',self.process,process_observer.register(self.process.pid)))
         self.pending=bytearray();self.closed=set()
         journal.append({'At':elapsed(),'Entrypoint':'shipped-rpc-fixture','Argv':args,'OriginalPid':self.process.pid})
         try:
@@ -267,8 +415,7 @@ class ShippedRpc:
             if 'stdout' in self.closed:raise EOFError('Shipped RPC helper response lost; never replay')
             pump(0);self.collect(.01)
         raise TimeoutError('Original shipped RPC response unknown; never replay')
-    def request(self,payload,seconds):
-        identity=uuid.uuid4().hex
+    def request(self,payload,seconds,identity):
         frame={'id':identity,'payload':json.dumps(payload),'timeoutMilliseconds':int(seconds*1000)}
         self.process.stdin.write((json.dumps(frame)+'\n').encode());self.process.stdin.flush()
         reply=self.frame(seconds+.5)
@@ -295,10 +442,11 @@ rpc_peer=None
 def rpc(payload,seconds=2):
     global rpc_peer
     assert payload['command'] in ['status','diagnostics','shutdown']
-    item={'At':elapsed(),'RPC':payload,'Attempted':True};journal.append(item)
-    if rpc_peer is None:rpc_peer=ShippedRpc()
-    response=rpc_peer.request(payload,seconds)
-    item['Response']=response;return response
+    def send_original(identity):
+        global rpc_peer
+        if rpc_peer is None:rpc_peer=ShippedRpc()
+        return rpc_peer.request(payload,seconds,identity)
+    return observed_rpc(journal,payload,send_original,elapsed)
 
 def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def staging_signature():
@@ -602,9 +750,7 @@ finally:
         result['Terminals'][p.name]={'ExitCode':p.process.poll(),'EOF':p.eof,'StreamEOF':{kind:fd in p.closed_streams for fd,kind in p.streams.items()},
             'TermiosRestored':restored,'CapturedBytes':len(p.capture),'EchoBytes':len(p.echo),
             'OutputMode':'captured-pipe' if p.captured_output else 'original-pty'}
-        (out/(p.name+'.raw')).write_bytes(p.capture)
         if p.captured_output:
-            (out/(p.name+'-echo.raw')).write_bytes(p.echo)
             p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
