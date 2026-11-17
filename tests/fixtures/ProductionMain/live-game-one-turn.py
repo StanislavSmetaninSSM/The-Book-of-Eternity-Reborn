@@ -22,6 +22,18 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-arguments':
     assert args[7:]==['-StatusPath','/own/game_session/game_state/control/gm_bridge_status.json']
     print(json.dumps({'InertRpcArgumentChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
+def rpc_helper_closed(result):
+    proof=result.get('RpcHelperClosure')
+    return isinstance(proof,dict) and proof.get('ExitCode')==0 and proof.get('StdoutEof') is True and proof.get('StderrEof') is True and 'RpcHelperCleanupFailure' not in result
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-closure':
+    valid={'ExitCode':0,'StdoutEof':True,'StderrEof':True}
+    assert rpc_helper_closed({'RpcHelperClosure':valid})
+    assert not rpc_helper_closed({'RpcHelperClosure':dict(valid,ExitCode=1)})
+    assert not rpc_helper_closed({'RpcHelperClosure':dict(valid,StderrEof=False)})
+    assert not rpc_helper_closed({'RpcHelperClosure':valid,'RpcHelperCleanupFailure':'join unknown'})
+    print(json.dumps({'InertRpcClosureChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
 def current_client_failure(text):
     return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
 
@@ -173,8 +185,14 @@ class ShippedRpc:
     """One fixture process; each request uses a fresh shipped connector stream."""
     def __init__(self):
         args=rpc_helper_arguments(__file__,ship,session)
-        self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        self.pending=bytearray();self.capture=bytearray();self.errors=bytearray();self.closed=set()
+        self.logs={}
+        try:
+            for kind in ['stdout','stderr']:self.logs[kind]=(out/('rpc-helper.'+kind+'.log')).open('wb')
+            self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        except BaseException:
+            for log in self.logs.values():log.close()
+            raise
+        self.pending=bytearray();self.closed=set()
         journal.append({'At':elapsed(),'Entrypoint':'shipped-rpc-fixture','Argv':args,'OriginalPid':self.process.pid})
         try:
             ready=self.frame(5)
@@ -191,10 +209,11 @@ class ShippedRpc:
             if kind in self.closed or stream.fileno() not in readable:continue
             data=os.read(stream.fileno(),65536)
             if not data:self.closed.add(kind)
-            if kind=='stdout':self.pending.extend(data);self.capture.extend(data)
-            else:self.errors.extend(data)
-        if len(self.pending)>1048576 or len(self.errors)>65536 or len(self.capture)>16777216:
-            raise RuntimeError('Shipped RPC helper capture bound')
+            # Raw diagnostics stream directly to disk without a cumulative quota.
+            self.logs[kind].write(data);self.logs[kind].flush()
+            if kind=='stdout':self.pending.extend(data)
+        if len(self.pending)>1048576:
+            raise RuntimeError('Shipped RPC outstanding frame bound')
     def frame(self,seconds):
         deadline=min(start+total_seconds,time.monotonic()+seconds)
         while time.monotonic()<deadline:
@@ -226,8 +245,7 @@ class ShippedRpc:
             if self.process.returncode!=0:raise RuntimeError('Shipped RPC helper failed')
             return {'ExitCode':self.process.returncode,'StdoutEof':True,'StderrEof':True}
         finally:
-            (out/'rpc-helper.stdout.log').write_bytes(self.capture)
-            (out/'rpc-helper.stderr.log').write_bytes(self.errors)
+            for log in self.logs.values():log.close()
 
 rpc_peer=None
 def rpc(payload,seconds=2):
@@ -535,9 +553,9 @@ finally:
             p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
-    result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    result['ElapsedSeconds']=elapsed();result['Success']=rpc_helper_closed(result) and result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     if controlled_refusal:
-        result['ControlledCleanupVerified']=bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+        result['ControlledCleanupVerified']=rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))
