@@ -12,7 +12,8 @@ public sealed class GmBridgeDesktopControlTests
 {
     private const string Id = "0123456789abcdef0123456789abcdef";
     private static string Frame(string status = "{}", int timeout = 3000) => JsonSerializer.Serialize(new
-    { requestId = Id, statusJson = status, requestJson = "{\"command\":\"diagnostics\"}", timeoutMilliseconds = timeout });
+    { requestId = Id, statusJson = status, requestJson = "{\"command\":\"diagnostics\"}", timeoutMilliseconds = timeout },
+        new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
 
     [Fact]
     public void EnvelopePreservesRawStatusRequestIdentityAndDeadline()
@@ -146,6 +147,7 @@ public sealed class GmBridgeDesktopControlTests
                 using var reader = new StreamReader(stream, Encoding.UTF8, false, 1024, true);
                 using var request = JsonDocument.Parse((await reader.ReadLineAsync(deadline.Token))!);
                 Assert.Equal("diagnostics", request.RootElement.GetProperty("command").GetString());
+                Assert.Equal("Проверка реле", request.RootElement.GetProperty("text").GetString());
                 if (outcome == "reply")
                     await stream.WriteAsync("{\"ok\":true,\"actual\":73}\n"u8.ToArray(), deadline.Token);
                 else if (outcome == "eof") { await stream.DisposeAsync(); stream = null; }
@@ -161,11 +163,15 @@ public sealed class GmBridgeDesktopControlTests
                     Assert.True(receipt.GetProperty("StdoutEof").GetBoolean());
                     Assert.True(receipt.GetProperty("StderrEof").GetBoolean());
                     Assert.True(receipt.GetProperty("HelperExited").GetBoolean());
+                    Assert.True(receipt.GetProperty("WriteCompleted").GetBoolean());
+                    Assert.True(receipt.GetProperty("CleanupComplete").GetBoolean());
                     Assert.Equal("{\"ok\":true,\"actual\":73}", receipt.GetProperty("ResponseJson").GetString());
                 }
                 else
                 {
                     Assert.True(value.GetProperty("HelperExited").GetBoolean());
+                    Assert.True(value.GetProperty("WriteCompleted").GetBoolean());
+                    Assert.True(value.GetProperty("CleanupComplete").GetBoolean());
                     Assert.True(value.GetProperty("StdoutEof").GetBoolean());
                     Assert.True(value.GetProperty("StderrEof").GetBoolean());
                 }

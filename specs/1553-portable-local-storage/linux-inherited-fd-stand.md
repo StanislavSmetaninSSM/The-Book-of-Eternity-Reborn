@@ -645,3 +645,35 @@ process branch explicitly, not a fabricated Windows runtime. Actual Windows
 PowerShell 5.1 and full Windows game behavior remain unqualified. Existing unrelated
 Desktop helper defects are not included in this correction. The earlier live
 Linux acceptance and its preserved failures retain their original scope.
+
+
+### Independent Desktop boundary review: corrective RED and source corrections
+
+The first implementation built with 0 errors / 85 warnings in 93.21s but was
+not accepted. Independent review found uncaught InvalidDataException for bad
+frames, a valid Framework UTF-8 preamble rejected by the strict reader, and
+cleanup steps which could skip later original-I/O joins after an exception.
+Actual application-role diagnostics confirmed malformed and BOM frames exited
+134 with unhandled exceptions and no stdout. No game state was involved.
+
+Six new RunAsync cases were added before correction. Fresh test build: 0 errors /
+41 warnings, 28.26s. Official gm-bridge-desktop-control: 21/21 executed,
+16 PASS / 5 FAIL, 14.846s, no duplicates, complete owned-tree cleanup. Four
+failures were malformed/duplicate/double-BOM/valid-BOM handling. The fifth was
+the actual successful-reply process path producing a JSON array instead of the
+expected single receipt. UTF-16 and invalid UTF-8 refusal already passed.
+The original write task awaiter's VoidTaskResult is now explicitly discarded;
+the single-receipt assertion is retained rather than weakened.
+
+RunAsync now catches InvalidDataException and strips exactly one leading UTF-8
+BOM after strict UTF-8 decoding, without UTF-16/32 autodetection. Cleanup now guards
+HasExited, kill, WaitForExit, stdin close, task joins and Dispose independently,
+retains the first failure, and reports original WriteCompleted separately from
+stdout/stderr EOF. CleanupComplete requires exact-child exit, original tasks
+terminal and disposal. Unknown or incomplete cleanup cannot return success.
+The test Frame serializer now emits real Cyrillic UTF-8 instead of ASCII escapes;
+the actual PowerShell/FIFO request also carries a Cyrillic value checked at its
+original receiving stream. These strengthen byte coverage, not Windows claims.
+These source corrections await independent review and fresh GREEN. Raw evidence
+remains outside Git; no additional Windows-runtime or whole-game qualification
+is inferred.

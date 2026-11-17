@@ -40,9 +40,12 @@ internal static class GmBridgeRequestControl
             using var reader = new StreamReader(input, new UTF8Encoding(false, true), false, 1024, leaveOpen: true);
             var line = await reader.ReadLineAsync(token);
             if (line is null) return 2;
+            // Strict UTF-8 decoding above; remove one UTF-8 preamble only.
+            // Do not enable StreamReader UTF-16/32 autodetection.
+            if (line.Length > 0 && line[0] == '\uFEFF') line = line[1..];
             request = ParseRequest(line);
         }
-        catch (Exception ex) when (ex is IOException or JsonException or DecoderFallbackException or OperationCanceledException)
+        catch (Exception ex) when (ex is IOException or InvalidDataException or JsonException or DecoderFallbackException or OperationCanceledException)
         { return 2; }
         object reply;
         int exit;
