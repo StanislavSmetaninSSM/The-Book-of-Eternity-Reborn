@@ -1,3 +1,24 @@
+## Result-fed merchant and teacher journey WIP, 2026-11-17
+
+T011 adds a second independently owned ordinary journey. The same complete
+existing actor starts at standard level 15, XP 87141/87142, with seven accepted
+canonical stock items and an available narrative passive-unlock teacher offer.
+Both real services must report Ready before the engine captures its original.
+The authored +2 XP transition must be accepted normally as level 16 / 1 /102400.
+A fresh consumer then must refuse the stale teacher purchase before money/XP or
+skill mutations, and request eight trade slots without regenerating stock.
+Compare exact protected bytes and accepted inventory/showcase/skill preservation.
+No direct post-turn level rewrite, validator bypass or simulated acceptance.
+
+The already passing ordinary journey shares only per-test code, never mutable
+worlds. Its reload now also checks the actual reloaded session and turn number.
+The official category selects both journeys because that common harness changed.
+All new edits are UNRUN; source review and build are next. Public browser/console
+rendering and negative/retry remain open, with no task-closure claim.
+Optimization: one world per sequential journey, existing canonical item fixture
+and consumer services reused. Fresh service reads are the subject, not redundant
+setup. No new cache and no speedup claim. Raw remains outside the repository.
+
 ## First ordinary XP journey accepted, 2026-11-17
 
 Verified source dd7581cbf0fdca3955d34720645ee83f67748560. Fresh integration build:

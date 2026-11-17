@@ -3,14 +3,15 @@
   "categories": [
     {
       "id": "mortal-npc-progression-full-journey",
-      "responsibility": "#1538 full ProcessPlayerTurn progression, actual turn advance/story and reloaded result.",
-      "excludes": "Current first block does not yet qualify merchant/teacher chains or provider generation.",
-      "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs"],
+      "responsibility": "#1538 ordinary accepted XP journeys with actual turn/story/reload and result-fed merchant-slot and teacher-showcase freshness.",
+      "excludes": "No provider generation, rendered browser/console, successful new training purchase, new stock generation or whole-task qualification.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs", "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionConsumers.cs"],
       "related": [],
       "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_OrdinaryXpGainCompletesWholeTurnAndReloads"]}]
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_OrdinaryXpGainCompletesWholeTurnAndReloads",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_AcceptedLevelFeedsMerchantAndTeacherFreshness"]}]
     },
     {
       "id": "mortal-storage-offscreen-birth-data",
