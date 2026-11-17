@@ -77,3 +77,13 @@ Independent outcome review accepted this bounded seven-case block after checking
 source blobs against bffce306, build/run logs, TRX and all six guardian/scenario
 results. It did not rerun runtime. No historical buffered-writer RED, complete
 protocol-negative matrix, bridge admission or live-game acceptance is claimed.
+
+## Abort timeout control WIP
+
+Adds one existing-production behavior check: hold the original control lease,
+cancel ReleaseTerminalAsync before A, observe its two-second abort gate timeout,
+reject disposal of the uncertain original owner, then release only the fixture
+lease and observe cleanup through that same owner. This is a cleanup observation
+retry, not a second A or a claim that abort closure itself retried. No production
+change. Eight selected cases are UNCOMPILED/UNRUN. Fresh original native owner
+is required; no authority reuse/cache. Existing category owns the wildcard test.

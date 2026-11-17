@@ -21,6 +21,9 @@ public sealed partial class GmInheritedTerminalLinuxTests
     public async Task BlockedOriginalControl_CancelsWithoutCommandOrPhaseAdvance(string mode)
         => await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
+    public async Task AbortControlTimeout_RefusesDisposalAndRetainsSameOwnerForCleanup()
+        => await GmOwnedTerminalLinuxTests.RunAsync("terminal-inherited-control-abort-timeout");
+    [Fact]
     public async Task ActualPartialControlInitialization_RetainsOriginalFailureAndOwner()
         => await GmOwnedTerminalLinuxTests.RunAsync("terminal-inherited-control-init-failure");
 }

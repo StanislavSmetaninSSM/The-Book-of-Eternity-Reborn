@@ -24,6 +24,30 @@ internal static partial class OwnedTerminalScenarioDriver
                 Guid.NewGuid().ToString("N"), 80, 25, CancellationToken.None);
             if (!owner.UsesInheritedTerminalBootstrap) throw new InvalidOperationException("Inherited path was not exercised.");
             gateLease = await owner.HoldInheritedControlForTestAsync();
+            if (mode == "terminal-inherited-control-abort-timeout")
+            {
+                using var cancelled = new CancellationTokenSource();
+                cancelled.Cancel();
+                var timer = Stopwatch.StartNew();
+                try { await owner.ReleaseTerminalAsync(cancelled.Token); throw new InvalidOperationException("Cancelled release unexpectedly succeeded."); }
+                catch (OperationCanceledException) { }
+                if (timer.Elapsed < TimeSpan.FromSeconds(1.5) || timer.Elapsed > TimeSpan.FromSeconds(4))
+                    throw new InvalidOperationException("Original abort did not take its bounded gate-timeout path.");
+                if (owner.Uncertainty == null || File.Exists(marker))
+                    throw new InvalidOperationException("Abort timeout erased uncertainty or released the payload.");
+                var refusedDispose = false;
+                try { await owner.DisposeAsync(); } catch (InvalidOperationException) { refusedDispose = true; }
+                if (!refusedDispose) throw new InvalidOperationException("Unresolved original owner was disposed.");
+                gateLease.Dispose(); gateLease = null;
+                var retry = await owner.StopAndObserveAsync();
+                if (!retry.CleanupComplete || retry.AuthorityRetained || owner.Uncertainty == null || File.Exists(marker))
+                    throw new InvalidOperationException("Same-owner observation failed after releasing the blocked gate.");
+                result["Success"] = true;
+                result["AbortWaitMilliseconds"] = timer.Elapsed.TotalMilliseconds;
+                result["DisposeRefused"] = true;
+                result["SameOwnerCleanupComplete"] = true;
+                return 0;
+            }
             var expiry = mode.EndsWith("expiry", StringComparison.Ordinal);
             using var token = new CancellationTokenSource();
             if (!expiry) token.CancelAfter(TimeSpan.FromMilliseconds(200));
