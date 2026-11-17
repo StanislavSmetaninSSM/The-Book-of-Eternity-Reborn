@@ -1,3 +1,21 @@
+## Settled real Firefox screenshots verified, 2026-11-17
+
+Follow-up on source 6a7e959f completed after separate scroll and capture calls.
+Both implementer and browser worker visually inspected the settled screenshots:
+profile card explicitly shows "Профиль развития", "Сведения", "Стандартный" and
+its formula; progression card explicitly shows level 16 and XP 1/102400 for
+Лев Наблюдатель. Earlier screenshot-value uncertainty is resolved only by these
+new captures; its cause is not asserted. Existing skill screenshot retains the
+actual skill name and progress. Raw images stay outside Git.
+
+SHA256 of settled profile image:
+ca91a0fd2a19d0778a516a953e82827d80b798f3b635013b61cb65174bbd29ef.
+SHA256 of settled XP/level image:
+89afb5b19214be9bc6dbccb62e43f347c8e9ab0737869e1368483b8a7aba6cbb.
+Firefox and host exited 0. No new GM turn or purchase was submitted. This closes
+the specific observed public-view defects and accepted-state UI inspection,
+not live GM-relay or full negative/repair/retry acceptance. No merge/closure.
+
 ## Row-local label GREEN and actual Firefox recheck, 2026-11-17
 
 Verified source 6a7e959ff35a49ba8129aecfcea50533a314ce9a. Fresh unit build:
