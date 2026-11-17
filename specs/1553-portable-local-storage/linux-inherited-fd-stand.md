@@ -266,3 +266,12 @@ peer creation and malformed endpoint refusal. UNBUILT/UNRUN at this checkpoint.
 No consumer wiring or live-GM success is claimed. Small endpoint DATA is parsed
 once per new connection; connection ownership cannot be cached. Existing FIFO
 17 cases remain controls because the public connector delegates to that transport.
+
+Connector causal RED: official category selected/completed25, 17 prior FIFO
+controls PASS and eight new cases FAIL with refusing-only connector; cleanup
+complete, no skips/duplicates, 17.131s runner wall. Build0errors96warnings94.63s.
+The implementation now validates exact version/kind/path/run before connection,
+delegates FIFO to the accepted transport, disposes failed named-pipe attempts,
+and checks caller cancellation before any new peer. No reconnect or fallback
+exists in clients. Linux named-pipe absolute paths remain valid so changing a
+child TMPDIR cannot retarget its original endpoint. GREEN pending.
