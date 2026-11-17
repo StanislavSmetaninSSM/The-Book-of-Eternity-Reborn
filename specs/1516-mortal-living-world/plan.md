@@ -104,6 +104,22 @@ After that, rerun the retained world journey and complete explicit receipt/news
 persistence plus contradictory-package/same-request repair evidence. Issue remains
 open; no merge/closure, live model, UI or full feature acceptance is claimed.
 
+## NPC activity component reproduction — test-only UNRUN
+
+A new sparse actual-normalizer case authors simultaneous supported NPCCoreChanges
+and NPCActivityUpdates against a genuine existing actor, exact mirrored core and
+an unchanged sibling. Whole-core expected equality protects receipts/history,
+checks command consumption and no replay. It does not fabricate an accepted plan
+or claim accepted-turn ownership. Category: mortal-living-world-npc-activity-normalization.
+Source/build/discovery/runtime are unqualified until execution; no activity
+production code is changed. This component gate supplements, never replaces,
+the already reached real GameEngine refusal.
+
+User's new requirement: final acceptance needs a LIVE GM relay journey with the
+root assistant acting as GM. Scripted regression responses above are technical
+regression evidence only, not live relay acceptance. Relay preparation runs
+separately while this defect is reproduced and corrected.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No

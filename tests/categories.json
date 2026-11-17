@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-npc-activity-normalization",
+      "responsibility": "#1516 actual normalizer applies bounded NPC activity progress to both canonical copies while preserving existing core reduction, sibling state and receipts, consuming commands and preventing replay.",
+      "excludes": "Full accepted-turn admission, completion outcome semantics, skill/treatment composition and unrelated NPC policy.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.NpcActivities.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-real-turn-journey",
+          "when": "After the component activity reduction gate, verify real accepted-turn effect evidence and publication separately."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityProgress_PreservesCoreChangesMirrorsAndReceipts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-canonical-faction-shape",
       "responsibility": "#1516 canonical Mortal split faction state agrees across real shape and materialization phases; nullable membership retains type checks, sidecars remain required and raw full-creation carriers remain mandatory.",
       "excludes": "Full GameEngine journey, faction command reduction, afterlife contracts and unrelated faction policies.",
