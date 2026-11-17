@@ -198,3 +198,20 @@ This does not qualify application run/root/generation or grant/activate/close-AC
 semantics, PowerShell consumer loading, bridge dispatcher/launcher integration,
 worker PID authentication, or a live GM turn. Those remain the parent's next
 integration boundary. No merge or issue closure is claimed here.
+
+## Final bounded handoff review
+
+Independent Astra High source/outcome review accepted the standalone Linux-x64
+FIFO boundary including all three independent-process cases, with no new
+Critical/Important finding. It verified exact source blobs, project wiring, logs
+and TRX without rerunning. Descriptor closure was accepted from the unconditional
+reviewed finally, not inferred merely from removed paths. The original capacity
+snapshot and per-byte parsing observations remain nonblocking deferred minors.
+
+The handoff contains three new production transport files, test-only fixtures,
+tests and the dedicated selection. Shared catalog, unit project and ignore-file
+changes must be integrated additively; they must not replace another branch's
+entries. Transport run identity is distinct from application identity. Internal
+48 slots bound pending handshakes plus queued connections only; accepted Stream
+count remains the bridge's responsibility. No consumer wiring was changed here.
+Ready for a separately reviewed integration block, not merge or issue closure.
