@@ -73,12 +73,23 @@ class OwnedProcessSnapshots:
                     unavailable(identity,'parent-changed');continue
                 try:current['WaitChannel']=(self.proc/str(pid)/'wchan').read_text().strip()
                 except OSError:current['WaitChannel']=None
-                children=set()
-                for task in sorted((self.proc/str(pid)/'task').iterdir()):
-                    if task.name.isdecimal():children.update(int(c) for c in (task/'children').read_text().split())
-                if self._read(pid)['StartTicks']!=identity['StartTicks']:
+                children=set();children_errors=[]
+                try:tasks=sorted((self.proc/str(pid)/'task').iterdir())
+                except OSError as error:
+                    tasks=[];children_errors.append(dict(identity,Stage='task-enumeration',Errno=error.errno))
+                for task in tasks:
+                    if not task.name.isdecimal():continue
+                    try:children.update(int(c) for c in (task/'children').read_text().split())
+                    except (OSError,ValueError) as error:
+                        children_errors.append(dict(identity,Stage='task-children',Tid=int(task.name),Errno=getattr(error,'errno',None)))
+                final=self._read(pid)
+                if final['StartTicks']!=identity['StartTicks']:
                     unavailable(identity,'identity-changed');continue
+                if final['ParentPid']!=current['ParentPid'] or ('ExpectedParent' in identity and
+                        self._read(identity['ExpectedParent'])['StartTicks']!=identity['ExpectedParentStartTicks']):
+                    unavailable(identity,'parent-changed');continue
                 result['Processes'].append(current)
+                for error in children_errors:unavailable(error,'children-unavailable')
                 for child in sorted(children):
                     candidate=self.register(child)
                     candidate['ExpectedParent']=pid;candidate['ExpectedParentStartTicks']=current['StartTicks'];pending.append(candidate)
@@ -114,6 +125,16 @@ if len(sys.argv)==2 and sys.argv[1] in ('--check-incremental-evidence','--check-
             assert [r['Pid'] for r in observed['Processes']]==[10,11,13], 'Only original roots and verified descendants'
             assert observed['Processes'][0]['StartTicks']==100
             assert observed['Processes'][0]['WaitChannel']=='pipe_read'
+            (root/'10'/'task'/'99').mkdir()
+            siblings=snapshot.collect([identity])
+            assert [r['Pid'] for r in siblings['Processes']]==[10,11,13]
+            assert siblings['Incomplete'] and siblings['Unavailable'][0]['Tid']==99
+            assert siblings['Unavailable'][0]['Stage']=='task-children' and siblings['Unavailable'][0]['Errno']==2
+            (root/'10'/'task'/'99').rmdir()
+            (root/'10'/'task'/'10'/'children').unlink()
+            limited=snapshot.collect([identity])
+            assert [r['Pid'] for r in limited['Processes']]==[10], 'Missing children interface must not erase verified root observation'
+            assert limited['Incomplete'] and limited['Unavailable'][0]['Reason']=='children-unavailable'
             proc(10,1,999,'11')
             reused=snapshot.collect([identity])
             assert not reused['Processes'] and reused['Incomplete']
@@ -143,6 +164,33 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-incremental-rpc':
         assert rows[3]['RPCOutcome']=='failed-or-unknown' and 'Response' not in rows[3]
         assert 'Response' not in rows[0], 'Attempt evidence stays immutable'
     print(json.dumps({'InertRpcEvidenceChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-driver-evidence-integration':
+    # Execute the real module assignment, real provider artifact loop and real
+    # pump in ONE namespace. Actual pipe bytes, no package/game/subprocess.
+    import ast, tempfile, types
+    tree=ast.parse(Path(__file__).read_text())
+    setup=next(n for n in tree.body if isinstance(n,ast.Assign) and isinstance(n.value,ast.Call)
+               and isinstance(n.value.func,ast.Name) and n.value.func.id=='IncrementalEvidence')
+    artifact_loop=next(n for n in ast.walk(tree) if isinstance(n,ast.For) and isinstance(n.iter,ast.List)
+                      and n.iter.elts and isinstance(n.iter.elts[0],ast.Constant) and n.iter.elts[0].value=='error_log.txt')
+    actual_pump=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='pump')
+    with tempfile.TemporaryDirectory(prefix='boe-driver-integration-') as directory:
+        root=Path(directory);read_fd,write_fd=os.pipe()
+        try:
+            peer=types.SimpleNamespace(master=read_fd,streams={read_fd:'output'},closed_streams=set(),
+                name='actual-pump',capture=bytearray(),echo=bytearray(),eof=False)
+            scope=dict(globals(),out=root,session=root,peers=[peer],elapsed=lambda:0,last_process_sample=0,
+                total_seconds=100,journal=[])
+            exec(compile(ast.Module(body=[setup,artifact_loop,actual_pump],type_ignores=[]),__file__,'exec'),scope)
+            os.write(write_fd,b'actual pump after artifact loop')
+            try:scope['pump'](0)
+            except AttributeError as failure:raise AssertionError('Artifact loop must not replace the live evidence sink') from failure
+            assert (root/'actual-pump.raw').read_bytes()==b'actual pump after artifact loop'
+            assert peer.capture==b'actual pump after artifact loop'
+            assert scope['journal'][0]['ByteEnd']==len(peer.capture)
+        finally:os.close(read_fd);os.close(write_fd)
+    print(json.dumps({'InertActualPumpChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
 def rpc_helper_arguments(script, shipped, current_session):
     # All code locations derive from the source fixture and explicit shipped package.
@@ -597,11 +645,11 @@ try:
         pump()
         # Capture transient client rejection evidence before a later rollback can
         # delete it; each artifact is copied once, at first observation.
-        for evidence in ['error_log.txt','output/validation_repair_request.json',
+        for artifact_name in ['error_log.txt','output/validation_repair_request.json',
             'game_state/control/validation_diagnostic_failure_report.json']:
-            source_path=session/evidence
-            if source_path.exists() and not (out/('captured-'+evidence.replace('/','__'))).exists():
-                (out/('captured-'+evidence.replace('/','__'))).write_bytes(source_path.read_bytes())
+            source_path=session/artifact_name
+            if source_path.exists() and not (out/('captured-'+artifact_name.replace('/','__'))).exists():
+                (out/('captured-'+artifact_name.replace('/','__'))).write_bytes(source_path.read_bytes())
         # Observe current output before another status RPC can obscure the causal
         # failure. Old startup/turn output is outside this original action's cut.
         provider_text=bridge.text(provider_bridge_offset)

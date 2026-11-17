@@ -455,3 +455,16 @@ one-line change, so it was not reused as current acceptance. No broader suite or
 Windows runtime qualification is claimed. Fresh live run d uses478 byte-identical
 published files and only the reviewed daemon replacement; no saved game/queue or
 ownership copied. Actual live acceptance and original cleanup remain next.
+
+Live d failed after one actual action and zero accepted turns: an old top-level
+`for evidence` artifact loop shadowed the new diagnostic sink, so the next real
+pump raised AttributeError. This fixture wiring error escaped isolated helper
+checks. Its still-pending status reply then mismatched the shutdown correlation;
+no retry or fabricated ACK was used. Original logical cleanup is unconfirmed;
+guardian reports ECHILD with two emergency signals, not clean completion.
+New regression executes the actual module assignment, artifact loop and pump in
+one namespace with a real pipe: RED reproduced the collision, GREEN renames only
+the loop variable. Process snapshots now preserve verified root rows when child
+listing is unavailable and separately record stage/errno/TID; inaccessible children
+remain UNKNOWN. All nine inert driver modes pass. No production changes. Next e
+reuses only the verified immutable runtime/native/relay; game state is fresh.
