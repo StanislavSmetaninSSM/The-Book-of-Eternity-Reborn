@@ -150,3 +150,15 @@ rendezvous input. Each explicitly checks path cleanup before fixture deletion.
 These additions are UNCOMPILED/UNRUN, with production unchanged. Independent
 client-process proof and application pin/launcher/live-GM integration remain open;
 the EPIPE case is not claimed as independent-process qualification.
+
+## Fourteen-case bounded transport GREEN
+
+Saved test-only `2ec02c0bc0d484050c4ef1c160b9b9a6fed85d91` built with zero errors,
+40 warnings, 32.22 seconds. Official PlanOnly selected 14 cases in 7.3193830s.
+Execution passed 14/14, test duration about five seconds (including real five-second
+abandoned-handshake expiry), runner wall15.3282362s; complete selection, no skips,
+duplicates or timeout, complete runner-owned cleanup. The new controls passed
+without further production changes. This qualifies only the named same-process
+Linux-x64 tests. Lifetime65536 exhaustion, every handshake crash phase, separate
+CLI process and application pin/launcher/live-GM acceptance are not claimed.
+Independent bounded source/outcome review is requested before extending the block.
