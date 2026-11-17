@@ -523,3 +523,18 @@ required for evidence. Fresh roots and original authority/pin observations are
 mandatory per attempt; mutable admission or shutdown evidence is never cached.
 No speedup claim or broad rerun is made. Raw diagnostic artifacts remain outside
 Git, including both preparation failures.
+
+The bounded coordinated idle-daemon control now passes 1/1 through the official
+`gm-daemon-coordinated-stop -NoBuild` category: fresh build 0 errors/63 warnings,
+36.97s; runner35.583s, complete cleanup and no duplicates. The real FIFO host
+observed an original active pin, then positive original shutdown and matching
+Stopped before foreground interrupt. Actual host exit0, daemon exit0/EOF/termios,
+guardian driverExit0/ECHILD/zero emergency/failures/deadline are present. Waiting
+arrived18.599s, signal19.506s, EOF20.044s: the former16s preparation bound was
+indeed insufficient. This is zero-game idle evidence, not the cause/fix of live e.
+A clean fresh clone of remote b228b59f5ddf669301e0a80ebb30a3ab4cce4fa2
+has exact HEAD, clean status and matching fixture bytes; it was not rebuilt.
+Next: new live f with unchanged production/order and existing DEBUG stop nonce
+set before host construction, to retain first failure if live refusal recurs.
+Never replay e, relax its refusal, or reuse its game/queue/owner state. No new
+cache is introduced; only immutable verified runtime files are reused.
