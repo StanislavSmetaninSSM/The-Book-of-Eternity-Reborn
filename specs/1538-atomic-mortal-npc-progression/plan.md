@@ -1,3 +1,26 @@
+## Accepted progression feeds merchant and teacher: GREEN, 2026-11-17
+
+Verified source 8b4f018d758ef07891d872252d63ecb701a9ddb7. Fresh build: 0 errors,
+124 warnings, 90.90 seconds. Official category mortal-npc-progression-full-journey:
+PlanOnly 2 cases in 9.053 seconds; runtime 2/2 PASS in 29.3058088 seconds, no
+skips/duplicates/timeouts and complete owned cleanup. Run identity:
+20261117-072742-513-5-fa67c095fbe24ed8937b0e6afabcdea9-categories.
+
+The ordinary journey remains passing. The second accepted real ProcessPlayerTurn
+advances the existing merchant/teacher from level 15 XP 87141/87142 to level 16
+XP 1/102400 with one story turn. Before acceptance both services expose ready
+stock/showcase. After fresh reload, unchanged seven-slot stock is not offered;
+the real trade service requests eight slots without fabricating inventory. The
+unchanged teacher showcase is stale; actual purchase refuses before changes to
+money, XP, skills, core or identity index. Protected bytes/absence are exact.
+A unique local diagnostic copy preserves this genuinely accepted world for
+upcoming console/browser inspection. Export alone is not UI qualification.
+
+Independent Sol XHigh source review accepted the baseline correction/export;
+outcome review is separate. Source is fully preserved; no raw artifact is in Git.
+Next: actual console and browser NPC detail rendering from separate copies of
+this accepted export, then remaining negative/retry evidence. No merge/closure.
+
 ## Consumer baseline correction and UI handoff export, 2026-11-17
 
 Source 5099dc40 built with 0 errors, 124 warnings in 63.39 seconds; PlanOnly
