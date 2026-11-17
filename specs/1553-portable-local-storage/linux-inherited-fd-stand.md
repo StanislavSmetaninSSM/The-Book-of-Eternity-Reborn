@@ -412,3 +412,15 @@ confirms its already present guardian/profile prevents adding a second guardian.
 Selection is through observed UI, not game-state edits. The existing initial
 cancellation remains honest preparation, not initial-NewGame-GM qualification.
 Full baseline/accepted ordinary turn still require actual runtime; no success yet.
+
+Third fresh ordinary-preset attempt created the actual turn-1 request after one
+real player action, but no GM relay queue request or accepted turn was observed.
+Execution recovery then lost the controlling exec session; its original handle
+returns Unknown process id. Last streamed RPC evidence is 2026-11-17 21:49:22 UTC;
+no final driver result or guardian report exists. Subsequent tool process views
+are separate PID namespaces and cannot establish the original processes' death.
+Thus cleanup, original Stopped, and completion are UNKNOWN, not successful.
+Do not reuse that session, replay its action, or overwrite its diagnostics. A
+possible PowerShell event/helper reentry hazard is being checked independently;
+it is not established as the cause of this interrupted measurement. A new owned
+run must retain incremental raw evidence and its own process observations.
