@@ -4,7 +4,17 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
-## Current completion checkpoint, 2026-11-16
+## Current status, 2026-11-17 — reopened verification, WIP
+
+The earlier completion claim below is superseded. Genuine multi-turn engine
+verification exposed a prepared-schedule source mismatch. The local correction
+and journey tests survived environment recovery but were not remotely saved;
+this checkpoint preserves them as UNVERIFIED WIP before fresh build/testing.
+No completed four-interval journey or prose-only rejection is claimed.
+Next: build and execute the single elapsed-no-change control, then diagnose
+remaining full-state refusals without suppressing validation.
+
+## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
 merge, pull-request merge, or issue closure is performed by this assignment.
@@ -581,3 +591,20 @@ must use real existing reducers and authority; no resetting receipts, suppressin
 validators, resealing authoritative state or reconstructing the world per turn.
 New test-only evidence may already pass existing code; do not manufacture RED.
 A genuine production defect requires an observed focused reproducer before fix.
+
+### Genuine engine RED and first causal correction (not yet GREEN)
+
+Two official journey attempts after fresh build show a legal elapsed no-change
+turn refusing with `mortal_living_world_source_invalid`: prepared schedule changed
+before source capture. Root cause: ordinary engine takes rollback backups before
+BuildControlForNextTurnAsync prepares schedule, but did not register that prepared
+schedule among staging validation originals. Source correctly rejects old/new
+bytes. The narrow correction signs prepared SchedulePath while keeping pre-turn
+rollback bytes unchanged. A new post-preparation schedule-tamper test preserves the
+negative boundary. Neither source byte equality nor restoration is weakened.
+
+Full copied example first required current storage-access projection at initial
+setup; it is derived by the actual composer before snapshots. The richer seed
+also exposed incomplete faction fixture fields. These setup failures are not
+claimed as production defects. The connected journey remains unaccepted and NPC
+activity command consumption still needs actual runtime verification.

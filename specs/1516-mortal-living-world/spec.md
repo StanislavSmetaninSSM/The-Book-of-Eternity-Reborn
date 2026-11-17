@@ -2,7 +2,7 @@
 
 **Feature Branch**: `1516-mortal-living-world`  
 **Created**: 2026-11-16  
-**Status**: Bounded implementation and selected verification complete; not merged
+**Status**: WIP: full-engine journey verification reopened; not merged
 
 ## Source Issues & Scope
 

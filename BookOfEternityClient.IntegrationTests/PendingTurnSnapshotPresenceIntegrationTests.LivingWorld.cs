@@ -137,6 +137,30 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
     }
 
     [Fact]
+    public async Task LivingWorldSource_CurrentScheduleMustMatchPreparedOriginal()
+    {
+        await using var context = await PrepareLivingWorldOriginalAsync();
+        await WriteLivingWorldReportAsync(context);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var original = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            new PendingTurnSnapshotPathSelection([ProgressionScheduleService.SchedulePath], []));
+        Assert.True(original.Success);
+        var signedBytes = original.Snapshot!.ReadRequiredBytes(ProgressionScheduleService.SchedulePath);
+        var schedule = JsonNode.Parse(signedBytes)!.AsObject();
+        schedule["lastUpdatedUtc"] = "2099-01-01T00:00:00Z";
+        await context.FileSystem.WriteFileAtomicAsync(lease, ProgressionScheduleService.SchedulePath, schedule.ToJsonString());
+
+        var result = await MortalLivingWorldSource.PrepareAsync(context.FileSystem, lease);
+
+        Assert.Null(result.Source);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_source_invalid");
+        var unchangedOriginal = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
+            new PendingTurnSnapshotPathSelection([ProgressionScheduleService.SchedulePath], []));
+        Assert.True(unchangedOriginal.Success);
+        Assert.Equal(signedBytes, unchangedOriginal.Snapshot!.ReadRequiredBytes(ProgressionScheduleService.SchedulePath));
+    }
+
+    [Fact]
     public async Task LivingWorldSource_CurrentRequestControlMustMatchSignedControl()
     {
         await using var context = await PrepareLivingWorldOriginalAsync();

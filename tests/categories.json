@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-real-turn-journey",
+      "responsibility": "#1516 real ProcessPlayerTurn elapsed-time simulation on full Mortal baseline with accepted story and private living-world history.",
+      "excludes": "Cross-surface four-turn journey is added separately; no hosted provider or UI acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldJourney.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldJourney_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-canonical-item-held-lease",
       "responsibility": "#1516 impacted canonical item validator propagates its genuine held write lease through original snapshot and pre-turn catalog reads without nested acquisition.",
       "excludes": "Whole item lifecycle, joint publication acceptance, cache-framework or lock-bypass changes.",
