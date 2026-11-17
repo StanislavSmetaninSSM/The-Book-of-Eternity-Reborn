@@ -83,3 +83,10 @@ explicit error, never an emergency helper kill or PASS. Eighteen planned cases
 also include premature/duplicate release, late A and EOF while held. Duplicate A
 cannot undo an already legitimate first release; its expected result is uncertain
 scoped cleanup, not a guarantee the first permitted payload never executed.
+
+Outcome review did NOT accept the first 18-case result: its kill-held trace
+contained Started although no A was sent. Marker absence alone missed this.
+A new no-Started-before-release assertion produced causal RED against that binary.
+Current narrow fix suppresses Started for terminal-pipe mode unless bootstrap
+phase4 (release) was reached. Root-death cleanup remains unchanged. Corrected
+source/test is UNRUN. The earlier 18 expected exits are not a native acceptance.

@@ -378,7 +378,7 @@ static void observe_exec(void) {
         if (errno == EINTR || errno == EAGAIN) return;
         lose("exec-channel", errno);
     } else if (exec_bytes) lose("exec-channel", EIO);
-    else if (!stopping) { reason = "started"; emit("Started", false); }
+    else if (!stopping && (!terminal_pipe_v1 || bootstrap_phase == 4)) { reason = "started"; emit("Started", false); }
     exec_pending = false; close(exec_fd); exec_fd = -1;
 }
 static void signal_children(void) {

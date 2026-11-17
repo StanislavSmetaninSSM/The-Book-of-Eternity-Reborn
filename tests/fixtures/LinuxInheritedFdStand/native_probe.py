@@ -92,6 +92,8 @@ def run(binary, mode):
             raise ValueError(mode)
         while not statuses or not statuses[-1].get('cleanupComplete'):
             statuses.append(frame(p.stdout.fileno(), timeout=7))
+        if mode not in ('success', 'fragmented', 'duplicate-release'):
+            assert not any(item.get('state') == 'Started' for item in statuses), statuses
         terminal = statuses[-1]
         expected_uncertain = mode in ('duplicate-launch', 'held-timeout', 'late-release', 'owner-eof-held', 'duplicate-release')
         assert terminal['state'] == ('Uncertain' if expected_uncertain else 'StoppedWithinScope'), terminal
