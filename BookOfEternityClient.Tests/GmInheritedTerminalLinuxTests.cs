@@ -20,4 +20,7 @@ public sealed partial class GmInheritedTerminalLinuxTests
     [InlineData("terminal-inherited-control-release-expiry")]
     public async Task BlockedOriginalControl_CancelsWithoutCommandOrPhaseAdvance(string mode)
         => await GmOwnedTerminalLinuxTests.RunAsync(mode);
+    [Fact]
+    public async Task ActualPartialControlInitialization_RetainsOriginalFailureAndOwner()
+        => await GmOwnedTerminalLinuxTests.RunAsync("terminal-inherited-control-init-failure");
 }

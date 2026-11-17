@@ -10,6 +10,7 @@ internal static partial class OwnedTerminalScenarioDriver
     // deliberately a blocked writer, NOT a second lawful launch admission.
     private static async Task<int> RunInheritedControlAsync(string mode, string package, string output)
     {
+        if (mode == "terminal-inherited-control-init-failure") return await RunInheritedControlInitFailureAsync(package, output);
         var result = new Dictionary<string, object?>();
         NativeLineageOwner? owner = null;
         IDisposable? gateLease = null;
@@ -54,6 +55,46 @@ internal static partial class OwnedTerminalScenarioDriver
             if (owner != null) try { result["FinalCleanup"] = await owner.StopAndObserveAsync(); } catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
             // A failed/uncertain owner is not falsely disposed as positively retired.
             // This disposable driver remains beneath the independent ECHILD guardian.
+            await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));
+        }
+    }
+    private static async Task<int> RunInheritedControlInitFailureAsync(string package, string output)
+    {
+        var result = new Dictionary<string, object?>();
+        GmWorkerOwnedLaunch? owner = null;
+        var injected = new IOException("injected-before-control-assignment");
+        try
+        {
+            var start = new ProcessStartInfo("/bin/sh") { UseShellExecute = false, WorkingDirectory = output };
+            start.ArgumentList.Add("-c"); start.ArgumentList.Add("printf released > unexpected-exec");
+            try
+            {
+                await NativeLineageOwner.PrepareTerminalAsync(start, GmWorkerNativePackage.Validate(package),
+                    Guid.NewGuid().ToString("N"), 80, 25, CancellationToken.None,
+                    beforeInheritedControl: () => throw injected);
+                throw new InvalidOperationException("Injected initialization failure was not reached.");
+            }
+            catch (GmWorkerOwnedLaunchException partial)
+            {
+                owner = partial.Owner;
+                if (!ReferenceEquals(injected, partial.InnerException))
+                    throw new InvalidOperationException("Original initialization failure was masked.");
+                if (owner is not NativeLineageOwner { UsesInheritedTerminalBootstrap: true })
+                    throw new InvalidOperationException("Original inherited owner was not retained.");
+            }
+            var evidence = await owner.StopAndObserveAsync();
+            if (!evidence.CleanupComplete || evidence.AuthorityRetained || owner.AdmittedHostProcessId != null)
+                throw new InvalidOperationException("Partial helper cleanup or no-root premise was not proven.");
+            if (File.Exists(Path.Combine(output, "unexpected-exec"))) throw new InvalidOperationException("Partial initialization executed payload.");
+            result["OriginalOwnerRetained"] = true;
+            result["OriginalFailureRetained"] = true;
+            result["Success"] = true;
+            return 0;
+        }
+        catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }
+        finally
+        {
+            if (owner != null) try { result["FinalCleanup"] = await owner.StopAndObserveAsync(); } catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));
         }
     }

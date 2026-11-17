@@ -448,10 +448,11 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
     }
     [System.Runtime.InteropServices.DllImport("libc",EntryPoint="fcntl",SetLastError=true)]
     private static extern int DuplicatePidfd(SafeFileHandle descriptor,int command,int argument);
-    internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null)
+    internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null,Action? beforeInheritedControl=null)
     {
         if(!Guid.TryParseExact(runId,"N",out var id) || id==Guid.Empty)throw new InvalidDataException("Terminal run identity is invalid.");
         var owner=new NativeLineageOwner(null,true,runId);
+        owner._beforeInheritedControl = beforeInheritedControl;
         try {await owner.StartAsync(fixture,executable,token,columns,rows,held,true);return owner;}
         catch(Exception ex){owner.Lose("partial-terminal-prepare");await owner.CloseBootstrapAsync();throw new GmWorkerOwnedLaunchException("Terminal prepare retains original owner.",owner,ex);}
     }
@@ -519,7 +520,11 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
         _supervisor.StartInfo = start;
         if (!_supervisor.Start()) throw new InvalidOperationException("Native supervisor did not start.");
         _processStarted = true;
-        if (_inheritedTerminal) _inheritedControl = new InheritedTerminalControl((PipeStream)_supervisor.StandardInput.BaseStream);
+        if (_inheritedTerminal)
+        {
+            _beforeInheritedControl?.Invoke();
+            _inheritedControl = new InheritedTerminalControl((PipeStream)_supervisor.StandardInput.BaseStream);
+        }
         _supervisorExit = _supervisor.WaitForExitAsync();
         _statusReader = ReadStatusAsync(_supervisor.StandardOutput.BaseStream);
         _helperErrorDrain = DrainAsync(_supervisor.StandardError.BaseStream);

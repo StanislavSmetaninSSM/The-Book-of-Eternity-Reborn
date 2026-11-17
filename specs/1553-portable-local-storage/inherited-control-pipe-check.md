@@ -20,3 +20,12 @@ All current managed cases must run against the extracted control, not old output
 Each kernel pipe and original owner is fresh. No cache or speedup claim is useful
 for this transient authority; stable toolchain/package data continues to be reused.
 Independent source/outcome review and actual runtime evidence remain pending.
+
+Independent review found a partial-initialization blocker in saved43533cc:
+control creation preceded original observation tasks, while abort dereferenced
+a possibly absent control. A typed failure-before-control-assignment hook and
+actual guarded-helper test are now prepared to expose that exact error without
+reflection. The test requires the original exception/owner, no admitted root or
+payload, native cleanup and independent ECHILD. The defect is deliberately not
+fixed in this test-first checkpoint; expected causal RED is a masked failure.
+All seven selected cases are still uncompiled/unrun after these additions.
