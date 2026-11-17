@@ -1,3 +1,33 @@
+## Reopened full progression journey verification, 2026-11-16
+
+Source: #1538. Branch `1538-progression-journey-audit`, base main
+`605ec71f1f9610d53f0c44f8a7ccf2c0860e3c6d`. WIP, not ready for closure.
+The owner requested convincing whole-game verification after discovering that
+isolated technical checks overstated readiness. Prior passing targeted evidence
+remains historical; it does not prove a current complete multi-turn journey.
+
+- [ ] Establish one complete ordinary `ProcessPlayerTurn` XP transition, ending
+  in real story append, turn advance, consumed command and reloaded NPC tuple.
+- [ ] Extend that same accepted NPC state through merchant/teacher consumers,
+  preserving stock/offer freshness and exact costs rather than rewriting level
+  directly before each consumer.
+- [ ] Add retry/invalid dependent-output refusal and exact unchanged-state checks;
+  distinguish malformed fixture from a production failure.
+- [ ] Verify public presentation uses accepted mechanics without private metadata.
+- [ ] Independently review requirements, test causal validity and final evidence.
+
+First diagnostic is a new isolated test partial with a current baseline: no
+unrelated vehicle receipts, current client storage-access projection, real
+resource-owner bootstrap, ordinary NPC and genuine engine preparation. No mocked
+validator or early cancellation substitutes for turn acceptance. No production
+change yet. All new tests currently UNRUN.
+
+Optimization: one independently owned world per journey; reuse its accepted
+state only between its own sequential turns. Fresh engine snapshots, leases,
+request identity, validation and effects are retained. Immutable source template
+copy is existing fixture preparation; no new cache or shared mutable fixture.
+Raw outputs stay outside Git under `/workspace/shared/diagnostics1538`.
+
 ## Final review and recovery receipt
 
 Independent Astra High source/outcome review accepted the documented mastery/treatment seam and87 final-runtime cases with no remaining blockers. Current FR4 below now states both standard mastery arrays are qualified; preceding WIP/RED and unsupported-array descriptions are historical and superseded. FR1-FR9 retain the current evidence map plus this final correction. T005/T006/T009 are complete again within the declared Mortal scope. Guided uses the reviewed shared producer path, but an independent full Guided/QTE runtime is not claimed or invented as a new task requirement.

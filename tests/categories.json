@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-full-journey",
+      "responsibility": "#1538 full ProcessPlayerTurn progression, actual turn advance/story and reloaded result.",
+      "excludes": "Current first block does not yet qualify merchant/teacher chains or provider generation.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_OrdinaryXpGainCompletesWholeTurnAndReloads"]}]
+    },
+    {
       "id": "mortal-storage-offscreen-birth-data",
       "responsibility": "#1515 direct noncurrent storage birth: prepared/completed DATA, exact route and repair identities, empty measurement/alternate route refusals, borrowed-catalog read counts and fresh authority checks.",
       "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",

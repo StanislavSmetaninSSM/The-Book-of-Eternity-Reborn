@@ -12,3 +12,8 @@ Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
 - [x] T007 P3 creation, representative NPC roles, real rollback/failure/retry, public UI privacy (FR6/FR7/FR8).
 - [x] T008 Synchronize actual GM entrypoints/repair/examples and bounded diagnostics (FR9).
 - [x] T009 Final requirement/evidence reconciliation, independent review and GitHub recovery. No merge/closure without explicit instruction.
+
+## Reopened acceptance verification
+- [ ] T010 Full ordinary XP-to-accepted-turn/reload journey.
+- [ ] T011 Result-fed merchant/teacher, negative/retry and public-view evidence.
+- [ ] T012 Independent requirement audit and final verified checkpoint.

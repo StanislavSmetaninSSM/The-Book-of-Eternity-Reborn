@@ -1,0 +1,118 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.AgentConsole;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    private const string ProgressionJourneyActor = "npc_progression_journey";
+
+    [Fact]
+    public async Task NpcProgressionJourney_OrdinaryXpGainCompletesWholeTurnAndReloads()
+    {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        await SeedProgressionJourneyAsync();
+        var log = new SpiritualLifecycleTestLogger();
+        var runtime = CreateGameEngineRuntime(_fs, new ProgressionJourneyInput(_fs),
+            settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
+            logger: log, finalizationHooks: new GameEngineSessionFinalizationHooks { AtCheckpointAsync = async checkpoint =>
+            {
+                if (checkpoint != SessionFinalizationCheckpoint.TerminalWaitStarted) return;
+                var request = JsonSerializer.Deserialize<TurnRequest>((await _fs.ReadFileAsync("input/turn_request.json"))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+                var command = new JsonObject
+                {
+                    ["NPCId"] = ProgressionJourneyActor, ["reason"] = "Accepted field observation experience",
+                    ["progression"] = new JsonObject
+                    {
+                        ["source"] = new JsonObject { ["sessionId"] = request.SessionId, ["requestId"] = request.RequestId, ["turnNumber"] = request.TurnNumber },
+                        ["experienceDelta"] = 2, ["level"] = 2, ["experience"] = 1, ["experienceForNextLevel"] = 565
+                    }
+                };
+                await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance).DistributeAsync(new GameResponse
+                { NPCCoreChanges = new[] { JsonSerializer.SerializeToElement(command) } });
+                await WriteProgressionJourneyOutputsAsync(request);
+            }});
+        runtime.GameLoop.SetSession("session_progression_journey", 41);
+        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", "{\"sessionId\":\"session_progression_journey\",\"entries\":[]}");
+        await runtime.StateManager.RefreshGameStateAsync();
+        var initial = await runtime.ValidationService.ValidateGameStateAsync();
+        Assert.True(!initial.Any(x => x.Severity == IssueSeverity.Error), "Initial state: " + JsonSerializer.Serialize(initial));
+        await runtime.Engine.ProcessPlayerTurn("Выслушать отчёт наблюдателя о завершённом упражнении.");
+        Assert.True(runtime.GameLoop.TurnNumber == 42, log.Describe());
+        var core = JsonNode.Parse((await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
+        var actor = Assert.Single(core["NPCsInScene"]!.AsArray());
+        Assert.Equal(2, actor!["level"]!.GetValue<int>());
+        Assert.Equal(1, actor["experience"]!.GetValue<int>());
+        Assert.Equal(565, actor["experienceForNextLevel"]!.GetValue<int>());
+        Assert.False(core.ContainsKey("NPCCoreChanges"));
+        var story = (await _fs.ReadFileAsync("stories/mortal_life_2.jsonl"))!;
+        Assert.Equal(42, JsonNode.Parse(Assert.Single(story.Split('\n', StringSplitOptions.RemoveEmptyEntries)))!["turn"]!.GetValue<int>());
+        var reloaded = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        await reloaded.RefreshGameStateAsync();
+        Assert.Equal(core.ToJsonString(), JsonNode.Parse((await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.ToJsonString());
+    }
+
+    private async Task SeedProgressionJourneyAsync()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
+        await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, MortalVehicleBirthReceiptState.CreateEmptyRoot().ToJsonString());
+        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 41, 20, 20, 20, 20, 20);
+        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());
+        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());
+        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions, path => _fs.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
+        await _fs.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
+        var map = JsonNode.Parse((await _fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
+        var projection = MortalStorageAccessProjection.Build(map, null);
+        Assert.True(projection.IsValid, JsonSerializer.Serialize(projection.Issues));
+        await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, projection.Root!.ToJsonString());
+        var location = Assert.Single(map["locations"]!.AsArray())!;
+        var actor = MortalActorTestFixtures.CreateActor(ProgressionJourneyActor, "loc_valmont_private_chambers", location["name"]!.GetValue<string>());
+        actor["name"] = "Лев Наблюдатель";
+        actor["level"] = 1; actor["experience"] = 99; actor["experienceForNextLevel"] = 100;
+        actor["teacherProfile"] = new JsonObject { ["canTeach"] = false, ["skills"] = new JsonArray() };
+        actor["progressionProfile"] = JsonNode.Parse("""{"schemaVersion":1,"mode":"standard","consequences":{"skills":{"levelsPerAward":2,"allowedAwards":["newSkill","masteryIncrease"]},"characteristics":{"mode":"currentWorld"}}}""");
+        await _fs.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, new JsonObject { ["NPCsInScene"] = new JsonArray(actor) }.ToJsonString());
+    }
+
+    private async Task WriteProgressionJourneyOutputsAsync(TurnRequest request)
+    {
+        var control = request.ProgressionControl!;
+        await WriteJsonAsync(ProgressionScheduleService.ReportPath, new { progressionProcessingReport = new
+        { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+          worldCyclesProcessed = control.WorldCyclesAlreadyPendingBeforeTurn, factionCyclesProcessed = control.FactionCyclesAlreadyPendingBeforeTurn,
+          newLastWorldSimulationTimeInMinutes = control.LastWorldSimulationTimeInMinutes + control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes,
+          newLastFactionSimulationTimeInMinutes = control.LastFactionSimulationTimeInMinutes + control.FactionCyclesAlreadyPendingBeforeTurn * control.FactionCycleMinutes }});
+        var timestamp = DateTime.UtcNow.ToString("o");
+        await WriteJsonAsync("output/narrative_response.json", new { response = "Лев завершил упражнение и стал опытнее. Его уровень повысился до второго.", timestamp });
+        await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
+        await WriteJsonAsync("output/debug_logs.json", new { timestamp, npcSkillClaims = Array.Empty<object>(), gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Лев Наблюдатель\n- Why relevant: Завершил упражнение, получает опыт.\n- Actors outside scope: нет\n- Why outside scope: Других NPC нет.\n\n## Reasoning\n- Применён точный переход опыта без награды навыком." });
+        await WriteJsonAsync("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber, status = "success", timestamp, filesModified = new[] { NpcCoreChangesContract.NpcCorePath, ProgressionScheduleService.ReportPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
+    }
+
+    private sealed class ProgressionJourneyInput(FileSystemManager files) : IConsoleInputSource
+    {
+        public bool IsScripted => true;
+        public bool KeyAvailable => files.FileExists("game_state/control/validation_repair_request.json");
+        public ConsoleKeyInfo ReadKey(bool intercept = true)
+        {
+            var repair = files.ResolvePath("game_state/control/validation_repair_request.json");
+            if (File.Exists(repair)) throw new InvalidOperationException("Progression journey repair: " + File.ReadAllText(repair));
+            return new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false);
+        }
+        public string? ReadLine() => string.Empty;
+        public void AssertCompleted() { }
+    }
+}
