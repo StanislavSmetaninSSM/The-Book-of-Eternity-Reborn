@@ -183,6 +183,14 @@ internal partial class NativeLineageOwner
     }
 
     internal bool IsInheritedRootHeld => HasHeldBootstrap();
+    internal (bool AbortRequested, bool CloseConfirmed, bool OriginalHandleClosed) InheritedControlObservation
+    {
+        get
+        {
+            lock (_stateGate)
+                return (_inheritedPhase == 5, _inheritedControlClosed, _inheritedControl?.OriginalHandleClosed == true);
+        }
+    }
 
     // Explicit typed fixture seam: ownership of this lease blocks the same
     // gate used by production writers. It cannot alter phase or deadlines.

@@ -87,3 +87,12 @@ lease and observe cleanup through that same owner. This is a cleanup observation
 retry, not a second A or a claim that abort closure itself retried. No production
 change. Eight selected cases are UNCOMPILED/UNRUN. Fresh original native owner
 is required; no authority reuse/cache. Existing category owns the wildcard test.
+
+Independent design inspection identified the stronger oracle: native retirement
+alone does not close the original control handle. The same test now observes the
+original SafePipeHandle through a read-only typed snapshot (no duplicate/raw PID,
+no new cleanup API). It requires abort requested but neither closure claim nor
+actual closure while the gate is held, and both confirmed and actual original
+handle closure after same-owner Stop. Current Stop does not retry this closure;
+expected causal RED is the final handle assertion. Only observation seams added,
+production cleanup behavior unchanged; fresh build/execution remain UNRUN.

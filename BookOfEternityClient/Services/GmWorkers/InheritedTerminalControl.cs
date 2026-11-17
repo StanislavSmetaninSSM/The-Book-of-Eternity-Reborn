@@ -7,6 +7,8 @@ namespace BookOfEternityClient.Services.GmWorkers;
 internal sealed class InheritedTerminalControl(PipeStream pipe) : IDisposable
 {
     private bool _aborted;
+    private readonly Microsoft.Win32.SafeHandles.SafePipeHandle _originalHandle = pipe.SafePipeHandle;
+    internal bool OriginalHandleClosed => _originalHandle.IsClosed;
 
     internal ValueTask WriteAsync(ReadOnlyMemory<byte> bytes, CancellationToken token)
     {

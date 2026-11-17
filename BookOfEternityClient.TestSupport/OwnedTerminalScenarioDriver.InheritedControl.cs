@@ -35,6 +35,9 @@ internal static partial class OwnedTerminalScenarioDriver
                     throw new InvalidOperationException("Original abort did not take its bounded gate-timeout path.");
                 if (owner.Uncertainty == null || File.Exists(marker))
                     throw new InvalidOperationException("Abort timeout erased uncertainty or released the payload.");
+                var beforeRetry = owner.InheritedControlObservation;
+                if (!beforeRetry.AbortRequested || beforeRetry.CloseConfirmed || beforeRetry.OriginalHandleClosed)
+                    throw new InvalidOperationException("Abort timeout falsely claimed original control closure.");
                 var refusedDispose = false;
                 try { await owner.DisposeAsync(); } catch (InvalidOperationException) { refusedDispose = true; }
                 if (!refusedDispose) throw new InvalidOperationException("Unresolved original owner was disposed.");
@@ -42,6 +45,10 @@ internal static partial class OwnedTerminalScenarioDriver
                 var retry = await owner.StopAndObserveAsync();
                 if (!retry.CleanupComplete || retry.AuthorityRetained || owner.Uncertainty == null || File.Exists(marker))
                     throw new InvalidOperationException("Same-owner observation failed after releasing the blocked gate.");
+                var afterRetry = owner.InheritedControlObservation;
+                if (!afterRetry.CloseConfirmed || !afterRetry.OriginalHandleClosed)
+                    throw new InvalidOperationException("Same-owner stop did not close the original aborted control handle.");
+                result["OriginalControlClosed"] = true;
                 result["Success"] = true;
                 result["AbortWaitMilliseconds"] = timer.Elapsed.TotalMilliseconds;
                 result["DisposeRefused"] = true;
