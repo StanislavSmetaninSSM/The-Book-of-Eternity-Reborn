@@ -385,3 +385,16 @@ compares both DLL/PDB hashes and reads the loaded PDB's existing source hashes.
 No production change or new reflection. Fresh verification pending. These cheap
 fresh source/hash checks require no cache; current build provenance cannot reuse
 prior acceptance. Live game remains UNRUN.
+
+Oracle correction e421beec: fresh unit build0errors40warnings28.62s and official
+input-lifetime33/33 PASS,20.916s,complete cleanup/no duplicates; independent source
+review accepted the three guards. FIFO53/53 from unchanged production remains.
+First actual maintained relay attempt reached original Running, derived Ready,
+and ordinary daemon Waiting without overrides. No game action was submitted:
+the test driver awaited an obsolete decorated player prompt while current UI
+showed its real plain prompt. Acceptance0; not live-GM qualification. Original
+shutdown ACK/Stopped, relay close, helper exit/EOF and guardian ECHILD succeeded,
+no emergency or deadline. Source-derived prompt oracle repair precedes a fresh
+session attempt; no existing game state or response is reused. Fresh runtime
+publication succeeded; immutable package479 files may be reused byte-exactly,
+never owner/config/state/queue.

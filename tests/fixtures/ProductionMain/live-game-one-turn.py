@@ -34,6 +34,24 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-closure':
     assert not rpc_helper_closed({'RpcHelperClosure':valid,'RpcHelperCleanupFailure':'join unknown'})
     print(json.dumps({'InertRpcClosureChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
+# Oracle consumes Peer.text() with ANSI CSI already removed.
+# BrowserPlayerInput.cs PromptMarkup + TextComposer.cs appended space.
+PLAYER_PROMPT_MARKER = '\n >  '
+def current_player_prompt_at(text):
+    heading=text.rfind('Ваш ход')
+    marker=text.rfind(PLAYER_PROMPT_MARKER)
+    return marker if heading>=0 and marker>heading else -1
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-player-prompt':
+    assert current_player_prompt_at('✦ Ваш ход ✦\nhints\n >  ')>=0, 'Current cooperative prompt must be recognized'
+    assert current_player_prompt_at('✦ Ваш ход ✦\r\nhints\r\n >  ')>=0
+    assert current_player_prompt_at('✦ Ваш ход ✦\nhints')==-1
+    assert current_player_prompt_at('menu\n >  ')==-1
+    assert current_player_prompt_at('✦ Ваш ход ✦\n🌊 > ')==-1
+    assert current_player_prompt_at('\n >  \n✦ Ваш ход ✦\nhints')==-1
+    assert current_player_prompt_at('✦ Ваш ход ✦\nquoted >  text')==-1
+    print(json.dumps({'InertPlayerPromptChecks':7,'Passed':7,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
 def current_client_failure(text):
     return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
 
@@ -332,7 +350,7 @@ def fresh_main(client,offset):
     fresh(client,'Продолжить',offset)
     until(lambda:re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,8,'fresh eight-item main menu')
 def fresh_player(client,offset,seconds=12):
-    fresh(client,'Ваш ход',offset,seconds);fresh(client,'🌊 > ',offset,seconds)
+    until(lambda:current_player_prompt_at(client.text(offset))>=0,seconds,'fresh cooperative player prompt')
 def exit_client(client):
     global client_exit_attempted
     assert not client_exit_attempted, 'Do not replay an ambiguous UI close sequence'
@@ -378,7 +396,7 @@ try:
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout',str(600 if relay_mode else 180),'--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
-    preparation_phase(lambda:'Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset),'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
@@ -473,9 +491,9 @@ finally:
                     # An actually rendered client error pause is distinct from
                     # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
-                    fresh_screen='Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text)
+                    fresh_screen='Продолжить' in text or current_player_prompt_at(text)>=0
                     pause_at=text.rfind('Нажмите любую клавишу для продолжения...')
-                    screen_at=max(text.rfind('Продолжить'),text.rfind('🌊 > '))
+                    screen_at=max(text.rfind('Продолжить'),current_player_prompt_at(text))
                     if pause_at>=screen_at and pause_at>=0:
                         # A stale player prompt cannot settle a newer error pause.
                         return False
@@ -508,7 +526,7 @@ finally:
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)
                 client_wait=False
-                client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
+                client_prompt=current_player_prompt_at(client.text(offset))>=0
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
