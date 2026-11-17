@@ -34,3 +34,8 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 - [x] T015 Accepted source/checkpoint bf5635fda8d9260c7ee1c644430469cc78e48cea restored into a fresh clean directory, fsck and 76 local source-file comparisons pass; final documentation closeout saved separately. No main merge or issue closure.
 
 Dependencies: Setup → US1/US2 pure contracts → combined publication → US3 → final verification. Read-only mapping or independent tests may run in parallel; shared writer/source changes remain coordinated. No unchecked task is completed by a report alone.
+
+## Reopened cross-issue semantic coupling (#1515/#1516)
+
+- [ ] Implement and verify [independent-audit-plan.md](independent-audit-plan.md).
+- [ ] Preserve the two prose-only causal failures until real audit/repair proves the fix.

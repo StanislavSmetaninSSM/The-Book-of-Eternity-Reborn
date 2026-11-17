@@ -37,3 +37,8 @@ that an ordinary multi-turn player journey completed through GameEngine.
 - [ ] T016 Simulate connected scout/threat, council/project, completion/news and bounded quiet-time outcomes in one retained world; assert actual canonical state, current request receipts and reload continuity after each turn.
 - [ ] T017 Submit one contradictory cross-surface package, observe genuine refusal without false accepted story/history, repair the same request through the supported route and verify acceptance.
 - [ ] T018 Run the narrowly owned official category, review fresh evidence independently, save branch and report limitations without merging or closing.
+
+## Shared independent semantic audit (#1515/#1516)
+
+- [ ] Implement and verify ../1515-mortal-transport-storage/independent-audit-plan.md.
+- [ ] Prove omitted crossing destruction refuses and repairs through real accepted-turn flow.
