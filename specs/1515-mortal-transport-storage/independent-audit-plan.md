@@ -148,3 +148,34 @@ Implementation now returns only fully validated, detached read-only findings;
 malformed responses retain no partial findings or packet binding. Effective
 semantic failure overrides uncertainty; uncertainty overrides a claimed pass.
 Fresh build/run and independent review are pending for this implementation.
+
+## T2 typed response accepted; transport remains blocked, 2026-11-17
+
+Source `72c174bc55c615901b2f93cf1639ca2c5dee6ca8` passed the official
+`mortal-independent-audit-contract -NoBuild` category: 47/47 PASS, 47 unique IDs,
+one descriptor, 12.0666261 seconds, no skips/duplicates/timeouts, complete runtime
+and owned-tree cleanup. Fresh serial build: 99.61 seconds, 96 existing warnings,
+zero errors. Independent Sol XHigh review verified the clean source/result join,
+detached evidence, all-or-nothing reply delivery and verdict precedence; no
+Critical/Important findings. This accepts only the typed-response block, not T2.
+
+Minor deferred test coverage: add exact typed mapping assertions for missing,
+uncertain, nonasserted, stateToNarrative and mixed failure/uncertainty when this
+contract is extended. Existing Boolean negative coverage and new explicit
+verdict/repair-retention tests pass; reviewed production mappings are correct.
+No measured speedup is claimed. Intended-diff selection stays a T4 prerequisite.
+
+Read-only Codex transport qualification has not reached model inference. The
+installed app-server accepts ephemeral threads with environments=[] and no
+dynamic tools in a clean profile; MCP inventory is empty, but account is null.
+The ordinary profile fails before initialize because of read-only runtime state.
+The documented sqlite_home override removes the SQLite-specific error but leaves
+an unidentified read-only startup error; a log_dir override does not resolve it.
+No credentials were copied, secret configuration changed, or security bypass used.
+Empty MCP inventory alone is not proof of no built-in tools. Therefore no live
+semantic result, transport isolation, cost or model latency is claimed. Do not
+wire an unqualified generic worker or interpret missing transport as acceptance.
+
+Next: qualify supported authenticated model transport, then the route-specific
+T3 capture/repair/freshness work already mapped in the design. The original
+prose-only engine failures remain open. No merge, closure or hosted CI dispatch.
