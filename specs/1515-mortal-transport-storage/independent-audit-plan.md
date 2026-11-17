@@ -273,3 +273,29 @@ normal publication remains unactivated unless an explicit preview was captured.
 The proof and negative cases remain UNVERIFIED; no live model gate is installed.
 Reuse remains operation-local; authority cache misses across fresh continuations
 are deliberate. Shared preflight avoids a parallel preparation algorithm.
+
+## T3 first runtime result and concrete existing-owner blocker
+
+At ecc99fda the first preview implementation compiled (172 warnings, zero errors,
+121.71 s). Its genuine live test failed1/1 in44.6260421s with complete cleanup,
+no skips/duplicates/timeout. It reached full common preparation but refused
+before the first preview close: current progression_schedule differs from its
+signed original solely in lastUpdatedUtc. Existing fixture dispatch assertions
+independently detect the same mismatch before preview. The original signed
+schedule is later than the restored current schedule.
+
+The exact existing fr063-joint-live-n-source-unchanged control, with NO preview,
+also failed1/1 in57.0183571s with complete cleanup/no duplicates/skips/timeout,
+at the same progression-source equality gate. This is not a model result or
+successful preview. Stage creates its rollback backup before BuildControlForNextTurn
+updates schedule; original capture occurs afterward. The legitimate original vs
+rollback distinction needs a narrowly justified owner correction, not ignoring
+timestamps or changing the signed original. Separately, joint outcome capture
+samples UtcNow for each candidate, so fresh rebuild determinism needs existing
+frozen DATA reuse under fresh authority. Targeted independent analysis is pending.
+
+Independent Astra source review found no confirmed critical/important production
+defect in this initial preview diff, but correctly requires changed-source/owner/
+iteration/failed-close/normalization-required negatives before acceptance. A
+positive semantic readback comparison is also pending. None are claimed covered.
+No broad activation, live model inference, merge or closure occurred.
