@@ -7,6 +7,12 @@ public sealed record BridgeTransportEndpoint(int Version, string Kind, string Ad
 
 public static class BridgeTransportConnector
 {
+    public static BridgeTransportEndpoint DecodeEndpoint(string json) => throw new IOException("Endpoint codec not implemented.");
+    public static BridgeTransportEndpoint DecodeStatus(string json) => throw new IOException("Endpoint codec not implemented.");
+    public static string EncodeEndpoint(BridgeTransportEndpoint endpoint) => throw new IOException("Endpoint codec not implemented.");
+    public static Task<string> RequestAsync(string statusJson, string requestJson, int timeoutMilliseconds, CancellationToken token = default)
+        => Task.FromException<string>(new IOException("Bridge request helper not implemented."));
+
     public static async Task<Stream> ConnectAsync(BridgeTransportEndpoint endpoint, CancellationToken token = default)
     {
         Validate(endpoint);

@@ -22,6 +22,7 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
     private readonly object _disposeGate = new();
     private Task? _dispose;
     internal LinuxBridgeFifoEndpoint Endpoint { get; }
+    internal Task<Exception> Failure { get; } = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously).Task;
 
     private LinuxBridgeFifoListener(SafeFileHandle parent, SafeFileHandle run, string name,
         LinuxBridgeFifoEndpoint endpoint, LinuxBridgeFifoNative.Identity ticketIdentity,
