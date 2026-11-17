@@ -283,3 +283,11 @@ Independent review accepted the FIFO path but requires Linux named descriptors
 to be absolute rather than allowing caller-dependent TMPDIR resolution. Two new
 review controls cover that refusal and stale prior run while a fresh listener is
 alive; these additions are UNBUILT/UNRUN. Named positive needs a socket-capable host.
+
+Review RED: 27 executed,25PASS/2FAIL, complete cleanup. Relative Linux named
+endpoint reached cancellation instead of validation: genuine missing refusal.
+Stale-run test expected exact IOException but correctly received its NativeFailure
+subtype errno2: test-oracle correction only, not a transport defect. Linux named
+addresses are now required absolute/canonical; stale test accepts IOException
+subtypes without weakening its independent fresh-listener/no-admission assertions.
+Fresh GREEN is pending; no actual consumer is switched yet.

@@ -72,7 +72,7 @@ public sealed partial class GmBridgeFifoTransportTests
                 stale = new(1, "linux-fifo-v1", old.Endpoint.DirectoryPath, old.Endpoint.RunId);
             await using var fresh = LinuxBridgeFifoListener.Create(root);
             using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            await Assert.ThrowsAsync<IOException>(() => BridgeTransportConnector.ConnectAsync(stale, timeout.Token));
+            await Assert.ThrowsAnyAsync<IOException>(() => BridgeTransportConnector.ConnectAsync(stale, timeout.Token));
             Assert.Empty(Directory.GetDirectories(fresh.Endpoint.DirectoryPath));
             var accepting = fresh.AcceptAsync(timeout.Token);
             await using var client = await BridgeTransportConnector.ConnectAsync(

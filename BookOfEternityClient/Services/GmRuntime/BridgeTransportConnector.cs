@@ -43,7 +43,7 @@ public static class BridgeTransportConnector
             var absoluteLinux = OperatingSystem.IsLinux() && Path.IsPathFullyQualified(endpoint.Address) &&
                 endpoint.Address == Path.GetFullPath(endpoint.Address);
             var simpleName = endpoint.Address.Length <= 128 && endpoint.Address.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
-            if (endpoint.TransportRun != null || (!simpleName && !absoluteLinux))
+            if (endpoint.TransportRun != null || (OperatingSystem.IsLinux() ? !absoluteLinux : !simpleName))
                 throw new InvalidDataException("Invalid named-pipe endpoint.");
         }
         else throw new InvalidDataException("Unsupported bridge transport endpoint.");
