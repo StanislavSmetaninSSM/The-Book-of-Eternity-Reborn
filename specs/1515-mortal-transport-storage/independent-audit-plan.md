@@ -179,3 +179,44 @@ wire an unqualified generic worker or interpret missing transport as acceptance.
 Next: qualify supported authenticated model transport, then the route-specific
 T3 capture/repair/freshness work already mapped in the design. The original
 prose-only engine failures remain open. No merge, closure or hosted CI dispatch.
+
+## T3 bounded preview/rebuild design refinement, not execution evidence
+
+Independent Astra review of the actual owner code found same-engine preview,
+unattempted close and fresh rebuild feasible while the enclosing Main remains
+live. The current publisher cannot simply be invoked twice: refusal retains
+PublicationUncertain, and attempt expiry disposes the live narrative invocation.
+A second invocation without fresh N would install a sticky narrative hold. Never
+clear either real hold to make preview appear to work.
+
+The next coherent lifecycle block is:
+1. Extract the existing under-lease preparation/preflight unchanged, keeping all
+   returned authority lease-local and shared with the original publisher.
+2. Add an actual preview entry resolving its own authenticated current frame.
+   Return only detached DATA after ClosedNoNativeAttempt, source closing checks,
+   successful lease disposal and attempt expiry. A successful preview has its
+   own CapturedAndClosed outcome, not PublicationUncertain; close failure holds.
+3. Issue a fresh read-only observed narrative policy pass through the existing
+   validator core (readOnly:true, source:source). Retain actual projection/source
+   observations. Normalization-required sealed bytes are refused, never rewritten.
+4. Recapture a new engine N invocation from the actual same frame, generation,
+   live Main/Ready/stage and frozen interface iteration. Do not rearm FIRST/I,
+   recreate Ready, reuse disposed N, or invent historical-resume admission.
+5. Rebuild under fresh ownership and compare detached semantic candidate DATA
+   before delegation/take. Fresh continuation identity deliberately misses the
+   old prepared-stage authority cache; existing invalidation handles this.
+6. Exercise the genuine JointNarrativeSource lifecycle fixture at a named
+   checkpoint after Published I and before the canonical attempt: two distinct
+   attempts, first expired/no publication, frozen I/consumed Ready preserved,
+   equivalent candidate DATA, then one real publication. Changed source/owner,
+   wrong iteration and failed close must hold without take. A two-preview-only
+   result is not publication/readback proof.
+
+Post-I fresh N is compatible with the existing exact-source check, which first
+accepts expected==current and only otherwise permits authenticated I-before to
+I-after. Resource mutation identities already use the joint deterministic seed;
+ordinary random ID factories do not establish a defect in this route. No old
+capability may cross the model wait. After the enclosing Main closes, only the
+existing genuine resume route applies. BrowserLocalAccess is rejected by the
+current unattempted-close owner and needs its own supported route, not a bypass.
+No T3 implementation or lifecycle test has run at this checkpoint.
