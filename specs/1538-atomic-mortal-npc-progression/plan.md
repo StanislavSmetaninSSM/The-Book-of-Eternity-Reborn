@@ -1,3 +1,27 @@
+## Whole-turn rejection/repair/resubmission journey WIP, 2026-11-17
+
+Root requests this independent technical step while live GM-relay preparation
+continues. A new single integration leaf reuses the proven ordinary journey and
+its real ProcessPlayerTurn, original snapshot, writer, validation and reload.
+The fixture initially declares XP result 2 instead of the independently expected
+1. An asynchronous bounded observer waits for the actual repair request, checks
+current session/request/turn and no published actor/story/turn advance, then edits
+only the pending command result and writes the documented matching repair-ready
+signal. Existing post-accept assertions require exactly one grant and story row,
+consumed command and fresh reload. Production code is unchanged; UNRUN.
+
+The fixture is deliberately scripted and is not live GM-relay proof. Its retry is
+resubmission within the same pending turn, not post-accept stale command replay.
+Unexpected diagnostic-only/full-turn resubmission requests fail rather than being
+ignored. Observer cancellation is joined before owned world cleanup; an observer
+failure is surfaced through the console input source to stop repair waiting.
+
+Optimization: reuse existing preparation/output helpers, one real owned world,
+no separate preflight journey, no new cache or production reads. The original
+actor snapshot is read only for this rejection leaf. Next: checkpoint, independent
+source review, fresh integration build and this exact one-case category.
+No merge/closure; live GM gameplay remains mandatory.
+
 ## Settled real Firefox screenshots verified, 2026-11-17
 
 Follow-up on source 6a7e959f completed after separate scroll and capture calls.

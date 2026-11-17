@@ -26,7 +26,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task NpcProgressionJourney_AcceptedLevelFeedsMerchantAndTeacherFreshness() =>
         RunProgressionJourneyAsync(withConsumers: true);
 
-    private async Task RunProgressionJourneyAsync(bool withConsumers)
+    private async Task RunProgressionJourneyAsync(bool withConsumers, bool repairInvalidResult = false)
     {
         var resultLevel = withConsumers ? 16 : 2;
         var resultThreshold = withConsumers ? 102400 : 565;
@@ -35,7 +35,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (withConsumers) await SeedProgressionJourneyConsumersAsync();
         var consumerBaseline = withConsumers ? await CaptureReadyJourneyConsumersAsync() : null;
         var log = new SpiritualLifecycleTestLogger();
-        var runtime = CreateGameEngineRuntime(_fs, new ProgressionJourneyInput(_fs),
+        var input = new ProgressionJourneyInput(_fs, repairInvalidResult);
+        var runtime = CreateGameEngineRuntime(_fs, input,
             settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             logger: log, finalizationHooks: new GameEngineSessionFinalizationHooks { AtCheckpointAsync = async checkpoint =>
             {
@@ -47,7 +48,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     ["progression"] = new JsonObject
                     {
                         ["source"] = new JsonObject { ["sessionId"] = request.SessionId, ["requestId"] = request.RequestId, ["turnNumber"] = request.TurnNumber },
-                        ["experienceDelta"] = 2, ["level"] = resultLevel, ["experience"] = 1, ["experienceForNextLevel"] = resultThreshold
+                        ["experienceDelta"] = 2, ["level"] = resultLevel, ["experience"] = repairInvalidResult ? 2 : 1, ["experienceForNextLevel"] = resultThreshold
                     }
                 };
                 await new StateDistributor(_fs, NullLogger<StateDistributor>.Instance).DistributeAsync(new GameResponse
@@ -59,7 +60,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         await runtime.StateManager.RefreshGameStateAsync();
         var initial = await runtime.ValidationService.ValidateGameStateAsync();
         Assert.True(!initial.Any(x => x.Severity == IssueSeverity.Error), "Initial state: " + JsonSerializer.Serialize(initial));
-        await runtime.Engine.ProcessPlayerTurn("Выслушать отчёт наблюдателя о завершённом упражнении.");
+        var beforeActor = repairInvalidResult
+            ? JsonNode.Parse((await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!["NPCsInScene"]![0]!.ToJsonString()
+            : string.Empty;
+        using var repairCancellation = new CancellationTokenSource();
+        var repair = repairInvalidResult
+            ? ObserveAndRepairProgressionJourneyAsync(runtime.GameLoop, input, beforeActor, repairCancellation.Token)
+            : Task.CompletedTask;
+        try
+        {
+            await runtime.Engine.ProcessPlayerTurn("Выслушать отчёт наблюдателя о завершённом упражнении.");
+            if (repairInvalidResult) Assert.True(input.RepairCompleted, "Expected a real rejected-result repair before acceptance.");
+        }
+        finally
+        {
+            repairCancellation.Cancel();
+            await repair;
+        }
         Assert.True(runtime.GameLoop.TurnNumber == 42, log.Describe());
         var core = JsonNode.Parse((await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
         var actor = Assert.Single(core["NPCsInScene"]!.AsArray());
@@ -166,12 +183,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         await WriteJsonAsync("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber, status = "success", timestamp, filesModified = new[] { NpcCoreChangesContract.NpcCorePath, "game_state/npcs/npc_journals.json", ProgressionScheduleService.ReportPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
     }
 
-    private sealed class ProgressionJourneyInput(FileSystemManager files) : IConsoleInputSource
+    private sealed class ProgressionJourneyInput(FileSystemManager files, bool allowRepair = false) : IConsoleInputSource
     {
+        public Exception? RepairFailure { get; set; }
+        public bool RepairCompleted { get; set; }
         public bool IsScripted => true;
-        public bool KeyAvailable => files.FileExists("game_state/control/validation_repair_request.json");
+        public bool KeyAvailable => RepairFailure != null || (!allowRepair && files.FileExists("game_state/control/validation_repair_request.json"));
         public ConsoleKeyInfo ReadKey(bool intercept = true)
         {
+            if (RepairFailure != null) throw new InvalidOperationException("Progression repair fixture failed", RepairFailure);
             var repair = files.ResolvePath("game_state/control/validation_repair_request.json");
             if (File.Exists(repair)) throw new InvalidOperationException("Progression journey repair: " + File.ReadAllText(repair));
             return new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false);

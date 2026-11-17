@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-progression-repair-journey",
+      "responsibility": "#1538 real ProcessPlayerTurn rejects wrong NPC XP result, emits current repair request, retries corrected pending command and accepts exactly one grant/story with fresh reload.",
+      "excludes": "Live GM relay, post-accept stale replay, merchant purchase, unrelated repair routes and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionRepairJourney.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_RejectedResultRepairsBeforeSingleAcceptedGrant"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-mixed-mechanics-labels",
       "responsibility": "#1538 mixed public NPC mechanics labels distinguish progression profiles from actual skills without changing accepted data.",
       "excludes": "Live GM relay, browser layout and whole feature qualification.",
