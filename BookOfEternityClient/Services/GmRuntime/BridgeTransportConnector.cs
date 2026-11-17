@@ -99,6 +99,10 @@ public static class BridgeTransportConnector
         catch { pipe.Dispose(); throw; }
     }
 
+    // Pure name grammar, independent of the executing OS; no connection or authority.
+    internal static bool IsSimpleNamedPipeName(string name)
+        => name.Length <= 128 && name.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
+
     internal static void Validate(BridgeTransportEndpoint endpoint)
     {
         if (endpoint == null || endpoint.Version != 1 || string.IsNullOrWhiteSpace(endpoint.Address) ||
@@ -117,7 +121,7 @@ public static class BridgeTransportConnector
             // Linux absolute socket paths preserve endpoint identity across TMPDIR changes.
             var absoluteLinux = OperatingSystem.IsLinux() && Path.IsPathFullyQualified(endpoint.Address) &&
                 endpoint.Address == Path.GetFullPath(endpoint.Address);
-            var simpleName = endpoint.Address.Length <= 128 && endpoint.Address.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
+            var simpleName = IsSimpleNamedPipeName(endpoint.Address);
             if (endpoint.TransportRun != null || (OperatingSystem.IsLinux() ? !absoluteLinux : !simpleName))
                 throw new InvalidDataException("Invalid named-pipe endpoint.");
         }

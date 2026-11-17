@@ -5,6 +5,32 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GmBridgeFifoTransportTests
 {
+    [Theory]
+    [InlineData("boe", true)]
+    [InlineData("boe-production_1", true)]
+    [InlineData("boe.production", true)]
+    [InlineData("boe.production-1_2", true)]
+    [InlineData(".", false)]
+    [InlineData("..", false)]
+    [InlineData("a..b", false)]
+    [InlineData(".a", false)]
+    [InlineData("a.", false)]
+    [InlineData("../boe", false)]
+    [InlineData("a/b", false)]
+    [InlineData(@"a\b", false)]
+    [InlineData(@"\\server\pipe", false)]
+    [InlineData(@"C:\pipe", false)]
+    [InlineData("a b", false)]
+    [InlineData("a\0b", false)]
+    public void SimpleNamedPipeName_PreservesDottedOverridesWithoutPaths(string name, bool accepted)
+        => Assert.Equal(accepted, BridgeTransportConnector.IsSimpleNamedPipeName(name));
+
+    [Theory]
+    [InlineData(128, true)]
+    [InlineData(129, false)]
+    public void SimpleNamedPipeName_PreservesExistingLengthBound(int length, bool accepted)
+        => Assert.Equal(accepted, BridgeTransportConnector.IsSimpleNamedPipeName(new string('a', length)));
+
     [Fact]
     public async Task PublicConnector_UsesOriginalFifoStreamAndEof()
     {
