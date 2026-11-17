@@ -1,3 +1,16 @@
+## Repair protocol source review refinement WIP, 2026-11-17
+
+Source re-review of e7ae3f39 found the maintained canonical-repair freshness rule:
+after corrected pending XP is normalized, stale narrative/interface outputs must
+be repaired in a second, explicit output-only request. The fixture now handles
+exactly that documented second request, preserves current metadata, verifies the
+already corrected actor and unchanged story/turn, rewrites only the two requested
+player-facing outputs, verifies canonical bytes unchanged, and writes Ready last.
+A third/unexpected repair fails; live watchdog remains until engine completion.
+Post-Ready request disappearance is tolerated narrowly as normal client cleanup,
+not as a changed request. No production fix or freshness bypass. Current UNRUN.
+The earlier one-request assumption was corrected statically before runtime.
+
 ## Repair journey fixture review corrections WIP, 2026-11-17
 
 Initial source ef85d903 built with 0 errors/126 warnings in 70.80 seconds.

@@ -22,7 +22,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var corePath = _fs.ResolvePath(NpcCoreChangesContract.NpcCorePath);
         try
         {
-            var deadline = DateTime.UtcNow.AddSeconds(30);
+            var deadline = DateTime.UtcNow.AddSeconds(60);
             while (!File.Exists(requestPath))
             {
                 if (DateTime.UtcNow >= deadline) throw new TimeoutException("No actual progression repair request appeared.");
@@ -52,14 +52,43 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(2, command["progression"]!["experience"]!.GetValue<int>());
             command["progression"]!["experience"] = 1;
             await WriteExternalRepairPacketAsync(corePath, core.ToJsonString(), cancellation);
-            await WriteExternalRepairPacketAsync(_fs.ResolvePath("game_state/control/validation_repair_ready.json"), JsonSerializer.Serialize(new
+            await WriteRepairReadyAsync(request, cancellation);
+
+            // Canonical correction requires genuinely fresh player-facing artifacts.
+            // Do not hide that second repair or refresh outputs before normalization.
+            var outputRequestText = await WaitForChangedRepairRequestAsync(requestPath, repairText, deadline, cancellation);
+            var outputRequest = JsonNode.Parse(outputRequestText)!.AsObject();
+            var outputErrors = outputRequest["errors"]!.AsArray();
+            Assert.NotEmpty(outputErrors);
+            Assert.All(outputErrors, error =>
             {
-                sessionId = request["sessionId"]!.GetValue<string>(),
-                requestId = request["requestId"]!.GetValue<string>(),
-                turnNumber = request["turnNumber"]!.GetValue<int>(),
-                status = "success",
-                timestamp = DateTime.UtcNow.ToString("O")
+                Assert.Equal("accepted_turn_stale_player_facing_output_after_canonical_repair", error!["code"]!.GetValue<string>());
+                Assert.Contains(error["filePath"]!.GetValue<string>(), new[] { "output/narrative_response.json", "output/interface_updates.json" });
+            });
+            foreach (var key in new[] { "sessionId", "requestId", "turnNumber" })
+                Assert.Equal(request[key]!.ToJsonString(), outputRequest[key]!.ToJsonString());
+            Assert.False(outputRequest["metadataDiagnosticOnly"]!.GetValue<bool>());
+            Assert.False(outputRequest["fullTurnResubmissionRequired"]!.GetValue<bool>());
+            Assert.Equal(41, loop.TurnNumber);
+            var correctedCore = await File.ReadAllTextAsync(corePath, cancellation);
+            var corrected = JsonNode.Parse(correctedCore)!.AsObject();
+            var correctedActor = Assert.Single(corrected["NPCsInScene"]!.AsArray())!;
+            Assert.Equal(2, correctedActor["level"]!.GetValue<int>());
+            Assert.Equal(1, correctedActor["experience"]!.GetValue<int>());
+            Assert.False(corrected.ContainsKey("NPCCoreChanges"));
+            Assert.True(!File.Exists(storyPath) || string.IsNullOrWhiteSpace(await File.ReadAllTextAsync(storyPath, cancellation)));
+            var timestamp = DateTime.UtcNow.ToString("O");
+            await WriteExternalRepairPacketAsync(_fs.ResolvePath("output/narrative_response.json"), JsonSerializer.Serialize(new
+            {
+                response = "Лев завершил упражнение и стал опытнее. Его уровень повысился до 2.", timestamp
             }), cancellation);
+            await WriteExternalRepairPacketAsync(_fs.ResolvePath("output/interface_updates.json"), JsonSerializer.Serialize(new
+            {
+                dialogueOptions = Array.Empty<object>(), timestamp
+            }), cancellation);
+            Assert.Equal(correctedCore, await File.ReadAllTextAsync(corePath, cancellation));
+            await WriteRepairReadyAsync(outputRequest, cancellation);
+            repairText = outputRequestText;
             input.RepairCompleted = true;
             // Keep an owned watchdog after submission: a second refusal must not wait
             // forever or be mistaken for the intended single repair.
@@ -69,8 +98,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                     throw new TimeoutException("Corrected progression did not finish within the protected repair window.");
                 if (File.Exists(requestPath))
                 {
-                    var current = await File.ReadAllTextAsync(requestPath, cancellation);
-                    if (!string.Equals(current, repairText, StringComparison.Ordinal))
+                    string? current;
+                    try { current = await File.ReadAllTextAsync(requestPath, cancellation); }
+                    catch (FileNotFoundException) { current = null; } // Successful validation removes this request.
+                    if (current != null && !string.Equals(current, repairText, StringComparison.Ordinal))
                         throw new InvalidOperationException("Unexpected subsequent repair request: " + current);
                 }
                 await Task.Delay(50, cancellation);
@@ -82,6 +113,32 @@ public sealed partial class GameEngineTurnLifecycleTests
             input.RepairFailure = error;
             throw;
         }
+    }
+
+    private async Task WriteRepairReadyAsync(JsonObject request, CancellationToken cancellation) =>
+        await WriteExternalRepairPacketAsync(_fs.ResolvePath("game_state/control/validation_repair_ready.json"), JsonSerializer.Serialize(new
+        {
+            sessionId = request["sessionId"]!.GetValue<string>(),
+            requestId = request["requestId"]!.GetValue<string>(),
+            turnNumber = request["turnNumber"]!.GetValue<int>(),
+            status = "success", timestamp = DateTime.UtcNow.ToString("O")
+        }), cancellation);
+
+    private static async Task<string> WaitForChangedRepairRequestAsync(
+        string path, string previous, DateTime deadline, CancellationToken cancellation)
+    {
+        while (DateTime.UtcNow < deadline)
+        {
+            if (File.Exists(path))
+            {
+                string? current;
+                try { current = await File.ReadAllTextAsync(path, cancellation); }
+                catch (FileNotFoundException) { current = null; }
+                if (current != null && !string.Equals(current, previous, StringComparison.Ordinal)) return current;
+            }
+            await Task.Delay(50, cancellation);
+        }
+        throw new TimeoutException("Expected fresh-output repair request did not appear.");
     }
 
     private static async Task WriteExternalRepairPacketAsync(string path, string content, CancellationToken cancellation)
