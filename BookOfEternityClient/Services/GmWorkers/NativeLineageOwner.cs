@@ -715,7 +715,8 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
                 _stopped = true;
                 try
                 {
-                    if (!_supervisor.HasExited && !(_finitePipe && _hostExit?.IsCompletedSuccessfully == true))
+                    if (!_supervisor.HasExited && !(_inheritedTerminal && _inheritedControlClosed) &&
+                        !(_finitePipe && _hostExit?.IsCompletedSuccessfully == true))
                     {
                         _stopControl = SendControlAsync('S');
                         await _stopControl.WaitAsync(observation.Token);

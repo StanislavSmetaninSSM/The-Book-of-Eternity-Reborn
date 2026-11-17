@@ -52,3 +52,8 @@ observations before the fallible control setup, and uses original raw-pipe close
 when no control object was assigned. Tests are unchanged. This correction is
 UNCOMPILED/UNRUN pending fresh build and the same seven cases. No raw diagnostics
 are committed; no broad suite, permission change or additional execution route.
+
+Source re-review found no blocker to GREEN. Its nonblocking observation is also
+addressed: when inherited abort already closed the original control pipe, stop
+does not try sending S through an absent/closed control; it observes the original
+process/status retirement. Tests remain unchanged, this final correction unrun.
