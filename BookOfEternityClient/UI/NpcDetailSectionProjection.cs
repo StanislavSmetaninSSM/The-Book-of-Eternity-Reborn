@@ -608,7 +608,7 @@ internal static class NpcDetailSectionProjection
     private static string FormatNpcDetailKey(string key, string sectionTitle, string rowTitle)
     {
         var clean = key.Trim();
-        var isSkillContext = IsNpcSkillContext(sectionTitle, rowTitle);
+        var isSkillContext = IsNpcSkillContext(rowTitle);
         return clean.ToLowerInvariant() switch
         {
             "status" or "active state" or "activestate" => "Состояние",
@@ -649,7 +649,7 @@ internal static class NpcDetailSectionProjection
     private static string InferNpcDetailScalarKey(string sectionTitle, string rowTitle, int scalarIndex, string rawValue)
     {
         var formattedValue = FormatNpcDetailValue(string.Empty, rawValue);
-        if (IsNpcSkillContext(sectionTitle, rowTitle))
+        if (IsNpcSkillContext(rowTitle))
         {
             if (IsNpcSkillTypeValue(formattedValue))
                 return "Тип навыка";
@@ -708,9 +708,11 @@ internal static class NpcDetailSectionProjection
         return scalarIndex == 0 ? "Сведения" : $"Сведения {scalarIndex + 1}";
     }
 
-    private static bool IsNpcSkillContext(string sectionTitle, string rowTitle)
+    private static bool IsNpcSkillContext(string rowTitle)
     {
-        var context = sectionTitle + " " + rowTitle;
+        // Mixed mechanics sections also contain profiles, characteristics and items.
+        // Only the row identifies a skill; the aggregate section title is not its type.
+        var context = rowTitle;
         return context.Contains("Навык", StringComparison.OrdinalIgnoreCase) ||
                context.Contains("skills", StringComparison.OrdinalIgnoreCase) ||
                context.Contains("skill", StringComparison.OrdinalIgnoreCase);

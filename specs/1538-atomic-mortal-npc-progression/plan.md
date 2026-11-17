@@ -1,3 +1,18 @@
+## Mixed-label causal RED and row-local fix WIP, 2026-11-17
+
+Source fc66d03050e22fca901c3e1133b5c4cc21fe7734 built successfully: 0 errors,
+54 warnings, 37.02 seconds. Official single-case mortal-npc-mixed-mechanics-labels
+returned 0 PASS / 1 FAIL in 9.6090684 seconds, complete cleanup and no skip,
+duplicate or timeout. Failure is the exact screenshot defect: profile fact
+Key="Название навыка", Value="Стандартный". Run identity:
+20261117-075910-448-5-33fcc3098d36483a8b7f07151707d4a4-categories.
+
+IsNpcSkillContext now uses only the existing row title. Canonical active/passive
+rows identify their own skill kind; an aggregate section title listing multiple
+categories cannot classify a profile or item as a skill. No browser normalizer
+change, new cache/read or GM/state contract change. Tests unchanged; GREEN UNRUN.
+Next: checkpoint, fresh build, same single case and actual Firefox recheck.
+
 ## Actual Firefox confirms progression and exposes mixed-label defect WIP, 2026-11-17
 
 Local official Firefox 160 rendered the real accepted turn-42 export through the
