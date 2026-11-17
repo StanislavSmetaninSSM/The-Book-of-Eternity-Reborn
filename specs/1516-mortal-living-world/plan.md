@@ -1036,3 +1036,11 @@ and byte-preserving refusal of a second export. Source review and first build/ru
 are pending. Initial builders may be shared as immutable setup code; no mutable
 world cache or authority reuse across live turns is allowed. Existing expensive
 journeys will not be rerun except where extracting their shared setup changes it.
+
+Seed exporter causal RED at source f6391417: fresh integration build0errors /
+175warnings /123.23s. Official mortal-live-seed-export selected/executed exactly
+one case, which failed at the deliberate refusal stub in8ms; runner10.9355196s,
+no skips/duplicates/timeout, complete cleanup. This is preparation-helper RED,
+not a gameplay defect. Implementation and fresh GREEN are pending. Independent
+review accepted the source join and found driver cleanup/continuation weaknesses
+before any native launch; those are being corrected without weakening ownership.

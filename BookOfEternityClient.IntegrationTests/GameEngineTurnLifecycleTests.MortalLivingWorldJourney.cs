@@ -60,28 +60,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task<GameEngineTestRuntime> CreateMortalLivingWorldJourneyAsync(
         Func<TurnRequest, Task> author, Func<FileSystemManager, Task>? seed = null, IConsoleInputSource? inputOverride = null)
     {
-        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
-        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
-        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(
-            Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        await _fs.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
-        var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 41, 20, 20, 20, 20, 20);
-        Assert.True(resources.IsValid, JsonSerializer.Serialize(resources.Issues));
-        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.StatePath, resources.State!.ToCanonicalJson());
-        await _fs.WriteFileAtomicAsync(ResourceMaterializationContract.HistoryPath, resources.History!.ToCanonicalJson());
-        var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(resources.Definitions,
-            path => _fs.ReadFileAsync(path), resources.State, resources.History, CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
-        Assert.True(authority.IsValid, JsonSerializer.Serialize(authority.Issues));
-        await _fs.WriteFileAtomicAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath, authority.CanonicalAuthorityJson!);
-        if (seed is not null) await seed(_fs);
-        // Current client projection, before the first signed original. The checked-in example
-        // predates effective storage access; never author this private state during a GM turn.
-        var map = JsonNode.Parse((await _fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
-        var projection = MortalStorageAccessProjection.Build(map, null);
-        Assert.True(projection.IsValid, JsonSerializer.Serialize(projection.Issues));
-        await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, projection.Root!.ToJsonString());
-        Assert.Empty(MortalStorageAccessProjection.ValidateCanonical(map, projection.Root));
+        await MortalLiveSeedBuilder.PrepareAsync(_fs, TestRepoPaths.BaseSessionRoot, seed);
         var input = inputOverride ?? new MortalLivingWorldJourneyInput(_fs);
         var runtime = CreateGameEngineRuntime(_fs, input,
             settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },

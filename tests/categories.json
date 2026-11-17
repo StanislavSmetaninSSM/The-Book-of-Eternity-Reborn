@@ -21,7 +21,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLiveSeedExporterTests.InitialExportIsValidatedCoherentSetupOnlyAndCannotOverwrite"
+            "BookOfEternityClient.Tests.MortalLiveSeedExporterTests.*"
           ]
         }
       ]
