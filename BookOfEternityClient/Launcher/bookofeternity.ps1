@@ -8,6 +8,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "gm_main_operation.ps1")
+. (Join-Path $PSScriptRoot "gm_bridge_request_transport.ps1")
 
 function Get-ClientRoot {
     return (Split-Path $PSScriptRoot -Parent)
@@ -318,6 +319,11 @@ function Invoke-BridgeRequest {
     $status = $statusJson | ConvertFrom-Json -ErrorAction Stop
     if (-not (Test-BridgeHelperAlive $status)) { throw "GM bridge helper is unavailable." }
 
+    $json = $Payload | ConvertTo-Json -Depth 8 -Compress
+    if ($PSVersionTable.PSEdition -eq 'Desktop') {
+        $receipt = Invoke-BoeBridgeRequestProcess -CodeRoot (Get-ClientRoot) -StatusJson $statusJson -RequestJson $json -TimeoutMilliseconds $ResponseTimeoutMilliseconds
+        return $receipt.ResponseJson | ConvertFrom-Json -ErrorAction Stop
+    }
     if (-not ('BookOfEternityClient.Services.GmRuntime.BridgeTransportConnector' -as [type])) {
         # Only trusted shipped/build locations, never a path supplied by status.
         $codeRoot = Get-ClientRoot
@@ -326,7 +332,6 @@ function Invoke-BridgeRequest {
         if (-not $assembly) { throw 'Built bridge transport client is unavailable.' }
         Add-Type -Path $assembly
     }
-    $json = $Payload | ConvertTo-Json -Depth 8 -Compress
     $operation = [BookOfEternityClient.Services.GmRuntime.BridgeTransportConnector]::RequestAsync(
         $statusJson, $json, $ResponseTimeoutMilliseconds, [Threading.CancellationToken]::None)
     # RequestAsync applies actual cancellation to every I/O and closes the one

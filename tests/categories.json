@@ -2,6 +2,59 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-bridge-desktop-control",
+      "responsibility": "#1589 Desktop external .NET8 control boundary: strict request envelope, original FIFO request, cancellation/EOF and joined child I/O; Linux executes external branch explicitly.",
+      "excludes": "No actual Windows PowerShell 5.1 runtime qualification or whole Windows daemon support; existing unrelated Desktop incompatibilities remain outside this boundary.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmBridgeRequestControl.cs",
+        "BookOfEternityClient/Launcher/gm_bridge_request_transport.ps1",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeDesktopControlTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-pipe-name-grammar",
+      "responsibility": "#1589 simple named-pipe grammar preserves valid dotted Windows overrides while rejecting path forms and oversized names.",
+      "excludes": "No Windows named-pipe execution or whole transport/runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/BridgeTransportConnector.cs",
+        "BookOfEternityClient.Tests/GmBridgeFifoTransportTests.Connector.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.SimpleNamedPipeName_PreservesDottedOverridesWithoutPaths",
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.SimpleNamedPipeName_PreservesExistingLengthBound"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-daemon-watcher-serialization",
       "responsibility": "#1589 daemon watcher serialization source guards: signal-only callbacks, retained startup/poll consumers, heartbeat and turn counting.",
       "excludes": "Source contracts only; actual event/stdio regression is separately verified through tests/fixtures/GmDaemonWatcher. No live GM acceptance or exact prior stall-cause claim.",
