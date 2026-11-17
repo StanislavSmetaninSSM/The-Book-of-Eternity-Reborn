@@ -1467,6 +1467,59 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             issue.Actor == "mortal_faction:temp-faction-watch");
     }
 
+    [Fact]
+    public async Task CanonicalMaterializedMortal_SplitBundle_RawNonMember_PassesShapeRawCompletenessAndResponse()
+    {
+        await WriteMortalCreationAsync(BuildCompleteMinimalMortalCreation());
+
+        var shapeIssues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+        var rawIssues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var response = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        response["response"] = "The Wayfarer Watch forms and records its complete charter.";
+        using var responseDocument = JsonDocument.Parse(response.ToJsonString());
+        var responseIssues = _validator.ValidateResponse(responseDocument.RootElement);
+
+        // The same complete raw creation must satisfy both public shape surfaces and
+        // raw materialization. Do not hide generic type errors behind an Actor filter.
+        var errors = shapeIssues.Concat(rawIssues).Concat(responseIssues)
+            .Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
+        Assert.True(errors.Length == 0, JsonSerializer.Serialize(errors));
+    }
+
+    [Theory]
+    [InlineData("playerRank")]
+    [InlineData("playerBranch")]
+    [InlineData("playerStrategyDirective")]
+    [InlineData("reputationDescription")]
+    public async Task CanonicalMaterializedMortal_SplitBundle_RawNonMember_NonStringMembershipFailsShapeRawAndResponse(
+        string field)
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction[field] = 7;
+        await WriteMortalCreationAsync(faction);
+
+        var shapeIssues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+        var rawIssues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var response = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        response["response"] = "The Wayfarer Watch forms and records its complete charter.";
+        using var responseDocument = JsonDocument.Parse(response.ToJsonString());
+        var responseIssues = _validator.ValidateResponse(responseDocument.RootElement);
+
+        Assert.Contains(shapeIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"{MortalPath}.factionDataChanges[0].{field}");
+        Assert.Contains(rawIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Code == "faction_materialization_mortal_player_membership_incomplete" &&
+            issue.Actor == "mortal_faction:temp-faction-watch" &&
+            issue.FilePath == $"{MortalPath}.factionDataChanges[0].playerMembership");
+        Assert.Contains(responseIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"response.factionDataChanges[0].{field}");
+    }
+
     [Theory]
     [InlineData("resources")]
     [InlineData("ranks")]
@@ -2908,496 +2961,7 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
     private async Task WritePopulatedMortalLocationAuthorityAsync()
     {
         var location = MortalLocationTestFixture.CreateCanonicalLocation();
-        location["locationId"] = "location_watch_road";
-        location["factionControl"] = new JsonArray(new JsonObject
-        {
-            ["factionId"] = "temp-faction-watch"
-        });
-        var envelope = location["materialization"]!.AsObject();
-        envelope["sections"]!["factionControl"] =
-            PopulatedLocationDisposition();
-        var receipt = location["materializationReceipt"]!.AsObject();
-        receipt["locationId"] = "location_watch_road";
-        receipt["seal"] = MortalLocationMaterializationContract.ComputeSeal(
-            envelope,
-            receipt);
-        await _fs.WriteFileAtomicAsync(
-            WorldMapPath,
-            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
-    }
-
-    private async Task WriteMortalAndShiningCreationsAsync(
-        string mortalMaterializationId,
-        string shiningMaterializationId)
-    {
-        var currentMortal = MortalRoot(
-            MaterializedMortalFaction("faction_watch", mortalMaterializationId));
-        var currentShining = ShiningRoot(
-            MaterializedShiningFaction("order_dawn", shiningMaterializationId));
-        var preTurnMortal = MortalRoot();
-        var preTurnShining = ShiningRoot();
-
-        await WriteCurrentAndSnapshotAsync(
-            (MortalPath, currentMortal.ToJsonString()),
-            (ShiningPath, currentShining.ToJsonString()),
-            (MortalPath, preTurnMortal.ToJsonString()),
-            (ShiningPath, preTurnShining.ToJsonString()));
-    }
-
-    private async Task WriteCurrentAndSnapshotAsync(
-        params (string Path, string Json)[] files)
-    {
-        var currentByPath = new Dictionary<string, string>(StringComparer.Ordinal);
-        var snapshotByPath = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var file in files)
-        {
-            if (!currentByPath.TryAdd(file.Path, file.Json))
-                snapshotByPath[file.Path] = file.Json;
-        }
-
-        foreach (var (path, json) in currentByPath)
-            await _fs.WriteFileAtomicAsync(path, json);
-
-        await WriteValidatedSnapshotManifestAsync(
-            snapshotByPath.Select(entry => (entry.Key, entry.Value)).ToArray());
-    }
-
-    private async Task WriteValidatedSnapshotManifestAsync(
-        params (string Path, string Json)[] snapshotFiles)
-    {
-        const string sessionId = "session_faction_materialization_validation";
-        const string requestId = "request_faction_materialization_validation";
-        const int turnNumber = 12;
-        const string playerAction = "Validate faction materialization continuity.";
-
-        await _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
-        {
-          "sessionId": "{{sessionId}}",
-          "requestId": "{{requestId}}",
-          "turnNumber": {{turnNumber}},
-          "playerAction": "{{playerAction}}"
-        }
-        """);
-
-        var files = new JsonObject();
-        var snapshotFileHashes = new JsonObject();
-        var rollbackBaselineFiles = new JsonArray();
-        foreach (var (path, json) in snapshotFiles)
-        {
-            var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
-            await _fs.WriteFileAtomicAsync(snapshotPath, json);
-            files[path] = snapshotPath;
-            snapshotFileHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(json);
-            rollbackBaselineFiles.Add(path);
-        }
-
-        var manifest = new JsonObject
-        {
-            ["sessionId"] = sessionId,
-            ["requestId"] = requestId,
-            ["turnNumber"] = turnNumber,
-            ["requestTimestamp"] = "2026-08-03T00:00:00Z",
-            ["playerAction"] = playerAction,
-            ["files"] = files,
-            ["snapshotFileHashes"] = snapshotFileHashes,
-            ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject(),
-            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
-            ["sourceLabel"] = "accepted faction turn",
-            ["manifestPayloadHash"] = string.Empty
-        };
-        manifest["manifestPayloadHash"] =
-            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
-
-        await _fs.WriteFileAtomicAsync(
-            "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString());
-        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
-    }
-
-    private static JsonObject MortalRoot(params JsonObject[] factions) =>
-        new()
-        {
-            ["factions"] = new JsonArray(
-                factions.Select(faction => (JsonNode?)faction).ToArray())
-        };
-
-    private static JsonObject ShiningRoot(params JsonObject[] factions) =>
-        new()
-        {
-            ["factions"] = new JsonArray(
-                factions.Select(faction => (JsonNode?)faction).ToArray())
-        };
-
-    private static JsonObject ReceiptlessMortalFaction(string factionId) =>
-        new()
-        {
-            ["factionId"] = factionId,
-            ["name"] = factionId
-        };
-
-    private static JsonObject ReceiptlessShiningFaction(
-        string factionId,
-        int factionStrength) =>
-        new()
-        {
-            ["factionId"] = factionId,
-            ["baseStrength"] = 30,
-            ["factionStrength"] = factionStrength
-        };
-
-    private static JsonObject MaterializedMortalFaction(
-        string factionId,
-        string materializationId)
-    {
-        var faction = ReceiptlessMortalFaction(factionId);
-        faction["materialization"] = BuildMortalEnvelope(factionId, materializationId);
-        return faction;
-    }
-
-    private static JsonObject MaterializedShiningFaction(
-        string factionId,
-        string materializationId)
-    {
-        var faction = ReceiptlessShiningFaction(factionId, factionStrength: 30);
-        faction["materialization"] = BuildShiningEnvelope(factionId, materializationId);
-        return faction;
-    }
-
-    private static JsonObject BuildRouteShiningRoot()
-    {
-        var root = ShiningAbodeState.CreateDefaultState();
-        root["availability"] = ShiningAbodeState.AvailabilityActive;
-        root["radiance"] = new JsonObject
-        {
-            ["experience"] = 250,
-            ["tier"] = 2
-        };
-        root["lightSparks"] = 80;
-        root["halls"] = new JsonArray();
-        root["factions"] = new JsonArray();
-        root["shiningPoliticalActors"] = new JsonArray();
-        root["coreActionReceipts"] = new JsonArray();
-        root["factionFoundingReceipts"] = new JsonArray();
-        root["pendingNativeFactionDiscovery"] = null;
-        return root;
-    }
-
-    private static JsonObject BuildExistingRouteFaction(
-        string factionId,
-        string hallId,
-        string projectId)
-    {
-        var faction = BuildCompleteNativeShiningFaction();
-        faction["factionId"] = factionId;
-        faction["hallId"] = hallId;
-        faction["baseStrength"] = 50;
-        faction["factionStrength"] = 63;
-        faction["projects"] = new JsonArray(
-            BuildRouteProject(
-                projectId,
-                ShiningAbodeState.ProjectStatusCompleted));
-        faction["materialization"] = BuildShiningRouteEnvelope(
-            factionId,
-            $"fmat_{factionId}_existing",
-            hasProjects: true,
-            hasResidents: true,
-            hasLeadershipHistory: false);
-        return faction;
-    }
-
-    private static JsonObject BuildRouteProject(
-        string projectId,
-        string status) =>
-        new()
-        {
-            ["projectId"] = projectId,
-            ["projectName"] = $"Project {projectId}",
-            ["status"] = status
-        };
-
-    private static JsonObject BuildCompleteNativeRouteFaction(
-        string factionId,
-        string hallId,
-        string requestId,
-        string headResidentId,
-        JsonArray projects)
-    {
-        var faction = BuildCompleteNativeShiningFaction();
-        faction["factionId"] = factionId;
-        faction["hallId"] = hallId;
-        faction["creationProvenance"] = new JsonObject
-        {
-            ["route"] = "native_discovery",
-            ["authorityType"] = "shining_core_action_request",
-            ["authorityId"] = requestId
-        };
-        faction["leadership"] = new JsonObject
-        {
-            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
-            ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
-            ["headActorId"] = headResidentId
-        };
-        faction["projects"] = projects;
-        faction["materialization"] = BuildShiningRouteEnvelope(
-            factionId,
-            $"fmat_{factionId}_12",
-            hasProjects: true,
-            hasResidents: true,
-            hasLeadershipHistory: false);
-        return faction;
-    }
-
-    private static JsonObject BuildCompletePlayerFoundedRouteFaction(
-        string factionId,
-        string hallId,
-        string requestId)
-    {
-        var faction = BuildCompleteNativeShiningFaction();
-        faction["factionId"] = factionId;
-        faction["originType"] = ShiningAbodeState.OriginTypePlayerFounded;
-        faction["hallId"] = hallId;
-        faction["creationProvenance"] = new JsonObject
-        {
-            ["route"] = "player_founding",
-            ["authorityType"] = "shining_founding_request",
-            ["authorityId"] = requestId
-        };
-        faction["charter"] = BuildPlayerFoundingCharter();
-        faction["leadership"] = new JsonObject
-        {
-            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure,
-            ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
-            ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul
-        };
-        faction["baseStrength"] = 35;
-        faction["factionStrength"] = 35;
-        faction["projects"] = new JsonArray();
-        faction["leadershipHistory"] = new JsonArray(
-            new JsonObject
-            {
-                ["requestId"] = requestId,
-                ["eventType"] = "founded",
-                ["turnNumber"] = 12,
-                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
-                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul
-            });
-        faction["materialization"] = BuildShiningRouteEnvelope(
-            factionId,
-            $"fmat_{factionId}_12",
-            hasProjects: false,
-            hasResidents: true,
-            hasLeadershipHistory: true);
-        return faction;
-    }
-
-    private static JsonObject BuildShiningRouteEnvelope(
-        string factionId,
-        string materializationId,
-        bool hasProjects,
-        bool hasResidents,
-        bool hasLeadershipHistory)
-    {
-        var envelope = BuildShiningEnvelope(
-            factionId,
-            materializationId,
-            canTrade: true);
-        var capabilities = envelope["capabilities"]!.AsObject();
-        capabilities["runsProjects"] = hasProjects;
-        capabilities["hasResidentAffiliations"] = hasResidents;
-        capabilities["hasLeadershipHistory"] = hasLeadershipHistory;
-        var sections = envelope["sections"]!.AsObject();
-        sections["projects"] = hasProjects
-            ? PopulatedDisposition()
-            : EmptyDisposition("No projects exist yet.");
-        sections["residentAffiliations"] = hasResidents
-            ? PopulatedDisposition()
-            : EmptyDisposition("No affiliations exist yet.");
-        sections["leadershipHistory"] = hasLeadershipHistory
-            ? PopulatedDisposition()
-            : EmptyDisposition("No leadership history exists yet.");
-        return envelope;
-    }
-
-    private static JsonObject BuildRouteResidentRoot(
-        params JsonObject[] residents) =>
-        new()
-        {
-            ["entries"] = new JsonArray(
-                residents.Select(resident => (JsonNode?)resident).ToArray()),
-            [GuardianAbodeResidentState.HistoryLogProperty] = new JsonArray()
-        };
-
-    /// <summary>Creates an independent exact ascended affiliation for typed fixture preparation.</summary>
-    internal static JsonObject BuildRouteResident(
-        string residentId,
-        string factionId) =>
-        new()
-        {
-            ["residentId"] = residentId,
-            ["displayName"] = $"Resident {residentId}",
-            ["ascensionState"] = ShiningAbodeState.AscensionStateAscended,
-            ["shiningFactionId"] = factionId,
-            ["factionLoyaltyLevel"] = 50,
-            ["factionLoyaltyTier"] =
-                ShiningAbodeState.ResolveFactionLoyaltyTier(50),
-            ["factionRestlessness"] = 0,
-            ["factionRealignmentState"] =
-                ShiningAbodeState.FactionRealignmentStateSettled
-        };
-
-    private static JsonObject BuildRouteSoulRoot(int currentFeathers) =>
-        new()
-        {
-            ["currentRealm"] = "Shining Abode",
-            ["currentIncarnation"] = 2,
-            ["soulName"] = "Route Test Soul",
-            ["inkFeathers"] = new JsonObject
-            {
-                ["current"] = currentFeathers,
-                ["total"] = 100
-            }
-        };
-
-    private static JsonObject BuildNativeDiscoveryRequest(string requestId) =>
-        new()
-        {
-            ["requestId"] = requestId,
-            ["actionType"] =
-                ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
-            ["radianceTierAtRequest"] = 2,
-            ["quotedCostFeathers"] = 25,
-            ["quotedCostLightSparks"] = 20,
-            ["sourceDraftVersion"] = 0,
-            ["selectedCardIds"] = new JsonArray(),
-            ["createdAtTurn"] = 12,
-            ["createdAtUtc"] = "2026-08-03T00:00:00Z"
-        };
-
-    private static JsonObject BuildNativeDiscoveryReceipt(
-        string requestId,
-        string factionId,
-        string hallId,
-        IReadOnlyCollection<string> residentIds,
-        IReadOnlyCollection<string> projectIds) =>
-        new()
-        {
-            ["requestId"] = requestId,
-            ["actionType"] =
-                ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
-            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
-            ["selectedCardIds"] = new JsonArray(),
-            ["newResidentIds"] = new JsonArray(
-                residentIds.Select(id => (JsonNode?)id).ToArray()),
-            ["seededProjectIds"] = new JsonArray(
-                projectIds.Select(id => (JsonNode?)id).ToArray()),
-            ["resolvedFactionId"] = factionId,
-            ["hallId"] = hallId,
-            ["quotedCostFeathers"] = 25,
-            ["quotedCostLightSparks"] = 20,
-            ["generatedDraftVersion"] = 0,
-            ["resolvedAtTurn"] = 12,
-            ["resolvedAtUtc"] = "2026-08-03T00:05:00Z",
-            ["reason"] = "native_discovery_accepted"
-        };
-
-    private static JsonObject BuildPlayerFoundingRequest(
-        string requestId,
-        string factionId,
-        string hallId,
-        IReadOnlyCollection<string> supporterIds) =>
-        new()
-        {
-            ["requestId"] = requestId,
-            ["proposedFactionId"] = factionId,
-            ["proposedHallId"] = hallId,
-            ["proposedHallName"] = "Player Hall",
-            ["proposedHallDescription"] =
-                "A hall founded by the player soul.",
-            ["proposedHallServiceTags"] = new JsonArray("social", "memory"),
-            ["charter"] = BuildPlayerFoundingCharter(),
-            ["supportingResidentIds"] = new JsonArray(
-                supporterIds.Select(id => (JsonNode?)id).ToArray()),
-            ["quotedCostFeathers"] =
-                ShiningFactionRequestState.FactionFoundingCostFeathers,
-            ["quotedCostLightSparks"] =
-                ShiningFactionRequestState.FactionFoundingCostLightSparks,
-            ["createdAtTurn"] = 12,
-            ["createdAtUtc"] = "2026-08-03T00:00:00Z"
-        };
-
-    private static JsonObject BuildPlayerFoundingCharter() =>
-        new()
-        {
-            ["factionName"] = "Player Covenant",
-            ["favoredArchetype"] =
-                ShiningAbodeState.ProjectArchetypeAccord,
-            ["patronEffectFamily"] =
-                ShiningAbodeState.EffectFamilySocial,
-            ["summary"] = "The player soul and supporters found a covenant."
-        };
-
-    private static JsonObject BuildPlayerFoundingHall(string hallId) =>
-        new()
-        {
-            ["hallId"] = hallId,
-            ["hallName"] = "Player Hall",
-            ["description"] = "A hall founded by the player soul.",
-            ["serviceTags"] = new JsonArray("social", "memory")
-        };
-
-    private static JsonObject BuildPlayerFoundingReceipt(
-        string requestId,
-        string factionId,
-        string hallId,
-        IReadOnlyCollection<string> supporterIds) =>
-        new()
-        {
-            ["requestId"] = requestId,
-            ["proposedFactionId"] = factionId,
-            ["proposedHallId"] = hallId,
-            ["hallName"] = "Player Hall",
-            ["factionId"] = factionId,
-            ["hallId"] = hallId,
-            ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
-            ["supportingResidentIds"] = new JsonArray(
-                supporterIds.Select(id => (JsonNode?)id).ToArray()),
-            ["quotedCostFeathers"] =
-                ShiningFactionRequestState.FactionFoundingCostFeathers,
-            ["quotedCostLightSparks"] =
-                ShiningFactionRequestState.FactionFoundingCostLightSparks,
-            ["resolvedAtTurn"] = 12,
-            ["resolvedAtUtc"] = "2026-08-03T00:05:00Z",
-            ["reason"] = "founding_accepted"
-        };
-
-    private static JsonObject BuildRouteAfterlifeProfile(
-        string actorId,
-        bool includeEnvelope,
-        string actorType = ShiningAbodeState.HeadActorTypeResident,
-        bool canTrade = false)
-    {
-        var profile = new JsonObject
-        {
-            ["actorType"] = actorType,
-            ["actorId"] = actorId,
-            ["displayName"] = $"Resident {actorId}",
-            ["appearanceDescription"] =
-                "A radiant resident with a fully authored spiritual form.",
-            ["profileSummary"] =
-                "A founding resident of the newly discovered faction.",
-            ["personalityProfile"] = new JsonObject
-            {
-                ["archetype"] = "Radiant Founder",
-                ["worldview"] =
-                    "Shared memory gives a shining faction continuity."
-            },
-            ["motivation"] =
-                "Build a durable home for newly ascended residents.",
-            ["realm"] = "Shining Abode",
-            ["locationId"] = "location_shining_abode_gate",
-            ["locationName"] = "Shining Abode Gate",
-            ["currencies"] = new JsonObject
+        location["locationId"] = "locationnew JsonObject
             {
                 ["inkFeathers"] = 0,
                 ["lightSparks"] = 0

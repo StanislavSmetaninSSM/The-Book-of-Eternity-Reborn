@@ -49,6 +49,18 @@ this block are unrun. Expected positive RED is the canonical-vs-raw routing defe
 The journey author now supplies complete purpose/currentAgenda/principles command
 data without changing unrelated values. No source finding is claimed as PASS.
 
+## Focused canonical RED and raw boundary preparation — WIP
+
+The ten-case official focused run completed in 12.650 seconds: 9 PASS / 1 FAIL,
+no skips/duplicates/timeouts, complete cleanup. The desired-success canonical
+split bundle is rejected for embedded resources/ranks plus four null membership
+fields. Fresh integration build had 0 errors, 171 warnings, 125.04 seconds.
+Five additional raw nonmember cases now cover file shape, raw materialization and
+public response validation. These additions are UNRUN. Source review confirms
+raw nonmember materialization also requires null, so nullable handling must cover
+both Mortal forms while embedded resource/rank requirements stay raw-only.
+The existing narrow selector owns all fifteen rows; production remains unchanged.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
