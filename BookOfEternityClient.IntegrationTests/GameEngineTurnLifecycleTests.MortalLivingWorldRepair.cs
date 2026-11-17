@@ -17,13 +17,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         const string activityPath = "game_state/npcs/npc_activities.json";
         const string repairPath = "game_state/control/validation_repair_request.json";
         TurnRequest? dispatched = null;
+        JsonObject? declaredReport = null;
         byte[]? originalRequest = null, originalManifest = null;
         var repairCount = 0;
+        string? handledRepair = null;
         var input = new LivingWorldRepairInput(() => _fs.FileExists(repairPath), () =>
         {
-            var repair = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(repairPath)))!;
+            var repairText = File.ReadAllText(_fs.ResolvePath(repairPath));
+            if (handledRepair == repairText) return; // Only the identical still-visible request.
+            Assert.True(handledRepair is null, "Unexpected second repair packet: " + repairText);
+            handledRepair = repairText;
+            var repair = JsonNode.Parse(repairText)!;
             Assert.Equal(1, repair["revalidationAttempt"]!.GetValue<int>());
-            if (repairCount != 0) return; // Same still-visible request while the client observes ready.
             repairCount++;
             Assert.NotNull(dispatched);
             Assert.Equal(dispatched.SessionId, repair["sessionId"]!.GetValue<string>());
@@ -91,6 +96,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     ["knowledge"] = new JsonObject { ["player"] = "known", ["newsReferences"] = new JsonArray("scout_missing_command") }
                 })
             };
+            declaredReport = (JsonObject)report.DeepClone();
             await _fs.WriteFileAtomicAsync(MortalLivingWorldSource.ReportPath, report.ToJsonString());
             await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", new JsonObject
             {
@@ -114,6 +120,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         var history = JsonNode.Parse((await _fs.ReadFileAsync(MortalLivingWorldSource.HistoryPath))!)!;
         var receipt = Assert.Single(history["entries"]!.AsArray())!;
         Assert.Equal(dispatched!.RequestId, receipt["requestId"]!.GetValue<string>());
+        Assert.Equal(dispatched.SessionId, receipt["sessionId"]!.GetValue<string>());
+        Assert.Equal(JsonNode.Parse(originalManifest!)!["manifestPayloadHash"]!.GetValue<string>(),
+            receipt["snapshotToken"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(declaredReport, receipt["report"]));
         Assert.Equal(42, receipt["turn"]!.GetValue<int>());
         var story = (await _fs.ReadFileAsync("stories/mortal_life_2.jsonl"))!;
         Assert.Single(story.Split('\n', StringSplitOptions.RemoveEmptyEntries));

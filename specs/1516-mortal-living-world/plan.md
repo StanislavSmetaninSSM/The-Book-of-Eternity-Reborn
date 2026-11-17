@@ -321,6 +321,13 @@ Preparation build at399ec712 failed in5.97s with CS0246: the new repair
 partial lacked the Core namespace import for IConsoleInputSource. Added only that
 import; this is compile setup, not a causal runtime RED. Both new tests remain UNRUN.
 
+Independent review caught a test-harness wait risk before execution: repair counters
+can restart at one for a new packet. The callback now ignores only the identical
+raw first request and fails immediately on any distinct second packet, rather than
+waiting silently until timeout. This is test-only; runtime remains UNRUN.
+Each probe needs an independent mutable real engine owner; no authority/fixture
+is shared or cached. Existing fixture helpers are reused without duplicate journeys.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
