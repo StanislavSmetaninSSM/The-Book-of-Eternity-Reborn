@@ -1,6 +1,61 @@
+using System.Runtime.ExceptionServices;
 namespace BookOfEternityGMBridge;
+
 internal static class BridgePeerDispatcher
 {
-    internal static Task RunAsync(BridgeTransportListener listener, Func<Stream,CancellationToken,Task> handler,
-        CancellationToken token, int maximumPeers=48) => throw new IOException("Dispatcher not implemented.");
+    internal static async Task RunAsync(BridgeTransportListener listener, Func<Stream,CancellationToken,Task> handler,
+        CancellationToken token, int maximumPeers=48)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(maximumPeers,1);
+        using var stop=CancellationTokenSource.CreateLinkedTokenSource(token);
+        using var capacity=new SemaphoreSlim(maximumPeers,maximumPeers);
+        var peers=new List<Task>();var errors=new List<Exception>();
+        var peerFailure=new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var observing=ObserveFailureAsync();
+        try {
+            while(true) {
+                await capacity.WaitAsync(stop.Token).ConfigureAwait(false);
+                Stream? accepted=null;
+                try {
+                    ThrowIfFailed();
+                    accepted=await listener.AcceptAsync(stop.Token).ConfigureAwait(false);
+                    ThrowIfFailed();
+                    peers.RemoveAll(p=>p.IsCompletedSuccessfully);
+                    peers.Add(ServeAsync(accepted));accepted=null;
+                } catch {if(accepted!=null)await accepted.DisposeAsync().ConfigureAwait(false);capacity.Release();throw;}
+            }
+        } catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
+        catch(Exception ex){errors.Add(ex);}
+        finally {
+            stop.Cancel();
+            // Independent attempts: a listener cleanup error must not skip joins.
+            try{await listener.DisposeAsync().ConfigureAwait(false);}catch(Exception ex){errors.Add(ex);}
+            try{await Task.WhenAll(peers).ConfigureAwait(false);}catch(Exception ex){errors.Add(ex);}
+            await observing.ConfigureAwait(false);
+        }
+        if(listener.Failure.IsCompletedSuccessfully)errors.Insert(0,listener.Failure.Result);
+        if(peerFailure.Task.IsCompletedSuccessfully)errors.Add(peerFailure.Task.Result);
+        var distinct=errors.SelectMany(e=>e is AggregateException a?a.Flatten().InnerExceptions:(IEnumerable<Exception>)new[]{e}).Distinct().ToArray();
+        if(distinct.Length==1)ExceptionDispatchInfo.Capture(distinct[0]).Throw();
+        if(distinct.Length>1)throw new AggregateException(distinct);
+        return;
+
+        void ThrowIfFailed() {
+            if(listener.Failure.IsCompletedSuccessfully)ExceptionDispatchInfo.Capture(listener.Failure.Result).Throw();
+            if(peerFailure.Task.IsCompletedSuccessfully)ExceptionDispatchInfo.Capture(peerFailure.Task.Result).Throw();
+            stop.Token.ThrowIfCancellationRequested();
+        }
+        async Task ObserveFailureAsync() {
+            try {
+                await Task.WhenAny(listener.Failure,peerFailure.Task).WaitAsync(stop.Token).ConfigureAwait(false);
+                stop.Cancel();
+            } catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
+        }
+        async Task ServeAsync(Stream stream) {
+            try {await using(stream.ConfigureAwait(false)){await handler(stream,stop.Token).ConfigureAwait(false);}}
+            catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
+            catch(Exception ex){peerFailure.TrySetResult(ex);stop.Cancel();}
+            finally{capacity.Release();}
+        }
+    }
 }

@@ -182,6 +182,7 @@ internal sealed partial class BridgeHost : IDisposable
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
     private BridgeStatus _status;
+    private BridgeTransportListener? _bridgeTransport;
 
     public BridgeHost(string sessionPath, string pipeName)
     {
@@ -1962,6 +1963,7 @@ internal sealed record BridgeStatus
     public int? ShellPid { get; set; }
     public int? CliProcessId { get; set; }
     public string PipeName { get; set; } = string.Empty;
+    public BridgeTransportEndpoint? TransportEndpoint { get; set; }
     public string CliLaunchCommand { get; set; } = string.Empty;
     public string ShellWorkingDirectory { get; set; } = string.Empty;
     public string LastPromptDispatchState { get; set; } = "None";

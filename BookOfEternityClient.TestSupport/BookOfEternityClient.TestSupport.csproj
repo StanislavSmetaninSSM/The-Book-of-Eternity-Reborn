@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
+    <ProjectReference Include="..\BookOfEternityGMBridge\BookOfEternityGMBridge.csproj" />
   </ItemGroup>
 
   <ItemGroup>

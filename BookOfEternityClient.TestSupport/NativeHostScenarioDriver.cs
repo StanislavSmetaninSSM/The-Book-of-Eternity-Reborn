@@ -81,6 +81,7 @@ internal static class NativeHostScenarioDriver
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-crash-",StringComparison.Ordinal))return await MainRunCrashScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-operation-",StringComparison.Ordinal))return await MainOperationScenarioDriver.RunAsync(args[0],args[1],args[2]);
+        if(args.Length==3 && args[0]=="terminal-main-consumer-fifo")return await GmBridgeConsumerScenarioDriver.RunAsync(args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-",StringComparison.Ordinal))return await MainRunFenceScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if (args.Length == 3 && args[0].StartsWith("terminal-", StringComparison.Ordinal))
             return await OwnedTerminalScenarioDriver.RunAsync(args[0], args[1], args[2]);

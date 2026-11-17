@@ -1,4 +1,3 @@
-using System.IO.Pipes;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -17,7 +16,7 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     private static readonly ConditionalWeakTable<CanonicalRootIdentity,RootState> Roots=new();
     private readonly FileSystemManager _files;
     private readonly RootState _root;
-    private NamedPipeClientStream? _pipe;
+    private Stream? _pipe;
     private MainOperationReader? _reader;
     private GmLoadSessionReply? _stop;
     private bool _finished;
@@ -54,12 +53,10 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
                 State=GmLoadMainState.NoActiveSession;_stop=new(true,Id,State);return;
             }
             using var doc=JsonDocument.Parse(status);
-            var name=doc.RootElement.GetProperty("pipeName").GetString();
-            if(string.IsNullOrWhiteSpace(name) || name.Length>128)throw new InvalidDataException("Original bridge endpoint is invalid.");
+            var endpoint=BridgeTransportConnector.DecodeStatus(doc.RootElement);
             var terminal=doc.RootElement.TryGetProperty("terminalRunId",out var run)?run.GetString():null;
-            _pipe=new(".",name,PipeDirection.InOut,PipeOptions.Asynchronous);
             using var bounded=CancellationTokenSource.CreateLinkedTokenSource(token);bounded.CancelAfter(TimeSpan.FromSeconds(15));
-            await _pipe.ConnectAsync(bounded.Token);_reader=new(_pipe);
+            _pipe=await BridgeTransportConnector.ConnectAsync(endpoint,bounded.Token);_reader=new(_pipe);
             await MainOperationReader.WriteAsync(_pipe,new {command="beginLoadSession",operationId=Id,rootKey=_files.BasePath,
                 loadSourceKey=SourceKey,expectedGeneration=ExpectedGeneration,expectedTerminalRunId=terminal,
                 expectedMainIdentity=expected?.Disposition==GmSessionRunDisposition.Running?expected.Identity:null},bounded.Token);

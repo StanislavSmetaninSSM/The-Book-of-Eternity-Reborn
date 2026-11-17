@@ -1,4 +1,3 @@
-using System.IO.Pipes;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
@@ -21,10 +20,10 @@ internal sealed partial class BridgeHost
         if(!File.Exists(apphost) || apphost.Contains(' ') || apphost.Any(char.IsWhiteSpace))
             throw new InvalidDataException("Packaged observer apphost must exist and be representable by the configured external editor.");
         _draftLaunchBinding=Guid.NewGuid().ToString("N");
-        var endpoint=System.IO.Path.IsPathFullyQualified(_pipeName)?_pipeName:System.IO.Path.Combine(System.IO.Path.GetTempPath(),"CoreFxPipe_"+_pipeName);
+        var endpoint=BridgeTransportConnector.EncodeEndpoint(_bridgeTransport?.Endpoint??throw new InvalidDataException("Original bridge transport is not prepared."));
         return c with {ChildEnvironment=new Dictionary<string,string?> {
             ["VISUAL"]=apphost+" --observe-draft",["EDITOR"]=apphost+" --observe-draft",
-            ["BOE_DRAFT_DIRECTORY"]=p.DraftDirectory,["BOE_DRAFT_BINDING"]=_draftLaunchBinding,["BOE_DRAFT_PIPE"]=endpoint,["TMPDIR"]=p.DraftDirectory
+            ["BOE_DRAFT_DIRECTORY"]=p.DraftDirectory,["BOE_DRAFT_BINDING"]=_draftLaunchBinding,["BOE_DRAFT_ENDPOINT"]=endpoint,["TMPDIR"]=p.DraftDirectory
         }};
     }
 
@@ -45,7 +44,7 @@ internal sealed partial class BridgeHost
     }
     private static bool SupportedMiniGlyph(char c)=>SynchronizedTerminalScreen.SupportedCell(c);
 
-    private async Task ServeDraftObservationAsync(NamedPipeServerStream stream,MainOperationReader reader,BridgeRequest request,CancellationToken token)
+    private async Task ServeDraftObservationAsync(Stream stream,MainOperationReader reader,BridgeRequest request,CancellationToken token)
     {
         PromptOperation? op=null;
         using var bounded=CancellationTokenSource.CreateLinkedTokenSource(token);

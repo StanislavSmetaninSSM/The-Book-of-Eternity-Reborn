@@ -6,16 +6,17 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GmBridgeFifoTransportTests
 {
     [Fact]
-    public async Task ListenerFactory_ActualSocketDenied_UsesFifoAndCleansOriginalRun()
+    public async Task ListenerFactory_ActualCapabilityUsesMatchingTransportAndCleansOriginalRun()
     {
         var root=Path.Combine(TestDiagnosticPaths.Root,"bridge-adapter",Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         try {
-            var denial=Assert.Throws<SocketException>(()=> { using var probe=new Socket(AddressFamily.Unix,SocketType.Stream,ProtocolType.Unspecified); });
-            Assert.Contains(denial.NativeErrorCode,new[]{1,13});
+            var expected="named-pipe-v1";
+            try {using var probe=new Socket(AddressFamily.Unix,SocketType.Stream,ProtocolType.Unspecified);}
+            catch(SocketException ex) when(ex.NativeErrorCode is 1 or 13){expected="linux-fifo-v1";}
             string address;
             await using(var listener=BridgeTransportListener.Create("adapter-"+Guid.NewGuid().ToString("N"),root)) {
-                Assert.Equal("linux-fifo-v1",listener.Endpoint.Kind);address=listener.Endpoint.Address;
+                Assert.Equal(expected,listener.Endpoint.Kind);address=listener.Endpoint.Address;
                 using var deadline=new CancellationTokenSource(TimeSpan.FromSeconds(5));
                 var accepting=listener.AcceptAsync(deadline.Token);
                 await using var client=await BridgeTransportConnector.ConnectAsync(listener.Endpoint,deadline.Token);
@@ -46,6 +47,13 @@ public sealed partial class GmBridgeFifoTransportTests
             var actual=Assert.Throws<SocketException>(()=>BridgeTransportListener.Create("adapter",root,()=>{},_=>throw original));
             Assert.Same(original,actual);Assert.Empty(Directory.GetFileSystemEntries(root));
         } finally {Directory.Delete(root,true);}
+    }
+    [Fact]
+    public void ListenerFactory_OtherConstructorErrorNeverSelectsTransport()
+    {
+        var original=new SocketException(22);
+        var actual=Assert.Throws<SocketException>(()=>BridgeTransportListener.Create("adapter",Path.GetTempPath(),()=>throw original,_=>throw new InvalidOperationException("Unexpected named factory")));
+        Assert.Same(original,actual);
     }
     [Fact]
     public async Task ListenerFailure_IsObservedWhileReadyPeerRemainsBuffered()

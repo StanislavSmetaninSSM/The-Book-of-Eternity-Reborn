@@ -311,38 +311,28 @@ function Invoke-BridgeRequest {
         [int]$ResponseTimeoutMilliseconds = 5000
     )
 
-    $status = Read-BridgeStatus $ResolvedSessionPath
-    if ($null -eq $status -or [string]::IsNullOrWhiteSpace($status.pipeName)) {
-        throw "GM bridge status file not found or pipeName is missing."
-    }
+    # Retain raw JSON until the shared codec checks duplicate/ambiguous fields.
+    $statusPath = Get-BridgeStatusPath $ResolvedSessionPath
+    if (-not (Test-Path -LiteralPath $statusPath)) { throw "GM bridge status file not found." }
+    $statusJson = Get-Content -LiteralPath $statusPath -Raw -Encoding UTF8
+    $status = $statusJson | ConvertFrom-Json -ErrorAction Stop
+    if (-not (Test-BridgeHelperAlive $status)) { throw "GM bridge helper is unavailable." }
 
-    $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut, [System.IO.Pipes.PipeOptions]::Asynchronous)
-    $read=$null; $write=$null; $reader=$null
-    try {
-        $pipe.Connect(3000)
-        $json = $Payload | ConvertTo-Json -Depth 8 -Compress
-        $requestBytes = [Text.Encoding]::UTF8.GetBytes($json + "`n")
-        $write = $pipe.WriteAsync($requestBytes, 0, $requestBytes.Length)
-        if (-not $write.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge request write timed out." }
-        $write.GetAwaiter().GetResult()
-
-        $reader = New-Object System.IO.StreamReader($pipe, [System.Text.Encoding]::UTF8, $false, 1024, $true)
-        $read = $reader.ReadLineAsync()
-        if (-not $read.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge response timed out." }
-        $responseJson = $read.GetAwaiter().GetResult()
-        if ([string]::IsNullOrWhiteSpace($responseJson)) {
-            throw "Bridge returned an empty response."
-        }
-
-        return $responseJson | ConvertFrom-Json
+    if (-not ('BookOfEternityClient.Services.GmRuntime.BridgeTransportConnector' -as [type])) {
+        # Only trusted shipped/build locations, never a path supplied by status.
+        $codeRoot = Get-ClientRoot
+        $candidates = @(Join-Path $codeRoot 'BookOfEternityClient.dll') + @(@('Debug','Release') | ForEach-Object { Join-Path $codeRoot "bin/$_/net8.0/BookOfEternityClient.dll" })
+        $assembly = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+        if (-not $assembly) { throw 'Built bridge transport client is unavailable.' }
+        Add-Type -Path $assembly
     }
-    finally {
-        $pipe.Dispose()
-        foreach ($pending in @($write,$read)) {
-            if ($pending) { try { if ($pending.Wait(2000)) { $pending.GetAwaiter().GetResult() | Out-Null } } catch { } }
-        }
-        if ($reader) { $reader.Dispose() }
-    }
+    $json = $Payload | ConvertTo-Json -Depth 8 -Compress
+    $operation = [BookOfEternityClient.Services.GmRuntime.BridgeTransportConnector]::RequestAsync(
+        $statusJson, $json, $ResponseTimeoutMilliseconds, [Threading.CancellationToken]::None)
+    # RequestAsync applies actual cancellation to every I/O and closes the one
+    # original stream before completing. No pending task survives this call.
+    $responseJson = $operation.GetAwaiter().GetResult()
+    return $responseJson | ConvertFrom-Json -ErrorAction Stop
 }
 
 function Get-BridgePromptContentHash {

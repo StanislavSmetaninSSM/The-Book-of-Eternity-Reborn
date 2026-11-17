@@ -22,7 +22,9 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
     private readonly object _disposeGate = new();
     private Task? _dispose;
     internal LinuxBridgeFifoEndpoint Endpoint { get; }
-    internal Task<Exception> Failure { get; } = new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously).Task;
+    private readonly TaskCompletionSource<Exception> _failure = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    internal Task<Exception> Failure => _failure.Task;
+    private void ReportFailure(Exception error) { _failure.TrySetResult(error); _ready.Writer.TryComplete(error); _stop.Cancel(); }
 
     private LinuxBridgeFifoListener(SafeFileHandle parent, SafeFileHandle run, string name,
         LinuxBridgeFifoEndpoint endpoint, LinuxBridgeFifoNative.Identity ticketIdentity,
@@ -94,7 +96,7 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
             }
         }
         catch (OperationCanceledException) when (_stop.IsCancellationRequested) { }
-        catch (Exception ex) { _ready.Writer.TryComplete(ex); _stop.Cancel(); }
+        catch (Exception ex) { ReportFailure(ex); }
         finally { _ready.Writer.TryComplete(); }
     }
 
@@ -125,6 +127,7 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
             delivered = true; stream = null;
         }
         catch (Exception ex) when (ex is IOException or OperationCanceledException) { /* Refusal never grants a connection. */ }
+        catch (Exception ex) { ReportFailure(ex); throw; }
         finally
         {
             if (stream != null) await stream.DisposeAsync().ConfigureAwait(false);
@@ -138,7 +141,7 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
                     if (peerId != null) LinuxBridgeFifoNative.RemoveDirectory(_run, name, peerId);
                 }
             }
-            catch (IOException ex) { _ready.Writer.TryComplete(ex); _stop.Cancel(); }
+            catch (IOException ex) { ReportFailure(ex); }
             finally { peer?.Dispose(); if (!delivered) _slots.Release(); }
         }
     }
