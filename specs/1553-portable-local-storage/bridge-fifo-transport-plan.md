@@ -101,3 +101,17 @@ Ruling: server owns all peer creation/cleanup after ticket acceptance. No client
 creates paths. Lifetime nonce registry is bounded and exhaustion refuses new
 connections; retired nonces are never recreated. CoreCLR8 SIGPIPE ignore is a
 runtime prerequisite, verified read-only before native writes; no handler changes.
+
+## Independent pre-build findings and causal probe preparation
+
+The first independent source review found important partial-creation path leaks,
+pending-task-fault shutdown cleanup omission, and concurrent stream disposal
+completion before actual FD closure. These are not accepted behavior. Five new
+expected-success cleanup tests exercise directory/FIFO post-create cuts, listener
+post-ticket cut, and an explicitly held pre-close gate. Narrow internal optional
+callbacks supply deterministic cuts without reflection or global umask/signal
+changes. They do not fix the defects. Compilation/execution of this seven-case
+selection is pending; an injected pending-admission ChannelClosedException also requires queue
+drain and run removal even when disposal propagates the fault. This is injected
+fault coverage, not proof of the precise production scheduling race. Further
+transport negative controls remain required. No bridge integration or live-GM claim.

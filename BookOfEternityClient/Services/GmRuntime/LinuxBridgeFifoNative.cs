@@ -43,18 +43,20 @@ internal static class LinuxBridgeFifoNative
         catch { fd.Dispose(); throw; }
     }
 
-    internal static SafeFileHandle CreateDirectory(SafeFileHandle parent, string name)
+    internal static SafeFileHandle CreateDirectory(SafeFileHandle parent, string name, Action? afterCreation = null)
     {
         Name(name);
         if (mkdirat(parent, name, 0x1c0) != 0) throw Error("mkdirat");
+        afterCreation?.Invoke();
         // Never repair permissions or reuse an existing entry.
         return OpenPrivateDirectory(parent, name);
     }
 
-    internal static Identity CreateFifo(SafeFileHandle directory, string name)
+    internal static Identity CreateFifo(SafeFileHandle directory, string name, Action? afterCreation = null)
     {
         Name(name);
         if (mkfifoat(directory, name, 0x180) != 0) throw Error("mkfifoat");
+        afterCreation?.Invoke();
         using var fd = OpenFifo(directory, name, ReadOnly);
         return Stat(fd);
     }

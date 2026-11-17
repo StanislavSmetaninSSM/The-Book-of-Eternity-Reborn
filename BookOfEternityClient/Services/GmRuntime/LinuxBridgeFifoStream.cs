@@ -4,7 +4,7 @@ using Microsoft.Win32.SafeHandles;
 namespace BookOfEternityClient.Services.GmRuntime;
 
 // Nonblocking syscalls only. No abandoned blocking Task.Run or dummy writer masks EOF.
-internal sealed class LinuxBridgeFifoStream(SafeFileHandle reader, SafeFileHandle writer) : Stream
+internal sealed class LinuxBridgeFifoStream(SafeFileHandle reader, SafeFileHandle writer, Action? beforeHandlesClose = null) : Stream
 {
     private readonly SemaphoreSlim _readGate = new(1), _writeGate = new(1);
     private readonly CancellationTokenSource _stop = new();
@@ -107,6 +107,7 @@ internal sealed class LinuxBridgeFifoStream(SafeFileHandle reader, SafeFileHandl
         }
         // Cancellation callbacks may complete operations; never invoke under lifetime lock.
         _stop.Cancel();
+        beforeHandlesClose?.Invoke();
         reader.Dispose(); writer.Dispose();
         base.Dispose(disposing);
     }

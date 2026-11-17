@@ -18,20 +18,22 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
     private readonly HashSet<string> _seen = new(StringComparer.Ordinal);
     private readonly List<Task> _pending = [];
     private readonly Task _pump;
+    private readonly Action? _beforeReadyEnqueue;
     private readonly object _disposeGate = new();
     private Task? _dispose;
     internal LinuxBridgeFifoEndpoint Endpoint { get; }
 
     private LinuxBridgeFifoListener(SafeFileHandle parent, SafeFileHandle run, string name,
         LinuxBridgeFifoEndpoint endpoint, LinuxBridgeFifoNative.Identity ticketIdentity,
-        LinuxBridgeFifoStream tickets)
+        LinuxBridgeFifoStream tickets, Action? beforeReadyEnqueue)
     {
+        _beforeReadyEnqueue = beforeReadyEnqueue;
         _parent = parent; _run = run; _name = name; Endpoint = endpoint;
         _runIdentity = LinuxBridgeFifoNative.Stat(run); _ticketIdentity = ticketIdentity; _tickets = tickets;
         _pump = PumpAsync();
     }
 
-    internal static LinuxBridgeFifoListener Create(string parentDirectory)
+    internal static LinuxBridgeFifoListener Create(string parentDirectory, Action? afterTicketCreated = null, Action? beforeReadyEnqueue = null)
     {
         var parent = LinuxBridgeFifoNative.OpenDirectory(parentDirectory);
         var runId = Guid.NewGuid().ToString("N"); var name = "boe-bridge-" + runId;
@@ -40,11 +42,12 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
         {
             run = LinuxBridgeFifoNative.CreateDirectory(parent, name);
             var ticketIdentity = LinuxBridgeFifoNative.CreateFifo(run, "tickets");
+            afterTicketCreated?.Invoke();
             // Only rendezvous has a lifetime RDWR anchor. Each peer is unidirectional.
             read = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.ReadWrite);
             write = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.WriteOnly);
             var tickets = new LinuxBridgeFifoStream(read, write); read = write = null;
-            return new(parent, run, name, new(Path.Combine(parentDirectory, name), runId), ticketIdentity, tickets);
+            return new(parent, run, name, new(Path.Combine(parentDirectory, name), runId), ticketIdentity, tickets, beforeReadyEnqueue);
         }
         catch { read?.Dispose(); write?.Dispose(); run?.Dispose(); parent.Dispose(); throw; }
     }
@@ -100,6 +103,7 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
             LinuxBridgeFifoNative.RemoveFifo(peer, "c2s", c2s); c2s = null;
             LinuxBridgeFifoNative.RemoveFifo(peer, "s2c", s2c); s2c = null;
             await LinuxBridgeFifoProtocol.SendAsync(stream, $"READY 1 {Endpoint.RunId} {nonce}", timeout.Token).ConfigureAwait(false);
+            _beforeReadyEnqueue?.Invoke();
             await _ready.Writer.WriteAsync(stream, timeout.Token).ConfigureAwait(false);
             delivered = true; stream = null;
         }
