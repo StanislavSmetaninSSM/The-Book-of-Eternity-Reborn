@@ -37,3 +37,8 @@ registration. It requires the first three successful registrations to be retaine
 and cleaned, no remaining own jobs/subscriptions, a disposed signal, and an
 unrelated subscriber to survive. Cleanup diagnostics must be empty. This is a
 separate partial-startup regression, not live daemon/turn qualification.
+
+`cleanup-failure.ps1` injects the first watcher disposal failure while executing
+the actual shutdown block. It requires explicit failed status, remaining cleanup
+attempts and signal disposal. Repeat with `-PriorFatal` to verify that an existing
+fatal error remains the published cause rather than being masked by cleanup.

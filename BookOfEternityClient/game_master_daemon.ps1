@@ -6964,6 +6964,14 @@ finally {
     foreach ($cleanupFailure in $script:DaemonWatcherCleanupFailures) {
         [Console]::Error.WriteLine("Daemon watcher cleanup failure: $cleanupFailure")
     }
+    if ($script:DaemonWatcherCleanupFailures.Count -gt 0 -and $null -eq $script:DaemonFatalError) {
+        # Cleanup is not confirmed. Preserve an earlier fatal cause if present;
+        # otherwise publish the retained cleanup failures instead of clean stopped.
+        $script:ErrorCount++
+        $cleanupException = [IO.IOException]::new(($script:DaemonWatcherCleanupFailures -join '; '))
+        $script:DaemonFatalError = [Management.Automation.ErrorRecord]::new(
+            $cleanupException, 'DaemonWatcherCleanupFailed', [Management.Automation.ErrorCategory]::CloseError, $null)
+    }
     if ($null -ne $script:DaemonFatalError) {
         Write-DaemonStatus -Status "failed" -FatalError $script:DaemonFatalError
     }
@@ -6971,5 +6979,6 @@ finally {
         Write-DaemonStatus -Status "stopped"
     }
     Write-Host ""
-    Write-Log "Daemon stopped. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
+    $shutdownLabel = if ($null -ne $script:DaemonFatalError) { 'failed' } else { 'stopped' }
+    Write-Log "Daemon $shutdownLabel. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
 }
