@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -16,7 +17,9 @@ public sealed partial class ExplorerModeCommandTests
              "snapshotToken":"PRIVATE_SENTINEL_snapshot","requestId":"PRIVATE_SENTINEL_request",
              "receipt":"PRIVATE_SENTINEL_receipt","source":{"sessionId":"PRIVATE_SENTINEL_session"},
              "activeSkills":[{"skillName":"Fireball","masteryLevel":7,"currentMasteryProgress":23,
-               "masteryProgressNeeded":91,"actionCost":"Fast","requestId":"PRIVATE_SENTINEL_skill"}]}
+               "masteryProgressNeeded":91,"actionCost":"Fast","requestId":"PRIVATE_SENTINEL_skill"}],
+             "passiveSkills":[{"skillName":"Careful observation","skillDescription":"Accepted canonical passive skill.",
+               "masteryLevel":2,"currentMasteryProgress":0,"masteryProgressNeeded":100}]}
             ]}
             """);
         await _stateManager.RefreshGameStateAsync();
@@ -25,6 +28,12 @@ public sealed partial class ExplorerModeCommandTests
         AssertNoHiddenExplorerErrors("accepted_npc_mechanics");
         var text = ExtractRenderedText();
         Assert.Contains("Fireball", text, StringComparison.Ordinal);
+        Assert.Contains("Careful observation", text, StringComparison.Ordinal);
+        Assert.Contains("Accepted canonical passive skill.", text, StringComparison.Ordinal);
+        Assert.Equal(1, Regex.Matches(text, "Активные навыки:").Count);
+        Assert.Equal(1, Regex.Matches(text, "Пассивные навыки:").Count);
+        Assert.DoesNotContain("• [cyan]?", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("• [white]?", text, StringComparison.Ordinal);
         Assert.Contains("мастерство 7", text, StringComparison.Ordinal);
         Assert.Contains("23/91", text, StringComparison.Ordinal);
         Assert.Contains("быстрое", text, StringComparison.Ordinal);

@@ -4,6 +4,44 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
+## Mortal live-relay source join (prepared, UNBUILT/UNRUN), 2026-11-17
+
+Branch `1515-1516-1538-live-gm-relay-20261117` starts from verified combined
+checkpoint `061dc813`, containing accepted #1589 relay work and #1516
+`fa5d5ec8a`. The latter and #1538 `cc6734b47` diverge from `605ec71f1`;
+#1516 does not already contain the later #1538 full-journey and public-view work.
+
+The nine nonconflicting #1538 files are copied byte-exactly from `cc6734b47`:
+four integration journey/view tests, one unit view test, the two production NPC
+view files, and its plan/tasks. The four new category objects are added verbatim;
+all existing #1516/#1589 catalog entries and default selection are retained.
+The overlapping shared vehicle validator stays byte-exactly at accepted #1516:
+its canonical-path receipt guard uses OrdinalIgnoreCase; #1538 independently used
+Ordinal. This join does not silently replace that already accepted behavior.
+Aside from the separately accepted relay files and these two #1538 NPC views,
+the game production base remains #1516. No audit WIP is imported.
+
+Prior accepted #1516 scripted full-engine journeys and two-phase repair evidence
+below remain historical evidence, not a live GM result. The known semantic
+omission still matters: narrative may assert an unreported vehicle/storage birth
+(#1515) or destroyed crossing (#1516) without corresponding mechanics. The
+separate independent-audit branch remains unfinished: its fresh preview replay
+still refuses different effect/resource allocations. Its DATA proofs do not
+qualify a live reviewer or an engine audit gate. Positive forthcoming live turns
+cannot close that known gap or claim those WIP stages are implemented.
+
+Next: independent source-join review, matching build and bounded affected checks,
+then fresh Mortal session through the maintained GM relay with genuinely authored
+responses, materialized-state readback and exact original cleanup. No Chaos Sea
+transport turn is counted as Mortal materialization. No build, game, issue closure
+or merge is claimed by this preparation checkpoint.
+
+Optimization: reuse exact accepted immutable source/category DATA, not another
+implementation or cache. Each live session keeps fresh request, actor, source,
+owner and publication authority. Sequential scenarios may use their own accepted
+state; historical test worlds/queues/admission tokens are not borrowed. No raw
+diagnostics or model responses are committed by this join.
+
 ## Latest verified checkpoint, 2026-11-17 — open, not merged
 
 Source d26cc546: fresh integration build 0 errors, 129 warnings, 59.68 seconds.
@@ -978,3 +1016,23 @@ setup; it is derived by the actual composer before snapshots. The richer seed
 also exposed incomplete faction fixture fields. These setup failures are not
 claimed as production defects. The connected journey remains unaccepted and NPC
 activity command consumption still needs actual runtime verification.
+
+## Seeded live GM relay preparation, 2026-11-17 — WIP
+
+Branch `1515-1516-1538-live-gm-relay-20261117`, base 061dc813. The actual
+Mortal CLI Continue/maintained relay will use a fresh explicitly prepared test
+world; this is not ordinary NewGame or incarnation acceptance. Initial marker
+41 is setup history only, never counted as a played GM turn. No live ownership,
+queue, outputs, or e/f game state is copied. Subsequent phases retain the same
+world and use fresh ordinary requests, one action per bounded phase, with full
+original cleanup required before continuation. The GM authors from each actual
+request, not canned responses. Semantic omission RED and the unfinished separate
+independent AI-audit branch remain open; no hidden runtime audit gate is assumed.
+
+A test-only exporter refusal stub and one exact integration category
+`mortal-live-seed-export` are saved before causal RED. It checks fresh export,
+whole-state validation, coherent story/session/turn, absence of pending state,
+and byte-preserving refusal of a second export. Source review and first build/run
+are pending. Initial builders may be shared as immutable setup code; no mutable
+world cache or authority reuse across live turns is allowed. Existing expensive
+journeys will not be rerun except where extracting their shared setup changes it.

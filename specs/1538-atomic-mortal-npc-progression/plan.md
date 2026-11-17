@@ -1,3 +1,412 @@
+## Whole-turn rejection and two-phase repair GREEN, 2026-11-17
+
+Verified source 30cd3f13b6ccb3cb33e55d9c5ebb2980083c6be1. Fresh integration build:
+0 errors, 126 warnings, 103.54 seconds. Official one-case repair journey passed
+1/1 in 29.1318382 seconds, full selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-082316-171-5-cd60253381e14e8d803059ad7323553f-categories.
+
+Actual ProcessPlayerTurn rejected the deliberately wrong XP result with exact
+npc_core_changes_progression_invalid at the experience path. Original actor bytes,
+turn 41 and absence of accepted story were verified before repair. Correcting the
+pending result under the same session/request/turn triggered the genuine second
+output-freshness request. Only narrative/interface were refreshed; canonical bytes
+were unchanged. After both Ready signals the engine accepted one XP grant and one
+story row, consumed the command and reloaded level 2 / XP 1/565 through a fresh
+public consumer. This is scripted full repair/resubmission evidence, not live GM.
+
+Because the shared journey helper changed, reran only its two existing affected
+ordinary/merchant-teacher leaves: 2/2 PASS in 30.9849286 seconds, full selection and
+owned cleanup, no skips/duplicates/timeouts. Run identity:
+20261117-082402-231-5-0842e2613b99463e90fb874f8eb85ce8-categories.
+No unchanged broad categories were replayed. Independent Sol 6.1 XHigh source and
+outcome reviews accepted this bounded two-phase repair block after checking the
+exact diagnostic refusal, summary/TRX, fixture cleanup and remote source identity.
+A nonblocking stale comment says "second refusal" where the watchdog now rejects
+a third unexpected request; behavior and source used by these runs are unchanged.
+
+Optimization: one preparation per real leaf, reused helper/output architecture,
+fresh external-GM packet reads required by the protocol, no new production cache
+or authority bypass. No production changes in this repair block. Post-accept stale
+replay is not newly qualified here. Live GM-relay remains mandatory; no merge or
+issue closure.
+
+## Repair protocol source review refinement WIP, 2026-11-17
+
+Source re-review of e7ae3f39 found the maintained canonical-repair freshness rule:
+after corrected pending XP is normalized, stale narrative/interface outputs must
+be repaired in a second, explicit output-only request. The fixture now handles
+exactly that documented second request, preserves current metadata, verifies the
+already corrected actor and unchanged story/turn, rewrites only the two requested
+player-facing outputs, verifies canonical bytes unchanged, and writes Ready last.
+A third/unexpected repair fails; live watchdog remains until engine completion.
+Post-Ready request disappearance is tolerated narrowly as normal client cleanup,
+not as a changed request. No production fix or freshness bypass. Current UNRUN.
+The earlier one-request assumption was corrected statically before runtime.
+
+## Repair journey fixture review corrections WIP, 2026-11-17
+
+Initial source ef85d903 built with 0 errors/126 warnings in 70.80 seconds.
+Official one-case run failed in 28.0421376 seconds with complete cleanup:
+the observer used client FileSystemManager.FileExists while the engine held the
+real GM-main owner, causing an owner-lock IOException. This is a fixture boundary
+error, not progression RED. Run identity:
+20261117-081308-252-5-2c70e8ea489f4bf498e00e3c1660e055-categories.
+
+The observer now uses the documented external-GM filesystem boundary: raw reads
+of the actual repair packet and an atomic replacement of only the pending command
+and matching ready packet. No second client owner, production lock bypass change,
+or inferred state publication. Independent review also found failure cleanup and
+oracle gaps: observer failures now request Escape so the engine cancels its wait;
+a watchdog remains owned until engine completion; exact progression-invalid code
+and experience-path refusal are required, not a substring anywhere in the packet.
+The observer is joined before owned fixture cleanup. Current corrections UNRUN.
+Next: checkpoint/re-review, build and the same single case; no broad replay.
+
+## Whole-turn rejection/repair/resubmission journey WIP, 2026-11-17
+
+Root requests this independent technical step while live GM-relay preparation
+continues. A new single integration leaf reuses the proven ordinary journey and
+its real ProcessPlayerTurn, original snapshot, writer, validation and reload.
+The fixture initially declares XP result 2 instead of the independently expected
+1. An asynchronous bounded observer waits for the actual repair request, checks
+current session/request/turn and no published actor/story/turn advance, then edits
+only the pending command result and writes the documented matching repair-ready
+signal. Existing post-accept assertions require exactly one grant and story row,
+consumed command and fresh reload. Production code is unchanged; UNRUN.
+
+The fixture is deliberately scripted and is not live GM-relay proof. Its retry is
+resubmission within the same pending turn, not post-accept stale command replay.
+Unexpected diagnostic-only/full-turn resubmission requests fail rather than being
+ignored. Observer cancellation is joined before owned world cleanup; an observer
+failure is surfaced through the console input source to stop repair waiting.
+
+Optimization: reuse existing preparation/output helpers, one real owned world,
+no separate preflight journey, no new cache or production reads. The original
+actor snapshot is read only for this rejection leaf. Next: checkpoint, independent
+source review, fresh integration build and this exact one-case category.
+No merge/closure; live GM gameplay remains mandatory.
+
+## Settled real Firefox screenshots verified, 2026-11-17
+
+Follow-up on source 6a7e959f completed after separate scroll and capture calls.
+Both implementer and browser worker visually inspected the settled screenshots:
+profile card explicitly shows "Профиль развития", "Сведения", "Стандартный" and
+its formula; progression card explicitly shows level 16 and XP 1/102400 for
+Лев Наблюдатель. Earlier screenshot-value uncertainty is resolved only by these
+new captures; its cause is not asserted. Existing skill screenshot retains the
+actual skill name and progress. Raw images stay outside Git.
+
+SHA256 of settled profile image:
+ca91a0fd2a19d0778a516a953e82827d80b798f3b635013b61cb65174bbd29ef.
+SHA256 of settled XP/level image:
+89afb5b19214be9bc6dbccb62e43f347c8e9ab0737869e1368483b8a7aba6cbb.
+Firefox and host exited 0. No new GM turn or purchase was submitted. This closes
+the specific observed public-view defects and accepted-state UI inspection,
+not live GM-relay or full negative/repair/retry acceptance. No merge/closure.
+
+## Row-local label GREEN and actual Firefox recheck, 2026-11-17
+
+Verified source 6a7e959ff35a49ba8129aecfcea50533a314ce9a. Fresh unit build:
+0 errors, 17 warnings, 77.83 seconds. Unchanged focused label test passed 1/1 in
+10.9092695 seconds; complete selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-080134-699-5-4ee1db908d974d5295d5e02788934870-categories.
+Independent Sol 6.1 XHigh reviewed actual diff and verified RED/GREEN summary/TRX;
+accepted only this bounded row-classification fix.
+
+A newly started real browser host and local Firefox 160 inspected the same
+accepted turn-42 world without new GM turns/purchases. Visible DOM confirms
+level 16, XP 1/102400, Standard profile and absence of the four private markers.
+Profile/reward/item facts no longer claim to be skill names: they retain generic
+'Sведения' labels, not newly invented semantic labels. Actual passive skill keeps
+its skill-name label, name, mastery 2/max 2 and progress 0/100. Skill screenshot
+visually inspected. The first fixed profile screenshot showed its corrected label
+but did not visibly show the value; a settled value screenshot is being requested,
+so DOM evidence is not overstated as that screenshot. Browser/host exited 0.
+
+No new cache/read, gameplay inference or GM contract change. Raw screenshots and
+logs remain outside Git. Live GM-relay and full negative/repair acceptance remain
+open; neither the UI checks nor scripted journeys replace live GM gameplay.
+No merge or closure.
+
+## Mixed-label causal RED and row-local fix WIP, 2026-11-17
+
+Source fc66d03050e22fca901c3e1133b5c4cc21fe7734 built successfully: 0 errors,
+54 warnings, 37.02 seconds. Official single-case mortal-npc-mixed-mechanics-labels
+returned 0 PASS / 1 FAIL in 9.6090684 seconds, complete cleanup and no skip,
+duplicate or timeout. Failure is the exact screenshot defect: profile fact
+Key="Название навыка", Value="Стандартный". Run identity:
+20261117-075910-448-5-33fcc3098d36483a8b7f07151707d4a4-categories.
+
+IsNpcSkillContext now uses only the existing row title. Canonical active/passive
+rows identify their own skill kind; an aggregate section title listing multiple
+categories cannot classify a profile or item as a skill. No browser normalizer
+change, new cache/read or GM/state contract change. Tests unchanged; GREEN UNRUN.
+Next: checkpoint, fresh build, same single case and actual Firefox recheck.
+
+## Actual Firefox confirms progression and exposes mixed-label defect WIP, 2026-11-17
+
+Local official Firefox 160 rendered the real accepted turn-42 export through the
+built browser client: level 16, XP 1/102400, Standard profile and canonical skill
+are visible; the four checked private markers are absent. Screenshots inspected.
+However the actual profile card shows "Название навыка" above "Стандартный";
+reward and item rows also receive skill labels. This is a confirmed public-view
+consumer defect, not a progression calculation failure. No browser-wide PASS.
+
+Root authorized narrow correction after causal reproduction. Current hypothesis:
+NpcDetailSectionProjection classifies every row using the mixed section title
+which includes "Навыки". One cheap typed regression combines a real profile and
+canonical active skill, requires no skill label on the profile while preserving
+actual skill name/mastery labels and unchanged input bytes. Production unchanged;
+RED UNRUN. The similarly named browser normalizer is only a hypothesis until
+shown to participate; do not change it preemptively.
+
+Optimization: reuse the existing invocation-local projection and structured facts;
+no extra reads, cache or authority changes. Next: checkpoint, one-case RED, minimal
+context fix, GREEN and actual Firefox recheck. Live GM relay remains separate.
+
+## Console fix GREEN and accepted export recovered, 2026-11-17
+
+Verified source 3d7d67a985f0e5a6f7caf90767cdeefc540fe34c. Fresh incremental
+integration build: 0 errors, 17 warnings, 51.96 seconds. Unchanged focused
+console theory: 2/2 PASS in 11.9275575 seconds; no skipped/duplicate/timed-out
+cases and complete owned cleanup. Run identity:
+20261117-075158-168-5-7bf5bb7fc348470c8a0cae7d6285aef7-categories.
+Independent Sol 6.1 XHigh verified actual diff, RED/GREEN logs, summary and TRX;
+bounded duplicate-rendering fix accepted, not whole-task completion.
+
+To recover the accepted export lost in the executor reset, reran only the two
+existing genuine progression journeys on the same current build: 2/2 PASS,
+28.6498165 seconds, complete selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-075220-201-5-c7bd7a2c53d34c4082f313c4adf54c1a-categories.
+This is reproducibility/export evidence, not additional live GM-relay coverage.
+
+Actual Program agent-console then inspected a separate copy of that export.
+Continued Mortal turn 42, opened the real NPC list, general card and mechanics.
+Observed level 16, XP 1/102400 and Standard profile. The general card now has
+exactly one passive section, correct Setting-defined test skill, mastery 2 and
+0/100 progress; no '?' placeholder. Neither view exposes snapshotToken,
+sourceActorSnapshotHash, journey_trade_seed or session_progression_journey.
+Returned through supported local return steps to game-loop without a GM turn or
+purchase. After reaching game-loop, the diagnostic host did not exit within
+10 seconds of SIGINT; the driver terminated its owned process (exit -9). This
+is not a graceful-shutdown qualification. All console snapshots/stdout remain
+outside Git. Genuine export was
+handed off for actual local Firefox rendering; browser outcome is pending.
+
+Optimization and scope unchanged: one existing canonical renderer consumes the
+already computed projection; no extra reads/cache or authority reuse. Live GM
+relay remains mandatory and unqualified. No merge or issue closure.
+
+## Console duplicate rendering causal RED and minimal fix WIP, 2026-11-17
+
+Test-first source a5263d22ebc620e6122fc540655ed6ec56f30983 restored/built on Linux,
+SDK 10.0.404, .NET/ASP.NET 8.0.34, PowerShell 7.7.0. Fresh integration build:
+0 errors, 166 warnings, 141.80 seconds. PlanOnly selected exactly two cases in
+7.801 seconds. Official mortal-npc-console-skill-single-render runtime completed
+0 PASS / 2 FAIL in 12.2484157 seconds, no skips/duplicates/timeouts and complete
+owned cleanup. Both normal/debug cases failed at the intended heading count:
+expected one active-skill section, actual two, after canonical names/descriptions
+were reached. This is causal RED, not a fixture/compile failure. Run identity:
+20261117-074649-998-5-3f8020167e8b4e2f91a3b1f4348c49ba-categories.
+
+Only the obsolete embedded active/passive rendering block is now removed.
+Existing acceptedMechanics construction and unconditional canonical RenderNpcSkills
+remain intact, retaining names/descriptions, mastery/progress and public mechanics.
+No contract, state read, cache, private metadata policy or GM prompt is changed.
+Independent Sol 6.1 XHigh reviewed this exact deletion boundary before application.
+GREEN and post-fix actual console observation are UNRUN; next is fresh build and
+the unchanged two cases, then accepted-world export for console/browser checks.
+Live GM-relay remains separately required and unqualified. No merge/closure.
+
+## Console regression recovery WIP, 2026-11-17
+
+Clean GitHub clone restored exact f6f5af7bee4de86ddee88cf65a711c1a98b1ba00
+on branch 1538-progression-journey-audit. The executor reset lost the accepted
+export and raw diagnostics. Earlier recorded GREEN remains historical evidence;
+the interrupted console RED build has no result. Reconstructed test-only changes
+are UNRUN. Production rendering is unchanged until a causal RED is obtained.
+
+Before reset, actual Program agent-console on a copy of the accepted consumer
+export showed level 16, XP 1/102400 and Standard progression without the private
+snapshot/source markers. NPC general details nevertheless rendered duplicate
+passive sections: obsolete embedded rendering showed '?' while the later canonical
+renderer showed the correct skill/mastery. This was real console inspection, not
+a live GM-relay turn. Browser rendering remains BLOCKED by separate browser/exec
+network namespaces; frontend build and Kestrel startup alone are not UI evidence.
+The owner additionally requires live GM-relay gameplay with the coordinator as GM;
+scripted accepted-turn fixtures do not satisfy that requirement.
+
+The existing no-sidecar console theory now includes a canonical passive skill and
+requires one active and one passive heading in normal/debug modes, proper names,
+and unchanged privacy/mastery assertions. A narrow two-case category avoids
+replaying unrelated suites. Independent Sol 6.1 XHigh source review found the
+proposed removal of only the obsolete embedded-skill block safe: unconditional
+RenderNpcSkills already preserves supported names/descriptions, mastery/progress
+and public mechanics. No production deletion has happened yet.
+
+Optimization: reuse the already computed acceptedMechanics and its existing
+canonical renderer. No extra read, cache or adapter is needed. No gameplay or
+GM-authored contract changes. Next: restore shared toolchain, build and run this
+exact category for causal RED, then remove only duplicate rendering and obtain
+GREEN plus actual console recheck. No merge or closure.
+
+## Accepted progression feeds merchant and teacher: GREEN, 2026-11-17
+
+Verified source 8b4f018d758ef07891d872252d63ecb701a9ddb7. Fresh build: 0 errors,
+124 warnings, 90.90 seconds. Official category mortal-npc-progression-full-journey:
+PlanOnly 2 cases in 9.053 seconds; runtime 2/2 PASS in 29.3058088 seconds, no
+skips/duplicates/timeouts and complete owned cleanup. Run identity:
+20261117-072742-513-5-fa67c095fbe24ed8937b0e6afabcdea9-categories.
+
+The ordinary journey remains passing. The second accepted real ProcessPlayerTurn
+advances the existing merchant/teacher from level 15 XP 87141/87142 to level 16
+XP 1/102400 with one story turn. Before acceptance both services expose ready
+stock/showcase. After fresh reload, unchanged seven-slot stock is not offered;
+the real trade service requests eight slots without fabricating inventory. The
+unchanged teacher showcase is stale; actual purchase refuses before changes to
+money, XP, skills, core or identity index. Protected bytes/absence are exact.
+A unique local diagnostic copy preserves this genuinely accepted world for
+upcoming console/browser inspection. Export alone is not UI qualification.
+
+Independent Sol XHigh source review accepted the baseline correction/export;
+outcome review is separate. Source is fully preserved; no raw artifact is in Git.
+Next: actual console and browser NPC detail rendering from separate copies of
+this accepted export, then remaining negative/retry evidence. No merge/closure.
+
+## Consumer baseline correction and UI handoff export, 2026-11-17
+
+Source 5099dc40 built with 0 errors, 124 warnings in 63.39 seconds; PlanOnly
+selected two cases. Actual official run: 1 PASS / 1 FAIL, 23.6178895 seconds,
+complete selection and owned cleanup. The ordinary journey still passes. New
+consumer journey correctly stops at initial validation because its fixture added
+unsupported top-level characteristics.modifiedTrade. Remove that test-only alias;
+canonical trade=12 already feeds the merchant service's supported fallback.
+No production change or weakening of full-state validation.
+
+After complete successful consumer assertions, export a uniquely named copy of
+the actual accepted world under BOE_TEST_DIAGNOSTIC_ROOT for separate real console
+and browser inspection. Copy is diagnostic-only outside Git; original fixture
+cleanup remains mandatory. Assert copied canonical NPC bytes equal accepted source.
+No manually fabricated post-XP UI world, no overwrite of an existing export.
+Corrections/export are UNRUN; next is fresh build and the same two cases.
+
+## Result-fed merchant and teacher journey WIP, 2026-11-17
+
+T011 adds a second independently owned ordinary journey. The same complete
+existing actor starts at standard level 15, XP 87141/87142, with seven accepted
+canonical stock items and an available narrative passive-unlock teacher offer.
+Both real services must report Ready before the engine captures its original.
+The authored +2 XP transition must be accepted normally as level 16 / 1 /102400.
+A fresh consumer then must refuse the stale teacher purchase before money/XP or
+skill mutations, and request eight trade slots without regenerating stock.
+Compare exact protected bytes and accepted inventory/showcase/skill preservation.
+No direct post-turn level rewrite, validator bypass or simulated acceptance.
+
+The already passing ordinary journey shares only per-test code, never mutable
+worlds. Its reload now also checks the actual reloaded session and turn number.
+The official category selects both journeys because that common harness changed.
+All new edits are UNRUN; source review and build are next. Public browser/console
+rendering and negative/retry remain open, with no task-closure claim.
+Optimization: one world per sequential journey, existing canonical item fixture
+and consumer services reused. Fresh service reads are the subject, not redundant
+setup. No new cache and no speedup claim. Raw remains outside the repository.
+
+## First ordinary XP journey accepted, 2026-11-17
+
+Verified source dd7581cbf0fdca3955d34720645ee83f67748560. Fresh integration build:
+0 errors, 124 warnings, 60.48 seconds. Official command on Linux with .NET SDK
+10.0.404 and PowerShell 7.7: `pwsh -NoProfile -File scripts/test-csharp.ps1
+-Category mortal-npc-progression-full-journey -NoBuild`. The preceding PlanOnly
+selected exactly one method/case in 6.829 seconds. Runtime completed 1/1 PASS
+in 25.1775782 seconds, zero duplicates, no timeout, complete owned cleanup.
+Run identity: 20261117-070929-120-54-faa11e5563cd4514a156211c979a214f-categories.
+Raw remains outside Git in /workspace/shared/diagnostics1538.
+
+This verifies real initial full validation and ProcessPlayerTurn, request-bound
+XP 99 + 2 -> level 2 / XP 1 / threshold 565, command consumption, turn 42 and
+one real story append. A new filesystem/state/ExplorerWebCommandService reads
+the accepted actor after reload and displays 1/565 with the standard profile,
+without the private session/snapshot marker. It is browser-facing service
+evidence, not rendered browser or console UI. Merchant/teacher, negative/retry
+and actual UI journeys remain open; no whole-task completion or merge.
+
+Independent GPT-6.1 Sol XHigh source review found no remaining blocker after
+fixing the weak reload oracle and required actor outputs. Runtime outcome review
+is separate. Next bounded step: feed this accepted progression state to actual
+merchant and teacher consumers without direct level rewrites. Fresh cold fixture
+and reload consumer are subjects of verification; no cache/speedup claim.
+
+## Ordinary turn reached; required NPC output repair, 2026-11-17
+
+At saved a91fb6ea, fresh build passes (0 errors, 141 warnings, 110.54 seconds).
+Official single-journey runtime: 0 PASS / 1 FAIL, 19.080 seconds, full selection
+and cleanup complete. Initial full validation now passes. ProcessPlayerTurn
+reaches current-output validation and requests two legitimate repairs: missing
+relevant NPC Actor Brain block and missing new first-person NPC journal entry.
+This is incomplete authored test output, not proven XP implementation failure.
+
+The fixture now supplies both ordinary authored outputs without disabling a
+validator. Independent Sol XHigh review also identified that the old reload
+assertion only reread a file. Replace it with a fresh FileSystemManager,
+StateManager and real ExplorerWebCommandService mechanics request, asserting
+accepted 1/565 XP and standard profile without private session/snapshot metadata.
+This observes the browser-facing service after reload, not browser rendering.
+These edits are UNRUN. Merchant/teacher, actual browser/console, negative/retry
+and final acceptance remain open. No new cache; a fresh consumer is necessary
+to test reload rather than share prior runtime state. Next: rebuild and repeat
+only the same one-journey official category.
+
+## Recovery build and initial baseline refusal, 2026-11-17
+
+WIP after remote checkpoint 364e85b6. Fresh restored integration build succeeds:
+0 errors, 124 warnings, 65.01 seconds. The preceding WIP build lacked the IO
+namespace import (2 compile errors); that import is now saved. Official PlanOnly
+selects exactly one journey. Runtime executes 0 PASS / 1 FAIL in 14.494 seconds,
+no timeout or duplicate, owned cleanup complete. It stops at initial full-state
+validation, before XP input or accepted turn, not an NPC progression failure.
+
+The seed replaces the template NPC but retained another NPC's journal. Clear that
+unrelated template journal as part of this isolated one-actor baseline. The same
+run also reproduces six wrong-path vehicle-receipt errors. Apply the already
+proven narrow #1515 fix from f93f0bce: only the exact canonical vehicles document
+undergoes immutable birth-receipt validation; other field validation is unchanged.
+Both corrections await fresh build and the same one-journey run. No merchant,
+teacher, public-console/browser, retry or final closure evidence yet.
+
+Optimization: no additional source reads or cache; use the existing dispatcher
+context to avoid applying canonical vehicle validation to unrelated documents.
+The independent journey retains its own world and fresh acceptance checks.
+
+## Reopened full progression journey verification, 2026-11-16
+
+Source: #1538. Branch `1538-progression-journey-audit`, base main
+`605ec71f1f9610d53f0c44f8a7ccf2c0860e3c6d`. WIP, not ready for closure.
+The owner requested convincing whole-game verification after discovering that
+isolated technical checks overstated readiness. Prior passing targeted evidence
+remains historical; it does not prove a current complete multi-turn journey.
+
+- [ ] Establish one complete ordinary `ProcessPlayerTurn` XP transition, ending
+  in real story append, turn advance, consumed command and reloaded NPC tuple.
+- [ ] Extend that same accepted NPC state through merchant/teacher consumers,
+  preserving stock/offer freshness and exact costs rather than rewriting level
+  directly before each consumer.
+- [ ] Add retry/invalid dependent-output refusal and exact unchanged-state checks;
+  distinguish malformed fixture from a production failure.
+- [ ] Verify public presentation uses accepted mechanics without private metadata.
+- [ ] Independently review requirements, test causal validity and final evidence.
+
+First diagnostic is a new isolated test partial with a current baseline: no
+unrelated vehicle receipts, current client storage-access projection, real
+resource-owner bootstrap, ordinary NPC and genuine engine preparation. No mocked
+validator or early cancellation substitutes for turn acceptance. No production
+change yet. All new tests currently UNRUN.
+
+Optimization: one independently owned world per journey; reuse its accepted
+state only between its own sequential turns. Fresh engine snapshots, leases,
+request identity, validation and effects are retained. Immutable source template
+copy is existing fixture preparation; no new cache or shared mutable fixture.
+Raw outputs stay outside Git under `/workspace/shared/diagnostics1538`.
+
 ## Final review and recovery receipt
 
 Independent Astra High source/outcome review accepted the documented mastery/treatment seam and87 final-runtime cases with no remaining blockers. Current FR4 below now states both standard mastery arrays are qualified; preceding WIP/RED and unsupported-array descriptions are historical and superseded. FR1-FR9 retain the current evidence map plus this final correction. T005/T006/T009 are complete again within the declared Mortal scope. Guided uses the reviewed shared producer path, but an independent full Guided/QTE runtime is not claimed or invented as a new task requirement.

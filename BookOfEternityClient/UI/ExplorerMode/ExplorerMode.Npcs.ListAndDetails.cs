@@ -489,7 +489,7 @@ private async Task ShowNPCs()
                     lines.Add($"      Прогресс: [{barColor}]{new string('█', filled)}[/][dim]{new string('░', 10 - filled)}[/] {pct}% ({FormatMinutes(spentTime)}/{FormatMinutes(totalTime)})");
                 }
                 if (totalSteps > 0)
-                    lines.Add($"      Шаг: [yellow]{curStep}[/]/{totalSteps}");
+     ($"      Шаг: [yellow]{curStep}[/]/{totalSteps}");
             }
         }
 
@@ -609,33 +609,6 @@ private async Task ShowNPCs()
                     if (!string.IsNullOrEmpty(rwDesc))
                         lines.Add($"      [green]Награда: {Markup.Escape(rwDesc)}[/]");
                 }
-            }
-        }
-
-        // ── Embedded skills (activeSkills/passiveSkills in npc_core) ──
-        if (npc.TryGetProperty("activeSkills", out var aSkills) && aSkills.ValueKind == JsonValueKind.Array && aSkills.GetArrayLength() > 0)
-        {
-            lines.Add("");
-            lines.Add($"  [bold cyan]⚔ Активные навыки:[/]");
-            foreach (var s in aSkills.EnumerateArray())
-            {
-                var sn = s.ValueKind == JsonValueKind.String ? (s.GetString() ?? "") : GetStr(s, "name", "?");
-                var sDesc = s.ValueKind == JsonValueKind.Object ? GetStr(s, "description", "") : "";
-                lines.Add($"    • [cyan]{Markup.Escape(sn)}[/]");
-                if (!string.IsNullOrEmpty(sDesc))
-                    lines.Add($"      [dim]{Markup.Escape(sDesc)}[/]");
-            }
-        }
-        if (npc.TryGetProperty("passiveSkills", out var pSkills) && pSkills.ValueKind == JsonValueKind.Array && pSkills.GetArrayLength() > 0)
-        {
-            lines.Add($"  [bold dim]🛡️ Пассивные навыки:[/]");
-            foreach (var s in pSkills.EnumerateArray())
-            {
-                var sn = s.ValueKind == JsonValueKind.String ? (s.GetString() ?? "") : GetStr(s, "name", "?");
-                var sDesc = s.ValueKind == JsonValueKind.Object ? GetStr(s, "description", "") : "";
-                lines.Add($"    • [white]{Markup.Escape(sn)}[/]");
-                if (!string.IsNullOrEmpty(sDesc))
-                    lines.Add($"      [dim]{Markup.Escape(sDesc)}[/]");
             }
         }
 
@@ -1007,8 +980,7 @@ private async Task ShowNPCs()
                 return;
 
             if (action.Contains("Поговорить", StringComparison.OrdinalIgnoreCase))
-            {
-                if (pendingNpcTalkRequest != null)
+          Request != null)
                 {
                     MarkupLine("[yellow]Уже есть незакрытый разговор с этим NPC. Дождитесь ответа GM.[/]");
                     return;
