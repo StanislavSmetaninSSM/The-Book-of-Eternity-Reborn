@@ -113,3 +113,18 @@ L/A, never sends S behind unresolved abort or after closed control, and preserve
 sticky uncertainty. Tests unchanged. This correction is UNCOMPILED/UNRUN and
 awaits independent source review. No caching of fresh handles/authority; existing
 immutable native preparation remains unchanged through this RED/GREEN pair.
+
+## Same-eight GREEN observed
+
+Saved 6ea0121390258226cc084ac81eef7d260ee8b70b passed independent source review,
+then built with 0 errors/19 warnings in 57.83s. The unchanged official selection
+completed 8/8 PASS in 37.0425s, no skips/duplicates, runner cleanup complete.
+TRX: 20261117-113439-392-5-92a0b32b25dd46c4bc9a2111d9a9eda9-categories.
+All seven native guardians reported ECHILD, driver0, emergency0, failures0,
+no deadline. The added scenario proved original control closed, disposal refused
+while uncertain, same-owner cleanup complete; abort timeout took 2042.7ms.
+Sticky uncertainty remained terminal-release-unconfirmed. Outcome review pending.
+Remote-fetched 6ea01213 also restored into a new clean workspace worktree with
+empty git status. This is source recovery, not another runtime execution.
+Descriptor-transfer fault cases, repeated abort timeout, bridge consumer wiring
+and actual live-GM/game acceptance remain unqualified.
