@@ -83,3 +83,53 @@ Both require sentinel bytes unchanged and no partial copy. Positive assertions
 cover actual setup-line hash, the complete story inventory/max41 and absence of
 runtime main ownership, queue, input/output and ready artifacts. Fresh GREEN and
 independent review are pending; no live result is claimed.
+
+### Initial lore inventory correction
+
+First implementation official exporter run: 3 executed, 2 PASS / 1 FAIL,
+18.276s, complete owned cleanup. The real full validator refused exactly six
+missing required lore files: codex_entries plus current_world world_setting,
+geography, history, cultures and threats. Restricting initial copy to game_state
+had omitted this non-runtime input. This is preparation failure, not gameplay
+or validator failure. The correction copies only those six exact files from the
+same reviewed example. No afterlife lore, draft example, output, saves or whole
+snapshot is added. The positive exporter test independently checks the complete
+six-file lore inventory and exact source bytes before full validation. Existing
+integration default preparation is unchanged. Fresh verification is pending;
+other planned categories were not executed in the failed run.
+
+### Canonical UTF-8 raw setup witness correction
+
+Next official run: 3 executed, 2 PASS / 1 FAIL, 14.3568s, complete owned cleanup.
+Full initial validation passed. The exporter then incorrectly compared canonical
+writer bytes with no-preamble UTF-8 bytes and reported a changed story.
+FileSystemManager's writer explicitly emits a UTF-8 preamble. The exporter now
+requires exactly that initial encoding, captures actual bytes before validation,
+and requires byte-identical bytes afterwards. The setup-entry fingerprint covers
+the actual raw first line including its single BOM, excluding only LF, matching
+the live driver's raw-line contract. Decoded setup turn/session semantics remain
+separate. The test checks exact BOM/LF and hashes the actual raw line. No state or
+history integrity check was weakened; fresh verification remains pending.
+
+### Preparation verification accepted, 2026-11-17
+
+Final exporter build completed with 0 errors / 154 warnings in 67.51 seconds.
+Official mortal-live-seed-export completed 3/3 PASS in 16.1158136 seconds:
+one fully validated initial export and two independent byte-preserving refusal
+cases (occupied base or manifest). One descriptor, no duplicates, skips or
+timeout; runner-owned cleanup complete. Independent review read the actual TRX.
+
+The affected existing consumers separately completed 7/7 PASS in 77.5598992
+seconds: living-world journey 2, NPC progression journey 2, console rendering 2,
+mixed mechanics labels 1. Four descriptors, complete owned cleanup and no skips,
+duplicates or timeout. Independent review verified that the subsequent commit
+8662939 changed only exporter and its tests; these seven do not call exporter,
+so their successful evidence is retained without repeating unchanged expensive
+journeys. Together these are ten bounded checks, not one aggregate run.
+
+Runtime publication and a fresh one-time seed export may now proceed. No Mortal
+live GM turn has run yet. Initial turn41 is setup-only. The independent semantic
+omission audit remains unfinished and old relay run e remains logically
+uncertain; neither is cleared by this preparation. Raw logs/TRX remain outside
+Git. Next: immutable runtime provenance, actual first relay request and GM-authored
+scout/crossing response, independent accepted-state and real shutdown readback.
