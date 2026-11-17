@@ -1,12 +1,10 @@
 # Linux inherited-channel stand and relay integration (#1589)
 
-**Current blocking review finding:** Linux live f is accepted, but final shared-path
-review found Windows Desktop PowerShell still launches the daemon under .NET
-Framework while the new launcher loads a net8 assembly in-process. That caller
-requires a compatible external typed-connector host, with bounded joined I/O,
-not a protocol fallback. Normal dotted custom pipe overrides are also rejected
-by the new strict grammar and are being reconciled securely. These findings
-are not yet fixed or tested; #1589 must remain open.
+**Current review status:** the newly introduced Desktop CLR boundary and dotted
+pipe-name regressions have source corrections and fresh bounded GREEN (92/92).
+Independent outcome review accepted the 92 unique passing cases. Actual Windows PowerShell 5.1 runtime
+and socket-capable Linux named-pipe positive execution remain unrun. The earlier
+stop e remains unexplained; successful f does not prove its cause repaired.
 
 ## Current bounded outcome, 2026-11-17
 
@@ -677,3 +675,35 @@ original receiving stream. These strengthen byte coverage, not Windows claims.
 These source corrections await independent review and fresh GREEN. Raw evidence
 remains outside Git; no additional Windows-runtime or whole-game qualification
 is inferred.
+
+### Desktop correction GREEN and recovery
+
+Source commit e41e70decc77593d1b506c963bbdcc1afffdf787 on
+1589-bridge-consumer-integration-20261117 was verified against the remote ref
+and freshly cloned into an empty directory; HEAD matches and status is clean.
+The recovered source was not independently rebuilt. Fresh working build:
+0 errors / 60 warnings, 73.71s. Official command:
+`pwsh -NoProfile -Command "& ./scripts/test-csharp.ps1 -Category @('gm-bridge-desktop-control','gm-bridge-fifo-linux') -NoBuild -Parallelism 1"`.
+Both descriptors completed: Desktop 21/21 and FIFO/connector 71/71, total
+92/92 PASS, no skips or duplicate IDs, 32.4794565s, exit 0, complete owned-tree
+cleanup. The FIFO count includes the 18 pipe-name grammar cases, not a second
+execution of that category. Actual external process tests verify response,
+withheld response and peer EOF, original successful write, stdout/stderr EOF
+and child cleanup; they include a real Cyrillic request over FIFO.
+
+Independent source review accepted strict single-BOM UTF8, single response,
+no replay and independently guarded cleanup before this GREEN. Independent outcome review recounted both TRX files: 92 unique passing test IDs,
+complete selection/cleanup and exact clean recovery. Faulted but terminal I/O is distinguished from successful
+I/O; unknown exit or pending tasks never produce success. Source inspection
+of exceptional cleanup is not fault-injection coverage of every OS failure.
+No cache or speedup claim: each endpoint/request/owner is deliberately fresh.
+Actual Windows Desktop runtime remains UNRUN, not substituted by Linux pwsh.
+No additional live-game replay was made for a Desktop-only branch; the shared
+Linux connector and actual listener controls are freshly covered above.
+
+Final reviewer found no new source blocker for the scoped Linux #1589 result.
+Actual malformed application-role control now exits 2 with zero stdout/stderr
+(previously 134/unhandled), separately confirmed after GREEN. All three recovered
+helper/script/test sources match their working bytes. No whole-platform or
+intermittent-stop reliability guarantee follows; e remains UNKNOWN. No merge or
+issue closure was performed by this checkpoint.
