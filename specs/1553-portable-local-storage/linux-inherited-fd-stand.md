@@ -68,3 +68,18 @@ with the official script; final edit checking expiry before commands is not yet
 rebuilt/run. Native happy/cancel tests are prepared, other phase/negative controls
 and independent native review remain pending. Managed and bridge paths unchanged.
 No live relay or game acceptance is claimed.
+
+Native source at `64147efd75efd97198147aea2bb55433dcecf226` passed the first
+happy/cancel-held pair through the actual compiled helper: terminal exchange
+and scoped retirement, or cancellation before execution with root exit125.
+Review found pre-authentication stop/cancel was consumed as malformed challenge;
+current source moves S/C/U handling before the challenge parser. Fourteen native
+cases now cover fragmented/invalid/oversized/replayed challenge, early launch,
+owner EOF, both deadlines, held-root death, duplicate launch and cancellation.
+Current expanded source/test delta is UNRUN and awaiting independent review.
+Further review correction: native harness now closes local descriptors/streams
+in an inner finally even if close/wait fails; unresolved owned cleanup is an
+explicit error, never an emergency helper kill or PASS. Eighteen planned cases
+also include premature/duplicate release, late A and EOF while held. Duplicate A
+cannot undo an already legitimate first release; its expected result is uncertain
+scoped cleanup, not a guarantee the first permitted payload never executed.

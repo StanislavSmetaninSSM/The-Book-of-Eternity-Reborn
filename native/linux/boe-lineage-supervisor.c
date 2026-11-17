@@ -461,7 +461,10 @@ int main(int argc, char **argv) {
         if (n == 0) lose("owner-lost", 0);
         else if (n < 0 && errno != EINTR && errno != EAGAIN) lose("owner-channel", errno);
         else if (n > 0) for (ssize_t i = 0; i < n; i++) {
-            if (terminal_pipe_v1 && bootstrap_phase == 1 && !stopping) pipe_challenge(commands[i]);
+            if (commands[i] == 'S') seal("stop-requested");
+            else if (commands[i] == 'C') seal("cancelled");
+            else if (commands[i] == 'U') lose("scope-breach", 0);
+            else if (terminal_pipe_v1 && bootstrap_phase == 1 && !stopping) pipe_challenge(commands[i]);
             else if (terminal_pipe_v1 && commands[i] == 'A' && bootstrap_phase == 3 && !stopping) {
                 if (write(held_gate, "L", 1) != 1) lose("bootstrap-release", errno);
                 close(held_gate); held_gate = -1; bootstrap_phase = 4;
@@ -469,9 +472,6 @@ int main(int argc, char **argv) {
                 if (terminal_master >= 0) { close(terminal_master); terminal_master = -1; }
             }
             else if (commands[i] == 'L' && !launched && !stopping && (!(host_v2 || terminal_v1) || bootstrap_phase == 2)) launch(&argv[terminal_pipe_v1 ? 7 : terminal_v1 ? 8 : host_v2 ? 6 : 4]);
-            else if (commands[i] == 'S') seal("stop-requested");
-            else if (commands[i] == 'C') seal("cancelled");
-            else if (commands[i] == 'U') lose("scope-breach", 0);
             else lose("invalid-command", 0);
         }
         observe_bootstrap();
