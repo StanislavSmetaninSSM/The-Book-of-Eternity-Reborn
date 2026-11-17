@@ -13,6 +13,7 @@ internal static partial class OwnedTerminalScenarioDriver
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
         if(mode.StartsWith("terminal-inherited-control-", StringComparison.Ordinal)) return await RunInheritedControlAsync(mode, package, output);
+        if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal))return await RunTypedIdleDaemonStopAsync(mode,output);
         if(mode.StartsWith("production-main-",StringComparison.Ordinal))return await RunBridgeAsync(mode,package,output);
         if (mode is "terminal-fence" or "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
