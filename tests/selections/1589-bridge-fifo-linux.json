@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-bridge-fifo-linux",
+      "reason": "Qualify independent bridge FIFO connections without socket dependency.",
+      "contracts": [
+        "Original per-peer duplex channel, terminal EOF and cancellation cleanup."
+      ]
+    }
+  ]
+}

@@ -248,3 +248,10 @@ claimed as a global 48-peer limit across both phases. Restore/build serially usi
 shared immutable toolchain/NuGet; no copying mutable bin/obj between checkouts.
 Independent design review identified startup gating, exact fallback boundary and
 failure observation as mandatory integration checks. No consumer code changed yet.
+
+Accepted FIFO block imported from 45ba9130 (17/17 same-process/independent-process
+controls, source/outcome independently accepted). Ten isolated files retain exact
+worker blob identities. Three shared files were merged additively: unit-project
+reference, fixture bin/obj ignores and one gm-bridge-fifo-linux category; existing
+inherited-terminal category and all unrelated entries retained. Combined checkout
+has not been built/run yet; no consumer wiring is included in this import.
