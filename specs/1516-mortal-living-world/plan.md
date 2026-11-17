@@ -1044,3 +1044,25 @@ no skips/duplicates/timeout, complete cleanup. This is preparation-helper RED,
 not a gameplay defect. Implementation and fresh GREEN are pending. Independent
 review accepted the source join and found driver cleanup/continuation weaknesses
 before any native launch; those are being corrected without weakening ownership.
+
+### Requested durable save before live execution, 2026-11-17
+
+Current live preparation sources are saved through fa5b1307: exact accepted
+#1538 view/journey source join, separate seed exporter/shared initial builders,
+three seed cases, and the reviewed one-action-per-phase live driver. The original
+accepted Chaos live fixture is unchanged. No game or raw diagnostic data is in
+this checkpoint. A checkpoint transport Unicode truncation in one imported UI
+file was corrected immediately by f6391417; remote bytes were verified equal to
+its source before any completion claim. Local compiled source was unaffected.
+
+Fresh exporter integration build: 0 errors /154 warnings /66.53s. Its GREEN
+execution is still pending. The source-reviewed Python driver passed AST parse,
+40 inert evidence checks, turn/repair evidence with distinct captured requests,
+wrong-revision refusal and pending-drain handling, four phase-admission checks,
+and actual maintained-relay import; zero game processes were started. These are
+preparation proofs only. A fresh unit build is underway before the nine selected
+setup/journey/public-view checks. No new Mortal live turn has yet been attempted.
+Next: finish the narrow verification, immutable runtime packaging, then actual
+first scout/report action through ordinary Continue and the live GM relay.
+Known prose omissions, unfinished independent audit, unavailable Windows
+qualification, and unexplained old stop e remain explicitly open.
