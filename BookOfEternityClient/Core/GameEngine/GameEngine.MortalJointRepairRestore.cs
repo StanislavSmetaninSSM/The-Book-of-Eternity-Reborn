@@ -28,16 +28,31 @@ public partial class GameEngine
             if (!snapshot.BaselineFiles.SetEquals(baseline.Keys))
                 throw new InvalidDataException("The joint restore requires the complete original rollback inventory.");
 
+            // Stage signs the prepared schedule after its pre-turn rollback backup.
+            // Resume that exact authenticated prepared DATA with the held graph;
+            // never replace the genuine earlier rollback maps or their hashes.
+            var preparedOriginal = PendingTurnSnapshotReader.ReadObservedCurrent(_fs, writeLease,
+                new PendingTurnSnapshotPathSelection(["game_state/meta/soul_state.json", ProgressionScheduleService.SchedulePath], []));
+            if (!preparedOriginal.Success || preparedOriginal.Snapshot is not { } original ||
+                preparedOriginal.Evidence is not { } originalEvidence || original.Realm != "mortal_world" ||
+                original.SessionId != expected["sessionId"]!.GetValue<string>() ||
+                original.RequestId != expected["requestId"]!.GetValue<string>() ||
+                original.SnapshotToken != expected["snapshotToken"]!.GetValue<string>() ||
+                original.TurnNumber != expected["turnNumber"]!.GetValue<int>())
+                throw new InvalidDataException("Joint repair resume lacks the exact authenticated prepared schedule.");
+            originalEvidence.RequireCurrent(_fs, writeLease, original);
+
             var desired = new Dictionary<string, byte[]?>(StringComparer.OrdinalIgnoreCase);
             foreach (var (path, bytes) in baseline) desired.Add(path, bytes);
             foreach (var path in EnumerateRollbackTrackedFiles(writeLease))
                 if (!snapshot.BaselineFiles.Contains(path)) desired.Add(path, null);
-            // The homogeneous command and full private wave are the only baseline
-            // overrides. Neither a public mixed command nor an accepted QTE command
-            // is fabricated or installed here.
+            // Resume overrides are the held homogeneous command, full private
+            // wave and signed prepared schedule. No public mixed/accepted QTE
+            // command, freshly sampled timestamp or new scheduler run is fabricated.
             desired[AcceptedMechanicsPlan.WoundCommandPath] = reconstructed.CommandBytes;
             desired[WoundAcceptedTurnSnapshotContract.PendingResolutionPath] =
                 System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(reconstructed.Pending);
+            desired[ProgressionScheduleService.SchedulePath] = original.ReadRequiredBytes(ProgressionScheduleService.SchedulePath);
 
             var changes = new List<CanonicalLocalFileChange>();
             foreach (var (path, after) in desired.OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase))
@@ -55,6 +70,7 @@ public partial class GameEngine
                     {
                         ThrowIfRepairSessionReplaced(writeLease, generation);
                         reconstructed.EnsureCurrent(_fs, writeLease);
+                        originalEvidence.RequireCurrent(_fs, writeLease, original);
                         await RequireJointRestoreImagesAsync(writeLease, cohort, after: false);
                         await RequireJointOriginalBytesAsync(writeLease, expected);
                     });
@@ -66,6 +82,7 @@ public partial class GameEngine
                 ThrowIfRepairSessionReplaced(writeLease, generation);
                 await RequireJointRestoreImagesAsync(writeLease, cohort, after: true);
                 await RequireJointOriginalBytesAsync(writeLease, expected);
+                originalEvidence.RequireCurrent(_fs, writeLease, original);
                 _ = await ReadCurrentJointRejectedCaptureAsync(writeLease, expected);
             }
             catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)

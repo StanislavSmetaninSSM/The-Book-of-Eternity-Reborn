@@ -299,3 +299,18 @@ defect in this initial preview diff, but correctly requires changed-source/owner
 iteration/failed-close/normalization-required negatives before acceptance. A
 positive semantic readback comparison is also pending. None are claimed covered.
 No broad activation, live model inference, merge or closure occurred.
+
+## Existing joint resume schedule correction WIP
+
+Targeted Astra analysis confirmed an explicit existing distinction: Stage signs
+prepared schedule after backup (TurnLifecycle RegisterOrdinaryTurnStagingValidationSnapshotFiles),
+while cancellation retains the earlier rollback image. Existing diagnosis retry
+resumes the signed prepared schedule atomically with held command/pending. Joint
+restore omitted that third resume override. The narrow correction reads the
+same authenticated original once with observed evidence, joins exact tuple/realm,
+and includes its prepared schedule in the existing compensatable restore cohort.
+Original evidence is freshly checked before batch and after readback. Rollback
+metadata, backup bytes, hashes and signed artifacts remain untouched. No clock
+sampling, arithmetic or fresh schedule normalization is added. Existing live-N
+control is the causal regression; re-run pending before altering candidate-time
+reuse. The independent reviewer is checking this exact correction.
