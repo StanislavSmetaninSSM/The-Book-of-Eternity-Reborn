@@ -288,14 +288,34 @@ full GameEngine setup is retained because actual lifecycle interaction is tested
 
 The retained four-interval engine test now additionally matches every receipt to
 its real dispatched session/request/turn and actual prepared manifest hash, exact
-authored report and immutable prior receipt bytes-as-DATA. It checks three public
+authored report and immutable prior receipt semantic DATA. It checks three public
 news rows against each authored event, no private receipt/audit fields in those
-rows, no news mutation during the final quiet interval, and identical history/news
-files across each real state refresh. Captured expected DATA is private per-test;
+rows, no decoded-news-text mutation during the final quiet interval, and identical
+decoded history/news text across each real state refresh (not a BOM/encoding/raw-byte claim). Captured expected DATA is private per-test;
 no owner/authority is manufactured or cached. This extends the same real journey,
 not another expensive duplicate fixture. These assertions are UNCOMPILED/UNRUN,
 not a new defect or causal RED claim. Same-request repair and live relay remain
 separate open gates.
+
+## Persistence GREEN and distinct repair/omission preparation
+
+At3242f354, fresh integration build0errors129warnings58.66s; official journey
+completed2/2PASS in45.999s, complete cleanup, no skipped/duplicate/timed-out cases.
+Enhanced tuple/manifest/report/semantic-history and decoded-news/text persistence
+assertions pass. Independent review confirms the source binding and cost-neutral
+reuse of the same four-turn fixture; decoded text is not a raw-byte claim.
+
+Next test-only gate intentionally declares scout progress240 and supplies narrative
+and public news, but omits its actual NPCActivityUpdates command. It must reach a
+real repair with mismatch/not-meaningful, no accepted story/receipt and unchanged
+request/manifest. Repair adds only the missing supported command, re-emits the
+unchanged report and player-facing outputs in real freshness order, then publishes
+the same request's ready signal. It never rewrites canonical actor/source/history
+or fabricates authority. A separate control must cover prose asserting an event
+while a formally valid no-change report omits it; declared-effect-without-command
+is NOT proof of that stronger coverage. The latter is expected to expose the
+current explicit-report/NLP boundary, not authorize a new audit system. Both
+checks are UNCOMPILED/UNRUN. No live-GM acceptance or closure is claimed.
 
 ## Historical bounded completion checkpoint, 2026-11-16
 

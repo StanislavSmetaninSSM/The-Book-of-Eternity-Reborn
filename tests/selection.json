@@ -2,6 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-living-world-declared-effect-repair",
+      "reason": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
+      "contracts": [
+        "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request."
+      ]
+    },
+    {
+      "category": "mortal-living-world-narrative-omission",
+      "reason": "#1516 Desired refusal probe for concrete prose event omitted from an otherwise valid no-change report; known NLP boundary, expected RED until observed.",
+      "contracts": [
+        "#1516 Desired refusal probe for concrete prose event omitted from an otherwise valid no-change report; known NLP boundary, expected RED until observed."
+      ]
+    },
+    {
       "category": "mortal-living-world-project-completion-type",
       "reason": "#1516 reopened verification: Actual project completion retains nonnegative Int32 and rejects invalid commands without tracker mutation.",
       "contracts": [

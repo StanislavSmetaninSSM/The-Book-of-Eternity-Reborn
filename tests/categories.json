@@ -2,6 +2,54 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-declared-effect-repair",
+      "responsibility": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
+      "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldRepair_DeclaredProgressWithoutCommandRefusesThenRepairsSameRequest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-narrative-omission",
+      "responsibility": "#1516 Desired refusal probe for concrete prose event omitted from an otherwise valid no-change report; known NLP boundary, expected RED until observed.",
+      "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldNarrativeOmission.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldNarrativeOmission_ConcreteWorldEventWithoutDeclarationRefusesRealTurn"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-project-evidence-type",
       "responsibility": "#1516 detached completed-project evidence rejects numeric-string completionTurn while a matching canonical integer transition remains valid.",
       "excludes": "Runtime reducer, current authority, publication, resource costs and live GM qualification.",

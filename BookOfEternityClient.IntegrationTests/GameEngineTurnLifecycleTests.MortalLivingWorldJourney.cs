@@ -58,7 +58,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private readonly SpiritualLifecycleTestLogger _journeyLogger = new();
 
     private async Task<GameEngineTestRuntime> CreateMortalLivingWorldJourneyAsync(
-        Func<TurnRequest, Task> author, Func<FileSystemManager, Task>? seed = null)
+        Func<TurnRequest, Task> author, Func<FileSystemManager, Task>? seed = null, IConsoleInputSource? inputOverride = null)
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
@@ -82,7 +82,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(projection.IsValid, JsonSerializer.Serialize(projection.Issues));
         await _fs.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath, projection.Root!.ToJsonString());
         Assert.Empty(MortalStorageAccessProjection.ValidateCanonical(map, projection.Root));
-        var input = new MortalLivingWorldJourneyInput(_fs);
+        var input = inputOverride ?? new MortalLivingWorldJourneyInput(_fs);
         var runtime = CreateGameEngineRuntime(_fs, input,
             settings => { InertRealmSettings(settings); settings.AutosaveIntervalTurns = 0; },
             logger: _journeyLogger, finalizationHooks: new GameEngineSessionFinalizationHooks { AtCheckpointAsync = async checkpoint =>
