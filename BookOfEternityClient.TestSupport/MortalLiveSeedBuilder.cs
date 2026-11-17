@@ -10,6 +10,12 @@ namespace BookOfEternityClient.Tests;
 // Shared initial setup only. No turn author, reply, history publication or reuse of authority.
 internal static class MortalLiveSeedBuilder
 {
+    private static readonly string[] RequiredMortalLore =
+    [
+        "lore/codex_entries.json", "lore/current_world/world_setting.json",
+        "lore/current_world/geography.json", "lore/current_world/history.json",
+        "lore/current_world/cultures.json", "lore/current_world/threats.json"
+    ];
     private const string JourneyScoutId = "npc_journey_scout";
     private const string JourneyFactionId = "faction_journey_council";
     private const string JourneyProjectId = "project_journey_bridge";
@@ -18,7 +24,17 @@ internal static class MortalLiveSeedBuilder
 
     internal static async Task PrepareAsync(FileSystemManager files, string exampleSessionPath, Func<FileSystemManager, Task>? seed, bool stateOnly = false)
     {
-        if (stateOnly) CopyDirectory(Path.Combine(exampleSessionPath, "game_state"), Path.Combine(files.GameSessionPath, "game_state"));
+        if (stateOnly)
+        {
+            CopyDirectory(Path.Combine(exampleSessionPath, "game_state"), Path.Combine(files.GameSessionPath, "game_state"));
+            // Exact required Mortal lore from the same reviewed example, not runtime/output or an invented world.
+            foreach (var relative in RequiredMortalLore)
+            {
+                var target = Path.Combine(files.GameSessionPath, relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                File.Copy(Path.Combine(exampleSessionPath, relative), target, overwrite: false);
+            }
+        }
         else CopyDirectory(exampleSessionPath, files.GameSessionPath);
         await files.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
         await files.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(

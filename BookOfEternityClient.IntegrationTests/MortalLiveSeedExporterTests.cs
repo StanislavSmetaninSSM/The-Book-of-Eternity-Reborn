@@ -20,6 +20,15 @@ public sealed class MortalLiveSeedExporterTests
             var manifest = Path.Combine(root, "seed-manifest.json");
             await MortalLiveSeedExporter.ExportAsync(basePath, TestRepoPaths.BaseSessionRoot, manifest);
             var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
+            var requiredLore = new[] { "lore/codex_entries.json", "lore/current_world/world_setting.json",
+                "lore/current_world/geography.json", "lore/current_world/history.json",
+                "lore/current_world/cultures.json", "lore/current_world/threats.json" };
+            Assert.Equal(requiredLore.OrderBy(p => p, StringComparer.Ordinal),
+                Directory.GetFiles(Path.Combine(fs.GameSessionPath, "lore"), "*", SearchOption.AllDirectories)
+                    .Select(p => Path.GetRelativePath(fs.GameSessionPath, p).Replace('\\', '/')).OrderBy(p => p, StringComparer.Ordinal));
+            foreach (var relative in requiredLore)
+                Assert.Equal(await File.ReadAllBytesAsync(Path.Combine(TestRepoPaths.BaseSessionRoot, relative)),
+                    await File.ReadAllBytesAsync(Path.Combine(fs.GameSessionPath, relative)));
             var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
             Assert.Empty(await validator.ValidateGameStateAsync());
             var receipt = JsonNode.Parse(await File.ReadAllTextAsync(manifest))!;
