@@ -26,7 +26,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityProgress_PreservesCoreChangesMirrorsAndReceipts"
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityProgress_PreservesCoreChangesMirrorsAndReceipts",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityGuard_*"
           ]
         }
       ]

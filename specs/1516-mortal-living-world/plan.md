@@ -146,6 +146,27 @@ composition is supported. No completion semantics, new cache or new publication
 authority is introduced. Negative guard and ordinary accepted-item/effect tests
 remain necessary; component NoPlan success alone will not qualify this consumer.
 
+## Activity guard preparation — WIP, unrun
+
+Saved production checkpoint 28f8fd32 builds successfully: production project,
+0 errors, 19 warnings, 53.63 seconds. No runtime GREEN is implied.
+Independent source review identified permanent-ID alias ambiguity and Int64
+versus canonical Int32 mismatch; both are corrected before build. The existing
+caller always replaces progression context with Validated.Binding, retaining its
+Mortal realm check. Command-only on-disk core is rejected, not silently restored;
+StateDistributor's ordinary command payload merge preserves canonical arrays.
+
+Three cheap guard theories cover 29 cases against the actual normalizer:
+original/current aliases, case variants, duplicates and divergent mirrors;
+integer overflow, terminal/unknown patches; missing originals/activities,
+command-only disk core and direct activity drift. They assert unchanged core,
+sidecar and original bytes. Each has its own sparse filesystem; no expensive
+world or mutable fixture is shared. These are UNCOMPILED/UNRUN until the official
+activity category executes. The existing positive, guards and real-engine journey
+are the next selection; accepted item composition remains a separate open gate.
+No new GM syntax is introduced; this repairs consumption of the already documented
+nonterminal NPCActivityUpdates command. No live-relay acceptance is claimed.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
