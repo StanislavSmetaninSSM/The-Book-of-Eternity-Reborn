@@ -63,6 +63,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task SeedProgressionJourneyAsync()
     {
         CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        // The journey owns one NPC, so template journals for other actors are not its baseline.
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", "{\"npcJournals\":[]}");
         await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", "{\"qteEventsEnabled\":false}");
         await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _fs.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");

@@ -1,3 +1,24 @@
+## Recovery build and initial baseline refusal, 2026-11-17
+
+WIP after remote checkpoint 364e85b6. Fresh restored integration build succeeds:
+0 errors, 124 warnings, 65.01 seconds. The preceding WIP build lacked the IO
+namespace import (2 compile errors); that import is now saved. Official PlanOnly
+selects exactly one journey. Runtime executes 0 PASS / 1 FAIL in 14.494 seconds,
+no timeout or duplicate, owned cleanup complete. It stops at initial full-state
+validation, before XP input or accepted turn, not an NPC progression failure.
+
+The seed replaces the template NPC but retained another NPC's journal. Clear that
+unrelated template journal as part of this isolated one-actor baseline. The same
+run also reproduces six wrong-path vehicle-receipt errors. Apply the already
+proven narrow #1515 fix from f93f0bce: only the exact canonical vehicles document
+undergoes immutable birth-receipt validation; other field validation is unchanged.
+Both corrections await fresh build and the same one-journey run. No merchant,
+teacher, public-console/browser, retry or final closure evidence yet.
+
+Optimization: no additional source reads or cache; use the existing dispatcher
+context to avoid applying canonical vehicle validation to unrelated documents.
+The independent journey retains its own world and fresh acceptance checks.
+
 ## Reopened full progression journey verification, 2026-11-16
 
 Source: #1538. Branch `1538-progression-journey-audit`, base main
