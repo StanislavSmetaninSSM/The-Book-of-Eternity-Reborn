@@ -133,3 +133,19 @@ omission audit remains unfinished and old relay run e remains logically
 uncertain; neither is cleared by this preparation. Raw logs/TRX remain outside
 Git. Next: immutable runtime provenance, actual first relay request and GM-authored
 scout/crossing response, independent accepted-state and real shutdown readback.
+
+### First Mortal startup refusal, not a gameplay run
+
+Fresh immutable publication contains 481 files; Client/Bridge no-build publish
+succeeded, six DLL/PDB output joins and native source/binary provenance matched.
+The fresh exporter produced a fully validated Mortal seed with zero issues.
+First phase ended after 25.363 seconds with `TimeoutError: original Running and
+published transport`: the durable main owner remained Prepared, transport never
+became ready, and no player action or GM response was sent (0 accepted turns).
+The sole guardian finished driverExitCode 1, ECHILD true, emergencySignals 0,
+failures 0 and deadline false. This establishes its physical descendant drain,
+not normal logical stop: no original Running identity, shutdown attempts 0,
+foreground EOF/termios and logical lifecycle unconfirmed. No continuation or
+retry uses this world. Root-cause investigation is read-only before another
+controlled attempt; the first failed world/diagnostics are preserved. This does
+not invalidate the ten preparation checks or qualify any live Mortal scenario.
