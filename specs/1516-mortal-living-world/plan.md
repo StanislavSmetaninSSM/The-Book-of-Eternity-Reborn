@@ -120,6 +120,32 @@ root assistant acting as GM. Scripted regression responses above are technical
 regression evidence only, not live relay acceptance. Relay preparation runs
 separately while this defect is reproduced and corrected.
 
+## Recovered environment and actual NPC activity RED — WIP
+
+The execution environment was replaced during the first component build; its
+process key changed and local checkout/toolchain/diagnostics disappeared. All
+source was already saved at 5ffda1ed. A clean clone restored that exact commit.
+The interrupted build is UNKNOWN, not a test result. Historical result summaries
+above remain recorded but their old local raw logs were lost.
+
+Official sources restored SDK 10.0.404, .NET/ASP.NET 8.0.34 and PowerShell 7.7.0.
+Integration restore passed; fresh single-node build with shared compilation off
+passed with 0 errors, 171 warnings in 143.03 seconds. Official single component
+run now gives genuine RED: expected activity time240, actual0, after real core
+command consumption; test883ms, runner26.950s, 1 executed/1 failed, no skips,
+duplicates or timeout, complete cleanup.
+
+The drafted update-only consumer is UNCOMPILED/UNRUN. It uses existing normalizer
+lease/rollback ownership, original actor/activity preconditions and CURRENT core
+output, preserving other fields and mirrored actors. Operation-local immutable
+DATA preparation is reused; command freshness is checked before publication and
+consumption. The sidecar enters existing rollback inventory. Pending/specialized
+plans, whole-carrier/pending/consumed/transition owner overlaps, sealed skill
+candidates and terminal-completion combinations fail closed before writes until
+composition is supported. No completion semantics, new cache or new publication
+authority is introduced. Negative guard and ordinary accepted-item/effect tests
+remain necessary; component NoPlan success alone will not qualify this consumer.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
