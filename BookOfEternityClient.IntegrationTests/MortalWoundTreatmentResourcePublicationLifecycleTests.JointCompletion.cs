@@ -86,7 +86,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool postOriginalAutomaticSubmission = false, Action<GameEngine>? attachActualOwnerProbe = null,
         JointCaptureCutProbe? currentCaptureProbe = null,
         JointInterfaceLifecycleProbe? interfaceLifecycleProbe = null, JointInterfaceCrashSeedMetadata? sourceSeed = null,
-        JointNarrativeSourceProbe? narrativeSourceProbe = null, JointReasoningPrefixProbe? reasoningPrefixProbe = null)
+        JointNarrativeSourceProbe? narrativeSourceProbe = null, JointReasoningPrefixProbe? reasoningPrefixProbe = null,
+        Func<GameEngine, SessionFinalizationCheckpoint, Task>? auditLifecycleObserver = null)
     {
         using var scenarioTiming = _fs.MeasureOperation("JointScenario.UntilCompletionOrActualCut");
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -212,6 +213,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                         appliedPauseReached = true;
                         throw new OperationCanceledException("joint applied-before-story test pause");
                     }
+                    if (auditLifecycleObserver is not null &&
+                        checkpoint == SessionFinalizationCheckpoint.MortalJointInterfacePublishedBeforeCanonicalAttempt)
+                        return auditLifecycleObserver(engine, checkpoint);
                     narrativeSourceProbe?.ObserveCheckpoint(checkpoint);
                     reasoningPrefixProbe?.ObserveCheckpoint(checkpoint);
                     return narrativeSourceProbe?.AssertPrefixPhaseAtCheckpointAsync(checkpoint) ?? Task.CompletedTask;

@@ -326,6 +326,7 @@ public partial class GameEngine
                 _mortalJointRepairCanonicalRefresh = held;
                 return new AcceptedTurnCanonicalRefreshResult(true, held.Issues, JointPublication: held);
             }
+            await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointInterfacePublishedBeforeCanonicalAttempt);
             var joint = await PublishCurrentMortalJointRepairAsync(activeSnapshotContext, expectedTurn, snapshot);
             return new AcceptedTurnCanonicalRefreshResult(true, joint.Issues, joint.Plan, JointPublication: joint);
         }

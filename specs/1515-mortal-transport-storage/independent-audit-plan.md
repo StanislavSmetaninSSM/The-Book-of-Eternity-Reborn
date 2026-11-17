@@ -220,3 +220,15 @@ capability may cross the model wait. After the enclosing Main closes, only the
 existing genuine resume route applies. BrowserLocalAccess is rejected by the
 current unattempted-close owner and needs its own supported route, not a bypass.
 No T3 implementation or lifecycle test has run at this checkpoint.
+
+
+## T3 lifecycle test-first scaffold WIP
+
+Added a named post-I/pre-attempt checkpoint and a genuine live-owner lifecycle
+case. The preview API intentionally throws until implemented: no audit gate is
+activated. The case asks for two closed previews, equal detached fingerprints,
+then the original complete publication assertions and settled-plan equality.
+Build and causal RED are pending. The narrow new category owns this case only.
+Reuse: existing full genuine source-turn fixture, no shared mutable owner/cache.
+Rebuild deliberately requires fresh authority; DATA equality is under test,
+not asserted as a speedup. Model transport remains blocked separately.
