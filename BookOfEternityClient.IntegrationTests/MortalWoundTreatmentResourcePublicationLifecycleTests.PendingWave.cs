@@ -283,7 +283,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await SeedHeldTreatmentAuthorityAsync(files, wound);
         await PrepareGuaranteedNativeNpcReceiptShapeAsync(files);
         // Adopt the current client-owned storage projection before minting original42.
-        // The historical example map has storage, but its derived access entries predate #1515.
+        // The newly seeded clinic map needs its current derived access root, even with no storages.
         var map = JsonNode.Parse((await files.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
         var storageAccess = MortalStorageAccessProjection.Build(map, null);
         Assert.True(storageAccess.IsValid, DescribeValidationIssues(storageAccess.Issues));

@@ -236,8 +236,20 @@ not asserted as a speedup. Model transport remains blocked separately.
 The first execution at 5ba55cbc did not reach preview: 1/1 FAIL in
 19.1443973 s, complete cleanup, no skips/duplicates/timeouts. Fresh build took
 137.07 s, 171 warnings, zero errors. The genuine source fixture fails its own
-canonical precondition because its historical map contains storage but the
-current client-owned storage-access projection was never seeded. This is not
+canonical precondition because its newly seeded clinic map lacks the
+current client-owned storage-access projection (even with no storages). This is not
 a causal preview RED. The fixture now derives the projection from accepted map
 metadata before original42, matching the existing living-world fixture; no GM
 command, runtime validator relaxation or gameplay change. Reverification pending.
+
+Independent Sol XHigh source review accepted the pre-original projection seed
+and identified two missing mandatory npcSkillClaims arrays in the actual
+source42/Stage43 debug authors. The ed67f52c run reached a real source42 repair
+request containing exactly npc_skill_claim_report_invalid, then waited for a
+repair the fixture does not author. It was deliberately interrupted (exit130),
+not a preview RED/PASS; final runner-owned cleanup receipt is unavailable and
+raw evidence is retained. Its fresh build passed171 warnings/zero errors in
+124.69s. Both no-NPC-use authors now explicitly declare []; corrected Stage43
+resubmission already copies that initial debug output. No validator is relaxed.
+The reviewer found no other concrete schema gap on this bounded path. Next
+execution still has to reach the intentional preview scaffold refusal.
