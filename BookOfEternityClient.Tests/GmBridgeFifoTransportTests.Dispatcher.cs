@@ -37,6 +37,38 @@ public sealed partial class GmBridgeFifoTransportTests
         }
     }
     [Fact]
+    public async Task Dispatcher_FatalSignalReleasesHostBoundHandlerBeforeJoin()
+    {
+        var root=Path.Combine(TestDiagnosticPaths.Root,"bridge-dispatch",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
+        BridgeTransportListener? owned=null;Task? run=null;using var ownerStop=new CancellationTokenSource();using var hostStop=new CancellationTokenSource();
+        try {
+            var failure=new InvalidOperationException("admission sentinel");var admissions=0;var handled=0;
+            var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var cancelled=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var listener=owned=BridgeTransportListener.CreateFifo(root,()=>{if(Interlocked.Increment(ref admissions)==3)throw failure;});
+            using var deadline=new CancellationTokenSource(TimeSpan.FromSeconds(8));
+            var running=run=BridgePeerDispatcher.RunAsync(listener,async(_,token)=>{
+                Interlocked.Increment(ref handled);entered.TrySetResult();
+                try {await Task.Delay(Timeout.Infinite,hostStop.Token);} catch(OperationCanceledException) when(hostStop.IsCancellationRequested){cancelled.TrySetResult();}
+            },ownerStop.Token,1,onFatal:_=>hostStop.Cancel());
+            await using var first=await BridgeTransportConnector.ConnectAsync(listener.Endpoint,deadline.Token);
+            await entered.Task.WaitAsync(deadline.Token);
+            await using var queued=await BridgeTransportConnector.ConnectAsync(listener.Endpoint,deadline.Token);
+            await using var faulting=await BridgeTransportConnector.ConnectAsync(listener.Endpoint,deadline.Token);
+            await cancelled.Task.WaitAsync(deadline.Token);
+            var error=await Assert.ThrowsAnyAsync<Exception>(()=>running.WaitAsync(deadline.Token));
+            Assert.True(ReferenceEquals(error,failure) || error is AggregateException a && a.Flatten().InnerExceptions.Contains(failure));
+            Assert.Equal(1,handled);Assert.False(Directory.Exists(listener.Endpoint.Address));
+            Assert.Equal(0,await first.ReadAsync(new byte[1],deadline.Token));
+            Assert.Equal(0,await queued.ReadAsync(new byte[1],deadline.Token));
+        } finally {
+            hostStop.Cancel();ownerStop.Cancel();
+            if(run!=null)try{await run.WaitAsync(TimeSpan.FromSeconds(5));}catch(InvalidOperationException){}catch(AggregateException){}
+            if(owned!=null)try{await owned.DisposeAsync();}catch(InvalidOperationException){}catch(AggregateException){}
+            Directory.Delete(root,true);
+        }
+    }
+    [Fact]
     public async Task Dispatcher_ThrowingCancellationCallbackPreservesFatalAndStillJoins()
     {
         var root=Path.Combine(TestDiagnosticPaths.Root,"bridge-dispatch",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);

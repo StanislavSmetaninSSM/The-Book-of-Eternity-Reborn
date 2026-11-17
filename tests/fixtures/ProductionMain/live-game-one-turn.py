@@ -1,11 +1,26 @@
 """Owner-authorized one genuine turn in an ordinary disposable console game.
 
-Run only beneath the independently compiled guardian --live-turn (300s).
+Run only beneath the independently compiled guardian: --live-turn (300s),
+or --relay-turn (750s) for the explicit maintained developer relay.
 Package is already deployed below fresh base/game_session/_runtime. No scripted
 GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 """
-import errno, fcntl, hashlib, json, os, pty, re, select, socket, struct, subprocess, sys, termios, time, uuid
+import errno, fcntl, hashlib, json, os, pty, re, select, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
+
+def rpc_helper_arguments(script, shipped, current_session):
+    # All code locations derive from the source fixture and explicit shipped package.
+    return ['pwsh','-NoLogo','-NoProfile','-File',str(Path(script).with_name('bridge-request.ps1')),
+            '-ClientAssembly',str(Path(shipped)/'BookOfEternityClient/BookOfEternityClient.dll'),
+            '-StatusPath',str(Path(current_session)/'game_state/control/gm_bridge_status.json')]
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-arguments':
+    args=rpc_helper_arguments('/source/with space/live-game-one-turn.py','/shipped/with space','/own/game_session')
+    assert args[:4]==['pwsh','-NoLogo','-NoProfile','-File']
+    assert args[4]=='/source/with space/bridge-request.ps1'
+    assert args[5:7]==['-ClientAssembly','/shipped/with space/BookOfEternityClient/BookOfEternityClient.dll']
+    assert args[7:]==['-StatusPath','/own/game_session/game_state/control/gm_bridge_status.json']
+    print(json.dumps({'InertRpcArgumentChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
 def current_client_failure(text):
     return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
@@ -33,15 +48,12 @@ def retain_turn_delivery(result,delivery,binding):
     return False
 
 def close_relay_execution(queue,seconds):
-    # Correlation/quiescence receipt only; original owner is still required for stop.
-    request=queue/'close-request.json'
-    if not request.exists():request.write_text(json.dumps({'RequestedMonotonic':time.monotonic()})+'\n')
+    # Maintained gated API, not legacy direct close-request publication.
+    from relay_contract import request_close, read_close
+    request_close(queue)
     deadline=time.monotonic()+seconds
     while time.monotonic()<deadline:
-        closed=queue/'closed.json'
-        if closed.exists():
-            proof=json.loads(closed.read_text())
-            return all(proof.get(k) is True for k in ['ExecutionDisabled','ChildExited','IoDrained'])
+        if read_close(queue) is not None:return True
         pump(.02)
     return False
 
@@ -75,8 +87,9 @@ pipe = 'og-' + uuid.uuid4().hex[:12]
 quote = lambda v: "'" + str(v).replace("'", "''") + "'"
 command = '& ' + quote(binary) + (' --driver-refusal-fixture' if controlled_refusal else ' --mini --pure --no-replay -m opencode/ling-3.1-flash-free')
 if relay_mode:
+    sys.path.insert(0,str(out/'relay'))
     relay_queue.mkdir()
-    command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/codex-gm-relay.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model gpt-6.1-sol'
+    command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
 env = {k:v for k,v in os.environ.items() if not k.upper().startswith('OPENCODE_')}
 for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_STATE_HOME','state'),('XDG_CACHE_HOME','cache'),('TMPDIR','tmp')]:
     path=out/folder;path.mkdir();env[key]=str(path)
@@ -100,7 +113,7 @@ start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=Non
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
-if relay_mode:result.update(ConfiguredModel='codex-agent/gpt-6.1-sol-test-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
+if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
 class Terminal:
@@ -156,22 +169,75 @@ def fresh(p,marker,offset,seconds=12):
     until(observed,seconds,p.name+': '+marker)
 def answer(p,marker,text,offset):
     fresh(p,marker,offset);offset=len(p.capture);p.send((text+'\r').encode(),'answer '+marker);return offset
+class ShippedRpc:
+    """One fixture process; each request uses a fresh shipped connector stream."""
+    def __init__(self):
+        args=rpc_helper_arguments(__file__,ship,session)
+        self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        self.pending=bytearray();self.capture=bytearray();self.errors=bytearray();self.closed=set()
+        journal.append({'At':elapsed(),'Entrypoint':'shipped-rpc-fixture','Argv':args,'OriginalPid':self.process.pid})
+        try:
+            ready=self.frame(5)
+            if ready!={'fixtureReady':True}:raise RuntimeError('Shipped RPC helper readiness failed')
+        except BaseException:
+            try:self.close()
+            except Exception as failure:journal.append({'At':elapsed(),'RpcHelperStartupCleanupFailure':str(failure)})
+            raise
+    def collect(self,delay):
+        streams=[(self.process.stdout,'stdout'),(self.process.stderr,'stderr')]
+        fds=[p.fileno() for p,kind in streams if kind not in self.closed]
+        readable=select.select(fds,[],[],delay)[0] if fds else []
+        for stream,kind in streams:
+            if kind in self.closed or stream.fileno() not in readable:continue
+            data=os.read(stream.fileno(),65536)
+            if not data:self.closed.add(kind)
+            if kind=='stdout':self.pending.extend(data);self.capture.extend(data)
+            else:self.errors.extend(data)
+        if len(self.pending)>1048576 or len(self.errors)>65536 or len(self.capture)>16777216:
+            raise RuntimeError('Shipped RPC helper capture bound')
+    def frame(self,seconds):
+        deadline=min(start+total_seconds,time.monotonic()+seconds)
+        while time.monotonic()<deadline:
+            if b'\n' in self.pending:
+                line,_,remaining=self.pending.partition(b'\n');self.pending=bytearray(remaining)
+                return json.loads(line)
+            if 'stdout' in self.closed:raise EOFError('Shipped RPC helper response lost; never replay')
+            pump(0);self.collect(.01)
+        raise TimeoutError('Original shipped RPC response unknown; never replay')
+    def request(self,payload,seconds):
+        identity=uuid.uuid4().hex
+        frame={'id':identity,'payload':json.dumps(payload),'timeoutMilliseconds':int(seconds*1000)}
+        self.process.stdin.write((json.dumps(frame)+'\n').encode());self.process.stdin.flush()
+        reply=self.frame(seconds+.5)
+        if reply.get('id')!=identity or not reply.get('ok'):
+            raise RuntimeError('Shipped RPC original operation failed: '+str(reply))
+        if len(reply['response'].encode('utf8'))>524288:raise RuntimeError('RPC bound')
+        return json.loads(reply['response'])
+    def close(self):
+        try:
+            if self.process.stdin and not self.process.stdin.closed:self.process.stdin.close()
+            deadline=time.monotonic()+5
+            while time.monotonic()<deadline and (self.process.poll() is None or len(self.closed)!=2):
+                pump(0);self.collect(.01)
+            if self.process.poll() is None or len(self.closed)!=2:
+                raise RuntimeError('Shipped RPC helper exit/I-O unconfirmed; guardian retains physical cleanup')
+            self.process.wait()
+            self.process.stdout.close();self.process.stderr.close()
+            if self.process.returncode!=0:raise RuntimeError('Shipped RPC helper failed')
+            return {'ExitCode':self.process.returncode,'StdoutEof':True,'StderrEof':True}
+        finally:
+            (out/'rpc-helper.stdout.log').write_bytes(self.capture)
+            (out/'rpc-helper.stderr.log').write_bytes(self.errors)
+
+rpc_peer=None
 def rpc(payload,seconds=2):
+    global rpc_peer
     assert payload['command'] in ['status','diagnostics','shutdown']
     item={'At':elapsed(),'RPC':payload,'Attempted':True};journal.append(item)
-    with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as s:
-        s.settimeout(.5);s.connect(str(out/'tmp'/('CoreFxPipe_'+pipe)));s.sendall(json.dumps(payload).encode()+b'\n');s.setblocking(False)
-        reply=bytearray();deadline=time.monotonic()+seconds
-        while time.monotonic()<deadline:
-            pump()
-            if not select.select([s],[],[],0)[0]:continue
-            b=s.recv(8192)
-            if not b:raise EOFError('Original response lost; never retry an operation')
-            reply.extend(b)
-            if len(reply)>524288:raise RuntimeError('RPC bound')
-            if reply.endswith(b'\n'):
-                item['Response']=json.loads(reply);return item['Response']
-        raise TimeoutError('Original RPC outcome unknown; never replay')
+    if rpc_peer is None:rpc_peer=ShippedRpc()
+    response=rpc_peer.request(payload,seconds)
+    item['Response']=response;return response
+
 def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def staging_signature():
     # Metadata only in this disposable game's staging namespace. Exclude live
@@ -275,8 +341,8 @@ try:
     result['BootstrapCancelledBeforeCli']=True
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
-    record_path=base/'.boe_runtime/gm-runs/main.json';socket_path=out/'tmp'/('CoreFxPipe_'+pipe)
-    until(lambda:record_path.exists() and socket_path.exists() and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running')
+    record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
+    until(lambda:record_path.exists() and status_path.exists() and bool(read_json(status_path).get('transportEndpoint')) and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running and published transport')
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
@@ -449,6 +515,9 @@ finally:
             daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,16,'daemon original stop')
         except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
     result['ShutdownAttempts']=shutdown_attempts
+    if rpc_peer is not None:
+        try:result['RpcHelperClosure']=rpc_peer.close()
+        except Exception as ex:result['RpcHelperCleanupFailure']=type(ex).__name__+': '+str(ex)
     for p in peers:
         if p.process.poll() is not None and p.slave>=0:os.close(p.slave);p.slave=-1
     try:until(lambda:all(p.eof for p in peers),8,'actual foreground EOF')

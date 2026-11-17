@@ -4,7 +4,7 @@ namespace BookOfEternityGMBridge;
 internal static class BridgePeerDispatcher
 {
     internal static async Task RunAsync(BridgeTransportListener listener, Func<Stream,CancellationToken,Task> handler,
-        CancellationToken token, int maximumPeers=48)
+        CancellationToken token, int maximumPeers=48, Action<Exception>? onFatal=null)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(maximumPeers,1);
         using var stop=CancellationTokenSource.CreateLinkedTokenSource(token);

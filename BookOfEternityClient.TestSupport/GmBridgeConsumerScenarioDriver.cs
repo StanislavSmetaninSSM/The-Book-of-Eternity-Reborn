@@ -12,9 +12,11 @@ namespace BookOfEternityClient.Tests;
 // Neutral terminal exercises ownership/transport; it is not a live GM game claim.
 internal static class GmBridgeConsumerScenarioDriver
 {
-    internal static async Task<int> RunAsync(string package, string output)
+    internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        var result = new Dictionary<string, object?>();
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo"))
+            throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
+        var result = new Dictionary<string, object?> { ["Mode"] = mode };
         BridgeHost? host = null;
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
@@ -82,6 +84,37 @@ internal static class GmBridgeConsumerScenarioDriver
             result["OriginalCloseObserved"] = true;
             await pin.DisposeAsync();
             pin = null;
+
+            if (mode == "terminal-main-consumer-load-fifo")
+            {
+                // Real Load stop/finish IPC without archive replacement or restart.
+                // The original host sees both receipts on the same accepted stream.
+                var generationBefore = await File.ReadAllBytesAsync(files.SessionGenerationPath, deadline.Token);
+                var receipts = new List<(Stream Stream, GmLoadMainState State)>();
+                host.BeforeLoadReceipt = (stream, state) => receipts.Add((stream, state));
+                try
+                {
+                    await using var load = GmLoadSessionOperation.Reserve(files, Guid.NewGuid().ToString("N"),
+                        "transport-no-replacement", original.Identity.GenerationId);
+                    await load.StopAsync(deadline.Token);
+                    if (!load.HadSession || load.State != GmLoadMainState.Stopped)
+                        throw new IOException("Actual Load did not receive original terminal stop acknowledgement.");
+                    var afterStop = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Load stopped record missing."));
+                    if (afterStop.Identity != original.Identity || afterStop.Disposition != GmSessionRunDisposition.Stopped)
+                        throw new IOException("Load did not stop the original terminal durably.");
+                    if (await load.FinishAsync(false, false, null) != GmLoadMainState.Stopped)
+                        throw new IOException("No-replacement Load finish did not retain Stopped.");
+                    if (receipts.Count != 2 || !ReferenceEquals(receipts[0].Stream, receipts[1].Stream) ||
+                        receipts.Any(receipt => receipt.State != GmLoadMainState.Stopped))
+                        throw new IOException("Load receipts did not use the one original accepted channel.");
+                    var generationAfter = await File.ReadAllBytesAsync(files.SessionGenerationPath, deadline.Token);
+                    if (!generationBefore.AsSpan().SequenceEqual(generationAfter))
+                        throw new IOException("Transport-only Load changed the installed generation.");
+                    result["ActualLoadStopFinishOriginalStream"] = true;
+                    result["LoadNoReplacementNoRestart"] = true;
+                }
+                finally { host.BeforeLoadReceipt = null; }
+            }
 
             using (var shutdown = await LauncherAsync("shutdown-bridge", launch.Scratch, output, deadline.Token))
             {

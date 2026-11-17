@@ -340,3 +340,19 @@ Program now prepares endpoint before StartShell, switches original handlers to
 Stream dispatcher, observes server failure and separately attempts drain, listener
 join, original terminal stop and console restoration. Dispatcher retains callback
 errors and all peer failures while still joining cleanup. Fresh GREEN pending.
+
+Actual-host GREEN at08eb76eb: fresh build0errors65warnings41.35s; official51/51
+PASS, no skips/duplicates,complete cleanup,20.545s. Independent outcome review
+read TRX+scenario+guardian: actual FIFO main grant/activation, client-observed
+close before independent shipped shutdown, diagnostics, durable original Stopped,
+endpoint removal, ECHILD and no emergency signals/deadline all passed. Actual
+Draft helper under changed TMPDIR also passed. This does not qualify live GM.
+
+Review found another cancellation boundary: short application operations can wait
+on host CTS, while dispatcher fatal initially canceled only its own CTS. New
+causal test requires immediate fatal notification before joining a host-bound
+handler. Callback exists as an unused stub for first RED. New actual Load transport
+coverage preserves its original Stop/Finish stream, with no canonical replacement
+claim. Maintained live driver now calls shipped connector via a qualification-only
+stdio fixture, uses maintained relay CLI/close, and supplies no game responses;
+inert syntax/argv/phase checks passed, actual game run remains pending.
