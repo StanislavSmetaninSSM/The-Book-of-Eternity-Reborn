@@ -114,6 +114,70 @@ public sealed class MortalTurnAuditContractTests
         Assert.False(MortalTurnAuditContract.Validate(packet, "not json").IsConsistent);
     }
 
+    [Theory]
+    [InlineData("/a~1b/~0key/1", "null", true)]
+    [InlineData("/", "7", true)]
+    [InlineData("", "{\"a/b\":{\"~key\":[3,null]},\"\":7}", true)]
+    [InlineData("/a~1b/~0key/01", "null", false)]
+    [InlineData("/a~1b/~0key/-1", "null", false)]
+    [InlineData("/a~1b/~0key/-", "null", false)]
+    [InlineData("/a~2b", "null", false)]
+    public void EvidencePointersUseExactJsonPointerSemantics(string pointer, string value, bool expected)
+    {
+        var original = Packet();
+        var packet = new MortalTurnAuditPacket("session1", "generation1", "request1", 42, 1,
+            original.Documents.Select(d => d.Id == "candidate" ? d with
+            { Text = "{\"a/b\":{\"~key\":[3,null]},\"\":7}" } : d));
+        var response = Response(packet); var evidence = response["findings"]![0]!["evidence"]![0]!;
+        evidence["pointer"] = pointer; evidence["value"] = JsonNode.Parse(value);
+        Assert.Equal(expected, MortalTurnAuditContract.Validate(packet, response.ToJsonString()).IsConsistent);
+    }
+
+    [Fact]
+    public void DuplicateStateOrNestedResponsePropertiesNeverPass()
+    {
+        var original = Packet();
+        var duplicate = new MortalTurnAuditPacket("session1", "generation1", "request1", 42, 1,
+            original.Documents.Select(d => d.Id == "original" ? d with { Text = "{\"x\":1,\"x\":2}" } : d));
+        Assert.False(MortalTurnAuditContract.Validate(duplicate, Response(duplicate).ToJsonString()).IsConsistent);
+        var response = Response(original);
+        response["findings"]![0]!["evidence"]![0]!["writePath"] = "../../outside";
+        Assert.False(MortalTurnAuditContract.Validate(original, response.ToJsonString()).IsConsistent);
+        var json = Response(original).ToJsonString().Replace("\"value\":\"cart1\"", "\"value\":\"cart1\",\"value\":\"cart1\"");
+        Assert.False(MortalTurnAuditContract.Validate(original, json).IsConsistent);
+    }
+
+    [Theory]
+    [InlineData("session")][InlineData("request")][InlineData("turn")]
+    [InlineData("path")][InlineData("text")][InlineData("id")]
+    public void ChangingAnyIdentityDimensionChangesDigest(string dimension)
+    {
+        var packet = Packet();
+        var changed = new MortalTurnAuditPacket(dimension == "session" ? "session2" : "session1", "generation1",
+            dimension == "request" ? "request2" : "request1", dimension == "turn" ? 43 : 42, 1,
+            packet.Documents.Select(d => d.Id == "original" ? d with
+            { Path = dimension == "path" ? "other" : d.Path, Text = dimension == "text" ? "{}" : d.Text,
+              Id = dimension == "id" ? "original2" : d.Id } : d));
+        Assert.NotEqual(packet.Digest, changed.Digest);
+    }
+
+    [Theory]
+    [InlineData("session")][InlineData("generation")][InlineData("request")]
+    [InlineData("id")][InlineData("path")][InlineData("text")]
+    public void IllFormedUnicodeCannotCollapseDistinctPacketIdentities(string field)
+    {
+        var bad = new string((char)0xd800, 1) + "quiet";
+        var docs = Packet().Documents.Select(d => d.Id == "narrative" ? d with
+        {
+            Id = field == "id" ? bad : d.Id,
+            Path = field == "path" ? bad : d.Path,
+            Text = field == "text" ? bad : d.Text
+        } : d).ToArray();
+        Assert.Throws<ArgumentException>(() => new MortalTurnAuditPacket(
+            field == "session" ? bad : "session1", field == "generation" ? bad : "generation1",
+            field == "request" ? bad : "request1", 42, 1, docs));
+    }
+
     [Fact]
     public void PacketCopiesDocumentCollectionAndDigestIncludesEveryInput()
     {

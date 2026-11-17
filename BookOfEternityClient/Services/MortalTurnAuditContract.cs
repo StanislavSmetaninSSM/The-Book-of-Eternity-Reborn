@@ -32,6 +32,19 @@ internal sealed class MortalTurnAuditPacket
                 d.Role is not ("original" or "candidate" or "narrative" or "rules")) ||
             new[] { "original", "candidate", "narrative" }.Any(role => !copies.Any(d => d.Role == role)))
             throw new ArgumentException("Audit requires unique documents and original, candidate and narrative coverage.");
+        // System.Text.Json replaces isolated UTF-16 surrogates. Reject them
+        // before serialization so different original input cannot share a digest.
+        var strictUtf8 = new UTF8Encoding(false, true);
+        try
+        {
+            foreach (var text in new[] { session, generation, request }.Concat(
+                copies.SelectMany(d => new[] { d.Id, d.Role, d.Path, d.Text })))
+                _ = strictUtf8.GetByteCount(text);
+        }
+        catch (EncoderFallbackException error)
+        {
+            throw new ArgumentException("Audit input must be well-formed Unicode.", nameof(documents), error);
+        }
         Documents = new ReadOnlyCollection<MortalTurnAuditDocument>(copies);
         // Ordered document identities make collection order irrelevant, but preserve
         // every text byte represented by the .NET string, role and source coordinate.
@@ -71,12 +84,12 @@ internal static class MortalTurnAuditContract
 
             // Parse each supplied state document once per response. This is a local
             // DATA index, not a permission cache; it never reads a path from the reply.
-            var state = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+            var state = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
             foreach (var document in packet.Documents.Where(d => d.Role is "original" or "candidate"))
             {
                 using var json = JsonDocument.Parse(document.Text);
                 NoDuplicates(json.RootElement);
-                state.Add(document.Id, JsonNode.Parse(document.Text));
+                state.Add(document.Id, json.RootElement.Clone());
             }
             var adverse = false;
             foreach (var finding in root.GetProperty("findings").EnumerateArray())
@@ -106,7 +119,7 @@ internal static class MortalTurnAuditContract
                     var pointer = evidence.GetProperty("pointer").GetString();
                     if (pointer is null || !state.TryGetValue(id, out var document) ||
                         !TryResolve(document, pointer, out var actual) ||
-                        !JsonNode.DeepEquals(actual, JsonNode.Parse(evidence.GetProperty("value").GetRawText())))
+                        !JsonNode.DeepEquals(JsonNode.Parse(actual.GetRawText()), JsonNode.Parse(evidence.GetProperty("value").GetRawText())))
                         return Hold("Audit evidence does not resolve to the exact packet state.");
                     count++;
                 }
@@ -156,7 +169,7 @@ internal static class MortalTurnAuditContract
             foreach (var child in value.EnumerateArray()) NoDuplicates(child);
     }
 
-    private static bool TryResolve(JsonNode? root, string pointer, out JsonNode? value)
+    private static bool TryResolve(JsonElement root, string pointer, out JsonElement value)
     {
         value = root;
         if (pointer.Length == 0) return true;
@@ -171,16 +184,16 @@ internal static class MortalTurnAuditContract
                 token.Append(encoded[i] == '0' ? '~' : '/');
             }
             var key = token.ToString();
-            if (value is JsonObject obj)
+            if (value.ValueKind == JsonValueKind.Object)
             {
-                if (!obj.TryGetPropertyValue(key, out value)) return false;
+                if (!value.TryGetProperty(key, out value)) return false;
             }
-            else if (value is JsonArray array)
+            else if (value.ValueKind == JsonValueKind.Array)
             {
                 if (key.Length == 0 || (key.Length > 1 && key[0] == '0') ||
                     !int.TryParse(key, NumberStyles.None, CultureInfo.InvariantCulture, out var index) ||
-                    index >= array.Count) return false;
-                value = array[index];
+                    index >= value.GetArrayLength()) return false;
+                value = value[index];
             }
             else return false;
         }

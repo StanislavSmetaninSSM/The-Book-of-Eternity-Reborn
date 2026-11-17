@@ -72,3 +72,21 @@ Optimization: T1 handles immutable strings and parses state once per response
 into an operation-local evidence index; no filesystem reads, global cache,
 publication authority or speedup claim. Full packets must not be repeatedly
 reconstructed around individual findings; T3 owns actual capture reuse/fences.
+
+## T1 source review corrections pending verification
+
+At44467f the narrow category passed22/22 in10.7664966s (build97.26s,
+96warnings/0errors); clean fresh GitHub clone and connectivity fsck confirmed
+exact44467f source. Independent Sol XHigh review nevertheless found a real
+identity bug: JsonSerializer maps distinct ill-formed UTF-16 toU+FFFD. Six new
+runtime-character regression cases failed as expected (28executed,22PASS/6FAIL,
+10.0860799s, complete cleanup). Strict UTF-8 validation before serialization
+now rejects those inputs rather than allowing digest collisions.
+
+The review also caught duplicate full state parsing. State is now parsed once
+per document and retained as detached JsonElement DATA for evidence resolution;
+only referenced evidence values are converted for semantic JSON equality.
+Pointer/duplicate-state/nested-field and remaining identity tests were added.
+These corrections are WIP until the fresh selected run completes. Typed
+semantic-failure/uncertainty/finding delivery belongs toT2; callers must never
+reparse unvalidated raw replies or branch on human Error strings.
