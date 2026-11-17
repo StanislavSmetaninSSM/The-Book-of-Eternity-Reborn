@@ -4,6 +4,34 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
+## Mortal live phase01 startup failure and bounded fixture correction, 2026-11-17
+
+The first genuine-relay attempt stopped before any player action or GM request:
+0 actions, 0 accepted turns; driver FAILED after 25.363 seconds waiting for the
+original Running owner and published transport. The durable main record remains
+Prepared, with no status descriptor or native bootstrap directory. Guardian
+observed ECHILD, driver exit 1, two reaped children and zero emergency signals,
+failures or deadline. This is physical closure only, NOT logical owner retirement;
+no shutdown RPC was attempted and the driver's terminal EOF/exit proof failed.
+Keep the old phase/world artifacts untouched; do not continue that owner.
+
+Source diagnosis: the phase-local TMPDIR gives a 110-byte UTF-8
+`boe-native-<32hex>/owner` path, whereas accepted guardian run f used 98 bytes.
+NativeLineageOwner rejects more than 107 bytes before native allocation, even
+before the constructor-only inherited-pipe fallback. Prepared is already published
+before that constructor. Subsequent uncertainty remains in memory; status
+publication is not opened on this failed startup path. The observed absence of
+transport therefore is not evidence of a slow Mortal seed. No exception diagnostic
+was enabled, so this is the exact source-derived path rejection, not a captured
+exception stack. No production timeout, transport, ownership or guard is changed.
+
+The fixture now preflights the same UTF-8 path budget before any processes,
+directory creation or operational configuration writes. Inert tests first failed
+at accepting 108 bytes, then passed ASCII and Unicode 107/108 boundaries; Python
+AST parsing passed. Future attempts use a fresh short `/workspace/shared/ml-<nonce>`
+phase root and a separately exported fresh seed world, reusing only the verified
+481-file immutable runtime. No live rerun is claimed by this fixture correction.
+
 ## Mortal live-relay source join (prepared, UNBUILT/UNRUN), 2026-11-17
 
 Branch `1515-1516-1538-live-gm-relay-20261117` starts from verified combined
