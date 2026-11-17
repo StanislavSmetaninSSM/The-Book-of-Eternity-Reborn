@@ -4,7 +4,34 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
-## Current status, 2026-11-17 — reopened verification, WIP
+## Latest verified checkpoint, 2026-11-17 — open, not merged
+
+Source d26cc546: fresh integration build 0 errors, 129 warnings, 59.68 seconds.
+Actual declared-effect repair now passes 1/1 in 25.7999353 seconds: mismatch and
+not-meaningful refusal, supported missing-command correction, legitimate second
+output-freshness refusal, output-only resubmission, then exactly one accepted
+story/receipt tied to the unchanged session/request/original manifest and report.
+No source, history or canonical state is authored by the repair callback.
+
+Because the optional test input override changed a shared helper, both existing
+actual-engine journeys were rerun: 2/2 PASS in 44.7312106 seconds. This retains the
+four accepted intervals, exact effects, semantic receipt immutability and decoded
+news/history persistence after state refresh, plus the separate quiet control.
+Both official runs selected/completed exactly their cases, no skips, duplicate IDs
+or timeouts, complete owned cleanup. Raw remains outside Git. Independent source
+review accepted the two-phase repair harness; final outcome review is separate.
+
+The separate unchanged prose-omission probe remains RED: valid no-change report
+with no events, concrete destroyed-crossing prose, expected refusal turn41 but
+actual acceptance turn42 (1/1 FAIL, 23.497 seconds at d7bc031e). No parsing error or
+missing report caused that result. Do not claim undeclared prose-event detection,
+change the assertion to accepted42, or introduce an NLP/audit system implicitly.
+The current spec explicitly limits the client to declarations/state evidence.
+Required live GM relay acceptance remains separate from these scripted outputs.
+No new production changes were made in the repair/omission block; no closure or
+merge. The following sections preserve earlier evidence, not current completion.
+
+## Initial recovered status, 2026-11-17 — historical WIP
 
 The earlier completion claim below is superseded. Genuine multi-turn engine
 verification exposed a prepared-schedule source mismatch. The local correction
