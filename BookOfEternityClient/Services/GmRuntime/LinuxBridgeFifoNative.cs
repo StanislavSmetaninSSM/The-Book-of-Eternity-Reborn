@@ -1,0 +1,167 @@
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+
+namespace BookOfEternityClient.Services.GmRuntime;
+
+// Trusted same-UID local transport. Anchoring prevents accidental parent replacement;
+// it does not turn stat/unlink into atomic defense against a hostile same-UID process.
+internal static class LinuxBridgeFifoNative
+{
+    internal const int ReadOnly = 0, WriteOnly = 1, ReadWrite = 2;
+    private const int NoFollow = 0x20000, DirectoryFlag = 0x10000, CloseOnExec = 0x80000, NonBlock = 0x800;
+    internal sealed record Identity(ulong Device, ulong Inode, uint Uid, ushort Mode, uint Links);
+
+    internal static void RequirePlatform()
+    {
+        if (!OperatingSystem.IsLinux() || RuntimeInformation.ProcessArchitecture != Architecture.X64)
+            throw new PlatformNotSupportedException("Bridge FIFO ABI is qualified only on Linux x64.");
+    }
+
+    internal static SafeFileHandle OpenDirectory(string path)
+    {
+        RequirePlatform();
+        if (!Path.IsPathFullyQualified(path) || path.IndexOf('\0') >= 0)
+            throw new IOException("Absolute bridge parent path required.");
+        var current = OpenAt(null, "/", ReadOnly | DirectoryFlag);
+        try
+        {
+            foreach (var part in path.Split('/', StringSplitOptions.RemoveEmptyEntries))
+            {
+                Name(part);
+                var next = OpenAt(current, part, ReadOnly | DirectoryFlag);
+                current.Dispose(); current = next;
+            }
+            return current;
+        }
+        catch { current.Dispose(); throw; }
+    }
+
+    internal static SafeFileHandle OpenPrivateDirectory(SafeFileHandle parent, string name)
+    {
+        Name(name); var fd = OpenAt(parent, name, ReadOnly | DirectoryFlag);
+        try { RequirePrivate(fd, 0x4000, 0x1c0); return fd; }
+        catch { fd.Dispose(); throw; }
+    }
+
+    internal static SafeFileHandle CreateDirectory(SafeFileHandle parent, string name)
+    {
+        Name(name);
+        if (mkdirat(parent, name, 0x1c0) != 0) throw Error("mkdirat");
+        // Never repair permissions or reuse an existing entry.
+        return OpenPrivateDirectory(parent, name);
+    }
+
+    internal static Identity CreateFifo(SafeFileHandle directory, string name)
+    {
+        Name(name);
+        if (mkfifoat(directory, name, 0x180) != 0) throw Error("mkfifoat");
+        using var fd = OpenFifo(directory, name, ReadOnly);
+        return Stat(fd);
+    }
+
+    internal static SafeFileHandle OpenFifo(SafeFileHandle directory, string name, int mode)
+    {
+        Name(name); var fd = OpenAt(directory, name, mode);
+        try { RequirePrivate(fd, 0x1000, 0x180); if (Stat(fd).Links != 1) throw new IOException("Linked FIFO refused."); return fd; }
+        catch { fd.Dispose(); throw; }
+    }
+
+    internal static bool Missing(IOException error) => error is NativeFailure { ErrorNumber: 2 };
+    internal static bool NoReader(IOException error) => error is NativeFailure { ErrorNumber: 6 };
+
+    internal static void RemoveFifo(SafeFileHandle directory, string name, Identity original)
+    {
+        SafeFileHandle current;
+        try { current = OpenFifo(directory, name, ReadOnly); }
+        catch (IOException ex) when (Missing(ex)) { return; }
+        using (current)
+        {
+            if (Stat(current) != original) throw new IOException("Changed FIFO retained during cleanup.");
+            if (unlinkat(directory, name, 0) != 0 && Marshal.GetLastPInvokeError() != 2) throw Error("unlinkat FIFO");
+        }
+    }
+
+    internal static void RemoveDirectory(SafeFileHandle parent, string name, Identity original)
+    {
+        SafeFileHandle current;
+        try { current = OpenPrivateDirectory(parent, name); }
+        catch (IOException ex) when (Missing(ex)) { return; }
+        using (current)
+        {
+            var now = Stat(current);
+            if (now.Device != original.Device || now.Inode != original.Inode || now.Uid != original.Uid || now.Mode != original.Mode)
+                throw new IOException("Changed directory retained during cleanup.");
+            if (unlinkat(parent, name, 0x200) != 0 && Marshal.GetLastPInvokeError() != 2) throw Error("unlinkat directory");
+        }
+    }
+
+    internal static Identity Stat(SafeFileHandle fd)
+    {
+        const uint mask = 0x10f;
+        if (statx(fd, "", 0x1000, mask, out var value) != 0 || (value.Mask & mask) != mask)
+            throw Error("statx");
+        return new(((ulong)value.DeviceMajor << 32) | value.DeviceMinor, value.Inode, value.Uid, value.Mode, value.Links);
+    }
+
+    private static void RequirePrivate(SafeFileHandle fd, ushort type, ushort permissions)
+    {
+        var id = Stat(fd);
+        if ((id.Mode & 0xf000) != type || (id.Mode & 0xfff) != permissions || id.Uid != geteuid())
+            throw new IOException("Bridge entry type, owner or private mode mismatch.");
+    }
+
+    private static SafeFileHandle OpenAt(SafeFileHandle? parent, string name, int flags)
+    {
+        int result;
+        if (parent == null) result = open(name, flags | NoFollow | CloseOnExec | NonBlock);
+        else result = openat(parent, name, flags | NoFollow | CloseOnExec | NonBlock);
+        if (result < 0) throw Error("openat");
+        return new SafeFileHandle((IntPtr)result, true);
+    }
+
+    internal static void Name(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name is "." or ".." || name.Contains('/') || name.Contains('\0'))
+            throw new IOException("Relative bridge basename required.");
+    }
+
+    internal static int Read(SafeFileHandle fd, byte[] buffer, int count, out int error)
+    {
+        var n = read(fd, buffer, (nuint)count); error = n < 0 ? Marshal.GetLastPInvokeError() : 0; return checked((int)n);
+    }
+
+    internal static int Write(SafeFileHandle fd, byte[] buffer, int count, out int error)
+    {
+        // CoreCLR8 initializes SIGPIPE=SIG_IGN. Observe, never mutate it. This
+        // trusted-runtime prerequisite excludes concurrent foreign handler changes.
+        if (sigaction(13, IntPtr.Zero, out var action) != 0 || action.Handler != (IntPtr)1)
+            throw new IOException("Bridge FIFO requires the existing CoreCLR SIGPIPE-ignore disposition.");
+        var n = write(fd, buffer, (nuint)count); error = n < 0 ? Marshal.GetLastPInvokeError() : 0; return checked((int)n);
+    }
+
+    internal sealed class NativeFailure(string operation, int number) : IOException($"Bridge FIFO {operation} failed (errno {number}).")
+    { internal int ErrorNumber { get; } = number; }
+    private static IOException Error(string operation) => new NativeFailure(operation, Marshal.GetLastPInvokeError());
+
+    [StructLayout(LayoutKind.Explicit, Size = 256)] private struct Statx
+    {
+        [FieldOffset(0)] public uint Mask;
+        [FieldOffset(16)] public uint Links;
+        [FieldOffset(20)] public uint Uid;
+        [FieldOffset(28)] public ushort Mode;
+        [FieldOffset(32)] public ulong Inode;
+        [FieldOffset(136)] public uint DeviceMajor;
+        [FieldOffset(140)] public uint DeviceMinor;
+    }
+    [StructLayout(LayoutKind.Explicit, Size = 152)] private struct SignalAction { [FieldOffset(0)] public IntPtr Handler; }
+    [DllImport("libc", SetLastError = true)] private static extern int open(string path, int flags);
+    [DllImport("libc", SetLastError = true)] private static extern int openat(SafeFileHandle directory, string path, int flags);
+    [DllImport("libc", SetLastError = true)] private static extern int mkdirat(SafeFileHandle directory, string path, uint mode);
+    [DllImport("libc", SetLastError = true)] private static extern int mkfifoat(SafeFileHandle directory, string path, uint mode);
+    [DllImport("libc", SetLastError = true)] private static extern int unlinkat(SafeFileHandle directory, string path, int flags);
+    [DllImport("libc", SetLastError = true)] private static extern int statx(SafeFileHandle directory, string path, int flags, uint mask, out Statx value);
+    [DllImport("libc")] private static extern uint geteuid();
+    [DllImport("libc", SetLastError = true)] private static extern nint read(SafeFileHandle fd, byte[] buffer, nuint length);
+    [DllImport("libc", SetLastError = true)] private static extern nint write(SafeFileHandle fd, byte[] buffer, nuint length);
+    [DllImport("libc", SetLastError = true)] private static extern int sigaction(int signal, IntPtr action, out SignalAction previous);
+}

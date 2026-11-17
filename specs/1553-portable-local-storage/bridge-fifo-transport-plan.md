@@ -2,7 +2,7 @@
 
 Source: [#1589](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1589).
 Base `1d9ae03f13b4a93fd786af96ac09cc4c4f0ba0c5`; isolated branch
-`1589-bridge-fifo-transport`. This worker owns only the files listed below.
+`1589-bridge-fifo-recovery-20261117`. This worker owns only the files listed below.
 No native supervisor, NativeLineageOwner, game contracts, bridge dispatcher or
 launcher is changed in this bounded reusable-transport block.
 
@@ -23,9 +23,11 @@ channel death/flow control and cannot claim per-peer kernel EOF. Per-peer FIFOs
 fit the current independent-client topology with explicit handshake and EOF.
 
 Server creates a unique run directory (0700), retains its parent/run dirfds and
-creates rendezvous FIFO (0600). Each client creates a unique never-reused peer
-directory with c2s/s2c FIFOs (0600), then sends one bounded ASCII ticket in one
-write, at most 512 bytes. The rendezvous has a lifetime RDWR anchor; peer FIFOs
+creates rendezvous FIFO (0600). Each client sends one bounded ASCII ticket in
+one write, at most 512 bytes. The server admits the ticket before creating its
+unique never-reused peer directory and c2s/s2c FIFOs (0600); clients only open
+verified entries. This avoids unregistered client-created debris. A bounded
+lifetime registry rejects reused nonces and fails closed on exhaustion. The rendezvous has a lifetime RDWR anchor; peer FIFOs
 never have dummy RDWR endpoints. A single ticket reader launches at most 48
 pending handshakes, independent of accepted Stream consumers. Duplicate in-flight
 peer tickets cannot open a second reader/writer for the same pair.
@@ -84,3 +86,18 @@ Initial source preparation: refusing API skeleton plus two expected-success real
 FIFO tests (bidirectional bytes/peer EOF and canceled read without byte loss).
 The dedicated category and selection are additive. Offline serial restore passed;
 compile/runtime are UNRUN. No bridge dispatcher or launcher wiring exists yet.
+
+## Verified initial checkpoint
+
+Recovery commit `f93acc722280b3bd9cc06e9baaae583b8bdf22f4` saves the refusing
+skeleton and two expected-success tests. Serial build passed (96 warnings, zero
+errors, 103.42 seconds). Initial selection schema typo prevented PlanOnly; after
+correction, PlanOnly selected exactly two cases. Official execution produced
+causal 2/2 FAIL at refusing Create, 12.4669711 seconds, complete selection and
+owned cleanup, no skips or duplicates. Actual transport implementation remains
+unqualified. Raw logs are external.
+
+Ruling: server owns all peer creation/cleanup after ticket acceptance. No client
+creates paths. Lifetime nonce registry is bounded and exhaustion refuses new
+connections; retired nonces are never recreated. CoreCLR8 SIGPIPE ignore is a
+runtime prerequisite, verified read-only before native writes; no handler changes.
