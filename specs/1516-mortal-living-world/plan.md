@@ -19,7 +19,9 @@ four accepted intervals, exact effects, semantic receipt immutability and decode
 news/history persistence after state refresh, plus the separate quiet control.
 Both official runs selected/completed exactly their cases, no skips, duplicate IDs
 or timeouts, complete owned cleanup. Raw remains outside Git. Independent source
-review accepted the two-phase repair harness; final outcome review is separate.
+review accepted the two-phase repair harness. Independent outcome review matched
+plan/TRX/counters/actual removed fixture roots and exact remote source blobs at
+d26cc546, including the helper/catalog/selection; no bounded outcome blocker.
 
 The separate unchanged prose-omission probe remains RED: valid no-change report
 with no events, concrete destroyed-crossing prose, expected refusal turn41 but
