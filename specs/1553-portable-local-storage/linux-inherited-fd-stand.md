@@ -538,3 +538,39 @@ Next: new live f with unchanged production/order and existing DEBUG stop nonce
 set before host construction, to retain first failure if live refusal recurs.
 Never replay e, relax its refusal, or reuse its game/queue/owner state. No new
 cache is introduced; only immutable verified runtime files are reused.
+
+## Live relay f: accepted turn and complete original shutdown, 2026-11-17
+
+Fresh f used 479 verified immutable runtime files and 8 current maintained-relay
+files only; no game state, queue, owner or response was copied. The reviewed
+PowerShell daemon and production stop ordering were unchanged from e. Existing
+DEBUG failure diagnostics were enabled before host creation with a new nonce;
+no failure report was emitted. This is not evidence establishing e's root cause.
+
+One real player action produced a new request and a newly authored GM response
+through the maintained relay. Actual request 07218728962849f7a5e5978ae59061aa,
+original run b0b3f7902e2a4b05b947cf33932b7fc5. The consumer reports Executed=true,
+exit0, child exited and both streams drained. The game accepted exactly one turn
+and displayed its new narrative/options at a fresh input prompt. No repair,
+scripted provider response, ready override or turn replay was used.
+
+The single original shutdown was attempted at 234.843s and acknowledged positive
+at 235.110s. Original Running and durable Stopped/OwnedScopeEmpty identities match.
+Relay execution closed; client, bridge and daemon each exit0 with all stream EOFs
+and restored terminal modes; RPC helper exit0 with both EOFs. Independent guardian
+reports driverExit0, ECHILD, zero emergency signals/failures/deadline. Whole live
+measurement 235.704s, Success=true, one genuine action/one accepted turn. Raw
+records remain outside Git in relay-live-1589-20261117-f; independent outcome
+review is pending at this checkpoint.
+
+Scope remains exact: ordinary launcher, Chaos Sea Elyara preset, initial request
+cancelled before CLI then ordinary Continue and a real new turn. This qualifies
+relay transport/lifecycle, not Mortal-world #1515/#1516 simulations, freeform
+Guardian bootstrap or initial-NewGame handoff. Windows runtime remains unrun.
+The older e accepted its turn but shutdown refused and left logical Uncertain;
+its failure remains unexplained and is NOT called fixed by the successful f.
+The idle original Active-pin stop control separately passed, with one expected
+read refusal during Stopping retained in daemon status rather than erased.
+No production stop timeout, authority/pin retirement, retry or security setting
+was relaxed. Current bounded capability is demonstrated; overall issue closure
+still requires the final requirements/support-boundary review.
