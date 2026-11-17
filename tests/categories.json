@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-project-evidence-type",
+      "responsibility": "#1516 detached completed-project evidence rejects numeric-string completionTurn while a matching canonical integer transition remains valid.",
+      "excludes": "Runtime reducer, current authority, publication, resource costs and live GM qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldEvents.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldProjectCompletionTypeTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-project-completion-type",
       "responsibility": "#1516 actual faction completion reducer preserves canonical nonnegative Int32 completion turn, sibling projects and prior history; malformed command turns refuse without tracker mutation.",
       "excludes": "Full live GM journey, project creation, arbitrary project targeting and afterlife systems.",
@@ -22,12 +47,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_FactionProjectCompletion_*"
-          ]
-        },
-        {
-          "project": "unit",
-          "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn"
           ]
         }
       ]

@@ -218,6 +218,18 @@ currently exposes Nonnegative's numeric-string fallback, which masked the domain
 integer mismatch in prior publication-only evidence. This additional case is
 UNRUN and changes no production behavior; resource Costs semantics are untouched.
 
+## Completion evidence first RED and split runner categories
+
+Fresh integration build0errors129warnings78.31s; unit build0errors54warnings33.28s.
+The combined type selection planned10cases but stopped its other descriptor after
+unit failed: 1 executed/1FAIL, incomplete9integration cases, runner16.510s,
+complete owned cleanup, no timeout or duplicate. The unit failed exactly because
+matching string7 produced no lifecycle issue after typed int7 control succeeded.
+This is causal evidence RED, not an executed ten-case regression.
+Split independent category owners into project-evidence-type (one unit case) and
+project-completion-type (nine integration cases) so fail-fast does not obscure
+causal outcomes. No tests or source behavior changed; integration RED is next.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
