@@ -1,3 +1,20 @@
+## Consumer baseline correction and UI handoff export, 2026-11-17
+
+Source 5099dc40 built with 0 errors, 124 warnings in 63.39 seconds; PlanOnly
+selected two cases. Actual official run: 1 PASS / 1 FAIL, 23.6178895 seconds,
+complete selection and owned cleanup. The ordinary journey still passes. New
+consumer journey correctly stops at initial validation because its fixture added
+unsupported top-level characteristics.modifiedTrade. Remove that test-only alias;
+canonical trade=12 already feeds the merchant service's supported fallback.
+No production change or weakening of full-state validation.
+
+After complete successful consumer assertions, export a uniquely named copy of
+the actual accepted world under BOE_TEST_DIAGNOSTIC_ROOT for separate real console
+and browser inspection. Copy is diagnostic-only outside Git; original fixture
+cleanup remains mandatory. Assert copied canonical NPC bytes equal accepted source.
+No manually fabricated post-XP UI world, no overwrite of an existing export.
+Corrections/export are UNRUN; next is fresh build and the same two cases.
+
 ## Result-fed merchant and teacher journey WIP, 2026-11-17
 
 T011 adds a second independently owned ordinary journey. The same complete

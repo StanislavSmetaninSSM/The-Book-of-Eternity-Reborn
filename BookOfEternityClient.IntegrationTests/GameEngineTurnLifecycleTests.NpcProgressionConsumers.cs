@@ -16,7 +16,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         actor["characteristics"]!["modifiedTrade"] = 14;
         actor["tradeState"] = new JsonObject { ["canTrade"] = true, ["merchantProfile"] = "GeneralGoods" };
         var playerCharacteristics = JsonNode.Parse((await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!)!.AsObject();
-        playerCharacteristics["modifiedTrade"] = 12;
         playerCharacteristics["trade"] = 12;
         await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", playerCharacteristics.ToJsonString());
         var slots = new JsonArray();

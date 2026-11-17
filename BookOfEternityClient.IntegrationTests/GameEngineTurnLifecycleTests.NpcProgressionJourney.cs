@@ -84,7 +84,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.DoesNotContain("session_progression_journey", publicOutput, StringComparison.Ordinal);
         Assert.DoesNotContain("snapshotToken", publicOutput, StringComparison.Ordinal);
         Assert.Equal(core.ToJsonString(), JsonNode.Parse((await reloadFiles.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.ToJsonString());
-        if (consumerBaseline != null) await AssertJourneyConsumersAfterProgressionAsync(reloadFiles, consumerBaseline);
+        if (consumerBaseline != null)
+        {
+            await AssertJourneyConsumersAfterProgressionAsync(reloadFiles, consumerBaseline);
+            var diagnosticRoot = Environment.GetEnvironmentVariable("BOE_TEST_DIAGNOSTIC_ROOT");
+            if (!string.IsNullOrWhiteSpace(diagnosticRoot))
+            {
+                var exportedRoot = Path.Combine(diagnosticRoot, "1538-accepted-ui-" + Guid.NewGuid().ToString("N"));
+                CopyDirectory(_rootPath, exportedRoot);
+                var exportedFiles = new FileSystemManager(exportedRoot, NullLogger<FileSystemManager>.Instance);
+                Assert.Equal(await reloadFiles.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath),
+                    await exportedFiles.ReadFileBytesAsync(NpcCoreChangesContract.NpcCorePath));
+                Console.WriteLine("Accepted UI session export: " + exportedRoot);
+            }
+        }
     }
 
     private async Task SeedProgressionJourneyAsync()
