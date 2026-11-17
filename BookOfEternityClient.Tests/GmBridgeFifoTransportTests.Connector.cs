@@ -52,4 +52,38 @@ public sealed partial class GmBridgeFifoTransportTests
         }
         finally { Directory.Delete(root, true); }
     }
+    [Fact]
+    public async Task PublicConnector_LinuxRelativeNamedEndpointCannotDependOnTmpdir()
+    {
+        Assert.True(OperatingSystem.IsLinux());
+        await Assert.ThrowsAsync<InvalidDataException>(() => BridgeTransportConnector.ConnectAsync(
+            new(1, "named-pipe-v1", "ambiguous-relative-name", null), new CancellationToken(true)));
+    }
+
+    [Fact]
+    public async Task PublicConnector_StaleRunDoesNotAdmitToFreshListener()
+    {
+        var root = Path.Combine(TestDiagnosticPaths.Root, "bridge-connector", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            BridgeTransportEndpoint stale;
+            await using (var old = LinuxBridgeFifoListener.Create(root))
+                stale = new(1, "linux-fifo-v1", old.Endpoint.DirectoryPath, old.Endpoint.RunId);
+            await using var fresh = LinuxBridgeFifoListener.Create(root);
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await Assert.ThrowsAsync<IOException>(() => BridgeTransportConnector.ConnectAsync(stale, timeout.Token));
+            Assert.Empty(Directory.GetDirectories(fresh.Endpoint.DirectoryPath));
+            var accepting = fresh.AcceptAsync(timeout.Token);
+            await using var client = await BridgeTransportConnector.ConnectAsync(
+                new(1, "linux-fifo-v1", fresh.Endpoint.DirectoryPath, fresh.Endpoint.RunId), timeout.Token);
+            await using var server = await accepting;
+            await client.WriteAsync(new byte[] { 73 }, timeout.Token);
+            var actual = new byte[1];
+            await server.ReadExactlyAsync(actual, timeout.Token);
+            Assert.Equal(73, actual[0]);
+        }
+        finally { Directory.Delete(root, true); }
+    }
+
 }

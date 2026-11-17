@@ -275,3 +275,11 @@ delegates FIFO to the accepted transport, disposes failed named-pipe attempts,
 and checks caller cancellation before any new peer. No reconnect or fallback
 exists in clients. Linux named-pipe absolute paths remain valid so changing a
 child TMPDIR cannot retarget its original endpoint. GREEN pending.
+
+Connector GREEN: fresh build0errors96warnings96.62s; official PlanOnly and run
+selected/completed25/25 PASS, no skips/duplicates, complete cleanup, 15.653s.
+This is only connector transport coverage, not actual bridge/launcher or live GM.
+Independent review accepted the FIFO path but requires Linux named descriptors
+to be absolute rather than allowing caller-dependent TMPDIR resolution. Two new
+review controls cover that refusal and stale prior run while a fresh listener is
+alive; these additions are UNBUILT/UNRUN. Named positive needs a socket-capable host.
