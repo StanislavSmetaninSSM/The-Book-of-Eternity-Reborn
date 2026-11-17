@@ -612,33 +612,6 @@ private async Task ShowNPCs()
             }
         }
 
-        // ── Embedded skills (activeSkills/passiveSkills in npc_core) ──
-        if (npc.TryGetProperty("activeSkills", out var aSkills) && aSkills.ValueKind == JsonValueKind.Array && aSkills.GetArrayLength() > 0)
-        {
-            lines.Add("");
-            lines.Add($"  [bold cyan]⚔ Активные навыки:[/]");
-            foreach (var s in aSkills.EnumerateArray())
-            {
-                var sn = s.ValueKind == JsonValueKind.String ? (s.GetString() ?? "") : GetStr(s, "name", "?");
-                var sDesc = s.ValueKind == JsonValueKind.Object ? GetStr(s, "description", "") : "";
-                lines.Add($"    • [cyan]{Markup.Escape(sn)}[/]");
-                if (!string.IsNullOrEmpty(sDesc))
-                    lines.Add($"      [dim]{Markup.Escape(sDesc)}[/]");
-            }
-        }
-        if (npc.TryGetProperty("passiveSkills", out var pSkills) && pSkills.ValueKind == JsonValueKind.Array && pSkills.GetArrayLength() > 0)
-        {
-            lines.Add($"  [bold dim]🛡️ Пассивные навыки:[/]");
-            foreach (var s in pSkills.EnumerateArray())
-            {
-                var sn = s.ValueKind == JsonValueKind.String ? (s.GetString() ?? "") : GetStr(s, "name", "?");
-                var sDesc = s.ValueKind == JsonValueKind.Object ? GetStr(s, "description", "") : "";
-                lines.Add($"    • [white]{Markup.Escape(sn)}[/]");
-                if (!string.IsNullOrEmpty(sDesc))
-                    lines.Add($"      [dim]{Markup.Escape(sDesc)}[/]");
-            }
-        }
-
         // ── Embedded masks (in npc_core) ──
         var activeMask = GetStr(npc, "activeMaskId", "");
         if (npc.TryGetProperty("masks", out var embMasks) && embMasks.ValueKind == JsonValueKind.Array && embMasks.GetArrayLength() > 0 && debugMode)

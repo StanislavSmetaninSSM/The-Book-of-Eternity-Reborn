@@ -1,3 +1,24 @@
+## Console duplicate rendering causal RED and minimal fix WIP, 2026-11-17
+
+Test-first source a5263d22ebc620e6122fc540655ed6ec56f30983 restored/built on Linux,
+SDK 10.0.404, .NET/ASP.NET 8.0.34, PowerShell 7.7.0. Fresh integration build:
+0 errors, 166 warnings, 141.80 seconds. PlanOnly selected exactly two cases in
+7.801 seconds. Official mortal-npc-console-skill-single-render runtime completed
+0 PASS / 2 FAIL in 12.2484157 seconds, no skips/duplicates/timeouts and complete
+owned cleanup. Both normal/debug cases failed at the intended heading count:
+expected one active-skill section, actual two, after canonical names/descriptions
+were reached. This is causal RED, not a fixture/compile failure. Run identity:
+20261117-074649-998-5-3f8020167e8b4e2f91a3b1f4348c49ba-categories.
+
+Only the obsolete embedded active/passive rendering block is now removed.
+Existing acceptedMechanics construction and unconditional canonical RenderNpcSkills
+remain intact, retaining names/descriptions, mastery/progress and public mechanics.
+No contract, state read, cache, private metadata policy or GM prompt is changed.
+Independent Sol 6.1 XHigh reviewed this exact deletion boundary before application.
+GREEN and post-fix actual console observation are UNRUN; next is fresh build and
+the unchanged two cases, then accepted-world export for console/browser checks.
+Live GM-relay remains separately required and unqualified. No merge/closure.
+
 ## Console regression recovery WIP, 2026-11-17
 
 Clean GitHub clone restored exact f6f5af7bee4de86ddee88cf65a711c1a98b1ba00
