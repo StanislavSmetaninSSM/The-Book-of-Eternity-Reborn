@@ -291,3 +291,24 @@ subtype errno2: test-oracle correction only, not a transport defect. Linux named
 addresses are now required absolute/canonical; stale test accepts IOException
 subtypes without weakening its independent fresh-listener/no-admission assertions.
 Fresh GREEN is pending; no actual consumer is switched yet.
+
+Review correction GREEN on source106bdcb3: fresh unit-project build0errors,
+59warnings,77.75s. Official category selected/completed27/27 PASS, no skips,
+no duplicates, owned cleanup complete,15.685s. Separate PlanOnly exits0 with27
+planned and0executed,5.814s. All three changed files read back byte-exactly from
+GitHub. Source review accepted Linux absolute-endpoint refusal and stale-run
+control; named-pipe positive remains unqualified on this socket-denied host.
+
+Next integration gate is the actual listener/dispatcher, not another synthetic
+transport benchmark. Test narrow real EPERM factory selection and exact cleanup;
+only constructor EPERM/EACCES can select FIFO, never later bind/listen failure.
+Create immutable endpoint before startup, dispatch only after its boundary.
+Fatal notification must be independent of Accept/channel drainage: with occupied
+handler capacity and queued peer it cancels/joins the first, does not dispatch the
+second, preserves the fatal error and always attempts original terminal stop.
+Normal app shutdown must retain original pin close ACK and final response before
+cancellation. Preserve next named listener before disposing prior accepted peer;
+rearm failure disposes both. A typed actual-host guardian test should then cover
+public main client grant/activate/CloseObserved plus shipped PowerShell diagnostics
+and shutdown. Only after consumer wiring can the maintained live GM relay gate
+be attempted. No task closure, merge or live-GM qualification in this checkpoint.
