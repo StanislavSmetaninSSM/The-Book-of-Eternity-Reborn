@@ -139,3 +139,12 @@ No cache is needed: reuse the already parsed response/state within one validatio
 call and return detached read-only DATA. No source or authority reuse is added.
 Tests and typed scaffold are WIP/UNRUN; model transport and engine gate remain
 absent. Transport qualification continues separately with no credential copying.
+
+The typed scaffold produced the expected causal RED: 47 executed, 43 PASS /
+4 FAIL in 10.4112125 seconds, complete cleanup, no skips/duplicates/timeouts.
+Build: 93.84 seconds, 96 existing warnings, zero errors. All three explicit
+verdict cases and adverse-pass repair retention failed against the scaffold.
+Implementation now returns only fully validated, detached read-only findings;
+malformed responses retain no partial findings or packet binding. Effective
+semantic failure overrides uncertainty; uncertainty overrides a claimed pass.
+Fresh build/run and independent review are pending for this implementation.

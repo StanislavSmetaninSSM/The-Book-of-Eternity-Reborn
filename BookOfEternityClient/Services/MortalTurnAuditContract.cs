@@ -65,11 +65,11 @@ internal sealed record MortalTurnAuditEvidence(string DocumentId, string Pointer
 internal sealed record MortalTurnAuditFinding(MortalTurnAuditDirection Direction,
     string QuoteDocumentId, string Quote, MortalTurnAuditAssessment Assessment,
     string Reason, IReadOnlyList<MortalTurnAuditEvidence> Evidence);
-internal sealed record MortalTurnAuditResult(bool IsConsistent, string Error)
+internal sealed record MortalTurnAuditResult(
+    MortalTurnAuditVerdict Verdict, string? PacketDigest,
+    IReadOnlyList<MortalTurnAuditFinding> Findings, string Error)
 {
-    internal MortalTurnAuditVerdict Verdict { get; init; } = MortalTurnAuditVerdict.Invalid;
-    internal string? PacketDigest { get; init; }
-    internal IReadOnlyList<MortalTurnAuditFinding> Findings { get; init; } = Array.Empty<MortalTurnAuditFinding>();
+    internal bool IsConsistent => Verdict == MortalTurnAuditVerdict.Pass;
 }
 
 internal static class MortalTurnAuditContract
@@ -103,7 +103,7 @@ internal static class MortalTurnAuditContract
                 NoDuplicates(json.RootElement);
                 state.Add(document.Id, json.RootElement.Clone());
             }
-            var adverse = false;
+            var findings = new List<MortalTurnAuditFinding>();
             foreach (var finding in root.GetProperty("findings").EnumerateArray())
             {
                 Shape(finding, "direction", "quoteDocumentId", "quote", "assessment", "reason", "evidence");
@@ -115,15 +115,14 @@ internal static class MortalTurnAuditContract
                 if (narrative is null || quote is null ||
                     (quote.Length != 0 && !narrative.Text.Contains(quote, StringComparison.Ordinal)))
                     return Hold("Audit quote is not present in the bound narrative.");
-                _ = Text(finding, "reason");
+                var reason = Text(finding, "reason");
                 var assessment = Text(finding, "assessment");
                 if (assessment is not ("supported" or "nonasserted" or "missing" or "contradicted" or "uncertain"))
                     return Hold("Unknown claim assessment.");
                 if (string.IsNullOrWhiteSpace(quote) &&
                     (direction != "stateToNarrative" || assessment is not ("missing" or "uncertain")))
                     return Hold("A prose-origin finding requires an exact nonempty quote.");
-                adverse |= assessment is "missing" or "contradicted" or "uncertain";
-                var count = 0;
+                var evidenceData = new List<MortalTurnAuditEvidence>();
                 foreach (var evidence in finding.GetProperty("evidence").EnumerateArray())
                 {
                     Shape(evidence, "documentId", "pointer", "value");
@@ -133,14 +132,31 @@ internal static class MortalTurnAuditContract
                         !TryResolve(document, pointer, out var actual) ||
                         !JsonNode.DeepEquals(JsonNode.Parse(actual.GetRawText()), JsonNode.Parse(evidence.GetProperty("value").GetRawText())))
                         return Hold("Audit evidence does not resolve to the exact packet state.");
-                    count++;
+                    evidenceData.Add(new(id, pointer, evidence.GetProperty("value").Clone()));
                 }
-                if ((assessment == "supported" || direction == "stateToNarrative") && count == 0)
+                if ((assessment == "supported" || direction == "stateToNarrative") && evidenceData.Count == 0)
                     return Hold("Supported mechanical claim requires canonical evidence.");
+                findings.Add(new(
+                    direction == "narrativeToState" ? MortalTurnAuditDirection.NarrativeToState : MortalTurnAuditDirection.StateToNarrative,
+                    quoteId, quote, assessment switch
+                    {
+                        "supported" => MortalTurnAuditAssessment.Supported,
+                        "nonasserted" => MortalTurnAuditAssessment.Nonasserted,
+                        "missing" => MortalTurnAuditAssessment.Missing,
+                        "contradicted" => MortalTurnAuditAssessment.Contradicted,
+                        _ => MortalTurnAuditAssessment.Uncertain
+                    }, reason, evidenceData.AsReadOnly()));
             }
-            return verdict == "pass" && !adverse
-                ? new(true, "")
-                : Hold("Independent audit found a discrepancy or could not determine consistency.");
+            // Only return the complete validated response. A malformed later
+            // finding must never expose an earlier partial repair instruction.
+            var effective = verdict == "fail" || findings.Any(f =>
+                    f.Assessment is MortalTurnAuditAssessment.Missing or MortalTurnAuditAssessment.Contradicted)
+                ? MortalTurnAuditVerdict.Fail
+                : verdict == "uncertain" || findings.Any(f => f.Assessment == MortalTurnAuditAssessment.Uncertain)
+                    ? MortalTurnAuditVerdict.Uncertain : MortalTurnAuditVerdict.Pass;
+            return new(effective, packet.Digest, findings.AsReadOnly(),
+                effective == MortalTurnAuditVerdict.Pass ? "" :
+                "Independent audit found a discrepancy or could not determine consistency.");
         }
         catch (Exception ex) when (ex is JsonException or InvalidOperationException or FormatException or OverflowException or ArgumentException)
         {
@@ -148,7 +164,8 @@ internal static class MortalTurnAuditContract
         }
     }
 
-    private static MortalTurnAuditResult Hold(string reason) => new(false, reason);
+    private static MortalTurnAuditResult Hold(string reason) =>
+        new(MortalTurnAuditVerdict.Invalid, null, Array.Empty<MortalTurnAuditFinding>(), reason);
 
     private static string Text(JsonElement value, string property)
     {
