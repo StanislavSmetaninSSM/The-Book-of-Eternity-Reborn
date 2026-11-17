@@ -79,7 +79,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         // Initial full-state validation currently requires these duplicated carriers. The ordinary
         // normalizer strips them; the journey must expose (not conceal) any resulting contract gap.
         foreach (var key in new[] { "playerBranch", "playerRank", "playerStrategyDirective", "reputationDescription" })
-            faction[key] = "";
+            faction[key] = null;
         var resources = JourneyFactionCompanion();
         resources["metaResources"] = new JsonArray(); resources["strategicGoods"] = new JsonArray();
         var custom = JourneyFactionCompanion(); custom["customStates"] = new JsonArray();

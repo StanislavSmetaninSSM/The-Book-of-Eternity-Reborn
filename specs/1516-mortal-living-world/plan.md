@@ -14,6 +14,31 @@ No completed four-interval journey or prose-only rejection is claimed.
 Next: build and execute the single elapsed-no-change control, then diagnose
 remaining full-state refusals without suppressing validation.
 
+## Recovered runtime evidence, 2026-11-17 — WIP
+
+Remote 9b6680d0 preserved the exact recovered source tree. Fresh integration
+build passed (0 errors, 171 warnings, 160.67 seconds). The official two-case
+journey category produced 1 PASS / 1 FAIL in 24.059 seconds with complete cleanup.
+The actual elapsed-no-change ProcessPlayerTurn now succeeds; the rich journey
+was refused before dispatch because the seed used empty strings for canonical
+non-member fields that materialization requires to be JSON null.
+
+This checkpoint restores those nulls and makes failure diagnostics conditional,
+avoiding unnecessary full-state validation on successful turns. Fresh build:
+0 errors, 171 warnings, 124.25 seconds. Official rerun: 1 PASS / 1 FAIL,
+36.115 seconds, no skips/duplicates/timeouts, complete cleanup. The rich journey
+is now causally refused by generic faction validation: all four canonical null
+membership fields are required to be strings. No journey event is accepted.
+Do not replace nulls with strings or suppress validation; repair the canonical
+Mortal-vs-command validation routing with focused negative controls next.
+
+Independent source review also identifies absent NPCActivityUpdates consumption,
+missing contradictory-package/same-request repair coverage, and incomplete
+receipt/news persistence assertions. These remain open, not proven runtime fixes.
+The schedule fix does not cache authority; conditional diagnostics remove repeated
+work without skipping production validation. No speedup claim is made. No merge,
+closure, hosted CI, live model or UI acceptance. Raw diagnostics remain outside Git.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No

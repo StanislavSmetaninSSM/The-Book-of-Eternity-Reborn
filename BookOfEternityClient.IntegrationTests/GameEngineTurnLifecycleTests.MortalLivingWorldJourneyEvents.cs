@@ -19,7 +19,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var action in actions)
         {
             await runtime.Engine.ProcessPlayerTurn(action);
-            Assert.True(runtime.GameLoop.TurnNumber == 42 + stage, "Journey turn failed: " + _journeyLogger.Describe() + "\n" + System.Text.Json.JsonSerializer.Serialize(await runtime.ValidationService.ValidateGameStateAsync()));
+            if (runtime.GameLoop.TurnNumber != 42 + stage)
+                Assert.Fail("Journey turn failed: " + _journeyLogger.Describe() + "\n" + System.Text.Json.JsonSerializer.Serialize(await runtime.ValidationService.ValidateGameStateAsync()));
             var history = await Read(MortalLivingWorldSource.HistoryPath);
             Assert.Equal(stage + 1, history["entries"]!.AsArray().Count);
             Assert.Equal(42 + stage, runtime.GameLoop.TurnNumber);
