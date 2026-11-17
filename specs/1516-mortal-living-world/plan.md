@@ -167,6 +167,23 @@ are the next selection; accepted item composition remains a separate open gate.
 No new GM syntax is introduced; this repairs consumption of the already documented
 nonterminal NPCActivityUpdates command. No live-relay acceptance is claimed.
 
+## Activity component GREEN and next journey fixture refusal
+
+At ac5144cb, fresh integration build passed: 0 errors, 152 warnings, 89.65s.
+Official `mortal-living-world-npc-activity-normalization -NoBuild` completed
+30/30 PASS (one positive, 29 guards), runner15.454s, no skips/duplicates/timeouts,
+complete owned cleanup. This proves the component, not general accepted-item
+composition or live GM execution.
+
+Official real-turn journey category then completed 1 PASS/1 FAIL in30.222s,
+with complete cleanup. The first rich scout interval now succeeds through the
+actual GameEngine; the next turn43 reaches faction_core_changes_target_not_existing.
+The scripted author had overwritten the on-disk faction core with a command-only
+object, deleting its current canonical target. This is a fixture authoring defect,
+not permission to relax the existing target guard. The draft correction preserves
+the current faction root and appends its command, as ordinary distribution does.
+The correction is UNCOMPILED/UNRUN; later project/news intervals remain unaccepted.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No

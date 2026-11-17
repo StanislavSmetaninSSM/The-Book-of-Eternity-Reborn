@@ -66,11 +66,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             if (stage == 1)
             {
-                var faction = (await Read("game_state/factions/faction_core.json"))["factions"]![0]!;
+                var factionCore = await Read("game_state/factions/faction_core.json");
+                var faction = factionCore["factions"]![0]!;
                 var agenda = "Reinforce the crossing before reopening public travel.";
                 effects.Add(JourneyEffect("council-agenda", JourneyReference("faction", JourneyFactionId), "currentAgenda", faction["currentAgenda"], JsonValue.Create(agenda)));
-                await Write("game_state/factions/faction_core.json", new JsonObject { ["factionCoreChanges"] = new JsonArray(new JsonObject
-                    { ["factionId"] = JourneyFactionId, ["reason"] = "The scout report prioritizes the existing bridge reinforcement project.", ["purposeAndPrinciples"] = new JsonObject { ["purpose"] = faction["purpose"]?.DeepClone(), ["currentAgenda"] = agenda, ["principles"] = faction["principles"]?.DeepClone() } }) });
+                factionCore["factionCoreChanges"] = new JsonArray(new JsonObject
+                    { ["factionId"] = JourneyFactionId, ["reason"] = "The scout report prioritizes the existing bridge reinforcement project.", ["purposeAndPrinciples"] = new JsonObject { ["purpose"] = faction["purpose"]?.DeepClone(), ["currentAgenda"] = agenda, ["principles"] = faction["principles"]?.DeepClone() } });
+                await Write("game_state/factions/faction_core.json", factionCore);
                 paths.Add("game_state/factions/faction_core.json");
                 var before = (await Read("game_state/factions/faction_projects.json"))["activeProjects"]![0]!;
                 effects.Add(JourneyEffect("project-time", JourneyReference("factionProject", JourneyProjectId, JourneyFactionId), "timeSpentMinutes", before["timeSpentMinutes"], JsonValue.Create(240)));
