@@ -174,7 +174,8 @@ internal partial class NativeLineageOwner
         {
             // No StreamWriter buffer is used by inherited control. Dispose the raw
             // pipe without flushing any cancelled command.
-            _inheritedControl!.Abort();
+            if (_inheritedControl != null) _inheritedControl.Abort();
+            else _supervisor.StandardInput.BaseStream.Dispose();
             _inheritedControlClosed = true;
         }
         catch (IOException) { Lose("inherited-control-close"); }

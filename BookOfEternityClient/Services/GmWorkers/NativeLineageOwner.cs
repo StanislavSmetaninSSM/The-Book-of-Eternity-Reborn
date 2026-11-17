@@ -520,14 +520,14 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
         _supervisor.StartInfo = start;
         if (!_supervisor.Start()) throw new InvalidOperationException("Native supervisor did not start.");
         _processStarted = true;
+        _supervisorExit = _supervisor.WaitForExitAsync();
+        _statusReader = ReadStatusAsync(_supervisor.StandardOutput.BaseStream);
+        _helperErrorDrain = DrainAsync(_supervisor.StandardError.BaseStream);
         if (_inheritedTerminal)
         {
             _beforeInheritedControl?.Invoke(this);
             _inheritedControl = new InheritedTerminalControl((PipeStream)_supervisor.StandardInput.BaseStream);
         }
-        _supervisorExit = _supervisor.WaitForExitAsync();
-        _statusReader = ReadStatusAsync(_supervisor.StandardOutput.BaseStream);
-        _helperErrorDrain = DrainAsync(_supervisor.StandardError.BaseStream);
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(TimeSpan.FromSeconds(5));
         if (_inheritedTerminal) await AuthenticateInheritedSupervisorAsync(deadline.Token);
