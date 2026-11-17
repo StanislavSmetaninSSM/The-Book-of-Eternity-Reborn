@@ -468,3 +468,16 @@ the loop variable. Process snapshots now preserve verified root rows when child
 listing is unavailable and separately record stage/errno/TID; inaccessible children
 remain UNKNOWN. All nine inert driver modes pass. No production changes. Next e
 reuses only the verified immutable runtime/native/relay; game state is fresh.
+
+Live e: one genuinely authored GM response traversed the maintained relay and
+fixed consumer (exit0, child exited, I/O drained); the game accepted exactly the
+one submitted action and showed a fresh player prompt. Original turn delivery
+was submission-observed with the retained input binding. No repair was requested.
+This is real accepted gameplay evidence, not yet a complete lifecycle PASS.
+The driver then closed relay execution, exited the client and requested original
+shutdown. Shutdown refused original main admission; the record is Uncertain.
+Physical terminal stop reported complete, guardian ECHILD/no emergency/no deadline,
+but bridge/daemon EOF and logical Stopped ACK were not established by the driver.
+Its result is Success=false, driverExit1,228.29s. Preserve that refusal. Investigate
+actual client-exit/daemon/owner shutdown ordering before another fresh run; do not
+relabel physical cleanup as logical authority or retry this original stop.
