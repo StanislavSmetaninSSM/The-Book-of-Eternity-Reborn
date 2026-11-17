@@ -18,7 +18,7 @@ actual read isolation, and material changes after a previously approved packet.
 
 ## Work blocks
 
-- [ ] T1: `Services/MortalTurnAuditContract.cs` and focused unit tests define
+- [x] T1: `Services/MortalTurnAuditContract.cs` and focused unit tests define
   immutable identity/documents, digest, closed response schema, exact review
   coverage, quotes and packet-local JSON evidence resolution. Explicit unknown
   and uncertain results hold. Tests first; causal RED, then GREEN. This DATA
@@ -90,3 +90,28 @@ Pointer/duplicate-state/nested-field and remaining identity tests were added.
 These corrections are WIP until the fresh selected run completes. Typed
 semantic-failure/uncertainty/finding delivery belongs toT2; callers must never
 reparse unvalidated raw replies or branch on human Error strings.
+
+## T1 accepted bounded DATA block, 2026-11-17
+
+Independent Sol XHigh correction/outcome review accepts production and tests
+at862f17b1ba71771e79d8d1001878cd1cf44d769d:42/42PASS,42uniqueIDs,
+10.7819795s official category wall, no skipped/duplicate/timed-out cases and
+complete owned cleanup. Build94.64s,96warnings,0errors. Review verified the
+source/TRX joins and both Important fixes, with no remaining T1 blockers.
+This is only packet/response DATA validation. T2/T3/T4 remain unimplemented;
+engine and real model behavior are unchanged and original semantic REDs remain.
+
+A final test-only fixture clarification makes the quiet/negated example's
+candidate vehicle state equal its original empty state, rather than inheriting
+the unrelated positive birth fixture. Production is unchanged; that fixture
+change receives a new focused run before its verification is claimed. No new
+semantic inference guarantee is created by passing these unit tests.
+
+The independent Astra owner-route investigation is retained in the design.
+T3 uses existing actual settled contributions for ordinary routes and needs a
+proven close-unattempted/rebuild-equality protocol for joint projected outcomes.
+No canonical lease may span model wait, and committed recovery can only hold.
+
+Next work: qualify a real no-tool transport (parent investigation ongoing), then
+implement typed verdict/findings and the explicit route-specific capture/final
+fences. T1 must not be wired as a Boolean substitute for those owners.

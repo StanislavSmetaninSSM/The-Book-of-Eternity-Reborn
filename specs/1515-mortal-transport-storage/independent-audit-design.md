@@ -115,3 +115,59 @@ T2 must either qualify a genuine restricted/no-tool transport or use a text-only
 model API with no tool definitions and an explicitly configured provider. Do not
 borrow an image API credential/configuration or call generic worker execution
 "isolated". Transport qualification is unresolved, not an implemented property.
+
+## Concrete T3 owner/route map (read-only design, not implementation)
+
+Ordinary active console/browser: `GameEngine.TurnLifecycle.cs` calls accepted
+validation near2074, rereads presentation near2115, runs post-accepted repair
+near2123, then advances/appends near2147–2161. Late turns use the corresponding
+1041/1063/1071/1084–1095 path; generic/transition turns use141/171/176/188–203.
+All require a final fresh audit binding after any late repair, and publication
+of that bound immutable presentation rather than another filesystem read.
+Determine Mortal eligibility from authenticated original-turn realm; the separate
+Chaos Sea life-evaluation request near2985–3006 is not a Mortal turn.
+
+Ordinary candidate DATA source: existing
+`AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync` in
+`CanonicalStateNormalizer.MortalItems.cs:1788–2034`. Export immutable audit
+contributions through its Result after settled validation, before living-world
+report consumption. Its normalization beforeimages are NOT pre-turn originals.
+`MortalLivingWorldPublication` already retains original documents/absence,
+reportBefore and finalImages: reuse detached exports, not its lease-bound source.
+Invoke the model only after this lease closes. Split success cleanup/progression
+out of `ValidateCurrentGameStateOrShowErrorsAsync`; timeout/unavailable needs an
+explicit held disposition, not TerminalRejected (whose callers delete artifacts).
+
+Original capture uses the existing validated pending snapshot context and
+`PendingTurnSnapshotReader.ReadCurrent(files, lease, selection)`, authenticating
+required bytes/absences. Its current64-path selection limit cannot silently
+truncate a full audit. Extend existing observed optional-path families where
+needed. Namespace membership and new files join the final fresh comparison.
+A `ReservedValidationReadSet` may reuse DATA only inside its eligible short lease;
+close it before model await and use fresh owners afterward, including browser
+fallback. Never retain it as publication permission.
+
+Presentation: `BuildGameResponseFromFilesCoreAsync` normalizes narrative and
+visible dialogue, reads combat/condition/interface prose, consumes wound
+notification handoff, and can fall back to runtime narrative. Extract a pure
+projection over captured inputs and reuse it for final GameResponse; do not call
+the existing stateful builder speculatively for audit. Include permitted silent
+world changes without forcing spoilers into prose.
+
+Joint publication: `PublishCurrentMortalJointRepairAsync` builds preparation,
+reservation, prepared/effect/final plans, frozen progression, commonPlan and
+preflight under one lease, then takes/publishes. Its attempt/preflight cannot
+cross model await. Investigate an exact detached full projection of baseline plus
+all afterimages/deletions, OutputBasis narrative/interface and progression/report
+before/after; close before take using `CloseCurrentJointAttempt` /
+`CloseOwnedJointAttemptUnattempted`, require ClosedNoNativeAttempt, then audit.
+Rebuild under a fresh owner and compare exact DATA/dependencies before take;
+actual readback must equal audited projection. Deterministic identity after
+unattempted close/rebuild is a REQUIRED UNPROVEN prerequisite, not a guarantee.
+
+Cold/completed joint resumes enter `ValidateMortalJointPostPublicationAsync` and
+must audit through actual completed-proof readers before fresh final progression
+lease. Final joint story completion also needs its own bound-output fence.
+Disagreement holds committed evidence; no ordinary rollback/repair bypass.
+These decisions preserve the existing owners and avoid a competing transaction
+framework, but still require route-specific runtime proofs before activation.

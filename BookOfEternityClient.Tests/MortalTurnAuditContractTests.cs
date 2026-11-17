@@ -37,7 +37,9 @@ public sealed class MortalTurnAuditContractTests
     [Fact]
     public void QuietOrNegatedNarrativeCanPassWithoutInventingMechanicalEvents()
     {
-        var packet = Packet("Вам не подарили повозку. Вы лишь мечтаете о ней.");
+        var source = Packet("Вам не подарили повозку. Вы лишь мечтаете о ней.");
+        var packet = new MortalTurnAuditPacket("session1", "generation1", "request1", 42, 1,
+            source.Documents.Select(d => d.Id == "candidate" ? d with { Text = "{\"vehicles\":[]}" } : d));
         var response = Response(packet, "nonasserted");
         response["findings"]![0]!["evidence"] = new JsonArray();
         Assert.True(MortalTurnAuditContract.Validate(packet, response.ToJsonString()).IsConsistent);
