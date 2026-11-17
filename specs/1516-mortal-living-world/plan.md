@@ -82,6 +82,28 @@ Recovery note: a86c85a0 transferred one test file incompletely. 8b3c5957 repairs
 and its full tree matches local verified 811645fd exactly; the 15-case RED ran from
 the complete source, not the damaged transfer. Use repaired or later checkpoints.
 
+## Faction GREEN and reached living-world refusal, 2026-11-17
+
+Fresh b120e037 integration build: 0 errors, 171 warnings, 157.04 seconds.
+The official combined run completed all 17 cases in 31.373 seconds: 16 PASS /
+1 FAIL, zero skips/duplicates/timeouts, complete cleanup. All 15 focused faction
+cases PASS; the real quiet elapsed turn also PASS. The unchanged four-turn
+journey now clears its initial baseline and reaches real turn42 contract repair.
+The first scout progress effect is refused with mortal_living_world_effect_mismatch
+and mortal_living_world_effect_not_meaningful: NPCActivityUpdates did not change
+canonical currentActivity. The test deliberately fails rather than accept a
+fictional effect or manually patch canonical progress. No later journey turn is
+claimed executed. This confirms the missing NPC activity consumption identified
+by source review, not a need to weaken living-world evidence checks.
+
+Next bounded block: demonstrate actual activity command consumption with the
+existing normalizer and exact rollback/identity controls; integrate only through
+existing publication ownership, preserving simultaneous NPC skill/core changes
+or refusing unsupported combinations. No new activity system or cache is implied.
+After that, rerun the retained world journey and complete explicit receipt/news
+persistence plus contradictory-package/same-request repair evidence. Issue remains
+open; no merge/closure, live model, UI or full feature acceptance is claimed.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
