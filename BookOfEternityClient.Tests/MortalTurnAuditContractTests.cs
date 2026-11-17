@@ -26,6 +26,55 @@ public sealed class MortalTurnAuditContractTests
         })
     };
 
+    [Theory]
+    [InlineData("pass", "Pass")]
+    [InlineData("fail", "Fail")]
+    [InlineData("uncertain", "Uncertain")]
+    public void ValidatedVerdictAndDetachedFindingsRemainAvailableToRepair(string verdict, string expected)
+    {
+        var packet = Packet(); var response = Response(packet);
+        response["verdict"] = verdict;
+        var result = MortalTurnAuditContract.Validate(packet, response.ToJsonString());
+        Assert.Equal(Enum.Parse<MortalTurnAuditVerdict>(expected), result.Verdict);
+        Assert.Equal(packet.Digest, result.PacketDigest);
+        var finding = Assert.Single(result.Findings);
+        Assert.Equal(MortalTurnAuditDirection.NarrativeToState, finding.Direction);
+        Assert.Equal(MortalTurnAuditAssessment.Supported, finding.Assessment);
+        Assert.Equal("Exact matching canonical vehicle.", finding.Reason);
+        Assert.Equal("narrative", finding.QuoteDocumentId);
+        Assert.Equal("Вам подарили повозку.", finding.Quote);
+        var evidence = Assert.Single(finding.Evidence);
+        Assert.Equal("candidate", evidence.DocumentId);
+        Assert.Equal("/vehicles/0/vehicleId", evidence.Pointer);
+        Assert.Equal("cart1", evidence.Value.GetString());
+        Assert.Throws<NotSupportedException>(() => ((IList<MortalTurnAuditFinding>)result.Findings).Clear());
+        Assert.Throws<NotSupportedException>(() => ((IList<MortalTurnAuditEvidence>)finding.Evidence).Clear());
+    }
+
+    [Fact]
+    public void InvalidResponseDoesNotLeakEarlierValidatedPartialFindings()
+    {
+        var packet = Packet(); var response = Response(packet);
+        var invalid = response["findings"]![0]!.DeepClone();
+        invalid["quote"] = "Invented";
+        response["findings"]!.AsArray().Add(invalid);
+        var result = MortalTurnAuditContract.Validate(packet, response.ToJsonString());
+        Assert.Equal(MortalTurnAuditVerdict.Invalid, result.Verdict);
+        Assert.Null(result.PacketDigest);
+        Assert.Empty(result.Findings);
+        Assert.False(result.IsConsistent);
+    }
+
+    [Fact]
+    public void AdverseTypedFindingOverridesPassWithoutDiscardingRepairEvidence()
+    {
+        var packet = Packet(); var response = Response(packet, "contradicted");
+        var result = MortalTurnAuditContract.Validate(packet, response.ToJsonString());
+        Assert.Equal(MortalTurnAuditVerdict.Fail, result.Verdict);
+        Assert.Equal(MortalTurnAuditAssessment.Contradicted, Assert.Single(result.Findings).Assessment);
+        Assert.False(result.IsConsistent);
+    }
+
     [Fact]
     public void ExactSupportedEvidenceAndCompleteReviewAreConsistent()
     {

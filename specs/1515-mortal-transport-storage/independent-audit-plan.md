@@ -125,3 +125,17 @@ no skips/duplicates/timeouts, complete owned cleanup. Fresh serial unit build:
 independently accepted `862f17b1` implementation. Only the honest quiet fixture
 changed; no model run or engine gate has been introduced. Final checkpoint after
 this note is documentation-only. No raw artifacts are staged or uploaded.
+
+## T2 typed-response preparation, WIP
+
+The next bounded block retains validated verdict/finding/evidence DATA for the
+future repair consumer instead of forcing a second parse of raw model output or
+branching on English error strings. Exact packet binding and immutable detached
+evidence remain mandatory. Any malformed later finding discards the whole reply,
+including earlier valid findings. Explicit uncertainty remains distinct from
+semantic failure; adverse findings cannot hide behind a pass verdict.
+
+No cache is needed: reuse the already parsed response/state within one validation
+call and return detached read-only DATA. No source or authority reuse is added.
+Tests and typed scaffold are WIP/UNRUN; model transport and engine gate remain
+absent. Transport qualification continues separately with no credential copying.

@@ -58,7 +58,19 @@ internal sealed class MortalTurnAuditPacket
 }
 
 /// <summary>Semantic consistency DATA only; never permission to publish or mutate.</summary>
-internal sealed record MortalTurnAuditResult(bool IsConsistent, string Error);
+internal enum MortalTurnAuditVerdict { Invalid, Pass, Fail, Uncertain }
+internal enum MortalTurnAuditDirection { NarrativeToState, StateToNarrative }
+internal enum MortalTurnAuditAssessment { Supported, Nonasserted, Missing, Contradicted, Uncertain }
+internal sealed record MortalTurnAuditEvidence(string DocumentId, string Pointer, JsonElement Value);
+internal sealed record MortalTurnAuditFinding(MortalTurnAuditDirection Direction,
+    string QuoteDocumentId, string Quote, MortalTurnAuditAssessment Assessment,
+    string Reason, IReadOnlyList<MortalTurnAuditEvidence> Evidence);
+internal sealed record MortalTurnAuditResult(bool IsConsistent, string Error)
+{
+    internal MortalTurnAuditVerdict Verdict { get; init; } = MortalTurnAuditVerdict.Invalid;
+    internal string? PacketDigest { get; init; }
+    internal IReadOnlyList<MortalTurnAuditFinding> Findings { get; init; } = Array.Empty<MortalTurnAuditFinding>();
+}
 
 internal static class MortalTurnAuditContract
 {
