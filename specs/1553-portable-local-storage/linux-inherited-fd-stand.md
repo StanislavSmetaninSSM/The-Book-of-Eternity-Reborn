@@ -195,3 +195,56 @@ abort, failed transfer/partial admission, independent review, bridge transport
 and actual maintained live-GM/game acceptance remain outstanding. No speedup
 claim: each actual root/guardian is deliberately fresh and cannot be cached;
 immutable toolchain/package DATA is reused, never ownership or authority.
+
+## Bridge consumer integration plan, 2026-11-17 (#1589)
+
+Continuation branch: `1589-linux-relay-integration`, base `82656f1b`.
+The user requested full ordinary Linux relay support and delegated engineering
+choices; no security relaxation, worker-auth replacement or synthetic live-GM
+claim is permitted. Managed eight-case block is independently accepted; FIFO
+primitive/peer acceptance is tracked separately and must be imported exactly.
+
+Architecture: a public `BridgeTransportEndpoint(Version, Kind, Address,
+TransportRun)` and shared `BridgeTransportConnector.ConnectAsync(endpoint, token)`
+in the shipped Client assembly return one live Stream. C# and PowerShell use the
+same native implementation; no duplicated P/Invoke or new unowned helper process.
+Kinds are named-pipe-v1 and linux-fifo-v1, version 1. Malformed/unknown/conflicting
+endpoints fail closed; no client reconnect/fallback. Transport identity does not
+replace application run/generation/root, draft challenge, live pins or close ACK.
+No legacy saved-state compatibility is needed for ephemeral bridge status.
+
+- [ ] Import accepted FIFO source/tests and merge additive catalog/project entries
+  without replacing the inherited-terminal category or existing TestSupport.
+- [ ] Add test-first endpoint/connector validation and actual FIFO Stream exchange;
+  initially refusal-only connector stub, then real bounded connection. Cover
+  unknown/malformed endpoints, stale run, cancellation and exact stream EOF.
+  New files: Services/GmRuntime/BridgeTransportConnector.cs and focused tests.
+- [ ] Add bridge-owned listener adapter in BookOfEternityGMBridge. A fresh AF_UNIX
+  construction probe may select FIFO only for EPERM/EACCES. Successful probe then
+  bind/path/listener failure is fatal, not fallback. Create listener and immutable
+  endpoint before StartShellAsync; dispatch begins after existing startup boundary.
+  Preserve the next named-pipe listener before serving the previous peer.
+- [ ] Wire Program server handlers to Stream, shared endpoint into BridgeStatus,
+  GmMainOperationClient, GmLoadSessionOperation and DraftObservation. Draft env
+  uses the same explicit endpoint despite TMPDIR changes. Existing application
+  handshakes/ownership/close ACK remain unchanged. Listener failures must reach
+  host lifecycle; shutdown closes admission, cancels/joins handlers and preserves
+  existing original-terminal cleanup and status publication authority.
+- [ ] Wire Launcher/bookofeternity.ps1 Invoke-BridgeRequest to the shared shipped
+  assembly connector, with actual cancellation deadline and joined connect/read/
+  write tasks. Never load an assembly path supplied by diagnostic status.
+- [ ] Verify actual PowerShell request and two independent clients, main-operation
+  close ACK, single-stream Load, Draft under changed TMPDIR, stale status refusal,
+  failed startup and shutdown with pending/accepted peers. Use narrowly owned
+  categories and independent source/outcome review; no global suite.
+- [ ] Run ordinary launcher and maintained gm-relay with live root-authored GM
+  responses, inspect materialized game effects and exact owned cleanup. Prepared
+  scripted packets do not satisfy this final acceptance; issue remains open.
+
+Performance: protocol DATA is small; existing FIFO buffers reused, no new cache.
+Every owner/pipe/pin is fresh. The FIFO admission bound covers pending/ready peers;
+existing bridge capacity still limits accepted handlers. Neither is silently
+claimed as a global 48-peer limit across both phases. Restore/build serially using
+shared immutable toolchain/NuGet; no copying mutable bin/obj between checkouts.
+Independent design review identified startup gating, exact fallback boundary and
+failure observation as mandatory integration checks. No consumer code changed yet.

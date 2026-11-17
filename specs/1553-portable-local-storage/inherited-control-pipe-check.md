@@ -128,3 +128,8 @@ Remote-fetched 6ea01213 also restored into a new clean workspace worktree with
 empty git status. This is source recovery, not another runtime execution.
 Descriptor-transfer fault cases, repeated abort timeout, bridge consumer wiring
 and actual live-GM/game acceptance remain unqualified.
+
+Independent outcome review accepted the bounded eight-case block: exact source,
+clean restored checkout, build/run/TRX and all seven native guardians checked.
+Reviewer did not rerun runtime. RootExitCode was null in the GREEN abort scenario,
+so no specific root exit code is asserted. Remaining exclusions above stand.
