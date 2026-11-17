@@ -57,3 +57,23 @@ Source re-review found no blocker to GREEN. Its nonblocking observation is also
 addressed: when inherited abort already closed the original control pipe, stop
 does not try sending S through an absent/closed control; it observes the original
 process/status retirement. Tests remain unchanged, this final correction unrun.
+
+## Same-case GREEN observed, 2026-11-17
+
+Saved bffce3062ed89967f9873d5d37511ff31f69108a built successfully:0errors,
+19warnings,56.39seconds (unchanged dependent test sources reused by the normal
+incremental build, no copied cross-checkout outputs). The same seven official
+cases completed7/7PASS, no skips/duplicates,45.776seconds runner wall, complete
+runner-owned cleanup. TRX identity:
+20261117-111533-641-5-de54343dc745441cba81938245368c09-categories.
+All six guarded scenarios reported ECHILD, driver0, zero emergency signals,
+zero failures and no deadline. Partial-init now retained the exact original
+owner and sentinel, no root was admitted, and native cleanup completed while
+uncertainty stayed explicit. The seventh case was the independent raw-pipe
+cancellation/abort check. Independent outcome review is pending; this does not
+qualify descriptor-transfer refusal, abort-timeout retry, bridge or live GM.
+
+Independent outcome review accepted this bounded seven-case block after checking
+source blobs against bffce306, build/run logs, TRX and all six guardian/scenario
+results. It did not rerun runtime. No historical buffered-writer RED, complete
+protocol-negative matrix, bridge admission or live-game acceptance is claimed.
