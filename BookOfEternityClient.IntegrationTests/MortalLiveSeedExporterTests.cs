@@ -42,7 +42,10 @@ public sealed class MortalLiveSeedExporterTests
             Assert.Equal(41, entry["turn"]!.GetValue<int>());
             Assert.Equal("[TEST SETUP ONLY]", entry["player"]!.GetValue<string>());
             Assert.Null(entry["requestId"]);
-            Assert.Equal(Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(story.TrimEnd('\n')))).ToLowerInvariant(),
+            var rawStory = await File.ReadAllBytesAsync(Path.Combine(fs.GameSessionPath, MortalLiveSeedExporter.StoryPath));
+            Assert.Equal(new byte[] { 0xef, 0xbb, 0xbf }, rawStory[..3]);
+            Assert.Equal((byte)'\n', rawStory[^1]);
+            Assert.Equal(Convert.ToHexString(SHA256.HashData(rawStory.AsSpan(0, rawStory.Length - 1))).ToLowerInvariant(),
                 receipt["setupStoryEntrySha256"]!.GetValue<string>());
             var allStories = Directory.GetFiles(Path.Combine(fs.GameSessionPath, "stories"), "*", SearchOption.AllDirectories);
             Assert.Single(allStories);

@@ -37,6 +37,12 @@ internal static class MortalLiveSeedExporter
             Location = "loc_valmont_private_chambers"
         });
         await fs.WriteFileAtomicAsync(StoryPath, entry + "\n");
+        var storyFile = Path.Combine(fs.GameSessionPath, StoryPath);
+        // FileSystemManager's canonical UTF-8 writer includes one preamble.
+        var expected = new UTF8Encoding(true).GetPreamble().Concat(Encoding.UTF8.GetBytes(entry + "\n")).ToArray();
+        var beforeValidation = await File.ReadAllBytesAsync(storyFile);
+        if (!beforeValidation.AsSpan().SequenceEqual(expected))
+            throw new InvalidDataException("Unexpected canonical setup story encoding.");
         AssertNoRuntimeArtifacts(basePath, fs.GameSessionPath);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
@@ -46,13 +52,13 @@ internal static class MortalLiveSeedExporter
         if (storyFiles.Length != 1 || Path.GetFullPath(storyFiles[0]) != Path.GetFullPath(Path.Combine(fs.GameSessionPath, StoryPath)))
             throw new InvalidDataException("Unexpected initial story inventory.");
         var raw = await File.ReadAllBytesAsync(storyFiles[0]);
-        if (!raw.AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(entry + "\n")))
+        if (!raw.AsSpan().SequenceEqual(beforeValidation))
             throw new InvalidDataException("Setup story changed during validation.");
         var manifest = new
         {
             schemaVersion = 1, kind = "seeded-live-mortal", acceptedGmTurn = false,
             basePath, sessionId, setupTurn = SetupTurn, storyPath = StoryPath,
-            setupStoryEntrySha256 = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(entry))).ToLowerInvariant(),
+            setupStoryEntrySha256 = Convert.ToHexString(SHA256.HashData(raw.AsSpan(0, raw.Length - 1))).ToLowerInvariant(),
             storyFiles = new[] { new { path = StoryPath, sha256 = Convert.ToHexString(SHA256.HashData(raw)).ToLowerInvariant() } },
             validationIssues = 0, currentRealm = "Mortal World", currentIncarnation = 2
         };
