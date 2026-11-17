@@ -39,6 +39,16 @@ The schedule fix does not cache authority; conditional diagnostics remove repeat
 work without skipping production validation. No speedup claim is made. No merge,
 closure, hosted CI, live model or UI acceptance. Raw diagnostics remain outside Git.
 
+## Focused faction regression preparation — UNRUN
+
+Added a narrow ten-case official category for canonical faction shape/completeness:
+one desired-success split bundle, four malformed membership fields, three missing
+sidecars, and two incomplete raw creation commands. Tests use existing minimal
+fixtures, not GameEngine. Production is unchanged; build/discovery/runtime of
+this block are unrun. Expected positive RED is the canonical-vs-raw routing defect.
+The journey author now supplies complete purpose/currentAgenda/principles command
+data without changing unrelated values. No source finding is claimed as PASS.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
