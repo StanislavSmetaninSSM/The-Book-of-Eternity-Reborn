@@ -1,3 +1,36 @@
+## Console fix GREEN and accepted export recovered, 2026-11-17
+
+Verified source 3d7d67a985f0e5a6f7caf90767cdeefc540fe34c. Fresh incremental
+integration build: 0 errors, 17 warnings, 51.96 seconds. Unchanged focused
+console theory: 2/2 PASS in 11.9275575 seconds; no skipped/duplicate/timed-out
+cases and complete owned cleanup. Run identity:
+20261117-075158-168-5-7bf5bb7fc348470c8a0cae7d6285aef7-categories.
+Independent Sol 6.1 XHigh verified actual diff, RED/GREEN logs, summary and TRX;
+bounded duplicate-rendering fix accepted, not whole-task completion.
+
+To recover the accepted export lost in the executor reset, reran only the two
+existing genuine progression journeys on the same current build: 2/2 PASS,
+28.6498165 seconds, complete selection/cleanup, no skips/duplicates/timeouts.
+Run identity 20261117-075220-201-5-c7bd7a2c53d34c4082f313c4adf54c1a-categories.
+This is reproducibility/export evidence, not additional live GM-relay coverage.
+
+Actual Program agent-console then inspected a separate copy of that export.
+Continued Mortal turn 42, opened the real NPC list, general card and mechanics.
+Observed level 16, XP 1/102400 and Standard profile. The general card now has
+exactly one passive section, correct Setting-defined test skill, mastery 2 and
+0/100 progress; no '?' placeholder. Neither view exposes snapshotToken,
+sourceActorSnapshotHash, journey_trade_seed or session_progression_journey.
+Returned through supported local return steps to game-loop without a GM turn or
+purchase. After reaching game-loop, the diagnostic host did not exit within
+10 seconds of SIGINT; the driver terminated its owned process (exit -9). This
+is not a graceful-shutdown qualification. All console snapshots/stdout remain
+outside Git. Genuine export was
+handed off for actual local Firefox rendering; browser outcome is pending.
+
+Optimization and scope unchanged: one existing canonical renderer consumes the
+already computed projection; no extra reads/cache or authority reuse. Live GM
+relay remains mandatory and unqualified. No merge or issue closure.
+
 ## Console duplicate rendering causal RED and minimal fix WIP, 2026-11-17
 
 Test-first source a5263d22ebc620e6122fc540655ed6ec56f30983 restored/built on Linux,
