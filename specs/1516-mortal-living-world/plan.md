@@ -256,6 +256,34 @@ aggregate selection is dispatched. This correction is UNCOMPILED/UNRUN.
 Next: fresh builds, separate type gates, existing event/lifecycle consumers, then
 the real-engine journey. All acceptance and live-GM gaps remain explicit.
 
+## Typed completion and scripted full-engine journey GREEN — bounded result
+
+Current tested source/docs snapshot is c791a911 (tree755b80bc7d008a8d0194232d7c9ddf2972c49a3c,
+verified equal to the complete local index). Fresh builds: production0errors/
+19warnings54.39s; integration0errors/129warnings88.23s; unit0errors/40warnings33.38s.
+Official NoBuild type categories completed11/11PASS in23.664s:9actual-normalizer
+completion cases and2evidence/documentation cases. The numeric-string evidence
+case and nine reducer cases have prior causal RED; the added documentation guard
+has no prior RED claim.
+
+Official event-evidence, lifecycle-publication and real-turn-journey categories
+completed53/53PASS in64.087s:47detached event cases,4real lifecycle publications,
+2GameEngine journey tests. All planned descriptors/cases completed, no skips,
+duplicates or timeouts, complete owned cleanup. The four-interval rich journey
+now actually accepts scout progress, council/project progress, project completion
+with threat reduction/news, and a quiet interval through ProcessPlayerTurn;
+story/history counts, canonical effects and intervening state reloads pass.
+The separate elapsed-no-change actual turn also passes.
+
+This is scripted GM regression evidence, NOT the user's required live relay GM
+acceptance. Stronger explicit source-bound receipt/news persistence assertions,
+contradictory-package/same-request repair, activity plus ordinary item composition
+and the raw flat-project index concern remain open. No merge/closure/full feature
+or Windows/afterlife claim. Current complete raw measurements remain outside Git
+under /workspace/shared/diagnostics1516; only these compact findings are published.
+No speedup claim: scalar type checks are cheap, no new cache/read authority is added;
+full GameEngine setup is retained because actual lifecycle interaction is tested.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
