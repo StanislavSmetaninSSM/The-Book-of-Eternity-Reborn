@@ -232,3 +232,12 @@ Build and causal RED are pending. The narrow new category owns this case only.
 Reuse: existing full genuine source-turn fixture, no shared mutable owner/cache.
 Rebuild deliberately requires fresh authority; DATA equality is under test,
 not asserted as a speedup. Model transport remains blocked separately.
+
+The first execution at 5ba55cbc did not reach preview: 1/1 FAIL in
+19.1443973 s, complete cleanup, no skips/duplicates/timeouts. Fresh build took
+137.07 s, 171 warnings, zero errors. The genuine source fixture fails its own
+canonical precondition because its historical map contains storage but the
+current client-owned storage-access projection was never seeded. This is not
+a causal preview RED. The fixture now derives the projection from accepted map
+metadata before original42, matching the existing living-world fixture; no GM
+command, runtime validator relaxation or gameplay change. Reverification pending.

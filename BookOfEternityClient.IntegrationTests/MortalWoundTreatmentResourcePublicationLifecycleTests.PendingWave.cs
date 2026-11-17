@@ -282,6 +282,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         wound["recovery"]!["mode"] = "no_natural_recovery";
         await SeedHeldTreatmentAuthorityAsync(files, wound);
         await PrepareGuaranteedNativeNpcReceiptShapeAsync(files);
+        // Adopt the current client-owned storage projection before minting original42.
+        // The historical example map has storage, but its derived access entries predate #1515.
+        var map = JsonNode.Parse((await files.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
+        var storageAccess = MortalStorageAccessProjection.Build(map, null);
+        Assert.True(storageAccess.IsValid, DescribeValidationIssues(storageAccess.Issues));
+        await files.WriteFileAtomicAsync(MortalStorageAccessProjection.StatePath,
+            storageAccess.Root!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         // Settle only canonical JSON formatting before ProtectedBefore and original minting.
         foreach (var path in new[] { WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,
                      WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath, WoundCarrierCatalog.AfterlifeProfilesPath,
