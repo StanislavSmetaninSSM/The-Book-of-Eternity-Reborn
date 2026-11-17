@@ -255,3 +255,14 @@ worker blob identities. Three shared files were merged additively: unit-project
 reference, fixture bin/obj ignores and one gm-bridge-fifo-linux category; existing
 inherited-terminal category and all unrelated entries retained. Combined checkout
 has not been built/run yet; no consumer wiring is included in this import.
+
+## Consumer continuation: shared connector test-first, 2026-11-17
+
+Branch `1589-bridge-consumer-integration-20261117`, base `39985a3f` verified on
+GitHub. A fresh isolated worktree restores the combined source. New public
+endpoint/connector is initially refusing-only; eight new cases in the existing
+FIFO transport category require exact stream exchange/EOF, cancellation before
+peer creation and malformed endpoint refusal. UNBUILT/UNRUN at this checkpoint.
+No consumer wiring or live-GM success is claimed. Small endpoint DATA is parsed
+once per new connection; connection ownership cannot be cached. Existing FIFO
+17 cases remain controls because the public connector delegates to that transport.
