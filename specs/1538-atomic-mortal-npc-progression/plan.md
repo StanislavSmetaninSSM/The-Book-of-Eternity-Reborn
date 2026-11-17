@@ -1,3 +1,28 @@
+## First ordinary XP journey accepted, 2026-11-17
+
+Verified source dd7581cbf0fdca3955d34720645ee83f67748560. Fresh integration build:
+0 errors, 124 warnings, 60.48 seconds. Official command on Linux with .NET SDK
+10.0.404 and PowerShell 7.7: `pwsh -NoProfile -File scripts/test-csharp.ps1
+-Category mortal-npc-progression-full-journey -NoBuild`. The preceding PlanOnly
+selected exactly one method/case in 6.829 seconds. Runtime completed 1/1 PASS
+in 25.1775782 seconds, zero duplicates, no timeout, complete owned cleanup.
+Run identity: 20261117-070929-120-54-faa11e5563cd4514a156211c979a214f-categories.
+Raw remains outside Git in /workspace/shared/diagnostics1538.
+
+This verifies real initial full validation and ProcessPlayerTurn, request-bound
+XP 99 + 2 -> level 2 / XP 1 / threshold 565, command consumption, turn 42 and
+one real story append. A new filesystem/state/ExplorerWebCommandService reads
+the accepted actor after reload and displays 1/565 with the standard profile,
+without the private session/snapshot marker. It is browser-facing service
+evidence, not rendered browser or console UI. Merchant/teacher, negative/retry
+and actual UI journeys remain open; no whole-task completion or merge.
+
+Independent GPT-6.1 Sol XHigh source review found no remaining blocker after
+fixing the weak reload oracle and required actor outputs. Runtime outcome review
+is separate. Next bounded step: feed this accepted progression state to actual
+merchant and teacher consumers without direct level rewrites. Fresh cold fixture
+and reload consumer are subjects of verification; no cache/speedup claim.
+
 ## Ordinary turn reached; required NPC output repair, 2026-11-17
 
 At saved a91fb6ea, fresh build passes (0 errors, 141 warnings, 110.54 seconds).

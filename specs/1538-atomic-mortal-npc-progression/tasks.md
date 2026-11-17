@@ -14,6 +14,6 @@ Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
 - [x] T009 Final requirement/evidence reconciliation, independent review and GitHub recovery. No merge/closure without explicit instruction.
 
 ## Reopened acceptance verification
-- [ ] T010 Full ordinary XP-to-accepted-turn/reload journey.
+- [x] T010 Full ordinary XP-to-accepted-turn/reload journey (dd7581cb, official 1/1 PASS; browser-facing service only).
 - [ ] T011 Result-fed merchant/teacher, negative/retry and public-view evidence.
 - [ ] T012 Independent requirement audit and final verified checkpoint.
