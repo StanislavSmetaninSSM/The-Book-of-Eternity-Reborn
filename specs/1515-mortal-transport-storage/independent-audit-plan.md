@@ -314,3 +314,28 @@ metadata, backup bytes, hashes and signed artifacts remain untouched. No clock
 sampling, arithmetic or fresh schedule normalization is added. Existing live-N
 control is the causal regression; re-run pending before altering candidate-time
 reuse. The independent reviewer is checking this exact correction.
+
+## Prepared schedule correction: runtime control verified
+
+At 46a3e173, independent Astra High exact-diff review found no blocker in the
+schedule resume correction. Serial integration build passed 0 errors / 129
+warnings in 76.80 s. The unchanged real live-N consumer with NO preview then
+passed 1/1, no skips/duplicates/timeout, complete runner-owned cleanup, wall
+207.1874982 s. Command: `TMPDIR=/workspace/shared/mortal-audit-tmp pwsh -NoProfile
+-File scripts/test-csharp.ps1 -Category fr063-joint-live-n-source-unchanged -NoBuild`.
+The standard /tmp attempt had failed earlier before repair dispatch with ENOSPC;
+a concurrent recovery clone had temporarily filled that tmpfs. It is not a code
+RED or proof of correction. Earlier concurrent compilation ended csc 137; its
+retry was intentionally stopped (130), then builds were serialized. No foreign
+files were removed. Raw evidence stays local. Fresh recovery checkout is clean
+at 46a3e173; download verification does not substitute for these runtime checks.
+
+This validates the narrow prepared/rollback schedule role correction, not the
+audit lifecycle. Targeted reviewer corrected an earlier missed Important issue:
+each progression capture samples UTC anew, so repeated candidate preparation is
+not deterministic. Next run is the existing preview lifecycle to isolate that
+remaining failure before implementation. The proposed fix retains only detached
+progression calculation JSON DATA, checks exact sources/control/tuple/generation,
+and constructs new service inputs and engine authority under each fresh lease.
+No retained lease-bound object, new clock, normalized comparison, authority cache
+or full feature acceptance is intended. Changed inputs must reject old DATA.
