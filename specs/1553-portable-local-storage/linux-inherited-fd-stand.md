@@ -398,3 +398,17 @@ no emergency or deadline. Source-derived prompt oracle repair precedes a fresh
 session attempt; no existing game state or response is reused. Fresh runtime
 publication succeeded; immutable package479 files may be reused byte-exactly,
 never owner/config/state/queue.
+
+Second fresh live attempt submitted one genuine action but the client rejected
+current state before publishing any GM request. Public read-only validation after
+original Stopped identified exactly two guardian_relationship_missing_network_edge
+errors between the freeform guardian and seeded Elyara. All original shutdown,
+relay closure, foreground exit/EOF/termios and guardian ECHILD passed; acceptance0.
+This freeform bootstrap defect is not fixed by the transport change. Do not simply
+start bridge during initial wait: that wait holds the physical main guard; bridge
+before NewGame conflicts with lifecycle generation reset. No race/guard relaxation.
+The next narrow relay smoke uses the ordinary selectable Elyara preset: source
+confirms its already present guardian/profile prevents adding a second guardian.
+Selection is through observed UI, not game-state edits. The existing initial
+cancellation remains honest preparation, not initial-NewGame-GM qualification.
+Full baseline/accepted ordinary turn still require actual runtime; no success yet.

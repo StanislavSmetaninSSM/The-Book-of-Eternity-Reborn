@@ -52,8 +52,33 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-player-prompt':
     assert current_player_prompt_at('✦ Ваш ход ✦\nquoted >  text')==-1
     print(json.dumps({'InertPlayerPromptChecks':7,'Passed':7,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
+ELYARA_PRESET_NAME = 'Элиара Последней Раны'
+def observed_elyara_choice(text):
+    # MainMenu PromptGuardianPresetChoice renders numbered exact names with
+    # optional parenthesized details, then the ordinary "> " menu prompt.
+    heading=text.rfind('Выберите извечного Хранителя:')
+    if heading<0:return None
+    menu=text[heading:]
+    prompt=re.search(r'(?m)^> ',menu)
+    if prompt is None:return None
+    choices=re.findall(r'(?m)^([1-9][0-9]*)\. '+re.escape(ELYARA_PRESET_NAME)+r'(?: \([^\r\n]*)?\r?$',menu[:prompt.start()])
+    if len(choices)>1:raise ValueError('Ambiguous exact Elyara preset in rendered menu')
+    return choices[0] if choices else None
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-guardian-preset':
+    menu='Выберите извечного Хранителя:\n1. Другой\n3. '+ELYARA_PRESET_NAME+' (домен • тон)\n4. Назад\n/tmp/presets\n> '
+    assert observed_elyara_choice(menu)=='3'
+    assert observed_elyara_choice(menu.replace('3. ', '12. '))=='12'
+    assert observed_elyara_choice(menu.replace('\n> ','')) is None
+    assert observed_elyara_choice('3. '+ELYARA_PRESET_NAME+'\n> ') is None
+    assert observed_elyara_choice(menu.replace(ELYARA_PRESET_NAME,ELYARA_PRESET_NAME+' чужая')) is None
+    try:observed_elyara_choice(menu.replace('4. Назад','4. '+ELYARA_PRESET_NAME))
+    except ValueError:pass
+    else:raise AssertionError('Ambiguous exact names must be rejected')
+    print(json.dumps({'InertGuardianPresetChecks':6,'Passed':6,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
 def current_client_failure(text):
-    return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
+    return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', 'Ход не принят', '❌ Ошибка:'])
 
 class PhaseWait:
     """Progress can renew an idle bound, never the original work deadline."""
@@ -100,7 +125,8 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     else:raise AssertionError('Idle phase had no bound')
     w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(9,'snapshot');w.observe(20,'request')
     assert current_client_failure('❌ Ошибка: Main run metadata or original owner admission is unavailable.'), 'Current main-menu error must stop preparation before a timeout'
-    print(json.dumps({'InertDriverChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+    assert current_client_failure('╭ Ход не принят ╮'), 'Pre-request rejection must fail promptly'
+    print(json.dumps({'InertDriverChecks':5,'Passed':5,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 out = Path(sys.argv[1]).resolve()
 base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime'
 assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
@@ -329,7 +355,7 @@ def current_request(offset):
     while True:
         text=client.text(offset)
         if client.process.poll() is not None:raise RuntimeError('Client exited during current preparation')
-        if 'Мир не смог безопасно завершить действие.' in text or 'Ход прервался' in text:
+        if current_client_failure(text):
             client_failure_offset=offset
             journal.append({'At':elapsed(),'ObservedPhase':'client-failure-before-captured-request'})
             raise RuntimeError('Current client reported a real failure before captured request')
@@ -365,8 +391,19 @@ try:
     fresh(client,'Тренировка QTE',0);offset=len(client.capture);client.send(b'\r','observed NewGame selected')
     offset=answer(client,'Введите имя вашей души:','Пробная Душа',offset)
     offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
-    offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
-    offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
+    if relay_mode:
+        # Ordinary preset avoids the separately observed freeform↔seeded-Elyara
+        # missing-network-edge defect. No canonical state or validator edits.
+        offset=answer(client,'Выберите способ создания Хранителя:','2',offset)
+        until(lambda:observed_elyara_choice(client.text(offset)) is not None,12,'rendered exact Elyara preset menu')
+        choice=observed_elyara_choice(client.text(offset))
+        result['OrdinaryGuardianPreset']={'DisplayName':ELYARA_PRESET_NAME,'ObservedMenuIndex':choice}
+        result['ExcludedSetupDefect']='Freeform guardian to seeded Elyara network edges; not qualified by this preset run'
+        offset=len(client.capture);client.send((choice+'\r').encode(),'observed exact Elyara preset menu index')
+        offset=answer(client,'Выбрать этого хранителя для новой игры?','',offset)
+    else:
+        offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
+        offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
     preparation_phase(lambda:(session/'input/turn_request.json').exists(),'ordinary initial request',client,offset=offset);client_wait=True
     result['InitialBootstrapRequest']=read_json(session/'input/turn_request.json');result['OrdinaryNewGame']=True
     # Observe the actual waiting UI, allow its cancellation listener to start.
