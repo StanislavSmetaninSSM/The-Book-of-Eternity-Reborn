@@ -519,6 +519,7 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
         _supervisor.StartInfo = start;
         if (!_supervisor.Start()) throw new InvalidOperationException("Native supervisor did not start.");
         _processStarted = true;
+        if (_inheritedTerminal) _inheritedControl = new InheritedTerminalControl((PipeStream)_supervisor.StandardInput.BaseStream);
         _supervisorExit = _supervisor.WaitForExitAsync();
         _statusReader = ReadStatusAsync(_supervisor.StandardOutput.BaseStream);
         _helperErrorDrain = DrainAsync(_supervisor.StandardError.BaseStream);
@@ -663,7 +664,7 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
         await _controlGate.WaitAsync();
         try
         {
-            if (_inheritedTerminal) await _supervisor.StandardInput.BaseStream.WriteAsync(new byte[] { (byte)command });
+            if (_inheritedTerminal) await _inheritedControl!.WriteAsync(new byte[] { (byte)command }, CancellationToken.None);
             else { await _supervisor.StandardInput.WriteAsync(command); await _supervisor.StandardInput.FlushAsync(); }
         }
         finally { _controlGate.Release(); }

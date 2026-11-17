@@ -11,6 +11,7 @@ namespace BookOfEternityClient.Services.GmWorkers;
 internal partial class NativeLineageOwner
 {
     private readonly bool _inheritedTerminal;
+    private InheritedTerminalControl? _inheritedControl;
     private SafeFileHandle? _originalSupervisorPidfd;
     private string? _inheritedNonce;
     // 0 challenge pending; 1 authenticated frame; 2 launch sent; 3 held;
@@ -43,7 +44,7 @@ internal partial class NativeLineageOwner
         await _controlGate.WaitAsync(token);
         try
         {
-            await _supervisor.StandardInput.BaseStream.WriteAsync(Encoding.ASCII.GetBytes("H" + nonce + "\n"), token);
+            await _inheritedControl!.WriteAsync(Encoding.ASCII.GetBytes("H" + nonce + "\n"), token);
         }
         finally { _controlGate.Release(); }
         await _inheritedAuthenticated.Task.WaitAsync(token);
@@ -113,7 +114,7 @@ internal partial class NativeLineageOwner
                     throw new IOException("Inherited command lost its original phase or deadline.");
                 _inheritedPhase = nextPhase;
             }
-            await _supervisor.StandardInput.BaseStream.WriteAsync(new byte[] { (byte)command }, deadline.Token).ConfigureAwait(false);
+            await _inheritedControl!.WriteAsync(new byte[] { (byte)command }, deadline.Token).ConfigureAwait(false);
         }
         catch
         {
@@ -172,7 +173,7 @@ internal partial class NativeLineageOwner
         {
             // No StreamWriter buffer is used by inherited control. Dispose the raw
             // pipe without flushing any cancelled command.
-            _supervisor.StandardInput.BaseStream.Dispose();
+            _inheritedControl!.Abort();
             _inheritedControlClosed = true;
         }
         catch (IOException) { Lose("inherited-control-close"); }

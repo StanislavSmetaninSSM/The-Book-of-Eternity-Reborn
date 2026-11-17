@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmInheritedTerminalLinuxTests
+public sealed partial class GmInheritedTerminalLinuxTests
 {
     [Fact]
     public async Task ActualOwnedTerminal_UsesInheritedBootstrapAndPreservesIoCleanup()
