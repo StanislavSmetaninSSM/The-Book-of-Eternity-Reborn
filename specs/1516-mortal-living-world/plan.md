@@ -284,6 +284,19 @@ under /workspace/shared/diagnostics1516; only these compact findings are publish
 No speedup claim: scalar type checks are cheap, no new cache/read authority is added;
 full GameEngine setup is retained because actual lifecycle interaction is tested.
 
+## Explicit journey persistence assertions — test-only WIP
+
+The retained four-interval engine test now additionally matches every receipt to
+its real dispatched session/request/turn and actual prepared manifest hash, exact
+authored report and immutable prior receipt bytes-as-DATA. It checks three public
+news rows against each authored event, no private receipt/audit fields in those
+rows, no news mutation during the final quiet interval, and identical history/news
+files across each real state refresh. Captured expected DATA is private per-test;
+no owner/authority is manufactured or cached. This extends the same real journey,
+not another expensive duplicate fixture. These assertions are UNCOMPILED/UNRUN,
+not a new defect or causal RED claim. Same-request repair and live relay remain
+separate open gates.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No

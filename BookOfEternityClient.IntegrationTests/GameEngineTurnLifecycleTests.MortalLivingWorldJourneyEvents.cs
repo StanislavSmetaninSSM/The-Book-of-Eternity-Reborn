@@ -13,6 +13,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var stage = 0;
         var requests = new HashSet<string>(StringComparer.Ordinal);
+        var authoredRequests = new List<TurnRequest>();
+        var authoredReports = new List<JsonObject>();
+        var originalSnapshotTokens = new List<string>();
+        var retainedReceipts = new List<JsonNode>();
+        string? retainedNews = null;
         string[] actions = ["Ждать доклада разведчицы четыре часа.", "Дать совету четыре часа для организации ремонта.",
             "Дождаться завершения укрепления переправы через четыре часа.", "Провести следующие четыре часа спокойно и проверить новости."];
         var runtime = await CreateMortalLivingWorldJourneyAsync(Author, SeedMortalLivingWorldJourneyActorsAsync);
@@ -23,6 +28,38 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Fail("Journey turn failed: " + _journeyLogger.Describe() + "\n" + System.Text.Json.JsonSerializer.Serialize(await runtime.ValidationService.ValidateGameStateAsync()));
             var history = await Read(MortalLivingWorldSource.HistoryPath);
             Assert.Equal(stage + 1, history["entries"]!.AsArray().Count);
+            var receipts = history["entries"]!.AsArray();
+            for (var previous = 0; previous < retainedReceipts.Count; previous++)
+                Assert.True(JsonNode.DeepEquals(retainedReceipts[previous], receipts[previous]), "Earlier immutable receipt changed.");
+            var receipt = receipts[stage]!;
+            Assert.Equal(2, receipt["receiptRevision"]!.GetValue<int>());
+            Assert.Equal(authoredRequests[stage].SessionId, receipt["sessionId"]!.GetValue<string>());
+            Assert.Equal(authoredRequests[stage].RequestId, receipt["requestId"]!.GetValue<string>());
+            Assert.Equal(authoredRequests[stage].TurnNumber, receipt["turn"]!.GetValue<int>());
+            Assert.Equal(originalSnapshotTokens[stage], receipt["snapshotToken"]!.GetValue<string>());
+            Assert.True(JsonNode.DeepEquals(authoredReports[stage], receipt["report"]));
+            Assert.StartsWith("sha256:", receipt["declarationFingerprint"]!.GetValue<string>());
+            Assert.StartsWith("sha256:", receipt["receiptFingerprint"]!.GetValue<string>());
+            retainedReceipts.Add(receipt.DeepClone());
+            var newsBytes = await _fs.ReadFileAsync("game_state/world/world_events.json");
+            var journeyNews = JsonNode.Parse(newsBytes!)!["worldEventsLog"]!.AsArray().OfType<JsonObject>()
+                .Where(row => row["eventId"] is JsonValue id && id.TryGetValue<string>(out var value) &&
+                    value.StartsWith("journey-crossing-", StringComparison.Ordinal)).ToList();
+            Assert.Equal(Math.Min(stage + 1, 3), journeyNews.Count);
+            for (var index = 0; index < journeyNews.Count; index++)
+            {
+                Assert.Equal("journey-crossing-" + authoredRequests[index].TurnNumber,
+                    journeyNews[index]["eventId"]!.GetValue<string>());
+                Assert.Equal("public", journeyNews[index]["visibility"]!.GetValue<string>());
+                Assert.Equal(JourneyLocationId, journeyNews[index]["locationId"]!.GetValue<string>());
+                Assert.Equal(authoredReports[index]["events"]![0]!["cause"]!["summary"]!.GetValue<string>(),
+                    journeyNews[index]["description"]!.GetValue<string>());
+                foreach (var privateField in new[] { "audit", "snapshotToken", "receiptFingerprint", "declarationFingerprint" })
+                    Assert.False(journeyNews[index].ContainsKey(privateField));
+            }
+            if (stage == 3) Assert.Equal(retainedNews, newsBytes);
+            retainedNews = newsBytes;
+            var historyBytes = await _fs.ReadFileAsync(MortalLivingWorldSource.HistoryPath);
             Assert.Equal(42 + stage, runtime.GameLoop.TurnNumber);
             Assert.Equal(720 + stage * 240, (await Read(MortalLivingWorldSource.WorldTimePath))["currentTimeInMinutes"]!.GetValue<int>());
             var story = await _fs.ReadFileAsync("stories/mortal_life_2.jsonl");
@@ -30,6 +67,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.False(_fs.FileExists(MortalLivingWorldSource.ReportPath));
             Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
             await runtime.StateManager.RefreshGameStateAsync();
+            Assert.Equal(historyBytes, await _fs.ReadFileAsync(MortalLivingWorldSource.HistoryPath));
+            Assert.Equal(newsBytes, await _fs.ReadFileAsync("game_state/world/world_events.json"));
             stage++;
         }
         Assert.Equal(4, requests.Count);
@@ -48,6 +87,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         async Task Author(TurnRequest request)
         {
             Assert.True(requests.Add(request.RequestId), "Each accepted interval needs a fresh actual request.");
+            authoredRequests.Add(request);
+            originalSnapshotTokens.Add((await Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))
+                ["manifestPayloadHash"]!.GetValue<string>());
             var time = await Read(MortalLivingWorldSource.WorldTimePath);
             var from = time["currentTimeInMinutes"]!.GetValue<int>();
             var effects = new JsonArray();
@@ -135,9 +177,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             var control = request.ProgressionControl!;
             if (control.WorldCyclesAlreadyPendingBeforeTurn > 0) reportFrom = Math.Min(reportFrom, control.LastWorldSimulationTimeInMinutes);
             if (control.FactionCyclesAlreadyPendingBeforeTurn > 0) reportFrom = Math.Min(reportFrom, control.LastFactionSimulationTimeInMinutes);
-            await Write(MortalLivingWorldSource.ReportPath, new JsonObject { ["schemaVersion"] = 1, ["sessionId"] = request.SessionId,
+            var authoredReport = new JsonObject { ["schemaVersion"] = 1, ["sessionId"] = request.SessionId,
                 ["requestId"] = request.RequestId, ["turn"] = request.TurnNumber, ["fromMinute"] = reportFrom, ["toMinute"] = from + 240,
-                ["resolution"] = stage == 3 ? "noSignificantChange" : "changes", ["audit"] = audit, ["events"] = events });
+                ["resolution"] = stage == 3 ? "noSignificantChange" : "changes", ["audit"] = audit, ["events"] = events };
+            authoredReports.Add(authoredReport.DeepClone().AsObject());
+            await Write(MortalLivingWorldSource.ReportPath, authoredReport);
             await WriteJourneyScoutJournalAsync(request.TurnNumber, stage);
             paths.Add("game_state/npcs/npc_journals.json");
             await WriteMortalLivingWorldJourneyOutputAsync(request, narrative, paths.ToArray(), JourneyActorReasoning(stage));
