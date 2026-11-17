@@ -489,7 +489,7 @@ private async Task ShowNPCs()
                     lines.Add($"      Прогресс: [{barColor}]{new string('█', filled)}[/][dim]{new string('░', 10 - filled)}[/] {pct}% ({FormatMinutes(spentTime)}/{FormatMinutes(totalTime)})");
                 }
                 if (totalSteps > 0)
-     ($"      Шаг: [yellow]{curStep}[/]/{totalSteps}");
+                    lines.Add($"      Шаг: [yellow]{curStep}[/]/{totalSteps}");
             }
         }
 
@@ -980,7 +980,8 @@ private async Task ShowNPCs()
                 return;
 
             if (action.Contains("Поговорить", StringComparison.OrdinalIgnoreCase))
-          Request != null)
+            {
+                if (pendingNpcTalkRequest != null)
                 {
                     MarkupLine("[yellow]Уже есть незакрытый разговор с этим NPC. Дождитесь ответа GM.[/]");
                     return;
