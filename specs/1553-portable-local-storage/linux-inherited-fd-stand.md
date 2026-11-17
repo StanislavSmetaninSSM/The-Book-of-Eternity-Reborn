@@ -375,3 +375,13 @@ metadata admission. Driver now waits for canonical terminalRunId publication
 before fresh original record admission; invalid published records still refuse,
 without catch/retry. Second requested input-lifetime descriptor was not executed
 because the first descriptor failed. Both require the next fresh verification.
+
+Current integration verification: FIFO53/53 PASS. Input-lifetime30/33 PASS;
+three source/provenance oracles failed, not runtime cases. Independent review
+confirmed both guards still searched a call absent in baseline39985a3; typed
+project reference now loads the byte-identical bridge DLL/PDB from test output.
+Guards now bind real Linux/Windows owner origins to shared attachment; provenance
+compares both DLL/PDB hashes and reads the loaded PDB's existing source hashes.
+No production change or new reflection. Fresh verification pending. These cheap
+fresh source/hash checks require no cache; current build provenance cannot reuse
+prior acceptance. Live game remains UNRUN.

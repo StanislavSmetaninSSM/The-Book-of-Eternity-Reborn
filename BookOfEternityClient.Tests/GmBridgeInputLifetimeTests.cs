@@ -300,9 +300,11 @@ public sealed class GmBridgeInputLifetimeTests
     public async Task ActualAssemblyAndPortablePdbMatchProductionSource()
     {
         await using var host = new HostFixture();
-        Assert.Equal(Path.GetFullPath(HostFixture.BridgePath), Path.GetFullPath(host.Type.Assembly.Location));
+        var loadedPath = host.Type.Assembly.Location;
+        Assert.Equal(SHA256.HashData(File.ReadAllBytes(HostFixture.BridgePath)), SHA256.HashData(File.ReadAllBytes(loadedPath)));
+        Assert.Equal(SHA256.HashData(File.ReadAllBytes(Path.ChangeExtension(HostFixture.BridgePath, ".pdb"))), SHA256.HashData(File.ReadAllBytes(Path.ChangeExtension(loadedPath, ".pdb"))));
         Assert.NotEqual(typeof(GmBridgeInputLifetimeTests).Assembly, host.Type.Assembly);
-        using var stream = File.OpenRead(Path.ChangeExtension(HostFixture.BridgePath, ".pdb"));
+        using var stream = File.OpenRead(Path.ChangeExtension(loadedPath, ".pdb"));
         using var provider = MetadataReaderProvider.FromPortablePdbStream(stream);
         var metadata = provider.GetMetadataReader();
         foreach (var name in new[] { "Program.cs", "BridgeHost.PromptDispatch.cs" })
@@ -398,7 +400,13 @@ public sealed class GmBridgeInputLifetimeTests
     public void ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods()
     {
         var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/Program.cs"));
-        Assert.Contains("AttachOwnedTerminal(pty, outputWriter)", source, StringComparison.Ordinal);
+        var linuxStart = source[source.IndexOf("if (!OperatingSystem.IsWindows()) {", source.IndexOf("private async Task StartShellCoreAsync", StringComparison.Ordinal), StringComparison.Ordinal)..source.IndexOf("await StartWindowsShellAsync(expectedGeneration);", StringComparison.Ordinal)];
+        Assert.Contains("LaunchProductionAsync", linuxStart, StringComparison.Ordinal);
+        Assert.Contains("OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());", linuxStart, StringComparison.Ordinal);
+        var windowsStart = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs"));
+        Assert.Contains("LaunchWindowsPreparedAsync", windowsStart, StringComparison.Ordinal);
+        Assert.Contains("var input=AttachOwnedTerminal(session,Console.OpenStandardOutput());", windowsStart, StringComparison.Ordinal);
+        Assert.Contains("AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)=>AttachOwnedTerminalCore(session,output,true)", source, StringComparison.Ordinal);
         Assert.Contains("BeginInputLifetime(session.InputWriter, shellLoopCts)", source, StringComparison.Ordinal);
         var server = source[source.IndexOf("private async Task RunServerLoopAsync", StringComparison.Ordinal)..source.IndexOf("private async Task<bool> ProcessConnectedRequestAsync", StringComparison.Ordinal)];
         Assert.Contains("await ProcessConnectedRequestAsync(server, async () =>", server, StringComparison.Ordinal);
