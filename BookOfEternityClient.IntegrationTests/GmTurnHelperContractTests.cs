@@ -5792,7 +5792,7 @@ public sealed class GmTurnHelperContractTests
     [Fact]
     public void DaemonWatchers_SignalOnlyAndRetainStartupAndPollingConsumers()
     {
-        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1").ReplaceLineEndings("\n");
         foreach (var name in new[] { "qteEffectResolutionAction", "action", "repairAction", "terminalProtocolFailureAction" })
         {
             var begin = daemon.IndexOf("$" + name + " = {", StringComparison.Ordinal);
