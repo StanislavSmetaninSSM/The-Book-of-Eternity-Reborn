@@ -46,7 +46,11 @@ static struct stat namespace_identity;
 struct child { pid_t pid; int fd; bool term_sent, kill_sent; };
 static struct child children[CHILD_LIMIT];
 static size_t child_count;
-static bool host_v2, terminal_v1;
+static bool host_v2, terminal_v1, terminal_pipe_v1;
+static int exported_root_fd = -1;
+static char pipe_nonce[65];
+static size_t pipe_nonce_bytes;
+static bool pipe_challenge_started;
 static int terminal_master = -1, terminal_slave = -1, terminal_columns, terminal_rows;
 static int bootstrap_fd = -1, output_fds[2] = {-1, -1}, held_gate = -1, bootstrap_phase;
 static long long bootstrap_at;
@@ -206,6 +210,7 @@ static bool bootstrap_send(const char *kind, int descriptor, int second) {
     return true;
 }
 static void close_bootstrap(void) {
+    if (exported_root_fd >= 0) { close(exported_root_fd); exported_root_fd = -1; }
     if (held_gate >= 0) { close(held_gate); held_gate = -1; }
     if (bootstrap_fd >= 0) { close(bootstrap_fd); bootstrap_fd = -1; }
     if (terminal_master >= 0) { close(terminal_master); terminal_master = -1; }
@@ -223,7 +228,46 @@ static bool bootstrap_connect(const char *path) {
     bootstrap_phase = 1; bootstrap_at = now_ms();
     return bootstrap_send(terminal_v1 ? "T1" : "H2", -1, -1);
 }
+/* Inherited channels carry locators, not authority. The caller must bind its
+ * candidate supervisor pidfd using a post-capture fresh nonce BEFORE L. */
+static void emit_pipe_bootstrap(bool authenticated) {
+    char line[512];
+    int n = authenticated
+        ? snprintf(line, sizeof line, "{\"bootstrap\":\"authenticated\",\"version\":1,\"runId\":\"%s\",\"nonce\":\"%s\"}\n", run_id, pipe_nonce)
+        : snprintf(line, sizeof line, "{\"bootstrap\":\"held\",\"version\":1,\"runId\":\"%s\",\"rootPidfd\":%d,\"terminalMaster\":%d}\n", run_id, exported_root_fd, terminal_master);
+    ssize_t written;
+    do { written = write(STDOUT_FILENO, line, (size_t)n); } while (written < 0 && errno == EINTR);
+    if (written != n) { status_usable = false; lose("bootstrap-status", written < 0 ? errno : EIO); }
+}
+static bool prepare_terminal(void) {
+    terminal_master = posix_openpt(O_RDWR | O_NOCTTY | O_CLOEXEC);
+    if (terminal_master < 0 || grantpt(terminal_master) || unlockpt(terminal_master)) { lose("pty-allocate", errno); return false; }
+    char slave_name[128];
+    if (ptsname_r(terminal_master, slave_name, sizeof slave_name)) { lose("pty-name", errno); return false; }
+    terminal_slave = open(slave_name, O_RDWR | O_NOCTTY | O_CLOEXEC);
+    struct winsize size = { .ws_col = (unsigned short)terminal_columns, .ws_row = (unsigned short)terminal_rows };
+    if (terminal_slave < 0 || ioctl(terminal_master, TIOCSWINSZ, &size)) { lose("pty-prepare", errno); return false; }
+    return true;
+}
+static void pipe_challenge(char command) {
+    if (!pipe_challenge_started) {
+        if (command != 'H') { lose("bootstrap-challenge", EPROTO); return; }
+        pipe_challenge_started = true; return;
+    }
+    if (pipe_nonce_bytes < 64) {
+        if (!((command >= '0' && command <= '9') || (command >= 'a' && command <= 'f'))) { lose("bootstrap-challenge", EPROTO); return; }
+        pipe_nonce[pipe_nonce_bytes++] = command; return;
+    }
+    if (command != '\n') { lose("bootstrap-challenge", EPROTO); return; }
+    if (!prepare_terminal()) return;
+    emit_pipe_bootstrap(true);
+    if (!stopping) { bootstrap_phase = 2; emit("Ready", false); }
+}
 static void observe_bootstrap(void) {
+    if (terminal_pipe_v1) {
+        if (!stopping && (bootstrap_phase == 1 || bootstrap_phase == 3) && now_ms() - bootstrap_at >= 5000) lose("bootstrap-timeout", 0);
+        return;
+    }
     if (bootstrap_fd < 0 || stopping) return;
     if ((bootstrap_phase == 1 || bootstrap_phase == 3) && now_ms() - bootstrap_at >= 5000) {
         lose("bootstrap-timeout", 0); return;
@@ -254,13 +298,7 @@ static void observe_bootstrap(void) {
         }
         if (valid) {
             if (terminal_v1) {
-                terminal_master = posix_openpt(O_RDWR | O_NOCTTY | O_CLOEXEC);
-                if (terminal_master < 0 || grantpt(terminal_master) || unlockpt(terminal_master)) { lose("pty-allocate", errno); return; }
-                char slave_name[128];
-                if (ptsname_r(terminal_master, slave_name, sizeof slave_name)) { lose("pty-name", errno); return; }
-                terminal_slave = open(slave_name, O_RDWR | O_NOCTTY | O_CLOEXEC);
-                struct winsize size = { .ws_col = (unsigned short)terminal_columns, .ws_row = (unsigned short)terminal_rows };
-                if (terminal_slave < 0 || ioctl(terminal_master, TIOCSWINSZ, &size)) { lose("pty-prepare", errno); return; }
+                if (!prepare_terminal()) return;
             } else { output_fds[0] = received[0]; output_fds[1] = received[1]; count = 0; }
             bootstrap_phase = 2; emit("Ready", false);
         }
@@ -319,7 +357,11 @@ static void launch(char **argv) {
     if (fcntl(exec_fd, F_SETFL, O_NONBLOCK)) { lose("exec-channel", errno); close(gate[1]); return; }
     if (host_v2 || terminal_v1) {
         held_gate = gate[1]; bootstrap_phase = 3; bootstrap_at = now_ms();
-        (void)bootstrap_send(terminal_v1 ? "B1" : "B2", root_fd, terminal_v1 ? terminal_master : -1);
+        if (terminal_pipe_v1) {
+            exported_root_fd = fcntl(root_fd, F_DUPFD_CLOEXEC, 3);
+            if (exported_root_fd < 0) { lose("bootstrap-export", errno); return; }
+            emit_pipe_bootstrap(false);
+        } else (void)bootstrap_send(terminal_v1 ? "B1" : "B2", root_fd, terminal_v1 ? terminal_master : -1);
     } else {
         if (write(gate[1], "L", 1) != 1) lose("bootstrap-release", errno);
         close(gate[1]);
@@ -384,10 +426,12 @@ int main(int argc, char **argv) {
     run_id = argv[1]; grace_ms = parse_ms(argv[2]); deadline_ms = parse_ms(argv[3]);
     if (grace_ms < 0 || deadline_ms < 0) return 64;
     host_v2 = !strcmp(argv[4], "--host-v2");
-    terminal_v1 = !strcmp(argv[4], "--terminal-v1");
+    terminal_pipe_v1 = !strcmp(argv[4], "--terminal-pipe-v1");
+    terminal_v1 = terminal_pipe_v1 || !strcmp(argv[4], "--terminal-v1");
     if (terminal_v1) {
-        if (argc < 9 || argv[8][0] != '/') return 64;
-        terminal_columns = parse_ms(argv[6]); terminal_rows = parse_ms(argv[7]);
+        int offset = terminal_pipe_v1 ? 0 : 1;
+        if (argc < 8 + offset || argv[7 + offset][0] != '/') return 64;
+        terminal_columns = parse_ms(argv[5 + offset]); terminal_rows = parse_ms(argv[6 + offset]);
         if (terminal_columns < 1 || terminal_rows < 1) return 64;
     }
     if (host_v2 && (argc < 7 || argv[6][0] != '/')) return 64;
@@ -406,16 +450,25 @@ int main(int argc, char **argv) {
     if (!proc_ready()) { lose("proc-unavailable", errno); emit("Uncertain", true); return 2; }
     (void)now_ms();
     if (clock_failed) { lose("clock-unavailable", errno); emit("Uncertain", true); return 2; }
-    if (host_v2 || terminal_v1) (void)bootstrap_connect(argv[5]); else emit("Ready", false);
+    if (terminal_pipe_v1) { bootstrap_phase = 1; bootstrap_at = now_ms(); }
+    else if (host_v2 || terminal_v1) (void)bootstrap_connect(argv[5]); else emit("Ready", false);
     bool stop_reported = false, uncertainty_reported = false;
     for (;;) {
         (void)now_ms(); if (clock_failed) lose("clock-unavailable", errno);
         if (signal_stop) seal("helper-signal");
+        if (terminal_pipe_v1) observe_bootstrap(); /* Expiry precedes any release command. */
         char commands[32]; ssize_t n = read(STDIN_FILENO, commands, sizeof commands);
         if (n == 0) lose("owner-lost", 0);
         else if (n < 0 && errno != EINTR && errno != EAGAIN) lose("owner-channel", errno);
         else if (n > 0) for (ssize_t i = 0; i < n; i++) {
-            if (commands[i] == 'L' && !launched && !stopping && (!(host_v2 || terminal_v1) || bootstrap_phase == 2)) launch(&argv[terminal_v1 ? 8 : host_v2 ? 6 : 4]);
+            if (terminal_pipe_v1 && bootstrap_phase == 1 && !stopping) pipe_challenge(commands[i]);
+            else if (terminal_pipe_v1 && commands[i] == 'A' && bootstrap_phase == 3 && !stopping) {
+                if (write(held_gate, "L", 1) != 1) lose("bootstrap-release", errno);
+                close(held_gate); held_gate = -1; bootstrap_phase = 4;
+                if (exported_root_fd >= 0) { close(exported_root_fd); exported_root_fd = -1; }
+                if (terminal_master >= 0) { close(terminal_master); terminal_master = -1; }
+            }
+            else if (commands[i] == 'L' && !launched && !stopping && (!(host_v2 || terminal_v1) || bootstrap_phase == 2)) launch(&argv[terminal_pipe_v1 ? 7 : terminal_v1 ? 8 : host_v2 ? 6 : 4]);
             else if (commands[i] == 'S') seal("stop-requested");
             else if (commands[i] == 'C') seal("cancelled");
             else if (commands[i] == 'U') lose("scope-breach", 0);

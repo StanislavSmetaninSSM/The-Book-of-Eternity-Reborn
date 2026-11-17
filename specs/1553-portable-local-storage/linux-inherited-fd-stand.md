@@ -42,3 +42,29 @@ partial-read assumption. These are corrected in source; new wrong-type,
 helper-pidfd-denial and pre-setsid child-failure controls await rerun/re-review.
 No production path was changed or qualified. Initial happy-path success does
 not qualify the corrected source or its failure paths.
+
+## Accepted primitive block and next native block (#1589)
+
+Issue: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1589
+Corrected stand ran seven cases successfully. Real transfer, bad descriptor and
+wrong descriptor type are distinct from injected EPERM/ENOSYS, helper acquisition
+failure and pre-setsid root exception. Root exits were respectively 0, 125 on
+refusal, and 126 for injected child exception; helper/root cleanup passed.
+Independent source/outcome review accepted this bounded primitive block only.
+No group signal or numeric-PID signal after reaping remains in the harness.
+
+Next design: `--terminal-pipe-v1` uses original stdin/stdout. Capture candidate
+supervisor pidfd, THEN generate a fresh random challenge; only its exact response
+from the original private status channel admits the candidate, before any fork.
+Pipe inode equality alone is NOT an identity proof. Candidate failure is handled
+by closing original control and joining original Process, never signaling an
+unadmitted candidate. One dispatcher consumes both bounded bootstrap and status
+frames. Root export pidfd is separately duplicated/pinned until bootstrap ends,
+including early root death. Expiry/stop/cancel precede release.
+
+Native initial RED against unchanged helper: it emitted legacy Ready instead of
+required authenticated bootstrap. Current narrow native implementation compiles
+with the official script; final edit checking expiry before commands is not yet
+rebuilt/run. Native happy/cancel tests are prepared, other phase/negative controls
+and independent native review remain pending. Managed and bridge paths unchanged.
+No live relay or game acceptance is claimed.
