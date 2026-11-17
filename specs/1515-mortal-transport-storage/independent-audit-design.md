@@ -78,3 +78,40 @@ reply after changed text/state, unavailable/cancel, single story/turn acceptance
 and full rollback. Live reviewer: original omission pairs and promise/dream/
 negation/quoted-speech controls, including prompt injection in narrative.
 Synchronize GM/daemon repair guidance and worked examples before activation.
+
+## Independent design review and resolved constraints (2026-11-17)
+
+Astra High independent review accepts T1 DATA work but blocks activation pending
+an explicit publisher route map and complete inventory. There is no universal
+post-validation hook: ordinary validation already advances progression; joint
+publication has separate prepared/completed/resume paths; final story delivery
+rereads outputs and can run another repair. Every final publisher must consume a
+bound audited candidate, not simply observe a Boolean earlier in its control flow.
+
+Joint candidates must be reviewed against validated projected afterimages before
+irreversible joint publication. A committed or resumed joint owner with missing
+or inconsistent proof is held using its existing recovery contract; it must not
+fall through to destructive ordinary full-turn repair. The earlier repair rule
+applies only where the existing owner legally permits restoration/resubmission.
+T3 first maps ordinary/late/browser/joint/resume paths and preserves their owners.
+
+Packet coverage has two levels. T1 validates complete review of the supplied
+packet only. T3 must prove the packet's versioned inventory covers the actual
+turn: all rendered prose fields, authenticated baseline bytes and absences,
+settled candidate namespace, pre-consumption report bytes, and rule/schema
+revisions. A model listing every supplied document does NOT prove capture is
+complete. Newly inserted files and changed/deleted output invalidate capture.
+
+State-origin findings may report an observable unexplained change with state
+references and no invented quote. Hidden/off-screen changes allowed by game
+rules may remain silent: auditing must not force spoiler disclosure or prose
+for every mechanical housekeeping field. The reviewer distinguishes allowed
+silent changes from effects the player is told happened or would perceive.
+Positive controls include both legitimate silence and explicit negation.
+
+Transport investigation found read-only Codex sandbox is not read isolation and
+`--ignore-user-config` does not prove absence of inherited tools/MCP. Therefore
+T2 must either qualify a genuine restricted/no-tool transport or use a text-only
+model API with no tool definitions and an explicitly configured provider. Do not
+borrow an image API credential/configuration or call generic worker execution
+"isolated". Transport qualification is unresolved, not an implemented property.

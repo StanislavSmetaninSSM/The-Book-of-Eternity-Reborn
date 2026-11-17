@@ -19,7 +19,7 @@ public sealed class MortalTurnAuditContractTests
         ["reviewedDocuments"] = new JsonArray("original", "candidate", "narrative"),
         ["findings"] = new JsonArray(new JsonObject
         {
-            ["quoteDocumentId"] = "narrative", ["quote"] = packet.Documents.Single(x => x.Id == "narrative").Text,
+            ["direction"] = "narrativeToState", ["quoteDocumentId"] = "narrative", ["quote"] = packet.Documents.Single(x => x.Id == "narrative").Text,
             ["assessment"] = assessment, ["reason"] = "Exact matching canonical vehicle.",
             ["evidence"] = new JsonArray(new JsonObject
             { ["documentId"] = "candidate", ["pointer"] = "/vehicles/0/vehicleId", ["value"] = "cart1" })
@@ -91,6 +91,18 @@ public sealed class MortalTurnAuditContractTests
             case "emptyReason": finding["reason"] = " "; break;
         }
         Assert.False(MortalTurnAuditContract.Validate(packet, response.ToJsonString()).IsConsistent);
+    }
+
+    [Fact]
+    public void UnexplainedStateChangeCanBeReportedWithoutInventedNarrativeQuote()
+    {
+        var packet = Packet("Вы спокойно ждете."); var response = Response(packet, "missing");
+        response["verdict"] = "fail";
+        response["findings"]![0]!["direction"] = "stateToNarrative";
+        response["findings"]![0]!["quote"] = "";
+        var result = MortalTurnAuditContract.Validate(packet, response.ToJsonString());
+        Assert.False(result.IsConsistent);
+        Assert.Contains("discrepancy", result.Error, StringComparison.Ordinal);
     }
 
     [Fact]

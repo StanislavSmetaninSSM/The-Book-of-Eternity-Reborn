@@ -48,3 +48,27 @@ No audit code/modelcall has run yet. Shell push lacks credentials; connector
 branch creation succeeded. Subsequent checkpoints use atomic connector commits.
 Ruling: shared audit branch starts at1516 to preserve newer accepted-turn code;
 1515's independent repro will be transferred without rewriting historical proofs.
+
+## T1 in progress and design review
+
+WIP scaffold/tests persisted as1a35e7def6d2a137c2e0ab0f5a08f24ad422a5a6.
+Fresh Linux SDK10.0.404/PowerShell7.7.0 restore requires serial MSBuild here:
+`dotnet restore BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --ignore-failed-sources --source /workspace/shared/toolchain/nuget --disable-parallel -m:1 -nr:false`.
+Ordinary parallel restore failed with0warnings/0errors before execution; not RED.
+Serial build passed96warnings/0errors in91.21s. Official category
+`mortal-independent-audit-contract -NoBuild` then gave21/21 executed,18PASS/3FAIL
+in9.4937495s, complete cleanup/no skips/duplicates/timeouts. The3failures are the
+positive/negative-narrative and packet-identity requirements against the
+always-hold/unbound scaffold; adverse replies already hold. Runtime gate absent.
+
+Independent Astra High design review identified four important gaps beforeT3:
+route-specific finalization, committed-joint recovery, enforceable capture
+inventory, and state-origin findings/legitimate silence. Clarifications are in
+the design. Transport no-tool isolation remains unresolved. T1 parsing tests are
+not model quality tests. Current next step: finish T1 response parser and focused
+verification, then transport decision/qualification and publisher route map.
+
+Optimization: T1 handles immutable strings and parses state once per response
+into an operation-local evidence index; no filesystem reads, global cache,
+publication authority or speedup claim. Full packets must not be repeatedly
+reconstructed around individual findings; T3 owns actual capture reuse/fences.
