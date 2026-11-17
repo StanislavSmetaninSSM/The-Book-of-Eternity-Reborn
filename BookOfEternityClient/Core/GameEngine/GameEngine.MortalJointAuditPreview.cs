@@ -14,7 +14,7 @@ public partial class GameEngine
 
     internal sealed class MortalJointAuditCandidateChangedException(
         MortalJointAuditPreview expected, MortalJointAuditPreview actual)
-        : InvalidDataException("joint_audit_candidate_changed: " + string.Join(",", new[]
+        : IOException("joint_audit_candidate_changed: " + string.Join(",", new[]
         {
             expected.InputFingerprint == actual.InputFingerprint ? null : "input",
             expected.PreparedPlanFingerprint == actual.PreparedPlanFingerprint ? null : "prepared",
