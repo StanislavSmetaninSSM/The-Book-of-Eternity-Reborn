@@ -120,3 +120,49 @@ actually used. The current capability observation is false and transport remains
 unwired; expected RED is the still-blocked socket launch, not a feature PASS.
 Fresh unit/bridge/test-support restore succeeded from shared offline package
 DATA. No bin/obj or ownership objects were copied. Build/run pending.
+
+## Managed implementation draft (separate checkout)
+
+The original relay-fd checkout remains frozen for the pending test-first save.
+Implementation continues separately in relay-managed, derived from saved native
+source plus those same test-first files; no competing remote ref write is made.
+Managed RED was 1/1 SocketException Permission denied, official runner 12.991s,
+independent guardian ECHILD with no emergency signals. No payload was launched.
+
+Draft uses creation-only EPERM/EACCES fallback before Process.Start, retained
+supervisor pidfd, post-capture nonce, strict bootstrap/status phases and actual
+root/PTY transfer. PTY uses master-specific TIOCGPTN, not isatty alone. Abort is
+async and bounded: failure retains uncertainty and prevents disposal; successful
+release keeps stdin for scoped stop. The original pidfd is retained to disposal.
+Finite workers and bridge are unchanged. Draft is UNCOMPILED/UNRUN.
+
+Channel premise was checked against upstream .NET8
+[Process.Unix.cs](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Unix.cs)
+and [pal_process.c](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/native/libs/System.Native/pal_process.c):
+redirects use CLOEXEC pipes and the parent closes child-side copies. The checked
+native helper does not fork before L. This is an ownership construction for the
+trusted launch, not authentication against hostile same-UID/same-process code.
+Actual managed lifecycle and adversarial observation tests remain required.
+
+Early independent managed review found unbounded L/A control-gate waits. Draft
+now has an inherited-only linked cancellation/deadline path covering gate,
+write and flush, with authority/phase/deadline checked again after admission to
+the gate. Failure retains uncertainty and never retries the command. Four
+new guarded-process probes hold the gate with an actual held original root:
+L/A cancellation and expiry must finish before gate release, leave the held
+phase unchanged and never execute the payload; original scoped cleanup and
+outer ECHILD remain required. The L probe is blocked-writer coverage, not a
+second lawful native launch. These new tests are UNCOMPILED/UNRUN, and no
+causal boundedness RED/GREEN is claimed yet. Abort-timeout/retry and descriptor
+transfer rejection coverage remain outstanding.
+
+Second independent early review caught StreamWriter cancellation buffering:
+closing that writer could flush an unconfirmed A after refusal. Inherited mode
+now exclusively writes original StandardInput.BaseStream bytes, including
+challenge, launch, release and stop; abort disposes that unbuffered pipe without
+writer flush. Old finite/socket routes retain their original writer API. The
+review also rejected new reflection probes under AGENTS; draft replaces them
+with an explicit typed gate lease that cannot mutate phase/deadlines, plus typed
+command/capability observations. Expiry probes now wait the real held deadline,
+not a shortened reflected field. Source review and a deterministic interrupted
+write/abort control remain pending; no runtime success is claimed.

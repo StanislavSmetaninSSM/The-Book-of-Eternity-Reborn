@@ -13,4 +13,11 @@ public sealed class GmInheritedTerminalLinuxTests
         using var result = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder!, "scenario.json")));
         Assert.True(result.RootElement.GetProperty("InheritedBootstrap").GetBoolean());
     }
+    [Theory]
+    [InlineData("terminal-inherited-control-launch-cancel")]
+    [InlineData("terminal-inherited-control-launch-expiry")]
+    [InlineData("terminal-inherited-control-release-cancel")]
+    [InlineData("terminal-inherited-control-release-expiry")]
+    public async Task BlockedOriginalControl_CancelsWithoutCommandOrPhaseAdvance(string mode)
+        => await GmOwnedTerminalLinuxTests.RunAsync(mode);
 }

@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Services.GmWorkers;
 
 // One retained owner contains every partial launch resource. Status has a dedicated
 // bounded reader from Process.Start onward; host output never enters this parser.
-internal class NativeLineageOwner : GmWorkerOwnedLaunch
+internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
 {
     /// <summary>
     /// Evaluates already observed finite launch evidence without creating native evidence.
@@ -159,8 +159,6 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     }
 
 
-    // Test-first capability observation; inherited transport is not wired yet.
-    internal bool UsesInheritedTerminalBootstrap => false;
     private readonly bool _terminalMode;
     private readonly bool _finitePipe;
     private bool _finiteReleased;
@@ -177,7 +175,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     private readonly string _run;
     protected readonly GmWorkerDurableExecution? _durable;
     private readonly string _bootstrapDirectory;
-    private readonly Socket _listener;
+    private readonly Socket? _listener;
     private Socket? _bootstrap;
     protected readonly Process _supervisor = new();
     private readonly AnonymousPipeServerStream? _output;
@@ -248,9 +246,14 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         {
             Directory.CreateDirectory(_bootstrapDirectory, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
             createdDirectory = true;
-            _listener = new Socket(AddressFamily.Unix, SocketType.Seqpacket, ProtocolType.Unspecified);
-            _listener.Bind(new UnixDomainSocketEndPoint(socketPath));
-            _listener.Listen(1);
+            try { _listener = new Socket(AddressFamily.Unix, SocketType.Seqpacket, ProtocolType.Unspecified); }
+            catch (SocketException ex) when (terminal && ex.NativeErrorCode is 1 or 13)
+            { _inheritedTerminal = true; } // Before any process start; no bind/listen fallback.
+            if (_listener != null)
+            {
+                _listener.Bind(new UnixDomainSocketEndPoint(socketPath));
+                _listener.Listen(1);
+            }
             if (!terminal) {
             _output = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
             _error = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.None);
@@ -399,7 +402,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         catch (Exception error)
         {
             owner.Lose("partial-finite-launch");
-            owner.CloseBootstrap();
+            await owner.CloseBootstrapAsync();
             throw new GmWorkerOwnedLaunchException("Finite launch retains its original owner.", owner, error);
         }
     }
@@ -414,7 +417,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         catch (Exception ex)
         {
             owner.Lose("partial-launch");
-            owner.CloseBootstrap();
+            await owner.CloseBootstrapAsync();
             throw new GmWorkerOwnedLaunchException("Native host start retains its original owner.", owner, ex);
         }
     }
@@ -423,7 +426,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     {
         var owner = new NativeLineageOwner(null, terminal: true);
         try { await owner.StartAsync(fixture, executable, token, columns, rows, observeHeldRoot); return owner; }
-        catch (Exception ex) { owner.Lose("partial-terminal-launch"); owner.CloseBootstrap(); throw new GmWorkerOwnedLaunchException("Terminal partial launch retains owner.", owner, ex); }
+        catch (Exception ex) { owner.Lose("partial-terminal-launch"); await owner.CloseBootstrapAsync(); throw new GmWorkerOwnedLaunchException("Terminal partial launch retains owner.", owner, ex); }
     }
 
     private int _terminalRelease;
@@ -431,7 +434,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     internal TimeSpan HeldTerminalRemaining=>TimeSpan.FromSeconds(Math.Max(0,(_heldDeadline-Stopwatch.GetTimestamp())/(double)Stopwatch.Frequency));
     internal void RequireOriginalHeldTerminal()
     {
-        if(!_terminalMode || _terminalRelease!=0 || _bootstrap==null || !AuthorityValid() || HeldTerminalRemaining<=TimeSpan.Zero)
+        if(!_terminalMode || _terminalRelease!=0 || !HasHeldBootstrap() || !AuthorityValid() || HeldTerminalRemaining<=TimeSpan.Zero)
             throw new IOException("Original held terminal authority unavailable.");
         _identity!.EnsureLive();
     }
@@ -450,18 +453,19 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         if(!Guid.TryParseExact(runId,"N",out var id) || id==Guid.Empty)throw new InvalidDataException("Terminal run identity is invalid.");
         var owner=new NativeLineageOwner(null,true,runId);
         try {await owner.StartAsync(fixture,executable,token,columns,rows,held,true);return owner;}
-        catch(Exception ex){owner.Lose("partial-terminal-prepare");owner.CloseBootstrap();throw new GmWorkerOwnedLaunchException("Terminal prepare retains original owner.",owner,ex);}
+        catch(Exception ex){owner.Lose("partial-terminal-prepare");await owner.CloseBootstrapAsync();throw new GmWorkerOwnedLaunchException("Terminal prepare retains original owner.",owner,ex);}
     }
     internal async Task ReleaseTerminalAsync(CancellationToken token)
     {
         if(!_terminalMode || Interlocked.Exchange(ref _terminalRelease,1)!=0)throw new InvalidOperationException("Original terminal release is single-use.");
         try {
             token.ThrowIfCancellationRequested();
-            if(Stopwatch.GetTimestamp()>=_heldDeadline || _bootstrap==null || !AuthorityValid())throw new IOException("Original held terminal expired or lost authority.");
-            _identity!.EnsureLive();GmWorkerNativeDescriptors.Send(_bootstrap,"A1:"+_run);
-            _bootstrap.Dispose();_bootstrap=null;
+            if(Stopwatch.GetTimestamp()>=_heldDeadline || !HasHeldBootstrap() || !AuthorityValid())throw new IOException("Original held terminal expired or lost authority.");
+            _identity!.EnsureLive();
+            if (_inheritedTerminal) await ReleaseInheritedAsync(token);
+            else { GmWorkerNativeDescriptors.Send(_bootstrap!,"A1:"+_run); _bootstrap!.Dispose(); _bootstrap=null; }
             await _startedHost.Task.WaitAsync(TimeSpan.FromSeconds(5),token);_identity.EnsureLive();
-        }catch{Lose("terminal-release-unconfirmed");CloseBootstrap();throw;}
+        }catch{Lose("terminal-release-unconfirmed");await CloseBootstrapAsync();throw;}
     }
 
     /// <summary>
@@ -503,8 +507,9 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
             };
             start.Environment.Clear();
             foreach (var item in host.Environment) start.Environment[item.Key] = item.Value;
-            foreach (var arg in new[] { _run, "100", "2500", "--terminal-v1", Path.Combine(_bootstrapDirectory, "owner") })
+            foreach (var arg in new[] { _run, "100", "2500", _inheritedTerminal ? "--terminal-pipe-v1" : "--terminal-v1" })
                 start.ArgumentList.Add(arg);
+            if (!_inheritedTerminal) start.ArgumentList.Add(Path.Combine(_bootstrapDirectory, "owner"));
             start.ArgumentList.Add(columns.ToString(System.Globalization.CultureInfo.InvariantCulture));
             start.ArgumentList.Add(rows.ToString(System.Globalization.CultureInfo.InvariantCulture));
             start.ArgumentList.Add(host.FileName);
@@ -519,31 +524,37 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         _helperErrorDrain = DrainAsync(_supervisor.StandardError.BaseStream);
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(TimeSpan.FromSeconds(5));
-        _bootstrap = await _listener.AcceptAsync(deadline.Token);
-        _listener.Dispose();
-        if (_supervisor.HasExited) throw new InvalidDataException("Native bootstrap supervisor exited.");
-        GmWorkerProcessHostPeerIdentity.Validate(_bootstrap.SafeHandle, _supervisor.Id,
-            GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId(), "native-bootstrap");
-        await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap, (_terminalMode ? "T1:" : "H2:") + _run, 0, deadline.Token);
-        if (_supervisor.HasExited) throw new InvalidDataException("Native bootstrap supervisor exited.");
-        if (_terminalMode) GmWorkerNativeDescriptors.Send(_bootstrap, "P1:" + _run);
-        else GmWorkerNativeDescriptors.Send(_bootstrap, "P2:" + _run, _output!.ClientSafePipeHandle, _error!.ClientSafePipeHandle);
+        if (_inheritedTerminal) await AuthenticateInheritedSupervisorAsync(deadline.Token);
+        else
+        {
+            _bootstrap = await _listener!.AcceptAsync(deadline.Token);
+            _listener.Dispose();
+            if (_supervisor.HasExited) throw new InvalidDataException("Native bootstrap supervisor exited.");
+            GmWorkerProcessHostPeerIdentity.Validate(_bootstrap.SafeHandle, _supervisor.Id,
+                GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId(), "native-bootstrap");
+            await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap, (_terminalMode ? "T1:" : "H2:") + _run, 0, deadline.Token);
+            if (_supervisor.HasExited) throw new InvalidDataException("Native bootstrap supervisor exited.");
+            if (_terminalMode) GmWorkerNativeDescriptors.Send(_bootstrap, "P1:" + _run);
+            else GmWorkerNativeDescriptors.Send(_bootstrap, "P2:" + _run, _output!.ClientSafePipeHandle, _error!.ClientSafePipeHandle);
+        }
         await _ready.Task.WaitAsync(deadline.Token);
         // Ready proves the helper owns its copies. Closing ours makes output EOF
         // depend only on actual host/descendant holders after the helper forks.
         _output?.DisposeLocalCopyOfClientHandle(); _error?.DisposeLocalCopyOfClientHandle();
         _heldDeadline=Stopwatch.GetTimestamp()+5*Stopwatch.Frequency;
-        await SendControlAsync('L');
-        var rights = await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap, (_terminalMode ? "B1:" : "B2:") + _run, _terminalMode ? 2 : 1, deadline.Token);
+        if (_inheritedTerminal) await LaunchInheritedAsync(deadline.Token);
+        else await SendControlAsync('L');
+        var rights = _inheritedTerminal ? await ReceiveInheritedRightsAsync(deadline.Token) : await GmWorkerNativeDescriptors.ReceiveAsync(_bootstrap!, (_terminalMode ? "B1:" : "B2:") + _run, _terminalMode ? 2 : 1, deadline.Token);
         _hostPidfd = rights[0];
         if (_terminalMode) _terminalMaster = rights[1];
         _identity = GmWorkerHostIdentity.FromTransferredPidfd(_supervisor, _hostPidfd, AuthorityValid);
         _hostExit = ObserveHostExitAsync();
         observeHeldRoot?.Invoke(_identity.ProcessId);
         if(holdTerminal)return;
-        GmWorkerNativeDescriptors.Send(_bootstrap, (_terminalMode ? "A1:" : "A2:") + _run);
+        if (_inheritedTerminal) await ReleaseInheritedAsync(deadline.Token);
+        else GmWorkerNativeDescriptors.Send(_bootstrap!, (_terminalMode ? "A1:" : "A2:") + _run);
         if (_finitePipe) { lock (_stateGate) _finiteReleased = true; }
-        _bootstrap.Dispose(); _bootstrap = null;
+        _bootstrap?.Dispose(); _bootstrap = null;
         if (_finitePipe)
         {
             var retirement = Task.WhenAll(_supervisorExit, _statusReader, _helperErrorDrain, _hostExit);
@@ -575,6 +586,11 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         _durable?.CloseForUncertainty();
         lock (_stateGate) _uncertainty ??= reason;
         _authorityLost.TrySetResult(reason);
+        if (_inheritedTerminal)
+        {
+            _inheritedAuthenticated.TrySetException(new InvalidDataException("Inherited authentication authority lost."));
+            _inheritedOffer.TrySetException(new InvalidDataException("Inherited descriptor authority lost."));
+        }
         _ready.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));
         _startedHost.TrySetException(new InvalidDataException("Native supervisor authority became uncertain."));
     }
@@ -594,7 +610,7 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
                 ReadOnlyMemory<byte> bytes = buffer.AsMemory(0, used); used = 0;
                 if (_observationFault != null) bytes = await _observationFault.ObserveFrameAsync(bytes);
                 using var frame = JsonDocument.Parse(bytes);
-                AcceptStatus(frame.RootElement);
+                if (!_inheritedTerminal || !AcceptInheritedBootstrap(frame.RootElement)) AcceptStatus(frame.RootElement);
             }
             lock (_stateGate) if (used != 0 || _terminal == null) Lose("status-lost");
         }
@@ -608,6 +624,12 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         if (names.Count != 11 || frame.GetProperty("version").GetInt32() != 2 || frame.GetProperty("runId").GetString() != _run ||
             frame.GetProperty("backend").GetString() != "native-lineage" || frame.GetProperty("guarantee").GetString() != GmWorkerBackendSelector.NativeGuarantee) throw new InvalidDataException();
         var state = frame.GetProperty("state").GetString();
+        if (_inheritedTerminal)
+        {
+            lock (_stateGate)
+                if ((state == "Ready" && _inheritedPhase != 1) || (state == "Started" && _inheritedPhase != 4))
+                    throw new InvalidDataException("Inherited status arrived before its admitted phase.");
+        }
         var reason = frame.GetProperty("reason").GetString() ?? throw new InvalidDataException();
         var complete = frame.GetProperty("cleanupComplete").GetBoolean();
         var retained = frame.GetProperty("authorityRetained").GetBoolean();
@@ -639,7 +661,11 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     private async Task SendControlAsync(char command)
     {
         await _controlGate.WaitAsync();
-        try { await _supervisor.StandardInput.WriteAsync(command); await _supervisor.StandardInput.FlushAsync(); }
+        try
+        {
+            if (_inheritedTerminal) await _supervisor.StandardInput.BaseStream.WriteAsync(new byte[] { (byte)command });
+            else { await _supervisor.StandardInput.WriteAsync(command); await _supervisor.StandardInput.FlushAsync(); }
+        }
         finally { _controlGate.Release(); }
     }
 
@@ -837,9 +863,10 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         return tail.ToString();
     }
 
-    private void CloseBootstrap()
+    private async Task CloseBootstrapAsync()
     {
-        _bootstrap?.Dispose(); _bootstrap = null; _listener.Dispose();
+        _bootstrap?.Dispose(); _bootstrap = null; _listener?.Dispose();
+        if (_inheritedTerminal) await AbortInheritedBootstrapAsync().ConfigureAwait(false);
         _output?.DisposeLocalCopyOfClientHandle(); _error?.DisposeLocalCopyOfClientHandle();
     }
 
@@ -858,9 +885,12 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
         // A filesystem failure retains the still-disposable original resources.
         // Repeat deletion is harmless after a partially successful attempt.
         if (Directory.Exists(_bootstrapDirectory)) Directory.Delete(_bootstrapDirectory, recursive: true);
-        CloseBootstrap();
+        await CloseBootstrapAsync();
+        if (_inheritedTerminal && !_inheritedControlClosed)
+            throw new InvalidOperationException("Original inherited control closure remains unresolved.");
         await Task.WhenAll(OutputCompletion, ErrorCompletion);
         if (_hostExit != null) await _hostExit;
+        _originalSupervisorPidfd?.Dispose();
         _hostPidfd?.Dispose(); _terminalMaster?.Dispose(); _supervisor.Dispose(); _output?.Dispose(); _error?.Dispose();
         _stopGate.Dispose(); _controlGate.Dispose();
         _disposed = true;

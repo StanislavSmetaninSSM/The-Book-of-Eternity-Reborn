@@ -61,6 +61,7 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
+        if(mode.StartsWith("terminal-inherited-control-", StringComparison.Ordinal)) { Assert.True(scenario.RootElement.GetProperty("Success").GetBoolean()); return; }
         if(foreground) {
             foreach(var proof in new[]{"Success","TwoActualConsoleInputsOneSession","ActualConsoleResize","CanonicalEofRootAlive","ActualScopedStop","OuterInputModeRestored"})Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean());return;
         }
