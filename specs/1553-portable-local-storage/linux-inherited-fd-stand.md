@@ -90,3 +90,25 @@ A new no-Started-before-release assertion produced causal RED against that binar
 Current narrow fix suppresses Started for terminal-pipe mode unless bootstrap
 phase4 (release) was reached. Root-death cleanup remains unchanged. Corrected
 source/test is UNRUN. The earlier 18 expected exits are not a native acceptance.
+
+## Native bounded acceptance
+
+Runtime source `04e55596f64df902a5233eb3877af992dea4e232`: all eighteen
+corrected native cases passed. In particular kill-held now emits Ready, Stopping,
+StoppedWithinScope, never Started. Official native compile passed with warnings
+as errors. C SHA256 `e05ec9d94ebda400c7ede8b7442660a279888a7c2092c7cf99d045b77641d896`
+matched build provenance and the fetched Git blob. Legacy exit/double-fork were
+rerun against that binary: guardian ECHILD, no emergency actions; 0.022/0.730s.
+Independent source/outcome review accepted the bounded native block after
+checking the causal RED and final source/evidence join. It did not rerun runtime.
+
+Positive old socket bootstrap remains unqualified in this environment; its
+actual EPERM path still returns version2 Uncertain with cleanupComplete and no
+root launch. No security policy was changed. No authority cache was introduced.
+
+Next gate: managed candidate pidfd capture followed by fresh nonce on original
+exclusive Process channels, strict one-reader dispatch and handle transfer,
+actual owned-terminal lifecycle/cleanup tests. Then bridge per-peer transport
+for independent CLI clients. Bridge currently has no exact-PID peer credential
+check; do not confuse its live connection pins with worker socket PID authority.
+Real launcher/maintained relay/live GM acceptance and cleanup remain required.
