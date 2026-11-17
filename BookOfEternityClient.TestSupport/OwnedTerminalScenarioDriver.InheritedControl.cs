@@ -62,6 +62,7 @@ internal static partial class OwnedTerminalScenarioDriver
     {
         var result = new Dictionary<string, object?>();
         GmWorkerOwnedLaunch? owner = null;
+        NativeLineageOwner? expectedOwner = null;
         var injected = new IOException("injected-before-control-assignment");
         try
         {
@@ -71,12 +72,14 @@ internal static partial class OwnedTerminalScenarioDriver
             {
                 await NativeLineageOwner.PrepareTerminalAsync(start, GmWorkerNativePackage.Validate(package),
                     Guid.NewGuid().ToString("N"), 80, 25, CancellationToken.None,
-                    beforeInheritedControl: () => throw injected);
+                    beforeInheritedControl: original => { expectedOwner = original; throw injected; });
                 throw new InvalidOperationException("Injected initialization failure was not reached.");
             }
             catch (GmWorkerOwnedLaunchException partial)
             {
                 owner = partial.Owner;
+                if (!ReferenceEquals(expectedOwner, owner))
+                    throw new InvalidOperationException("Returned owner is not the exact original instance.");
                 if (!ReferenceEquals(injected, partial.InnerException))
                     throw new InvalidOperationException("Original initialization failure was masked.");
                 if (owner is not NativeLineageOwner { UsesInheritedTerminalBootstrap: true })
@@ -94,7 +97,8 @@ internal static partial class OwnedTerminalScenarioDriver
         catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }
         finally
         {
-            if (owner != null) try { result["FinalCleanup"] = await owner.StopAndObserveAsync(); } catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
+            var diagnosticOwner = owner ?? expectedOwner;
+            if (diagnosticOwner != null) try { result["FinalCleanup"] = await diagnosticOwner.StopAndObserveAsync(); } catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));
         }
     }

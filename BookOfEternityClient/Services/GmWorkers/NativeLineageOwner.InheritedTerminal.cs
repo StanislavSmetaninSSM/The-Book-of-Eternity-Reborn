@@ -12,7 +12,7 @@ internal partial class NativeLineageOwner
 {
     private readonly bool _inheritedTerminal;
     private InheritedTerminalControl? _inheritedControl;
-    private Action? _beforeInheritedControl;
+    private Action<NativeLineageOwner>? _beforeInheritedControl;
     private SafeFileHandle? _originalSupervisorPidfd;
     private string? _inheritedNonce;
     // 0 challenge pending; 1 authenticated frame; 2 launch sent; 3 held;

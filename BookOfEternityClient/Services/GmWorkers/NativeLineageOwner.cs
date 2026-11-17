@@ -448,7 +448,7 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
     }
     [System.Runtime.InteropServices.DllImport("libc",EntryPoint="fcntl",SetLastError=true)]
     private static extern int DuplicatePidfd(SafeFileHandle descriptor,int command,int argument);
-    internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null,Action? beforeInheritedControl=null)
+    internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null,Action<NativeLineageOwner>? beforeInheritedControl=null)
     {
         if(!Guid.TryParseExact(runId,"N",out var id) || id==Guid.Empty)throw new InvalidDataException("Terminal run identity is invalid.");
         var owner=new NativeLineageOwner(null,true,runId);
@@ -522,7 +522,7 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
         _processStarted = true;
         if (_inheritedTerminal)
         {
-            _beforeInheritedControl?.Invoke();
+            _beforeInheritedControl?.Invoke(this);
             _inheritedControl = new InheritedTerminalControl((PipeStream)_supervisor.StandardInput.BaseStream);
         }
         _supervisorExit = _supervisor.WaitForExitAsync();

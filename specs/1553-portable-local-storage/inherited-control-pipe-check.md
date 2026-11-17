@@ -29,3 +29,8 @@ reflection. The test requires the original exception/owner, no admitted root or
 payload, native cleanup and independent ECHILD. The defect is deliberately not
 fixed in this test-first checkpoint; expected causal RED is a masked failure.
 All seven selected cases are still uncompiled/unrun after these additions.
+
+The typed hook now captures the exact original owner instance; the retention
+oracle requires ReferenceEquals with the exception owner. Its diagnostic
+reference may attempt cleanup after a RED but never satisfies the main oracle.
+This corrects the earlier type-only assertion before runtime execution.
