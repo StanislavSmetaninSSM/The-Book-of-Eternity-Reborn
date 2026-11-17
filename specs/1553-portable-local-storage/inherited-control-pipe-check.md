@@ -96,3 +96,20 @@ actual closure while the gate is held, and both confirmed and actual original
 handle closure after same-owner Stop. Current Stop does not retry this closure;
 expected causal RED is the final handle assertion. Only observation seams added,
 production cleanup behavior unchanged; fresh build/execution remain UNRUN.
+
+## Abort control causal RED and correction WIP
+
+Saved b42afa6f built with 0 errors/96 warnings in 102.19s. Official PlanOnly
+selected eight cases in 9.036s; the actual unchanged selection completed
+7 PASS / 1 FAIL in 34.871s, no duplicates/skips, runner cleanup complete.
+The new case reached the exact final assertion: same-owner stop did not close
+the original aborted control handle. Native cleanup was already complete and
+guardian ECHILD/emergency0, demonstrating why those facts alone were insufficient.
+TRX run: 20261117-112920-835-100-ade4a64e373749b3b316b3b28713f373-categories.
+
+Correction retries only bounded closure for an already-aborted inherited owner
+inside existing StopAndObserve, outside its one-shot S branch. It never retries
+L/A, never sends S behind unresolved abort or after closed control, and preserves
+sticky uncertainty. Tests unchanged. This correction is UNCOMPILED/UNRUN and
+awaits independent source review. No caching of fresh handles/authority; existing
+immutable native preparation remains unchanged through this RED/GREEN pair.

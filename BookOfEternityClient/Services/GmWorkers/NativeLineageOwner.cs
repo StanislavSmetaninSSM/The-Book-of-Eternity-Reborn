@@ -709,13 +709,22 @@ internal partial class NativeLineageOwner : GmWorkerOwnedLaunch
             using var observation = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             if (!_processStarted)
                 return new(_run, GmWorkerBackend.NativeLineage, GmWorkerBackendSelector.NativeGuarantee, GmWorkerStopState.Uncertain, "start-unconfirmed", false, true, null);
+            // An earlier admission abort may have timed out behind an original
+            // writer. Retry only closure of that same control, never L/A. This
+            // stays outside the one-shot stop request so later observations can
+            // resolve closure without manufacturing positive retirement.
+            bool inheritedAbort;
+            lock (_stateGate) inheritedAbort = _inheritedTerminal && _inheritedPhase == 5;
+            if (inheritedAbort && !_inheritedControlClosed)
+                await AbortInheritedBootstrapAsync().ConfigureAwait(false);
+            var unresolvedInheritedAbort = inheritedAbort && !_inheritedControlClosed;
             var finiteControlFailure = false;
             if (!_stopped)
             {
                 _stopped = true;
                 try
                 {
-                    if (!_supervisor.HasExited && !(_inheritedTerminal && _inheritedControlClosed) &&
+                    if (!unresolvedInheritedAbort && !_supervisor.HasExited && !(_inheritedTerminal && _inheritedControlClosed) &&
                         !(_finitePipe && _hostExit?.IsCompletedSuccessfully == true))
                     {
                         _stopControl = SendControlAsync('S');
