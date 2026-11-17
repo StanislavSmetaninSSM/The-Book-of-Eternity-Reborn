@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-living-world-project-completion-type",
+      "responsibility": "#1516 actual faction completion reducer preserves canonical nonnegative Int32 completion turn, sibling projects and prior history; malformed command turns refuse without tracker mutation.",
+      "excludes": "Full live GM journey, project creation, arbitrary project targeting and afterlife systems.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.FactionProjectCompletion.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_FactionProjectCompletion_*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-living-world-npc-activity-normalization",
       "responsibility": "#1516 actual normalizer applies bounded NPC activity progress to both canonical copies while preserving existing core reduction, sibling state and receipts, consuming commands and preventing replay.",
       "excludes": "Full accepted-turn admission, completion outcome semantics, skill/treatment composition and unrelated NPC policy.",

@@ -184,6 +184,35 @@ not permission to relax the existing target guard. The draft correction preserve
 the current faction root and appends its command, as ordinary distribution does.
 The correction is UNCOMPILED/UNRUN; later project/news intervals remain unaccepted.
 
+## Third journey interval: completion type defect — confirmed RED
+
+After d36c30a5's faction-author correction, fresh integration build passed with
+0 errors, 129 warnings in64.45s. Official journey completed 1 PASS/1 FAIL in39.299s,
+no skips/duplicates/timeouts, complete cleanup. The scout and council/project
+progress intervals now complete. Turn44 project completion is refused because
+completedProjects[0].completionTurn is a string, but canonical validation requires
+a nonnegative integer. The existing completion reducer calls GetNodeString on
+an integer command; even the earlier publication-only test expected string42.
+That helper-level PASS did not qualify the full engine state validator.
+Next: sparse typed completion regression, causal RED, preserve nonnegative Int32
+without guessed fallback, then rerun the affected lifecycle and journey cases.
+No completed four-turn/live-GM journey is claimed.
+
+Independent source review also flagged a possible raw flat-project identity-index
+gap; it did not cause this runtime refusal and remains unverified. Do not silently
+expand acceptance or weaken existing target checks to avoid investigating it.
+
+## Project completion sparse regression preparation — test-only WIP
+
+One desired-success actual-normalizer Fact and eight invalid-turn cases are added
+under mortal-living-world-project-completion-type. The positive requires JSON
+Int32, whole tracker equality including sibling/history, command consumption and
+bounded canonical tracker validation. Missing/null/string/negative/fraction/
+overflow/boolean/object inputs must refuse without tracker or backup mutation.
+No production change yet. Build/discovery/runtime are UNRUN; expected causal RED
+is string output for the positive and missing refusal for the eight invalid inputs.
+Sparse per-test state avoids re-running full GameEngine setup for this type gate.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
