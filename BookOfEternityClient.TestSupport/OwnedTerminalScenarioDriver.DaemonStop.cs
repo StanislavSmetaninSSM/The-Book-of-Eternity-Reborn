@@ -14,7 +14,7 @@ internal static partial class OwnedTerminalScenarioDriver
         BridgeHost? host = null;
         Task<int>? running = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(60));
         var session = Path.Combine(folder,"root/game_session");
         var statusPath = Path.Combine(session,"game_state/control/gm_bridge_status.json");
         try
@@ -84,7 +84,7 @@ internal static partial class OwnedTerminalScenarioDriver
                     .GetProperty("Reply",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(pin)!).ToArray();
             }
         }
-        using var bound = new CancellationTokenSource(TimeSpan.FromSeconds(17));
+        using var bound = new CancellationTokenSource(TimeSpan.FromSeconds(55));
         var start = new System.Diagnostics.ProcessStartInfo("/usr/bin/python3") { UseShellExecute=false,
             RedirectStandardOutput=true, RedirectStandardError=true };
         start.ArgumentList.Add(Path.Combine(folder,"ship/idle-daemon-stop.py")); start.ArgumentList.Add(folder);

@@ -14,6 +14,7 @@ internal static class ProductionMainLinuxFixture
     {
         Assert.True(OperatingSystem.IsLinux(),"M1 requires actual Linux execution.");
         var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(repo,"TestResults/production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        var daemonStopControl=mode is "production-main-daemon-stop" or "production-main-daemon-coordinated-stop";
         var reusableRelay=mode.StartsWith("production-main-relay-",StringComparison.Ordinal);
         if(reusableRelay) {
             var own=Path.Combine("/tmp","reusable-relay-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);
@@ -36,7 +37,10 @@ internal static class ProductionMainLinuxFixture
         var fixture=Path.Combine(package,"configured-neutral-cli");var source=Path.Combine(repo,"tests/fixtures/ProductionMain/configured-neutral-cli.c");
         var compiler=(Environment.GetEnvironmentVariable("PATH")??"").Split(Path.PathSeparator).Select(d=>Path.Combine(d,"cc")).First(File.Exists);
         await Prepare(compiler,["--version"],"fixture-compiler-version");
-        await Prepare(compiler,["-std=c11","-O2","-g","-Wall","-Wextra","-Werror",source,"-o",fixture],"fixture-build");
+        var fixtureCompileArgs=new[]{"-std=c11","-O2","-g","-Wall","-Wextra","-Werror"}
+            .Concat(daemonStopControl?new[]{"-DBOE_NEUTRAL_LIFETIME_SECONDS=65"}:Array.Empty<string>())
+            .Concat(new[]{source,"-o",fixture}).ToArray();
+        await Prepare(compiler,fixtureCompileArgs,"fixture-build");
         foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"}.Concat(mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"BookOfEternityClient.TestSupport"}:Array.Empty<string>()))
             await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-m:1","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
         if(mode=="package-layout") {
@@ -151,8 +155,11 @@ internal static class ProductionMainLinuxFixture
         var start=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=ship};
         start.Environment["PATH"]=playerBin;
         var scenarioArgs=mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(ship,"BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"),mode,package,folder}:new[]{"/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/ordinary.py"),mode,folder,ship,files.GameSessionPath};
-        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);
-        using var guardian=Process.Start(start)!;await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian,TimeSpan.FromSeconds(35),Path.Combine(folder,"guardian.log"));
+        // --live-turn selects only the native guardian budget range here. These
+        // two idle controls execute zero game turns and provide no GM qualification.
+        if(daemonStopControl)start.ArgumentList.Add("--live-turn");
+        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),daemonStopControl?"70000":"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);
+        using var guardian=Process.Start(start)!;await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian,TimeSpan.FromSeconds(daemonStopControl?75:35),Path.Combine(folder,"guardian.log"));
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,report.RootElement.GetProperty("emergencySignals").GetInt32());Assert.Equal(0,report.RootElement.GetProperty("failures").GetInt32());Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
         using var result=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"scenario.json")));

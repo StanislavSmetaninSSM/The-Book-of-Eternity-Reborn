@@ -481,3 +481,45 @@ but bridge/daemon EOF and logical Stopped ACK were not established by the driver
 Its result is Success=false, driverExit1,228.29s. Preserve that refusal. Investigate
 actual client-exit/daemon/owner shutdown ordering before another fresh run; do not
 relabel physical cleanup as logical authority or retry this original stop.
+
+## #1589 idle-daemon stop control preparation corrections (WIP, 2026-11-17)
+
+The accepted live relay turn in attempt e does not qualify orderly shutdown:
+its original owner remained Uncertain despite physical terminal cleanup. The
+bounded idle control preserves the existing original active-pin observation and
+both stop orders, using actual typed BridgeHost initialization and the shipped
+transport connector. It executes zero game turns and is not live GM acceptance.
+
+Two official attempts failed during preparation, not causal shutdown RED:
+
+1. Client and Bridge no-build publication succeeded, but TestSupport publication
+   attempted an MSBuild node named pipe and failed with SocketException 13.
+   Publication now uses supported serial `-m:1`; no security setting changed.
+2. With serial publication, root `f5ecc247bc82406f84d7816da711b531` reached daemon
+   Watching but not Waiting. Python expired at 16.000763 seconds, SignalCount 0;
+   no active-pin predicate or original shutdown was reached. Logs show session
+   at 17:30:10, backend 17:30:14 and Watching 17:30:16. Guardian reported ECHILD,
+   zero emergency signals and driver exit 1. Full startup duration is unknown.
+
+The next fixture-only source block is UNRUN. Python separates 30 seconds startup
+(until Waiting) from 20 seconds operation/EOF. C# child observation is 55 seconds,
+actual-host deadline 60 seconds with existing five-second final join; guardian
+70 seconds and outer observation 75 seconds. Only the two exact daemon control
+modes compile the inert neutral CLI with lifetime 65 seconds instead of default
+20. Guardian `--live-turn` is only its existing budget-range selector here, not
+a game/GM qualification. Production drain remains five seconds, connector RPC
+12 seconds, and launcher daemon timeout 30 seconds; none is relaxed.
+
+PTY diagnostics now stream all bytes directly to the raw file without cumulative
+record/byte quotas. A rolling marker window detects Watching/Waiting only;
+spawn, readiness, signal and EOF timings distinguish preparation from operation.
+Python AST parsing and diff whitespace checks passed; no runtime was started.
+Next: independent review/checkpoint, fresh unit build, then only the same
+`gm-daemon-coordinated-stop` category with existing stop diagnostics enabled.
+
+Optimization: immutable already-built outputs are reused through `--no-build
+--no-restore` publication. Serial MSBuild removes unnecessary node IPC, not work
+required for evidence. Fresh roots and original authority/pin observations are
+mandatory per attempt; mutable admission or shutdown evidence is never cached.
+No speedup claim or broad rerun is made. Raw diagnostic artifacts remain outside
+Git, including both preparation failures.
