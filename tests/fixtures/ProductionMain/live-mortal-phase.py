@@ -470,8 +470,26 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-evidence':
     else:raise AssertionError('Config duplicate admitted')
     print(json.dumps({'InertMortalEvidenceChecks':40,'ProcessesStarted':0}));sys.exit(0)
 
+def require_native_bootstrap_path_budget(temp_root):
+    # NativeLineageOwner currently checks this before constructing a socket,
+    # including the inherited-pipe fallback. Mirror, never weaken, that guard.
+    count=len((str(Path(temp_root)/('boe-native-'+'0'*32)/'owner')).encode('utf-8'))
+    if count>107:raise ValueError(f'Fixture native bootstrap path is {count} UTF-8 bytes; maximum 107. Choose a fresh shorter phase root.')
+    return count
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
+    suffix=len(('/boe-native-'+'0'*32+'/owner').encode('utf-8'))
+    for root in ['/'+('a'*(107-suffix-1)), '/'+('é'*20)+('a'*(107-suffix-41))]:
+        assert require_native_bootstrap_path_budget(root)==107
+        try:require_native_bootstrap_path_budget(root+'a')
+        except ValueError:pass
+        else:raise AssertionError('108-byte native bootstrap path was accepted')
+    print('PASS native bootstrap path budget: ASCII and UTF-8 107/108 boundaries')
+    sys.exit(0)
+
 assert len(sys.argv) in (4,5), 'phase-root seed-manifest action-file [previous-result]'
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
+require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=json.loads(seed_bytes)
 base=Path(seed['basePath']).resolve();session=base/'game_session';ship=session/'_runtime'
 assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
