@@ -405,3 +405,15 @@ They are UNBUILT/UNRUN; causal engine RED above precedes this implementation.
 Fresh matching/recomposition still costs work and no speedup is claimed. Next:
 cheap category before one expensive lifecycle rerun, then required negatives and
 independent review. Model transport remains blocked and no audit gate activated.
+
+## Replay cheap proof and remaining complete-candidate mismatch
+
+At4bd629fc build passed0errors/173warnings/123.65s. Dedicated seven cheap replay
+cases passed7/7 in12.8448443s, complete cleanup/no skips/duplicates/timeout. Real
+preview lifecycle still failed1/1 in125.4005039s at SECOND candidate comparison,
+complete cleanup. Therefore the timestamp correction is not enough to establish
+full candidate equivalence. No further speculative semantic change is made.
+A typed mismatch exception now names differing components and retains detached
+expected/actual DATA; the test logs that exact pair locally. This diagnostic-only
+change preserves the strict comparison and every refusal. Next is one bounded
+diagnostic rerun, then root-cause decision. Raw pairs are never committed.

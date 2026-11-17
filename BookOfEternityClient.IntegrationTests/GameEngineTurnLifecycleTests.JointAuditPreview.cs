@@ -15,7 +15,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 checkpointCount++;
                 previews.Add(await engine.CaptureCurrentMortalJointAuditPreviewAsync());
-                previews.Add(await engine.CaptureCurrentMortalJointAuditPreviewAsync());
+                try { previews.Add(await engine.CaptureCurrentMortalJointAuditPreviewAsync()); }
+                catch (GameEngine.MortalJointAuditCandidateChangedException mismatch)
+                {
+                    WritePhysicalInjuryDiagnostic("joint_audit_exact_rebuild_mismatch",
+                        new { mismatch.Expected, mismatch.Actual });
+                    throw;
+                }
                 Assert.Equal(previews[0], previews[1]);
             },
             observeSettledCommonPlan: plan =>

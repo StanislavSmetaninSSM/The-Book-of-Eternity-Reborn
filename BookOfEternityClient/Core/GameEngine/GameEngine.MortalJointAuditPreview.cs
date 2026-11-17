@@ -12,6 +12,23 @@ public partial class GameEngine
         string SemanticCandidateJson, string NarrativeSourcesJson,
         string ProgressionBasisJson, string ProgressionInputFingerprint);
 
+    internal sealed class MortalJointAuditCandidateChangedException(
+        MortalJointAuditPreview expected, MortalJointAuditPreview actual)
+        : InvalidDataException("joint_audit_candidate_changed: " + string.Join(",", new[]
+        {
+            expected.InputFingerprint == actual.InputFingerprint ? null : "input",
+            expected.PreparedPlanFingerprint == actual.PreparedPlanFingerprint ? null : "prepared",
+            expected.InventoryFingerprint == actual.InventoryFingerprint ? null : "inventory",
+            expected.SemanticCandidateJson == actual.SemanticCandidateJson ? null : "semantic",
+            expected.NarrativeSourcesJson == actual.NarrativeSourcesJson ? null : "narrative",
+            expected.ProgressionBasisJson == actual.ProgressionBasisJson ? null : "progressionBasis",
+            expected.ProgressionInputFingerprint == actual.ProgressionInputFingerprint ? null : "progressionIdentity"
+        }.Where(field => field is not null)))
+    {
+        internal MortalJointAuditPreview Expected { get; } = expected;
+        internal MortalJointAuditPreview Actual { get; } = actual;
+    }
+
     private MortalJointAuditPreview? _mortalJointAuditExpected;
 
     /// <summary>Captures the real candidate and releases every attempt capability before returning DATA.</summary>
@@ -49,7 +66,7 @@ public partial class GameEngine
                     var preflight = await BuildCurrentMortalJointPreflightAsync(lease, frame, capture, attempt, _normalizer.BindTo(lease));
                     data = CaptureMortalJointAuditCandidate(preflight);
                     if (_mortalJointAuditExpected is { } expected && data != expected)
-                        throw new InvalidDataException("joint_audit_candidate_changed_before_preview_close");
+                        throw new MortalJointAuditCandidateChangedException(expected, data);
                     await preflight.Preparation.ValidateInventoryCurrentAsync(_fs, lease);
                     await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
                     await attempt.RecheckPreflightDebugPrefixAsync(JointAttemptIssuer, preflight);
@@ -126,8 +143,9 @@ public partial class GameEngine
 
     private void RequireCurrentMortalJointAuditCandidate(CanonicalStateNormalizer.JointRepairPublicationPreflight preflight)
     {
-        if (_mortalJointAuditExpected is { } expected && CaptureMortalJointAuditCandidate(preflight) != expected)
-            throw new InvalidDataException("joint_audit_candidate_changed_before_publication_take");
+        if (_mortalJointAuditExpected is not { } expected) return;
+        var actual = CaptureMortalJointAuditCandidate(preflight);
+        if (actual != expected) throw new MortalJointAuditCandidateChangedException(expected, actual);
     }
 
     private MortalJointAuditPreview CaptureMortalJointAuditCandidate(CanonicalStateNormalizer.JointRepairPublicationPreflight preflight)
