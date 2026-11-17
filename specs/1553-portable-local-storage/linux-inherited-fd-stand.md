@@ -441,3 +441,17 @@ The live driver now flushes raw output and immutable correlated RPC events befor
 finalization, and reads only its own retained process identities/descendants.
 Missing/reused process identities remain observational UNKNOWN, never cleanup.
 Eight inert driver controls pass. No complete live game turn is claimed yet.
+
+Watcher closeout: independent review accepted runtime, partial acquisition and
+failed-cleanup reporting. Initial official source checks were1PASS/3FAIL: two
+historical guards selected an existing wrapper instead of Core; new cleanup
+extraction wrongly required a following function. Exact Core/current-guard and
+last-function boundaries were corrected without production change. Local LF
+normalization preserves CRLF portability. Final fresh integration build0errors,
+129warnings,60.75s; exact document PDB SHA256 joins current source. Official
+four-case category4/4 PASS,11.815s,zero duplicates,complete owned-tree cleanup.
+The preceding pre-normalization4/4 run is separate; its PDB did not match the final
+one-line change, so it was not reused as current acceptance. No broader suite or
+Windows runtime qualification is claimed. Fresh live run d uses478 byte-identical
+published files and only the reviewed daemon replacement; no saved game/queue or
+ownership copied. Actual live acceptance and original cleanup remain next.
