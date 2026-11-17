@@ -328,6 +328,26 @@ waiting silently until timeout. This is test-only; runtime remains UNRUN.
 Each probe needs an independent mutable real engine owner; no authority/fixture
 is shared or cached. Existing fixture helpers are reused without duplicate journeys.
 
+## Two distinct actual-engine outcomes at d7bc031e
+
+Fresh integration build: 0 errors, 129 warnings, 60.40 seconds. Separate official
+runs completed exactly one case each with full cleanup, no skips/duplicates/timeouts.
+Declared-effect repair: 1 FAIL, 23.139 seconds. The first actual mismatch and
+not-meaningful refusal assertions passed, and the missing command was consumed;
+then ordinary normalization rewrote canonical state after the GM outputs, correctly
+requiring a second output-only freshness repair. The one-packet test assumption
+failed, not production. The test now handles exactly that second packet, rewrites
+only unchanged player-facing outputs, asserts canonical/history/report unchanged,
+and rejects any further distinct packet. This updated harness is UNRUN.
+
+Narrative omission: 1 FAIL, 23.497 seconds, desired turn41 versus actual accepted42.
+The report was valid noSignificantChange with events=[] while prose claimed the
+crossing was destroyed. Thus undeclared prose claims are NOT automatically caught.
+This is distinct from declared effects without commands. The explicit-report spec
+excludes NLP; no new audit system or weakened assertion is introduced here. Parent
+was notified of this verified acceptance limitation. The red probe remains owned
+by its separate category; no completion/merge/live-GM qualification is claimed.
+
 ## Historical bounded completion checkpoint, 2026-11-16
 
 The bounded #1516 implementation and selected verification are complete. No
