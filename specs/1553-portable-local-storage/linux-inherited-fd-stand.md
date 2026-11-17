@@ -331,3 +331,12 @@ not listener startup/dispatcher wiring, so its first valid execution remains a
 required causal integration observation. Source test fixture lifetimes are now
 independent of the owner's cancellation path; actual capability tests follow real
 named/FIFO selection rather than assuming ordinary Linux denies sockets.
+
+Valid integration RED atf79ec9c1:51 selected/completed,49PASS/2FAIL,cleanupcomplete.
+Actual typed BridgeHost reached Running and refused missing transportEndpoint;
+throwing-cancellation control lost the original fatal error, as review predicted.
+The actual changed-TMPDIR Draft helper passed, as did all prior transport controls.
+Program now prepares endpoint before StartShell, switches original handlers to
+Stream dispatcher, observes server failure and separately attempts drain, listener
+join, original terminal stop and console restoration. Dispatcher retains callback
+errors and all peer failures while still joining cleanup. Fresh GREEN pending.

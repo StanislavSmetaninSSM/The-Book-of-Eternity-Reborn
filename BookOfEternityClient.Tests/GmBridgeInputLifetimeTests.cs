@@ -404,7 +404,7 @@ public sealed class GmBridgeInputLifetimeTests
         Assert.Contains("await ProcessConnectedRequestAsync(server, async () =>", server, StringComparison.Ordinal);
         Assert.Contains("var response = await HandleRequestAsync(request);", server, StringComparison.Ordinal);
         Assert.Contains("}, deadline.Token);", server, StringComparison.Ordinal);
-        Assert.Contains("finally { listener.Dispose(); await Task.WhenAll(peers); }", server, StringComparison.Ordinal);
+        Assert.Contains("await BridgePeerDispatcher.RunAsync(EnsureBridgeTransport(),ServePeerAsync,cancellationToken);", server, StringComparison.Ordinal);
         Assert.Contains("PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token)", source, StringComparison.Ordinal);
         Assert.Contains("return await DispatchPromptAsync(request);", source, StringComparison.Ordinal);
         Assert.Contains("Task.WhenAll(input.PromptTasks)", source, StringComparison.Ordinal);
