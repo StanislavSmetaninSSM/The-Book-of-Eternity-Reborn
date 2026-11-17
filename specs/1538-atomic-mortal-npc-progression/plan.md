@@ -1,3 +1,23 @@
+## Ordinary turn reached; required NPC output repair, 2026-11-17
+
+At saved a91fb6ea, fresh build passes (0 errors, 141 warnings, 110.54 seconds).
+Official single-journey runtime: 0 PASS / 1 FAIL, 19.080 seconds, full selection
+and cleanup complete. Initial full validation now passes. ProcessPlayerTurn
+reaches current-output validation and requests two legitimate repairs: missing
+relevant NPC Actor Brain block and missing new first-person NPC journal entry.
+This is incomplete authored test output, not proven XP implementation failure.
+
+The fixture now supplies both ordinary authored outputs without disabling a
+validator. Independent Sol XHigh review also identified that the old reload
+assertion only reread a file. Replace it with a fresh FileSystemManager,
+StateManager and real ExplorerWebCommandService mechanics request, asserting
+accepted 1/565 XP and standard profile without private session/snapshot metadata.
+This observes the browser-facing service after reload, not browser rendering.
+These edits are UNRUN. Merchant/teacher, actual browser/console, negative/retry
+and final acceptance remain open. No new cache; a fresh consumer is necessary
+to test reload rather than share prior runtime state. Next: rebuild and repeat
+only the same one-journey official category.
+
 ## Recovery build and initial baseline refusal, 2026-11-17
 
 WIP after remote checkpoint 364e85b6. Fresh restored integration build succeeds:

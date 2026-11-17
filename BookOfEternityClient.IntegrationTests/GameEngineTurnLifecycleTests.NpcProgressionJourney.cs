@@ -2,6 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.WebUi;
+using BookOfEternityClient.UI;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
@@ -55,9 +58,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(core.ContainsKey("NPCCoreChanges"));
         var story = (await _fs.ReadFileAsync("stories/mortal_life_2.jsonl"))!;
         Assert.Equal(42, JsonNode.Parse(Assert.Single(story.Split('\n', StringSplitOptions.RemoveEmptyEntries)))!["turn"]!.GetValue<int>());
-        var reloaded = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        var reloadFiles = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        var reloaded = new StateManager(reloadFiles, new GameSettings(), NullLogger<StateManager>.Instance);
         await reloaded.RefreshGameStateAsync();
-        Assert.Equal(core.ToJsonString(), JsonNode.Parse((await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.ToJsonString());
+        var reloadView = new ExplorerWebCommandService(reloadFiles, reloaded, new LocalizationManager(),
+            new ValidationService(reloadFiles, NullLogger<ValidationService>.Instance));
+        var details = await reloadView.ExecuteAsync(new ExplorerWebCommandRequest($"/npc section {ProgressionJourneyActor} mechanics"));
+        Assert.Equal(CommandExecutionState.Completed, details.State);
+        var publicOutput = string.Join("\n", details.Blocks.Select(block => JsonSerializer.Serialize(block, block.GetType(), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)));
+        Assert.Contains("1/565", publicOutput, StringComparison.Ordinal);
+        Assert.Contains("Стандартный", publicOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("session_progression_journey", publicOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotToken", publicOutput, StringComparison.Ordinal);
+        Assert.Equal(core.ToJsonString(), JsonNode.Parse((await reloadFiles.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.ToJsonString());
     }
 
     private async Task SeedProgressionJourneyAsync()
@@ -99,10 +112,31 @@ public sealed partial class GameEngineTurnLifecycleTests
           newLastWorldSimulationTimeInMinutes = control.LastWorldSimulationTimeInMinutes + control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes,
           newLastFactionSimulationTimeInMinutes = control.LastFactionSimulationTimeInMinutes + control.FactionCyclesAlreadyPendingBeforeTurn * control.FactionCycleMinutes }});
         var timestamp = DateTime.UtcNow.ToString("o");
+        await WriteJsonAsync("game_state/npcs/npc_journals.json", new { NPCJournals = new[] { new
+        { npcId = ProgressionJourneyActor, npcName = "Лев Наблюдатель", journalEntries = new[] { new
+          { entryId = "progression_journey_" + request.TurnNumber, timestamp,
+            description = "Я завершил упражнение и увереннее различаю детали. Я расскажу об этом спокойно, не приписывая себе нового навыка." } } } } });
+        const string actorReasoning = """
+        ## Actor Brain 2.0
+        ### Лев Наблюдатель
+        - Current location: loc_valmont_private_chambers, остаётся на месте.
+        - Situation: Завершил упражнение и отвечает на просьбу об отчёте.
+        - Profile inputs: Известный наблюдатель; опыт 99/100, явный стандартный профиль развития.
+        - Motivation: Честно сообщить результат наблюдения.
+        - Constraints: Не присваивает себе новую способность и не покидает локацию.
+        - Thoughts: Я стал внимательнее и могу спокойно рассказать о выполненной работе.
+        - Strategy options:
+          1. Сообщить результат точно. Benefit: собеседник понимает результат. Risk: отчёт покажется скромным.
+          2. Преувеличить достижения. Benefit: привлечь внимание. Risk: потерять доверие.
+        - Chosen strategy: Точно сообщить результат упражнения.
+        - Rejected alternatives: Преувеличение не подтверждено упражнением.
+        - Actions: Рассказывает о завершённом упражнении, оставаясь на месте.
+        - State changes: NPCCoreChanges progression добавляет 2 XP, итог level 2, experience 1, threshold 565; NPCJournals добавляет собственную мысль. Награда навыком не положена за один полученный уровень.
+        """;
         await WriteJsonAsync("output/narrative_response.json", new { response = "Лев завершил упражнение и стал опытнее. Его уровень повысился до второго.", timestamp });
         await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
-        await WriteJsonAsync("output/debug_logs.json", new { timestamp, npcSkillClaims = Array.Empty<object>(), gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Лев Наблюдатель\n- Why relevant: Завершил упражнение, получает опыт.\n- Actors outside scope: нет\n- Why outside scope: Других NPC нет.\n\n## Reasoning\n- Применён точный переход опыта без награды навыком." });
-        await WriteJsonAsync("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber, status = "success", timestamp, filesModified = new[] { NpcCoreChangesContract.NpcCorePath, ProgressionScheduleService.ReportPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
+        await WriteJsonAsync("output/debug_logs.json", new { timestamp, npcSkillClaims = Array.Empty<object>(), gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Лев Наблюдатель\n- Why relevant: Завершил упражнение, получает опыт.\n- Actors outside scope: нет\n- Why outside scope: Других NPC нет.\n\n## Reasoning\n- Применён точный переход опыта без награды навыком.\n\n" + actorReasoning });
+        await WriteJsonAsync("ready/turn_complete.json", new { sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber, status = "success", timestamp, filesModified = new[] { NpcCoreChangesContract.NpcCorePath, "game_state/npcs/npc_journals.json", ProgressionScheduleService.ReportPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
     }
 
     private sealed class ProgressionJourneyInput(FileSystemManager files) : IConsoleInputSource
