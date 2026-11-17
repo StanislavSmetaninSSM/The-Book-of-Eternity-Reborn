@@ -211,7 +211,12 @@ bounded canonical tracker validation. Missing/null/string/negative/fraction/
 overflow/boolean/object inputs must refuse without tracker or backup mutation.
 No production change yet. Build/discovery/runtime are UNRUN; expected causal RED
 is string output for the positive and missing refusal for the eight invalid inputs.
-Sparse per-test state avoids re-running full GameEngine setup for this type gate.
+Sparse per-test state avoids re-running full GameEngine setup for this type gate. A
+separate pure-DATA unit case exercises MortalLivingWorldEvents.Validate: canonical
+int7 is accepted, while matching canonical/report string7 must be rejected. It
+currently exposes Nonnegative's numeric-string fallback, which masked the domain
+integer mismatch in prior publication-only evidence. This additional case is
+UNRUN and changes no production behavior; resource Costs semantics are untouched.
 
 ## Historical bounded completion checkpoint, 2026-11-16
 

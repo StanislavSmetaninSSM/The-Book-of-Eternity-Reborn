@@ -23,6 +23,12 @@
           "tests": [
             "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_FactionProjectCompletion_*"
           ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn"
+          ]
         }
       ]
     },
