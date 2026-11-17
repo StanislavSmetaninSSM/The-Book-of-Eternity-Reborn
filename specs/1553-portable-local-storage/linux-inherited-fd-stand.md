@@ -1,4 +1,39 @@
-# Linux inherited-channel stand (WIP)
+# Linux inherited-channel stand and relay integration (#1589)
+
+**Current blocking review finding:** Linux live f is accepted, but final shared-path
+review found Windows Desktop PowerShell still launches the daemon under .NET
+Framework while the new launcher loads a net8 assembly in-process. That caller
+requires a compatible external typed-connector host, with bounded joined I/O,
+not a protocol fallback. Normal dotted custom pipe overrides are also rejected
+by the new strict grammar and are being reconciled securely. These findings
+are not yet fixed or tested; #1589 must remain open.
+
+## Current bounded outcome, 2026-11-17
+
+Linux NativeLineage inherited launch and the legitimate FIFO bridge path are
+implemented. Accepted evidence includes native 18 cases, managed 8 cases,
+FIFO/consumer integration 53/53, input-lifetime 33/33, daemon watcher source
+checks 4/4 and the actual original-active-pin coordinated idle stop 1/1. These
+are distinct bounded observations, not one combined all-platform suite.
+
+Fresh live f completed one genuinely authored GM turn through the ordinary
+launcher and maintained relay, then one successful original shutdown: 235.704s,
+matching durable Stopped/OwnedScopeEmpty, all participating terminals and helper
+exit0/EOF, guardian ECHILD with no emergency signals. Independent outcome review
+accepted the source/evidence join and materialized
+`chronicle_elyara_shore_orientation`, thought `elyara_first_orientation_1` and
+three offered options. No fabricated response, ready override or replay was used.
+
+This is Linux relay transport/lifecycle acceptance with the Chaos Sea Elyara
+preset, not Mortal-world simulations or initial-NewGame handoff. Linux named-pipe
+positive execution on a socket-capable host and Windows runtime were not run in
+this block. The prior e shutdown refusal remains unexplained and is not declared
+fixed. Unsupported kernel permissions must fail closed; see the maintained relay
+README for current requirements. Final combined requirements/support review and
+remote closeout are separate from these accepted outcomes.
+
+The chronological sections below preserve earlier WIP, failures and next-step
+statements at their original checkpoints; they do not supersede this summary.
 
 Base: `fa5d5ec8a20851f6b7401e5e7b27b455c9deb9d7`, branch
 `1553-linux-relay-fd-stand`. User authorized a separate isolated launch stand,
@@ -213,31 +248,35 @@ endpoints fail closed; no client reconnect/fallback. Transport identity does not
 replace application run/generation/root, draft challenge, live pins or close ACK.
 No legacy saved-state compatibility is needed for ephemeral bridge status.
 
-- [ ] Import accepted FIFO source/tests and merge additive catalog/project entries
+Checklist reconciled after accepted live f: completed within the bounded Linux
+scope recorded in the continuation/results below, not Windows runtime or whole
+game acceptance. Original test-first design text is retained.
+
+- [x] Import accepted FIFO source/tests and merge additive catalog/project entries
   without replacing the inherited-terminal category or existing TestSupport.
-- [ ] Add test-first endpoint/connector validation and actual FIFO Stream exchange;
+- [x] Add test-first endpoint/connector validation and actual FIFO Stream exchange;
   initially refusal-only connector stub, then real bounded connection. Cover
   unknown/malformed endpoints, stale run, cancellation and exact stream EOF.
   New files: Services/GmRuntime/BridgeTransportConnector.cs and focused tests.
-- [ ] Add bridge-owned listener adapter in BookOfEternityGMBridge. A fresh AF_UNIX
+- [x] Add bridge-owned listener adapter in BookOfEternityGMBridge. A fresh AF_UNIX
   construction probe may select FIFO only for EPERM/EACCES. Successful probe then
   bind/path/listener failure is fatal, not fallback. Create listener and immutable
   endpoint before StartShellAsync; dispatch begins after existing startup boundary.
   Preserve the next named-pipe listener before serving the previous peer.
-- [ ] Wire Program server handlers to Stream, shared endpoint into BridgeStatus,
+- [x] Wire Program server handlers to Stream, shared endpoint into BridgeStatus,
   GmMainOperationClient, GmLoadSessionOperation and DraftObservation. Draft env
   uses the same explicit endpoint despite TMPDIR changes. Existing application
   handshakes/ownership/close ACK remain unchanged. Listener failures must reach
   host lifecycle; shutdown closes admission, cancels/joins handlers and preserves
   existing original-terminal cleanup and status publication authority.
-- [ ] Wire Launcher/bookofeternity.ps1 Invoke-BridgeRequest to the shared shipped
+- [x] Wire Launcher/bookofeternity.ps1 Invoke-BridgeRequest to the shared shipped
   assembly connector, with actual cancellation deadline and joined connect/read/
   write tasks. Never load an assembly path supplied by diagnostic status.
-- [ ] Verify actual PowerShell request and two independent clients, main-operation
+- [x] Verify actual PowerShell request and two independent clients, main-operation
   close ACK, single-stream Load, Draft under changed TMPDIR, stale status refusal,
   failed startup and shutdown with pending/accepted peers. Use narrowly owned
   categories and independent source/outcome review; no global suite.
-- [ ] Run ordinary launcher and maintained gm-relay with live root-authored GM
+- [x] Run ordinary launcher and maintained gm-relay with live root-authored GM
   responses, inspect materialized game effects and exact owned cleanup. Prepared
   scripted packets do not satisfy this final acceptance; issue remains open.
 
@@ -561,7 +600,9 @@ and restored terminal modes; RPC helper exit0 with both EOFs. Independent guardi
 reports driverExit0, ECHILD, zero emergency signals/failures/deadline. Whole live
 measurement 235.704s, Success=true, one genuine action/one accepted turn. Raw
 records remain outside Git in relay-live-1589-20261117-f; independent outcome
-review is pending at this checkpoint.
+review accepted this complete outcome and the source/evidence join. It also
+verified materialized `chronicle_elyara_shore_orientation`, thought
+`elyara_first_orientation_1` and three offered options.
 
 Scope remains exact: ordinary launcher, Chaos Sea Elyara preset, initial request
 cancelled before CLI then ordinary Continue and a real new turn. This qualifies
