@@ -355,3 +355,10 @@ prefix evaluation or relaxation for arbitrary stages. Shared binding checks are
 factored, not removed. This correction is UNBUILT/UNRUN, narrow independent review
 assigned by parent because earlier reviewer followup hit the agent-thread limit.
 Clock DATA rebinding and negative lifecycle tests remain pending. No model gate.
+
+Narrow independent source review found no blocking phase defect; it requested
+avoiding duplicate early owner checks introduced by extraction. Those checks now
+run once at each entry; common context fences remain identical. New terminal
+negative coverage is still required (Common-only, foreign preflight, closed or
+delegated owner and source drift); existing early-consumption negatives do not
+claim this coverage. No test result is inferred from source review.

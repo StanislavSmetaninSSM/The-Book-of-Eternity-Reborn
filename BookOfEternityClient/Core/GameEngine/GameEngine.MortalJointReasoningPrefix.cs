@@ -75,13 +75,11 @@ public partial class GameEngine
             RequireOrdinaryJointRepairLease(_lease);
             if (capturing ? !_capturing || _phase != "Capturing" : _capturing || _phase != "PreparationStarted" || _stages.Count != 0)
                 throw new InvalidDataException("debug_prefix_attempt_phase_unavailable");
-            return RequirePrefixOwnerBinding();
+            return RequirePrefixContextBinding();
         }
 
-        private ValidatedPendingTurnSnapshotContext RequirePrefixOwnerBinding()
+        private ValidatedPendingTurnSnapshotContext RequirePrefixContextBinding()
         {
-            RequireActualOwner(_files, _lease);
-            RequireOrdinaryJointRepairLease(_lease);
             if (_delegated || _close is not null || _frame is not ValidatedPendingTurnSnapshotContext frame ||
                 _engine._mortalJointRepairCheckpoint is not { } checkpoint ||
                 checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>() != _prefixCheckpoint ||
@@ -200,7 +198,9 @@ public partial class GameEngine
             RequireIssuer(issuer);
             ValidatedPendingTurnSnapshotContext RequirePreflight()
             {
-                var frame = RequirePrefixOwnerBinding();
+                RequireActualOwner(_files, _lease);
+                RequireOrdinaryJointRepairLease(_lease);
+                var frame = RequirePrefixContextBinding();
                 if (!_prefixSelected || _capturing || _phase != "V2CommonSealed" ||
                     _stages.Count != 6 || !_stages.TryGetValue(JointAttemptStage.Preflight, out var retainedStage) ||
                     !ReferenceEquals(retainedStage, actualPreflight))
