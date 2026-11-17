@@ -424,3 +424,20 @@ Do not reuse that session, replay its action, or overwrite its diagnostics. A
 possible PowerShell event/helper reentry hazard is being checked independently;
 it is not established as the cause of this interrupted measurement. A new owned
 run must retain incremental raw evidence and its own process observations.
+
+A separate bounded real PowerShell event regression demonstrated helper reentry:
+a watcher callback issues sequence2 after reply1 is read but before the outer
+PowerShell function compares its mutable sequence. Control succeeds; old callback
+fails identity validation. This is not proof of the interrupted run's cause.
+Callbacks now only signal; the unchanged serial startup/polling consumers own work.
+The ordinary terminal/repair/protocol-failure paths return to polling; arbitrary
+repair during unrelated indefinite work is not newly qualified. Initial control
+plus all four real watcher callbacks pass with child exit0/EOF/no forced stop.
+Acquisition is inside cleanup scope, successful registrations retained immediately;
+injected fourth-registration refusal cleans its three earlier subscriptions/jobs
+without touching an unrelated subscriber. Fresh C# source-contract run and final
+independent review remain pending. No current admission/authority is cached.
+The live driver now flushes raw output and immutable correlated RPC events before
+finalization, and reads only its own retained process identities/descendants.
+Missing/reused process identities remain observational UNKNOWN, never cleanup.
+Eight inert driver controls pass. No complete live game turn is claimed yet.

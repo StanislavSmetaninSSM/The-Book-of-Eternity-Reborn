@@ -2,6 +2,35 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-daemon-watcher-serialization",
+      "responsibility": "#1589 daemon watcher serialization source guards: signal-only callbacks, retained startup/poll consumers, heartbeat and turn counting.",
+      "excludes": "Source contracts only; actual event/stdio regression is separately verified through tests/fixtures/GmDaemonWatcher. No live GM acceptance or exact prior stall-cause claim.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "tests/fixtures/GmDaemonWatcher/reentry.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonWatchers_SignalOnlyAndRetainStartupAndPollingConsumers",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonLifecycle_PreservesWatcherAndReportsFatalDiagnostics",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonStatus_RefreshesWhileWaitingForGmTurnResponse",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-bridge-fifo-linux",
       "responsibility": "#1589 real Linux per-peer FIFO bridge transport: duplex bytes, EOF, cancellation and owned cleanup; no game preparation.",
       "excludes": "Bridge dispatcher/launcher integration, worker PID authentication, Windows, hostile same-UID protection and live GM acceptance.",

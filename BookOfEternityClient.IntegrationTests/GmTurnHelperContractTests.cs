@@ -5790,6 +5790,41 @@ public sealed class GmTurnHelperContractTests
     }
 
     [Fact]
+    public void DaemonWatchers_SignalOnlyAndRetainStartupAndPollingConsumers()
+    {
+        var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
+        foreach (var name in new[] { "qteEffectResolutionAction", "action", "repairAction", "terminalProtocolFailureAction" })
+        {
+            var begin = daemon.IndexOf("$" + name + " = {", StringComparison.Ordinal);
+            Assert.True(begin >= 0);
+            var end = daemon.IndexOf("\n}", begin, StringComparison.Ordinal);
+            Assert.True(end > begin);
+            var callback = daemon[begin..end];
+            Assert.Contains("$Event.MessageData.Set()", callback, StringComparison.Ordinal);
+            Assert.DoesNotContain("Process-", callback, StringComparison.Ordinal);
+            Assert.DoesNotContain("Invoke-Gm", callback, StringComparison.Ordinal);
+        }
+        var loop = daemon[daemon.IndexOf("# Main loop", StringComparison.Ordinal)..];
+        foreach (var consumer in new[] { "Process-QteEffectResolutionRequest", "Process-Turn", "Process-RepairRequest", "Process-TerminalProtocolFailureRequest" })
+        {
+            Assert.Contains(consumer, loop, StringComparison.Ordinal);
+            var startup = daemon[daemon.IndexOf("Watching: $InputDir", StringComparison.Ordinal)..daemon.IndexOf("# Main loop", StringComparison.Ordinal)];
+            Assert.Contains(consumer, startup, StringComparison.Ordinal);
+        }
+        Assert.Contains("Start-Sleep -Milliseconds $PollingInterval", loop, StringComparison.Ordinal);
+        Assert.Contains("Unregister-Event -SubscriptionId", daemon, StringComparison.Ordinal);
+        var acquisition = daemon.IndexOf("$qteEffectResolutionWatcher = New-Object", StringComparison.Ordinal);
+        var guardedStart = daemon.LastIndexOf("try {", acquisition, StringComparison.Ordinal);
+        Assert.True(guardedStart > daemon.IndexOf("Assert-SingleDaemonInstance\n", StringComparison.Ordinal));
+        Assert.Contains("$daemonWatcherSubscriptions.Add([pscustomobject]", daemon, StringComparison.Ordinal);
+        var cleanup = ExtractFunctionBlock(daemon, "function Stop-GmDaemonWatcherResources");
+        Assert.True(cleanup.IndexOf("EnableRaisingEvents = $false", StringComparison.Ordinal) < cleanup.IndexOf("Unregister-Event", StringComparison.Ordinal));
+        Assert.True(cleanup.IndexOf("Remove-Job", StringComparison.Ordinal) < cleanup.IndexOf("$Signal.Dispose()", StringComparison.Ordinal));
+        Assert.Contains("$failures.Add", cleanup, StringComparison.Ordinal);
+
+    }
+
+    [Fact]
     public void DaemonLifecycle_PreservesWatcherAndReportsFatalDiagnostics()
     {
         var daemon = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");

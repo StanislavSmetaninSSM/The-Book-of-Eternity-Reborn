@@ -6788,8 +6788,39 @@ function Resolve-DaemonTimeoutTerminalConflict {
 # FileSystemWatcher & Main Loop
 # ═══════════════════════════════════════════════
 
+function Stop-GmDaemonWatcherResources {
+    param($Watchers, $Subscriptions, $Signal)
+    $failures = [Collections.Generic.List[string]]::new()
+    foreach ($producer in $Watchers) {
+        if ($null -ne $producer) {
+            try { $producer.EnableRaisingEvents = $false } catch { $failures.Add("disable watcher: $($_.Exception.Message)") }
+        }
+    }
+    foreach ($subscription in $Subscriptions) {
+        try {
+            Get-EventSubscriber -SourceIdentifier $subscription.SourceId -ErrorAction SilentlyContinue |
+                ForEach-Object { Unregister-Event -SubscriptionId $_.SubscriptionId -ErrorAction Stop }
+        } catch { $failures.Add("unregister $($subscription.SourceId): $($_.Exception.Message)") }
+        try { Remove-Job -Job $subscription.Job -Force -ErrorAction Stop }
+        catch { $failures.Add("remove job $($subscription.SourceId): $($_.Exception.Message)") }
+    }
+    foreach ($producer in $Watchers) {
+        if ($null -ne $producer) {
+            try { $producer.Dispose() } catch { $failures.Add("dispose watcher: $($_.Exception.Message)") }
+        }
+    }
+    if ($null -ne $Signal) {
+        try { $Signal.Dispose() } catch { $failures.Add("dispose signal: $($_.Exception.Message)") }
+    }
+    return $failures.ToArray()
+}
+
 Assert-SingleDaemonInstance
 
+$qteEffectResolutionWatcher = $watcher = $repairWatcher = $terminalProtocolFailureWatcher = $null
+$daemonWorkSignal = $null
+$daemonWatcherSubscriptions = [Collections.Generic.List[object]]::new()
+try {
 $qteEffectResolutionWatcher = New-Object System.IO.FileSystemWatcher
 $qteEffectResolutionWatcher.Path = $InputDir
 $qteEffectResolutionWatcher.Filter = "qte_effect_resolution_request.json"
@@ -6818,46 +6849,33 @@ $terminalProtocolFailureWatcher.IncludeSubdirectories = $false
 $terminalProtocolFailureWatcher.NotifyFilter = [System.IO.NotifyFilters]::FileName -bor [System.IO.NotifyFilters]::CreationTime -bor [System.IO.NotifyFilters]::LastWrite
 $terminalProtocolFailureWatcher.EnableRaisingEvents = $true
 
-$qteEffectResolutionAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-QteEffectResolutionRequest -RequestPath $path
-    }
+# Watcher callbacks may interrupt a PowerShell command while the shared
+# participating helper still owns its reply/sequence. Never enter consumers
+# from an event action: startup and the serial polling loop own all work.
+$daemonWorkSignal = [Threading.AutoResetEvent]::new($false)
+$qteEffectResolutionAction = { [void]$Event.MessageData.Set()
+}
+$action = { [void]$Event.MessageData.Set()
+}
+$repairAction = { [void]$Event.MessageData.Set()
+}
+$terminalProtocolFailureAction = { [void]$Event.MessageData.Set()
 }
 
-$action = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-Turn -RequestPath $path
+    foreach ($registration in @(
+        @($qteEffectResolutionWatcher, $qteEffectResolutionAction),
+        @($watcher, $action),
+        @($repairWatcher, $repairAction),
+        @($terminalProtocolFailureWatcher, $terminalProtocolFailureAction)
+    )) {
+        foreach ($eventName in @('Created', 'Changed')) {
+            $sourceId = 'boe-daemon-' + [guid]::NewGuid().ToString('N')
+            $job = Register-ObjectEvent $registration[0] $eventName -SourceIdentifier $sourceId -MessageData $daemonWorkSignal -Action $registration[1]
+            $daemonWatcherSubscriptions.Add([pscustomobject]@{ SourceId = $sourceId; Job = $job })
+        }
     }
-}
-
-$repairAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-RepairRequest -RepairPath $path
-    }
-}
-
-$terminalProtocolFailureAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-TerminalProtocolFailureRequest -FailurePath $path
-    }
-}
-
-Register-ObjectEvent $qteEffectResolutionWatcher "Created" -Action $qteEffectResolutionAction | Out-Null
-Register-ObjectEvent $qteEffectResolutionWatcher "Changed" -Action $qteEffectResolutionAction | Out-Null
-Register-ObjectEvent $watcher "Created" -Action $action | Out-Null
-Register-ObjectEvent $watcher "Changed" -Action $action | Out-Null
-Register-ObjectEvent $repairWatcher "Created" -Action $repairAction | Out-Null
-Register-ObjectEvent $repairWatcher "Changed" -Action $repairAction | Out-Null
-Register-ObjectEvent $terminalProtocolFailureWatcher "Created" -Action $terminalProtocolFailureAction | Out-Null
-Register-ObjectEvent $terminalProtocolFailureWatcher "Changed" -Action $terminalProtocolFailureAction | Out-Null
 
 Write-Log "Watching: $InputDir" -Color DarkGray
-
-try {
     if (-not $CliWindowTitle -and -not ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal'))) {
         Write-Host ""
         Write-Host "  +-------------------------------------------------+" -ForegroundColor Yellow
@@ -6897,6 +6915,9 @@ try {
     while ($true) {
         try {
             Start-Sleep -Milliseconds $PollingInterval
+            # Coalesce hints without reducing the existing polling delay.
+            # Event delivery is not a latency guarantee; polling also sees missed hints.
+            [void]$daemonWorkSignal.WaitOne(0)
             Update-DaemonHeartbeat
 
             if ((Test-Path $QteEffectResolutionRequestFile) -and !$script:IsProcessing) {
@@ -6937,14 +6958,12 @@ catch {
     Write-DaemonFatalReport -ErrorRecord $_ -Phase "fatal"
 }
 finally {
-    $qteEffectResolutionWatcher.EnableRaisingEvents = $false
-    $qteEffectResolutionWatcher.Dispose()
-    $watcher.EnableRaisingEvents = $false
-    $watcher.Dispose()
-    $repairWatcher.EnableRaisingEvents = $false
-    $repairWatcher.Dispose()
-    $terminalProtocolFailureWatcher.EnableRaisingEvents = $false
-    $terminalProtocolFailureWatcher.Dispose()
+    $script:DaemonWatcherCleanupFailures = @(Stop-GmDaemonWatcherResources -Watchers @(
+        $qteEffectResolutionWatcher, $watcher, $repairWatcher, $terminalProtocolFailureWatcher
+    ) -Subscriptions $daemonWatcherSubscriptions -Signal $daemonWorkSignal)
+    foreach ($cleanupFailure in $script:DaemonWatcherCleanupFailures) {
+        [Console]::Error.WriteLine("Daemon watcher cleanup failure: $cleanupFailure")
+    }
     if ($null -ne $script:DaemonFatalError) {
         Write-DaemonStatus -Status "failed" -FatalError $script:DaemonFatalError
     }
