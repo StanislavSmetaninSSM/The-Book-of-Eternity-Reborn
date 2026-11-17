@@ -31,6 +31,7 @@
                       ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
     <ProjectReference Include="..\tests\fixtures\PortableStorageCrashHost\PortableStorageCrashHost.csproj" />
+    <ProjectReference Include="..\tests\fixtures\GmBridgeFifoPeerHost\GmBridgeFifoPeerHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>

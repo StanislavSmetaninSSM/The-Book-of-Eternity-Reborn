@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmBridgeFifoTransportTests
+public sealed partial class GmBridgeFifoTransportTests
 {
     [Fact]
     public async Task OriginalPair_ExchangesBothDirections_AndPeerCloseIsEof()

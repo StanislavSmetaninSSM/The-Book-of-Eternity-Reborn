@@ -162,3 +162,22 @@ without further production changes. This qualifies only the named same-process
 Linux-x64 tests. Lifetime65536 exhaustion, every handshake crash phase, separate
 CLI process and application pin/launcher/live-GM acceptance are not claimed.
 Independent bounded source/outcome review is requested before extending the block.
+
+## Independent bounded acceptance and separate-process extension
+
+Independent Astra High review checked the exact source hashes, logs and TRX and
+accepted the current standalone same-process Linux-x64 boundary, with no remaining
+Critical/Important finding. It did not accept production readiness. Nonblocking
+minors: the 48-directory snapshot is not itself an independent proof that ticket49
+stays blocked (the reviewed semaphore establishes the source bound); per-byte
+handshake overhead remains unmeasured and deferred.
+
+A test-only independent peer executable is now prepared, reusing the exact client
+connector through existing TestSupport friendship. Three scenarios cover 128KiB
+echo, EPIPE after remote closure with ordinary child exit, and original channel
+EOF after deliberate owned-child termination. The official test starts one direct
+bounded child using the existing crash-host pattern, drains stdout/stderr, and
+joins exit in finally; no production helper, detached process, authentication
+change or duplicated native transport. The child launches no descendants. Tests
+assert paths removed before fixture deletion. This extension is UNCOMPILED/UNRUN;
+application and PowerShell consumer wiring remain entirely unchanged.
