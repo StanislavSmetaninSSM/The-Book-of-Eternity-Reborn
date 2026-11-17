@@ -20,6 +20,9 @@ channels. Required kernel/runtime permissions include pidfd operations and
 denial (`EPERM` or `EACCES`) may select the inherited/FIFO paths. Later socket
 bind/listen failures do not trigger fallback. Clients use the shipped connector
 and the original endpoint; they do not reconnect to another owner on failure.
+Use a short writable temporary parent: NativeLineage still requires the UTF-8
+`<temp>/boe-native-<run>/owner` path to fit 107 bytes before the transport probe,
+including when inherited/FIFO transport will be selected.
 
 This is a trusted local launch boundary, not authentication against hostile
 same-user/same-process code. Unsupported kernels or security policies must refuse

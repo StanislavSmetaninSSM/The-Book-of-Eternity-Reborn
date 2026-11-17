@@ -101,7 +101,24 @@ public static class BridgeTransportConnector
 
     // Pure name grammar, independent of the executing OS; no connection or authority.
     internal static bool IsSimpleNamedPipeName(string name)
-        => name.Length <= 128 && name.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_');
+    {
+        if (name.Length is 0 or > 128) return false;
+        var segmentHasCharacter = false;
+        foreach (var character in name)
+        {
+            if (character == '.')
+            {
+                if (!segmentHasCharacter) return false;
+                segmentHasCharacter = false;
+            }
+            else
+            {
+                if (!char.IsAsciiLetterOrDigit(character) && character is not ('-' or '_')) return false;
+                segmentHasCharacter = true;
+            }
+        }
+        return segmentHasCharacter;
+    }
 
     internal static void Validate(BridgeTransportEndpoint endpoint)
     {

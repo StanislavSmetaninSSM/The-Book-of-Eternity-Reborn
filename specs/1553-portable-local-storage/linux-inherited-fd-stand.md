@@ -615,3 +615,33 @@ read refusal during Stopping retained in daemon status rather than erased.
 No production stop timeout, authority/pin retirement, retry or security setting
 was relaxed. Current bounded capability is demonstrated; overall issue closure
 still requires the final requirements/support-boundary review.
+
+
+## Desktop control boundary and pipe grammar: RED / implementation awaiting review
+
+#1589, 2026-11-17. The new launcher control connector had introduced a Desktop
+PowerShell CLR incompatibility by loading a net8 assembly directly. The bounded
+correction uses one external dotnet process only on Desktop; Core/Linux retains
+its direct shared connector path. Exact raw status/request and a fresh correlated
+one-shot envelope cross stdin. No pipeName fallback, replay, alternate owner,
+status-derived assembly, admission change or security relaxation is introduced.
+The caller's monotonic deadline starts before process launch (default 5 seconds);
+cleanup has separate bounded process and original I/O observation. Failure stays
+failed-or-unknown rather than replaying an action. No new cache is appropriate:
+endpoint authority and request are fresh per operation, while the existing built
+package is reused by cheap actual FIFO tests. No speedup is claimed.
+
+Coordinator-reported official RED: fresh build 0 errors / 85 warnings in 96.58s.
+Desktop category: 15 cases, 10 PASS / 5 FAIL, runner 11.476s, complete cleanup.
+Failures were valid envelope rejection by the stub, absent correlated refusal,
+and all three real external-process cases not reaching FIFO because of the stub.
+The separate grammar category gave 18 cases, 16 PASS / 2 FAIL, runner 9.808s,
+complete cleanup: dotted pipe overrides were rejected. Existing refusal checks
+passing against a refusal stub are not claimed as causal regression evidence.
+
+The minimal external helper implementation is now source-only, awaiting independent
+review and fresh GREEN. Tests are unchanged. Linux exercises the actual external
+process branch explicitly, not a fabricated Windows runtime. Actual Windows
+PowerShell 5.1 and full Windows game behavior remain unqualified. Existing unrelated
+Desktop helper defects are not included in this correction. The earlier live
+Linux acceptance and its preserved failures retain their original scope.
