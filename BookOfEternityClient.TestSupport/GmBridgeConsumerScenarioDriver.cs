@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net.Sockets;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
@@ -18,9 +19,13 @@ internal static class GmBridgeConsumerScenarioDriver
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(35));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(25));
         try
         {
+            var expectedKind = "named-pipe-v1";
+            try { using var probe = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified); }
+            catch (SocketException error) when (error.NativeErrorCode is 1 or 13) { expectedKind = "linux-fifo-v1"; }
+            result["ObservedSocketCapability"] = expectedKind;
             var launch = NeutralTerminalLaunch.Create(package, output);
             var root = Directory.GetParent(launch.Scratch)!.FullName;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -31,9 +36,11 @@ internal static class GmBridgeConsumerScenarioDriver
 
             string? status = null;
             GmSessionRunRecord? original = null;
+            using var startupDeadline = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token);
+            startupDeadline.CancelAfter(TimeSpan.FromSeconds(5));
             while (status == null)
             {
-                deadline.Token.ThrowIfCancellationRequested();
+                startupDeadline.Token.ThrowIfCancellationRequested();
                 if (running.IsCompleted)
                     throw new IOException($"Actual bridge ended before publication (exit {await running}).");
                 var candidate = await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json");
@@ -51,10 +58,11 @@ internal static class GmBridgeConsumerScenarioDriver
                         break;
                     }
                 }
-                await Task.Delay(10, deadline.Token);
+                await Task.Delay(10, startupDeadline.Token);
             }
             var endpoint = BridgeTransportConnector.DecodeStatus(status);
-            if (endpoint.Kind != "linux-fifo-v1") throw new IOException("Actual denied-socket host did not publish FIFO endpoint.");
+            if (endpoint.Kind != expectedKind) throw new IOException("Actual host transport disagrees with fresh socket capability.");
+            if (!TransportEntryExists(endpoint.Address)) throw new IOException("Published transport entry is absent before use.");
             result["ActualEndpoint"] = endpoint;
             pin = await GmMainOperationClient.OpenAsync(files, deadline.Token, original!.Identity);
             if (pin.Identity != original.Identity) throw new IOException("Actual main grant changed original identity.");
@@ -87,7 +95,7 @@ internal static class GmBridgeConsumerScenarioDriver
             var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Stopped record missing."));
             if (stopped.Identity != original.Identity || stopped.Disposition != GmSessionRunDisposition.Stopped)
                 throw new IOException("Original terminal did not become durably Stopped.");
-            if (Directory.Exists(endpoint.Address)) throw new IOException("Original transport directory survived actual host shutdown.");
+            if (TransportEntryExists(endpoint.Address)) throw new IOException("Original transport entry survived actual host shutdown.");
             result["OriginalStoppedAndEndpointRemoved"] = true;
             result["Success"] = true;
             exit = 0;
@@ -109,6 +117,10 @@ internal static class GmBridgeConsumerScenarioDriver
         }
         return exit;
     }
+
+    private static bool TransportEntryExists(string address)
+        => Directory.EnumerateFileSystemEntries(Path.GetDirectoryName(address)!)
+            .Any(entry => string.Equals(entry, address, StringComparison.Ordinal));
 
     private static async Task<JsonDocument> LauncherAsync(string command, string session, string output, CancellationToken token)
     {

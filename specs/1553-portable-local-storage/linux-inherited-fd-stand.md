@@ -312,3 +312,22 @@ rearm failure disposes both. A typed actual-host guardian test should then cover
 public main client grant/activate/CloseObserved plus shipped PowerShell diagnostics
 and shutdown. Only after consumer wiring can the maintained live GM relay gate
 be attempted. No task closure, merge or live-GM qualification in this checkpoint.
+
+## Listener/consumer integration work in progress, 2026-11-17
+
+Checkpoint3aafe3bf supplied refusing listener/dispatcher/endpoint-codec stubs.
+Fresh build succeeded; official45 cases completed27PASS/18FAIL with complete
+cleanup. Implementation at81c9188f then completed49 cases:48PASS/1FAIL. The new
+actual-host case did not reach product code: its45s guardian argument exceeded
+the non-live guardian's30s maximum, causing exit64 and no report. This is a test
+preparation error, not causal product RED or a live relay result. Exact new-mode
+budgets are corrected to25s fixture,30s guardian and35s outer observation.
+
+Independent review also found throwing cancellation callbacks can hide original
+listener failure. A new typed regression requires both fatal and callback errors,
+joined original handler and removed transport. The production correction is still
+pending. Actual host Program intentionally has descriptor field/property only,
+not listener startup/dispatcher wiring, so its first valid execution remains a
+required causal integration observation. Source test fixture lifetimes are now
+independent of the owner's cancellation path; actual capability tests follow real
+named/FIFO selection rather than assuming ordinary Linux denies sockets.
