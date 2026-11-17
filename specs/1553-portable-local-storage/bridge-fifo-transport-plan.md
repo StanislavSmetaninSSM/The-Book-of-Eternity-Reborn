@@ -2,7 +2,7 @@
 
 Source: [#1589](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1589).
 Base `1d9ae03f13b4a93fd786af96ac09cc4c4f0ba0c5`; isolated branch
-`1589-bridge-fifo-recovery-20261117`. This worker owns only the files listed below.
+`1589-bridge-fifo-recovery2-20261117`. This worker owns only the files listed below.
 No native supervisor, NativeLineageOwner, game contracts, bridge dispatcher or
 launcher is changed in this bounded reusable-transport block.
 
@@ -115,3 +115,21 @@ selection is pending; an injected pending-admission ChannelClosedException also 
 drain and run removal even when disposal propagates the fault. This is injected
 fault coverage, not proof of the precise production scheduling race. Further
 transport negative controls remain required. No bridge integration or live-GM claim.
+
+## Seven-case causal cleanup RED and proposed corrections
+
+Saved test-first `b23a73f9d587092773d2a64ee19bfc3306db8544` built with zero errors,
+96 warnings in 101.02 seconds. Official PlanOnly selected exactly seven cases.
+Execution yielded the two duplex/cancellation cases PASS and all five new cleanup
+cases FAIL at the intended assertions: retained created paths, early concurrent
+disposal completion, and retained run after injected pending fault. Wall time
+12.8100100 seconds, seven cases complete, no skips/duplicates, runner cleanup
+complete. This is real FIFO behavior but not independent-process/live-GM proof.
+
+Corrections now record newly-created identity before faultable initialization,
+perform descriptor-free anchored cleanup on creation failure, close the whole
+listener even if pending admission faults (then rethrow original failure), and
+share a disposal completion that includes both closed FDs and joined operations.
+Synchronous stream disposal also joins. Unverifiable or changed cleanup targets
+remain refused, not recursively deleted. These corrections are UNCOMPILED/UNRUN;
+tests are unchanged. Further negative and independent-client controls remain.

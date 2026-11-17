@@ -10,6 +10,7 @@ internal sealed class LinuxBridgeFifoStream(SafeFileHandle reader, SafeFileHandl
     private readonly CancellationTokenSource _stop = new();
     private readonly object _lifetime = new();
     private readonly TaskCompletionSource _idle = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource _closed = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private int _operations;
     private bool _disposed;
     public override bool CanRead => !_disposed;
@@ -97,24 +98,39 @@ internal sealed class LinuxBridgeFifoStream(SafeFileHandle reader, SafeFileHandl
     {
         lock (_lifetime) { _operations--; if (_disposed && _operations == 0) _idle.TrySetResult(); }
     }
-    protected override void Dispose(bool disposing)
+    private Task StartDispose()
     {
         lock (_lifetime)
         {
-            if (_disposed) return;
+            if (_disposed) return _closed.Task;
             _disposed = true;
             if (_operations == 0) _idle.TrySetResult();
         }
-        // Cancellation callbacks may complete operations; never invoke under lifetime lock.
-        _stop.Cancel();
-        beforeHandlesClose?.Invoke();
-        reader.Dispose(); writer.Dispose();
+        Exception? failure = null;
+        try
+        {
+            // Cancellation callbacks may finish operations; never invoke under lock.
+            _stop.Cancel();
+            beforeHandlesClose?.Invoke();
+        }
+        catch (Exception ex) { failure = ex; }
+        finally { reader.Dispose(); writer.Dispose(); }
+        _ = FinishDisposeAsync(failure);
+        return _closed.Task;
+    }
+    private async Task FinishDisposeAsync(Exception? failure)
+    {
+        await _idle.Task.ConfigureAwait(false);
+        if (failure == null) _closed.TrySetResult(); else _closed.TrySetException(failure);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        StartDispose().GetAwaiter().GetResult();
         base.Dispose(disposing);
     }
     public override async ValueTask DisposeAsync()
     {
-        Dispose();
-        await _idle.Task.ConfigureAwait(false);
+        await StartDispose().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }
 }

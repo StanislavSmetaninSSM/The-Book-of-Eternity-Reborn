@@ -47,18 +47,39 @@ internal static class LinuxBridgeFifoNative
     {
         Name(name);
         if (mkdirat(parent, name, 0x1c0) != 0) throw Error("mkdirat");
-        afterCreation?.Invoke();
-        // Never repair permissions or reuse an existing entry.
-        return OpenPrivateDirectory(parent, name);
+        Identity? original = null;
+        try
+        {
+            original = StatAt(parent, name, 0x100);
+            afterCreation?.Invoke();
+            return OpenPrivateDirectory(parent, name);
+        }
+        catch (Exception failure)
+        {
+            try { RemoveCreated(parent, name, original, directory: true); }
+            catch (Exception cleanup) { throw new AggregateException(failure, cleanup); }
+            throw;
+        }
     }
 
     internal static Identity CreateFifo(SafeFileHandle directory, string name, Action? afterCreation = null)
     {
         Name(name);
         if (mkfifoat(directory, name, 0x180) != 0) throw Error("mkfifoat");
-        afterCreation?.Invoke();
-        using var fd = OpenFifo(directory, name, ReadOnly);
-        return Stat(fd);
+        Identity? original = null;
+        try
+        {
+            original = StatAt(directory, name, 0x100);
+            afterCreation?.Invoke();
+            using var fd = OpenFifo(directory, name, ReadOnly);
+            return Stat(fd);
+        }
+        catch (Exception failure)
+        {
+            try { RemoveCreated(directory, name, original, directory: false); }
+            catch (Exception cleanup) { throw new AggregateException(failure, cleanup); }
+            throw;
+        }
     }
 
     internal static SafeFileHandle OpenFifo(SafeFileHandle directory, string name, int mode)
@@ -71,37 +92,34 @@ internal static class LinuxBridgeFifoNative
     internal static bool Missing(IOException error) => error is NativeFailure { ErrorNumber: 2 };
     internal static bool NoReader(IOException error) => error is NativeFailure { ErrorNumber: 6 };
 
-    internal static void RemoveFifo(SafeFileHandle directory, string name, Identity original)
+    internal static void RemoveFifo(SafeFileHandle directory, string name, Identity original) =>
+        RemoveCreated(directory, name, original, directory: false);
+
+    internal static void RemoveDirectory(SafeFileHandle parent, string name, Identity original) =>
+        RemoveCreated(parent, name, original, directory: true);
+
+    private static void RemoveCreated(SafeFileHandle parent, string name, Identity? original, bool directory)
     {
-        SafeFileHandle current;
-        try { current = OpenFifo(directory, name, ReadOnly); }
+        // statx-at needs no new FD, so cleanup still works after descriptor exhaustion.
+        Name(name);
+        if (original == null) throw new IOException("Created entry ownership could not be captured; cleanup remains uncertain.");
+        Identity now;
+        try { now = StatAt(parent, name, 0x100); }
         catch (IOException ex) when (Missing(ex)) { return; }
-        using (current)
-        {
-            if (Stat(current) != original) throw new IOException("Changed FIFO retained during cleanup.");
-            if (unlinkat(directory, name, 0) != 0 && Marshal.GetLastPInvokeError() != 2) throw Error("unlinkat FIFO");
-        }
+        var type = directory ? 0x4000 : 0x1000;
+        if ((original.Mode & 0xf000) != type || original.Uid != geteuid() ||
+            now.Device != original.Device || now.Inode != original.Inode || now.Uid != original.Uid || now.Mode != original.Mode ||
+            (!directory && (now.Links != 1 || original.Links != 1)))
+            throw new IOException("Changed owned entry retained during cleanup.");
+        if (unlinkat(parent, name, directory ? 0x200 : 0) != 0 && Marshal.GetLastPInvokeError() != 2) throw Error("unlinkat owned entry");
     }
 
-    internal static void RemoveDirectory(SafeFileHandle parent, string name, Identity original)
-    {
-        SafeFileHandle current;
-        try { current = OpenPrivateDirectory(parent, name); }
-        catch (IOException ex) when (Missing(ex)) { return; }
-        using (current)
-        {
-            var now = Stat(current);
-            if (now.Device != original.Device || now.Inode != original.Inode || now.Uid != original.Uid || now.Mode != original.Mode)
-                throw new IOException("Changed directory retained during cleanup.");
-            if (unlinkat(parent, name, 0x200) != 0 && Marshal.GetLastPInvokeError() != 2) throw Error("unlinkat directory");
-        }
-    }
-
-    internal static Identity Stat(SafeFileHandle fd)
+    internal static Identity Stat(SafeFileHandle fd) => StatAt(fd, "", 0x1000);
+    private static Identity StatAt(SafeFileHandle fd, string name, int flags)
     {
         const uint mask = 0x10f;
-        if (statx(fd, "", 0x1000, mask, out var value) != 0 || (value.Mask & mask) != mask)
-            throw Error("statx");
+        if (statx(fd, name, flags, mask, out var value) != 0) throw Error("statx");
+        if ((value.Mask & mask) != mask) throw new IOException("Incomplete FIFO identity metadata.");
         return new(((ulong)value.DeviceMajor << 32) | value.DeviceMinor, value.Inode, value.Uid, value.Mode, value.Links);
     }
 

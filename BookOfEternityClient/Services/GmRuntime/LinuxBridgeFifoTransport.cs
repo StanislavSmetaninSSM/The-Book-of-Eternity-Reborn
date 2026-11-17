@@ -38,18 +38,34 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
         var parent = LinuxBridgeFifoNative.OpenDirectory(parentDirectory);
         var runId = Guid.NewGuid().ToString("N"); var name = "boe-bridge-" + runId;
         SafeFileHandle? run = null, read = null, write = null;
+        LinuxBridgeFifoNative.Identity? runIdentity = null, ticketIdentity = null;
+        LinuxBridgeFifoStream? tickets = null;
         try
         {
             run = LinuxBridgeFifoNative.CreateDirectory(parent, name);
-            var ticketIdentity = LinuxBridgeFifoNative.CreateFifo(run, "tickets");
+            runIdentity = LinuxBridgeFifoNative.Stat(run);
+            ticketIdentity = LinuxBridgeFifoNative.CreateFifo(run, "tickets");
             afterTicketCreated?.Invoke();
             // Only rendezvous has a lifetime RDWR anchor. Each peer is unidirectional.
             read = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.ReadWrite);
             write = LinuxBridgeFifoNative.OpenFifo(run, "tickets", LinuxBridgeFifoNative.WriteOnly);
-            var tickets = new LinuxBridgeFifoStream(read, write); read = write = null;
+            tickets = new LinuxBridgeFifoStream(read, write); read = write = null;
             return new(parent, run, name, new(Path.Combine(parentDirectory, name), runId), ticketIdentity, tickets, beforeReadyEnqueue);
         }
-        catch { read?.Dispose(); write?.Dispose(); run?.Dispose(); parent.Dispose(); throw; }
+        catch (Exception failure)
+        {
+            var errors = new List<Exception> { failure };
+            try
+            {
+                TryCleanup(() => tickets?.Dispose(), errors);
+                read?.Dispose(); write?.Dispose();
+                if (run != null && ticketIdentity != null) TryCleanup(() => LinuxBridgeFifoNative.RemoveFifo(run, "tickets", ticketIdentity), errors);
+                if (runIdentity != null) TryCleanup(() => LinuxBridgeFifoNative.RemoveDirectory(parent, name, runIdentity), errors);
+            }
+            finally { run?.Dispose(); parent.Dispose(); }
+            if (errors.Count > 1) throw new AggregateException(errors);
+            throw;
+        }
     }
 
     internal async Task<Stream> AcceptAsync(CancellationToken token = default)
@@ -132,18 +148,29 @@ internal sealed class LinuxBridgeFifoListener : IAsyncDisposable
     }
     private async Task DisposeCoreAsync()
     {
-        _stop.Cancel();
-        await _tickets.DisposeAsync().ConfigureAwait(false);
-        await _pump.ConfigureAwait(false);
-        await Task.WhenAll(_pending).ConfigureAwait(false);
-        while (_ready.Reader.TryRead(out var stream)) await stream.DisposeAsync().ConfigureAwait(false);
+        var errors = new List<Exception>();
         try
         {
-            LinuxBridgeFifoNative.RemoveFifo(_run, "tickets", _ticketIdentity);
-            LinuxBridgeFifoNative.RemoveDirectory(_parent, _name, _runIdentity);
+            TryCleanup(() => _stop.Cancel(), errors);
+            try { await _tickets.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            try { await _pump.ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            try { await Task.WhenAll(_pending).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            while (_ready.Reader.TryRead(out var stream))
+            {
+                try { await stream.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            }
+            TryCleanup(() => LinuxBridgeFifoNative.RemoveFifo(_run, "tickets", _ticketIdentity), errors);
+            TryCleanup(() => LinuxBridgeFifoNative.RemoveDirectory(_parent, _name, _runIdentity), errors);
         }
         finally { _run.Dispose(); _parent.Dispose(); }
+        if (errors.Count == 1) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(errors[0]).Throw();
+        if (errors.Count > 1) throw new AggregateException(errors);
     }
+    private static void TryCleanup(Action cleanup, List<Exception> errors)
+    {
+        try { cleanup(); } catch (Exception ex) { errors.Add(ex); }
+    }
+
 }
 
 internal static class LinuxBridgeFifoClient
