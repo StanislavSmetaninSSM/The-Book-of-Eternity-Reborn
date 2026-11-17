@@ -75,6 +75,13 @@ public partial class GameEngine
             RequireOrdinaryJointRepairLease(_lease);
             if (capturing ? !_capturing || _phase != "Capturing" : _capturing || _phase != "PreparationStarted" || _stages.Count != 0)
                 throw new InvalidDataException("debug_prefix_attempt_phase_unavailable");
+            return RequirePrefixOwnerBinding();
+        }
+
+        private ValidatedPendingTurnSnapshotContext RequirePrefixOwnerBinding()
+        {
+            RequireActualOwner(_files, _lease);
+            RequireOrdinaryJointRepairLease(_lease);
             if (_delegated || _close is not null || _frame is not ValidatedPendingTurnSnapshotContext frame ||
                 _engine._mortalJointRepairCheckpoint is not { } checkpoint ||
                 checkpoint.ToJsonObject()["fingerprint"]!.GetValue<string>() != _prefixCheckpoint ||
@@ -175,6 +182,37 @@ public partial class GameEngine
                 // it cannot evaluate, reenter Capturing or attach new evidence.
                 await retained.RequireCurrentAsync(_files, _lease);
                 if (!ReferenceEquals(frame, RequirePrefixBinding(capturing: false)))
+                    throw new InvalidDataException("debug_prefix_closed_frame_changed");
+                _prefixChecks++; ObservePrefix(retained);
+            }
+            catch (Exception error)
+            {
+                ObservePrefix(retained, error.Message); retained.Dispose(); _prefix = null;
+                MarkPrefixDataDisposed(); throw;
+            }
+        }
+
+        // A separate terminal refusal fence, not permission to reuse the early
+        // PreparationStarted API after stages have been built.
+        internal async Task RecheckPreflightDebugPrefixAsync(object issuer,
+            CanonicalStateNormalizer.JointRepairPublicationPreflight actualPreflight)
+        {
+            RequireIssuer(issuer);
+            ValidatedPendingTurnSnapshotContext RequirePreflight()
+            {
+                var frame = RequirePrefixOwnerBinding();
+                if (!_prefixSelected || _capturing || _phase != "V2CommonSealed" ||
+                    _stages.Count != 6 || !_stages.TryGetValue(JointAttemptStage.Preflight, out var retainedStage) ||
+                    !ReferenceEquals(retainedStage, actualPreflight))
+                    throw new InvalidDataException("debug_prefix_actual_preflight_unavailable");
+                return frame;
+            }
+            var frame = RequirePreflight();
+            var retained = _prefix ?? throw new InvalidDataException("debug_prefix_closed_source_missing");
+            try
+            {
+                await retained.RequireCurrentAsync(_files, _lease);
+                if (!ReferenceEquals(frame, RequirePreflight()))
                     throw new InvalidDataException("debug_prefix_closed_frame_changed");
                 _prefixChecks++; ObservePrefix(retained);
             }

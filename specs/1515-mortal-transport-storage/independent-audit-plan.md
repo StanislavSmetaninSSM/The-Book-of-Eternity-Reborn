@@ -339,3 +339,19 @@ progression calculation JSON DATA, checks exact sources/control/tuple/generation
 and constructs new service inputs and engine authority under each fresh lease.
 No retained lease-bound object, new clock, normalized comparison, authority cache
 or full feature acceptance is intended. Changed inputs must reject old DATA.
+
+## First preview terminal-prefix fence correction WIP
+
+The preview lifecycle on unchanged 46a3 source (checkpoint2cc1) executed 1/1 FAIL
+in81.1955878s, complete owned cleanup/no skips/duplicates/timeout. It reached full
+preflight, then FIRST preview failed `debug_prefix_attempt_phase_unavailable`:
+its final source recheck incorrectly called the early PreparationStarted/stages0
+API after all six stages were retained. Thus no second-preview clock result is
+claimed. A separate preflight recheck now requires selected current live owner,
+unchanged bindings, no delegation/close, V2CommonSealed, six actual stages and
+reference equality to the retained preflight. It rechecks existing detached prefix
+DATA before and after the await. The old early phase guard is unchanged; no new
+prefix evaluation or relaxation for arbitrary stages. Shared binding checks are
+factored, not removed. This correction is UNBUILT/UNRUN, narrow independent review
+assigned by parent because earlier reviewer followup hit the agent-thread limit.
+Clock DATA rebinding and negative lifecycle tests remain pending. No model gate.

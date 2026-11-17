@@ -51,7 +51,7 @@ public partial class GameEngine
                         throw new InvalidDataException("joint_audit_candidate_changed_before_preview_close");
                     await preflight.Preparation.ValidateInventoryCurrentAsync(_fs, lease);
                     await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
-                    await attempt.RecheckClosedDebugPrefixAsync(JointAttemptIssuer);
+                    await attempt.RecheckPreflightDebugPrefixAsync(JointAttemptIssuer, preflight);
                     if (sourceOperation is not null) await sourceOperation.CompleteAsync();
                     CloseCurrentJointAttempt(attempt, lease);
                     if (attempt.CloseDisposition != "ClosedNoNativeAttempt" || attempt.Delegated)
