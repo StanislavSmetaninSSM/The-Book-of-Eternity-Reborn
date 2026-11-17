@@ -45,6 +45,40 @@ public sealed class GmBridgeDesktopControlTests
         Assert.Empty(output.ToArray());
     }
 
+    [Theory]
+    [InlineData("malformed")]
+    [InlineData("duplicate")]
+    [InlineData("double-bom")]
+    [InlineData("utf16")]
+    [InlineData("invalid-utf8")]
+    public async Task ActualStdinRefusesMalformedFramesWithoutUncorrelatedOutput(string kind)
+    {
+        var frame = Frame("{\"pipeName\":\"старый\"}") + "\n";
+        byte[] bytes = kind switch
+        {
+            "malformed" => Encoding.UTF8.GetBytes("{broken\n"),
+            "duplicate" => Encoding.UTF8.GetBytes(frame.Replace("{\"requestId\":", "{\"requestId\":\"" + Id + "\",\"requestId\":")),
+            "double-bom" => new byte[] { 0xef, 0xbb, 0xbf, 0xef, 0xbb, 0xbf }.Concat(Encoding.UTF8.GetBytes(frame)).ToArray(),
+            "utf16" => Encoding.Unicode.GetPreamble().Concat(Encoding.Unicode.GetBytes(frame)).ToArray(),
+            _ => new byte[] { 0xc3, 0x28, 0x0a }
+        };
+        using var input = new MemoryStream(bytes); using var output = new MemoryStream();
+        Assert.Equal(2, await GmBridgeRequestControl.RunAsync(input, output, CancellationToken.None));
+        Assert.Empty(output.ToArray());
+    }
+
+    [Fact]
+    public async Task ActualUtf8BomFramePreservesCorrelationAndCyrillicPayload()
+    {
+        var frame = Frame("{\"pipeName\":\"старый\"}") + "\n";
+        using var input = new MemoryStream(new byte[] { 0xef, 0xbb, 0xbf }.Concat(Encoding.UTF8.GetBytes(frame)).ToArray());
+        using var output = new MemoryStream();
+        Assert.Equal(2, await GmBridgeRequestControl.RunAsync(input, output, CancellationToken.None));
+        using var response = JsonDocument.Parse(output.ToArray());
+        Assert.Equal(Id, response.RootElement.GetProperty("requestId").GetString());
+        Assert.False(response.RootElement.GetProperty("ok").GetBoolean());
+    }
+
     [Fact]
     public async Task MissingEndpointProducesCorrelatedRefusalWithoutLegacyFallback()
     {
