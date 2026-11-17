@@ -191,7 +191,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         public bool KeyAvailable => RepairFailure != null || (!allowRepair && files.FileExists("game_state/control/validation_repair_request.json"));
         public ConsoleKeyInfo ReadKey(bool intercept = true)
         {
-            if (RepairFailure != null) throw new InvalidOperationException("Progression repair fixture failed", RepairFailure);
+            if (RepairFailure != null) return new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, false, false, false);
             var repair = files.ResolvePath("game_state/control/validation_repair_request.json");
             if (File.Exists(repair)) throw new InvalidOperationException("Progression journey repair: " + File.ReadAllText(repair));
             return new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false);

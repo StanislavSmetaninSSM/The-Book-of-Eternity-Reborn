@@ -1,3 +1,22 @@
+## Repair journey fixture review corrections WIP, 2026-11-17
+
+Initial source ef85d903 built with 0 errors/126 warnings in 70.80 seconds.
+Official one-case run failed in 28.0421376 seconds with complete cleanup:
+the observer used client FileSystemManager.FileExists while the engine held the
+real GM-main owner, causing an owner-lock IOException. This is a fixture boundary
+error, not progression RED. Run identity:
+20261117-081308-252-5-2c70e8ea489f4bf498e00e3c1660e055-categories.
+
+The observer now uses the documented external-GM filesystem boundary: raw reads
+of the actual repair packet and an atomic replacement of only the pending command
+and matching ready packet. No second client owner, production lock bypass change,
+or inferred state publication. Independent review also found failure cleanup and
+oracle gaps: observer failures now request Escape so the engine cancels its wait;
+a watchdog remains owned until engine completion; exact progression-invalid code
+and experience-path refusal are required, not a substring anywhere in the packet.
+The observer is joined before owned fixture cleanup. Current corrections UNRUN.
+Next: checkpoint/re-review, build and the same single case; no broad replay.
+
 ## Whole-turn rejection/repair/resubmission journey WIP, 2026-11-17
 
 Root requests this independent technical step while live GM-relay preparation
