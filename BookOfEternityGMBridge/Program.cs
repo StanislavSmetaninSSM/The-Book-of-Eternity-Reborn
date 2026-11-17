@@ -233,13 +233,15 @@ internal sealed partial class BridgeHost : IDisposable
         PrintBanner();
 
         Task? serverTask=null;
+        Task? preparedFailureWatch=null;
         var errors=new List<Exception>();
         var controlKeys=!Console.IsInputRedirected;
         var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
         _controlLoopOwnsTransport=true;
         try
         {
-            EnsureBridgeTransport(); // Freeze coordinates before any child environment is constructed.
+            var transport=EnsureBridgeTransport(); // Freeze coordinates before any child environment is constructed.
+            preparedFailureWatch=ObservePreparedTransportFailureAsync(transport,_cts.Token);
             try { await StartShellAsync(); }
             catch(StartupObservationUnavailableException ex) { ReportDiagnosticStartupException(ex); }
             catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); }
@@ -276,6 +278,7 @@ internal sealed partial class BridgeHost : IDisposable
             // failure still owns its listener and must close it before returning.
             if(serverTask!=null){try{await serverTask;}catch(Exception ex){errors.Add(ex);}}
             else if(_bridgeTransport!=null){try{await _bridgeTransport.DisposeAsync();}catch(Exception ex){errors.Add(ex);}}
+            if(preparedFailureWatch!=null){try{await preparedFailureWatch;}catch(Exception ex){errors.Add(ex);}}
             try{await StopShellAsync();}catch(Exception ex){errors.Add(ex);}
             try{if(controlKeys)Console.TreatControlCAsInput=previousControlKeys;}catch(Exception ex){errors.Add(ex);}
             _controlLoopOwnsTransport=false;
@@ -285,6 +288,17 @@ internal sealed partial class BridgeHost : IDisposable
         if(distinct.Length==1)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(distinct[0]).Throw();
         if(distinct.Length>1)throw new AggregateException(distinct);
         return 0;
+    }
+
+    private async Task ObservePreparedTransportFailureAsync(BridgeTransportListener transport,CancellationToken token)
+    {
+        Exception failure;
+        try {failure=await transport.Failure.WaitAsync(token);}
+        catch(OperationCanceledException) when(token.IsCancellationRequested){return;}
+        // This watcher runs before startup, independent of dispatcher admission or joins.
+        // Revoke the host waits as well as transport waits; original stop is still joined.
+        try{_cts.Cancel();}catch(Exception cancellation){throw new AggregateException(failure,cancellation);}
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
 
     private static void ReportDiagnosticStartupException(Exception error)
@@ -319,7 +333,7 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task RunServerLoopAsync(CancellationToken cancellationToken)
     {
         using var shortCapacity = new SemaphoreSlim(16,16);
-        await BridgePeerDispatcher.RunAsync(EnsureBridgeTransport(),ServePeerAsync,cancellationToken);
+        await BridgePeerDispatcher.RunAsync(EnsureBridgeTransport(),ServePeerAsync,cancellationToken,onFatal:_=>_cts.Cancel());
 
         async Task ServePeerAsync(Stream server,CancellationToken peerToken)
         {

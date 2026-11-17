@@ -9,6 +9,7 @@ internal static class BridgePeerDispatcher
         ArgumentOutOfRangeException.ThrowIfLessThan(maximumPeers,1);
         using var stop=CancellationTokenSource.CreateLinkedTokenSource(token);
         using var capacity=new SemaphoreSlim(maximumPeers,maximumPeers);
+        var notified=0;
         var peers=new List<Task>();var errors=new System.Collections.Concurrent.ConcurrentQueue<Exception>();
         var peerFailure=new TaskCompletionSource<Exception>(TaskCreationOptions.RunContinuationsAsynchronously);
         var observing=ObserveFailureAsync();
@@ -25,7 +26,7 @@ internal static class BridgePeerDispatcher
                 } catch {if(accepted!=null)await accepted.DisposeAsync().ConfigureAwait(false);capacity.Release();throw;}
             }
         } catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
-        catch(Exception ex){errors.Enqueue(ex);}
+        catch(Exception ex){NotifyFatal(ex);errors.Enqueue(ex);}
         finally {
             CancelAndRetainErrors();
             // Independent attempts: a listener cleanup error must not skip joins.
@@ -40,6 +41,10 @@ internal static class BridgePeerDispatcher
         if(distinct.Length>1)throw new AggregateException(distinct);
         return;
 
+        void NotifyFatal(Exception error) {
+            if(Interlocked.Exchange(ref notified,1)==0 && onFatal!=null)
+                try{onFatal(error);}catch(Exception ex){errors.Enqueue(ex);}
+        }
         void CancelAndRetainErrors() {try{stop.Cancel();}catch(Exception ex){errors.Enqueue(ex);}}
         void ThrowIfFailed() {
             if(listener.Failure.IsCompletedSuccessfully)ExceptionDispatchInfo.Capture(listener.Failure.Result).Throw();
@@ -48,14 +53,15 @@ internal static class BridgePeerDispatcher
         }
         async Task ObserveFailureAsync() {
             try {
-                await Task.WhenAny(listener.Failure,peerFailure.Task).WaitAsync(stop.Token).ConfigureAwait(false);
+                var failed=await Task.WhenAny(listener.Failure,peerFailure.Task).WaitAsync(stop.Token).ConfigureAwait(false);
+                NotifyFatal(await failed.ConfigureAwait(false));
                 CancelAndRetainErrors();
             } catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
         }
         async Task ServeAsync(Stream stream) {
             try {await using(stream.ConfigureAwait(false)){await handler(stream,stop.Token).ConfigureAwait(false);}}
             catch(OperationCanceledException) when(stop.IsCancellationRequested) { }
-            catch(Exception ex){errors.Enqueue(ex);peerFailure.TrySetResult(ex);CancelAndRetainErrors();}
+            catch(Exception ex){errors.Enqueue(ex);peerFailure.TrySetResult(ex);NotifyFatal(ex);CancelAndRetainErrors();}
             finally{capacity.Release();}
         }
     }

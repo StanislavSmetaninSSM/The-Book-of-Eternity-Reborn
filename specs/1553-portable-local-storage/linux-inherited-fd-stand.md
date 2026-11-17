@@ -356,3 +356,12 @@ coverage preserves its original Stop/Finish stream, with no canonical replacemen
 claim. Maintained live driver now calls shipped connector via a qualification-only
 stdio fixture, uses maintained relay CLI/close, and supplies no game responses;
 inert syntax/argv/phase checks passed, actual game run remains pending.
+
+Host-bound fatal RED:53cases52PASS/1FAIL,completecleanup31.001s. Both actual
+Main and Load original-stream/launcher scenarios passed, including no-replacement
+Load generation preservation. The new independent host-token wait timed out until
+fixture cleanup because fatal callback was not wired. Dispatcher now notifies host
+on first fatal before waiting for handlers; a separate prepared-listener watcher
+starts before terminal startup and is canceled/joined at shutdown. Natural app
+shutdown still writes its original stop response before cancellation; no guarantee
+of concurrent unobserved close ACK delivery is added. Fresh GREEN pending.
