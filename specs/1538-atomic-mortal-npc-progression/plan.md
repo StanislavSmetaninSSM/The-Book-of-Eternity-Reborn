@@ -1,3 +1,35 @@
+## Console regression recovery WIP, 2026-11-17
+
+Clean GitHub clone restored exact f6f5af7bee4de86ddee88cf65a711c1a98b1ba00
+on branch 1538-progression-journey-audit. The executor reset lost the accepted
+export and raw diagnostics. Earlier recorded GREEN remains historical evidence;
+the interrupted console RED build has no result. Reconstructed test-only changes
+are UNRUN. Production rendering is unchanged until a causal RED is obtained.
+
+Before reset, actual Program agent-console on a copy of the accepted consumer
+export showed level 16, XP 1/102400 and Standard progression without the private
+snapshot/source markers. NPC general details nevertheless rendered duplicate
+passive sections: obsolete embedded rendering showed '?' while the later canonical
+renderer showed the correct skill/mastery. This was real console inspection, not
+a live GM-relay turn. Browser rendering remains BLOCKED by separate browser/exec
+network namespaces; frontend build and Kestrel startup alone are not UI evidence.
+The owner additionally requires live GM-relay gameplay with the coordinator as GM;
+scripted accepted-turn fixtures do not satisfy that requirement.
+
+The existing no-sidecar console theory now includes a canonical passive skill and
+requires one active and one passive heading in normal/debug modes, proper names,
+and unchanged privacy/mastery assertions. A narrow two-case category avoids
+replaying unrelated suites. Independent Sol 6.1 XHigh source review found the
+proposed removal of only the obsolete embedded-skill block safe: unconditional
+RenderNpcSkills already preserves supported names/descriptions, mastery/progress
+and public mechanics. No production deletion has happened yet.
+
+Optimization: reuse the already computed acceptedMechanics and its existing
+canonical renderer. No extra read, cache or adapter is needed. No gameplay or
+GM-authored contract changes. Next: restore shared toolchain, build and run this
+exact category for causal RED, then remove only duplicate rendering and obtain
+GREEN plus actual console recheck. No merge or closure.
+
 ## Accepted progression feeds merchant and teacher: GREEN, 2026-11-17
 
 Verified source 8b4f018d758ef07891d872252d63ecb701a9ddb7. Fresh build: 0 errors,

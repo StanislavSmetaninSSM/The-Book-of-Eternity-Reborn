@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-console-skill-single-render",
+      "responsibility": "#1538 actual Explorer console renders canonical active/passive names once, preserving mastery and privacy in normal/debug modes.",
+      "excludes": "Browser rendering, live GM relay, purchases and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.AcceptedNpcMechanics.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_AcceptedSkillsWithoutSidecar_HidesPrivateMechanics"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-progression-full-journey",
       "responsibility": "#1538 ordinary accepted XP journeys with actual turn/story/reload and result-fed merchant-slot and teacher-showcase freshness.",
       "excludes": "No provider generation, rendered browser/console, successful new training purchase, new stock generation or whole-task qualification.",
