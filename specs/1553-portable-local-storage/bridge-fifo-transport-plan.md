@@ -181,3 +181,20 @@ joins exit in finally; no production helper, detached process, authentication
 change or duplicated native transport. The child launches no descendants. Tests
 assert paths removed before fixture deletion. This extension is UNCOMPILED/UNRUN;
 application and PowerShell consumer wiring remain entirely unchanged.
+
+## Independent process execution result
+
+Saved fixture `78adafa4b3a0f0c5ad7c98adc8c54f27d4803df1` built with zero errors,
+63 warnings, 43.84 seconds. Official PlanOnly selected exactly 17 cases in
+7.1023153 seconds. Execution passed 17/17: roughly six seconds of test execution,
+23.5662593 seconds runner wall, no skips/duplicates/timeouts, complete selection
+and runner-owned cleanup. Three new real child-process scenarios passed: exact
+128KiB exchange, EPIPE handled with normal exit0, and server EOF after deliberate
+owned-child termination. Child exit and stdout/stderr draining were joined; each
+case asserted owned paths removed before fixture cleanup. No production transport
+code changed for these tests. Independent extension review remains pending.
+
+This does not qualify application run/root/generation or grant/activate/close-ACK
+semantics, PowerShell consumer loading, bridge dispatcher/launcher integration,
+worker PID authentication, or a live GM turn. Those remain the parent's next
+integration boundary. No merge or issue closure is claimed here.
