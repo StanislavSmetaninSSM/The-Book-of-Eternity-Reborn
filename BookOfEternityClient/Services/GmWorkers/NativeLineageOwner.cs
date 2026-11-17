@@ -159,6 +159,8 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
     }
 
 
+    // Test-first capability observation; inherited transport is not wired yet.
+    internal bool UsesInheritedTerminalBootstrap => false;
     private readonly bool _terminalMode;
     private readonly bool _finitePipe;
     private bool _finiteReleased;

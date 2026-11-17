@@ -41,6 +41,13 @@ internal static partial class OwnedTerminalScenarioDriver
                     result["HeldRootHasNoHelperChannels"] = !descriptors.Any(d=>d is "0" or "1" or "2");
                     if(descriptors.Any(d=>d is "0" or "1" or "2")) throw new InvalidOperationException("Gated terminal root still inherits helper control/status stdio.");
                 } : null);
+            if (mode == "terminal-inherited") {
+                var original = (NativeLineageOwner)typeof(LinuxOwnedTerminalSession)
+                    .GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(session)!;
+                if (!original.UsesInheritedTerminalBootstrap)
+                    throw new InvalidOperationException("Inherited bootstrap was not exercised.");
+                result["InheritedBootstrap"] = true;
+            }
             var text = new StringBuilder();
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(6));
             var decoder = Encoding.UTF8.GetDecoder();

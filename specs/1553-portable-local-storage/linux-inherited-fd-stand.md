@@ -112,3 +112,11 @@ actual owned-terminal lifecycle/cleanup tests. Then bridge per-peer transport
 for independent CLI clients. Bridge currently has no exact-PID peer credential
 check; do not confuse its live connection pins with worker socket PID authority.
 Real launcher/maintained relay/live GM acceptance and cleanup remain required.
+
+Managed test-first gate prepared: a narrow category reuses the existing real
+owned-terminal/independent-guardian journey (Unicode input, resize, canonical
+EOF and scoped cleanup), additionally requiring the inherited transport was
+actually used. The current capability observation is false and transport remains
+unwired; expected RED is the still-blocked socket launch, not a feature PASS.
+Fresh unit/bridge/test-support restore succeeded from shared offline package
+DATA. No bin/obj or ownership objects were copied. Build/run pending.
