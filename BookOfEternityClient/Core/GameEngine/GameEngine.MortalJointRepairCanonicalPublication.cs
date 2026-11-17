@@ -47,6 +47,8 @@ public partial class GameEngine
         MortalJointPublicationAttempt? attempt = null;
         try
         {
+        if (_mortalJointAuditExpected is not null)
+            await RefreshCurrentMortalJointAuditNarrativeAsync(frame);
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             RequireOrdinaryJointRepairLease(lease);
@@ -69,85 +71,9 @@ public partial class GameEngine
             attempt = BeginCurrentJointAttempt(lease, frame, capture);
             try
             {
-                using var namedOperationTimer5 = _fs.MeasureOperation("GameEngine.CaptureCurrentHotCustodyAsync");
-                await CaptureCurrentHotCustodyAsync(attempt, lease, frame);
-                namedOperationTimer5?.Dispose();
-                await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.MortalJointCustodyCaptureCompletedBeforePreparation);
-                await RecheckMortalJointNarrativeBeforePreparationAsync(attempt, lease, frame);
-                await attempt.RecheckClosedDebugPrefixAsync(JointAttemptIssuer);
-                using var namedOperationTimer6 = _fs.MeasureOperation("GameEngine.CreateJointRepairPreparationAsync");
-                var preparation = await WoundAcceptedTurnPlanner.CreateJointRepairPreparationAsync(_fs, lease, capture);
-                namedOperationTimer6?.Dispose();
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preparation, preparation);
-                if (!preparation.IsValid) return Refused(preparation.Issues);
-                var continuation = preparation.Authority!;
-                attempt.RetainContinuation(JointAttemptIssuer, continuation);
-                using var namedOperationTimer7 = _fs.MeasureOperation("GameEngine.ReserveMortalJointRepairPublicationAsync");
-                var reservation = await AcceptedTurnAuthorityRegistry.ReserveMortalJointRepairPublicationAsync(_fs, lease, continuation);
-                namedOperationTimer7?.Dispose();
-                if (reservation.Authority is null || reservation.Status is not
-                    (MortalWoundTreatmentPublicationReservationStatus.Reserved or MortalWoundTreatmentPublicationReservationStatus.Exact))
-                    throw new InvalidDataException("The same joint owner could not reserve its exclusive publication slot.");
-                var reservationAuthority = reservation.Authority;
-                attempt.RetainReservation(JointAttemptIssuer, reservationAuthority);
-                using var namedOperationTimer8 = _fs.MeasureOperation("GameEngine.GetOrBuildPreparedValidatedAsync");
-                var prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync(
-                    _fs, lease, preparation.Input!, continuation, reservationAuthority);
-                namedOperationTimer8?.Dispose();
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Prepared, prepared);
-                if (!prepared.Success || prepared.Plan is not { } preparedPlan) return Refused(prepared.Issues);
-                var effectInput = WoundAcceptedTurnPlanner.ComposeJointRepairEffectInput(preparedPlan);
-                using var namedOperationTimer9 = _fs.MeasureOperation("GameEngine.GetOrBuildEffectValidatedAsync");
-                var effects = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairEffectValidatedAsync(
-                    _fs, lease, preparedPlan, effectInput, continuation, reservationAuthority);
-                namedOperationTimer9?.Dispose();
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Effects, effects);
-                if (!effects.Success || effects.Plan is not { } effectPlan) return Refused(effects.Issues);
-                using var namedOperationTimer10 = _fs.MeasureOperation("GameEngine.GetOrBuildFinalValidatedAsync");
-                var final = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairFinalValidatedAsync(
-                    _fs, lease, preparedPlan, effects, continuation, reservationAuthority);
-                namedOperationTimer10?.Dispose();
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Final, final);
-                if (!final.Success || final.Plan is not { } finalPlan) return Refused(final.Issues);
-                var bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, preparedPlan, effectPlan, finalPlan);
-                using var namedOperationTimer11 = _fs.MeasureOperation("GameEngine.CreateJointRepairAnchors");
-                var anchors = MortalWoundCanonicalAnchorPlan.CreateJointRepair(_fs, lease, bundle);
-                namedOperationTimer11?.Dispose();
-                if (!anchors.Success || anchors.Plan is null) return Refused(anchors.Issues);
-                using var namedOperationTimer12 = _fs.MeasureOperation("GameEngine.CreateMechanicalAdmissionAsync");
-                var mechanical = await CreateMortalJointRepairMechanicalAdmissionAsync(lease, frame, bundle, continuation);
-                namedOperationTimer12?.Dispose();
-                using var namedOperationTimer13 = _fs.MeasureOperation("GameEngine.CreateJointRepairCommonBaselineAsync");
-                var baseline = await WoundAcceptedTurnPlanner.CreateJointRepairCommonBaselineAsync(
-                    _fs, lease, mechanical, bundle, anchors.Plan, continuation, reservationAuthority);
-                namedOperationTimer13?.Dispose();
-                if (!baseline.IsValid) return Refused(baseline.Issues);
-                using var namedOperationTimer14 = _fs.MeasureOperation("GameEngine.CreateJointRepairResourcePublicationAsync");
-                var resources = await WoundAcceptedTurnPlanner.CreateJointRepairResourcePublicationAsync(_fs, lease, baseline.Authority!);
-                namedOperationTimer14?.Dispose();
-                if (!resources.IsValid) return Refused(resources.Issues);
-                // Freeze and authenticate progression BEFORE the common input,
-                // cache fingerprint and take. No after-seal acknowledgement may
-                // attach to the already-issued mechanics candidate.
-                using var namedOperationTimer15 = _fs.MeasureOperation("GameEngine.CaptureMortalJointProgressionSourceAsync");
-                var progression = await CaptureMortalJointProgressionSourceAsync(lease, frame);
-                namedOperationTimer15?.Dispose();
-                using var namedOperationTimer16 = _fs.MeasureOperation("GameEngine.CreateJointRepairCommonPlanAsync");
-                var common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanAsync(_fs, lease, resources.Authority!, progression);
-                namedOperationTimer16?.Dispose();
-                if (!common.Success || common.Plan is not { } commonPlan) return Refused(common.Issues);
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Common, common);
                 var bound = _normalizer.BindTo(lease);
-                using var namedOperationTimer17 = _fs.MeasureOperation("GameEngine.PrevalidateJointRepairPublicationTransactionAsync");
-                var preflight = await bound.PrevalidateJointRepairPublicationTransactionAsync() ??
-                    throw new InvalidDataException("The exact complete joint common plan was not preflighted.");
-                namedOperationTimer17?.Dispose();
-                if (preflight.Validated.Plan.InputFingerprint != commonPlan.InputFingerprint ||
-                    preflight.Validated.Plan.PreparedPlanFingerprint != commonPlan.PreparedPlanFingerprint)
-                    throw new InvalidDataException("Joint canonical preflight no longer selects the same complete common candidate.");
-                // From here only the owning transaction can classify/compensate
-                // attempted publication. A generic catch must never abort/rearm it.
-                attempt.RetainStage(JointAttemptIssuer, JointAttemptStage.Preflight, preflight);
+                var preflight = await BuildCurrentMortalJointPreflightAsync(lease, frame, capture, attempt, bound);
+                RequireCurrentMortalJointAuditCandidate(preflight);
                 attempt.MarkDelegated(JointAttemptIssuer);
                 using var namedOperationTimer18 = _fs.MeasureOperation("GameEngine.NormalizeAndValidateJointRepairAsync");
                 var published = await bound.NormalizeAndValidateJointRepairAsync(preflight, _validator, backups);
@@ -164,6 +90,10 @@ public partial class GameEngine
                     result = Retain(result with { Completed = witness });
                 }
                 lease.EnsureNoPendingLocalDecision();
+            }
+            catch (MortalJointPreparationRejectedException error)
+            {
+                result = Refused(error.Issues);
             }
             catch (MortalJointDebugPrefixRejectedException error)
             {

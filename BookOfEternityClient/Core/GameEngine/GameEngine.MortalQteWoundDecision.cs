@@ -53,6 +53,7 @@ public partial class GameEngine
             _mortalJointRepairCheckpoint = null;
             _mortalJointRepairCorrectionReady = false;
             _mortalJointRepairCanonicalRefresh = null;
+            _mortalJointAuditExpected = null;
         }
         try
         {

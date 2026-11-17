@@ -157,6 +157,7 @@ public partial class GameEngine
             _pendingImagePrompt = _lastResponse.ImagePrompt;
             TakeAcceptedTurnWoundNotifications();
             _mortalJointRepairCanonicalRefresh = null;
+            _mortalJointAuditExpected = null;
             _mortalJointRepairCheckpoint = null;
             _mortalJointRepairCorrectionReady = false;
             _mortalJointRepairTerminalReason = "validation_failed";

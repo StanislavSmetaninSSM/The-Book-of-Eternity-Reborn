@@ -551,7 +551,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                      ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
                      WoundCarrierCatalog.PlayerPath, WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,
                      MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath })
+        {
+            if (!(before[path] ?? []).AsSpan().SequenceEqual(dispatch.Images[path] ?? []))
+                WritePhysicalInjuryDiagnostic("joint_before_repair_dispatch_mismatch", new
+                { Path = path, Expected = before[path], Actual = dispatch.Images[path] });
             Assert.Equal(before[path], dispatch.Images[path]);
+        }
         Assert.Equal(signedOriginalSchedule, dispatch.Images[ProgressionScheduleService.SchedulePath]);
         Assert.Equal(1, repairReplies);
         if (reasoningPrefixProbe is not null)

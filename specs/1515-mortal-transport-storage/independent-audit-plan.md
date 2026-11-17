@@ -253,3 +253,23 @@ raw evidence is retained. Its fresh build passed171 warnings/zero errors in
 resubmission already copies that initial debug output. No validator is relaxed.
 The reviewer found no other concrete schema gap on this bounded path. Next
 execution still has to reach the intentional preview scaffold refusal.
+
+## T3 first shared preparation/closed-preview implementation WIP
+
+At ef4d7d8a, the genuine source42 completed and Stage43 reached the post-I
+checkpoint. Engine diagnostics confirm the intentional preview NotSupported
+exception, with publication suppressed. Run: 1 executed / 1 FAIL, 35.8911401 s,
+no skips/duplicates/timeout, complete owned cleanup. A subsequent old fixture
+byte assertion masks that exception; path-specific mismatch diagnostics now
+retain its exact expected/actual bytes locally rather than weakening it.
+
+WIP implementation shares the original preparation/preflight with publication.
+Preview creates real ownership, copies full semantic afterimages and observed
+read-only narrative DATA, checks source closure, requires ClosedNoNativeAttempt,
+and returns only after lease disposal/attempt expiry. A fresh read-only observed
+N invocation uses the actual current Main/Ready/I/frame; no normalization or
+Ready replay. Later preview and publication compare DATA before take. Existing
+normal publication remains unactivated unless an explicit preview was captured.
+The proof and negative cases remain UNVERIFIED; no live model gate is installed.
+Reuse remains operation-local; authority cache misses across fresh continuations
+are deliberate. Shared preflight avoids a parallel preparation algorithm.

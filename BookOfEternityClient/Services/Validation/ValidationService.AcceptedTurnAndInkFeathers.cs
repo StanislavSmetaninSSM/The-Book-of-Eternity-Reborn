@@ -104,7 +104,9 @@ public partial class ValidationService
 
         if (readOnly)
         {
-            if (AcceptedTurnOutputProjector.ProjectNarrative(json).Changed)
+            var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);
+            source?.Projection(projected.Json, projected.Changed);
+            if (projected.Changed)
                 issues.Add(new ValidationIssue("output/narrative_response.json", IssueSeverity.Error,
                     "The sealed joint narrative requires normalization; exact accepted bytes must be retained.",
                     code: "mortal_joint_sealed_narrative_requires_normalization"));
