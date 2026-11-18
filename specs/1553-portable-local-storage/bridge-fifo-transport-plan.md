@@ -987,3 +987,30 @@ consumers (retired registration/readmission/sticky cleanup/neighbors/watcher and
 existing main template rendering). No aggregate/default suite or hosted CI runs.
 Each group retains its category budgets and fresh owned fixtures; current compiled
 outputs are reused only with unchanged source pins. Runtime results remain UNRUN.
+
+Relay-only composition runtime gates completed without rebuilding: group A
+100/100 PASS (58.0486087s; three descriptors, overlapping FIFO/grammar deduplicated),
+group B40/40 PASS (63.7507296s; six descriptors), group C17/17 PASS (62.0030248s;
+eight descriptors). All157 distinct cases had complete runner-owned cleanup,
+zero skips, duplicate IDs and timeouts. This is the explicit affected-contract
+selection above, not a whole suite. Before and after runs, 3339 compiler-input
+pins and28 DLL/PDB pins remained exact. Prior phase wrapper1/1 is separate.
+B's strengthened idle daemon retained the same owner40415093f105466c9855f40181b51842
+through stopped/terminalSettled/guard-settled; recovered errorCount1 is retained.
+Original scoped main closure and guardian0/ECHILD/reaped1/no emergency were
+observed. B's separate actual contender/restart scenario also succeeded with
+its own guardian0. Raw and selection inventories remain external as
+relay-only-gate-{a,b,c}.log and corresponding -pins.json. Independent outcome
+review is pending; no live-game or merge acceptance follows from these gates.
+
+Fresh pristine rl1 preparation is separate and UNLAUNCHED: no-build/no-restore
+publishes from the candidate produce729 runtime files, with8 maintained relay
+files and4 source-matched native files. The current daemon and launcher match
+source exactly, no finalization instrumentation is active. All28 output and3339
+compile-input pins were rechecked. New p01 world contains only _runtime, no
+config/game_state/queue; its actual package preflight passed. Source-rooted
+launch and private environment are prepared; native bootstrap path is88 bytes.
+External preparation manifest SHA256
+6d2a00bc4a84cb8a00b149601f50d942db2423d754924782c9c3fbddeb187eee.
+Independent preparation review and genuine first/retained second GM responses
+are still required. Historical ml7/e uncertainty is not declared repaired.
