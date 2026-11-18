@@ -2383,3 +2383,22 @@ entry lacks first-person marker, reasoning does not name canonical journal surfa
 Investigate the complete phase ordering and distinguish fixture mistakes from
 runtime contradictions before editing or rerunning. No live retry. Empty-effect
 unit4 GREEN remains bounded evidence, not acceptance of the combined journey.
+
+T022 source investigation separates defects from fixture assumptions. Both known
+permanent-location readers consult only the signed pre-turn map after allocation.
+The post-materialized-named wrapper is a read/reuse optimization over the same All
+selection, not a semantic mode; changing the diagnostic source string would also
+skip accepted payload/reasoning checks and is explicitly rejected. Reuse the
+existing canonical-refresh Result and invocation-scoped completed-validation
+handoff pattern for an exact published-location comparison, not a global current
+file fallback, registry, or cached publication permission. Design/review precede
+implementation, including source/repair invalidation and unchanged BrowserOriginal.
+Fresh seed Mira lacks tradeInventoryReceipts; the existing NpcTrade publication
+tail adds its empty canonical array, which explains the exact-retention conflict.
+Initialize this through the existing shape helper before the first snapshot,
+not by relaxing original equality or editing failed worlds. Full UpdateNPCs rows
+are already canonical carriers; the test must enumerate existing carriers rather
+than demand their relocation into NPCsInScene. The negative oracle captured
+progression_schedule after BuildControlForNextTurn's documented staging refresh;
+rollback intentionally restores the earlier backup. Preserve exact pre-staging
+expectation and name any mismatching path, not omit scheduler or timestamps.
