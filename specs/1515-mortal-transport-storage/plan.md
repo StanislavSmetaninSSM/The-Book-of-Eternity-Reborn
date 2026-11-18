@@ -2920,3 +2920,18 @@ from validated B Load/stop evidence; failed/unknown operations are never replaye
 Stateless DATA checks and fixture routes require independent review and cheap
 negative tests before fresh packaging. Neither inert console nor diagnostic
 GREEN completes these routes or the required native game acceptance.
+T024 inert smoke independently accepted after TRX, guardian and complete source/
+output pin verification. This acceptance remains limited to the inert prompt.
+Native fixture DATA source first chunk: mortal_console_routes.py plus six-method
+controls for finite descriptors, exact IDs/unique current labels, permission,
+fresh frames and unchanged local story/history/queue. Stub baseline gave six
+NotImplemented errors, then6PASS; these are new DATA controls, not a causal runtime
+bug reproduction or native authority. Driver is still unchanged.
+Load-consumer correction now keeps daemon A and requires actual pre/post status/
+guard/raw hashes, distinct launcher versus managed-process identities/polls and
+Load action boundary. No invented B daemon. Fifteen inert methods are prepared;
+continuity function intentionally returns false pending RED. Other13 are initial
+qualification, not retrospectively causal. C# wire schema was source-checked,
+not runtime-golden qualified; actual captured client observation is still needed.
+Both helper modules/tests saved before continuation. Exact current tests and
+native driver integration require coherent independent review before packaging.

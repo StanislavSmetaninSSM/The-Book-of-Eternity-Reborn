@@ -450,10 +450,8 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
         if value['StartupIdentityA']!=a or value['ShutdownIdentityB']!=b:return False
         if value['OriginalRunningRecord']['Identity']!=a or value['OriginalRunningRecord']['Disposition']!='Running':return False
         if value['OriginalRunningStatus']['ok'] is not True or value['OriginalRunningStatus']['status']['terminalRunId']!=a['RunId']:return False
-        # Both lifetimes must be captured, never relabel A's daemon as B.
-        if not daemon_settlement_proved(value['DaemonSettlement']):return False
-        if value['DaemonSettlement']['SessionPath']!=value['LoadDaemonSettlement']['SessionPath']:return False
-        if daemon_pair_decode(value['DaemonSettlement'],'Original',False)==daemon_pair_decode(value['LoadDaemonSettlement'],'Original',False):return False
+        # Load replaces main A with B, not the retained root/session daemon.
+        if not retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']):return False
         terminal=observed['ReplacementFinish']['TerminalIdentity']
         if value['ShutdownReceipt']['status']['terminalStop']['identity']!={
             'runId':terminal['RunId'],'backend':terminal['Backend'],'guarantee':terminal['Guarantee'],'rootPid':terminal['RootPid']}:return False
@@ -462,7 +460,16 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
         if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:return False
         # The existing fixed stop proof is reused only against observed B. Original
         # caller evidence remains untouched; no process action occurs in this module.
-        closing=dict(value,OriginalRunningRecord=running,OriginalRunningStatus=status,
-            DaemonSettlement=value['LoadDaemonSettlement'])
+        closing=dict(value,OriginalRunningRecord=running,OriginalRunningStatus=status)
         return relay_phase_cleanup_proved(closing)
     except (KeyError,TypeError,ValueError,UnicodeError):return False
+
+
+def retained_daemon_load_continuity_proved(settlement, continuity):
+    """Fail-closed RED seam for actual retained-daemon captures; never creates a daemon B.
+
+    Continuity must join fresh pre/post-Load status/guard bytes, original managed
+    process and launcher PID/start-ticks, live retained launcher handles, and a
+    post-action heartbeat to the original daemon's eventual settlement.
+    """
+    return False

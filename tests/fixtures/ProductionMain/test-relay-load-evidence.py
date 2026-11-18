@@ -21,7 +21,7 @@ def wire(value):return json.dumps(value,separators=(',',':')).encode()+b'\n'
 def daemon(owner):
     proof={'SessionPath':'/owned/game_session'}
     for prefix,settled in [('Original',False),('Final',True)]:
-        status=dict(daemonGuardOwnerId=owner,daemonGuardVersion=1,sessionPath=proof['SessionPath'],status='stopped' if settled else 'running',terminalSettled=settled)
+        status=dict(pid=301,startedAtUtc='2026-11-18T10:00:00Z',heartbeatAtUtc='2026-11-18T10:00:01Z',daemonGuardOwnerId=owner,daemonGuardVersion=1,sessionPath=proof['SessionPath'],status='stopped' if settled else 'running',terminalSettled=settled)
         guard=dict(version=1,sessionPath=proof['SessionPath'],ownerId=owner,settled=settled)
         for name,value in [('Status',status),('Guard',guard)]:
             raw=wire(value);proof[prefix+name+'RawHex']=raw.hex();proof[prefix+name+'SHA256']=evidence.sha(raw)
@@ -33,9 +33,20 @@ def cleanup(expected,document,installed):
     value=dict(AcceptedGameTurns=1,GenuineActionsSent=1,ShutdownAttempts=1,InputQualified=True,LogicalLifecycleVerified=True,RelayExecutionClosed=True,
         RpcHelperClosure=dict(ExitCode=0,StdoutEof=True,StderrEof=True),
         Terminals={k:dict(ExitCode=0,EOF=True,TermiosRestored=True,StreamEOF=dict(stdout=True,stderr=True)) for k in ('client','bridge','daemon')},
-        DaemonSettlement=daemon('3'*32),LoadDaemonSettlement=daemon('4'*32),StartupIdentityA=a,ShutdownIdentityB=b,
+        DaemonSettlement=daemon('3'*32),StartupIdentityA=a,ShutdownIdentityB=b,
         OriginalRunningRecord=dict(Disposition='Running',Identity=a),OriginalRunningStatus=status(a['RunId']),
         LoadRunningRecord=installed,LoadRunningStatus=status(b['RunId']),StoppedRecord=dict(Disposition='Stopped',Identity=b,StopEvidence=dict(Identity=b,Kind='OwnedScopeEmpty')))
+    continuity=dict(SessionPath='/owned/game_session',LoadActionUtc='2026-11-18T10:00:02Z',
+        OriginalProcessIdentity=dict(Pid=301,StartTicks=1001),PostLoadProcessIdentity=dict(Pid=301,StartTicks=1001),
+        OriginalLauncherIdentity=dict(Pid=300,StartTicks=1000),PostLoadLauncherIdentity=dict(Pid=300,StartTicks=1000),
+        OriginalLauncherPoll=None,PostLoadLauncherPoll=None)
+    for prefix in ('Original','PostLoad'):
+        for name in ('Status','Guard'):
+            raw=bytes.fromhex(value['DaemonSettlement']['Original'+name+'RawHex'])
+            if prefix=='PostLoad' and name=='Status':
+                data=json.loads(raw);data['heartbeatAtUtc']='2026-11-18T10:00:03Z';raw=wire(data)
+            continuity[prefix+name+'RawHex']=raw.hex();continuity[prefix+name+'SHA256']=evidence.sha(raw)
+    value['PostLoadDaemonContinuity']=continuity
     value['ShutdownReceipt']=status(b['RunId'])
     value['ShutdownReceipt']['status']['terminalStop']=dict(identity={k[0].lower()+k[1:]:v for k,v in t.items()},state='stopped-within-scope',cleanupComplete=True,authorityRetained=False)
     return value
@@ -96,18 +107,37 @@ class LoadEvidenceTests(unittest.TestCase):
         self.assertFalse(evidence.relay_phase_cleanup_proved(value)) # A cannot stand in for B.
     def test_cleanup_rejects_A_stop_foreign_B_and_relabelled_daemon(self):
         original=cleanup(self.expected,self.document,self.installed)
-        for mutation in ('A-stop','foreign-terminal','A-daemon','missing-B','not-settled'):
+        for mutation in ('A-stop','foreign-terminal','foreign-daemon','missing-B','not-settled'):
             value=copy.deepcopy(original)
             if mutation=='A-stop':value['StoppedRecord']['Identity']=self.expected['StartupIdentityA']
             elif mutation=='foreign-terminal':value['ShutdownReceipt']['status']['terminalStop']['identity']['rootPid']=999
-            elif mutation=='A-daemon':value['LoadDaemonSettlement']=value['DaemonSettlement']
+            elif mutation=='foreign-daemon':value['DaemonSettlement']=daemon('5'*32)
             elif mutation=='missing-B':del value['ShutdownIdentityB']
-            else:value['LoadDaemonSettlement']['FinalStatusSHA256']='0'*64
+            else:value['DaemonSettlement']['FinalStatusSHA256']='0'*64
             with self.subTest(mutation=mutation):self.assertFalse(evidence.relay_load_phase_cleanup_proved(value,wire(self.document),0,self.expected))
     def test_ordinary_no_load_contract_remains_unchanged(self):
         value=cleanup(self.expected,self.document,self.installed)
-        value['OriginalRunningRecord']=value['LoadRunningRecord'];value['OriginalRunningStatus']=value['LoadRunningStatus'];value['DaemonSettlement']=value['LoadDaemonSettlement']
-        for key in ['LoadRunningRecord','LoadRunningStatus','LoadDaemonSettlement','StartupIdentityA','ShutdownIdentityB']:del value[key]
+        value['OriginalRunningRecord']=value['LoadRunningRecord'];value['OriginalRunningStatus']=value['LoadRunningStatus']
+        for key in ['LoadRunningRecord','LoadRunningStatus','PostLoadDaemonContinuity','StartupIdentityA','ShutdownIdentityB']:del value[key]
         self.assertTrue(evidence.relay_phase_cleanup_proved(value))
+
+    def test_retained_daemon_positive_requires_real_continuity_implementation(self):
+        value=cleanup(self.expected,self.document,self.installed)
+        self.assertTrue(evidence.retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']))
+    def test_retained_daemon_missing_stale_replaced_or_exited_refuses(self):
+        original=cleanup(self.expected,self.document,self.installed)
+        for mutation in ('missing','pid-reused','launcher-replaced','launcher-exited','stale-heartbeat','foreign-owner','corrupt-raw'):
+            value=copy.deepcopy(original);continuity=value['PostLoadDaemonContinuity']
+            if mutation=='missing':continuity={}
+            elif mutation=='pid-reused':continuity['PostLoadProcessIdentity']['StartTicks']+=1
+            elif mutation=='launcher-replaced':continuity['PostLoadLauncherIdentity']['Pid']+=1
+            elif mutation=='launcher-exited':continuity['PostLoadLauncherPoll']=0
+            elif mutation=='corrupt-raw':continuity['PostLoadGuardSHA256']='0'*64
+            else:
+                status=json.loads(bytes.fromhex(continuity['PostLoadStatusRawHex']))
+                if mutation=='stale-heartbeat':status['heartbeatAtUtc']=continuity['LoadActionUtc']
+                else:status['daemonGuardOwnerId']='f'*32
+                raw=wire(status);continuity['PostLoadStatusRawHex']=raw.hex();continuity['PostLoadStatusSHA256']=evidence.sha(raw)
+            with self.subTest(mutation=mutation):self.assertFalse(evidence.retained_daemon_load_continuity_proved(value['DaemonSettlement'],continuity))
 
 if __name__=='__main__':unittest.main()
