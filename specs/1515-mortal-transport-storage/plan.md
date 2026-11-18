@@ -2216,3 +2216,22 @@ No predecessor or copied failed-world state; both diagnostic markers retained.
 Actual corrected GM response requires fresh request bindings and a final exact
 birth-resource envelope assertion before relay submission, not an invented
 canonical receipt. Independent prelaunch gate pending; no native launch yet.
+
+mm8 actual request039683b3de1e4a18811f4430b4631a4a/turn42 submitted one corrected
+GM packet8e6b880159d0f80ee89b189164e13d09416e586970dd339e0e83d34bd76a27f1.
+Final packet assertions passed NPC health100/cart health100/item durability100;
+Mira unchanged, resource envelopes closed and no authored current/receipts.
+Consumer exit0/drained is not acceptance. Exact protected rejection advanced to
+resource_owner_vehicle_receipt_invalid at vehicles.json: expected complete
+client-owned vehicle companion with receipt collection, actual missing companion.
+Authenticated baseline vehicles file is absent; raw input has vehicles:[] plus
+one UpdateVehicles and no authored receipts. T020 tracks causal source/fixture
+reproduction before any further live attempt; no manual receipt insertion.
+Independent outcome confirms probe8e3d42ff67090e17d06a0176be64afe194e99eb7856c8cee259cd108e3be3248,
+Success=false/accepted0/action1/176.137s. All9 writes restored exactly, setup
+story41 byte-identical, pending/snapshot/repair/ready absent. Original owner
+6fcd3b518c2049eb9587b0338f07dc8a is Stopped/OwnedScopeEmpty, one shutdown.
+All3 terminals0/EOF/termios, RPC/relay drained, queue closed; same daemon settled
+with errorCount0. Guardian driver1/ECHILD/reaped2, no emergency/failure/deadline.
+Final world/config/runtime/relay/helper pins match. No accepted predecessor,
+T018 live acceptance or vehicle/resource materialization qualification yet.
