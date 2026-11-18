@@ -1014,3 +1014,20 @@ External preparation manifest SHA256
 6d2a00bc4a84cb8a00b149601f50d942db2423d754924782c9c3fbddeb187eee.
 Independent preparation review and genuine first/retained second GM responses
 are still required. Historical ml7/e uncertainty is not declared repaired.
+
+First pristine rl1 p01 attempt completed32.292s and FAILED before any relay
+request: one real player action was entered, zero turns accepted, queue closed
+without a request or GM-authored packet. The ordinary client displayed its
+pre-turn contract-validation refusal ('Ход не принят'). The detailed issue was
+not exposed by the normal AddDebug-only logger; no error_log existed. This is
+not successful live relay qualification and no action is replayed.
+Nevertheless this original run's physical and logical shutdown completed: client,
+bridge and daemon exited0 with EOF/restored terminals; exact original main
+c3bbc9945a504a85865cf0ea6dc9c216 received scoped positive ACK/full Stopped.
+Original daemon owner8e205159a87c42ab8e79f6ea8c61d867 changed from running/active
+to stopped/terminalSettled/guard-settled. Guardian reported driver1 (failed test),
+ECHILD, reaped1, zero emergency signals/failures and no deadline. These shutdown
+facts do not turn the failed game attempt into PASS. Original exec58553 ended;
+world and raw evidence remain untouched. A copied-state diagnostic of the exact
+pre-turn validation path is being investigated; no production fix or new launch
+is authorized by an assumed cause. Main remains unchanged and merge is blocked.
