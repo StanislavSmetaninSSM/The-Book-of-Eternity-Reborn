@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-completion-refusal",
+      "responsibility": "#1516 real ordinary completion refuses missing/stale/foreign original and invalid actor/history/command inputs without mutation; reintroduced command requires genuine first publication before refusal.",
+      "excludes": "No isolated foreign/disposed issued-lease proof, specialized route coverage, full engine or live GM relay.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.NpcCompletionRefusal.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_InvalidInputRefusesWithoutMutation",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_ReintroducedCommandCannotAppendAgain"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-completion-contract",
       "responsibility": "#1516 explicit terminal NPC activity state/outcome combinations and client-owned completion-turn refusal through public validation.",
       "excludes": "No publication authority, canonical history creation or live GM relay.",
