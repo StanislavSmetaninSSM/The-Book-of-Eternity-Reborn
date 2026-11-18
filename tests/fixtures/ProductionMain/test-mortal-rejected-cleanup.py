@@ -5,7 +5,6 @@ independent safety requirement that historical wait text cannot authorize ESC
 against a newer player prompt, even when rejection evidence is incomplete.
 """
 import ast
-import copy
 import relay_phase_evidence as evidence
 import re
 import unittest
@@ -45,11 +44,11 @@ class RejectedCleanupTests(unittest.TestCase):
     def test_completed_rollback_with_new_prompt_does_not_send_escape(self):
         text = ('Мастер игры размышляет...\n'
                 '↩ Изменения мира не были приняты; состояние до хода восстановлено.\n'
-                'Ваш ход\n > ')
+                'Ваш ход\n >  ')
         self.assertFalse(actual_cancel_predicate(text))
 
     def test_new_prompt_without_rejection_authority_still_forbids_old_wait_escape(self):
-        self.assertFalse(actual_cancel_predicate('Мастер игры размышляет...\nВаш ход\n > '))
+        self.assertFalse(actual_cancel_predicate('Мастер игры размышляет...\nВаш ход\n >  '))
 
     def test_actual_current_wait_without_new_prompt_retains_cancel_branch(self):
         self.assertTrue(actual_cancel_predicate('Мастер игры размышляет...\n'))
@@ -58,7 +57,22 @@ class RejectedCleanupTests(unittest.TestCase):
 class GeneralCleanupTests(unittest.TestCase):
     def test_same_general_driver_new_prompt_forbids_historical_wait_escape(self):
         tree = ast.parse(SOURCE.with_name('live-game-one-turn.py').read_text())
-        self.assertFalse(actual_cancel_predicate('Мастер игры размышляет...\nВаш ход\n > ', tree))
+        self.assertFalse(actual_cancel_predicate('Мастер игры размышляет...\nВаш ход\n >  ', tree))
+
+
+class ProducerWiringTests(unittest.TestCase):
+    def test_raw_queue_refusal_never_reaches_cleanup_join(self):
+        reached=[]
+        def refused(*args):
+            reached.append('raw-validator')
+            raise ValueError('raw original queue mismatch')
+        scope=dict(NS, relay_response_evidence=refused,
+                   phase_evidence=type('Evidence', (), {'rejected_restored_for_cleanup':lambda *args: reached.append('join')})())
+        producer=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='observed_rejected_cleanup')
+        exec(compile(ast.Module(body=[producer],type_ignores=[]),str(SOURCE),'exec'),scope)
+        with self.assertRaisesRegex(ValueError,'raw original queue mismatch'):
+            scope['observed_rejected_cleanup'](b'{}',None,None,None,None,'',b'',None)
+        self.assertEqual(reached,['raw-validator'])
 
 
 class RejectedJoinTests(unittest.TestCase):
@@ -68,7 +82,7 @@ class RejectedJoinTests(unittest.TestCase):
                     keys_after=['session|previous|42', 'session|request|43'],
                     action_text=('Мастер игры размышляет...\n'
                         '↩ Изменения мира не были приняты; состояние до хода восстановлено.\n'
-                        '✦ Ваш ход ✦\n > '),
+                        '✦ Ваш ход ✦\n >  '),
                     story_before=b'original story', story_after=b'original story',
                     pending_paths=[], relay_observation={'RequestIdentity': dict(request),
                         'ValidatedOriginalQueue': True, 'Executions': [
@@ -82,9 +96,9 @@ class RejectedJoinTests(unittest.TestCase):
             ('stale_key', lambda v: v['keys_before'].append('session|request|43')),
             ('wrong_key', lambda v: v.update(keys_after=['session|wrong|43'])),
             ('quoted_marker', lambda v: v.update(action_text=v['action_text'].replace('↩ Изменения', 'quoted "↩ Изменения'))),
-            ('future_marker', lambda v: v.update(action_text='Состояние до хода будет восстановлено.\nВаш ход\n > ')),
-            ('incomplete_marker', lambda v: v.update(action_text='состояние до хода восстановлено.\nВаш ход\n > ')),
-            ('prompt_before_marker', lambda v: v.update(action_text='Ваш ход\n > \n↩ Изменения мира не были приняты; состояние до хода восстановлено.')),
+            ('future_marker', lambda v: v.update(action_text='Состояние до хода будет восстановлено.\nВаш ход\n >  ')),
+            ('incomplete_marker', lambda v: v.update(action_text='состояние до хода восстановлено.\nВаш ход\n >  ')),
+            ('prompt_before_marker', lambda v: v.update(action_text='Ваш ход\n >  \n↩ Изменения мира не были приняты; состояние до хода восстановлено.')),
             ('newer_wait', lambda v: v.update(action_text=v['action_text']+'\nМастер игры размышляет...')),
             ('changed_story', lambda v: v.update(story_after=b'new story')),
             ('pending', lambda v: v.update(pending_paths=['input/turn_request.json'])),

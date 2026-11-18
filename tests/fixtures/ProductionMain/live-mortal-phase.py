@@ -433,7 +433,7 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
             if write['Path']=='output/narrative_response.json':narratives.append(write['Data']['response'])
         rows.append({'QueueId':folder.name,'Kind':meta['Kind'],'RequestSHA256':meta['RequestSHA256'],'ResponseSHA256':sha(response),'Dispatch':dispatch,'Execution':execution})
     if not rows or rows[0]['Kind']!='turn' or any(r['Kind'] not in ('turn','repair') for r in rows) or sum(r['Kind']=='turn' for r in rows)!=1:raise ValueError('Unexpected relay operation sequence')
-    if not narratives or narratives[-1]!=narrative:raise ValueError('Story differs from actual final GM narrative')
+    if narrative is not None and (not narratives or narratives[-1]!=narrative):raise ValueError('Story differs from actual final GM narrative')
     return rows
 
 
@@ -473,6 +473,27 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
         (folder/'execution.json').unlink()
         assert not all((q/'execution.json').exists() for q in queue.glob('request-*'))
     print(json.dumps({'InertTurnAndDifferentRepairEvidence':True,'WrongRevisionRefused':True,'PendingDrainNotReady':True,'GameProcesses':0}));sys.exit(0)
+
+def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, action_text, story_before, story):
+    # The same actual raw queue validator checks bytes, dispatch, identities,
+    # hashes and drained execution. No ledger/boolean alone certifies rejection.
+    def terminal_keys(path):
+        value=strict_settings(path.read_bytes())
+        if type(value.get('schemaVersion')) is not int or value['schemaVersion']!=1:raise ValueError('Terminal key schema')
+        return value['keys']
+    pending=['input/turn_request.json','game_state/control/pending_turn_snapshot.json',
+        'game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot',
+        'ready/turn_complete.json','ready/turn_error.json',
+        'game_state/control/validation_repair_request.json','output/validation_repair_request.json']
+    rows=relay_response_evidence(queue,request_bytes,binding,session,None,baseline)
+    request=json.loads(request_bytes)
+    observation={'RequestIdentity':{k:request[k] for k in ('sessionId','requestId','turnNumber')},
+                 'ValidatedOriginalQueue':True,'Executions':[row['Execution'] for row in rows]}
+    relative='game_state/control/gm_observed_terminal_requests.json'
+    return phase_evidence.rejected_restored_for_cleanup(request,terminal_keys(baseline/relative),
+        terminal_keys(session/relative),action_text,story_before,story.read_bytes(),
+        [p for p in pending if (session/p).exists()],observation)
+
 
 def receipt_check_budget(deadline,now):
     remaining=deadline-now
@@ -909,7 +930,7 @@ try:
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)
-    offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
+    offset=len(client.capture);action_cut=offset;client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
     request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
     assert request['playerAction']==action and request['turnNumber']==expected_turn
@@ -940,6 +961,16 @@ try:
         if re.search(r'(?m)^\s*Forbidden: Domain forbidden[ \r]*$',provider_text):
             result['ObservedProviderFailure']={'Text':'Forbidden: Domain forbidden','At':elapsed(),'BridgeCut':provider_bridge_offset}
             raise RuntimeError('Actual current provider refusal; no automatic retry')
+        if current_player_prompt_at(client.text(action_cut))>=0:
+            try:
+                rejected=observed_rejected_cleanup(request_bytes,relay_queue,
+                    result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
+                    client.text(action_cut),story_before,story)
+            except (OSError,ValueError,KeyError,TypeError):rejected=False
+            if rejected:
+                result['RejectedRestoredForCleanup']=True
+                client_wait=False;client_prompt=True
+                raise RuntimeError('Original turn rejected; completed rollback observed for cleanup only')
         if current_client_failure(client.text(offset)):
             client_failure_offset=offset
             result['ObservedCurrentClientFailureAt']=elapsed()
@@ -1018,7 +1049,16 @@ finally:
         # bridge exit8s, daemon exit16s, EOF8s and connection/disposal margin.
         active_phase_deadline=start+client_cleanup_seconds
         try:
-            if client_wait or current_client_failure(client.text(offset)):
+            if result.get('ActualRequest') and result['AcceptedGameTurns']==0 and current_player_prompt_at(client.text(action_cut))>=0:
+                try:
+                    rejected=observed_rejected_cleanup(request_bytes,relay_queue,
+                        result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
+                        client.text(action_cut),story_before,story)
+                except (OSError,ValueError,KeyError,TypeError):rejected=False
+                if rejected:
+                    result['RejectedRestoredForCleanup']=True
+                    client_wait=False;client_prompt=True
+            if client_wait or (not result.get('RejectedRestoredForCleanup') and current_client_failure(client.text(offset))):
                 offset=client_failure_offset if client_failure_offset is not None else offset
                 pause_acknowledged=False;cancel_sent=False
                 def settled():
@@ -1055,7 +1095,7 @@ finally:
                         if error_path.exists():(out/'original-client-error.txt').write_bytes(error_path.read_bytes())
                         offset=len(client.capture);client.send(b'\r','observed client error pause: acknowledge once');pause_acknowledged=True
                         result['ClientSettlement']='error-pause-acknowledged; rollback not established'
-                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and 'Мастер игры размышляет...' in text:
+                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and current_player_prompt_at(text)<0 and 'Мастер игры размышляет...' in text:
                         offset=len(client.capture);client.send(b'\x1b','observed current wait: cancel once');cancel_sent=True
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)

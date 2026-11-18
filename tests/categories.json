@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-rejected-cleanup-data",
+      "responsibility": "#1516 shipped relay harness rejects stale wait Escape after newer prompt and admits only exact rejected-request cleanup DATA through actual queue validation.",
+      "excludes": "No native closure, accepted-turn authority, terminal NPC completion or live relay qualification.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/test-mortal-rejected-cleanup.py",
+        "BookOfEternityClient.Tests/MortalRejectedCleanupTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalRejectedCleanupTests.RejectedRollbackCleanupSourceContracts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-composition-repair",
       "responsibility": "#1516 ordinary engine refuses conflicting activity commands before canonical refresh, then repairs the same original request using supported nonterminal progress.",
       "excludes": "No terminal activity completion or live GM relay qualification.",

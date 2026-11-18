@@ -933,7 +933,7 @@ finally:
                         if error_path.exists():(out/'original-client-error.txt').write_bytes(error_path.read_bytes())
                         offset=len(client.capture);client.send(b'\r','observed client error pause: acknowledge once');pause_acknowledged=True
                         result['ClientSettlement']='error-pause-acknowledged; rollback not established'
-                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and 'Мастер игры размышляет...' in text:
+                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and current_player_prompt_at(text)<0 and 'Мастер игры размышляет...' in text:
                         offset=len(client.capture);client.send(b'\x1b','observed current wait: cancel once');cancel_sent=True
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)

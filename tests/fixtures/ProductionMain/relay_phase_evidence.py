@@ -143,9 +143,25 @@ def execution_closed(value):
 def rejected_restored_for_cleanup(request, keys_before, keys_after, action_text,
                                   story_before, story_after, pending_paths,
                                   relay_observation):
-    """Read-only cleanup DATA join. RED baseline refuses every observation.
-
-    relay_observation must originate from the existing exact raw queue/dispatch/
-    response/execution validator; it is not an authorisation or accepted receipt.
-    """
-    return False
+    """Cleanup observation only, never acceptance or canonical restoration authority."""
+    try:
+        if type(request['turnNumber']) is not int or request['turnNumber'] < 0:return False
+        if any(type(request[k]) is not str or not request[k] or '|' in request[k]
+               for k in ('sessionId','requestId')):return False
+        key=f"{request['sessionId']}|{request['requestId']}|{request['turnNumber']}"
+        if (type(keys_before) is not list or type(keys_after) is not list or
+            any(type(k) is not str for k in keys_before+keys_after) or
+            len(set(keys_before))!=len(keys_before) or len(set(keys_after))!=len(keys_after) or
+            key in keys_before or key not in keys_after):return False
+        marker='↩ Изменения мира не были приняты; состояние до хода восстановлено.'
+        matches=list(re.finditer(r'(?m)^'+re.escape(marker)+r'\r?$',action_text))
+        if len(matches)!=1:return False
+        end=matches[0].end();heading=action_text.rfind('Ваш ход');prompt=action_text.rfind('\n >  ')
+        if heading<=end or prompt<=heading:return False
+        if action_text.rfind('Мастер игры размышляет...')>end:return False
+        if story_before!=story_after or pending_paths:return False
+        identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
+        if relay_observation['RequestIdentity']!=identity or relay_observation['ValidatedOriginalQueue'] is not True:return False
+        executions=relay_observation['Executions']
+        return bool(executions) and all(execution_closed(x) for x in executions)
+    except (KeyError,TypeError,ValueError):return False
