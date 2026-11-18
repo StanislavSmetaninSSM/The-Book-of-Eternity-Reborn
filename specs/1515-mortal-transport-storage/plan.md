@@ -3271,3 +3271,16 @@ pins and exactly3 changed C# files, clears all three findings and accepts fresh
 Unit plus the five bounded official categories. Python100 passes retained after
 correction. C# compilation/runtime and actual serialized wire assertions remain
 UNRUN here. External diagnostic root is explicitly required; no native/mm11 work.
+T025 official GREEN completed54/54 across5 descriptors/categories, no failures,
+skips, duplicates or timeout, owned-tree cleanup complete. Applicability39 plus
+union adapter7inner; strict10; routes14/Load23; general11; fixed restored18.
+Six actual C# RunAsync output captures passed the real Python checker:4NotRequired,
+2ReceiptAppended. All9 Python subprocess outcomes exit0 with both pumps complete
+and no cleanup failures. Fresh Unit39.84s(40.197wall),70warnings/0errors; category
+runner34.4429999s(36.316wall).3491source/8output pins remain exact; reviewed13 source
+pins match. External root mortal-t025/applicability-green contains full evidence;
+source-pin manifest SHA7c556a700ecd373dfd38b7e566f09de58a72aa5ba96295d0f4ff2818afd2eb6f,
+output-pin manifest cefc5f7473567ea54404694a4390b4cd81ef42f8674f5492495ebaa217d11223.
+Independent OUTCOME verification pending. No Integration build, native game or
+mm11 replay. Automated evidence qualifies this detached helper/consumer block,
+not an accepted live journey. No performance speedup claim.
