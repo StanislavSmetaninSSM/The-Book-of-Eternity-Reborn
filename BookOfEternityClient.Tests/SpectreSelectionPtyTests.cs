@@ -36,19 +36,51 @@ public sealed class SpectreSelectionPtyTests
         Assert.True(result.RootElement.GetProperty("TermiosRestored").GetBoolean());
     }
 
+    [Fact]
+    public async Task ScreenProjectionRefusesUnsupportedOrIncompleteTerminalState()
+    {
+        var root=Path.Combine(TestDiagnosticPaths.Root,"spectre-screen",Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        await RunAsync("/usr/bin/python3",
+            [Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/SelectionPrompt/test_screen.py")],
+            root,"parser",10);
+    }
+
     private static async Task RunAsync(string executable, string[] args, string root, string label, int seconds)
     {
-        var stdout=File.Create(Path.Combine(root,label+".stdout.raw"));
-        var stderr=File.Create(Path.Combine(root,label+".stderr.raw"));
+        FileStream? stdout=null, stderr=null;
+        Process? process=null;
         var start=new ProcessStartInfo(executable) {
             UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,
             WorkingDirectory=TestRepoPaths.RepoRoot
         };
         foreach(var arg in args) start.ArgumentList.Add(arg);
-        var process=Process.Start(start) ?? throw new IOException("Selection smoke process did not start.");
-        var output=process.StandardOutput.BaseStream.CopyToAsync(stdout);
-        var error=process.StandardError.BaseStream.CopyToAsync(stderr);
-        var exit=process.WaitForExitAsync();
+        try
+        {
+            stdout=File.Create(Path.Combine(root,label+".stdout.raw"));
+            stderr=File.Create(Path.Combine(root,label+".stderr.raw"));
+            process=Process.Start(start) ?? throw new IOException("Selection smoke process did not start.");
+        }
+        catch (Exception startupFailure)
+        {
+            // No pump exists yet. Each successfully created file is independently released.
+            var startupCleanup=new List<string>();
+            try { stdout?.Dispose(); } catch(Exception e) { startupCleanup.Add(e.ToString()); }
+            try { stderr?.Dispose(); } catch(Exception e) { startupCleanup.Add(e.ToString()); }
+            File.WriteAllText(Path.Combine(root,label+".startup-failure.json"),JsonSerializer.Serialize(new {
+                Failure=startupFailure.ToString(),CleanupFailures=startupCleanup
+            }));
+            throw;
+        }
+        Task StartTask(Func<Task> operation)
+        {
+            try { return operation(); }
+            catch(Exception error) { return Task.FromException(error); }
+        }
+        var output=StartTask(() => process.StandardOutput.BaseStream.CopyToAsync(stdout));
+        var error=StartTask(() => process.StandardError.BaseStream.CopyToAsync(stderr));
+        var exit=StartTask(() => process.WaitForExitAsync());
+        var retainedTasks=new List<Task> { exit, output, error };
         int? observedExitCode = null;
         Exception? failure=null;
         var cleanupFailures=new List<string>();
@@ -59,6 +91,7 @@ public sealed class SpectreSelectionPtyTests
             using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             async Task Observe(Task task, string step)
             {
+                retainedTasks.Add(task);
                 try { await task.WaitAsync(cleanup.Token); }
                 catch(Exception exception) { cleanupFailures.Add(step + ": " + exception); }
             }
@@ -92,10 +125,23 @@ public sealed class SpectreSelectionPtyTests
             catch(Exception exception) { cleanupFailures.Add("outcome: " + exception); }
             if (exit.IsCompletedSuccessfully && process.HasExited) observedExitCode = process.ExitCode;
             // Process streams must not be disposed while either original pump remains active.
-            if (exit.IsCompleted && output.IsCompleted && error.IsCompleted)
+            if (retainedTasks.All(task => task.IsCompleted))
             {
                 try { process.Dispose(); }
                 catch(Exception exception) { cleanupFailures.Add("process-dispose: " + exception); }
+            }
+            else
+            {
+                // This continuation retains exact original resources until all their I/O settles.
+                // The test remains FAILED/incomplete; late cleanup is never reported as PASS.
+                cleanupFailures.Add("Late cleanup retained by original-task continuation");
+                _ = Task.WhenAll(retainedTasks).ContinueWith(async completed => {
+                    _ = completed.Exception;
+                    try { await stdout.DisposeAsync(); } catch { }
+                    try { await stderr.DisposeAsync(); } catch { }
+                    try { process.Dispose(); } catch { }
+                }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default).Unwrap();
             }
 
         }

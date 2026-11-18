@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-load-session-observation-data",
+      "responsibility": "T024 opt-in diagnostic DATA and real Load operation parsing/metadata/disposal over an inert test transport; no new runtime authority.",
+      "excludes": "Native process ownership, actual UI Load, replacement restart and live A-to-B shutdown qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionObservation.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLoadSessionObservationTests.*",
+            "BookOfEternityClient.Tests.GmLoadSessionObservationOperationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-local-scope-faction-storage",
       "responsibility": "#1515 T023 actual Mortal locality resolver requires the exact current canonical faction companion for faction-owned storage.",
       "excludes": "No native relay, new ownership grants, storage mutation or whole feature acceptance.",
@@ -58697,7 +58723,7 @@
     },
     {
       "id": "mortal-spectre-selection-pty",
-      "responsibility": "#1515 T024 inert default Spectre SelectionPrompt on proposed owned client PTY with plain output; separate captured-output-pipe refusal control.",
+      "responsibility": "#1515 T024 inert default Spectre SelectionPrompt on proposed owned client PTY with plain output; separate captured-output-pipe refusal control and pure fail-closed screen projection controls.",
       "excludes": "Game bootstrap, menus, load lifecycle, GM/bridge/daemon, worlds and native relay acceptance.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpectreSelectionPtyTests.cs",
@@ -58716,7 +58742,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualDefaultPromptUsesOwnedClientConsole"
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualDefaultPromptUsesOwnedClientConsole",
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ScreenProjectionRefusesUnsupportedOrIncompleteTerminalState"
           ]
         }
       ]

@@ -16,6 +16,7 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     private static readonly ConditionalWeakTable<CanonicalRootIdentity,RootState> Roots=new();
     private readonly FileSystemManager _files;
     private readonly RootState _root;
+    private readonly Func<BridgeTransportEndpoint,CancellationToken,Task<Stream>> _connect;
     private Stream? _pipe;
     private MainOperationReader? _reader;
     private GmLoadSessionReply? _stop;
@@ -30,22 +31,26 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     internal GmLoadMainState State {get;private set;}=GmLoadMainState.Refused;
     internal bool HadSession=>_stop?.State==GmLoadMainState.Stopped;
 
-    private GmLoadSessionOperation(FileSystemManager files,RootState root,string id,string source,string? generation)
+    private GmLoadSessionOperation(FileSystemManager files,RootState root,string id,string source,string? generation,
+        Func<BridgeTransportEndpoint,CancellationToken,Task<Stream>>? connect)
     {
+        _connect=connect??BridgeTransportConnector.ConnectAsync;
         _files=files;_root=root;Id=id;SourceKey=source;ExpectedGeneration=generation;
 #if DEBUG
         try { _observationNonce=Environment.GetEnvironmentVariable(GmLoadSessionObservationWriter.NonceVariable); }
         catch { /* Opt-in diagnostics cannot change reservation. */ }
 #endif
     }
-    internal static GmLoadSessionOperation Reserve(FileSystemManager files,string id,string source,string? generation)
+    /// <summary>Reserves the existing original Load operation; the optional connector substitutes transport only, never receipt validation or ownership.</summary>
+    internal static GmLoadSessionOperation Reserve(FileSystemManager files,string id,string source,string? generation,
+        Func<BridgeTransportEndpoint,CancellationToken,Task<Stream>>? connect=null)
     {
         if(!Guid.TryParseExact(id,"N",out _) || string.IsNullOrWhiteSpace(source))throw new InvalidDataException("Immutable Load identity is incomplete.");
         var root=Roots.GetValue(files.CanonicalRootAuthorityIdentity,_=>new());
         lock(root) {
             if(root.Active!=null || root.Uncertain || root.Used.Count>=128 || !root.Used.Add(id))
                 throw new InvalidOperationException("Load is already active, unresolved or this operation was used.");
-            return root.Active=new(files,root,id,source,generation);
+            return root.Active=new(files,root,id,source,generation,connect);
         }
     }
     internal async Task StopAsync(CancellationToken token=default)
@@ -66,7 +71,7 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
             var endpoint=BridgeTransportConnector.DecodeStatus(doc.RootElement);
             var terminal=doc.RootElement.TryGetProperty("terminalRunId",out var run)?run.GetString():null;
             using var bounded=CancellationTokenSource.CreateLinkedTokenSource(token);bounded.CancelAfter(TimeSpan.FromSeconds(15));
-            _pipe=await BridgeTransportConnector.ConnectAsync(endpoint,bounded.Token);_reader=new(_pipe);
+            _pipe=await _connect(endpoint,bounded.Token);_reader=new(_pipe);
             await MainOperationReader.WriteAsync(_pipe,new {command="beginLoadSession",operationId=Id,rootKey=_files.BasePath,
                 loadSourceKey=SourceKey,expectedGeneration=ExpectedGeneration,expectedTerminalRunId=terminal,
                 expectedMainIdentity=expected?.Disposition==GmSessionRunDisposition.Running?expected.Identity:null},bounded.Token);

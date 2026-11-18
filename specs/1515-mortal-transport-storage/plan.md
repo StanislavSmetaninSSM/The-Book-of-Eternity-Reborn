@@ -2782,3 +2782,23 @@ not a general emulator or fabricated terminal response. Also tighten startup
 handle ownership where simple; uncertain asynchronous cleanup must remain failure.
 Both actual smoke cases are UNRUN. The precise proposed child TERM is
 xterm-256color; bridge/daemon settings remain unchanged.
+T024 parser-only correction: isolated eight-method Python controls first failed
+on unsupported alternate buffer/conceal/modes and incomplete state (16 failing
+subtests plus5 missing-finalizer errors); corrected8/8 in0.001s. This is parser
+RED/GREEN, not actual console execution. Source now import-safe; only bounded
+known cursor/erase and non-concealing styles accepted; unknown/alternate/DSR
+fail, invalid-state stays failed, incomplete CSI/UTF8 cannot authorize selection,
+and EOF finalizes both. Outer smoke startup handles and late-I/O ownership are
+explicit, incomplete cleanup still fails. Official category now3 leaves:
+2 actual console cases plus one parser Fact containing the8 controls. All three
+official leaves and fresh C# build remain UNRUN; follow-up review next.
+Load-observer RED source now includes optional internal stream connector seam,
+with production default unchanged. Nine cases execute actual Stop/Finish parsing,
+current-metadata fences and Dispose over inert protocol DATA: success, warning,
+malformed/foreign stop, foreign/stale/lost finish, failed disposal/no re-emission,
+and sink failure/no replay. Together with11 diagnostic DATA cases, proposed20
+cases expected5FAIL/15PASS under no-output stub, NOT MEASURED. Explicit category
+gm-load-session-observation-data owns this bounded unit slice/2min; no native
+process authority claimed. Global environment/stderr scoped to nonparallel tests
+and restored. Both writers are frozen for reviewed smoke execution; observer
+RED execution awaits its separate review. No gameplay or native retry occurred.
