@@ -2751,3 +2751,14 @@ attribute that extra coverage to effect refusal. Positive/two-repair branches
 reach resolved locality and all birth/resource/receipt/access assertions; the
 latter requires exactly two repairs. Every fixture was removed without failure.
 Bounded automatic gate accepted, native remains unrun with this source.
+T024 inert smoke source prepared (UNRUN): typed TestSupport entry uses actual
+ClientStartupOptions --plain-output and default Spectre SelectionPrompt, two
+fixed inert choices, child-owned result; no gameplay services. Native driver gets
+one role dispatch. Python fixture reuses owned PTY/guardian and tests fresh render,
+Down selection, Enter/returned Beta, exit/EOF/termios; captured-pipe is a separate
+negative case. Cursor-position query causes explicit refusal, not fake DSR.
+New official mortal-spectre-selection-pty owns two Linux unit cases/2min.
+Raw capture remains external; no daemon/bridge/game world. Guardian preparation
+is per-test bounded and isolated, no shared mutable owner/cache. No speedup claim.
+Five source files and category are WIP awaiting independent source review and
+fresh Unit build. Actual game menus and Load lineage remain UNRUN.

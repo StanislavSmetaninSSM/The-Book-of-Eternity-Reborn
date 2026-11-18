@@ -58694,6 +58694,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mortal-spectre-selection-pty",
+      "responsibility": "#1515 T024 inert default Spectre SelectionPrompt on proposed owned client PTY with plain output; separate captured-output-pipe refusal control.",
+      "excludes": "Game bootstrap, menus, load lifecycle, GM/bridge/daemon, worlds and native relay acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpectreSelectionPtyTests.cs",
+        "BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs",
+        "tests/fixtures/SelectionPrompt/smoke.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualDefaultPromptUsesOwnedClientConsole"
+          ]
+        }
+      ]
     }
   ]
 }
