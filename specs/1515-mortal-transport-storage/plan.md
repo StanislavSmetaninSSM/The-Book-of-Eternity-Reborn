@@ -3208,3 +3208,16 @@ are missing current history and strict+1 refusal, not malformed fixture/setup.
 Strict old helper unchanged. Fresh Unit build/official two-case RED authorized;
 actual exception sites must confirm causality. Successful-return inventory assert
 cannot prove exception-path immutability, so no such RED claim is made.
+T025 causal RED independently accepted: exactly2/2 FAIL after production
+prerequisites at test83. Absent case fails current-history ReadAsync73;
+retained case fails strict+1 Validate42. Fresh Unit29.13s(29.485wall),43warnings/
+0errors; runner10.7301748s(12.639wall), complete selection and ownedcleanup,
+no skips/duplicates/timeout.3488source/8outputs independently rehashed exact.
+External run.log SHAa38087f5258795db41829d5ae625618e6018626813ff16f15f7f5986a9a9b125.
+Initial official/PlanOnly raw accidentally used checkout TestResults because
+BOE_TEST_DIAGNOSTIC_ROOT was omitted. Only the exact finished owned directories
+were copied to external mortal-t025/applicability-red/official, verified all4+3
+file hashes/sizes and then originals removed; no other directories touched or
+runs repeated. Future runs set the external variable explicitly. No raw in Git.
+Implementation GO now covers the coherent agreed helper/consumer/test change;
+SOURCE review and narrow GREEN remain gates before any new package/native work.
