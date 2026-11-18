@@ -1145,3 +1145,19 @@ No new cache is appropriate for fresh pidfd/ownership observation. Reuse existin
 immutable build evidence only where inputs match; do not cache authority. Raw
 rl2 logs, queue, request and guardian records remain outside Git. Independent
 failure/source investigation is underway; no broad tests or hosted CI ran.
+
+Independent forensic review confirmed the ordering: last certain status111.557s,
+first uncertainty111.610s, relay closure111.620s, client cancellation111.621s,
+sole shutdown118.625s. No queue reply/response/started/execution exists. The first
+recorded stop stage is downstream of RootExited fault; it is not the original
+system-call cause. No evidence proves EINTR, kernel termination or an environment
+restriction. Because poll timeout is zero, ordinary blocking-poll signal behavior
+is not evidence for this failure.
+
+The next bounded implementation is diagnostic-only: retain original poll result,
+revents and immediate errno only on negative return, plus the original fault's
+type/message/stack. Read only the already-faulted retained RootExited task through
+the existing nonce-bound diagnostic path. An instance-scoped typed seam will test
+negative/error masks, pending and normal IN/HUP observations without changing
+classification, retry policy, handle lifetime or ownership. No new cache, native
+probe loop or live replay is justified. Actual implementation and tests are UNRUN.
