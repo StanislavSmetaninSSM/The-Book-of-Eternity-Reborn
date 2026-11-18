@@ -2365,3 +2365,21 @@ the engine's own effect refusal instead of separately prevalidating then accepti
 any rollback. Generic actor characteristic names also need current-world fidelity.
 No combined run occurred, so these are source review findings, not runtime fails.
 All corrections remain test-only; no native retry or accepted-turn claim.
+
+T021 corrected combined fixture66501fca6061f514f2b369d879eb77568d9fa6bf passed
+independent source re-review, then actual2/2 FAIL (not GREEN), official26.2552039s.
+Fresh Integration62.14s/129warnings/0errors,3434source pins unchanged,20current
+outputs retained; both owned fixtures removed and runner cleanup complete, no
+skips/duplicates/timeouts. External mortal-t021/combined/official; exact records
+02e8b701d0324e2a946c0befcfbeb07f and ddf0280748a74cfd84d81f76c0d5c592.
+The negative reached the exact engine effect owner refusal, then its broad
+rollback byte oracle failed on timestamp-looking bytes; affected path and genuine
+original boundary require investigation, not a rollback-regression claim.
+The positive reached a later protected location refusal with12 issues: allocated
+location unknown in current/NPC/vehicle validation; retained Mira treated as changed
+or out of scene; current-location activeEffectDefinitions/adjacencyMap/knownExits
+rejected as noncanonical; and two authored fixture-text defects (new journal
+entry lacks first-person marker, reasoning does not name canonical journal surface).
+Investigate the complete phase ordering and distinguish fixture mistakes from
+runtime contradictions before editing or rerunning. No live retry. Empty-effect
+unit4 GREEN remains bounded evidence, not acceptance of the combined journey.
