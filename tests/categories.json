@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-bridge-status-prewrite-contention-data",
+      "responsibility": "#1589 genuine canonical lock contention origin, current-acquisition refusal boundary, unchanged ordinary write/close failures, and diagnostic snapshot bookkeeping decisions.",
+      "excludes": "No native/game launch, actual Bridge owner/epoch/first-publication or signal/seal race qualification; pure decision cases do not prove publisher lock ordering. No timeout increase or general IO suppression.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BridgeStatusContention.cs",
+        "BookOfEternityGMBridge/BridgeHost.StatusBackpressure.cs",
+        "BookOfEternityClient.Tests/BridgeStatusContentionTests.cs",
+        "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-ready-cancellation-coordination",
       "responsibility": "#1589 original PowerShell readiness timeout cancellation orchestration: one original stream, retained caller failure, exact receipt and non-ready timeout guard, five inert peer cases.",
       "excludes": "Inert stdio receipts are not native owner authority or game qualification; canonical status publication is separate.",
