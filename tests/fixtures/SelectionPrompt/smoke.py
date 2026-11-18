@@ -124,12 +124,16 @@ def expected_dumb_refusal(result):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory')
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load')
     inventory = mode == 'pipe-inventory'
-    if inventory:
+    load = mode == 'pipe-load'
+    fixed_render = inventory or load
+    if fixed_render:
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
-        from mortal_console_routes import selected_frame, fixed_menu
+        from mortal_console_routes import selected_frame, fixed_menu, local_load_menu
         menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
+        if load:menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
+        first_label,footer=menu['choices']
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
@@ -142,7 +146,7 @@ def main():
     frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
     try:
-        args=['dotnet',helper,'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
+        args=['dotnet',helper,'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if mode=='pty' else subprocess.PIPE,
                                  stderr=slave if mode=='pty' else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
@@ -161,12 +165,12 @@ def main():
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
             ready=lambda choice: (selected_frame(bytes(captured),raw_cut,menu) ==
-                ('💰 Деньги: 500' if choice=='SMOKE_ALPHA' else '← Назад')) if inventory else (
+                (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
                 screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
-                if inventory:
+                if fixed_render:
                     actual=bytes(captured[raw_cut:])
-                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith('← Назад'.encode())
+                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                     result['InitialCompleteFooterWithoutCR']=True
                 result['InitialRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 arrow=screen.down()
@@ -176,9 +180,9 @@ def main():
                 result['Inputs'].append({'Key':'Down','Hex':arrow.hex()})
                 frame_cut=len(screen.plain);raw_cut=len(captured);stage=1
             elif stage==1 and ready('SMOKE_BETA'):
-                if inventory:
+                if fixed_render:
                     actual=bytes(captured[raw_cut:])
-                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith('← Назад'.encode())
+                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                     result['MovedCompleteFooterWithoutCR']=True
                 result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 assert os.write(master,b'\r')==1
@@ -196,7 +200,7 @@ def main():
         assert result['TermiosRestored'] and not receipt['InputRedirected']
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
         if mode!='pipe-dumb':
-            assert stage==2 and result['ExitCode']==0 and receipt['Selected']==('← Назад' if inventory else 'SMOKE_BETA') and receipt['Failure'] is None
+            assert stage==2 and result['ExitCode']==0 and receipt['Selected']==(footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
         if mode=='pty':
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:

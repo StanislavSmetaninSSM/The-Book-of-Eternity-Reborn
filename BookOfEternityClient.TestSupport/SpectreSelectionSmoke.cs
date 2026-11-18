@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 // T024: inert default Spectre, no game/service/authority construction.
 internal static class SpectreSelectionSmoke
 {
-    internal static int Run(string evidence, string plainOutput, bool inventory = false)
+    internal static int Run(string evidence, string plainOutput, bool inventory = false, bool load = false)
     {
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8; // Linux Program.cs branch.
@@ -20,11 +20,11 @@ internal static class SpectreSelectionSmoke
         try
         {
             selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title(inventory
+                .Title(load ? "Выберите сохранение:" : inventory
                     ? "[bold yellow]🎒 📦 Инвентарь[/]  [dim](⚖ 1.8kg/45.0kg кг)[/]  [dim](выберите для просмотра / управления)[/]"
                     : "T024 inert selection")
-                .PageSize(20)
-                .AddChoices(inventory ? new[] { "💰 Деньги: 500", "← Назад" } : new[] { "SMOKE_ALPHA", "SMOKE_BETA" }));
+                .PageSize(load ? 15 : 20)
+                .AddChoices(load ? new[] { "s | Ход 43 | Хозяйственный двор у кладовой совета | 18.11.2026 18:00 | 99999KB", "↩️ Назад" } : inventory ? new[] { "💰 Деньги: 500", "← Назад" } : new[] { "SMOKE_ALPHA", "SMOKE_BETA" }));
             return 0;
         }
         catch (Exception error) { failure = error; return 1; }

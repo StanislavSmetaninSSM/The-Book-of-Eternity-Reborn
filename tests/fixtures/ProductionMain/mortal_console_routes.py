@@ -89,7 +89,7 @@ def fixed_menu(header, choices, page_size):
         raise ValueError('Explicit finite menu required')
     if len(choices)>page_size or len(set(choices))!=len(choices):raise ValueError('Pagination or duplicate choices')
     def safe(line):
-        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=76
+        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=78
     if not all(safe(line) for line in header.split('\n')) or not all(type(x) is str and safe(x) for x in choices):
         raise ValueError('Unsupported control or wrapped menu')
     footer=choices[-1]
@@ -135,36 +135,78 @@ def inventory_menu(inventory, location, player_status):
         weight='  (⚖ '+str(inventory['totalWeight'])+'/'+str(inventory.get('maxWeight','?'))+' кг'+(' — ПЕРЕГРУЗКА!' if inventory.get('isOverloaded') is True else '')+')'
     return fixed_menu('🎒 📦 Инвентарь'+weight+'  (выберите для просмотра / управления)',rows+['← Назад'],20)
 
+def preflight_local_route(inventory, location, player_status, storage_id, item_id, turn):
+    """Checks both finite move menus and the worst supported Load label before owners start.
+
+    These copies predict only visible choice membership. Fresh real bytes remain
+    mandatory after each action; no copied DATA is publication permission.
+    """
+    import copy
+    inv=copy.deepcopy(inventory);loc=copy.deepcopy(location)
+    target=storage_target(loc,storage_id,item_id,True)
+    storage=next(st for st in loc['locationStorages'] if st['storageId']==storage_id)
+    for retrieve in (True,False):
+        inventory_menu(inv,loc,player_status)
+        actions=[]
+        if inv['items']:actions.append(f"📥 Положить предмет в хранилище ({len(inv['items'])} в инвентаре)")
+        if storage['contents']:actions.append(f"📤 Забрать предмет из хранилища ({len(storage['contents'])} внутри)")
+        fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(storage['contents'])),actions+['← Назад к инвентарю'],10)
+        source=storage['contents'] if retrieve else inv['items']
+        labels=[i['name']+(' ×'+str(i.get('quantity',i.get('count',1))) if str(i.get('quantity',i.get('count',1)))!='1' else '') for i in source]
+        title='Выберите предмет для извлечения из хранилища:' if retrieve else 'Выберите предмет для перемещения в хранилище:'
+        fixed_menu(title,labels+['← Отмена'],20)
+        item=next(i for i in source if i['itemId']==item_id);source.remove(item)
+        (inv['items'] if retrieve else storage['contents']).append(item)
+    local_load_menu(location['name'],turn,99999)
+
+
 def selected_frame(raw, cut, menu):
-    """Match a complete known sequence after a fresh cut, not a reconstructed screen."""
+    """Exact emitted frames; only SGR and the source-sized CR/cursor-up redraw prefix are accepted."""
     if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
     try:
         checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'])
         text=raw[cut:].decode('utf-8')
-        def ansi(match):
-            args,final=match.groups()
-            if final in ('h','l') and args=='?25':return ''
-            if '?' in args or final not in 'mABCDGHfKJ':raise ValueError('Unsupported control')
-            if final=='m' and any(int(v or 0) not in (0,1,2,3,4,9,22,23,24,29) for v in args.split(';')):raise ValueError('Concealing decoration')
+        def decoration(match):
+            if any(int(v or 0) not in (0,1,2,3,4,9,22,23,24,29) for v in match.group(1).split(';')):raise ValueError('Unsupported decoration')
             return ''
-        text=re.sub(r'\x1b\[([0-9;?]*)([A-Za-z])',ansi,text)
+        text=re.sub(r'\x1b\[([0-9;]*)m',decoration,text)
     except (ValueError,KeyError,TypeError,UnicodeError):return None
-    if '\x1b' in text:return None
-    # A header starts a physical line; optional renderer padding is not arbitrary suffix text.
-    header='\n'.join(re.escape(line)+r' *' for line in checked['header'].split('\n'))
-    starts=list(re.finditer(r'(?:^|\n)\r?'+header+r'\r?\n',text))
-    if not starts:return None
-    body=text[starts[-1].end():]
-    body=re.sub(r'^(?: *\r?\n)*','',body)
-    if re.search(r'\r(?!\n|$)',body):return None
-    rows=body.replace('\r','').split('\n')
-    if len(rows)!=len(checked['choices']):return None
-    selected=[]
-    for index,(row,label) in enumerate(zip(rows,checked['choices'])):
-        match=re.fullmatch(r'(> |  )'+re.escape(label)+r' *',row)
-        if not match:return None
-        if match.group(1)=='> ':selected.append(index)
-    return checked['choices'][selected[0]] if len(selected)==1 else None
+    header_lines=checked['header'].split('\n')
+    height=len(header_lines)+len(checked['choices'])
+    redraw='\r\x1b['+str(height)+'A'
+    parts=text.split(redraw)
+    def one(part, first):
+        # Cursor hiding is allowed only immediately before an exact header.
+        part=part.replace('\x1b[?25l'+header_lines[0],header_lines[0],1)
+        if '\x1b' in part:return None
+        header='\n'.join(re.escape(line)+r' *' for line in header_lines)
+        starts=list(re.finditer(r'(?:^|\n)\r?'+header+r'\r?\n',part))
+        if not starts or (not first and starts[-1].start()!=0):return None
+        body=part[starts[-1].end():]
+        body=re.sub(r'^(?: *\r?\n)*','',body)
+        if re.search(r'\r(?!\n|$)',body):return None
+        rows=body.replace('\r','').split('\n')
+        if len(rows)!=len(checked['choices']):return None
+        selected=[]
+        for index,(row,label) in enumerate(zip(rows,checked['choices'])):
+            match=re.fullmatch(r'(> |  )'+re.escape(label)+r' *',row)
+            if not match:return None
+            if match.group(1)=='> ':selected.append(index)
+        return checked['choices'][selected[0]] if len(selected)==1 else None
+    # A fresh cut can start at the redraw prefix. Coalesced old frames must also
+    # be complete; a newest partial draw can never fall back to an earlier one.
+    if len(parts)>1 and parts[0]=='':parts=parts[1:]
+    selected=None
+    for index,part in enumerate(parts):
+        selected=one(part,index==0)
+        if selected is None:return None
+    return selected
+
+
+def local_load_menu(location_name, turn, size_kb, timestamp='18.11.2026 18:00'):
+    """Fixed sole-save visible contract; size bound is operational, not a predicted ZIP size."""
+    if type(size_kb) is not int or not 0<=size_kb<=99999:raise ValueError('Unsupported Save size display')
+    return fixed_menu('Выберите сохранение:',[f's | Ход {turn} | {location_name} | {timestamp} | {size_kb}KB','↩️ Назад'],15)
 
 def item_position(location,inventory,storage_id,item_id):
     """Exact observed target position, never permission to move an item."""

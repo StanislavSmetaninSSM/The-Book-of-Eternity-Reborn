@@ -23,6 +23,8 @@ internal static class NativeHostScenarioDriver
     /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0] == "spectre-load-smoke")
+            return SpectreSelectionSmoke.Run(args[1], args[2], load: true);
         if (args.Length == 3 && args[0] == "spectre-inventory-smoke")
             return SpectreSelectionSmoke.Run(args[1], args[2], inventory: true);
         if (args.Length == 3 && args[0] == "spectre-selection-smoke")

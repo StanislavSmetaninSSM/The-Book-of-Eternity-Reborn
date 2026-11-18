@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-menu-frame-data",
-      "responsibility": "#1515 T027 twelve authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
+      "responsibility": "#1515 T027 sixteen authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
       "excludes": "No real renderer, owner, world or live acceptance. Initial no-output recognition failures are causal RED only after fixture assertions.",
       "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-menu-frame.py"],
       "related": [],
@@ -21,7 +21,7 @@
       "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher"]}]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
     },
     {
       "id": "mortal-explorer-participation-data",

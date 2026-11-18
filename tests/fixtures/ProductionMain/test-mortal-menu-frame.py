@@ -1,6 +1,6 @@
 """T027 authored captured-pipe DATA, not retained live bytes or terminal authority."""
 import unittest
-from mortal_console_routes import selected_frame, fixed_menu, inventory_menu
+from mortal_console_routes import selected_frame, fixed_menu, inventory_menu, local_load_menu, preflight_local_route
 
 TITLE = '🎒 📦 Инвентарь'
 HEADER = TITLE + '  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)'
@@ -70,10 +70,37 @@ class MenuFrameTests(unittest.TestCase):
         self.assertEqual(menu['choices'],('💰 Деньги: 500','📦 Мел [Материал]','📦 🔒 Council (0 пр.)','← Назад'))
         self.assertIn('(⚖ 1kg/45kg кг)',menu['header'])
         with self.assertRaises(ValueError):inventory_menu(dict(inv,items=inv['items']*21),loc,{'money':500})
-        with self.assertRaises(ValueError):fixed_menu('Menu',['A'*77,'Back'],20)
+        with self.assertRaises(ValueError):fixed_menu('Menu',['A'*79,'Back'],20)
+
+    def test_actual_redraw_prefix_coalesced_and_fresh_cut(self):
+        redraw=b'\r\x1b[4A'
+        self.assertEqual(selected_frame(frame()+redraw+frame(2),0,MENU),'← Назад')
+        self.assertEqual(selected_frame(redraw+frame(2),0,MENU),'← Назад')
+        for tail in (b'',HEADER.encode(),(HEADER+'\n> ').encode()):
+            self.assertIsNone(selected_frame(frame()+redraw+tail,0,MENU))
+        two=fixed_menu(HEADER,['💰 Деньги: 500','← Назад'],20)
+        draw=(HEADER+'\n\n> 💰 Деньги: 500   \n  ← Назад   ').encode()
+        self.assertEqual(selected_frame(draw+b'\r\x1b[3A'+draw,0,two),'💰 Деньги: 500')
+    def test_cursor_erase_and_wrong_redraw_height_refuse(self):
+        for control in (b'\x1b[2K',b'\x1b[2J',b'\x1b[1A',b'\x1b[3;1A',b'\x1b[?25h'):
+            self.assertIsNone(selected_frame(frame()+control,0,MENU))
+            self.assertIsNone(selected_frame(frame().replace('Мел'.encode(),control+'Мел'.encode()),0,MENU))
+        self.assertIsNone(selected_frame(frame()+b'\r\x1b[3A'+frame(),0,MENU))
+    def test_long_location_load_supported_label_and_oversize_refuse(self):
+        menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
+        self.assertTrue(menu['choices'][0].startswith('s | Ход 43 | '))
+        with self.assertRaises(ValueError):local_load_menu('Хозяйственный двор у кладовой совета',43,100000)
+        with self.assertRaises(ValueError):local_load_menu('Location '*20,43,1)
+    def test_whole_local_preflight_rejects_picker_page_or_prefix_before_actions(self):
+        inv={'items':[{'itemId':'i','name':'Мел','type':'Материал'}],'equippedItems':{}}
+        loc={'name':'Court','locationStorages':[{'storageId':'s','name':'Council','hasFullAccess':True,'contents':[{'itemId':'target','name':'Rope','type':'Материал'}]}]}
+        preflight_local_route(inv,loc,{'money':0},'s','target',43)
+        self.assertEqual(len(inv['items']),1);self.assertEqual(len(loc['locationStorages'][0]['contents']),1)
+        loc['locationStorages'][0]['contents'][0]['name']='← Отмена extra'
+        with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43)
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(MenuFrameTests)
-    if suite.countTestCases()!=12:raise SystemExit('Expected exactly twelve menu-frame DATA methods')
+    if suite.countTestCases()!=16:raise SystemExit('Expected exactly sixteen menu-frame DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==12 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==16 and result.wasSuccessful() and not result.skipped else 1)

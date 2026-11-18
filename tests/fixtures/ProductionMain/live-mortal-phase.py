@@ -1076,7 +1076,7 @@ def storage_local_route():
         cut,_=finite_select(current_inventory_menu(),'← Назад',cut,20)
         fresh_player(client,cut,10);client_prompt=True
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
-    save_name='t027-'+uuid.uuid4().hex[:8] # Bounded visible label; exact archive uniqueness is still checked.
+    save_name='s' # Sole fresh archive, checked before any owner starts; no canonical name changes.
     saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
     cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Save menu')
     fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'1\r','observed Save choice')
@@ -1119,7 +1119,8 @@ def storage_local_route():
     if all_save_files!=[archive]:raise RuntimeError('Finite Load fixture requires the one exact observed archive; unsupported additional saves')
     timestamp=datetime.datetime.fromisoformat(metadata['timestamp'].replace('Z','+00:00')).strftime('%d.%m.%Y %H:%M')
     load_label=f"{save_name} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
-    load_menu=console_routes.fixed_menu('Выберите сохранение:',[load_label,'↩️ Назад'],15)
+    load_menu=console_routes.local_load_menu(metadata['currentLocation'],metadata['turnNumber'],len(archive_bytes)//1024,timestamp)
+    if load_menu['choices'][0]!=load_label:raise RuntimeError('Actual Load metadata label differs from preflight contract')
     cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
     fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
     # Select the exact archive row without activating it yet; its receipt SourceKey must match.
@@ -1157,6 +1158,12 @@ load_cut=None;load_expected=None
 # Reject unsupported fixed UI layout before starting any owned process; refresh again at each action.
 if route['Route']!='birth':
     current_inventory_menu()
+    if route['Route']=='storage-local-proof':
+        pre_location=strict_settings((session/'game_state/world/current_location.json').read_bytes())
+        # Worst supported size-display width, NOT a claim about future compression/diagnostic growth.
+        console_routes.preflight_local_route(strict_settings((session/'game_state/inventory/items.json').read_bytes()),
+            pre_location,strict_settings((session/'game_state/core/player_status.json').read_bytes()),
+            route['StorageId'],route['ItemId'],expected_turn-1)
     if route['Route']=='storage-local-proof' and any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
         raise RuntimeError('Finite local proof requires no pre-existing Save choices')
 client=bridge=daemon=None;client_wait=False;client_prompt=False

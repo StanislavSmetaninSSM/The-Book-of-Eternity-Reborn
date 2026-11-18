@@ -15,6 +15,9 @@ public sealed class SpectreSelectionPtyTests
     [Fact]
     public Task ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher() => RunModeAsync("pipe-inventory");
 
+    [Fact]
+    public Task ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack() => RunModeAsync("pipe-load");
+
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)
     {
