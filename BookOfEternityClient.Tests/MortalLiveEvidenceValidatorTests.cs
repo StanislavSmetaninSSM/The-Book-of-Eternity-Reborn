@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using BookOfEternityClient.Services;
 using Xunit;

@@ -33,6 +33,13 @@ public sealed class MortalLiveOutcomeApplicabilityTests
     [InlineData("schedule-cycle")]
     [InlineData("schedule-context")]
     [InlineData("request-control")]
+    [InlineData("raw-control-missing-default")]
+    [InlineData("raw-control-unknown")]
+    [InlineData("raw-both-controls-unknown")]
+    [InlineData("absent-history-member")]
+    [InlineData("absent-history-link")]
+    [InlineData("absent-report-member")]
+    [InlineData("absent-report-link")]
     [InlineData("living-report")]
     [InlineData("progression-report")]
     [InlineData("original-report")]
@@ -52,7 +59,7 @@ public sealed class MortalLiveOutcomeApplicabilityTests
     [InlineData("case-alias-presence")]
     [InlineData("normalization-alias-hashes")]
     [InlineData("normalization-alias-presence")]
-    public Task InvalidCapturedOrCurrentOutcomeRefusesWithoutMutation(string fault) => CheckAsync(true, fault);
+    public Task InvalidCapturedOrCurrentOutcomeRefusesWithoutMutation(string fault) => CheckAsync(!fault.StartsWith("absent-history", StringComparison.Ordinal), fault);
 
     /// <summary>Runs one owned detached fixture; faults are applied only after lawful production prerequisites.</summary>
     private static async Task CheckAsync(bool priorReceipt, string? fault)
@@ -203,11 +210,44 @@ public sealed class MortalLiveOutcomeApplicabilityTests
                 raw[dictionary]!.AsObject()[name] = raw[dictionary]![MortalLivingWorldSource.WorldTimePath]!.DeepClone();
                 await WriteAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath, Encoding.UTF8.GetBytes(raw.ToJsonString()));
             }
+            if (fault is "raw-control-missing-default" or "raw-control-unknown" or "raw-both-controls-unknown")
+            {
+                var raw = JsonNode.Parse(JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions))!.AsObject();
+                var rawControl = raw["progressionControl"]!.AsObject();
+                if (fault == "raw-control-missing-default") Assert.True(rawControl.Remove("worldCycleMinutes"));
+                else rawControl["unrecognizedControlMember"] = 1;
+                // Keep the genuine original token: deserialization would previously erase this raw mutation.
+                Assert.Equal(manifest.ManifestPayloadHash, raw["manifestPayloadHash"]!.GetValue<string>());
+                await WriteAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath, Encoding.UTF8.GetBytes(raw.ToJsonString()));
+                if (fault == "raw-both-controls-unknown")
+                {
+                    var rawRequest = JsonNode.Parse(await File.ReadAllTextAsync(request))!.AsObject();
+                    rawRequest["progressionControl"]!.AsObject()["unrecognizedControlMember"] = 1;
+                    await File.WriteAllTextAsync(request, rawRequest.ToJsonString());
+                }
+            }
+            if (fault?.StartsWith("absent-", StringComparison.Ordinal) == true)
+            {
+                var logical = fault.StartsWith("absent-history", StringComparison.Ordinal) ? MortalLivingWorldSource.HistoryPath : MortalLivingWorldSource.ReportPath;
+                Assert.False(manifest.OriginalPathPresenceV1![logical]);
+                Assert.False(manifest.Files.ContainsKey(logical));
+                Assert.False(manifest.SnapshotFileHashes.ContainsKey(logical));
+                var selected = "game_state/control/pending_turn_snapshot/" + logical;
+                if (fault.EndsWith("-member", StringComparison.Ordinal)) await WriteAsync(baseline, selected, Encoding.UTF8.GetBytes("{}"));
+                else
+                {
+                    var path = Path.Combine(baseline, selected);Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                    File.CreateSymbolicLink(path, Path.Combine(baseline, manifest.Files[MortalLivingWorldSource.WorldTimePath]));
+                }
+            }
             var before = Inventory(root);
             if (fault is not null && !fault.StartsWith("legal-", StringComparison.Ordinal))
             {
                 var refused = await Assert.ThrowsAsync<InvalidDataException>(() => MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request));
                 if (fault?.Contains("alias", StringComparison.Ordinal) == true) Assert.Equal("Aliased original source key.", refused.Message);
+                if (fault.StartsWith("raw-", StringComparison.Ordinal)) Assert.Equal("Raw captured/request progression control is not the exact closed control DTO.", refused.Message);
+                if (fault.StartsWith("absent-", StringComparison.Ordinal)) Assert.Equal(fault.EndsWith("-link", StringComparison.Ordinal)
+                    ? "Linked evidence path." : "Explicitly absent original has a physical captured member.", refused.Message);
                 Assert.Equal(before, Inventory(root));
                 return;
             }

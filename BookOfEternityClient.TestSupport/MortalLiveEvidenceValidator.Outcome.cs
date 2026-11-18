@@ -22,6 +22,12 @@ internal static partial class MortalLiveEvidenceValidator
         var snapshot = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifest,
             LiveTurnPreparationService.ManifestJsonOptions, "Captured snapshot") ?? throw new InvalidDataException("Missing snapshot.");
         var req = Object(request, "Actual request");
+        var rawControl = Object(manifest, "Captured snapshot")["progressionControl"];
+        if (rawControl is not JsonObject || req["progressionControl"] is not JsonObject ||
+            !JsonNode.DeepEquals(rawControl, req["progressionControl"]) || snapshot.ProgressionControl is null ||
+            !JsonNode.DeepEquals(rawControl, JsonSerializer.SerializeToNode(snapshot.ProgressionControl,
+                LiveTurnPreparationService.ManifestJsonOptions)))
+            throw new InvalidDataException("Raw captured/request progression control is not the exact closed control DTO.");
         var token = snapshot.ManifestPayloadHash;
         var computed = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(snapshot,
             LiveTurnPreparationService.ManifestHashJsonOptions, value => value.ManifestPayloadHash,
@@ -132,6 +138,8 @@ internal static partial class MortalLiveEvidenceValidator
                     throw new InvalidDataException("Unexpected selected original path.");
                 bytes = await ReadOutcomeBytesAsync(baseline, snapshot.Files[logical], false);
             }
+            else if (await ReadOutcomeBytesAsync(baseline, "game_state/control/pending_turn_snapshot/" + logical, true) is not null)
+                throw new InvalidDataException("Explicitly absent original has a physical captured member.");
             RequireOriginalMapping(snapshot, logical, bytes); inputs.Add(logical, bytes);
         }
         return ValidateOutcome(manifest, await ReadUtf8Async(actualRequest), inputs,
