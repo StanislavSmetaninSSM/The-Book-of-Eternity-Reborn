@@ -1,5 +1,34 @@
 # Seeded-live Mortal relay qualification plan
 
+## ml6 second-phase startup refused before gameplay, 2026-11-18
+
+After the independently accepted first phase below, a fresh p02 queue and
+isolated launch environment were prepared against the same retained world and
+exact predecessor. Preparation manifest SHA256:
+`572daf18ea11405daa35eca2adb88f8654c96706ca4f224e7c35eb875457b22b`.
+The original bounded launch completed its probe in 27.199 seconds with FAIL,
+zero player actions and zero accepted turns. The launcher printed
+`GM bridge already running (pid=36).` The expected Running owner and published
+transport never appeared. No actual GM request, response or packet was authored.
+This is a startup refusal, not a failed game turn or evidence about Continue.
+
+The prior p01 bridge had exited0 with EOF and its original owner was independently
+verified Stopped. PID reuse is a hypothesis to investigate in the launcher,
+not permission to kill a process, remove a lock or bypass ownership. Inspect all
+analogous PID checks in the bounded restart chain before another live attempt.
+Do not claim a historical baseline failure without an actual historical run.
+
+p02 has no original Running identity and made zero shutdown calls. Its bridge
+exited0/EOF/termios restored, but client exit/EOF/termios are unconfirmed. The
+guardian reported driverExitCode1, ECHILD true, reaped1, zero emergency signals,
+zero failures and no deadline. This proves only physical descendant drain;
+logical lifecycle and ordinary client cleanup were NOT established. p02 is not
+a continuation token. Preserve both phases and do not replay this world.
+The first-phase story remains byte-identical; independent failure/state review
+is pending. Raw evidence remains outside Git. No new production change or retry
+has been made. Earlier uncertain runs and unfinished task requirements remain
+open.
+
 Owner-directed follow-up for #1515 / #1516 / #1538, 2026-11-17. This is distinct
 from the already verified scripted engine journeys and #1589 Chaos relay run.
 No initial incarnation, NLP completeness, Windows, or whole-feature acceptance
