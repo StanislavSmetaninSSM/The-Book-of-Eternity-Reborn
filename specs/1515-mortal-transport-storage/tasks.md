@@ -34,3 +34,6 @@ Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 - [x] T015 Accepted source/checkpoint bf5635fda8d9260c7ee1c644430469cc78e48cea restored into a fresh clean directory, fsck and 76 local source-file comparisons pass; final documentation closeout saved separately. No main merge or issue closure.
 
 Dependencies: Setup → US1/US2 pure contracts → combined publication → US3 → final verification. Read-only mapping or independent tests may run in parallel; shared writer/source changes remain coordinated. No unchecked task is completed by a report alone.
+
+## User-required real GM-relay journey, 2026-11-18
+- [ ] T016 Drive an ordinary player/GM-relay cart-and-storage encounter in a fresh current-runtime Mortal world; verify accepted complete birth, exact ownership/access and cargo identity, then real denied/authorized inventory consumers and reload without replaying materialization. Preserve actual repairs, independent prelaunch/outcome review and original-owner cleanup. Setup41 is not an accepted game turn. No claim of full live coverage from the earlier typed proofs.

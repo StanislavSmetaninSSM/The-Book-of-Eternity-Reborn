@@ -1734,3 +1734,34 @@ No nonempty cargo, new-location add route, ordinary access grants or spiritual
 behavior is introduced. No runtime publication/rollback or whole-issue claim.
 Remote persistence remains blocked on the previously delivered approval; no new
 GitHub write was attempted. Raw diagnostic files remain outside Git.
+
+## Reopened real journey: mm5 preparation, 2026-11-18
+
+Tracked T016 follows the user's requirement for actual GM-relay play. Shared
+working branch1515-1516-1538-live-main-20261118; relay baseline main1efd1bfd,
+current C# source6d736a5 includes independently verified T019/T020/T021 fixes.
+The source/output manifestabcabce0 matches3,420 source files and20 eligible
+outputs before/after three no-build publications;8 stale Unit outputs excluded.
+No new build or broad tests. This is inventory consistency, not a PDB audit.
+
+Fresh ordinary seed exports49 files with a new session and setup41, not accepted
+story. Expected genuine request42. No mm3/mm4 world/history/config or old
+ownership is copied; no diagnostic result becomes a predecessor. Current harness
+and immutable native/helper/relay/runtime packages are separately pinned.
+Preparation manifestd24045682cb43db9dd823e6c02edbdb150fac66bc2f1722380f05bfbd0dc445d;
+package5b510a6c2857cd5eeba7868c0ef676b3ac1b7ec4f00ee14d9e3b90e37fe9ab13;
+seed4bd5e0424ec7dbbf43cb9d7821ef8229597817588634d735653bc024d0fd40a6.
+Actionc7cf3b09f51a0d174cade83286cbfcaef466aca535059cc4868a5e935d21a9e0
+asks a council representative to show a cargo cart and supplies storage, explain
+ownership/access, and takes nothing without permission. The GM must author
+complete coherent entities from the actual request, not a scripted fixture
+acceptance. Admission, restricted-access refusal and later authorized movement
+must be observed through genuine consumers. Native launch remains UNRUN pending
+independent prelaunch. The ordinary diagnostic exception nonce is unset.
+
+Optimization: reuse exact current output DATA avoids rebuilding; each genuine
+world/owner is fresh. Existing acceptance/cleanup guards are never cached or
+replaced with old receipts. Old unsuccessful mm3p04 remains preserved; its
+exception was not reproduced by the separate accepted mm4 diagnostic, which
+cannot serve as an ordinary predecessor. Full1516 chronology is in its existing
+live-relay-phase-plan.md, not duplicated here.
