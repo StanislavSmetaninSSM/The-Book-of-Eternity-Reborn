@@ -2181,3 +2181,14 @@ harness detected it and preserved state. T019 must make the compact authoring
 example complete and guard that source, rather than invent maxima or weaken the
 protected gate. Fresh actual packet construction will explicitly assert every
 new owner's required resource envelope before submission. No broad suite needed.
+T019 causal RED confirmed before template correction: fresh Unit build28.27s
+(28.647wall),43warnings/0errors. Official data-only selection executes1/1FAIL
+at the explicit missing resourceMaterialization assertion, after exact here-string
+extraction, JSON parse and new-actor premises. Runner10.2766008s, complete1/1,
+no skip/duplicate/timeout and owned cleanup complete. All3431 source pins and
+original daemon c6b56cf077765c6dd42d8d565707102600c6399ad4fd9d828a58c44ce2aaaf1f
+remain exact. External mortal-t019/red; identity
+20261118-095618-479-5-6649f02769514385b99cfb1065dc2bc1-categories.
+Strengthened actual exporter test remains UNRUN; no unrelated examples or native
+attempt were run. Minimal daemon example/directive correction follows, then
+exact unit1+existing-renderer1 GREEN. Existing runtime resource gates stay intact.
