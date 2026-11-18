@@ -26,6 +26,27 @@ public sealed partial class MortalLivingWorldPublicationTests
     internal static async Task<(EffectMaterializationTestContext Context, AcceptedTurnCanonicalStateRefresh.Result Result,
         IReadOnlyDictionary<string, string> Backups, byte[]? OriginalMap)> PublishLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null)
     {
+        var prepared = await PrepareLocationComparisonFixtureAsync(hooks);
+        var context = prepared.Context;
+        var backups = prepared.Backups;
+        var originalMapBytes = prepared.OriginalMap;
+        try
+        {
+        var result = await PublishAsync(context, backups);
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        var current = (await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath))!;
+        var allocated = current["locationId"]!.GetValue<string>();
+        Assert.NotEqual("loc_comparison_original", allocated);
+        Assert.NotNull(current["materializationReceipt"]);
+        Assert.Equal(originalMapBytes, await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]));
+        return (context, result, backups, originalMapBytes);
+        }
+        catch { await context.DisposeAsync(); throw; }
+    }
+    /// <summary>Creates an actual signed original and raw command, without publishing or issuing comparison DATA.</summary>
+    private static async Task<(EffectMaterializationTestContext Context, IReadOnlyDictionary<string, string> Backups,
+        byte[]? OriginalMap)> PrepareLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null)
+    {
         var context = await EffectMaterializationTestContext.CreateAsync(hooks);
         try
         {
@@ -65,15 +86,9 @@ public sealed partial class MortalLivingWorldPublicationTests
             new JsonObject { ["currentLocationData"] = raw });
         Assert.Empty(raw["locationStorages"]!.AsArray());
         Assert.Equal(originalAccessBytes, await context.FileSystem.ReadFileBytesAsync(MortalStorageAccessProjection.StatePath));
-        var result = await PublishAsync(context, backups);
-        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
-        var current = (await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath))!;
-        var allocated = current["locationId"]!.GetValue<string>();
-        Assert.NotEqual("loc_comparison_original", allocated);
-        Assert.NotNull(current["materializationReceipt"]);
-        Assert.Equal(originalMapBytes, await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]));
-        return (context, result, backups, originalMapBytes);
+        return (context, backups, originalMapBytes);
         }
         catch { await context.DisposeAsync(); throw; }
     }
+
 }

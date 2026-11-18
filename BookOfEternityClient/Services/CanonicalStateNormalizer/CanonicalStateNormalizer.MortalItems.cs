@@ -1877,6 +1877,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     boundNormalizer = await boundNormalizer.WithOrdinaryNpcCompletionSourceAsync();
                     mechanicsPlan = await boundNormalizer
                         .NormalizeAccumulatedStateWithPlanAsync(backups);
+                    if (locationCapture is not null)
+                        await locationCapture.BindPublishedImageAsync(fs, writeLease, LocationPublicationIssuer);
                 }
                 else
                 {

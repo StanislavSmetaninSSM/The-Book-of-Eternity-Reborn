@@ -4,7 +4,7 @@
     {
       "id": "mortal-published-location-comparison",
       "responsibility": "#1515 T022 genuine completed location allocation reference comparison after actual canonical publication.",
-      "excludes": "No native relay, actual GameEngine two-repair flow or genuine Browser invocation qualification.",
+      "excludes": "No native relay or actual GameEngine repair flow; genuine Browser-original refusal is included.",
       "changeHints": [
         "BookOfEternityClient/Services/Validation/ValidationService.CompletedLocationComparison.cs",
         "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.LocationComparison.cs"
@@ -26,7 +26,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_*"
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_*",
+            "BookOfEternityClient.Tests.BrowserGameStateReadReservationTests.CompletedLocationComparisonCannotEnterActualBrowserOriginal"
           ]
         }
       ]
@@ -63,7 +64,7 @@
     },
     {
       "id": "mortal-combined-birth-engine",
-      "responsibility": "#1515 T021 full ordinary pending-turn location/link, retained NPC, new NPC, cart, restricted storage and chalk birth; unresolved effect candidate rolls back without creation publication.",
+      "responsibility": "#1515 T021/T022 full ordinary location/link, retained/new NPC, cart, storage/item birth; actual repeated non-location repair, changed map/index repair refusal and exact rollback.",
       "excludes": "No native relay, legacy source migration, authored receipt or direct accepted-refresh shortcut.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalBirth.cs",
@@ -86,7 +87,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_RealTurnPreservesHistoricalActorAndPublishesOnlyAdmittedCandidate"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_RealTurnPreservesHistoricalActorAndPublishesOnlyAdmittedCandidate",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_CompletedPublicationRechecksEveryRepair"
           ]
         }
       ]

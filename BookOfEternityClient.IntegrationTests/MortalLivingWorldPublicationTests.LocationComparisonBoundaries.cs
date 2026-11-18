@@ -26,6 +26,51 @@ public sealed partial class MortalLivingWorldPublicationTests
     }
 
     [Theory]
+    [InlineData("map")]
+    [InlineData("index")]
+    public async Task CompletedLocation_LatePostValidationDriftCannotIssueAndRestoresOwnedBytes(string target)
+    {
+        EffectMaterializationTestContext? current = null;
+        var reached = false;
+        var finalHistoryReads = 0;
+        var closingMapReads = 0;
+        var hooks = new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = path =>
+        {
+            if (current is null || reached) return Task.CompletedTask;
+            if (path == MortalLivingWorldSource.HistoryPath)
+            {
+                var projection = JsonNode.Parse(File.ReadAllText(current.FileSystem.ResolvePath(
+                    MortalLocationMaterializationContract.CurrentLocationPath)).TrimStart('\uFEFF'))!;
+                if (projection["materializationReceipt"] is not null)
+                {
+                    Assert.NotEqual("loc_comparison_original", projection["locationId"]!.GetValue<string>());
+                    finalHistoryReads++;
+                }
+                return Task.CompletedTask;
+            }
+            // Third history read is the final living-world source check. Its own map check comes first;
+            // the next live map (or first live index) belongs to closing location-completion comparison.
+            if (finalHistoryReads != 3) return Task.CompletedTask;
+            if (target == "map" && (path != MortalLocationMaterializationContract.WorldMapPath || ++closingMapReads != 2))
+                return Task.CompletedTask;
+            if (target == "index" && path != MortalLocationIdentityState.StatePath) return Task.CompletedTask;
+            reached = true;
+            File.AppendAllText(current.FileSystem.ResolvePath(path), "\n ");
+            return Task.CompletedTask;
+        } };
+        var prepared = await PrepareLocationComparisonFixtureAsync(hooks);
+        await using var context = prepared.Context;
+        var before = await CaptureAsync(context);
+        current = context;
+        var error = await Record.ExceptionAsync(() => PublishAsync(context, prepared.Backups));
+        current = null;
+        Assert.True(reached, "Must reach actual post-validation published-source boundary after allocated receipt.");
+        var refusal = Assert.IsType<ValidationService.CompletedLocationComparisonRefusedException>(error);
+        Assert.Equal("Location publication output changed before completion.", refusal.Message);
+        await AssertBytesAsync(context, before);
+    }
+
+    [Theory]
     [InlineData("request")]
     [InlineData("map")]
     [InlineData("index")]
@@ -180,6 +225,22 @@ public sealed partial class MortalLivingWorldPublicationTests
         armed = false;
         Assert.Equal(proofReads, manifestReads);
         Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
+        var selectedReads = manifestReads;
+        manifestReads = 0;
+        armed = true;
+        var allIssues = await context.Validator.ValidateCompletedLocationStateAsync(fixture.Result,
+            GameStateValidationSelection.All);
+        armed = false;
+        var artifact = Path.Combine(TestDiagnosticPaths.Root, "completed-location-read-counts", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(artifact);
+        await File.WriteAllTextAsync(Path.Combine(artifact, "reads.json"), System.Text.Json.JsonSerializer.Serialize(new
+        {
+            proofOnlyManifestReads = proofReads, crossAndNpcManifestReads = selectedReads,
+            allManifestReads = manifestReads, allIssueCodes = allIssues.Select(issue => issue.Code).ToArray(),
+            scope = "Real All invocation; unrelated fixture validity is not asserted. No timing or cache-speed claim."
+        }));
+        Assert.True(manifestReads >= proofReads);
+        Assert.DoesNotContain(allIssues, issue => issue.Code == "current_location_unknown_location_id");
     }
 
     /// <summary>Injected close failure for the actual lease, not a fabricated owner.</summary>

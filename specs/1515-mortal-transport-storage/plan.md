@@ -2522,3 +2522,17 @@ sentinel cannot bless later drift. Source-count control also needs actual All
 measurement beyond None and CrossReferences|NpcStateFiles. Preserve this coherent
 WIP before completing those changes; category ownership and exact counts will be
 updated before discovery. No additional native run or successful acceptance.
+T022 correction source now binds the exact map/index after-image immediately
+after genuine normalizer output, before later awaited validation, then compares
+it at private single-use issuance. Added reached late map/index drift controls,
+existing pending-invocation reuse, typed nonissuer rejection, actual Browser
+original refusal/default equivalence, nonempty topology match/mismatch and
+actual All source-count measurement. The unchanged canonical original remains
+separate. Source frozen19 files, ready-correction-pins external manifest SHA256
+4a6ab848a490abc6c00fc160fcb8e5f3414474d3832c1ebbeb3005057b6574cf.
+Catalog owns27 cheap cases (CompletedLocation15, projection/seed11, Browser1)
+and5 combined cases (original2 plus genuine repair modes3). These remain
+UNCOMPILED/UNRUN. Automatic-continuation runtime coverage is not claimed.
+Targeted independent review of prior findings and affected dependencies is next;
+cheap27 must pass before combined5 and native. No new framework or spiritual
+expansion; actual costs/read counts remain pending, not inferred from source.

@@ -62,6 +62,8 @@ public partial class ValidationService
         private readonly PendingTurnSnapshotReadAuthority _original;
         private readonly IReadOnlyDictionary<string, string> _bindings;
         private int _completionTaken;
+        private byte[]? _publishedMap;
+        private string? _publishedIndexHash;
         internal LocationComparisonCapture(object key, FileSystemManager files, string generation,
             PendingTurnSnapshotReadAuthority original, IReadOnlyDictionary<string, string> bindings)
         {
@@ -88,6 +90,22 @@ public partial class ValidationService
                     throw new CompletedLocationComparisonRefusedException("Completed location request binding changed.");
         }
 
+        /// <summary>Binds exact output immediately after actual normalization, before awaited post-validation.</summary>
+        internal async Task BindPublishedImageAsync(FileSystemManager files,
+            FileSystemManager.CanonicalWriteLease lease, object publicationIssuer)
+        {
+            if (!AcceptedTurnCanonicalStateRefresh.IsLocationPublicationIssuer(publicationIssuer))
+                throw new InvalidOperationException("Only successful ordinary publication can bind location output.");
+            if (_publishedMap is not null || Volatile.Read(ref _completionTaken) != 0)
+                throw new InvalidOperationException("Location publication output was already bound.");
+            await RequireCurrentAsync(files, lease);
+            var map = await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath);
+            var index = await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath);
+            _publishedIndexHash = LocationHash(index);
+            _ = LocationHash(map);
+            _publishedMap = map!.ToArray();
+        }
+
         /// <summary>Seals only after the ordinary refresh has validated its actual published image.</summary>
         internal async Task<CompletedLocationComparison> CompleteAsync(FileSystemManager files,
             FileSystemManager.CanonicalWriteLease lease, object publicationIssuer)
@@ -99,7 +117,10 @@ public partial class ValidationService
             await RequireCurrentAsync(files, lease);
             var map = await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath);
             var index = await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath);
-            using var doc = JsonDocument.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(map!));
+            if (_publishedMap is null || _publishedIndexHash is null ||
+                !map.AsSpan().SequenceEqual(_publishedMap) || LocationHash(index) != _publishedIndexHash)
+                throw new CompletedLocationComparisonRefusedException("Location publication output changed before completion.");
+            using var doc = JsonDocument.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(_publishedMap));
             var ids = ReadExactCanonicalWorldMapLocationIds(doc.RootElement).ToHashSet(StringComparer.Ordinal);
             return new CompletedLocationComparison(LocationComparisonKey, this, LocationHash(map), LocationHash(index), ids);
         }
