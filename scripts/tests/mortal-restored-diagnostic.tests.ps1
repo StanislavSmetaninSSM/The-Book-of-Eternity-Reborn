@@ -11,7 +11,7 @@ foreach ($line in $lines) { Write-Host $line }
 $reports = @($lines | ForEach-Object { [string]$_ } | Where-Object { $_.StartsWith('RESTORED-DATA-RESULT ') })
 if ($code -ne 0 -or $reports.Count -ne 1) { throw 'Restored DATA tests failed or lacked a unique actual result.' }
 $report = $reports[0].Substring('RESTORED-DATA-RESULT '.Length) | ConvertFrom-Json
-if ($report.testsRun -ne 17 -or $report.failures -ne 0 -or $report.errors -ne 0 -or $report.skipped -ne 0) {
+if ($report.testsRun -ne 18 -or $report.failures -ne 0 -or $report.errors -ne 0 -or $report.skipped -ne 0) {
     throw 'Restored DATA test counts are incomplete.'
 }
 Write-Host 'CATEGORY-CONTRACT-RESULT passed=1 failed=0'

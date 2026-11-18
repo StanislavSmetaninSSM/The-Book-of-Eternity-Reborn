@@ -145,6 +145,15 @@ class RestoredDiagnosticTests(unittest.TestCase):
         _,_,ship,_,package,_=NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
         self.assertFalse((ship/'__pycache__').exists())
         self.assertEqual({str(p.relative_to(ship)) for p in ship.rglob('*') if p.is_file()},set(package['RuntimePins']))
+    def test_pinned_executable_preserves_bytes_and_safe_owner_execute(self):
+        out,helper=self.producer_setup()
+        original=Path(self.descriptor['RuntimePath'])/'client.bin'
+        original.chmod(0o4755) # Privileged bits must never propagate from source metadata.
+        _,_,ship,_,package,_=NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
+        copied=ship/'client.bin'
+        self.assertEqual(copied.read_bytes(),original.read_bytes())
+        self.assertEqual(copied.stat().st_mode & 0o7777,0o700)
+        self.assertEqual(sha(copied.read_bytes()),package['RuntimePins']['client.bin'])
     def test_fixed_exact_names(self):
         self.assertEqual(len(evidence.RESTORED_MORTAL_DATA_PATHS),59)
         self.assertEqual(len(set(evidence.RESTORED_MORTAL_DATA_PATHS)),59)
@@ -198,7 +207,7 @@ class RestoredDiagnosticTests(unittest.TestCase):
 if __name__=='__main__':
     if '--category-contract' in sys.argv:
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__]))
-        ok=result.wasSuccessful() and result.testsRun==17 and not result.skipped
+        ok=result.wasSuccessful() and result.testsRun==18 and not result.skipped
         print('RESTORED-DATA-RESULT '+json.dumps(dict(testsRun=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped))))
         sys.exit(0 if ok else 1)
     unittest.main(verbosity=2)

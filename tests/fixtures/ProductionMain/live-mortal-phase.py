@@ -622,13 +622,16 @@ def prepare_restored_diagnostic(descriptor,out,receipt_helper,driver,nonce):
     # outputs remain DATA, with no ready marker, pending request or dispatch.
     retained={name:exact_file(data/name) for name in phase_evidence.RESTORED_MORTAL_DATA_PATHS}
     if any(sha(value)!=descriptor['DataPins'][name] for name,value in retained.items()):raise ValueError('Restored DATA changed before import')
-    runtime_bytes={}
+    runtime_bytes={};runtime_modes={}
     for name,digest in package['RuntimePins'].items():
         relative=Path(name)
         if relative.is_absolute() or '..' in relative.parts or str(relative)!=name:raise ValueError('Invalid pinned runtime path')
         value=exact_file(runtime/relative)
         if sha(value)!=digest:raise ValueError('Pinned runtime changed before import')
         runtime_bytes[name]=value
+        # Preserve only owner execution needed by native/apphost binaries.
+        # Never copy privileged/group/other permissions or source ACL metadata.
+        runtime_modes[name]=0o700 if phase_evidence._restored_plain_path(runtime/relative).stat().st_mode & 0o100 else 0o600
     session=base/'game_session';session.mkdir()
     for name,value in retained.items():
         target=session/name;target.parent.mkdir(parents=True,exist_ok=True)
@@ -637,6 +640,8 @@ def prepare_restored_diagnostic(descriptor,out,receipt_helper,driver,nonce):
     for name,value in runtime_bytes.items():
         target=session/'_runtime'/name;target.parent.mkdir(parents=True,exist_ok=True)
         with target.open('xb') as stream:stream.write(value)
+        target.chmod(runtime_modes[name])
+        if target.stat().st_mode & 0o7777 != runtime_modes[name]:raise ValueError('Imported runtime mode differs')
     if phase_evidence.relay_inventory(session/'_runtime')!=package['RuntimePins']:raise ValueError('Imported runtime differs')
     # A retained one-use descriptor is not a seed or an original stopped owner.
     return base,session,session/'_runtime',expected,package,package_sha
