@@ -3025,3 +3025,14 @@ execution: mortal-console-route-data, gm-relay-phase-contract and
 mortal-restored-diagnostic-data. Previously accepted observer20/inertconsole4
 are unchanged and not repeated. Existing38 Mortal driver DATA remains separately
 verified. Concrete native package/accepted game routes remain UNRUN.
+T024 official bounded verification completed: fresh Unit build27.73s
+(28.053140s wrapper),43warnings/0errors; PlanOnly selected3descriptors/4cases.
+Official mortal-console-route-data + gm-relay-phase-contract +
+mortal-restored-diagnostic-data:4/4 outer PASS,15.0269096s runner
+(17.007760s wrapper),3/3 descriptors complete, no duplicates/skips/timeout,
+owned-tree cleanup complete. This wraps finite route14, Load22, general11 and
+restored18 DATA controls, not game turns. Evidence external mortal-t024/
+route-official/run.log SHA256 d17615ca84f921a193daac9e3b4f90f493b43dc2d4c2134768d0005572f2ee22.
+3487 source/8 Unit output pins captured; final independent outcome join pending.
+No new runtime package or native world launched. Next gate: independent outcome,
+then immutable current package and genuine GM-authored initial storage birth.
