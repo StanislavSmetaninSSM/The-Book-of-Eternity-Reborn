@@ -876,3 +876,33 @@ conditional project work, then a separate legitimate quiet assessment. Actual
 context determines whether physical work is justified; empty formal costs do
 not prove arbitrary workers, tools or materials. T016/T018 remain open, as do
 #1515/#1538 live requirements. No raw diagnostics are published.
+
+### mm3 retained continuation: scout terminal and conditional work, accepted
+
+Same-world turn43/request82b2af04ab9c462a9a7ed1ce9d908546 passed one genuine
+relay dispatch without repair in276.557s. Probe SHA256
+`efb7417946fb35e2a07a4f90c5af6d9875b93506edb9e28006a1f247ebe8df75`.
+Scout completion contains explicit Success and client-owned turn43, once; XP0.
+Clock720 became960. The action's conditional additional four hours were not
+spent: the council had not yet established worker/tool/material readiness.
+This is explicitly not a declaration that those ordinary means are unavailable.
+The project file remained byte-identical, including name and Active240/480.
+Agenda, journal, chronicle and public news carry the report and concrete next
+readiness inquiry; no physical reinforcement or project completion is claimed.
+Prior story41/42 and receipt prefix were preserved; one correlated story/receipt
+was added. Independent review accepted this bounded continuation.
+
+Original run13e3d088e1c04521b747e5527c448229, same generation and epoch2, reached
+Stopped/OwnedScopeEmpty with one acknowledgement and removed endpoint. All
+terminals and RPC exited0 and drained, terminal state restored; daemon errors0
+and matching settled guard; guardian ECHILD, no emergency/failure/deadline.
+Current runtime732/helper249/world106 pins and absent pending surfaces verified.
+No new code/build/aggregate rerun: the same immutable package is retained with
+fresh owner/admission/closing checks, not cached authority. Original launcher0.
+
+Next action actively asks the council to establish available ordinary means and
+organize safe reinforcement within eight hours, with a concrete shortage/plan
+if infeasible. Ordinary world facts may be established by the GM without adding
+a new formal resource engine or inventing player-owned property. Success is not
+preselected. T016 remains open until actual project/consequence and quiet-time
+outcomes; T018 and other issue-specific live requirements remain open.
