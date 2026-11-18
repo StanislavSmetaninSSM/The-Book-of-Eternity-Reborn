@@ -1013,3 +1013,42 @@ no skips/duplicates/timeouts and complete owned cleanup. Result identity
 Source SHA256 `92dafa7cf2dd89c897b786854341f2bb2c922bbadd9ce9f0c75e605336760240`.
 Independent final outcome review and current output pins are pending. This is
 not a new native run or a diagnosis/fix of p04's unknown client exception.
+
+T022 proposed diagnostic design (not implemented/admitted yet): exact accepted
+p03 DATA can be recovered106/106 by its pins, and reconstruction of only three
+ordinary phase config fields reproduces its exact config hash. A new isolated
+root would import59 explicitly listed gameplay DATA files, preserving historical
+session identity and story41-44. Exclude47 operational status/ledger/context
+paths and all live locks, queues, pending45/snapshot authority/repair surfaces.
+The only retained control DATA are exact accepted progression schedule, prepared
+dice and empty ink list; no old control object becomes current authority.
+An explicit restored-accepted-data-diagnostic descriptor must bind source probe,
+request/story/history/config/package and a fresh diagnostic nonce, not pretend
+the imported root has the old stopped owner. Existing initial/continuation paths
+remain unchanged. New root obtains fresh real ownership. Existing immutable
+Debug DLL already contains the opt-in stderr exception exporter; no production
+change is needed to observe the next exception. The one controlled reproduction
+would diagnose old58df9 behavior, not qualify T021. Cheap admission negatives and
+independent source/prelaunch review precede any copying or native execution.
+
+T022 design review accepts fixture-only source work, not native execution.
+The explicit list must reject aliases/links/overlap and missing/extra paths;
+source probe/guardian/receipt/story/history/config remain bound. Historical
+outputs and resource-owner records are DATA only, never new readiness or
+publication permission. Require a fresh requestId distinct from failed p04,
+new root/owner/generation/nonce, and an ordinary-continuation rejection of any
+diagnostic result. Bootstrap/context regenerate from the pristine package.
+The three retained control DATA are accepted unlocked next-roll state, empty
+ink actions and schedule; do not publish roll values. The old58df9 package and
+modified diagnostic harness get separate pins; no T021 native claim. One
+controlled diagnostic reproduction is the limit before reassessing.
+
+T021 current source/output inventory SHA256
+`abcabce04758082bc55a607612a4bda9fd237a357698b18e504e366a9b7ea56e`
+contains3,420 source files and20 coherent current outputs,8 unused Unit outputs
+excluded. Client DLL SHA256
+`b9ffca485eb84e1206c2fd050f3adf83737cce1cbbf6ed35a822b2223f0852cd`;
+bridge/support unchanged. This is consistency inventory, not a PDB document
+audit. Exact validator source was recovered from remote6d736a5 into a fresh
+folder with matching blob0eb8dc8372eeed493405a9f09bf21a966eb3dc7d and SHA92dafa7c.
+This proves that file recovery only, not a clean full checkout/build restore.
