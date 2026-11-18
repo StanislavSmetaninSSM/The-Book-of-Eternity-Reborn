@@ -100,7 +100,7 @@ class RestoredDiagnosticTests(unittest.TestCase):
         runtime=self.root/'runtime';runtime.mkdir();(runtime/'client.bin').write_bytes(b'synthetic DATA, never executable')
         helperdir=self.root/'helper';helperdir.mkdir();helper=helperdir/'helper.dll'
         for name in ['helper.dll','helper.deps.json','helper.runtimeconfig.json']:(helperdir/name).write_bytes(b'{}')
-        package=dict(RuntimePins=evidence.relay_inventory(runtime),RelayPins=evidence.relay_inventory(out/'relay'),ReceiptHelperPins=evidence.relay_inventory(helperdir),DriverSHA256=sha(SOURCE.read_bytes()),EvidenceModuleSHA256=sha(Path(evidence.__file__).read_bytes()))
+        package=dict(RuntimePins=evidence.relay_inventory(runtime),RelayPins=evidence.relay_inventory(out/'relay'),ReceiptHelperPins=evidence.relay_inventory(helperdir),DriverSHA256=sha(SOURCE.read_bytes()),EvidenceModuleSHA256=sha(Path(evidence.__file__).read_bytes()),ConsoleRouteModuleSHA256=sha(Path(evidence.__file__).with_name('mortal_console_routes.py').read_bytes()))
         (out/'relay-phase-package.json').write_bytes(raw(package));self.source['PhasePackage']=package
         self.source_raw=raw(self.source);self.descriptor['SourceProbeSHA256']=sha(self.source_raw)
         paths={}
