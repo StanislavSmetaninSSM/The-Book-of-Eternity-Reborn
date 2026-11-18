@@ -1891,3 +1891,31 @@ turn snapshot; do not call that a rollback defect or assert complete restoration
 without the correct original. Direct rejection reason is not present in the UI.
 Source/retained-trace investigation is next, with no new run or invented cause.
 This is no completed cart/storage materialization test. T016/T017 stay open.
+
+Independent mm6 rejected-outcome review verified all93 archived original snapshot
+hashes and authority-payload hash. Current90/93 original bytes match, along with
+all34 captured original-presence conditions. Three operational exceptions are
+stopped daemon status, absent prepared dice (outside92 rollback backups) and
+progression schedule differing only in lastUpdatedUtc. All nine GM-written
+surfaces are restored to their actual preturn bytes/absence; startup settings/
+mods match that snapshot, not the earlier seed. This is a bounded restoration
+proof, not blanket world byte identity or permission to replay. Full original
+owner/queue/terminal/RPC/guardian closure and daemonErrors0 are independently
+verified. The exact refusal reason was not retained.
+
+Concrete GM authoring mismatch: Mira remained in NPCsInScene anchored to the old
+chambers while a new courtyard was selected. Its exact source predicate produces
+npc_scene_missing_initial_location_id; that alone is recoverable and does not
+prove the unobserved protected refusal. Fixed12 characteristics were read from
+actual characteristics.json and are not a confirmed schema defect. Same-turn
+vehicle location initialId is supported, not evidence of a wrong reference.
+
+A second concrete submitted shape omission is missing required eventDescriptions
+on the new scene. A reduced test-only DATA class now checks that exact code,
+supported link/item envelope shapes, and the NPC anchor. No raw packet/snapshot
+is committed; no93-file fixture, GameEngine loop, new authority/API or production
+change. Existing minimal fixture builders and typed validators are used.
+Category mortal-raw-scene-diagnostics selects4 unit Facts/1minute, UNRUN.
+Test SHA4121e1c6673028eda97675bf0457d6804c3c342471b5d78e3f5bcea5508bbda4.
+Unbound repair-policy diagnostics are labelled as such, not the actual live
+branch decision. Independent source review precedes build/execution.

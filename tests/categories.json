@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-raw-scene-diagnostics",
+      "responsibility": "#1515 T017 reduced authored DATA diagnostics: required new-scene event history field, same-turn link shape, storage item envelope and NPC new-scene anchor.",
+      "excludes": "No replay of mm6, bound materialization authority, normalization/publication, whole actor validity, or identification of its unrecorded rejection reason.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalRawSceneDiagnosticTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalRawSceneDiagnosticTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-terminal-wait-contention",
       "responsibility": "#1515 T017 diagnostic ordinary terminal wait: real canonical-lock exhaustion, release/retry and post-open integrity distinction without GM writes.",
       "excludes": "Does not identify the original mm5 exception, qualify remote-owner admission, fix wait backpressure, or run a live GM journey. Linux-only physical lock observation.",
