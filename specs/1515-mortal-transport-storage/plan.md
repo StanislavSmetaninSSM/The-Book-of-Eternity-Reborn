@@ -2139,3 +2139,14 @@ remain unproven. Next: prepare fresh mm7/current pinned runtime with both opt-in
 exception and normal-rejection capture, independently review its package, then
 run the actual cart/storage encounter. No uncertain-world replay or new feature
 acceptance is implied by these typed tests.
+Fresh mm7 prepared only from current9f27b142 C# (later fbda67c is findings-only):
+package d027bfd00ffce3291426116de87857d56db442d8e231bc4e54e18999da318dca;
+preparation manifest091b2d996066453293462786328472710666560674a0548a34cf74ee183b8502.
+New session seeded_live_mortal_c456d5164de14170ba5d7c41a25da5cd, setup41
+not accepted, expected42, zero seed validation issues. All3430 source/inventory
+and28 output pins checked before/after three serial no-build package publishes;
+54 export inputs unchanged. Runtime includes both opt-in exception and normal
+rejection diagnostics, verified marker/method identities in the actual DLL.
+No previous phase, no copied failed-world state, no native launch yet. Actual
+cart/storage action unchanged; its GM response will bind to the real new request.
+Package/prelaunch independent review is separate from GREEN acceptance.
