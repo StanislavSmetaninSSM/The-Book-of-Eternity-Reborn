@@ -944,6 +944,7 @@ public partial class ValidationService
     private void ValidateFactionExtendedFields(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
         if (item.TryGetProperty("customArchetypePriorities", out var priorities) &&
+            priorities.ValueKind != JsonValueKind.Null &&
             RequireObject(priorities, $"{itemContext}.customArchetypePriorities", issues))
         {
             RequireString(priorities, $"{itemContext}.customArchetypePriorities", issues, "primary");
