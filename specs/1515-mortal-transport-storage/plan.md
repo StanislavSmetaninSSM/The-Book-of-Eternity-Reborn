@@ -1962,3 +1962,10 @@ asserted field errors. Link and item envelope shapes have no issues. None proves
 bound resource/source admission or retrospectively names mm6's actual refusal.
 No further identical DATA repetition is needed. Next is the already described
 minimal refusal-observation RED/GREEN block, not a gameplay/authority change.
+
+T017 rejection-observation WIP RED source: two documented no-output typed stubs,
+DEBUG callsites before existing bookkeeping and9 cases (2 expected emission FAIL,
+7 negative/sourceguard PASS). Category gm-game-loop-rejection-diagnostics, unit,
+1minute. No build/execution yet, serialization unimplemented. Reuse already
+computed issues/flags/exception only; trivial one-shot diagnostic work needs no
+cache or additional reads. Independent source review pending. No new live run.

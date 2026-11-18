@@ -79,6 +79,17 @@ public partial class GameEngine
             requiresResourceFailClosed ||
             requiresWoundFailClosed)
         {
+#if DEBUG
+            try
+            {
+                EmitProtectedMaterializationFixtureRejection(errors,
+                    requiresMortalItemFailClosed, requiresMortalLocationFailClosed,
+                    requiresEffectFailClosed, requiresResourceFailClosed, requiresWoundFailClosed,
+                    source, attempt, rollbackAvailable,
+                    Environment.GetEnvironmentVariable("BOE_TEST_GAME_LOOP_FAILURE_NONCE"), Console.Error);
+            }
+            catch { /* Observation must not replace the original refusal. */ }
+#endif
             _logger.LogError(
                 "Materialization repair after {Source} has protected or unresolved authority; rejecting the accepted state for caller-owned rollback instead of dispatching a broad GM repair.",
                 source);

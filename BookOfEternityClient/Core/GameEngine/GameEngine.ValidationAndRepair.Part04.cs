@@ -578,6 +578,14 @@ public partial class GameEngine
         Exception exception,
         RollbackSnapshot? rollbackSnapshot)
     {
+#if DEBUG
+        try
+        {
+            EmitCanonicalRefreshFixtureRejection(exception, source, HasRollbackCapability(rollbackSnapshot),
+                Environment.GetEnvironmentVariable("BOE_TEST_GAME_LOOP_FAILURE_NONCE"), Console.Error);
+        }
+        catch { /* Observation must not replace the original caught failure. */ }
+#endif
         try
         {
             var sessionGeneration = await CaptureCurrentSessionGenerationAsync();

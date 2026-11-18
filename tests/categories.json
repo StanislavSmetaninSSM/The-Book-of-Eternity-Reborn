@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-game-loop-rejection-diagnostics",
+      "responsibility": "#1515 T017 DEBUG nonce-only observation of existing protected-materialization and canonical-refresh refusals; full issue/exception DATA with diagnostic noninterference.",
+      "excludes": "No actual GameEngine rejection execution, mm5/mm6 root-cause proof, acceptance/rollback authority or gameplay change.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.FixtureRejectionDiagnostics.cs",
+        "BookOfEternityClient.Tests/GameLoopRejectionDiagnosticTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GameLoopRejectionDiagnosticTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-raw-scene-diagnostics",
       "responsibility": "#1515 T017 reduced authored DATA diagnostics: required new-scene event history field, same-turn link shape, storage item envelope and NPC new-scene anchor.",
       "excludes": "No replay of mm6, bound materialization authority, normalization/publication, whole actor validity, or identification of its unrecorded rejection reason.",
