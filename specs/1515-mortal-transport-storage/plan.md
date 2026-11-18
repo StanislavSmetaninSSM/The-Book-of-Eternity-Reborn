@@ -3334,3 +3334,17 @@ Same daemon settled,errorCount1 retained near retirement, not declared harmless.
 Probe SHA7e66f01bffdb756297d2f0385e1297bc27045c566d6344af2a88b92ffd08af0f.
 Independent semantic/cleanup OUTCOME review pending. This is a real new birth
 turn, not automatic setup; denial/permission/movement/Save-Load remain unrun.
+Independent Sol6.1 XHigh accepts mm12 p01 bounded birth as an ordinary predecessor
+under existing continuation checks. Exactpacket/request/dispatch/snapshot joins,
+setupstory bytes plus42, complete location/2links/NPC/vehicle/storage/item receipts,
+three resource births/history3→6 and preserved prior identities/player state verified.
+Faction ownership remains restricted; no controller/active vehicle granted. Actual
+NotRequired0→0/absent history/480→500,108worldpins/config/package3510sources/20outputs
+all match. Originalowner/oneACK/Stopped/OwnedScopeEmpty,terminal/RPC/relay EOF,
+samedaemon settlement andguardianECHILD verified against17757journal records and
+complete contiguous streams. No scoped process remains;2CLRdebugFIFOs remain.
+Error1 is specifically heartbeat participating status writec332d38a at20:46:32.354930Z,
+GmMainOperationClient.Validate82/Update-DaemonHeartbeat4070, before shutdown ACK
+20:46:32.516172Z: retirement overlap, not a harmlessness/root-cause conclusion.
+Next prepares p02 exactlockedstorage denial then actualGM permission, takingnothing;
+retrieve/deposit/Save-Load stay separate. No failed mm11 authority is reused.
