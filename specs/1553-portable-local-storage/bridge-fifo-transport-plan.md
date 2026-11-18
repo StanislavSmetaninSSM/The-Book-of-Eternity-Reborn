@@ -891,3 +891,40 @@ framework is added. Existing source/runtime failures and ml7's unconfirmed daemo
 settlement are not reclassified by this candidate. Next gate: independent source
 review, save, one bounded held-guard proof, then the strengthened idle control only
 if that proof succeeds.
+
+SOURCE a42668d443d011bc1f8a17ec6b1fb55d9c76cf5e: serial no-restore unit
+build42.43s (wall42.762s),67 warnings,0 errors. Official observational-reader
+proof1/1 PASS9.7098909s; only then separately strengthened coordinated-stop
+1/1 PASS34.6085241s. Both selections completed with no timeout/skips/duplicates
+and complete owned cleanup. The earlier two managed-reader failures remain
+recorded. Oracle17 and diagnostic4 were unchanged and not repeated.
+
+Actual idle scenario production-main/b7b508201ac447379f58cf68b0d6d50f captures
+the original running/active daemon pair and exact final stopped/terminalSettled
+and guard-settled pair for owner9762d92ca1964028ae2bcb1cff42924c, same session.
+Final status SHA25613b092416ff345b66cda4c0b11832411b307f3b91b1a3e09aa3206d73fbb5dc4;
+final guard SHA2568a4a361c80353c65f4eb7390b5b29197a4632774dba70be7cc966c7e34b42b7f.
+All17 original pins were Observed after original shutdown and daemon exit.
+Original main d0b76c1052ba44d7ac0f523672dc073f, generation
+4e8f836aac964e1b888e2c56219f8090, epoch1 had matching positive ACK and complete
+Stopped identity before the daemon Ctrl+C. Daemon exit0/EOF/restored termios,
+host exit0; guardian driver0/ECHILD/reaped1/no emergency/failures/deadline.
+The daemon retained errorCount1 and recovered `Original admitted daemon read
+refused.` during close; this is not an error-free-log claim. This bounded idle
+success does not explain or erase the previously unsettled ml7 live result.
+
+Runner proofs:20261117-224521-717-6-9c555599e75545f1873474be8ce1909a-categories
+and20261117-224543-026-5-00533099d6f84e3fb485e4b8b76106d6-categories.
+Raw daemon-observation-python-{build,proof,idle}.log and all original captures
+remain outside Git. No production behavior change or live run occurred in this
+block. Outputs are frozen for independent outcome review; relay-only merge
+must exclude unverified materialization work and raw diagnostics.
+
+Fresh idle fixture-preparation.json SHA256
+99c5851d8bfb4fa33c323b562b346f8bbe8486aff676aa1a41abb425eefbd26d;
+neutral CLI source e6fad1618cdbf2255f99a0eee6f88064236f118b77b54282c25fd647067b6616,
+compiled binary6fab87e76d57eb09d2164b54438e0cb906de9c963eb628cbc2c313bcdaa13d1f.
+Preparation records publisher-only compile and compiler absent from player
+startup. The recovered read refusal is the expected closing-fence condition
+in this bounded successful stop, not a claim of clean error counters. The
+unsettled ml7 result remains unresolved.
