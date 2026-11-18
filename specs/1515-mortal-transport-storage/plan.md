@@ -3262,3 +3262,12 @@ separate cheap evidence, not supplied by the general relay category. No build or
 native work authorized until focused correction review. No Critical finding or
 production gameplay change; prior cheap100 passes remain evidence of their scope,
 not a waiver of these newly identified gaps.
+Three SOURCE findings corrected at3b20f24d7cc3305adb92699595f2b0572b3000e5:
+Core import, raw manifest/request/closed-DTO control equality before reconstruction,
+and exact captured physical absence checks. Seven new targeted controls retain the
+original token or assert history/report member/link contradictions and unchanged
+inputs; applicability now39. Independent Astra High focused review verifies all13
+pins and exactly3 changed C# files, clears all three findings and accepts fresh
+Unit plus the five bounded official categories. Python100 passes retained after
+correction. C# compilation/runtime and actual serialized wire assertions remain
+UNRUN here. External diagnostic root is explicitly required; no native/mm11 work.
