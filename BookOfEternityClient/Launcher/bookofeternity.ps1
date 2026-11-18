@@ -683,15 +683,20 @@ function Start-Bridge {
         [bool]$VisibleBridge = $false
     )
 
-    $status = Read-BridgeStatus $ResolvedSessionPath
-    if ($status -and $status.helperPid) {
-        try {
-            $proc = Get-Process -Id ([int]$status.helperPid) -ErrorAction Stop
-            Write-Host "GM bridge already running (pid=$($proc.Id))." -ForegroundColor Yellow
-            return
-        }
-        catch {
-            # stale status file, continue
+    # Linux production admission is decided by the retained main-owner guard
+    # and its durable record, never a PID from a different command namespace.
+    # Preserve the existing advisory PID path and ordering on other platforms.
+    if (-not ($PSVersionTable.PSEdition -eq 'Core' -and $IsLinux)) {
+        $status = Read-BridgeStatus $ResolvedSessionPath
+        if ($status -and $status.helperPid) {
+            try {
+                $proc = Get-Process -Id ([int]$status.helperPid) -ErrorAction Stop
+                Write-Host "GM bridge already running (pid=$($proc.Id))." -ForegroundColor Yellow
+                return
+            }
+            catch {
+                # stale status file, continue
+            }
         }
     }
 

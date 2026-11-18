@@ -679,3 +679,15 @@ bridge-restart-red-build-actual.log and bridge-restart-red-official.log outside
 Git; runner20261117-215302-137-5-11f4cb0343ec416396e70521d31d3e8c-categories.
 The separately prepared actual contender/restart case remains UNRUN, and the
 production launcher is unchanged at this checkpoint.
+
+Minimal GREEN source prepared after independently accepted causal RED: only the
+Start-Bridge advisory PID block is conditional on not Linux/Core. Linux proceeds
+to its unchanged visible/foreground and packaged-DLL checks, then actual host
+main-owner admission; no new authority or fallback is introduced. Other
+platforms execute the identical PID block before configuration, preserving
+Windows Desktop short-circuit compatibility without resolving IsLinux there.
+No other PID consumer changed. The retained diagnostic bytes are untouched.
+Optimization: this removes untrusted advisory reads from Linux startup; it does
+not cache or skip any locked main-owner/durable-state check. No speedup claim.
+AST3 plus actual contender/restart1 await post-patch source review/execution;
+no broader tests or live game were run for this source checkpoint.
