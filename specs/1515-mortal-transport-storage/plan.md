@@ -2235,3 +2235,15 @@ All3 terminals0/EOF/termios, RPC/relay drained, queue closed; same daemon settle
 with errorCount0. Guardian driver1/ECHILD/reaped2, no emergency/failure/deadline.
 Final world/config/runtime/relay/helper pins match. No accepted predecessor,
 T018 live acceptance or vehicle/resource materialization qualification yet.
+T020 source boundary resolved: production MortalBootstrapStateBuilder already
+initializes MortalVehicleBirthReceiptState.CreateEmptyRoot (vehicles[],
+activeVehicleId:null,birthReceipts[]). MortalLiveSeedBuilder instead copies the
+example and resource roots, omitting this current bootstrap companion. Composer
+correctly preserves raw root fields; receipt attachment requires the client
+collection, so missing seeded collection causes mm8 failure. Existing first-birth
+integration fixtures use genuine production bootstrap and have this premise.
+Fix only fresh seed before any signed original, verify both seed modes and compare
+other required materialization roots. Do not introduce runtime absence promotion
+or legacy-save compatibility; the user explicitly excludes those. T019 is complete
+within its bounded template/guard/final-authored-packet scope; it does not make the
+rejected mm8 turn accepted or close T016. Runtime and all failed worlds unchanged.
