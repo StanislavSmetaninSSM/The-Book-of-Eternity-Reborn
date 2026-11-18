@@ -1236,3 +1236,16 @@ this120s neutral path, not an rl2 fix, game acceptance or merge readiness. Reuse
 existing immutable native/package preparation when its full source identity
 matches; fresh owner/endpoint observations cannot be cached. No game fixture or
 additional system is introduced.
+
+Soak source c42ab821 is independently reviewed and remains UNRUN. Review added
+terminalOwnerRetained to every sample, saved the diagnostic nonce before host
+construction, closed the exact owned pin before failure shutdown, and reduced
+the work cutoff to140s. Reserved cleanup is5s pin +8s original scoped stop +5s
+Dispose observation +5s host join, below170s guardian with7s margin. Any timeout
+remains FAIL; timed-out Dispose can continue in the fixture process, and restoring
+the nonce may suppress a late export, so absence of such a report proves nothing.
+The120s observation holds the original HOST after its operation pin has closed.
+Shutdown uses the public connector with captured endpoint and full identity, not
+a generic launcher that could reread a different current owner. Existing fixture
+modes and the broad FIFO wildcard remain unchanged. Only the separate one-case
+`gm-host-exit-original-fifo-soak` category is authorized for this reproduction.
