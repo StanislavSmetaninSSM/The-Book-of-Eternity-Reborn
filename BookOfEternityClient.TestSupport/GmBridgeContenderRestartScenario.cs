@@ -5,7 +5,8 @@ using BookOfEternityGMBridge;
 
 namespace BookOfEternityClient.Tests;
 
-// Actual configured hosts under the existing independent guardian. No game/GM claim.
+// Actual same-root guard contention between typed hosts in one driver process.
+// Existing independent guardian owns physical cleanup; no cross-process contender or game/GM claim.
 internal static class GmBridgeContenderRestartScenario
 {
     internal static async Task<int> RunAsync(string folder)
@@ -19,6 +20,7 @@ internal static class GmBridgeContenderRestartScenario
         var configPath = Path.Combine(session, "config.json");
         var pipe = "contender-" + Guid.NewGuid().ToString("N");
         var held = new int[3];
+        var contenderGuardHits = 0;
         var exit = 1;
         try
         {
@@ -27,6 +29,11 @@ internal static class GmBridgeContenderRestartScenario
             {
                 var host = new BridgeHost(session, pipe);
                 host.ObserveMainHeldRoot = _ => Interlocked.Increment(ref held[index]);
+                if (index == 1) host.ObserveMainGuardContention = () =>
+                {
+                    Interlocked.Increment(ref contenderGuardHits);
+                    return Task.CompletedTask;
+                };
                 var pair = (host, host.RunAsync());
                 hosts.Add(pair);
                 return pair;
@@ -50,15 +57,15 @@ internal static class GmBridgeContenderRestartScenario
                     await Task.Delay(10, deadline.Token);
                 }
             }
-            async Task<JsonElement> Rpc(string status, string command)
+            async Task<JsonElement> Rpc(string status, object request)
             {
-                var response = await BridgeTransportConnector.RequestAsync(status, JsonSerializer.Serialize(new { command }), 12000, deadline.Token);
+                var response = await BridgeTransportConnector.RequestAsync(status, JsonSerializer.Serialize(request), 12000, deadline.Token);
                 using var doc = JsonDocument.Parse(response);
                 return doc.RootElement.Clone();
             }
             async Task Stop((BridgeHost Host, Task<int> Run) host, string status, GmSessionRunRecord original)
             {
-                var ack = await Rpc(status, "shutdown");
+                var ack = await Rpc(status, new { command = "shutdown", rootKey = original.Identity.RootKey, expectedMainIdentity = original.Identity });
                 evidence["StopAck-" + original.Identity.RunId] = ack;
                 if (!ack.GetProperty("ok").GetBoolean()) throw new IOException("Original scoped shutdown refused.");
                 var observed = ack.GetProperty("status");
@@ -88,6 +95,8 @@ internal static class GmBridgeContenderRestartScenario
             catch (Exception failure) when (failure is not OperationCanceledException && !deadline.IsCancellationRequested) { refusal = failure; }
             if (refusal == null && contenderExit == 0) throw new IOException("Contender unexpectedly succeeded.");
             evidence["ContenderRefusal"] = refusal?.ToString() ?? $"exit {contenderExit}";
+            evidence["ContenderMainGuardContentionHits"] = contenderGuardHits;
+            if (contenderGuardHits < 1) throw new IOException("Contender failed without reaching the original main guard.");
             contender.Host.Dispose();
             if (held[1] != 0 || held[0] != 1) throw new IOException("Contender created a second held native root.");
             if (!durable.AsSpan().SequenceEqual(GmSessionRunPersistence.Read(root))) throw new IOException("Contender changed original durable Running identity/state.");
@@ -98,7 +107,7 @@ internal static class GmBridgeContenderRestartScenario
                 foreach (var field in new[] { "terminalRunId", "inputBindingId", "sessionPath", "pipeName" })
                     if (oldStatus.RootElement.GetProperty(field).GetRawText() != currentStatus.RootElement.GetProperty(field).GetRawText())
                         throw new IOException("Contender changed original status identity: " + field);
-            var alive = await Rpc(after, "status");
+            var alive = await Rpc(after, new { command = "status" });
             if (!alive.GetProperty("ok").GetBoolean() || alive.GetProperty("status").GetProperty("terminalRunId").GetString() != original.Record.Identity.RunId)
                 throw new IOException("Original status RPC unavailable after contender refusal.");
             evidence["OriginalRpcAfterRefusal"] = alive;

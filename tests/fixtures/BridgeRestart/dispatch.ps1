@@ -6,9 +6,13 @@ $ast=[Management.Automation.Language.Parser]::ParseFile($Source,[ref]$tokens,[re
 if($errors.Count){throw 'Launcher source parse failed'}
 # Extract unchanged production function bodies. Only the external dotnet launch
 # leaf is substituted; filesystem, Get-Process and Console probes are real.
-foreach($node in $ast.FindAll({param($n)$n -is [Management.Automation.Language.FunctionDefinitionAst]},$true)) {
- . ([scriptblock]::Create($node.Extent.Text))
-}
+$functionTexts=@($ast.EndBlock.Statements | Where-Object {$_ -is [Management.Automation.Language.FunctionDefinitionAst]} | ForEach-Object {$_.Extent.Text})
+if($functionTexts.Count -eq 0){throw 'No top-level launcher functions found'}
+$extracted=Join-Path $PSScriptRoot 'actual-launcher-functions.ps1'
+[IO.File]::WriteAllText($extracted,($functionTexts -join "`n`n"))
+. $extracted
+$expectedRoot=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
+if((Get-RepoRoot) -cne $expectedRoot){throw 'Actual extracted functions lost lexical fixture root'}
 $path=Get-BridgeStatusPath $Session
 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($path))|Out-Null
 $raw=(@{helperPid=$PID;state='ShuttingDown';terminalRunId='retained-original'}|ConvertTo-Json -Compress)
