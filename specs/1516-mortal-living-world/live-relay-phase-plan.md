@@ -347,3 +347,25 @@ all original closure evidence; the next retained-world phase is admitted on ml4
 only, using this exact result and the unchanged seed manifest.
 No implementation changed or broad test suite ran; immutable runtime reuse
 avoided recompilation while the new original authority/seed/effects stayed fresh.
+
+### ml4 p02 startup refusal before action
+
+A separate p02 phase attempted retained-world continuation after the verified
+p01 result. The runtime/helper/relay hashes and exact prior seed/request/story/
+history/Stopped record were checked first. No exporter or world reset was used.
+The daemon refused startup: an existing status file named pid111 from the prior
+p01 daemon and Assert-SingleDaemonInstance reported it already running. The
+phase ended17.596s with zero genuine actions and zero accepted turns. No GM
+response was authored or submitted. Its new owner17ebeb3f27d44417bb71191e15bf240e
+was shut down once with durable same-identity Stopped/OwnedScopeEmpty; guardian
+reported ECHILD, driverExitCode1, no emergency signals, failures or deadline.
+Client exit-2 and daemon exit1 make this a failed phase despite bounded physical
+and logical owner closure; it is not a continuation token.
+
+Source investigation is pending: the daemon singleton path uses a numeric PID
+liveness predicate, whereas the prior daemon's exit is already proven. PID reuse
+or namespace mismatch is a hypothesis, not yet an independently reproduced root
+cause. Do not delete the status/lock or relax admission to retry. Establish the
+specific source identity failure with a cheap test before changing code. The
+accepted p01 turn remains separate evidence; p02 did not run the proposed next
+game action. No broad suite or extra game run has been performed.
