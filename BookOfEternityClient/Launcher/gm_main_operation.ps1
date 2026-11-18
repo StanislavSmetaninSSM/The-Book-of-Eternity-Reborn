@@ -38,8 +38,14 @@ function Read-GmOperationReply {
     param($Context)
     $read = $Context.process.StandardOutput.ReadLineAsync(); $Context.pendingRead=$read
     if (-not $read.Wait(10000)) {
-        if($Context.sequence -eq 0 -and $Context.lastAction -ceq 'helper-ready'){$Context | Add-Member -NotePropertyName readyTimedOut -NotePropertyValue $true -Force}
-        $Context.lost = $true; Write-GmOperationDiagnostic 'reply-timeout' $null $Context; throw 'Original operation reply unavailable; no replay.' }
+        $Context.lost = $true
+        # Optional observation metadata must never replace the transport failure.
+        try {
+            if($Context.sequence -eq 0 -and $Context.PSObject.Properties['lastAction'] -and $Context.lastAction -ceq 'helper-ready'){
+                $Context | Add-Member -NotePropertyName readyTimedOut -NotePropertyValue $true -Force -ErrorAction Stop
+            }
+        } catch { }
+        Write-GmOperationDiagnostic 'reply-timeout' $null $Context; throw 'Original operation reply unavailable; no replay.' }
     $line = $read.Result
     if ($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
     return ($line | ConvertFrom-Json -ErrorAction Stop)
@@ -84,7 +90,8 @@ function Send-GmOperationCommand {
     param($Context,[hashtable]$Command)
     if ($Context.closed -or $Context.lost) { throw 'Original operation is closed or lost; no reconnect.' }
     if ($Context.publicationUncertain -and $Command.action -cne 'close') { throw 'Original command publication is uncertain; later mutation refused before admission.' }
-    $Context.lastAction=$Command.action
+    # Shared callers may omit or reject this optional diagnostic slot.
+    try { $Context.lastAction=$Command.action } catch { }
     $nextSequence = $Context.sequence + 1
     $Command.sequence = $nextSequence
     $frame = $Command | ConvertTo-Json -Depth 8 -Compress
