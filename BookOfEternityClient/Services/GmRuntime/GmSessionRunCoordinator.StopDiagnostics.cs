@@ -40,7 +40,9 @@ internal sealed partial class GmSessionRunCoordinator
     internal static (string? Status,HostExitFaultCapture.Fault? Fault) CaptureOriginalRootExit(IOwnedTerminalSession? original)
     {
         var task=original?.RootExited; // Read the trusted original task once, outside owner locks.
-        return (task?.Status.ToString(),HostExitFaultCapture.Capture(task));
+        var status=task?.Status;
+        // A pending snapshot must not acquire a later fault and mislabel its provenance.
+        return (status?.ToString(),status==TaskStatus.Faulted ? HostExitFaultCapture.Capture(task) : null);
     }
 
     private static string? ReadStopDiagnosticNonce()
