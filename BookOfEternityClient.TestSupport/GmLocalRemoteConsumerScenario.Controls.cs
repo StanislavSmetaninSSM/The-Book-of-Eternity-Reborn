@@ -14,17 +14,21 @@ internal sealed partial class GmLocalRemoteConsumerScenario
         results.Add(new { mode = "unbound", failure = bareFailure.Message });
         MainOperationClose? refusedClose = null;
         bool observed = false, remote = false;
-        Exception? generationFailure = null;
+        var mismatchedExpectedGeneration = Guid.NewGuid().ToString("N");
+        SessionReplacedException? generationFailure = null;
         try
         {
-            await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, Guid.NewGuid().ToString("N"),
+            await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, mismatchedExpectedGeneration,
                 () => Task.FromResult(true), observeOriginalClose: (close, seen, wasRemote) =>
                 { refusedClose = close; observed = seen; remote = wasRemote; });
         }
-        catch (Exception failure) when (failure is IOException or InvalidDataException or InvalidOperationException) { generationFailure = failure; }
-        if (generationFailure == null || !observed || !remote || refusedClose == null)
+        catch (SessionReplacedException failure) { generationFailure = failure; }
+        if (generationFailure == null || generationFailure.ExpectedGeneration != mismatchedExpectedGeneration ||
+            !observed || !remote || refusedClose == null || refusedClose.Outcome != MainOperationOutcome.Failed)
             throw new InvalidOperationException("Wrong generation did not refuse and close its original operation.");
-        results.Add(new { mode = "wrong-generation", failure = generationFailure.Message, close = refusedClose });
+        // This is a mismatched expected binding, not a changed durable generation.
+        results.Add(new { mode = "wrong-expected-generation", expectedGeneration = mismatchedExpectedGeneration,
+            failure = generationFailure.Message, close = refusedClose });
         await RequireFollowingOrdinaryAsync(refusedClose);
         foreach (var mode in new[] { "replacement", "late-ordinary" })
         {
