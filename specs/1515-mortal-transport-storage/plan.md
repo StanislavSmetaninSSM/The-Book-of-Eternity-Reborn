@@ -1827,3 +1827,28 @@ Engine SHA307d22dc651e08fdc177b0789ae5d66c4da19ea45019b176389060b3403f156b;
 test SHAae26d7be9d64ba805459fff3fcec7db380724a865244070ba5842ee092bc9d74.
 One real lock-exhaustion interval is necessary to distinguish this boundary;
 there is no expensive repeated world setup or new cached authority.
+
+T017 official diagnostic verification and independent outcome accepted3/3.
+Integration build122.47s/122.864s wall,176warnings/0errors; an unavailable
+/usr/bin/time wrapper initially exited127 before dotnet ran and is preserved
+separately, not counted as compilation failure. PlanOnly selected exactly3 cases;
+actual runner24.9252009s, no skips/duplicates/timeouts, owned/runtime cleanup complete.
+Result20261118-082356-527-5-e8433f617be74ea8b849be00ed3651f7.
+Independent rehash3413 C#sources and20 outputs found zero mismatches.
+
+Exhausted case observed199 real contentions and no open/inspection, propagated
+typed CanonicalLockContention, settled original task Faulted, then acquired a
+fresh lease. Released case observed one contention/open/inspection and Completed.
+Post-open integrity propagated the exact InvalidDataException, not contention,
+and settled before fresh lease. Asserted bytes/signals stayed unchanged and
+cleanupFailure was null. This proves a feasible local path, not actual mm5 cause,
+remote-owner coverage, a causalRED or a behavior fix. No suppression was added.
+
+Further identical local repetitions would add little. The next bounded diagnostic
+may use one fresh ordinary baseline with the exact immutable mm5/T021 package
+and existing DEBUG stderr nonce enabled from launch. No old pending/authority or
+world continuation. Full original cleanup and immutable package checks remain.
+This single observation is aimed at the missing exception/stack while the GM
+handles the actual current request; no fabricated response or timeoutincrease.
+If it does not reproduce, say so. Preparation/prelaunch remain separate from
+execution; no native retry has occurred since mm5.
