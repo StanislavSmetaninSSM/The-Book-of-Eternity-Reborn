@@ -3584,3 +3584,13 @@ Independent T027 OUTCOME review accepted the causal RED: actual Python failures,
 original failure cleanup and all 3,498 source/eight output/seven reviewed pins
 were checked without mismatch. GO is limited to the agreed GREEN implementation;
 normal renderer exit/restoration and actual live gameplay remain unqualified.
+
+T027 first GREEN source is preserved at ed5fa4b236c500eaae91ac1f6335b490a9c5c294
+but independent SOURCE review blocks execution. Three concrete issues must be
+corrected together: recorded coalesced draws use CR plus exact cursor-up before
+the next header, not LF; the actual long location makes the Load row exceed the
+fixture width and this is currently discovered only after local mutations; and
+unrestricted stripping of cursor/erase CSI can conceal trailing or mid-row
+operations. Add production-shaped DATA controls, an explicit narrow redraw grammar,
+a genuinely unwrapped redirected renderer layout and whole-route preflight before
+owner launch. No build or GREEN execution occurred, and no live world was started.
