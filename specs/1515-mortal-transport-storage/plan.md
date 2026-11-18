@@ -2883,3 +2883,13 @@ Success assigned only after cleanup. Wrong exception/exit, choice/input or missi
 cleanup must fail. Cheap controls11PASS/1causalFAIL then12/12PASS0.002s; no C#,
 driver, category or selection change. Fresh official4 awaits focused review;
 existing compiled outputs may be reused only after full matching compiled pins.
+T024 stateless native Load-consumer WIP prepared in relay_phase_evidence.py and
+new test-relay-load-evidence.py,13 inert unittest methods UNRUN. Existing ordinary
+cleanup predicate unchanged; separate Load path retains A and expects exact B
+stop/terminal plus separately captured daemon-B settlement. Internal operationId
+and installed generation are not falsely claimed preknown: captured receipt pair
+must agree, then installed metadata is an independent postcondition check.
+A-daemon settlement and distinct B-daemon owner still need actual integration
+review and observation; this DATA predicate alone grants no ownership. Source is
+saved before tests/review; no driver or native world changed. Writers paused for
+final inert smoke verification, not evidence that live Load already works.

@@ -380,3 +380,89 @@ def require_restored_diagnostic_owner(identity,source,new_base,daemon_owner):
         if not isinstance(value,str) or not value.strip() or value==old[key]:raise ValueError('Diagnostic owner identity reused or empty')
     old_daemon=daemon_pair_decode(source['DaemonSettlement'],'Final',True)
     if not isinstance(daemon_owner,str) or not daemon_owner.strip() or daemon_owner==old_daemon:raise ValueError('Diagnostic daemon owner reused or empty')
+
+
+def validated_load_observation(client_output, action_cut, expected, installed_record):
+    """Validate captured Load DATA, not authority. Caller owns fresh output/cut and expected tuple.
+
+    B comes only from the one validated retained-connection client observation;
+    status, PID and epoch cannot substitute for that observation.
+    """
+    def require(condition, message):
+        if not condition:raise ValueError(message)
+    def guid(value):return type(value) is str and re.fullmatch('[0-9a-f]{32}',value) is not None
+    def identity(value):
+        require(type(value) is dict and set(value)=={'RootKey','RunId','GenerationId','Epoch','Backend','HostInstanceId','BootId'},'Invalid main identity shape')
+        require(all(guid(value[k]) for k in ('RunId','GenerationId','HostInstanceId')) and
+            type(value['Epoch']) is int and value['Epoch']>0 and type(value['Backend']) is int and value['Backend'] in (1,2) and
+            all(type(value[k]) is str and value[k] for k in ('RootKey','BootId')),'Invalid main identity values')
+    def terminal(value):
+        require(type(value) is dict and set(value)=={'RunId','Backend','Guarantee','RootPid'} and guid(value['RunId']) and
+            all(type(value[k]) is str and value[k] for k in ('Backend','Guarantee')) and
+            type(value['RootPid']) is int and value['RootPid']>0,'Invalid terminal identity')
+    require(type(client_output) is bytes and type(action_cut) is int and 0<=action_cut<=len(client_output),'Invalid client output cut')
+    require(type(expected) is dict and set(expected)=={'Nonce','SourceKey','RootKey','ExpectedGeneration',
+        'StartupIdentityA','StartupTerminalA'},'Incomplete expected Load tuple')
+    require(all(guid(expected[k]) for k in ('Nonce','ExpectedGeneration')) and
+        all(type(expected[k]) is str and expected[k] for k in ('SourceKey','RootKey')),'Invalid expected Load tuple')
+    identity(expected['StartupIdentityA']);terminal(expected['StartupTerminalA'])
+    fresh=client_output[action_cut:]
+    marker=b'boe-load-session-completed'
+    require(fresh.count(marker)==1,'Missing or duplicate fresh Load observation')
+    position=fresh.index(marker)
+    start=fresh.rfind(b'{',0,position)
+    require(start>=0 and fresh[start:position]==b'{"kind":"','Partial or malformed Load observation prefix')
+    end=fresh.find(b'\n',position)
+    require(end>=0,'Incomplete Load observation line')
+    document=strict_settings(fresh[start:end].decode('utf-8'))
+    require(set(document)=={'kind','nonce','observation'} and document['kind']==marker.decode() and
+        document['nonce']==expected['Nonce'],'Foreign Load observation')
+    observed=document['observation']
+    require(type(observed) is dict and set(observed)=={'OperationId','SourceKey','RootKey','ExpectedGeneration','OriginalStop',
+        'ReplacementFinish','Committed','RefreshConfirmed','EstablishedGeneration'},'Invalid Load observation shape')
+    require(all(observed[k]==expected[k] for k in ('SourceKey','RootKey','ExpectedGeneration')) and
+        guid(observed['OperationId']) and guid(observed['EstablishedGeneration']) and observed['Committed'] is True and observed['RefreshConfirmed'] is True,'Load binding or completion mismatch')
+    for key,state in (('OriginalStop','Stopped'),('ReplacementFinish','Running')):
+        receipt=observed[key]
+        require(type(receipt) is dict and set(receipt)=={'Ok','OperationId','State','MainIdentity','TerminalIdentity','Error'} and
+            receipt['Ok'] is True and receipt['OperationId']==observed['OperationId'] and receipt['State']==state and
+            receipt['Error'] is None,'Load receipt is not exact successful completion')
+        identity(receipt['MainIdentity']);terminal(receipt['TerminalIdentity'])
+        require(receipt['TerminalIdentity']['RunId']==receipt['MainIdentity']['RunId'],'Load terminal/main mismatch')
+    a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
+    require(a==expected['StartupIdentityA'] and observed['OriginalStop']['TerminalIdentity']==expected['StartupTerminalA'] and
+        a['RootKey']==expected['RootKey'] and a['GenerationId']==expected['ExpectedGeneration'],'Original Load owner mismatch')
+    require(b['RootKey']==a['RootKey'] and b['GenerationId']==observed['EstablishedGeneration'] and
+        b['GenerationId']!=a['GenerationId'] and b['RunId']!=a['RunId'] and b['Epoch']>a['Epoch'] and
+        b['Backend']==a['Backend'],'Replacement Load owner mismatch')
+    # Post-action metadata is an independent consistency check, never the source
+    # of B or of the internally generated operation ID.
+    require(type(installed_record) is dict and installed_record.get('Disposition')=='Running' and
+        installed_record.get('Identity')==b,'Installed replacement consistency mismatch')
+    return document
+
+
+def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
+    """Separate Load-only cleanup join. Never overwrites startup A or adopts B from status."""
+    try:
+        observed=validated_load_observation(client_output,action_cut,expected,value['LoadRunningRecord'])['observation']
+        a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
+        if value['StartupIdentityA']!=a or value['ShutdownIdentityB']!=b:return False
+        if value['OriginalRunningRecord']['Identity']!=a or value['OriginalRunningRecord']['Disposition']!='Running':return False
+        if value['OriginalRunningStatus']['ok'] is not True or value['OriginalRunningStatus']['status']['terminalRunId']!=a['RunId']:return False
+        # Both lifetimes must be captured, never relabel A's daemon as B.
+        if not daemon_settlement_proved(value['DaemonSettlement']):return False
+        if value['DaemonSettlement']['SessionPath']!=value['LoadDaemonSettlement']['SessionPath']:return False
+        if daemon_pair_decode(value['DaemonSettlement'],'Original',False)==daemon_pair_decode(value['LoadDaemonSettlement'],'Original',False):return False
+        terminal=observed['ReplacementFinish']['TerminalIdentity']
+        if value['ShutdownReceipt']['status']['terminalStop']['identity']!={
+            'runId':terminal['RunId'],'backend':terminal['Backend'],'guarantee':terminal['Guarantee'],'rootPid':terminal['RootPid']}:return False
+        running=value['LoadRunningRecord'];status=value['LoadRunningStatus']
+        if running['Identity']!=b or running['Disposition']!='Running':return False
+        if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:return False
+        # The existing fixed stop proof is reused only against observed B. Original
+        # caller evidence remains untouched; no process action occurs in this module.
+        closing=dict(value,OriginalRunningRecord=running,OriginalRunningStatus=status,
+            DaemonSettlement=value['LoadDaemonSettlement'])
+        return relay_phase_cleanup_proved(closing)
+    except (KeyError,TypeError,ValueError,UnicodeError):return False
