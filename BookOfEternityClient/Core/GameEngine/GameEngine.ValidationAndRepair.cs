@@ -304,14 +304,10 @@ public partial class GameEngine
                 }
                 catch (ValidationService.CompletedLocationComparisonRefusedException refused)
                 {
-                    // A repair cannot redefine the already consumed allocation. Close the
-                    // ordinary rollback path instead of validating against a new baseline.
+                    // A repair cannot redefine the already consumed allocation. Both ordinary
+                    // callers return this rejection to their terminal owner, which restores and
+                    // removes the backup once. Keep its evidence intact until that owner runs.
                     if (beforeTerminalRepairReturn is not null) await beforeTerminalRepairReturn();
-                    if (HasRollbackCapability(rollbackSnapshot))
-                    {
-                        await RestorePreTurnBackup(rollbackSnapshot!);
-                        CleanupBackup(rollbackSnapshot!);
-                    }
                     await _progressionSchedule.DeleteTransientReportAsync();
                     _logger.LogError(refused, "mortal_location_completed_comparison_refused");
                     ShowContractValidationErrors(source, [new ValidationIssue(

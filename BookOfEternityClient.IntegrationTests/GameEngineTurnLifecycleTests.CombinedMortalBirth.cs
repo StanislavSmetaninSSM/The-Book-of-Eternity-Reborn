@@ -253,7 +253,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 issue!["code"]?.GetValue<string>() == "effect_source_authority_invalid_owner_identity" &&
                 issue["filePath"]?.GetValue<string>() == currentPath + ".activeEffectDefinitions");
             }
-            else Assert.Contains("mortal_location_completed_comparison_refused", _journeyLogger.Describe());
+            else
+            {
+                Assert.Contains("mortal_location_completed_comparison_refused", _journeyLogger.Describe());
+                Assert.DoesNotContain("Rejected accepted-turn rollback failed", _journeyLogger.Describe());
+                Assert.Null(await _fs.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json"));
+            }
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
             foreach (var pair in before)
             {
@@ -269,6 +274,19 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             var rejectedStory = await _fs.ReadFileAsync("stories/mortal_life_2.jsonl");
             Assert.True(string.IsNullOrWhiteSpace(rejectedStory));
+            if (repairMode is "map-drift" or "index-drift")
+            {
+                // This fixture calls ProcessPlayerTurn directly, not EnterGameLoop. A fresh
+                // typed current-session idle pass proves usable owned cleanup, not _inGame=true.
+                Assert.False(await runtime.Engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync());
+                Assert.Equal(41, runtime.GameLoop.TurnNumber);
+                Assert.Equal(1, calls);
+                Assert.DoesNotContain("Rejected accepted-turn rollback failed", _journeyLogger.Describe());
+                Assert.Null(await _fs.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json"));
+                Assert.Null(await _fs.ReadFileAsync(LiveTurnPreparationService.TurnRequestPath));
+                Assert.Null(await _fs.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+                Assert.Null(await _fs.ReadFileAsync("ready/turn_complete.json"));
+            }
             return;
         }
         Assert.Empty(refusalRecords);

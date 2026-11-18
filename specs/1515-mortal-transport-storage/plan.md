@@ -2536,3 +2536,16 @@ UNCOMPILED/UNRUN. Automatic-continuation runtime coverage is not claimed.
 Targeted independent review of prior findings and affected dependencies is next;
 cheap27 must pass before combined5 and native. No new framework or spiritual
 expansion; actual costs/read counts remain pending, not inferred from source.
+Targeted correction review resolved BOM, issuer/reseal, expected-after-image,
+read-reuse and coverage-source findings, but found a new double rollback:
+the new comparison-refusal catch restored/deleted backup, then its existing
+terminal caller restored the same snapshot again. Removed only that inner
+Restore/Cleanup; both ordinary and final callers retain settlement ownership.
+Changed-map/index engine oracles now reject rollback-failure logs/diagnostics,
+check exact restoration and execute the existing typed idle current-session
+consumer after cleanup. That fixture never enters the interactive loop, so this
+is bounded usability evidence when run, not an invented _inGame=true assertion.
+Frozen19source manifest terminal-owner-correction-pins SHA256
+27c099b21b586f63fda4f670c6ef04bb8a5a387d20ae3d4c3ca21dabd9f44edb.
+Counts unchanged27cheap+5combined, all stillUNRUN. Focused review of these two
+changed files precedes the cheap gate; no additional framework or native attempt.
