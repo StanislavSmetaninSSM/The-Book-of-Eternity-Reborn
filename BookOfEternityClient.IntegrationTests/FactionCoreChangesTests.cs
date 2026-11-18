@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class FactionCoreChangesTests : IDisposable
+public sealed partial class FactionCoreChangesTests : IDisposable
 {
     private const string CorePath =
         "game_state/factions/faction_core.json";

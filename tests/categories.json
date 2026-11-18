@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-faction-null-priorities",
+      "responsibility": "#1516 T021 public full/canonical optional nullable priorities shape and complete progression normalization through final validation.",
+      "excludes": "No live owner/birth acceptance, no new faction schema or broad faction suite.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.FactionPriorities.cs",
+        "BookOfEternityClient.IntegrationTests/FactionCoreChangesTests.NullablePriorities.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.FactionPriorities_FullDeclarationNullableShape",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.FactionPriorities_SelectedCanonicalNullableShape",
+            "BookOfEternityClient.Tests.FactionCoreChangesTests.Normalize_CompleteProgressionWithNullPriorities_PreservesNullThroughFinalValidation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-faction-project-partial-update",
       "responsibility": "#1516 T020 actual normalizer preserves omitted existing faction project fields, exact owner/siblings/history and consumes only supplied partial update; explicit rename control.",
       "excludes": "No live relay, new project creation, or terminal completion qualification.",
