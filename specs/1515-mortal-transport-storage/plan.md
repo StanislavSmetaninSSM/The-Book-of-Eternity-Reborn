@@ -3042,3 +3042,15 @@ process/output settlement and full runner cleanup. No additional source blocker.
 Next is fresh immutable current runtime/helper/relay/fixture package and a new
 isolated seed; independent package preflight precedes genuine GM-relay execution.
 This acceptance does not supply the still-unrun birth/permission/local Load chain.
+T024 fresh mm10 package PREPARED ONLY: three serial Debug no-build/no-restore
+publishes and one new labelled seed export; no additional compile or game run.
+Current Client/Bridge/Support outputs join accepted Unit copies; stale eight
+Integration copies excluded. Pins:3506 source inputs (3487 compiled snapshot plus
+19 operational),20 current output copies; runtime732/deployed732/helper249/
+relay8/native4/freshseed53 all match before/after. Seed setup41, expected42,
+zero validation issues; no failed-world state or authority imported. Explicit
+birth route; launcher environment directories0700, native executables0755,
+Unix socket path89 bytes. No config/main owner/queue/probe/guardian/launch artifact
+exists yet. Manifest SHA2566819557b7daa8ca0c7076f6b33364b774fb227eb7de127d0bb69974e43eb79a3;
+package34f39515c1e6faebe0675d57980cc3e4c65b935870947d469abc54961416027e.
+Independent package preflight pending; actual accepted turn and cleanup UNRUN.
