@@ -3447,3 +3447,12 @@ ECHILD/noemergency/failures/deadline,hostDispose/joincomplete;3496source/8output
 unchanged. Externalmortal-t026/dispatch-red-cold-corrected retainsfullcaptures.
 IndependentcausalOUTCOMEreview pending beforeproductionparticipationfix. No realgame
 retry, no exacthistoricalthrow-line inference; failedmm12p02 staysinadmissible.
+Independent causalOUTCOME accepts correctedRED,includingexactoriginalStopped/
+OwnedScopeEmpty records andabsentendpoints,bothguardianscleanup and3496/8/10pins.
+Agreedminimalproductionfix saved8d03caa0f0f4d596b7578bd6b4030a8acee8b5ee changesonly
+GameEngine.ExplorerDispatch.cs: deferredexistingparticipation withsamelease typed
+missinggenerationveto, returnafterfinalization before anyGMaction; nocanonicallease
+retainedacrossmenu. All8testsunchanged. FocusedSOURCEreview/freshGREEN pending.
+No newGM-authoredcontract/field or capability, so no prompt/example schema change.
+Cost isexistingadmission/finalization plusoneunboundtypedgenerationread; nonewcache,
+newauthority orclaimed speedup. Livegameconsumer remainsunqualified untilnewrun.
