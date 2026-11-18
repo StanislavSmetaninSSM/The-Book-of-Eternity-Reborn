@@ -112,16 +112,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             var suffix = scheduleBackup[_fs.ResolvePath(ProgressionScheduleService.SchedulePath).Length..];
             Assert.StartsWith(".rollback.", suffix);
             Assert.True(suffix.Length > ".rollback.".Length);
+            // FileSystemManager logical paths are relative to game_session, not the
+            // fixture's parent directory. Match the producer's ResolvePath round trip.
+            var sessionRoot = _fs.GameSessionPath;
+            Assert.Equal(Path.GetFullPath(Path.Combine(_rootPath, "game_session")), Path.GetFullPath(sessionRoot));
             var members = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
             var inventory = new JsonArray();
-            foreach (var member in Directory.GetFiles(_rootPath, "*", SearchOption.AllDirectories)
+            foreach (var member in Directory.GetFiles(sessionRoot, "*", SearchOption.AllDirectories)
                          .Where(path => path.EndsWith(suffix, StringComparison.Ordinal)))
             {
-                var relative = Path.GetRelativePath(_rootPath, member).Replace(Path.DirectorySeparatorChar, '/');
+                var relative = Path.GetRelativePath(sessionRoot, member).Replace(Path.DirectorySeparatorChar, '/');
                 Assert.False(Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal));
                 var original = relative[..^suffix.Length];
                 // Ask the actual producer's typed inventory contract, including its exclusions.
-                Assert.Equal(original, Assert.Single(GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(new[] { original })));
+                var tracked = GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(new[] { original }).ToArray();
+                Assert.True(tracked.Length == 1 && tracked[0] == original,
+                    "Owned rollback member is outside the producer contract: physical=" + member +
+                    "; sessionRoot=" + sessionRoot + "; logical=" + original);
                 Assert.Equal(Path.GetFullPath(_fs.ResolvePath(original) + suffix), Path.GetFullPath(member));
                 var bytes = await File.ReadAllBytesAsync(member);
                 Assert.True(members.TryAdd(original, bytes), "Duplicate owned rollback member: " + original);

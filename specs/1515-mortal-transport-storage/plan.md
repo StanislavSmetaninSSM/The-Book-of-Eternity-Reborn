@@ -2679,3 +2679,22 @@ CombinedMortalBirth source SHA256
 45264233a4ae2279a4404affbadfa092fac45704e4752315852530a1d80513cb.
 Source-only, awaiting narrow independent oracle review then fresh combined5;
 previous full positive/two-repair PASS remain historical results, not a new run.
+T023 all-originals scanner run: 0 PASS / 5 preparation FAIL at the typed inventory
+assertion, before any candidate verification. Integration build62.62s,
+130warnings/0errors; runner26.2563365s, complete5/no skips/duplicates/timeouts,
+all owned roots removed,3439source/20output pins unchanged. External
+mortal-t023/combined-originals-corrected/result.log SHA256
+ ec0ece19bae7386cfa4737d73664be725532714232406cc022eb44320604342f.
+Cause established from producer and FileSystemManager: physical root is
+_basePath/game_session; the fixture had relativized backups against _basePath,
+producing game_session/game_state/... instead of the producer's game_state/...
+logical names. Contract rejection was correct. Corrected scanner uses actual
+GameSessionPath and checks the owned-root and ResolvePath round trips; diagnostics
+include physical/session/logical identity. No assertion dropped, no production
+change. Source SHA256
+0da9261a4f74ff8ad518bb1b0af91ae9e14d150deebaf0bb21dfbaa117a735fc.
+Independent review is checking the complete inventory/Explorer overlay boundary
+before fresh combined verification. Single fixture-owned scan/read per original
+is necessary to compare actual original DATA, not cached cleanup authority;
+no cross-test or mutable-owner sharing. Current correction is WIP/UNRUN, previous
+two full PASS results remain separate; native retry remains blocked on this gate.
