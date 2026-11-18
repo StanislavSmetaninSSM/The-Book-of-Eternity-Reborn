@@ -2705,3 +2705,40 @@ and example has no persistent local-turn artifacts. One suffix is valid here,
 not a general oracle for Explorer journeys. Existing exact-byte/absence and
 owned cleanup assertions remain. Approve fresh combined5 only; no runtime result
 yet. Optional manifest-mapping durability guard is not required for this fixture.
+T023 corrected full combined result:5/5 PASS,51.6474367s,1/1descriptor and5/5cases,
+no skips/duplicates/timeouts, all five OwnedFixtureRemoved=true/CleanupFailure=null.
+All three rollback-mismatches arrays are empty; positive and two-nonlocation-repair
+cases reach actual locality/cart/storage/item/receipt consumers. Fresh Integration
+60.59s (60.978wall),130warnings/0errors;3439source/20output pins unchanged.
+External mortal-t023/combined-session-root/result.log SHA256
+9aaee51db560983413f847d74f9a4757c63dafc8c3863b509dd398f06196bee7.
+Independent outcome check pending. This is the full automatic packet gate,
+not a new native acceptance or closure of #1515/#1516/#1538.
+
+### T024 bounded interactive native fixture, planned 2026-11-18
+Before packaging a fresh native world, preserve the unchanged runtime/relay
+while preparing the actual inventory/save/load console transport. Existing
+client stdout pipe does not support direct Spectre SelectionPrompt menus.
+Choose client-only stdin/stdout/stderr on its existing owned PTY with TERM=xterm;
+bridge/daemon/RPC TERM and ownership remain unchanged. A PTY is not a terminal
+emulator: first prove actual inert Spectre selection, fresh rendered observation,
+selected return value, normal exit/EOF/termios with this exact configuration.
+Do not invent cursor responses or infer success from echoed input.
+Considered retaining captured pipe (cannot operate these menus), retrofitting
+an already accepted world's pinned driver (requires an extra package-transition
+contract), or preparing the bounded routes before first birth. Choose the last;
+this is an implementation choice within the delegated real-live-test request.
+Use only fixed birth, denied-storage-then-GM-permission, and local retrieve/save/
+deposit/load routes; no arbitrary scripts or generic key-program input. Targets
+are exact accepted canonical IDs, selected from actual unambiguous fresh menus.
+Keep all request/receipt/source/world ownership checks, full raw external capture
+and actual cleanup; no common live mutable fixture and no provider dispatch.
+Load replaces the main relay owner in the same bridge. The client validates two
+same-operation receipts, but public status does not expose their operationId.
+Investigate existing exact witness before any Load or shutdown of a replacement;
+a currently Running status alone is not adoption authority. If no lawful exact
+join is observable, report that boundary instead of repeating Load or stopping
+an unrelated process. First stage is cheap real prompt transport proof, not a
+claim of complete gameplay routes. Preserve existing source; no native game
+retry until package/readiness review. No gameplay/GM-authored contract change is
+planned, so no prompt/example revision unless implementation finds one necessary.
