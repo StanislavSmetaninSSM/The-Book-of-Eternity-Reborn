@@ -176,6 +176,7 @@ internal static class ProductionMainLinuxFixture
             Assert.Equal(0,result.RootElement.GetProperty("HostExit").GetInt32());
             Assert.True(result.RootElement.GetProperty("FreshControlPassedBeforeWarm").GetBoolean(),result.RootElement.ToString());
             Assert.True(result.RootElement.GetProperty("SameClientLocalThenRemote").GetProperty("configAndGenerationUnchanged").GetBoolean(),result.RootElement.ToString());
+            Assert.Equal(7,result.RootElement.GetProperty("SameClientLocalThenRemote").GetProperty("refusalControls").GetArrayLength());
         }
         Assert.True(result.RootElement.TryGetProperty("Success",out var succeeded) && succeeded.GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
         if(mode=="production-main-uncertain") {

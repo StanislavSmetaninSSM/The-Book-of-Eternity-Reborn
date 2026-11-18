@@ -73,14 +73,16 @@ internal sealed partial class GmLocalRemoteConsumerScenario : IAsyncDisposable
             var generationBefore=File.ReadAllBytes(files.SessionGenerationPath);
             bool remoteObserved=false,closed=false;MainOperationClose? close=null;
             Exception? failure=null;
+            IReadOnlyList<object>? refusalControls=null;
             try {
                 await SessionOperationContext.RunParticipatingCurrentSessionAsync(files,()=>Task.FromResult(true),
                     observeOriginalClose:(reply,observed,remote)=>{close=reply;closed=observed;remoteObserved=remote;});
+                if (!fresh) refusalControls=await RunRefusalControlsAsync(files);
             } catch(Exception error) {failure=error;}
             finally {
                 var unchanged=configBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.ResolvePath("config.json"))) &&
                     generationBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath));
-                Console.WriteLine(JsonSerializer.Serialize(new{remote=remoteObserved,closed,close,configAndGenerationUnchanged=unchanged,
+                Console.WriteLine(JsonSerializer.Serialize(new{remote=remoteObserved,closed,close,refusalControls,configAndGenerationUnchanged=unchanged,
                     stage=failure==null?"remote-completed":"remote-refused",failure=failure?.ToString()}));
                 if(!unchanged)throw new InvalidOperationException("Readmission changed canonical config or generation.");
             }

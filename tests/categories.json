@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-retired-worker-registration-data",
+      "responsibility": "#1589 exact retired durable registration DATA predicates; active, uncertainty, replacement and foreign-root refusals. Predicate is not remote admission authority.",
+      "excludes": "No fabricated remote grants, gameplay or live world replay.",
+      "changeHints": ["BookOfEternityClient.Tests/RetiredWorkerRegistrationTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.RetiredWorkerRegistrationTests.*"]}]
+    },
+    {
       "id": "gm-local-remote-worker-readmission",
       "responsibility": "#1589 same client local current-session admission retires quiescent worker context, then enters through a real external production main and closes its original remote pin.",
       "excludes": "No actual Continue UI, gameplay, GM response, worker task execution or live-world replay.",

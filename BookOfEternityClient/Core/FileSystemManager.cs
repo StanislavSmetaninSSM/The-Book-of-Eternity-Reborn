@@ -410,6 +410,7 @@ public partial class FileSystemManager
         internal CanonicalWritePurpose Purpose { get; }
         internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }
         internal IDisposable? WorkerRootPin { get; set; }
+        internal RetiredWorkerRemoteAdmission? RetiredWorkerAdmission { get; set; }
         internal object? ExternalPublicationContext { get; set; }
         internal object? PendingLocalDecision { get; set; }
         internal void EnsureNoPendingLocalDecision()
@@ -489,7 +490,7 @@ public partial class FileSystemManager
             catch (Exception ex) { RetainFailure(ex); }
             try { MainAdmission?.Dispose(); MainAdmission=null; }
             catch (Exception ex) { RetainFailure(ex); }
-            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; }
+            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; RetiredWorkerAdmission = null; }
             catch (Exception ex) { RetainFailure(ex); }
             try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }
             catch (Exception ex) { RetainFailure(ex); }
@@ -4830,9 +4831,12 @@ public partial class FileSystemManager
                 }
                 workerPurpose?.ValidateRoot(this);
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
-                workerContext?.ValidateCanonical(this, writeLease);
-                workerContext?.ValidateBeforeRecovery();
-                writeLease.WorkerRootPin = workerContext?.PinCanonical();
+                if (workerContext == null || !writeLease.MainAdmission!.TryBindRetiredWorker(writeLease, workerContext))
+                {
+                    workerContext?.ValidateCanonical(this, writeLease);
+                    workerContext?.ValidateBeforeRecovery();
+                    writeLease.WorkerRootPin = workerContext?.PinCanonical();
+                }
                 if(purpose==CanonicalWritePurpose.SessionFinalization) {
                     // Closing verifies the current generation without replaying
                     // publication recovery or granting mutation authority.
@@ -5082,7 +5086,9 @@ public partial class FileSystemManager
         if (writeLease.WorkerPurpose is { } workerPurpose)
             using (MeasureOperation("Lease.Validate.WorkerPurpose"))
                 workerPurpose.ValidateRoot(this);
-        if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
+        if (writeLease.RetiredWorkerAdmission is { } retired)
+            retired.RequireLocalPair(this, writeLease);
+        else if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
             using (MeasureOperation("Lease.Validate.WorkerContext"))
                 workerContext.ValidateCanonical(this, writeLease);
     }
@@ -5096,8 +5102,11 @@ public partial class FileSystemManager
 
     internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease, string diagnosticOrigin = "worker-other")
     {
+        if (writeLease.Purpose == CanonicalWritePurpose.SessionFinalization)
+            throw new InvalidOperationException("Closing finalization cannot perform canonical recovery.");
         EnsureValidCanonicalWriteLease(writeLease);
-        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
+        if (writeLease.RetiredWorkerAdmission is { } retired) retired.RequireLocalPair(this, writeLease);
+        else CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
         EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }
 

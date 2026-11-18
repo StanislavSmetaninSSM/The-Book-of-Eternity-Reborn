@@ -492,3 +492,43 @@ under the shared external diagnostics directory and its test-owned scenario
 Production guards remain unchanged. Next: independently agree the exact
 lease-local retired-registration/original-remote-pin conjunction and its negative
 controls before implementation; no broad disposed/WasRemote bypass is permitted.
+
+### Exact retired-registration remote conjunction: source WIP
+
+Independent design review accepted the verified causal RED and this bounded fix.
+A canonical lease may retain only the exact retired durable root registration,
+its exact MainAdmission/MainAccess and original remote client/generation. The
+registration must still be the root's current reference, disposed after ordinary
+quiescent retirement, with zero clients/executions, no pending/deferred work and
+no uncertainty. These DATA predicates alone grant nothing. Existing fresh
+MainAdmission remote validation, inventory observation and generation checks
+remain authoritative, bracketed by short registration checks without disk/IPC
+under the root gate. The lease binding is checked first even if the current
+root registration disappears. No retired coordinator is reopened or pinned.
+
+Ordinary permission is limited to SessionMutation/PublicationReadQuiescence with
+no worker purpose and no closing frame. A distinct SessionFinalization lease
+requires the actually bound closing original and cannot perform recovery or
+mutation. MainMetadata, replacement, worker and cleanup authority gain no new
+exemption; their existing routes stay intact. References are released with the
+lease. No permission cache, last-validated Boolean, root fence deletion or global
+registry is added. Existing fresh validation is reused within each synchronous
+checkpoint rather than repeating its I/O merely to validate reference DATA.
+This is not a measured speedup claim.
+
+Four new cheap predicate cases cover active, uncertain, swapped and foreign-root
+registrations without invented remote grants. The same real FIFO causal fixture
+adds unbound refusal, wrong expected generation, forbidden replacement and late
+ordinary acquisition after BeginClosing. Each owned refusal closes its exact
+original operation, and each owned refusal is followed by a distinct successful
+ordinary operation on the same main. Canonical config/generation and full original
+stop/guardian evidence remain required. New category is
+`gm-retired-worker-registration-data`; existing narrow readmission category keeps
+its exact Fact. All additions are currently UNBUILT/UNRUN pending source review.
+
+Affected selections require transport inspection, not blind reruns: existing
+console runtime/pending fixtures use legacy named-pipe paths and are not being
+ported for this correction. Their coverage is not claimed here. New typed/FIFO
+readmission and managed registration/absence controls are the primary selection;
+existing exact cleanup neighbors are considered separately with the reviewer.
+No game world, prior request, or accepted live result was modified or replayed.
