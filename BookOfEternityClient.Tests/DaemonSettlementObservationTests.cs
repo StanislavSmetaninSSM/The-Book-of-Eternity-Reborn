@@ -24,7 +24,7 @@ public sealed class DaemonSettlementObservationTests
             }
             original.Validate();
             RequireContenderBlockedBeforeStatusRead();
-            var before=OwnedTerminalScenarioDriver.ReadDaemonObservationBytes(path);
+            var before=OwnedTerminalScenarioDriver.ReadDaemonObservationBytes(path,root+"-read-before");
             using(var document=JsonDocument.Parse(before))
             {
                 var guard=document.RootElement;
@@ -36,7 +36,7 @@ public sealed class DaemonSettlementObservationTests
             }
             original.Validate();
             RequireContenderBlockedBeforeStatusRead();
-            var after=OwnedTerminalScenarioDriver.ReadDaemonObservationBytes(path);
+            var after=OwnedTerminalScenarioDriver.ReadDaemonObservationBytes(path,root+"-read-after");
             Assert.Equal(before,after);
             original.Validate();
             // A read does not settle the owner. Only its normal explicit operation does so.

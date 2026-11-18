@@ -5,13 +5,49 @@ namespace BookOfEternityClient.Tests;
 internal static partial class OwnedTerminalScenarioDriver
 {
     // Test-only observation. These persisted bytes never grant ownership or authorize recovery.
-    internal static byte[] ReadDaemonObservationBytes(string path)
+    internal static byte[] ReadDaemonObservationBytes(string path, string diagnostics) =>
+        ReadDaemonObservationBytesAsync(path,diagnostics).GetAwaiter().GetResult();
+    private static async Task<byte[]> ReadDaemonObservationBytesAsync(string path,string diagnostics)
     {
-        // Observation only: permit the owner's existing open handle; never acquire or release its lock.
-        using var input = new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
-        using var copy = new MemoryStream();
-        input.CopyTo(copy);
-        return copy.ToArray();
+        Directory.CreateDirectory(diagnostics);
+        var script=Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/DaemonObservation/read-only.py");
+        var start=new System.Diagnostics.ProcessStartInfo("/usr/bin/python3") {
+            UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true };
+        start.ArgumentList.Add(script); start.ArgumentList.Add(Path.GetFullPath(path));
+        var stdoutPath=Path.Combine(diagnostics,"stdout.raw");
+        await using var stdout=File.Create(stdoutPath);
+        await using var stderr=File.Create(Path.Combine(diagnostics,"stderr.raw"));
+        using var process=System.Diagnostics.Process.Start(start)!;
+        using var copying=new CancellationTokenSource();
+        var output=process.StandardOutput.BaseStream.CopyToAsync(stdout,copying.Token);
+        var error=process.StandardError.BaseStream.CopyToAsync(stderr,copying.Token);
+        Exception? failure=null;var cleanup=new List<string>();
+        try {
+            await Task.WhenAll(process.WaitForExitAsync(),output,error).WaitAsync(TimeSpan.FromSeconds(3));
+            if(process.ExitCode!=0)throw new IOException("Read-only observer exit code "+process.ExitCode);
+        } catch(Exception caught) {failure=caught;}
+        var clock=System.Diagnostics.Stopwatch.StartNew();
+        TimeSpan Left()=>TimeSpan.FromMilliseconds(Math.Max(1,2000-clock.Elapsed.TotalMilliseconds));
+        try {
+            if(!process.HasExited)process.Kill(); // This exact child never launches descendants.
+            await process.WaitForExitAsync().WaitAsync(Left());
+        } catch(Exception caught) {cleanup.Add("join: "+caught);}
+        try {await Task.WhenAll(output,error).WaitAsync(Left());}
+        catch(Exception caught) {
+            cleanup.Add("drain: "+caught);copying.Cancel();
+            process.StandardOutput.Dispose();process.StandardError.Dispose();
+            _=Task.WhenAll(output,error).ContinueWith(t=>{_=t.Exception;},
+                TaskContinuationOptions.OnlyOnFaulted|TaskContinuationOptions.ExecuteSynchronously);
+        }
+        await File.WriteAllTextAsync(Path.Combine(diagnostics,"outcome.json"),JsonSerializer.Serialize(new {
+            Input=path,Script=script,ScriptSHA256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(script))).ToLowerInvariant(),
+            Failure=failure?.ToString(),CleanupFailures=cleanup,Joined=process.HasExited,
+            StdoutDrained=output.IsCompletedSuccessfully,StderrDrained=error.IsCompletedSuccessfully }));
+        if(failure is not null || cleanup.Count!=0)
+            throw new IOException("Read-only daemon observation failed; raw evidence: "+diagnostics+"; "+string.Join("; ",cleanup),failure);
+        await stdout.FlushAsync();await stderr.FlushAsync();
+        await stdout.DisposeAsync();await stderr.DisposeAsync();
+        return File.ReadAllBytes(stdoutPath);
     }
     private sealed record DaemonSettlementSnapshot(string Owner, JsonElement Status, JsonElement Guard);
     private static DaemonSettlementSnapshot CaptureDaemonSettlement(string folder, string phase,
@@ -29,7 +65,7 @@ internal static partial class OwnedTerminalScenarioDriver
             var destination = Path.Combine(folder,$"daemon-{phase}-{(i==0?"status":"guard")}.raw.json");
             try
             {
-                var raw = ReadDaemonObservationBytes(paths[i]);
+                var raw = ReadDaemonObservationBytes(paths[i],Path.Combine(folder,$"daemon-{phase}-{i}-observer"));
                 File.WriteAllBytes(destination,raw);
                 captured[i] = raw;
                 capture.Add(new { Path=paths[i], RawPath=destination,

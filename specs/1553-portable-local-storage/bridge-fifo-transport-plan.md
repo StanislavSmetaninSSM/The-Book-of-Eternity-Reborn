@@ -861,3 +861,33 @@ its prerequisite failed; oracle17 and diagnostic4 were also not repeated.
 Runner20261117-223642-889-6-be1e2e8cbfd8464c8db99ab4b25f373d-categories;
 raw daemon-observation-green-{build,official}.log remains outside Git.
 Production and all live worlds remain unchanged; no live run occurred.
+
+## WIP: readonly daemon-guard observer candidate, 2026-11-18
+
+#1589, test-only candidate; source review pending and runtime **UNRUN**.
+The strengthened idle control's first preparation failed before Ctrl-C because
+`File.ReadAllBytes` requested incompatible managed sharing on the held guard
+(root `7a2fe8b27a9f472fa9dc524a5c6b5fe3`). The subsequent `FileStream` read with
+`FileShare.ReadWrite` was independently disproved by the narrow held-guard test
+at source `de2ba039`: 1 executed / 1 FAIL, 11.8538620 seconds, complete runner
+cleanup. Neither result is a daemon-stop result; both remain preserved.
+
+The new candidate uses one trusted source-root Python observer shared by the
+held-guard proof and actual idle snapshots. It opens only for reading with
+NOFOLLOW/NONBLOCK, rejects nonregular inputs, and never requests or releases an
+advisory lock. Production guard/API, owner admission and daemon behavior remain
+unchanged. The C# caller requires real exit and full stdout/stderr drain within
+three seconds, with a separate bounded two-second cleanup; complete raw streams,
+script hash and error outcome are retained. Existing strict owner/session/version,
+exact guard shape, duplicate rejection and raw-persistence failure gates remain.
+The proof still requires original Validate and contender refusal before its
+status-reader callback both before and after observation, with unchanged bytes.
+No idle rerun, new live phase, retry of ml7 or successful settlement is claimed.
+
+Optimization assessment: the idle observation needs only four small reads across
+two lifecycle boundaries. Mutable owner/status bytes cannot be reused between
+those boundaries; no cache, heavy package preparation or new general process
+framework is added. Existing source/runtime failures and ml7's unconfirmed daemon
+settlement are not reclassified by this candidate. Next gate: independent source
+review, save, one bounded held-guard proof, then the strengthened idle control only
+if that proof succeeds.
