@@ -1462,3 +1462,53 @@ output pins stayed exact. External PlanOnly pins SHA256
 c5a243c34b52697f964a3cb6846568c6867d868e97e34d1032e3cd849d0524cf.
 No hosted CI or full suite ran. Main remains unchanged pending p02 and final
 source/remote-tree verification; historical rl2/e uncertainty remains separate.
+
+### #1589 rl4 p02 fails before acceptance; merge remains blocked
+
+After independent continuation preflight, ordinary Continue reached a fresh
+turn2 request2e637f9d557f4b4ca5f0049432887ab9 in the SAME retained session. One
+new live-authored responseaa7b13fbc3910699550547df73e6ee9a7e0fde8a0e093358472f17d7bdaaacc2
+was published and executed exit0/drained; no repair or replay. Execution alone
+is not acceptance. Original launch completed274.365s, overall FAIL, one action,
+zero confirmed accepted turns: daemon exited during current provider wait.
+
+The primary refusal precedes shutdown: daemon turn processing finished around
+241.065s, then read admission/completion refused at255.762s; bridge reported
+unconfirmed status publication at255.784s and daemon fatal original-connection
+admission at255.971s. First client cancellation was later,256.896s; the sole
+scoped shutdown261.083s returned NACK266.309s. Pin-drain timeout with one pin is
+therefore downstream, not proof of the already-fixed PreparedGrant stop race.
+RootExitFault remains null; original native root eventually completes physical
+scoped stop, but logical settlement fails. The initiating helper exception and
+exact retained pin identity/state are not present in the current public evidence.
+No environment restriction or specific new production cause is established.
+
+Daemon exit1/EOF/termios was observed; client and bridge exit/EOF/termios were
+not confirmed. Guardian independently reports ECHILD, driver1, reaped2, no
+emergency signals/failures/deadline. p02 is not reusable or eligible for replay.
+p01 remains a valid earlier acceptance, but same-world continuation acceptance
+and reliable completion remain unqualified. Main is unchanged; investigate the
+first failure boundary before any new live launch.
+
+Fresh-context independent GPT-6 Astra High final review found no additional
+concrete authority/transport regression in the118-path source delta, but marked
+one Important diagnostic-policy blocker: new host-fault text truncation and the
+existing same-path stderr size drop can discard original evidence. Correct the
+existing observational collector with cheap long Unicode message/stack/export
+controls, preserving owner/nonce/getter-failure isolation; no logging framework
+or ownership relaxation. That later correction will not be claimed as exercised
+by the frozen rl4 runs.
+
+Clean remote ca6d9626 restored into a separate directory:3347/3347 tracked source
+inputs exact,28/28 current output hashes unchanged,118 changed paths, no new raw
+logs/build artifacts or unverified materialization. Of105 initial exclusions,
+103 retain main/absence; only the reviewed vehicle predicate prerequisite and
+current selection intentionally differ. This is clean-source restoration, NOT
+a clean-build run. GitHub compare:34 ahead/0 behind, base and merge-base605ec71.
+Exploratory finally diagnostics and unavailable legacy NamedPipe coverage remain
+explicitly unqualified; minor EOF whitespace hygiene also remains to correct.
+
+Independent canonical-story readback clarifies p02: turn2 WAS written, with exact
+original action and GM narrative, while turn1 bytes remain exact. Input is now
+empty. The probe zero means no confirmed client/lifecycle acceptance, not absence
+of game effects or successful rollback. Preserve the changed world untouched.
