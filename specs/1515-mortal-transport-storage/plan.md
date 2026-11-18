@@ -3081,3 +3081,18 @@ errorCount1 retained, not called error-free. Probe SHA256
 a5bfc7b39b0b074717a7304c43a3aa0889e2f3223fd1fa4002fa1fb0fe8bf1e3.
 Final102 pins match captured files; independent rollback/cleanup audit pending.
 No permission, local move, Save/Load or accepted birth qualification follows.
+Independent mm10 failure audit accepts only failure/state/cleanup evidence:
+authored/queued/executing packet hashes agree, original identity stopped once,
+all recorded terminal/RPC/relay EOF/settlement and guardian ECHILD verified.
+All97 captured snapshot hashes verify. Final95/96 authenticated rollback-original
+hashes match; sole difference is operational daemon status subsequently retired.
+Scheduler matches rollback original, not later snapshot. All21 recorded absent
+paths remain absent; per-turn dice and pending/ready/repair artifacts removed;
+story remains exact setup41, no accepted history.102 final pins and immutable
+package match. Process snapshots were incomplete; conclusions rely on original
+receipts/EOF/guardian. Two CLR debug FIFOs remain, so complete temporary-file
+deletion is not claimed. Heartbeat participating-write refusal/errorCount1 is
+separate operational error, not silently classified harmless. The independent
+packet review also traces every current nested authored field/identity before
+any next response; no automatic preparation is a live accepted turn. Prepare a
+new isolated mm11 using only immutable package DATA, never mm10 world state.
