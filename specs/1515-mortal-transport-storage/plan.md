@@ -3176,3 +3176,20 @@ relay EOF/drain, same daemon settlement, guardianECHILD/driver1/noemergency and
 here is Process-TurnCore status write during retirement, unlike mm10 heartbeat;
 retain that distinction and do not claim harmlessness. Probe stays failed and
 inadmissible for ordinary continuation; no helper rerun or failed-probe rewrite.
+Applicability design refined: keep old strict Validate API unchanged. New
+ValidateOutcome consumes raw manifest/request; fixed manifest-selected originals
+(clock/schedule/soul/history/report); current clock/schedule/history and actual
+living-world/progression-report bytes. No flat fallback, links/path aliases or
+uncovered absence. Reuse production Assessment(null) AND
+RequirePublishedMortalTreatmentOutcome complete schedule comparator, with actual
+current progression-report bytes, not a forged null. Residual living-world report
+must be absent for either outcome. Any changed/new/deleted/malformed history takes
+strict append validation first, never fallback. NotRequired additionally needs
+original report absence, unchanged raw optional history, nondecreasing settled
+clock and exact source/control reconstruction. Output has explicit outcome kind
+and history presence/hash; appended fingerprints cannot be invented for no-receipt.
+Acceptance/predecessor/local-route witnesses join final pins (absent means no path,
+present means matching digest); fixed turn44 three-receipt diagnostic remains
+append-only. Planned RED includes genuine missing-history ReadAsync, prior-present
+unchanged, due/crossing/pending/report, schedule/control/source/path/absence drift,
+malformed/deleted/extra/BOM history and unresolved clock commands. No code yet.
