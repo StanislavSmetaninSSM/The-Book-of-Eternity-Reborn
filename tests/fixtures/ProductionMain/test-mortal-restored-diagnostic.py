@@ -121,6 +121,30 @@ class RestoredDiagnosticTests(unittest.TestCase):
         out,helper=self.producer_setup();self.descriptor['DataPins']['lore/codex_entries.json']='0'*64
         with self.assertRaises(ValueError):NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
         self.assertEqual(list(self.base.iterdir()),[])
+    def test_diagnostic_owner_join_rejects_reused_or_foreign_identity(self):
+        calls=[n for n in ast.walk(TREE) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)]
+        joins=[n for n in calls if n.func.attr=='require_restored_diagnostic_owner']
+        continues=[n for n in calls if n.func.attr=='send' and any(isinstance(a,ast.Constant) and a.value=='observed Continue selected' for a in n.args)]
+        self.assertEqual(len(joins),1);self.assertEqual(len(continues),1)
+        self.assertLess(joins[0].lineno,continues[0].lineno)
+        self.assertEqual(ast.unparse(joins[0].args[0]),"record['Identity']")
+        self.assertEqual(ast.unparse(joins[0].args[3]),'daemon_owner')
+        old=self.source['OriginalRunningRecord']['Identity']
+        current=dict(old,RootKey=str(self.base),GenerationId='new-generation',RunId='new-run')
+        old_daemon=evidence.daemon_pair_decode(self.source['DaemonSettlement'],'Final',True)
+        evidence.require_restored_diagnostic_owner(current,self.source,self.base,'new-daemon')
+        for key,value in [('RootKey','/foreign'),('GenerationId',old['GenerationId']),('RunId',old['RunId']),('GenerationId',''),('RunId','')]:
+            with self.subTest(key=key,value=value),self.assertRaises(ValueError):
+                evidence.require_restored_diagnostic_owner(dict(current,**{key:value}),self.source,self.base,'new-daemon')
+        for owner in [old_daemon,'']:
+            with self.subTest(owner=owner),self.assertRaises(ValueError):
+                evidence.require_restored_diagnostic_owner(current,self.source,self.base,owner)
+    def test_actual_preparation_never_copies_unpinned_cache(self):
+        out,helper=self.producer_setup()
+        cache=Path(self.descriptor['RuntimePath'])/'__pycache__';cache.mkdir();(cache/'untrusted.pyc').write_bytes(b'unpinned')
+        _,_,ship,_,package,_=NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
+        self.assertFalse((ship/'__pycache__').exists())
+        self.assertEqual({str(p.relative_to(ship)) for p in ship.rglob('*') if p.is_file()},set(package['RuntimePins']))
     def test_fixed_exact_names(self):
         self.assertEqual(len(evidence.RESTORED_MORTAL_DATA_PATHS),59)
         self.assertEqual(len(set(evidence.RESTORED_MORTAL_DATA_PATHS)),59)
@@ -174,7 +198,7 @@ class RestoredDiagnosticTests(unittest.TestCase):
 if __name__=='__main__':
     if '--category-contract' in sys.argv:
         result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__]))
-        ok=result.wasSuccessful() and result.testsRun==15 and not result.skipped
+        ok=result.wasSuccessful() and result.testsRun==17 and not result.skipped
         print('RESTORED-DATA-RESULT '+json.dumps(dict(testsRun=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped))))
         sys.exit(0 if ok else 1)
     unittest.main(verbosity=2)

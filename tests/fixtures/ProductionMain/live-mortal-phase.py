@@ -622,12 +622,21 @@ def prepare_restored_diagnostic(descriptor,out,receipt_helper,driver,nonce):
     # outputs remain DATA, with no ready marker, pending request or dispatch.
     retained={name:exact_file(data/name) for name in phase_evidence.RESTORED_MORTAL_DATA_PATHS}
     if any(sha(value)!=descriptor['DataPins'][name] for name,value in retained.items()):raise ValueError('Restored DATA changed before import')
+    runtime_bytes={}
+    for name,digest in package['RuntimePins'].items():
+        relative=Path(name)
+        if relative.is_absolute() or '..' in relative.parts or str(relative)!=name:raise ValueError('Invalid pinned runtime path')
+        value=exact_file(runtime/relative)
+        if sha(value)!=digest:raise ValueError('Pinned runtime changed before import')
+        runtime_bytes[name]=value
     session=base/'game_session';session.mkdir()
     for name,value in retained.items():
         target=session/name;target.parent.mkdir(parents=True,exist_ok=True)
         with target.open('xb') as stream:stream.write(value)
     with (session/'config.json').open('xb') as stream:stream.write(source['Config'])
-    shutil.copytree(runtime,session/'_runtime')
+    for name,value in runtime_bytes.items():
+        target=session/'_runtime'/name;target.parent.mkdir(parents=True,exist_ok=True)
+        with target.open('xb') as stream:stream.write(value)
     if phase_evidence.relay_inventory(session/'_runtime')!=package['RuntimePins']:raise ValueError('Imported runtime differs')
     # A retained one-use descriptor is not a seed or an original stopped owner.
     return base,session,session/'_runtime',expected,package,package_sha
@@ -978,6 +987,11 @@ try:
     daemon_owner=daemon_pair_decode(result['DaemonSettlement'],'Original',False)
     if previous and daemon_owner==daemon_pair_decode(previous['DaemonSettlement'],'Final',True):
         raise RuntimeError('Daemon startup reused predecessor owner')
+    if restored_diagnostic:
+        accepted_raw=phase_evidence._restored_plain_path(seed['SourceEvidence']['Probe']).read_bytes()
+        if sha(accepted_raw)!=seed['SourceProbeSHA256']:raise ValueError('Diagnostic accepted source changed before owner join')
+        phase_evidence.require_restored_diagnostic_owner(record['Identity'],strict_settings(accepted_raw),base,daemon_owner)
+        result['DiagnosticFreshOwnerQualified']=True
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)

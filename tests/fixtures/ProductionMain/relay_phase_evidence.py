@@ -369,3 +369,14 @@ def restored_diagnostic_request_proved(descriptor, request_bytes):
             request['turnNumber']==descriptor['ExpectedTurn']==45 and isinstance(request.get('requestId'),str) and
             bool(request['requestId']) and request['requestId']!=descriptor['ExcludedRequestId'])
     except (ValueError,KeyError,TypeError):return False
+
+def require_restored_diagnostic_owner(identity,source,new_base,daemon_owner):
+    """Observed new authority join only; accepted source is DATA, not previous admission."""
+    require_fresh_owner(identity,None)
+    old=source['OriginalRunningRecord']['Identity']
+    if identity.get('RootKey')!=str(new_base):raise ValueError('Diagnostic owner root mismatch')
+    for key in ('GenerationId','RunId'):
+        value=identity.get(key)
+        if not isinstance(value,str) or not value.strip() or value==old[key]:raise ValueError('Diagnostic owner identity reused or empty')
+    old_daemon=daemon_pair_decode(source['DaemonSettlement'],'Final',True)
+    if not isinstance(daemon_owner,str) or not daemon_owner.strip() or daemon_owner==old_daemon:raise ValueError('Diagnostic daemon owner reused or empty')
