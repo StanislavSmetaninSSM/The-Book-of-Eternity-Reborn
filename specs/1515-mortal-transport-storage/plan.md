@@ -3325,3 +3325,12 @@ reasoning, no unrequested grant and coherent480→500/08:20. Current request/pro
 Explicit GO issued for that exact packet only after immediate fresh author gate.
 No static review or prepared candidate is an accepted live turn; original launch
 and original-owner cleanup outcome remain pending.
+Original mm12 p01 exits0: probeSuccess true,1action/1acceptedturn,402.146s.
+Exact reviewed packet submitted once,consumer0/no repairs. Typed helper returns
+valid NotRequired for exact42/480→500,history absent before/after/count0→0.
+Executor verifies original ACK/Stopped/OwnedScopeEmpty,all3terminal0/EOF/termios,
+RPC/relay drain,guardian0/ECHILD/noemergency/failures and108finalworld/config pins.
+Same daemon settled,errorCount1 retained near retirement, not declared harmless.
+Probe SHA7e66f01bffdb756297d2f0385e1297bc27045c566d6344af2a88b92ffd08af0f.
+Independent semantic/cleanup OUTCOME review pending. This is a real new birth
+turn, not automatic setup; denial/permission/movement/Save-Load remain unrun.
