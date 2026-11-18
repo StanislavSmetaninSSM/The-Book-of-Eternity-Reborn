@@ -298,3 +298,21 @@ to restore that original observation channel or obtain explicit orchestration
 termination evidence; no fabricated Stopped record, deletion of locks, forced
 pending cleanup or replay is permitted. The cause remains unknown, not a proven
 product defect or repaired infrastructure failure.
+
+### Separate initial simulation admission
+
+The coordinator subsequently authorized checking a wholly separate new world,
+without contacting or modifying ml3. Independent source review permits this:
+main locks are base-local; bridge/native endpoints use distinct temporary root,
+run and pipe identities; relay is exact session/queue-local; guardian binds only
+its own checked descendant lineage. No old result becomes a continuation token.
+A fresh exporter creates a different session, no pending state or main authority,
+with a new phase/queue/report and no previous-result argument. Copies must not
+hardlink mutable files, and no ml3 GM response is reused. In addition to the
+existing driver's four XDG home paths and TMPDIR, launch sets fresh HOME,
+DOTNET_CLI_HOME and mode0700 XDG_RUNTIME_DIR, with a fresh diagnostic nonce and no
+old debug output paths. Physical CPU/RAM/disk remain shared; this is logical
+isolation, not a claim of separate hardware. Immutable verified binaries can be
+reused without another build. This avoids redundant preparation computation while
+retaining fresh seed, authority and request checks. Any later success or cleanup
+belongs solely to this new run; ml3 remains unknown and preserved untouched.
