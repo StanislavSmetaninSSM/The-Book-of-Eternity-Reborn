@@ -1113,7 +1113,7 @@ def storage_local_route():
     observed=phase_evidence.validated_load_observation(bytes(client.capture),load_cut,load_expected,installed)
     b=observed['observation']['ReplacementFinish']['MainIdentity']
     result['LoadObservation']=observed;result['LoadRunningRecord']=installed;result['ShutdownIdentityB']=b
-    original_record=b;original={k[0].lower()+k[1:]:v for k,v in b.items()};original['backend']=2
+    original_record=installed['Identity'];original={k[0].lower()+k[1:]:v for k,v in b.items()};original['backend']=2
     loaded_status=rpc({'command':'status'});result['LoadRunningStatus']=loaded_status
     if not loaded_status['ok'] or loaded_status['status']['terminalRunId']!=b['RunId'] or loaded_status['status']['terminalUncertain'] or not loaded_status['status']['terminalOwnerRetained']:
         raise RuntimeError('Validated B has inconsistent current status')

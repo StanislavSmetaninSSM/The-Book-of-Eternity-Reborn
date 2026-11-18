@@ -86,10 +86,40 @@ class RouteTests(unittest.TestCase):
         fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
         text=ast.unparse(fn)
         self.assertLess(text.index('original = None'),text.index('one actual Load'))
-        self.assertLess(text.index('validated_load_observation'),text.index('original_record = b'))
+        self.assertLess(text.index('validated_load_observation'),text.index('original_record =',text.index('validated_load_observation')))
         self.assertIn("observed['observation']['ReplacementFinish']['MainIdentity']",text)
         self.assertNotIn("result['OriginalRunningRecord'] =",text)
         self.assertNotIn("result['AcceptedGameTurns'] =",text)
+    def test_actual_load_assignment_and_closing_assert_keep_wire_schemas_distinct(self):
+        # Execute the shipped assignments and exact closing assertion, not a
+        # duplicate comparison helper. This is DATA after the separate receipt join.
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        bind=next(n for n in fn.body if isinstance(n,ast.Assign) and
+            any(isinstance(t,ast.Name) and t.id=='original_record' for t in n.targets) and
+            not isinstance(n.value,ast.Constant))
+        start=fn.body.index(bind)
+        assignments=fn.body[start:start+3]
+        self.assertTrue(all(isinstance(n,ast.Assign) for n in assignments))
+        closing=[n for n in ast.walk(tree) if isinstance(n,ast.Assert) and
+            'settled' in {x.id for x in ast.walk(n.test) if isinstance(x,ast.Name)} and
+            'original_record' in {x.id for x in ast.walk(n.test) if isinstance(x,ast.Name)}]
+        self.assertEqual(len(closing),1)
+        durable={'RootKey':'/owned','RunId':'b'*32,'GenerationId':'2'*32,'Epoch':2,
+                 'Backend':'LinuxSupervisor','HostInstanceId':'c'*32,'BootId':'boot'}
+        observed=dict(durable,Backend=2)
+        installed={'Disposition':'Running','Identity':dict(durable)}
+        scope={'b':observed,'installed':installed,'settled':{'Disposition':'Stopped','Identity':dict(durable)}}
+        exec(compile(ast.Module(body=assignments,type_ignores=[]),'actual Load binding','exec'),scope)
+        self.assertEqual(scope['original'],{k[0].lower()+k[1:]:v for k,v in observed.items()})
+        check=compile(ast.Module(body=closing,type_ignores=[]),'actual closing assertion','exec')
+        exec(check,scope)
+        self.assertEqual(scope['original_record'],durable)
+        self.assertEqual(installed['Identity']['Backend'],'LinuxSupervisor')
+        self.assertEqual(observed['Backend'],2)
+        for field,replacement in [('RootKey','/foreign'),('RunId','a'*32),('Backend',2)]:
+            scope['settled']={'Disposition':'Stopped','Identity':dict(durable,**{field:replacement})}
+            with self.subTest(field=field),self.assertRaises(AssertionError):exec(check,scope)
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','HistorySHA256':'b','QueuePins':{}}
         require_local_unchanged(before,dict(before))
@@ -99,6 +129,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=12:raise SystemExit('Expected exactly twelve finite-route DATA methods')
+    if suite.countTestCases()!=13:raise SystemExit('Expected exactly thirteen finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==12 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==13 and result.wasSuccessful() and not result.skipped else 1)
