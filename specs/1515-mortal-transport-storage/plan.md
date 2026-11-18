@@ -3411,3 +3411,11 @@ causalRED. GenuineStopping uses heldpin/readback/ownedclose, not fabricatedmetad
 IndependentSOURCEreview pending before freshUnit/two-categoryexecution. No tests,
 nativegame or mm12change occurred in this checkpoint. Actual neutralprotocol cost
 is necessary; deterministicseed/menu avoidwholeworldsetup andnewcache.
+T026 RED SOURCE review found a fixture timing blocker: late Stopping observer would
+not reach the delegate already captured by hoststartup. Corrected beforeexecution
+at2fc40db7ef709d77ebccdc4b03e834659c7e4857: installbeforeRunAsync,pass realreadbackrecord
+andcheckexactoriginalidentity/disposition. Also retainmenu Title/Choices explicitly
+rather than defaultValueTuple{}serialization. Only2fixturefileschanged; independent
+AstraHigh focusedreview confirms all10pins/oldrace/cleanup andclearsbothfindings.
+FreshUnit/exact2categoryRED authorized,expected2causalFAIL+6baselinePASS. Production
+helper remainsdirect. No actualgameorfailedworldretry; rawrootmortal-t026/dispatch-red.
