@@ -10,6 +10,13 @@ public sealed class SpectreSelectionPtyTests
     [InlineData("pipe-dumb")]
     [InlineData("pipe-xterm")]
     public async Task ActualDefaultPromptUsesOwnedClientConsole(string mode)
+        => await RunModeAsync(mode);
+
+    [Fact]
+    public Task ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher() => RunModeAsync("pipe-inventory");
+
+    /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
+    private static async Task RunModeAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
         var root = Path.Combine(TestDiagnosticPaths.Root, "spectre-selection", Guid.NewGuid().ToString("N"));

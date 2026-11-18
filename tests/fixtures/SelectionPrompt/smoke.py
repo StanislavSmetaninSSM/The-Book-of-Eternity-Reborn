@@ -124,7 +124,11 @@ def expected_dumb_refusal(result):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm')
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory')
+    inventory = mode == 'pipe-inventory'
+    if inventory:
+        sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
+        from mortal_console_routes import selected_frame
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
@@ -134,10 +138,10 @@ def main():
     env=os.environ.copy();env['TERM']='dumb' if mode=='pipe-dumb' else 'xterm-256color'
     result={'Mode':mode,'Success':False,'EOF':False,'CleanupFailures':[],'Inputs':[]}
     process=None;screen=Screen();control=Screen(screen.keyboard);closed=set();streams={};raws={}
-    frame_cut=0
+    frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
     try:
-        args=['dotnet',helper,'spectre-selection-smoke',str(root),'--plain-output']
+        args=['dotnet',helper,'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if mode=='pty' else subprocess.PIPE,
                                  stderr=slave if mode=='pty' else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
@@ -152,9 +156,12 @@ def main():
                     data=b''
                 if not data:closed.add(fd);continue
                 raws[fd].write(data)
-                if mode=='pty' or streams[fd]=='captured':screen.feed(data)
+                if mode=='pty' or streams[fd]=='captured':
+                    captured.extend(data);screen.feed(data)
                 else:control.feed(data)
-            ready=lambda choice:screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut)
+            ready=lambda choice: (selected_frame(bytes(captured),raw_cut,'🎒 📦 Инвентарь') ==
+                ('💰 Деньги: 500' if choice=='SMOKE_ALPHA' else '← Назад')) if inventory else (
+                screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
                 result['InitialRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 arrow=screen.down()
@@ -162,7 +169,7 @@ def main():
                 assert not control.pending and not control.invalid
                 assert os.write(master,arrow)==len(arrow)
                 result['Inputs'].append({'Key':'Down','Hex':arrow.hex()})
-                frame_cut=len(screen.plain);stage=1
+                frame_cut=len(screen.plain);raw_cut=len(captured);stage=1
             elif stage==1 and ready('SMOKE_BETA'):
                 result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 assert os.write(master,b'\r')==1
@@ -180,7 +187,7 @@ def main():
         assert result['TermiosRestored'] and not receipt['InputRedirected']
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
         if mode!='pipe-dumb':
-            assert stage==2 and result['ExitCode']==0 and receipt['Selected']=='SMOKE_BETA' and receipt['Failure'] is None
+            assert stage==2 and result['ExitCode']==0 and receipt['Selected']==('← Назад' if inventory else 'SMOKE_BETA') and receipt['Failure'] is None
         if mode=='pty':
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:

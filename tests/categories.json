@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-menu-frame-data",
+      "responsibility": "#1515 T027 seven authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
+      "excludes": "No real renderer, owner, world or live acceptance. Initial no-output recognition failures are causal RED only after fixture assertions.",
+      "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-menu-frame.py"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.MortalMenuFrameTests.CapturedPipeFixedMenuFrameContracts"]}]
+    },
+    {
+      "id": "mortal-menu-frame-renderer",
+      "responsibility": "#1515 T027 actual inert Spectre inventory-shaped pipe/xterm render and fresh redraw through shipped finite menu matcher, Down then Back and owned EOF/guardian cleanup.",
+      "excludes": "No game, bootstrap, GM, world, main-owner lifecycle or publication authority.",
+      "changeHints": ["BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs", "tests/fixtures/SelectionPrompt/smoke.py"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher"]}]
+    },
+    {
       "id": "mortal-explorer-participation-data",
       "responsibility": "#1515 T026 shared actual GameEngine Explorer dispatch source route and initialized/cold/foreign/nested session DATA boundaries.",
       "excludes": "No actual main-process owner or live storage movement; missing-generation refusal is causal RED on direct dispatch.",

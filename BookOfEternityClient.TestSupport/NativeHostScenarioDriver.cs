@@ -23,6 +23,8 @@ internal static class NativeHostScenarioDriver
     /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 3 && args[0] == "spectre-inventory-smoke")
+            return SpectreSelectionSmoke.Run(args[1], args[2], inventory: true);
         if (args.Length == 3 && args[0] == "spectre-selection-smoke")
             return SpectreSelectionSmoke.Run(args[1], args[2]);
         if(args.Length==3 && args[0]=="local-remote-consumer" && args[2] is "warm" or "fresh") return await GmLocalRemoteConsumerScenario.RunChildAsync(args[1],args[2]=="fresh");
