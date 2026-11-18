@@ -2893,3 +2893,30 @@ A-daemon settlement and distinct B-daemon owner still need actual integration
 review and observation; this DATA predicate alone grants no ownership. Source is
 saved before tests/review; no driver or native world changed. Writers paused for
 final inert smoke verification, not evidence that live Load already works.
+T024 final inert console selection4/4PASS16.0697099s, complete4/cleanup/no skips/
+duplicates/timeout. Two genuine successful Beta selections (PTY/xterm, pipe/xterm)
+and one exact expected old pipe/dumb ANSI refusal, not a third successful choice.
+All three EOF/termios/join/drain; guardian ECHILD/driver0/emergency0/failures0,
+no deadline. Parser wrapper12PASS. NoBuild reused matched compiled source/8outputs;
+3446 current recorded sourcepins unchanged acrossrun (only two reviewed Python
+files had changed since build). External console-final/result.log SHA256
+202a522ab7be61a5a8170a98ad1e32e0746b11f237b67df0541db22c64c1195f.
+Independent final outcome review pending. Preserve historical failed runs.
+
+T024 native integration design correction: Load restarts main only; daemon is a
+separate retained foreground process with root/session-scoped guard. No user or
+spec requires a distinct daemon after Load. Earlier consumer WIP's distinct-B-
+daemon condition is unsupported and must be corrected, not satisfied by adding
+an artificial stop/restart. Keep original daemon identity and prove fresh actual
+post-Load continuity plus eventual same-owner settlement; main A-to-B remains a
+separate exact receipt relationship. Missing continuity is unqualified/failure,
+not permission to relabel or automatically replace it.
+Implement only three fixed routes before immutable packaging: existing live birth;
+locked-row/no-move proof then a genuine GM permission turn; local retrieve/save/
+deposit/Load with no new GM request. Use current observed unique labels bound to
+exact accepted IDs, refuse ambiguity/pagination rather than guess. Client-only
+TERM=xterm-256color keeps existing pipe capture. Preserve A startup separately
+from validated B Load/stop evidence; failed/unknown operations are never replayed.
+Stateless DATA checks and fixture routes require independent review and cheap
+negative tests before fresh packaging. Neither inert console nor diagnostic
+GREEN completes these routes or the required native game acceptance.
