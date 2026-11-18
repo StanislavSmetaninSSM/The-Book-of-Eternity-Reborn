@@ -161,6 +161,55 @@
       "contracts": [
         "Preserve original failure/nonce provenance and cancellation isolation; unsupported legacy NamedPipe success is not silently counted as passing."
       ]
+    },
+    {
+      "category": "gm-stop-diagnostic-full-text-data",
+      "reason": "#1589 complete existing Unicode exception text and failure-report export without diagnostic collection quotas; isolated sink failure.",
+      "contracts": [
+        "Diagnostic DATA only. No native/game launch, nonce or owner admission qualification, stop repair, retry or lifecycle authority."
+      ]
+    },
+    {
+      "category": "gm-main-first-operation-failure-data",
+      "reason": "#1589 nonce-bound original operation failure diagnostic DATA: full frozen tuple and text, disabled/stale nonce and capture/sink isolation.",
+      "contracts": [
+        "No live fault attribution, operation retry, authority or runtime producer qualification."
+      ]
+    },
+    {
+      "category": "gm-main-nested-heartbeat-fifo",
+      "reason": "#1589 original nested participation scope closes before a fresh FIFO main heartbeat on the same owner.",
+      "contracts": [
+        "No game turn, materialization acceptance, production first-loss repair or broad relay qualification."
+      ]
+    },
+    {
+      "category": "gm-main-held-ready-fifo",
+      "reason": "#1589 combined genuine held canonical lease, actual original readiness cancellation and status deferral: dual-event release, newest snapshot publication and full owned shutdown; not historical game causality.",
+      "contracts": [
+        "No game acceptance, timeout changes, retries or authority changes; unproved acquisition ordering fails rather than qualifying a leak."
+      ]
+    },
+    {
+      "category": "gm-ready-cancellation-coordination",
+      "reason": "#1589 original PowerShell readiness timeout cancellation orchestration: one original stream, retained caller failure, exact receipt and non-ready timeout guard, five inert peer cases.",
+      "contracts": [
+        "Inert stdio receipts are not native owner authority or game qualification; canonical status publication is separate."
+      ]
+    },
+    {
+      "category": "gm-bridge-status-prewrite-contention-data",
+      "reason": "#1589 genuine canonical lock contention origin, current-acquisition refusal boundary, unchanged ordinary write/close failures, and diagnostic snapshot bookkeeping decisions.",
+      "contracts": [
+        "No native/game launch, actual Bridge owner/epoch/first-publication or signal/seal race qualification; pure decision cases do not prove publisher lock ordering. No timeout increase or general IO suppression."
+      ]
+    },
+    {
+      "category": "gm-bridge-status-initial-and-seal-fifo",
+      "reason": "#1589 genuine original publisher first-contention failure and in-flight seal/discard with independent public shutdown.",
+      "contracts": [
+        "No game/GM, no automatic deferred delivery guarantee; initial failure preserves logical uncertainty."
+      ]
     }
   ]
 }
