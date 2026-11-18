@@ -3060,3 +3060,24 @@ markers, isolated launch and original-owner cleanup bounds verified read-only.
 No blocking findings. Approved one bounded birth-phase launch, not game success,
 later Load phases or merge. Existing bounds: provider600/work660/driver720/
 outerguardian750 seconds. Genuine GM reads the actual request before authoring.
+
+T024 mm10 p01 actual birth REFUSED, 2026-11-18: one genuine action and one GM
+publication, zero accepted turns,213.438s. Actual request
+f2c23a00fbb64807958e4865d272d4e2, turn42. Packet SHA256
+9cd0adcb68ea7e5db41848159e8f12631de23c31ff6ee8ded20eb2b97cde7342.
+Consumer exited0/child exited/I-O drained but that was NOT acceptance. No repair
+request was issued; client rolled back to setup41/clock480. Read-only causal join
+found authored hazards:[] outside current location contract, plus reasoning and
+Relevant actors using Name (ID) instead of exact canonical Name/ID. The complete
+actor was present; matching does not strip arbitrary ID suffixes. Positive T023
+fixture uses exact bare canonical name. These are GM-authoring errors, not a new
+production defect. Next authored packet must compare full allowed fields and
+exact actor aliases before submission; no validator weakening or parser widening.
+No replay or manual state repair occurred; failed mm10 is not a continuation token.
+Original owner shutdown once, ACK and durable Stopped/OwnedScopeEmpty, client/
+bridge/daemon exit0+EOF+termios, RPC/relay drained, same daemon settled. Guardian
+ECHILD/driver1/reaped1/emergency0/failures0/deadlinefalse. Daemon heartbeat-write
+errorCount1 retained, not called error-free. Probe SHA256
+a5bfc7b39b0b074717a7304c43a3aa0889e2f3223fd1fa4002fa1fb0fe8bf1e3.
+Final102 pins match captured files; independent rollback/cleanup audit pending.
+No permission, local move, Save/Load or accepted birth qualification follows.
