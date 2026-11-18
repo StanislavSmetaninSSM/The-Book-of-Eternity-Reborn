@@ -2118,3 +2118,24 @@ unrelated sidecar0 versus relevant historical core1 marker read. These counts
 are expected assertions, not measured results yet. Integration now17 +routing1
 +guidance1 =19 planned GREEN cases. No broad cache, authority reuse or source
 read fallback. Default worker path and all existing hard checks remain intact.
+
+T018 bounded GREEN independently accepted, 2026-11-18: official three-category
+selection executed all19/19PASS (17 integration,1 routing,1 documentation),
+3/3 descriptors, no skips/duplicates/aborts/timeouts; owned-tree/runtime cleanup
+completed. Runner33.4175504s. Unit build93.44s/90warnings and Integration62.42s/
+129warnings, both0errors. Independent rehash matched3430 source/project/catalog/
+doc inventory entries and28 outputs; all11 reviewed source pins are unchanged.
+This is inventory verification, not a PDB document audit. Positive historical
+retention, strict failures, inspection lifetime and nested response/read-failure
+controls passed. Lazy-read counter measured0 unrelated versus1 relevant marker
+read; no overall speedup claimed and no longer-lived authority cache introduced.
+External evidence mortal-t018/green; official identity
+20261118-094133-313-5-61b8c53b99474489b63becb8003e1f90-categories.
+Result log SHA256 2d197d3d1d1b4a14256f19e9202a4c352f7dfc1e3659687f3bf8a3f0a6bcc092;
+output inventory SHA256 a8518575836118708a8818ce785b4d9708f93c576c010ce4cf58a7511da95d26.
+No raw evidence is published. T018 remains open for actual live transition and
+later inspection/reload; T017 original mm5 exception and exact mm6 rejection
+remain unproven. Next: prepare fresh mm7/current pinned runtime with both opt-in
+exception and normal-rejection capture, independently review its package, then
+run the actual cart/storage encounter. No uncertain-world replay or new feature
+acceptance is implied by these typed tests.
