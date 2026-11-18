@@ -2057,3 +2057,14 @@ new-actor error oracle was too narrow. Corrected only the new actor to existing
 none/XP0/threshold0 plus explicit health60 resource initialization; the positive
 now rejects any Error scoped to the newcomer before testing historical-row
 scene errors. Still10 integration cases, all UNRUN, no behavior implementation.
+T018 RED execution: Unit build94.64s/90warnings/0errors; Integration59.94s/
+129warnings/0errors. Combined official PlanOnly selected11, but fail-fast actual
+ran only doc1 (expected missing-guidance FAIL), so its incomplete result is not
+11-case execution. A second official selection executed the unrun integration10:
+7PASS/3FAIL, no skips/duplicates/timeouts and complete cleanup in both runs.
+Runner16.0348589s +16.7301860s. Known-scene retained-row and idle inspection fail
+at their intended scene-anchor assertions. New-scene positive instead fails its
+newcomer premise: npc_initial_location_same_turn_target_unknown for the new
+initialId; it is NOT qualified causal RED yet. Preserve the strict assertion,
+inspect missing raw-response scene context, fix only that fixture before GREEN.
+3427source pins and16output pins remain exact. No product exception implemented.
