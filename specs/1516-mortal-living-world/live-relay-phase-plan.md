@@ -607,3 +607,48 @@ Exact engine routing causal RED now verified with test7ae1dedf: fresh Integratio
 
 Cleanup official qualification: fresh Unit build28.57s/wall28.860,42warnings/0errors; sole mortal-rejected-cleanup-data1/1PASS10.4247804s, full runner cleanup/no skips/duplicates. Inner Python8PASS0.108s, outcome exit0 and both pumps RanToCompletion, no cleanup failures; raw stored externally via BOE_TEST_DIAGNOSTIC_ROOT. This is source-contract verification, not native rejected-client closure.
 Composition GREEN source WIP now adds the shared parsed-root collision check beside current command validators, plus a narrow ordinary upstream npc_activities sidecar validation before canonical refresh. Reuses ValidateNpcFile/current-owner text machinery; no full-world validation pass/new cache; trivial array checks do not justify caching. Normalizer refusal unchanged. Rules19.F and worked progress-only repair example explicitly prohibit two nonempty families even across actors; canonical state/history/original must not be rewritten. Integration diagnostic export now uses existing configurable TestDiagnosticPaths.Root. Source review and selected Unit12/Integrationnew1+existingrepair1 GREEN checks remain UNRUN; terminal-completion consumer remains a separate known gap.
+
+Composition repair GREEN on6484f14 verified: Unit build91.21s/wall91.521,89warnings/0errors; Integration58.09s/wall58.330,129warnings/0errors. Plan3descriptors14cases12.281s, zero execution. Official14/14PASS57.5221186s, exit0, completeownedcleanup/no skip/duplicate/timeout. New engine case proves exact first collision repair, same original request/manifest, no prior accepted story/history, legal progress-only correction and exactly one final receipt/story; original declared-effect repair also passes. New repair count is bounded1..2, not numerically exported, so no exact count is claimed. ClientDLL1849e65805ad31bf9c26a88b86a76307799380598ef52e1106a2dfde532390d3 agrees across project/Integration copies; UnitDLL3f36828424accd906fdafd924d202411f52e1c5daae336cc05a5b388045c0423, IntegrationDLLffbc73cd34e12940909e2438fd194e1aa82b2a5274840fb3d8606536375728aa. Five source hashes remain frozen. Independent outcome review pending. No new live execution or terminal completion proof.
+
+### Next bounded block T019: existing NPC terminal consumer (design, not implementation)
+
+Goal: make documented completion-only command materialize the original NPC activity
+through the existing ordinary accepted owner; no rewards, generic mutation API or
+new transaction framework. Spec.md records the explicit working outcome table
+approved through delegated coordination. Alternatives rejected: guessing outcome
+from prose/defaulting Success loses semantics; writing canonical history directly
+bypasses the existing command/owner contract.
+
+- [ ] Extend cheap public validation tests for four allowed and two forbidden
+  finalState/outcome combinations, missing/unknown fields and forged completionTurn.
+  Add independent actual-normalizer RED for known original activity completion,
+  exact mirrors/history preservation/one append/command consumption and no-source
+  refusal. New tests get narrow categories before execution; preserve original RED.
+- [ ] Implement the small terminal path beside existing NpcActivities preparation
+  and normalization, using actual signed pending-original/request under the current
+  accepted owner. Inspect/reuse existing validated source reads; progression source
+  may be null without skills and cannot substitute for completion provenance.
+  Prepare all targets before writes; recheck current input/owner and sidecar before
+  consumption. Reuse rollback inventory already containing both affected paths.
+  Reject unsupported specialized/pending ownership rather than granting it.
+- [ ] Synchronize Rules19.F command, Rule19 history explanation, living-world
+  worked completion/repair example and delivered guidance/source guards. Update
+  both current npc_complete_activity_name fixtures to preserve their name-test
+  premise; no old-save fallback. Do not silently change unrelated faction commands.
+- [ ] After cheap GREEN, one genuine ordinary accepted-owner test exercises illegal
+  package then supported same-request repair, exact source turn, matching living
+  effects, one story/receipt and no premature/duplicate publication. Reached late
+  failure uses existing rollback controls, not a fabricated cleanup claim.
+- [ ] Save/review source and outcomes before fresh live GM relay. A fresh eight-hour
+  completion+repair may avoid repeating unchanged four-hour progress, but cannot
+  claim retained-world next-request/reload or #1515/#1538 qualification. Keep mm1p03
+  untouched; native cleanup and initial missing-ledger limitations require explicit
+  gate resolution before relying on a new harness rejection path.
+
+Optimization: reuse parsed current sidecar, original NPC DATA and current accepted
+operation context once per owner. No authority cache or new dictionary framework;
+trivial enum/shape checks need no cache. Fresh source/sidecar/lease checks stay at
+publication boundaries. Separate named preparation/publication costs if integration
+is slow; no speedup claim from fewer scenarios. Implementer chooses exact narrow
+helper signatures after source trace, while preserving this explicit contract.
+Independent outcome review accepted the bounded composition repair: all three TRX/14cases, seven source/output pins and shared Client DLL joins independently verified. This clears only scripted T017 repair, not its requested live GM journey. T019 contract/next-block source review remains pending; no terminal implementation started.

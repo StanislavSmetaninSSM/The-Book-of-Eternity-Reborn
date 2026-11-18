@@ -65,3 +65,36 @@ Initial 24h skip; pending cycles with no new time; short scene; absent/malformed
 ## Clarifications and assumptions
 
 Existing cycle configuration supplies the meaningful-time threshold (default world 240 minutes, faction 1440); no new arbitrary hourly threshold. The client checks explicit declarations and state evidence, not the truth of unstructured natural-language assertions through NLP. No-significant-change is an explicit GM decision with a bounded review of current relevant systems, not a client simulation result. Any significant autonomous state claim must be declared and evidenced.
+
+## Live-discovered NPC terminal activity contract, 2026-11-18 (implementation pending)
+
+The documented `completeNPCActivities` command lacks a canonical consumer in the
+current implementation. This is a bounded completion of existing Mortal activity
+materialization, not a new simulation or reward system. The delegated working
+choice is explicit outcome data, never a prose-derived/default outcome:
+
+- Require `NPCId`, `NPCName`, `activityName`, `finalState`, `finalOutcome` and
+  `narrativeSummary` for an existing original active NPC activity.
+- `Completed` means brought to a terminal result and admits explicit `Success`,
+  `SuccessWithComplication` or `Failure`. `Abandoned` admits only `Failure`.
+  Missing/unknown outcomes and the other two Abandoned combinations fail closed.
+- `completionTurn` is client-owned, obtained from the exact authenticated original
+  request; a command-supplied value is rejected. Do not infer identity, outcome,
+  actors, XP, rewards or references from narrative text.
+- Keep `finalState` command-local. Canonical history retains its existing exact
+  four fields: `activityName`, integer `completionTurn`, `finalOutcome`,
+  `narrativeSummary`. Clear `currentActivity` to null and append exactly once;
+  preserve previous history, unrelated state and agreeing canonical NPC mirrors.
+- Resolve exact original NPC/name/activity and current-source agreement before
+  writes. Missing original/owner, contradictory mirrors, duplicate targets,
+  same-turn newly born NPCs, mixed progress/completion or unsupported specialized
+  publication routes refuse. No generic unsourced normalizer call gains authority.
+- Reuse existing normalizer rollback inventory for npc_core/npc_activities and
+  consume the command only inside the same accepted publication. A failed turn
+  must preserve/restore its original bytes and accepted history; same-request
+  repair must not append twice.
+- Current fixtures/prompts/examples migrate to the explicit field; there is no
+  legacy save compatibility or automatic old-command fallback requirement.
+
+This choice does not qualify implementation, live closure, other activity/faction
+commands, NPC progression or the whole living-world feature.
