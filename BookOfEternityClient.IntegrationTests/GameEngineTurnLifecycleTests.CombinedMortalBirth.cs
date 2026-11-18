@@ -109,7 +109,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 ["npcId"] = actorRef, ["npcName"] = "Council supply steward", ["lastJournalNote"] = "I explained council ownership without granting access.",
                 ["journalEntries"] = new JsonArray(new JsonObject { ["entryId"] = "steward_inspection_42", ["timestamp"] = DateTime.UtcNow.ToString("O"),
-                    ["event"] = "Supply inspection", ["description"] = "The visitor asked permission before touching the supplies.", ["emotionalImpact"] = "cautious trust", ["relationshipChange"] = "0" })
+                    ["event"] = "Supply inspection", ["description"] = "I heard the visitor ask permission before touching our supplies.", ["emotionalImpact"] = "cautious trust", ["relationshipChange"] = "0" })
             });
             await _fs.WriteFileAtomicAsync(journalsPath, journals.ToJsonString());
             var time = await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath);
@@ -140,9 +140,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 - Chosen strategy: Explain restrictions without transferring property.
                 - Rejected alternatives: Unrequested transfer would violate the council's authority.
                 - Actions: Show the cart and locked chest; no item movement or access grant.
-                - State changes: Only the new actor's first journal observation is authored; no relationship, skill or activity change.
+                - State changes: Only NPCJournals[].journalEntries[] receives my first observation; no relationship, skill or activity change.
                 """);
         }, SeedMortalLivingWorldJourneyActorsAsync);
+        // Ordinary rollback restores the image before staging, not the scheduler image
+        // signed later at TerminalWaitStarted. Keep that exact byte expectation separately.
+        var preStagingSchedule = await _fs.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
         // This existing collection has DisableParallelization=true: no other test in this
         // process overlaps the temporary diagnostic sink/nonce. Restore both even on failure.
         var artifact = Path.Combine(TestDiagnosticPaths.Root, "combined-mortal-birth", Guid.NewGuid().ToString("N"));
@@ -184,7 +187,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                 issue!["code"]?.GetValue<string>() == "effect_source_authority_invalid_owner_identity" &&
                 issue["filePath"]?.GetValue<string>() == currentPath + ".activeEffectDefinitions");
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
-            foreach (var pair in before) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+            foreach (var pair in before)
+            {
+                var expected = pair.Key == ProgressionScheduleService.SchedulePath ? preStagingSchedule : pair.Value;
+                var actual = await _fs.ReadFileBytesAsync(pair.Key);
+                if (!(expected is null ? actual is null : actual is not null && expected.AsSpan().SequenceEqual(actual)))
+                {
+                    var stem = pair.Key.Replace('/', '_');
+                    if (expected is not null) await File.WriteAllBytesAsync(Path.Combine(artifact, stem + ".expected"), expected);
+                    if (actual is not null) await File.WriteAllBytesAsync(Path.Combine(artifact, stem + ".actual"), actual);
+                    Assert.Fail("Rollback bytes differ: " + pair.Key + "; full images retained at " + artifact);
+                }
+            }
             var rejectedStory = await _fs.ReadFileAsync("stories/mortal_life_2.jsonl");
             Assert.True(string.IsNullOrWhiteSpace(rejectedStory));
             return;
@@ -205,8 +219,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(JsonNode.DeepEquals(mira, retained));
         var scope = await new LocalInteractionScopeService(_fs).ResolveAsync("Mortal World");
         Assert.False(LocalInteractionScopeService.IsMortalActorLocal(scope, retained.AsObject()));
-        Assert.Null(finalCore["UpdateNPCs"]);
-        var steward = Assert.Single(finalCore["NPCsInScene"]!.AsArray(), row => row!["NPCId"]?.GetValue<string>() != JourneyScoutId)!;
+        // Full actors may remain in either canonical carrier; only creation commands
+        // and one-time envelopes are consumed, not the canonical UpdateNPCs array.
+        var steward = Assert.Single(GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections
+            .SelectMany(section => (finalCore[section] as JsonArray ?? new JsonArray()).OfType<JsonObject>())
+            .Where(row => row["NPCId"]?.GetValue<string>() != JourneyScoutId));
         var stewardId = steward["NPCId"]!.GetValue<string>();
         Assert.Equal(locationId, steward["currentLocationId"]!.GetValue<string>());
         Assert.True(LocalInteractionScopeService.IsMortalActorLocal(scope, steward.AsObject()));

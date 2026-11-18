@@ -2418,3 +2418,13 @@ the ordinary rollback path. Keep diagnostic source, payload/reasoning checks and
 existing repair freshness obligations. No outer repair-disposition expansion is
 needed for unchanged membership. Location-changing repairs remain outside this
 comparison route. Code/TDD next; full and native runs remain blocked on cheap proof.
+
+T022 causal test source WIP: seven cases are planned (genuine common publication
+then canonical reference validation1, current projection fields/unknown control4,
+fresh seed receipt-shape idempotence2). The typed completed-location entry is a
+RED-stage strict delegate only: passing Result does not issue authority. Genuine
+publication must succeed before the expected location-reference assertion fails;
+setup/compile failure is not causal RED. Foreign/drift/repair/invocation proofs
+remain required for the actual privately issued implementation. Combined fixture
+prose, original scheduler before-image and canonical actor-carrier oracles are
+corrected but unrun. No production after-image permission has been implemented.

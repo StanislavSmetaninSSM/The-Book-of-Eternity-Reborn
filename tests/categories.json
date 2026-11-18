@@ -2,6 +2,38 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-published-location-comparison",
+      "responsibility": "#1515 T022 genuine completed location allocation reference comparison, canonical projection schema and fresh historical NPC trade receipt shape.",
+      "excludes": "No native relay or full GameEngine acceptance; foreign/drift/repair invocation controls remain a required implementation step.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.CompletedLocationComparison.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.LocationComparison.cs",
+        "BookOfEternityClient.IntegrationTests/MortalPublishedProjectionShapeTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-combined-birth-engine",
+          "when": "Completed publication reference selection or current canonical projection shape changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_RealPublicationRecognizesAllocatedCurrentReferenceWithoutChangingOriginal",
+            "BookOfEternityClient.Tests.MortalPublishedProjectionShapeTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-combined-birth-engine",
       "responsibility": "#1515 T021 full ordinary pending-turn location/link, retained NPC, new NPC, cart, restricted storage and chalk birth; unresolved effect candidate rolls back without creation publication.",
       "excludes": "No native relay, legacy source migration, authored receipt or direct accepted-refresh shortcut.",
