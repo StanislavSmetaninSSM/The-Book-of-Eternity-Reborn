@@ -1280,3 +1280,22 @@ No Integration refresh had occurred at this result. Independent outcome review
 is pending; next prepare fresh matched game outputs and a new isolated world
 with the diagnostic-enabled original observer. Never continue rl2 or infer that
 its failure was caused by a timeout merely because this longer observation passed.
+
+Independent soak outcome review accepted all25 samples, full original shutdown
+proof, durable identity/OwnedScopeEmpty and guardian evidence. Fresh Integration
+build then actually recompiled in59.37s/59.660s wall,124 warnings/0 errors; no
+tests ran. Current3344 source inputs and28 output joins match; external source
+manifest SHA2563d38a05d5d8ba5849f5ead307ba3243d74b9589cfed60be3457d268e1a322c10,
+output manifest fad70d3e8508a05a94173ab0466a7684829410e7bbb91f0581f428bdb2a027bc.
+
+Fresh rl3 p01 is PREPARED, NOT LAUNCHED. It contains729 matching runtime files,
+8 maintained relay files,4 native source-matched binaries and6 deployed native
+copies; new Clientf79dba9b, Bridge2a091c40 and Support0c65ea09 agree with current
+outputs. Source-bound PowerShell and driver2f7aa13b remain unchanged. The world
+contains only _runtime; private environment directories0700, no symlinks, native
+path88bytes. Original guardian750s/driver720s bounds remain unchanged. Preparation
+manifest SHA25698daf799c093106694f23bae346632d90a8d1d000e1083bbc5b7d729bfef3509;
+phase package3993cd8b56a87daa6986f2c21c16c709870a484fe6beb8dd1daaeffd8fb58767.
+Independent preparation review is pending. Previous worlds remain untouched;
+this fresh game will use the diagnostic-enabled observer, without claiming any
+production fix for the unknown rl2 failure. Main remains unchanged.
