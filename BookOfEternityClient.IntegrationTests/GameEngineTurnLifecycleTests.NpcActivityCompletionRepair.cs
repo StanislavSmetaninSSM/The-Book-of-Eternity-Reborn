@@ -36,22 +36,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         void AssertActors(bool settled)
         {
             var actors = Read(core);
-            foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+            Assert.Empty(actors["UpdateNPCs"]!.AsArray()); // No full-actor resend of the seeded actor.
+            var actor = Assert.Single(actors["NPCsInScene"]!.AsArray())!.AsObject();
+            Assert.Equal(JourneyScoutId, actor["NPCId"]!.GetValue<string>());
+            Assert.True(actor.ContainsKey("currentActivity"));
+            if (settled)
             {
-                var actor = Assert.Single(actors[section]!.AsArray().OfType<JsonObject>(),
-                    row => row["NPCId"]?.GetValue<string>() == JourneyScoutId);
-                Assert.True(actor.ContainsKey("currentActivity"));
-                if (settled)
-                {
-                    Assert.Null(actor["currentActivity"]);
-                    Assert.True(JsonNode.DeepEquals(completed, Assert.Single(actor["completedActivities"]!.AsArray())));
-                }
-                else
-                {
-                    Assert.Equal(0, actor["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
-                    Assert.Equal("Active", actor["currentActivity"]!["activeState"]!.GetValue<string>());
-                    Assert.Empty(actor["completedActivities"]!.AsArray());
-                }
+                Assert.Null(actor["currentActivity"]);
+                Assert.True(JsonNode.DeepEquals(completed, Assert.Single(actor["completedActivities"]!.AsArray())));
+            }
+            else
+            {
+                Assert.Equal(0, actor["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
+                Assert.Equal("Active", actor["currentActivity"]!["activeState"]!.GetValue<string>());
+                Assert.Empty(actor["completedActivities"]!.AsArray());
             }
         }
 
@@ -120,7 +118,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     authorityBytes = Assert.IsType<byte[]>(Bytes(authority));
                     storyBefore = Bytes(story);
                     AssertActors(false);
-                    stages.Add("verified-original-mirrors-and-authority");
+                    stages.Add("verified-original-actor-and-authority");
                     var actor = Read(core)["NPCsInScene"]![0]!;
                     var activity = actor["currentActivity"]!;
                     var name = activity["activityName"]!.GetValue<string>();
@@ -159,12 +157,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     stages.Add("terminal-output-written");
                 }
                 catch (Exception error) { callbackFailure ??= error; throw; }
-            }, async files => {
-                await SeedMortalLivingWorldJourneyActorsAsync(files);
-                var seed = JsonNode.Parse((await files.ReadFileAsync(core))!)!;
-                seed["UpdateNPCs"]!.AsArray().Add(seed["NPCsInScene"]![0]!.DeepClone()); // Two agreeing mirrors before any signed request.
-                await files.WriteFileAtomicAsync(core, seed.ToJsonString());
-            }, input);
+            }, SeedMortalLivingWorldJourneyActorsAsync, input);
 
             observedValidator = runtime.ValidationService;
             stages.Add("process-player-turn-entered");
