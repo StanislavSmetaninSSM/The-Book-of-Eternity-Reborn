@@ -70,7 +70,7 @@ class MenuFrameTests(unittest.TestCase):
         self.assertEqual(menu['choices'],('💰 Деньги: 500','📦 Мел [Материал]','📦 🔒 Council (0 пр.)','← Назад'))
         self.assertIn('(⚖ 1kg/45kg кг)',menu['header'])
         with self.assertRaises(ValueError):inventory_menu(dict(inv,items=inv['items']*21),loc,{'money':500})
-        with self.assertRaises(ValueError):fixed_menu('Menu',['A'*79,'Back'],20)
+        with self.assertRaises(ValueError):fixed_menu('Menu',['A'*77,'Back'],20)
 
     def test_actual_redraw_prefix_coalesced_and_fresh_cut(self):
         redraw=b'\r\x1b[4A'
@@ -87,14 +87,20 @@ class MenuFrameTests(unittest.TestCase):
             self.assertIsNone(selected_frame(frame().replace('Мел'.encode(),control+'Мел'.encode()),0,MENU))
         self.assertIsNone(selected_frame(frame()+b'\r\x1b[3A'+frame(),0,MENU))
     def test_long_location_load_supported_label_and_oversize_refuse(self):
-        menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
+        menu=local_load_menu('Двор совета',43,99999)
         self.assertTrue(menu['choices'][0].startswith('s | Ход 43 | '))
+        # Actual 78-character rejected renderer label, not a speculative width limit.
+        with self.assertRaises(ValueError):local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
         with self.assertRaises(ValueError):local_load_menu('Хозяйственный двор у кладовой совета',43,100000)
         with self.assertRaises(ValueError):local_load_menu('Location '*20,43,1)
     def test_whole_local_preflight_rejects_picker_page_or_prefix_before_actions(self):
         inv={'items':[{'itemId':'i','name':'Мел','type':'Материал'}],'equippedItems':{}}
         loc={'locationId':'loc_court','name':'Court','locationStorages':[{'storageId':'s','name':'Council','hasFullAccess':True,'contents':[{'itemId':'target','name':'Rope','type':'Материал'}]}]}
+        loc['name']='Двор совета'
         preflight_local_route(inv,loc,{'money':0},'s','target',43)
+        loc['name']='Хозяйственный двор у кладовой совета'
+        with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43)
+        loc['name']='Двор совета'
         self.assertEqual(len(inv['items']),1);self.assertEqual(len(loc['locationStorages'][0]['contents']),1)
         loc['locationStorages'][0]['contents'][0]['name']='← Отмена extra'
         with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43)

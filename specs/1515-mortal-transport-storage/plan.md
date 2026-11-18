@@ -3632,3 +3632,25 @@ evidence is mortal-t027/dispatch-green and dispatch-green-fixture-corrected.
 Investigate the observed display-width boundary before another renderer run;
 prefer a genuinely supported narrow fixture/normal route over relaxing matching
 or changing canonical data. All failed worlds remain untouched.
+
+
+### T027 supported Load label correction (source-only, UNRUN)
+
+The actual redirected two-prompt run rejected the 78-character Load label: its
+last size token wrapped. Spectre.Console 0.49.1 `SelectionPrompt.Render` uses a
+Grid column with one cell of right padding, then adds the arrow and a space
+before the label. Thus the observed effective width of 80 is not 78 label cells.
+Primary versioned source:
+https://raw.githubusercontent.com/spectreconsole/spectre.console/0.49.1/src/Spectre.Console/Prompts/SelectionPrompt.cs
+(lines 160–186). Restore the conservative 76-cell label/header bound; do not
+change terminal width or infer it from the 100-column controlling PTY.
+
+The old long-location 78-character label is an explicit negative. The positive
+real two-prompt renderer now uses `Двор совета` and the worst supported size
+`99999KB`, still with actual Back/EOF, close/Clear and freshness assertions.
+Whole-route prelaunch DATA tests accept this short form and refuse the old long
+form. Actual Save size and current metadata remain checked later; the size limit
+is an operational guard, not a prediction of future archive compression.
+A future GM may legitimately create a new scene with this natural short name.
+No existing canonical location, mm13 evidence, gameplay or ownership was changed.
+This correction is UNRUN pending source review and scoped execution.

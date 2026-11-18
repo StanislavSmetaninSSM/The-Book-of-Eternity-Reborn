@@ -89,7 +89,7 @@ def fixed_menu(header, choices, page_size):
         raise ValueError('Explicit finite menu required')
     if len(choices)>page_size or len(set(choices))!=len(choices):raise ValueError('Pagination or duplicate choices')
     def safe(line):
-        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=78
+        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=76
     if not all(safe(line) for line in header.split('\n')) or not all(type(x) is str and safe(x) for x in choices):
         raise ValueError('Unsupported control or wrapped menu')
     footer=choices[-1]

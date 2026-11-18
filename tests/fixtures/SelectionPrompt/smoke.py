@@ -132,7 +132,7 @@ def main():
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
         from mortal_console_routes import selected_frame, fixed_menu, local_load_menu, after_menu, entry_menu
         menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
-        if load:load_menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
+        if load:load_menu=local_load_menu('Двор совета',43,99999)
         first_label,footer=menu['choices']
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
