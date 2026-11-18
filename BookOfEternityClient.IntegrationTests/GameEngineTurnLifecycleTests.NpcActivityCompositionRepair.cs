@@ -148,7 +148,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             const string failurePath = "game_state/control/validation_diagnostic_failure_report.json";
             var diagnostic = await _fs.ReadFileAsync(failurePath);
-            var artifact = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "npc-composition-refusal", Guid.NewGuid().ToString("N") + ".json");
+            var artifact = Path.Combine(TestDiagnosticPaths.Root, "npc-composition-refusal", Guid.NewGuid().ToString("N") + ".json");
             Directory.CreateDirectory(Path.GetDirectoryName(artifact)!);
             await File.WriteAllTextAsync(artifact, diagnostic ?? "null");
             _directGachaOutput?.WriteLine("Unrepaired canonical refusal artifact: " + artifact);

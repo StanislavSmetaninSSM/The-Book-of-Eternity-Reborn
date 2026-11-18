@@ -5068,6 +5068,7 @@ public partial class ValidationService
             "NPCEffectChanges");
         RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyNpcWoundResponseProperty);
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
+        ValidateNpcActivityCommandComposition(root, contextPrefix, issues);
         ValidateNpcActivityUpdates(root, contextPrefix, issues);
         ValidateCompleteNpcActivities(root, contextPrefix, issues);
         ValidateNpcMaskChanges(root, contextPrefix, issues, "NPCMaskAdds", "mask");
@@ -7871,6 +7872,38 @@ public partial class ValidationService
                     repairHint: $"Добавь в {propName} обязательное поле {requiredPayloadField} рядом с NPC identity, чтобы команда несла реально изменяемый payload."));
             }
         }
+    }
+
+    /// <summary>Validate only the current NPC activity sidecar before ordinary normalization.</summary>
+    public async Task<IReadOnlyList<ValidationIssue>> ValidateNpcActivitiesBeforeNormalizationAsync()
+    {
+        var issues = new List<ValidationIssue>();
+        await ValidateNpcFile("game_state/npcs/npc_activities.json",
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "NPCActivityUpdates", "completeNPCActivities"
+            }, issues);
+        return issues;
+    }
+
+    private static void ValidateNpcActivityCommandComposition(
+        JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("NPCActivityUpdates", out var updates) ||
+            updates.ValueKind != JsonValueKind.Array || updates.GetArrayLength() == 0 ||
+            !root.TryGetProperty("completeNPCActivities", out var completions) ||
+            completions.ValueKind != JsonValueKind.Array || completions.GetArrayLength() == 0)
+            return;
+        issues.Add(new ValidationIssue(
+            contextPrefix, IssueSeverity.Error,
+            "NPC activity progress and terminal completion cannot compose in one command sidecar.",
+            code: "npc_activity_update_completion_composition_forbidden", section: "NPCActivities",
+            expected: "one non-empty command family: NPCActivityUpdates or completeNPCActivities",
+            actual: "both command families are non-empty",
+            repairHint: "Переподай npc_activities.json для того же запроса с одной согласованной группой команд. " +
+                "Для продолжающейся активности оставь NPCActivityUpdates и убери completeNPCActivities. " +
+                "Не сообщай terminal completion для продолжающейся активности; согласуй living-world report и player-facing output. " +
+                "Не изменяй canonical NPC core, history или исходный snapshot. Запрет относится ко всему sidecar, даже для разных NPC."));
     }
 
     private void ValidateNpcActivityUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

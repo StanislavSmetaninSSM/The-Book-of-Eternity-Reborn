@@ -23,6 +23,7 @@
    <description>
     Use this command to report NON-TERMINAL progress or other in-progress changes of an NPC's 'currentActivity'.
     Terminal completion belongs only to the separate 'completeNPCActivities' command.
+    Do not combine non-empty NPCActivityUpdates and completeNPCActivities in the same npc_activities.json, even for different NPCs. A rejected combination must be corrected on the same request, with consistent report and narrative; never patch canonical NPC state or history to bypass it.
    </description>
    <content language="json" type="code_example">
     <![CDATA[
