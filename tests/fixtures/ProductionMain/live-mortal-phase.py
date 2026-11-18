@@ -312,9 +312,57 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     assert current_client_failure('❌ Ошибка: Main run metadata or original owner admission is unavailable.'), 'Current main-menu error must stop preparation before a timeout'
     assert current_client_failure('╭ Ход не принят ╮'), 'Pre-request rejection must fail promptly'
     print(json.dumps({'InertDriverChecks':5,'Passed':5,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+def daemon_pair_capture(session, evidence, prefix):
+    paths={'Status':Path(session)/'game_state/control/gm_daemon_status.json',
+           'Guard':Path(session).parent/'.boe_runtime/locks/gm-daemon-instance.lock'}
+    evidence['SessionPath']=str(session)
+    for name,path in paths.items():
+        key=prefix+name
+        try:
+            raw=path.read_bytes()
+            evidence[key+'RawHex']=raw.hex()
+            evidence[key+'SHA256']=hashlib.sha256(raw).hexdigest()
+        except OSError as failure:
+            evidence[key+'ReadError']=type(failure).__name__+': '+str(failure)
+    return evidence
+
+def daemon_pair_decode(evidence, prefix, settled):
+    def unique(pairs):
+        value={};seen=set()
+        for key,item in pairs:
+            if key.casefold() in seen:raise ValueError('Duplicate daemon JSON field')
+            seen.add(key.casefold());value[key]=item
+        return value
+    def decode(name):
+        key=prefix+name
+        raw=bytes.fromhex(evidence[key+'RawHex'])
+        if hashlib.sha256(raw).hexdigest()!=evidence[key+'SHA256']:raise ValueError('Daemon evidence hash mismatch')
+        result=json.loads(raw.decode('utf-8-sig'),object_pairs_hook=unique,
+            parse_constant=lambda value:(_ for _ in ()).throw(ValueError('Non-JSON constant')))
+        if type(result) is not dict:raise ValueError('Daemon evidence is not an object')
+        return result
+    status=decode('Status');guard=decode('Guard');session=evidence['SessionPath']
+    if type(session) is not str or not session:raise ValueError('Missing exact daemon session')
+    owner=status.get('daemonGuardOwnerId')
+    if type(owner) is not str or re.fullmatch('[0-9a-f]{32}',owner) is None:raise ValueError('Invalid daemon owner')
+    if (type(status.get('daemonGuardVersion')) is not int or status['daemonGuardVersion']!=1 or
+        type(guard.get('version')) is not int or guard['version']!=1):raise ValueError('Invalid daemon version')
+    if set(guard)!={'version','sessionPath','ownerId','settled'}:raise ValueError('Invalid guard shape')
+    if status.get('sessionPath')!=session or guard.get('sessionPath')!=session or guard.get('ownerId')!=owner:
+        raise ValueError('Daemon owner/session mismatch')
+    if (status.get('status')!=('stopped' if settled else 'running') or
+        status.get('terminalSettled') is not settled or guard.get('settled') is not settled):
+        raise ValueError('Daemon lifecycle is not exact')
+    return owner
+
+def daemon_settlement_proved(evidence):
+    try:return daemon_pair_decode(evidence,'Original',False)==daemon_pair_decode(evidence,'Final',True)
+    except (KeyError,TypeError,ValueError,UnicodeError):return False
+
 def phase_cleanup_proved(value):
     try:
         if any(k.endswith('Failure') for k in value):return False
+        if not daemon_settlement_proved(value.get('DaemonSettlement')):return False
         if value['AcceptedGameTurns']!=1 or value['GenuineActionsSent']!=1 or value['ShutdownAttempts']!=1:return False
         if not value['InputQualified'] or not value['LogicalLifecycleVerified'] or not value['RelayExecutionClosed'] or not rpc_helper_closed(value):return False
         terminals=value['Terminals']
@@ -342,6 +390,16 @@ def phase_admission(seed, previous, current_max, guardian=None):
         if previous.get('SeedSessionId') != seed['sessionId'] or previous.get('BasePath') != seed['basePath']:
             raise ValueError('Prior phase belongs to a different seeded world')
         if previous.get('AcceptedTurnNumber') != current_max:raise ValueError('Prior story turn does not match current world')
+        prior=previous['DaemonSettlement']
+        session=str(Path(seed['basePath'])/'game_session')
+        if prior.get('SessionPath')!=session:raise ValueError('Prior daemon belongs to another exact session')
+        current=daemon_pair_capture(session,{},'Final')
+        for name in ('Status','Guard'):
+            for suffix in ('RawHex','SHA256'):
+                key='Final'+name+suffix
+                if current.get(key)!=prior.get(key):raise ValueError('Current daemon pair changed since accepted phase')
+        current.update({k:v for k,v in prior.items() if k.startswith('Original')})
+        if not daemon_settlement_proved(current):raise ValueError('Current daemon pair is not settled')
     return current_max + 1
 
 def load_relay_contract(folder):
@@ -887,6 +945,11 @@ try:
     result['ReadinessQualified']=True
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout',str(600 if relay_mode else 180),'--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
+    result['DaemonSettlement']=daemon_pair_capture(session,{},'Original')
+    journal.append({'At':elapsed(),'OriginalDaemonEvidence':dict(result['DaemonSettlement'])})
+    daemon_owner=daemon_pair_decode(result['DaemonSettlement'],'Original',False)
+    if previous and daemon_owner==daemon_pair_decode(previous['DaemonSettlement'],'Final',True):
+        raise RuntimeError('Daemon startup reused predecessor owner')
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)
@@ -1084,9 +1147,13 @@ finally:
             p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
+    daemon_evidence=result.setdefault('DaemonSettlement',{})
+    daemon_pair_capture(session,daemon_evidence,'Final')
+    journal.append({'At':elapsed(),'FinalDaemonEvidence':dict(daemon_evidence)})
+    if not daemon_settlement_proved(daemon_evidence):result['DaemonSettlementFailure']='Original daemon terminal settlement unconfirmed'
     result['ElapsedSeconds']=elapsed();result['Success']=phase_cleanup_proved(result)
     if controlled_refusal:
-        result['ControlledCleanupVerified']=rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+        result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))

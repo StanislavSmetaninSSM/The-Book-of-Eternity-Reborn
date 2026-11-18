@@ -98,6 +98,8 @@ internal static partial class OwnedTerminalScenarioDriver
         while(!child.HasExited);
         if(!active.Any(p=>p.State==MainOperationState.Active)) throw new InvalidOperationException("No original active daemon pin observed; stop cause unqualified.");
         evidence["PinsAtSignalRequest"] = active;
+        var originalDaemon = CaptureDaemonSettlement(folder,"before-stop",evidence);
+        RequireDaemonSettlement(originalDaemon,settled:false);
         if (coordinated)
         {
             // Do not interrupt the participating caller's admission transport.
@@ -118,7 +120,14 @@ internal static partial class OwnedTerminalScenarioDriver
         await File.WriteAllTextAsync(Path.Combine(folder,"idle-daemon-driver.log"),(await output)+(await error));
         var terminal=JsonSerializer.Deserialize<JsonElement>(File.ReadAllText(Path.Combine(folder,"idle-daemon-terminal.json")));
         evidence["ActualDaemonTerminal"] = terminal;
-        evidence["ActualDaemonStatus"] = JsonSerializer.Deserialize<JsonElement>(File.ReadAllText(Path.Combine(folder,"root/game_session/game_state/control/gm_daemon_status.json")));
+        // Historical controls proved pins/physical exit only. Terminal settlement is a separate gate.
+        var finalDaemon = CaptureDaemonSettlement(folder,"after-eof",evidence);
+        evidence["ActualDaemonStatus"] = finalDaemon.Status;
+        RequireDaemonSettlement(finalDaemon,settled:true,expectedOwner:originalDaemon.Owner);
+        if(!terminal.GetProperty("EOF").GetBoolean() || terminal.GetProperty("ExitCode").GetInt32()!=0 ||
+            !terminal.GetProperty("TermiosRestored").GetBoolean())
+            throw new InvalidOperationException("Original daemon EOF/exit/terminal restoration is unconfirmed.");
+        evidence["OriginalDaemonSettlementVerified"] = true;
         var final=Snapshot(); evidence["PinsBeforeOriginalShutdown"] = final;
         if(child.ExitCode!=0 || final.Any(p=>p.State!=MainOperationState.ClosedObserved || p.Identity==null ||
             !GmSessionRunValidation.IdentityMatches(p.Identity,main.Identity)))

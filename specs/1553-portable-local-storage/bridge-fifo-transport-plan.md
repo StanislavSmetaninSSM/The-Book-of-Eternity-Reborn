@@ -794,3 +794,20 @@ Evidence root powershell-finally/f53d81226f4a4d7884c20e62f4a1b1cd,
 runner20261117-221748-951-5-5ce07e5d9b804535bf0a8da67cc8b568-categories,
 raw powershell-finally-diagnostic-official.log are retained outside Git.
 Driver and production daemon remain unchanged; no live/old-world replay occurred.
+
+Post-RED Python fixture correction is prepared, not yet executed: actual startup
+captures raw status/guard bytes and hashes after the daemon Waiting marker and
+before Continue/action. Strict duplicate/case-collision-free JSON, exact field
+types/version/session/owner and running/active markers are required; continuation
+startup cannot reuse its predecessor's owner. After process EOF observation,
+raw final status/guard evidence is retained even on read/parse failure and the
+same original owner must be stopped/terminalSettled/settled. Both ordinary and
+controlled-refusal success require this evidence in addition to their physical
+and original-main proofs. No zero-error-counter predicate was added.
+
+Retained-world admission first validates the saved original/final pair and then
+reads current final bytes again, requiring byte/hash equality and exact settled
+identity before any phase queue/config/process write. Malformed or missing pair
+refuses; no canonical/guard writes or status repairs occur. Immutable ml7 probe
+is not rewritten. The17 causal tests are unchanged; implementation awaits
+independent source review with the separately strengthened idle-daemon fixture.
