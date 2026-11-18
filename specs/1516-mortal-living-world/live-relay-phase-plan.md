@@ -1060,3 +1060,19 @@ Existing GM guidance already states the correct nullable contract; no prompt,
 example or afterlife change is required. This does not qualify a corrected
 native turn or explain the unknown mm3p04 exception. T021 is checked within
 this explicit component scope; T016/T018/T022 remain open.
+
+T022 first test/stub source is saved as WIPb4ceafeb, UNRUN. Independent source
+review blocked RED preparation: the synthetic positive fixture's receipt counts,
+story/history lengths, control DATA and source-superset inventory were internally
+inconsistent. Rehashed negatives also needed source-witness rehashing to test
+semantic joins instead of only stale hashes. Correct the fixture before running;
+these are source-review findings, not causal runtime RED. Unused admission stubs
+remain fail closed and the driver has not been wired or launched.
+
+Corrected T022 synthetic source89de73e independently passed the source gate.
+One direct cheap RED then ran13 methods in0.033s:10PASS/3expectedFAIL,exit1.
+The two new fail-closed DATA stubs refuse positive import45/fresh-request, and
+the old ordinary continuation path does not yet reject the diagnostic marker
+early. No setup/import exception; temporary-directory cleanup completed. Raw
+remains external. This is a harness-admission RED only, no copied world or native
+run. Minimal implementation and official PowerShell adapter verification are next.
