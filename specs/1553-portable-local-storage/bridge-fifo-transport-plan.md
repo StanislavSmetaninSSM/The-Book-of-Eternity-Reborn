@@ -363,3 +363,31 @@ Start→confirmed stopped→Dispose→actual Start with a new owner, malformed J
 UTF8 reader refusal. Positive primitive fixtures now explicitly mark their
 fixture-confirmed stop; the unconfirmed-stop negative remains unchanged.
 All revised code is unbuilt/unrun pending save, re-review and official GREEN.
+
+### Guard regular-file runtime flag correction (GREEN pending)
+
+Corrected-source unit build completed 93.76s, 88 warnings, 0 errors. Source,
+client output and unit output carried byte-identical daemon helper. The malformed
+JSON/UTF8 fixture branch was corrected before execution; no production change.
+Official DATA executed 21: 20 PASS / 1 FAIL, 11.2230875s; separately script
+executed 13: 10 PASS / 3 FAIL, 14.2456923s. Both had complete owned cleanup and
+no duplicate IDs. The actual peer and actual Start positives failed on the first
+fresh guard readback; the terminal-readback scenario remained blocked before its
+terminal phase. Other affected categories remain UNRUN.
+
+A minimal native-open control under the actual PowerShell .NET 11.0.0 runtime
+reproduced FileStream Position=0 but Read=0 after a successful write. RandomAccess
+also failed on that O_NONBLOCK handle; independent native pread and reopened-file
+read verified the exact ABC bytes. Native-open without O_NONBLOCK passed, and the
+precise original NONBLOCK→fcntl clear→FileStream control passed n=3/ABC. These are
+runtime diagnostic controls, not game or publication acceptance.
+
+The narrow correction preserves NONBLOCK during open/type/owner/link validation,
+exclusive flock and named identity checking; only then clears that flag on the
+same retained regular-file handle before FileStream. Other flags and CLOEXEC are
+unchanged. Errors including EINTR refuse and dispose; no I/O replay or repair.
+FIFO opens and general PhysicalFileAuthority are unchanged. The proposed native
+record-I/O alternative was discarded before build/publication. Existing actual
+peer and helper-start failures provide causal RED for this runtime boundary.
+Fresh namespace/ownership/readback checks remain mandatory; no new cache or
+performance claim. Corrected flag source awaits save, review and official GREEN.

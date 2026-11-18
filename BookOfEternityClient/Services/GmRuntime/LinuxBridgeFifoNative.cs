@@ -105,6 +105,12 @@ internal static class LinuxBridgeFifoNative
             ValidateGuard(handle);
             if (flock(handle, 2 | 4) != 0) throw Error("flock guard");
             RequireNamedIdentity(parent, name, handle);
+            // Open nonblocking until the held inode is proven regular: a FIFO
+            // at this name must not block admission. Then clear only NONBLOCK
+            // before FileStream; newer Core runtimes treat it as nonseekable I/O.
+            var flags = fcntl(handle, 3, 0); // F_GETFL
+            if (flags < 0) throw Error("fcntl guard flags");
+            if (fcntl(handle, 4, flags & ~NonBlock) != 0) throw Error("fcntl guard blocking"); // F_SETFL
             return handle;
         }
         catch { handle.Dispose(); throw; }
@@ -217,6 +223,7 @@ internal static class LinuxBridgeFifoNative
     [DllImport("libc", SetLastError = true)] private static extern int open(string path, int flags);
     [DllImport("libc", SetLastError = true)] private static extern int openat(SafeFileHandle directory, string path, int flags);
     [DllImport("libc", EntryPoint = "openat", SetLastError = true)] private static extern int openatCreate(SafeFileHandle directory, string path, int flags, uint mode);
+    [DllImport("libc", SetLastError = true)] private static extern int fcntl(SafeFileHandle descriptor, int command, int value);
     [DllImport("libc", SetLastError = true)] private static extern int flock(SafeFileHandle descriptor, int operation);
     [DllImport("libc", SetLastError = true)] private static extern int mkdirat(SafeFileHandle directory, string path, uint mode);
     [DllImport("libc", SetLastError = true)] private static extern int mkfifoat(SafeFileHandle directory, string path, uint mode);
