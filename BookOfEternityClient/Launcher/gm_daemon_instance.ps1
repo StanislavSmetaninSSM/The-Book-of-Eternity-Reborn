@@ -9,7 +9,9 @@ function Start-LinuxGmDaemonInstance {
     if (-not $assembly) { throw 'Trusted Linux daemon guard assembly is unavailable.' }
     Add-Type -Path $assembly
     $base = [IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($GameSessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar))
-    $reader = [Func[string]] {
+    $session = [IO.Path]::GetFullPath($GameSessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar)
+    if ($session -cne [IO.Path]::Combine($base,'game_session')) { throw 'Daemon session path must be exact game_session.' }
+    $reader = [Func[object]] {
         $bytes = Get-GmDaemonFileBytes $DaemonStatusFile
         if ($null -eq $bytes) { return $null }
         $offset = if ($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191) { 3 } else { 0 }
@@ -36,4 +38,5 @@ function Write-LinuxGmDaemonStatus {
     $observed = Get-GmDaemonText $DaemonStatusFile
     if ($observed -cne ($json + [Environment]::NewLine)) { throw 'Guarded daemon status publication readback is not exact.' }
     $script:LinuxDaemonGuard.Validate()
+    if ($Payload.terminalSettled -eq $true) { $script:LinuxDaemonGuard.MarkSettled($observed) }
 }

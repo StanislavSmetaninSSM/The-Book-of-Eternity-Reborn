@@ -102,13 +102,18 @@ internal static class LinuxBridgeFifoNative
         var handle = new SafeFileHandle((IntPtr)fd, true);
         try
         {
-            RequirePrivate(handle, 0x8000, 0x180);
-            if (Stat(handle).Links != 1) throw new IOException("Linked guard refused.");
+            ValidateGuard(handle);
             if (flock(handle, 2 | 4) != 0) throw Error("flock guard");
             RequireNamedIdentity(parent, name, handle);
             return handle;
         }
         catch { handle.Dispose(); throw; }
+    }
+
+    internal static void ValidateGuard(SafeFileHandle handle)
+    {
+        RequirePrivate(handle, 0x8000, 0x180);
+        if (Stat(handle).Links != 1) throw new IOException("Linked guard refused.");
     }
 
     internal static void RequireNamedIdentity(SafeFileHandle parent, string name, SafeFileHandle held)

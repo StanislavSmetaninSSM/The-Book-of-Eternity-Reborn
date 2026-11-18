@@ -23,6 +23,7 @@ public sealed class LinuxDaemonInstanceGuardTests
                 first.Validate(); oldOwner=first.OwnerId; session=first.SessionPath;
                 Assert.Equal(Path.Combine(root,"game_session"),session);
                 Assert.True(Guid.TryParseExact(oldOwner,"N",out _));
+                first.MarkSettled(Stopped(session,oldOwner));
             }
             using var second=LinuxDaemonInstanceGuard.Acquire(root,Stopped(session,oldOwner));
             second.Validate(); Assert.NotEqual(oldOwner,second.OwnerId);
@@ -37,7 +38,7 @@ public sealed class LinuxDaemonInstanceGuardTests
         var root=NewRoot();
         try {
             string status;
-            using(var first=LinuxDaemonInstanceGuard.Acquire(root,null)) status=Stopped(first.SessionPath,first.OwnerId);
+            using(var first=LinuxDaemonInstanceGuard.Acquire(root,null)) {status=Stopped(first.SessionPath,first.OwnerId);first.MarkSettled(status);}
             string? candidate=fault switch {
                 "missing"=>null,"null"=>"null","legacy"=>"{\"status\":\"stopped\",\"pid\":111}",
                 "running"=>status.Replace("stopped","running"),"failed"=>status.Replace("stopped","failed"),
@@ -96,7 +97,7 @@ public sealed class LinuxDaemonInstanceGuardTests
             var errors=child.StandardError.ReadToEndAsync();
             try {
                 var line=await child.StandardOutput.ReadLineAsync().WaitAsync(TimeSpan.FromSeconds(10));
-                Assert.NotNull(line);
+                if(line is null) Assert.Fail("Peer returned EOF before ready: "+await errors);
                 using var json=JsonDocument.Parse(line!);
                 var result=(json.RootElement.GetProperty("owner").GetString()!,json.RootElement.GetProperty("session").GetString()!);
                 await body(result);

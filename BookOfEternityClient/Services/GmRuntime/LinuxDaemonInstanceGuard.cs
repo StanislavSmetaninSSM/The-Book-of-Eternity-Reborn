@@ -14,7 +14,8 @@ public sealed class LinuxDaemonInstanceGuard : IDisposable
     private readonly string rootPath;
     private readonly SafeFileHandle root, runtime, locks;
     private readonly FileStream stream;
-    private readonly byte[] identityBytes;
+    private byte[] identityBytes;
+    private bool settled;
     private bool disposed;
     public string OwnerId { get; }
     public string SessionPath { get; }
@@ -30,7 +31,7 @@ public sealed class LinuxDaemonInstanceGuard : IDisposable
         AcquireWithStatusReader(basePath, () => priorStatusJson);
 
     // The supplied ordinary admitted reader executes only after exclusive lock acquisition.
-    public static LinuxDaemonInstanceGuard AcquireWithStatusReader(string basePath, Func<string?> readStatus)
+    public static LinuxDaemonInstanceGuard AcquireWithStatusReader(string basePath, Func<object?> readStatus)
     {
         LinuxBridgeFifoNative.RequirePlatform();
         ArgumentNullException.ThrowIfNull(readStatus);
@@ -45,7 +46,8 @@ public sealed class LinuxDaemonInstanceGuard : IDisposable
             guard=LinuxBridgeFifoNative.OpenGuard(locks,FileName,out var created);
             stream=new FileStream(guard,FileAccess.ReadWrite,4096,false);guard=null;
             var session=Path.Combine(path,"game_session");
-            var prior=readStatus();
+            var observed=readStatus();
+            var prior=observed switch { null=>null, string text=>text, _=>throw new IOException("Invalid status-reader result.") };
             if(created)
             {
                 if(prior is not null) throw new IOException("Fresh guard cannot adopt preexisting daemon status.");
@@ -53,17 +55,15 @@ public sealed class LinuxDaemonInstanceGuard : IDisposable
             else
             {
                 var old=Parse(Read(stream));
-                if(old.Count!=3 || Number(old,"version")!=1 || Text(old,"sessionPath")!=session ||
+                if(old.Count!=4 || !True(old,"settled") || Number(old,"version")!=1 || Text(old,"sessionPath")!=session ||
                     !Guid.TryParseExact(Text(old,"ownerId"),"N",out _)) throw new IOException("Invalid retained daemon guard.");
                 if(prior is null) throw new IOException("Existing daemon guard lost its status.");
                 var status=Parse(prior);
-                if(Number(status,"daemonGuardVersion")!=1 || Text(status,"sessionPath")!=session ||
-                    Text(status,"daemonGuardOwnerId")!=Text(old,"ownerId") || Text(status,"status")!="stopped" ||
-                    status["terminalSettled"] is not JsonValue settled || !settled.TryGetValue<bool>(out var done) || !done)
+                if(!ExactStopped(status,session,Text(old,"ownerId")))
                     throw new IOException("Prior guarded daemon is not an exact settled stop.");
             }
             var owner=Guid.NewGuid().ToString("N");
-            var bytes=Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new {version=1,sessionPath=session,ownerId=owner}));
+            var bytes=Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new {version=1,sessionPath=session,ownerId=owner,settled=false}));
             // No truncate-on-open, replacement or unlink. A partial failure is not repaired.
             stream.Position=0;stream.Write(bytes);stream.SetLength(bytes.Length);stream.Flush(true);
             var result=new LinuxDaemonInstanceGuard(path,root,runtime,locks,stream,owner,bytes);
@@ -84,8 +84,28 @@ public sealed class LinuxDaemonInstanceGuard : IDisposable
         LinuxBridgeFifoNative.RequireNamedIdentity(root,".boe_runtime",runtime);
         LinuxBridgeFifoNative.RequireNamedIdentity(runtime,"locks",locks);
         LinuxBridgeFifoNative.RequireNamedIdentity(locks,FileName,stream.SafeFileHandle);
+        LinuxBridgeFifoNative.ValidateGuard(stream.SafeFileHandle);
         if(!Encoding.UTF8.GetBytes(Read(stream)).AsSpan().SequenceEqual(identityBytes)) throw new IOException("Daemon guard identity changed.");
     }
+
+    /// <summary>Records a caller-confirmed canonical terminal operation, not process exit or delivery.</summary>
+    public void MarkSettled(string confirmedStatusJson)
+    {
+        Validate();
+        if(settled || !ExactStopped(Parse(confirmedStatusJson),SessionPath,OwnerId))
+            throw new IOException("Exact confirmed terminal status required.");
+        var bytes=Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new {version=1,sessionPath=SessionPath,ownerId=OwnerId,settled=true}));
+        // No retry or rollback on partial/unknown write. A later independent owner
+        // may admit only a complete exact pair, never a caller's success claim.
+        stream.Position=0;stream.Write(bytes);stream.SetLength(bytes.Length);stream.Flush(true);
+        identityBytes=bytes;
+        Validate();settled=true;
+    }
+
+    private static bool ExactStopped(JsonObject status,string session,string owner) =>
+        Number(status,"daemonGuardVersion")==1 && Text(status,"sessionPath")==session &&
+        Text(status,"daemonGuardOwnerId")==owner && Text(status,"status")=="stopped" && True(status,"terminalSettled");
+    private static bool True(JsonObject obj,string key) => obj[key] is JsonValue value && value.TryGetValue<bool>(out var flag) && flag;
 
     private static string Read(FileStream file)
     {

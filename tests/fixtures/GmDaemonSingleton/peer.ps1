@@ -3,10 +3,12 @@ $ErrorActionPreference='Stop';$guard=$null
 try {
  Add-Type -Path $Assembly
  $status=if($StatusPath){[IO.File]::ReadAllText($StatusPath)}else{$null}
- $guard=[BookOfEternityClient.Services.GmRuntime.LinuxDaemonInstanceGuard]::Acquire($Root,$status)
+ $guard=[BookOfEternityClient.Services.GmRuntime.LinuxDaemonInstanceGuard]::AcquireWithStatusReader($Root,[Func[object]] {if($StatusPath){return $status};return $null})
  @{owner=$guard.OwnerId;session=$guard.SessionPath}|ConvertTo-Json -Compress|Write-Output
  [Console]::Out.Flush()
  [void][Console]::ReadLine()
  $guard.Validate()
+ # This inert peer records fixture-confirmed terminal DATA, not a canonical game publication.
+ $guard.MarkSettled((@{daemonGuardVersion=1;daemonGuardOwnerId=$guard.OwnerId;sessionPath=$guard.SessionPath;status='stopped';terminalSettled=$true}|ConvertTo-Json -Compress))
 } catch { [Console]::Error.WriteLine($_.Exception.Message);exit 2 }
 finally {if($guard){$guard.Dispose()}}

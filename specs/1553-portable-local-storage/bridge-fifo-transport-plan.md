@@ -330,3 +330,36 @@ These are unbuilt/unrun pending independent review and official GREEN. There is
 no live-game result for this change yet. Fresh mutable handle/namespace checks
 cannot be cached; one-shot parsed prior status stays within acquisition and is
 not retained. No performance improvement or hostile-owner/powerloss guarantee.
+
+### Singleton corrective review RED and revised protocol (GREEN pending)
+
+Initial implementation compiled in 89.33s, 87 warnings, 0 errors; tests were held
+for independent review. Review found unconfirmed stopped JSON could authorize
+restart; PowerShell string callbacks could coerce missing to empty; changed mode
+or hardlink was not rechecked; fatal diagnostics could write after guard loss;
+and a wrong session sibling could poison the valid root before refusal.
+
+Corrective build: 27.71s, 42 warnings, 0 errors. Official separate selections:
+DATA 21 executed / 17 PASS / 4 FAIL, 10.9888681s; script 11 executed / 7 PASS /
+4 FAIL, 13.6948904s. Both complete cleanup. DATA reached mode, hardlink and
+unconfirmed-stop failures; its peer failed before ready through the same PS
+string-null boundary. Script reached missing-status coercion, wrong-sibling
+poison and unguarded fatal write. The terminal-readback scenario was blocked at
+initial missing-status coercion, so it did not yet qualify that later branch.
+
+The revised guard writes active(settled=false) on admission, then marks the same
+inode settled only after the original canonical final operation and exact
+readback/guard validation succeed. This records canonical operation completion,
+not process exit/EOF/delivery or powerloss durability. A failed marker write/read
+is not caller success and is never retried or rolled back. A later independent
+acquisition accepts only a complete exact settled guard/status pair under flock.
+Mode/UID/type/single-link are rechecked. The object-returning status callback
+preserves actual absence separately from a zero-byte file; session basename is
+validated before guard acquisition. Lost guard suppresses canonical fatal/log
+publication; stderr and own handle cleanup remain available.
+
+The revised selection expects 34 cases (21 DATA, 13 script), including actual
+Start→confirmed stopped→Dispose→actual Start with a new owner, malformed JSON and
+UTF8 reader refusal. Positive primitive fixtures now explicitly mark their
+fixture-confirmed stop; the unconfirmed-stop negative remains unchanged.
+All revised code is unbuilt/unrun pending save, re-review and official GREEN.

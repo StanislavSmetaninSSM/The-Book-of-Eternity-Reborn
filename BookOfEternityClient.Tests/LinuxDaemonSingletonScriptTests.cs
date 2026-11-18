@@ -46,7 +46,7 @@ public sealed class LinuxDaemonSingletonScriptTests
     }
 
     [Theory]
-    [InlineData("missing")][InlineData("empty")][InlineData("initial-write-fails")][InlineData("terminal-readback-fails")][InlineData("wrong-session")]
+    [InlineData("missing")][InlineData("empty")][InlineData("initial-write-fails")][InlineData("terminal-readback-fails")][InlineData("wrong-session")][InlineData("malformed-json")][InlineData("malformed-utf8")]
     public async Task ActualStartPreservesMissingStatusAndTerminalConfirmation(string scenario)
     {
         var root=Path.Combine(TestDiagnosticPaths.Root,"daemon-actual-start",Guid.NewGuid().ToString("N"));

@@ -1,11 +1,11 @@
-param([Parameter(Mandatory)][string]$RepoRoot,[Parameter(Mandatory)][string]$Root,[ValidateSet('missing','empty','initial-write-fails','terminal-readback-fails','wrong-session')][string]$Scenario)
+param([Parameter(Mandatory)][string]$RepoRoot,[Parameter(Mandatory)][string]$Root,[ValidateSet('missing','empty','initial-write-fails','terminal-readback-fails','wrong-session','malformed-json','malformed-utf8')][string]$Scenario)
 $ErrorActionPreference='Stop'
 . (Join-Path $RepoRoot 'BookOfEternityClient/Launcher/gm_daemon_instance.ps1')
 [void][IO.Directory]::CreateDirectory($Root)
 $GameSessionPath=Join-Path $Root 'game_session';$ControlDir=Join-Path $GameSessionPath 'game_state/control';$DaemonStatusFile=Join-Path $ControlDir 'gm_daemon_status.json'
 $script:StartTime=Get-Date;$TurnTimeout=600;$script:DaemonTerminalSettled=$false;$script:LinuxDaemonGuard=$null
-$script:Written=if($Scenario -eq 'empty'){''}else{$null};$script:ReadbackFailure=$false;$script:Writes=0
-function Get-GmDaemonFileBytes {param($Path) if($null -eq $script:Written){return $null};return ,([Text.Encoding]::UTF8.GetBytes($script:Written))}
+$script:Written=if($Scenario -eq 'empty'){''}elseif($Scenario -eq 'malformed-json'){'{'}else{$null};$script:ReadbackFailure=$false;$script:Writes=0
+function Get-GmDaemonFileBytes {param($Path) if($Scenario -eq 'malformed-utf8'){return ,([byte[]]@(255,254,255))};if($null -eq $script:Written){return $null};return ,([Text.Encoding]::UTF8.GetBytes($script:Written))}
 function Get-GmDaemonText {param($Path) if($script:ReadbackFailure){throw 'original terminal readback refused'};return $script:Written}
 function Invoke-GmParticipatingConsumer {param($SessionPath,[scriptblock]$Body) & $Body}
 function Test-GmDaemonPath {param($Path) return $true}
@@ -24,9 +24,17 @@ if($Scenario -eq 'wrong-session'){
  try {Start-LinuxGmDaemonInstance}catch{$failure=$_.Exception.Message}
 }
 try {
- if($Scenario -in @('missing','terminal-readback-fails','wrong-session')){
+ if($Scenario -in @('missing','terminal-readback-fails','wrong-session','malformed-json','malformed-utf8')){
   if($failure){throw "Actual Start unexpectedly refused: $failure"}
   if(-not $script:LinuxDaemonGuard -or $script:Writes -ne 1){throw 'Actual Start did not retain guard and confirm running'}
+  if($Scenario -in @('missing','wrong-session')){
+   $oldOwner=$script:LinuxDaemonGuard.OwnerId
+   $script:DaemonTerminalSettled=$true
+   Write-LinuxGmDaemonStatus ([ordered]@{status='stopped';sessionPath=$GameSessionPath})
+   $script:LinuxDaemonGuard.Dispose();$script:LinuxDaemonGuard=$null;$script:DaemonTerminalSettled=$false
+   Start-LinuxGmDaemonInstance
+   if($script:LinuxDaemonGuard.OwnerId -ceq $oldOwner -or ($script:Written|ConvertFrom-Json).status -cne 'running'){throw 'Actual clean stop/restart did not establish new owner'}
+  }
   if($Scenario -eq 'terminal-readback-fails'){
    $script:DaemonTerminalSettled=$true;$script:ReadbackFailure=$true;$terminalFailure=$null
    try {Write-LinuxGmDaemonStatus ([ordered]@{status='stopped';sessionPath=$GameSessionPath})}catch{$terminalFailure=$_.Exception.Message}

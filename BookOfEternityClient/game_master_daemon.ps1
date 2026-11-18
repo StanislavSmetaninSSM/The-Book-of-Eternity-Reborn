@@ -3872,6 +3872,10 @@ function Write-Log {
     $logLine = "[$timestamp][$Level] $Message"
     Write-Host $logLine -ForegroundColor $Color
     if ($LogFile) {
+        if ($script:LinuxDaemonGuard) {
+            try { $script:LinuxDaemonGuard.Validate() }
+            catch { [Console]::Error.WriteLine($logLine); return }
+        }
         try {
             $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
             if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
@@ -3966,6 +3970,11 @@ function Write-DaemonFatalReport {
         [object]$ErrorRecord,
         [string]$Phase = "fatal"
     )
+
+    if ($script:LinuxDaemonGuard) {
+        try { $script:LinuxDaemonGuard.Validate() }
+        catch { [Console]::Error.WriteLine('Daemon singleton ownership lost; fatal diagnostic retained on stderr only.'); return }
+    }
 
     $payload = [ordered]@{
         status = "failed"
