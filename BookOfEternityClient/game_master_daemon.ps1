@@ -64,6 +64,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "Launcher/gm_main_operation.ps1")
+. (Join-Path $PSScriptRoot "Launcher/gm_daemon_instance.ps1")
+$script:LinuxDaemonGuard = $null
+$script:DaemonTerminalSettled = $false
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -155,6 +158,9 @@ $script:DaemonFatalError = $null
 $script:DaemonLastLoopError = $null
 $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
+
+try {
+Start-LinuxGmDaemonInstance
 
 Invoke-GmParticipatingConsumer $GameSessionPath {
     foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
@@ -4015,10 +4021,12 @@ function Write-DaemonStatus {
         $payload.fatalError = New-DaemonErrorPayload -ErrorRecord $FatalError -Phase "fatal"
     }
 
+    if ($script:LinuxDaemonGuard) { Write-LinuxGmDaemonStatus $payload; return }
     [void](Write-DaemonJsonFileBestEffort -Path $DaemonStatusFile -Payload $payload -Depth 8)
 }
 
 function Assert-SingleDaemonInstance {
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate(); return }
     $status = Read-DaemonStatus
     if ($null -ne $status -and $null -ne $status.pid) {
         $pidValue = 0
@@ -5853,6 +5861,7 @@ function Read-QteDaemonEligibility {
 
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
 }
 
@@ -5969,6 +5978,7 @@ function Process-QteEffectResolutionRequestCore {
 
 function Process-Turn {
     param([string]$RequestPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath }
 }
 
@@ -6333,6 +6343,7 @@ function Process-TurnCore {
 
 function Process-RepairRequest {
     param([string]$RepairPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-RepairRequestCore -RepairPath $RepairPath }
 }
 
@@ -6590,6 +6601,7 @@ function Test-ProtocolRequestUsesDiagnosticOnlyMetadata {
 
 function Process-TerminalProtocolFailureRequest {
     param([string]$FailurePath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-TerminalProtocolFailureRequestCore -FailurePath $FailurePath }
 }
 
@@ -6941,6 +6953,7 @@ Write-Log "Watching: $InputDir" -Color DarkGray
     # Main loop
     $statusTimer = 0
     while ($true) {
+        if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
         try {
             Start-Sleep -Milliseconds $PollingInterval
             # Coalesce hints without reducing the existing polling delay.
@@ -7004,9 +7017,16 @@ finally {
         Write-DaemonStatus -Status "failed" -FatalError $script:DaemonFatalError
     }
     else {
+        $script:DaemonTerminalSettled = $true
         Write-DaemonStatus -Status "stopped"
     }
     Write-Host ""
     $shutdownLabel = if ($null -ne $script:DaemonFatalError) { 'failed' } else { 'stopped' }
     Write-Log "Daemon $shutdownLabel. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
+}
+
+} finally {
+    if ($script:LinuxDaemonGuard) {
+        try { $script:LinuxDaemonGuard.Dispose() } finally { $script:LinuxDaemonGuard = $null }
+    }
 }

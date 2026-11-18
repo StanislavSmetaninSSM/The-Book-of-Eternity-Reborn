@@ -82,6 +82,41 @@ internal static class LinuxBridgeFifoNative
         }
     }
 
+    // Shared local singleton primitive. No PID, process registry or publication authority.
+    internal static SafeFileHandle OpenOrCreateGuardDirectory(SafeFileHandle parent, string name)
+    {
+        Name(name);
+        if (mkdirat(parent, name, 0x1c0) != 0 && Marshal.GetLastPInvokeError() != 17)
+            throw Error("mkdirat guard parent");
+        return OpenAt(parent, name, ReadOnly | DirectoryFlag);
+    }
+
+    internal static SafeFileHandle OpenGuard(SafeFileHandle parent, string name, out bool created)
+    {
+        Name(name);
+        var fd = openatCreate(parent, name, ReadWrite | NoFollow | CloseOnExec | NonBlock | 0x40 | 0x80, 0x180);
+        created = fd >= 0;
+        if (fd < 0 && Marshal.GetLastPInvokeError() == 17)
+            fd = openat(parent, name, ReadWrite | NoFollow | CloseOnExec | NonBlock);
+        if (fd < 0) throw Error("openat guard");
+        var handle = new SafeFileHandle((IntPtr)fd, true);
+        try
+        {
+            RequirePrivate(handle, 0x8000, 0x180);
+            if (Stat(handle).Links != 1) throw new IOException("Linked guard refused.");
+            if (flock(handle, 2 | 4) != 0) throw Error("flock guard");
+            RequireNamedIdentity(parent, name, handle);
+            return handle;
+        }
+        catch { handle.Dispose(); throw; }
+    }
+
+    internal static void RequireNamedIdentity(SafeFileHandle parent, string name, SafeFileHandle held)
+    {
+        Name(name);
+        if (StatAt(parent, name, 0x100) != Stat(held)) throw new IOException("Guard namespace identity changed.");
+    }
+
     internal static SafeFileHandle OpenFifo(SafeFileHandle directory, string name, int mode)
     {
         Name(name); var fd = OpenAt(directory, name, mode);
@@ -176,6 +211,8 @@ internal static class LinuxBridgeFifoNative
     [StructLayout(LayoutKind.Explicit, Size = 152)] private struct SignalAction { [FieldOffset(0)] public IntPtr Handler; }
     [DllImport("libc", SetLastError = true)] private static extern int open(string path, int flags);
     [DllImport("libc", SetLastError = true)] private static extern int openat(SafeFileHandle directory, string path, int flags);
+    [DllImport("libc", EntryPoint = "openat", SetLastError = true)] private static extern int openatCreate(SafeFileHandle directory, string path, int flags, uint mode);
+    [DllImport("libc", SetLastError = true)] private static extern int flock(SafeFileHandle descriptor, int operation);
     [DllImport("libc", SetLastError = true)] private static extern int mkdirat(SafeFileHandle directory, string path, uint mode);
     [DllImport("libc", SetLastError = true)] private static extern int mkfifoat(SafeFileHandle directory, string path, uint mode);
     [DllImport("libc", SetLastError = true)] private static extern int unlinkat(SafeFileHandle directory, string path, int flags);

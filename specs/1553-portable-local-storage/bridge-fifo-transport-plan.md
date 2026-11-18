@@ -295,3 +295,38 @@ local scope without claiming hostile-owner or power-loss guarantees. Partial
 owner-token write refuses without repair; an error before the first written byte
 may leave the old clean pair intact because no new work began. Strict raw status
 parsing must reject duplicate/case-colliding keys and wrong types before use.
+
+### Singleton first causal RED and implementation (unverified GREEN)
+
+The automatic-build official attempt stopped during restore before discovery:
+0 cases, runner 3.0518261s, complete cleanup; this is not causal RED. A separate
+no-restore unit build completed 94.18s, 87 warnings, 0 errors. Official DATA
+selection then executed 11/11 FAIL at the explicit refusal stub, 10.5236368s,
+complete cleanup. The runner stopped before the script descriptor, so a separate
+script selection executed its actual AST-extracted singleton function: 1/1 FAIL
+at the old PID-only already-running refusal, 11.1895805s, complete cleanup.
+
+The implementation now retains a Linux-x64 in-process guard and reads prior raw
+status through a one-shot callback under flock. Strict duplicate/case-collision,
+version/type, session and prior-owner checks precede the new same-handle token.
+The native adapter reuses LinuxBridgeFifoNative directory walking/statx and adds
+regular-file exclusive creation/flock checks; no Windows PhysicalFileAuthority
+no-op is misrepresented as Linux identity validation. Parent/root/file identities
+are freshly compared. No PID registry/cache or lifetime main pin is introduced.
+
+A new script helper loads only on Linux/Core with a compatible net8 runtime.
+Admission and confirmed running publication precede canonical bootstrap; only
+the ordinary admitted status-parent creation may precede the running write.
+The outer finally retains the handle through the existing watcher cleanup and
+strict final status. Non-Linux singleton code remains the previous branch.
+Status and control data bounds are protocol bounds, not raw diagnostic quotas.
+
+The two narrow categories now select 23 cases: 18 guard DATA/process cases and
+5 actual-script/source cases. The added 11 cases supplement the initial 12 RED
+cases, not retroactive causal RED. They include a real child owner, same-root
+contention, EOF release and successor child; strict status shapes; callback under
+lock; failed read; actual status write/readback refusal and bootstrap ordering.
+These are unbuilt/unrun pending independent review and official GREEN. There is
+no live-game result for this change yet. Fresh mutable handle/namespace checks
+cannot be cached; one-shot parsed prior status stays within acquisition and is
+not retained. No performance improvement or hostile-owner/powerloss guarantee.
