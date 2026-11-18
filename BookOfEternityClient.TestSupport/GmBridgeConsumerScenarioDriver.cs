@@ -51,7 +51,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             host = new BridgeHost(launch.Scratch, "consumer-" + Guid.NewGuid().ToString("N"));
             host.ConfigureNeutral(launch);
             var stoppingReadback = new TaskCompletionSource<GmSessionRunRecord>(TaskCreationOptions.RunContinuationsAsynchronously);
-            if (race) host.ObserveMainMetadata = stage =>
+            if (race || mode == "terminal-main-explorer-stopping") host.ObserveMainMetadata = stage =>
             {
                 if (stage != MainRunIoStage.Readback) return;
                 try
@@ -102,7 +102,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (explorer)
             {
                 if (mode == "terminal-main-explorer-stopping")
-                    await VerifyExplorerStoppingAsync(explorerFixture!, host, original!, output, result, deadline.Token);
+                    await VerifyExplorerStoppingAsync(explorerFixture!, stoppingReadback.Task, original!, output, result, deadline.Token);
                 else
                 {
                     await VerifyExplorerDispatchAsync(explorerFixture!, original!, result, deadline.Token);

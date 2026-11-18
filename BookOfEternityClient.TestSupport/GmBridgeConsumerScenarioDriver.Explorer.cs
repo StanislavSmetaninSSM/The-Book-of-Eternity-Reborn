@@ -1,7 +1,6 @@
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
-using BookOfEternityGMBridge;
 
 namespace BookOfEternityClient.Tests;
 
@@ -26,7 +25,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             () => participating.Explorer.TryProcessCommand("/storage_move"),
             observeOriginalClose: (value, closed, wasRemote) => { close = value;observed = closed;remote = wasRemote; }).WaitAsync(token);
         result["ParticipatingConsole"] = participating.Console.MarkupLines;
-        result["ParticipatingSelections"] = participating.Console.SelectionChoicesHistory;
+        result["ParticipatingSelections"] = participating.Console.SelectionChoicesHistory.Select(value => new { value.Title, value.Choices }).ToArray();
         result["ControlOriginalClose"] = close;
         if (!ExplorerParticipationFixture.MenuObserved(participating.Console) || !observed || !remote || close?.Identity != original.Identity)
             throw new IOException("Existing participation control did not establish menu plus exact original protocol close.");
@@ -36,7 +35,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
         var desired = fixture.Menu();
         var returned = await GameEngine.DispatchExplorerForCurrentSessionAsync(files, desired.Explorer, "/storage_move").WaitAsync(token);
         result["SharedConsole"] = desired.Console.MarkupLines;
-        result["SharedSelections"] = desired.Console.SelectionChoicesHistory;
+        result["SharedSelections"] = desired.Console.SelectionChoicesHistory.Select(value => new { value.Title, value.Choices }).ToArray();
         result["DesiredReturned"] = returned;
         RequireExplorerBytes(fixture, before);RequireNoExplorerAmbient(files);
         if (!ExplorerParticipationFixture.MenuObserved(desired.Console))
@@ -47,23 +46,19 @@ internal static partial class GmBridgeConsumerScenarioDriver
     }
 
     /// <summary>Retains one genuine original pin until actual Stopping readback, then verifies no menu or gameplay effect before releasing it.</summary>
-    private static async Task VerifyExplorerStoppingAsync(ExplorerParticipationFixture fixture, BridgeHost host,
+    private static async Task VerifyExplorerStoppingAsync(ExplorerParticipationFixture fixture, Task<GmSessionRunRecord> stoppingReadback,
         GmSessionRunRecord original, string output, Dictionary<string, object?> result, CancellationToken token)
     {
         var files = fixture.Files;RequireNoExplorerAmbient(files);var before = fixture.GameInventory();
-        var stopping = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        host.ObserveMainMetadata = stage =>
-        {
-            if (stage != MainRunIoStage.Readback) return;
-            var record = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(files.BasePath) ?? throw new IOException("Missing original metadata."));
-            if (record.Identity == original.Identity && record.Disposition == GmSessionRunDisposition.Stopping) stopping.TrySetResult();
-        };
         GmMainOperationClient? held = null;Task<JsonDocument>? shutdown = null;Exception? primary = null;
         try
         {
             held = await GmMainOperationClient.OpenAsync(files, token, original.Identity);
             shutdown = LauncherAsync("shutdown-bridge", files.GameSessionPath, output, token);
-            await stopping.Task.WaitAsync(token);
+            var stopping = await stoppingReadback.WaitAsync(token);
+            result["StoppingReadback"] = stopping;
+            if (stopping.Identity != original.Identity || stopping.Disposition != GmSessionRunDisposition.Stopping)
+                throw new IOException("Stopping readback does not identify the exact original owner.");
             var menu = fixture.Menu();Exception? refusal = null;
             try { await GameEngine.DispatchExplorerForCurrentSessionAsync(files, menu.Explorer, "/storage_move").WaitAsync(token); }
             catch (IOException error) { refusal = error; }
@@ -82,7 +77,6 @@ internal static partial class GmBridgeConsumerScenarioDriver
         catch (Exception failure) { primary = failure;throw; }
         finally
         {
-            host.ObserveMainMetadata = null;
             using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             var failures = new List<Exception>();
             if (held is not null)
