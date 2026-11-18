@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-composition-repair",
+      "responsibility": "#1516 ordinary engine refuses conflicting activity commands before canonical refresh, then repairs the same original request using supported nonterminal progress.",
+      "excludes": "No terminal activity completion or live GM relay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcActivityCompositionRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldRepair_ConflictingActivityCommandsRefuseThenRepairSameRequest"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-command-composition",
       "responsibility": "#1516 public raw-sidecar and response validation rejects the existing whole-sidecar nonterminal-update/terminal-completion conflict without consuming commands.",
       "excludes": "No full NPC materialization or accepted-turn repair proof; each-alone controls concern this conflict code only.",
