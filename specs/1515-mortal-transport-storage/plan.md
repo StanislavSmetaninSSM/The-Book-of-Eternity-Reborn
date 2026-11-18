@@ -1852,3 +1852,18 @@ This single observation is aimed at the missing exception/stack while the GM
 handles the actual current request; no fabricated response or timeoutincrease.
 If it does not reproduce, say so. Preparation/prelaunch remain separate from
 execution; no native retry has occurred since mm5.
+
+mm6 prepare-only complete, native UNRUN. Manifest
+7ddeb91ce734d641a0e47aad39f03d73b03b33b2466127ed27b85d5e99c03a11
+pins reused exact mm5/T021 runtime732/helper249/relay8/native4; current T017
+build outputs were not substituted. No build/publication was repeated. Fresh
+ordinary export read54 input files unchanged before/after and produced49 seed
+files, new session, only setup41/nonaccepted marker, validation0/expected42.
+Exception nonce is enabled from launch and distinct from stop nonce; the existing
+DEBUG catch emits exception/stack into full captured stderr before filesystem
+logging. No operational authority is changed. Config/pending/queue are absent,
+private environment0700 and native socket path88bytes; no previous result.
+Same player action is retained. The GM may reuse an unpublished response only
+as an authoring draft after checking the genuine new request/state, never as
+an old-request replay or prewritten canonical result. Independent prelaunch
+still precedes this single observation; no artificial response delay is planned.
