@@ -2577,3 +2577,24 @@ survival and premature-close refusal; owned-mode close-injection tests are not
 claimed as this wrapper's physical disposal. That injection remains unqualified.
 Rerun the16 completed-location/Browser controls after source review; unchanged
 shape11 PASS is retained, not rerun for count. Combined5/native still pending.
+Corrected completed-location/Browser category16/16PASS in23.4479112s with
+complete cleanup/no skips/duplicates/timeouts; unchanged shape11 PASS retained.
+Integration59.78s/130warnings/0errors;3439source pins unchanged and20outputs.
+Actual read artifact: proof-only2, cross+NPC2, All3 manifest reads; All reported
+missing fixture fields, so this is read measurement, NOT whole-All validity or
+speedup evidence. External mortal-t022/green-fixture-corrected. Targeted source
+review accepted the two fixture corrections with participating-session limitation.
+
+Then same verified binaries, no rebuild, official combined5:0PASS/5FAIL,
+52.1401503s; complete5/no skips/duplicates/timeouts/owned cleanup. Positive and
+two-nonlocation-repair cases reached accepted turn42 and passed allocation/
+retained-NPC checks, but failed actual new-steward locality at line320, before
+cart/storage assertions. Three rejection cases reached intended refusal/turn41
+then failed exact progression_schedule rollback bytes at line272; subsequent
+typed-idle checks remain UNREACHED. All5 owned fixtures removed, no cleanup
+failure, source3439/output20 still exact. External mortal-t022/combined/result.log
+SHA256e83c22e4316ee3d7173b6e0f84a17be1e4e4bc495657fbd30b19addec82665f5.
+Trace actual locality consumer and exact scheduler writer/timing before another
+run. The earlier scheduler-oracle adjustment was insufficient; do not remove
+its assertion or mislabel this as runtime rollback failure without tracing.
+No native retry, no full packet acceptance, no issue closure.
