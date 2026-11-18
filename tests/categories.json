@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-empty-effect-source-owner",
+      "responsibility": "#1515 T021 empty registered new-location definition DATA neither demands nor grants effect source authority; nonempty unresolved and malformed definitions remain refusing.",
+      "excludes": "No location allocation, whole candidate acceptance, native run or mutation authority; combined engine candidate is separate.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/EmptyEffectSourceOwnerTests.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.EmptyEffectSourceOwnerTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-seed-export-coherence",
       "responsibility": "#1515 T020 existing initial export proves validated coherent setup and refuses overwrite after empty-companion initialization.",
       "excludes": "Other occupied-root/manifest controls, native turns, legacy migration or resource allocation to historical fixture actors.",
