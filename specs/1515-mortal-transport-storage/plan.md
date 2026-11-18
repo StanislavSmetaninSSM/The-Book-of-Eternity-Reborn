@@ -2624,3 +2624,17 @@ inputs, scope reason and planner diagnostics are exported before assertions.
 Existing CoordinatedStateWriteHelper authority guard writes already consume all
 Scope.AuthoritySnapshots; future faction companion must join that collection.
 No owner inference/cache/fallback. RED source and fixture corrections UNRUN.
+T023 causal RED confirmed:3 executed, matching-companion scope assertionFAIL,
+missing/foreign controlsPASS; no preparation error. Unit37.04s/43warnings/0errors,
+runner11.6631058s, complete cleanup/no skips/duplicates/timeouts,3439sourcepins
+unchanged/8Unitoutputs. External mortal-t023/red/result.log SHA256
+1fef964a6ed469509469425f55354859c8170b1da1a320214ad56eac077e880c.
+Minimal production correction adds one canonical faction read through the existing
+optional lease, includes its exact AuthoritySnapshot in resolved/unresolved scope,
+and passes it to the existing planner. Existing identity/map/current/discovery/
+receipt/storage guards remain. Caller guard-write composition already consumes
+all scope snapshots. LocalInteractionScopeService SHA256
+33e17c54f5ca73710e96d2415f62d192969fe192dc8855afaf336e9c22ea7c25.
+Source fix UNRUN pending independent review and cheap3 GREEN, then combined5.
+No cache needed for the single additional dependency read; its snapshot is reused
+by existing mutation freshness checks, not converted into cached permission.

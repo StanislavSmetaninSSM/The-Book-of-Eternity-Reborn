@@ -214,15 +214,19 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         var locationRead = await ReadAuthorityObjectAsync(writeLease, MortalLocationPath);
         var mapRead = await ReadAuthorityObjectAsync(writeLease, MortalWorldMapPath);
         var indexRead = await ReadAuthorityObjectAsync(writeLease, MortalLocationIdentityPath);
+        var factionRead = await ReadAuthorityObjectAsync(writeLease, FactionCoreChangesContract.FactionCorePath);
         var resolvedSnapshots = AppendSnapshot(
             AppendSnapshot(
-                AppendSnapshot(authoritySnapshots, locationRead.Snapshot),
-                mapRead.Snapshot),
-            indexRead.Snapshot);
+                AppendSnapshot(
+                    AppendSnapshot(authoritySnapshots, locationRead.Snapshot),
+                    mapRead.Snapshot),
+                indexRead.Snapshot),
+            factionRead.Snapshot);
         if (!TryResolveExactCanonicalMortalCurrent(
                 locationRead.Root,
                 mapRead.Root,
                 indexRead.Root,
+                factionRead.Root,
                 out var locationId,
                 out var locationName))
         {
@@ -248,6 +252,7 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
         JsonObject? current,
         JsonObject? map,
         JsonObject? identityRoot,
+        JsonObject? factionRoot,
         out string locationId,
         out string locationName)
     {
@@ -274,7 +279,8 @@ internal sealed class LocalInteractionScopeService : ILocalInteractionScopeResol
             identityRoot,
             RawCurrentLocationData: null,
             RawWorldMapUpdates: null,
-            Turn: 1));
+            Turn: 1,
+            RawFactionCore: factionRoot));
         if (!planning.Success)
             return false;
 
