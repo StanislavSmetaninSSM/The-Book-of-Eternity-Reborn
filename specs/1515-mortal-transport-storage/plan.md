@@ -3673,3 +3673,13 @@ Next: prepare a fresh isolated mm14 world/package, then author the equivalent ne
 scene with the natural short location name Двор совета and independently review
 the entire actual GM packet before publication. Never rename or reuse mm13; it
 remains Uncertain. Old raw evidence is not uploaded, and no issue is closed.
+mm14 prepared only: three serial no-build publishes and one fresh seed export
+completed in 8.369 seconds. An initial missing /usr/bin/time wrapper failed before
+preparation began; no duplicate preparation/native launch occurred. Manifest
+384ba66e88b0f553cce6c9482f5665379ceccb20bb44f8145e20924dfdde640b, package
+8876a16e05703fe4344df1a96054a71e03b868224ca3ff05196f5984a3665ede. Exact
+3,517 source inputs, 20 outputs and eight fresh Unit corroborations are retained;
+runtime/deployed732, helper249, relay8, native4 and seed53 inventories agree.
+New setup41/session and private directories contain no owner, pending queue or
+launch. No old world/authority was copied. Independent prelaunch review is pending;
+actual GM creation of the natural short location remains a candidate constraint.
