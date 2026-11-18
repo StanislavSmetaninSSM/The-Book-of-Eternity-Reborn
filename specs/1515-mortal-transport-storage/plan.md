@@ -3488,3 +3488,11 @@ or due report. Whole recursive diff shows only20fresh identity/timestamp/narrati
 leaves versus prior reviewedshape; actualtemplates/resource definitions unchanged.
 Freshcandidate/request/prompt/3witnesses/9targets/openqueue pass. ExplicitGO onlyfor
 that SHA after immediateauthorgate; actualacceptance/cleanup remainpending.
+Original mm13 p01 exits0,probeSuccess1action/1acceptedturn,342.625s;exactreviewed
+packetonce/consumer0/norepairs. TypedNotRequired actual42/request6dde.../480→500,
+absenthistory0→0. Executor reports exactoriginalmainacbafbc3ACK/StoppedOwnedScopeEmpty,
+allterminal0/EOF/termios,RPC/relaydrained,guardian0/ECHILD/noemergency/failures,
+samedaemon110/e6d8e229settledErrors0,and108worldpins/configmatch. Probe
+c10084ee81430d6dbbc0ff6bfb006939c54fb1b3f1f1c2762479f0ebd3f4902e.
+Independentsemantic/cleanupOUTCOMEpending. Olderretirementerrors remainhistorical;
+thisnewrun doesnotfix/explain them. Nextdenial/permission/movement/Load stillunrun.
