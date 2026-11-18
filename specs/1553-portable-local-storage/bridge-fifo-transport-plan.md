@@ -1086,3 +1086,16 @@ This trivial dispatch predicate needs no new cache; mutable validation authority
 is still checked by the existing path. No speedup measurement or broader feature
 acceptance is claimed. The original rl1 failure and diagnostic evidence remain
 outside Git and are not erased by this candidate fix.
+
+Source6e946e8 canonical scope correction passed the same official11 cases:
+11/11 PASS17.4027833s, complete owned cleanup, zero skips/duplicates/timeouts.
+The earlier4PASS/7FAIL remains causal evidence, not a preparation failure.
+Unit rebuild51.30s (17 warnings,0 errors); Integration incremental refresh1.48s
+(0 warnings/errors) did not recompile unchanged integration sources. Updated3340
+compiler inputs and28 DLL/PDB joins agree across project/unit/integration outputs.
+The prior157 unrelated relay composition cases were not repeated for this isolated
+validation dispatch correction. Updated output-manifest SHA256
+96a3f81e92c72c2de388f5b2f449d8471dc6aeaef6b224d3388da99226349334;
+compiler-input manifest85370efbfa582964cdf8e1af86a4406d4a28dfb8e636c1a3e94c22b77411aed1.
+Original rl1 runtime/world remain unchanged. Independent outcome review and
+fresh actual relay turns are still required; main has not changed.
