@@ -840,3 +840,39 @@ manifest SHA256:
 contains3,418 source files and20 coherent current outputs; eight unused Unit
 outputs are explicitly excluded/stale. This is not a PDB compiled-document audit.
 Fresh mm3 preparation may proceed; its live outcome remains unqualified.
+
+
+### T020 corrected real relay turn accepted in fresh mm3
+
+The new immutable package (source commit58df9c8, package SHA256
+`14efc63e687e2427d5e7522c28ee7a0991cefeb9127298048d095a074d132b0b`)
+completed its real four-hour preparation/scout turn. This is a labelled test
+baseline, not an incarnation/bootstrap acceptance claim. One genuine player
+action produced one accepted turn42 in263.369s, one dispatch and no repair.
+Request528d0ddb06d24c2eb2702ffb91c7c837; final probe SHA256
+`f67d7c81d068a21f7d88ec31b43c673fa7f221c23c4113979adb35e648297830`.
+The actual partial project command omitted both name keys. Canonical project
+`project_journey_bridge` retained `Repair the crossing`, changed only progress
+to240/480 and step1/2, and retained owner, description, empty costs and history.
+Mira independently advanced to240/480 and step1/2, remained Active with XP0 and
+no completion. Clock480 became720. No physical reinforcement or reopened route
+was claimed: the council organized the work while the scout continued inspection.
+
+One correlated living-world receipt was accepted; setup story41 remained exact
+and story42 appended once. No pending request/input/repair remained. Independent
+outcome review verified semantics, immutable package/world joins and original
+lifecycle: Stopped/OwnedScopeEmpty, exact shutdown acknowledgement, removed
+endpoint, daemon settled with errorCount0, client/bridge/daemon exit0 with EOF and
+restored terminal state, drained RPC, guardian exit0/ECHILD with one reaped child,
+zero emergency signals/failures. Original launcher also exited0. This qualifies
+T020's real omitted-name repair, not project completion or all of #1516.
+
+No extra build or repeated passing suite was needed: the native run reused the
+reviewed immutable package and rechecked fresh source/output/admission and
+cleanup boundaries. It does not reuse live authority or claim a speedup. The
+old mm2 accepted defect remains preserved and is not retroactively corrected.
+Next is a predecessor-bound retained mm3 continuation for the scout report and
+conditional project work, then a separate legitimate quiet assessment. Actual
+context determines whether physical work is justified; empty formal costs do
+not prove arbitrary workers, tools or materials. T016/T018 remain open, as do
+#1515/#1538 live requirements. No raw diagnostics are published.
