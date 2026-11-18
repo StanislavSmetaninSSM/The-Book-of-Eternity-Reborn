@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-stop-diagnostic-full-text-data",
+      "responsibility": "#1589 complete existing Unicode exception text and failure-report export without diagnostic collection quotas; isolated sink failure.",
+      "excludes": "Diagnostic DATA only. No native/game launch, nonce or owner admission qualification, stop repair, retry or lifecycle authority.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/HostExitFaultCapture.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.StopDiagnostics.cs",
+        "BookOfEternityGMBridge/BridgeHost.StopDiagnostics.cs",
+        "BookOfEternityClient.Tests/StopDiagnosticFullTextTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StopDiagnosticFullTextTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-stop-diagnostic-fifo-neighbors",
       "responsibility": "#1589 supported original-stop diagnostic neighbors: actual pin-timeout and non-primary refusal provenance plus three original RPC cancellation/error boundaries.",
       "excludes": "Legacy hardcoded NamedPipe success fixture is not selected or requalified here; its existing category remains unchanged. Actual FIFO clean stop/restart is covered separately. No lifecycle repair or historical root-cause claim.",

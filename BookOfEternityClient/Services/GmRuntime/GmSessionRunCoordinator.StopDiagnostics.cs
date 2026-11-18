@@ -60,7 +60,7 @@ internal sealed partial class GmSessionRunCoordinator
 #endif
     }
     private static string? BoundStopText(string? value,int limit)=>value?.Length>limit?value[..limit]:value;
-    private static FrozenStopText TryFreezeStopFailureText(Exception failure)
+    internal static FrozenStopText TryFreezeStopFailureText(Exception failure)
     {
         try {
             var message=failure.Message;var stack=failure.StackTrace;

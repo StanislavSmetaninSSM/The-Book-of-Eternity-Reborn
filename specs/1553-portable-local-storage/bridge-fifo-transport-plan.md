@@ -1512,3 +1512,11 @@ Independent canonical-story readback clarifies p02: turn2 WAS written, with exac
 original action and GM narrative, while turn1 bytes remain exact. Input is now
 empty. The probe zero means no confirmed client/lifecycle acceptance, not absence
 of game effects or successful rollback. Preserve the changed world untouched.
+
+### #1589 diagnostic full-text collection, RED-ready WIP
+The fresh merge review identified application diagnostic collection quotas, not transport/protocol payload constraints: HostExitFaultCapture and coordinator text freezing truncate Message/StackTrace at2048/4096, while Bridge export silently omits a report above32768 UTF-8 bytes. This contradicts the current no-quota raw diagnostic policy.
+Only behavior-preserving export extraction and tests are prepared. The new internal WriteStopFailureReport(report,TextWriter) retains the original prefix/JsonSerializer/byte-drop/WriteLine and exception isolation. The production caller still resolves the genuine report through the existing nonce/original-owner gate before calling it. A typed synthetic report tests DATA serialization only; it grants no authority and is never supplied to a coordinator. No new reflection.
+New gm-stop-diagnostic-full-text-data selects4 cheap cases: separate original-fault long Unicode Message and StackTrace; large Unicode report exact JSON round-trip; rejecting TextWriter isolation. Expected causal result3FAIL/1PASS remains UNRUN. No native/game activity, builds, or runs occurred in this preparation. Existing hostile-getter and nonce/owner controls remain intact. Old quota-specific test expectations deliberately remain until causal RED.
+Optimization: reuse already computed exception strings and the existing serializer/stderr route, no new cache or logging framework. Getter/serialization/sink errors remain isolated. No lifecycle, authority, retry, admission or first-failure decision changes are proposed. All source collection and failure constraints remain distinct from diagnostic storage policy.
+
+Coordinator text freezing is exposed internal, body unchanged, for the same two typed rows. Initial HostExit assertions fail first, so coordinator checks remain unreached until GREEN.
