@@ -1867,3 +1867,27 @@ Same player action is retained. The GM may reuse an unpublished response only
 as an authoring draft after checking the genuine new request/state, never as
 an old-request replay or prewritten canonical result. Independent prelaunch
 still precedes this single observation; no artificial response delay is planned.
+
+### mm6 single observation: rejected and returned to setup41
+
+Independent prelaunch accepted the frozen manifest. Genuine request
+822c26f271e646cbb1347af54768319b/turn42 received one new actual GM packet
+ba7fa72995e071cfcad24f9492e6f7c16415dbd70ea027f0414929eb7fb1f872.
+The packet's current source bindings were freshly authored; nine writes proposed
+new courtyard/links, representative, parked council cart, restricted chalk
+storage, time and outputs. Actual consumer Executed/exit0/ChildExited/IoDrained
+is confirmed, but it is not acceptance. Probe
+974e831f9b6d4f6f623884c2e980f14e4ff7f1ce29367337f35fb16819e11cbe
+reports0 accepted/1action/171.419s and explicit completed rollback followed by
+the turn41 prompt. No genuine repair was received. Existing DEBUG exception
+nonce was enabled but emitted no exception marker: this is a different outcome,
+not reproduction or repair of mm5's exception.
+
+The current world has only setup41 and no pending/input/repair/ready artifacts;
+the reported original-owner/terminal/RPC/guardian closure succeeded, daemonErrors0.
+Independent snapshot-specific rollback review is pending. A preaction seed
+comparison differs in settings/system_mods because startup occurs before the
+turn snapshot; do not call that a rollback defect or assert complete restoration
+without the correct original. Direct rejection reason is not present in the UI.
+Source/retained-trace investigation is next, with no new run or invented cause.
+This is no completed cart/storage materialization test. T016/T017 stay open.
