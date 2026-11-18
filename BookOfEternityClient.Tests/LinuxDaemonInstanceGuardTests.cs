@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using BookOfEternityClient.Services.GmRuntime;
 using Xunit;
 namespace BookOfEternityClient.Tests;
@@ -133,6 +134,33 @@ public sealed class LinuxDaemonInstanceGuardTests
                 reads++;Assert.ThrowsAny<IOException>(()=>LinuxDaemonInstanceGuard.Acquire(root,null));return null;
             });
             held.Validate();held.Validate();Assert.Equal(1,reads);
+        } finally {Directory.Delete(root,true);}
+    }
+
+    [Fact]
+    public void WrittenStoppedStatusWithoutConfirmedSettlementCannotRestart()
+    {
+        var root=NewRoot();
+        try {
+            string status;
+            using(var first=LinuxDaemonInstanceGuard.Acquire(root,null)) status=Stopped(first.SessionPath,first.OwnerId);
+            Assert.ThrowsAny<IOException>(()=>LinuxDaemonInstanceGuard.Acquire(root,status));
+        } finally {Directory.Delete(root,true);}
+    }
+
+    [DllImport("libc",EntryPoint="link",SetLastError=true)]
+    private static extern int CreateLink(string existing,string added);
+    [Theory]
+    [InlineData("mode")][InlineData("hardlink")]
+    public void HeldGuardRechecksPrivateSingleLinkFile(string mutation)
+    {
+        var root=NewRoot();
+        try {
+            using var guard=LinuxDaemonInstanceGuard.Acquire(root,null);
+            var path=Path.Combine(root,".boe_runtime/locks/gm-daemon-instance.lock");
+            if(mutation=="mode") File.SetUnixFileMode(path,UnixFileMode.UserRead|UnixFileMode.UserWrite|UnixFileMode.OtherRead);
+            else Assert.Equal(0,CreateLink(path,path+".link"));
+            Assert.ThrowsAny<IOException>(guard.Validate);
         } finally {Directory.Delete(root,true);}
     }
 
