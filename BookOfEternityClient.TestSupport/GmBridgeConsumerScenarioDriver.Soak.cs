@@ -29,6 +29,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (!json.RootElement.GetProperty("ok").GetBoolean() ||
                 current.GetProperty("terminalRunId").GetString() != original.Identity.RunId ||
                 current.GetProperty("terminalUncertain").GetBoolean() ||
+                !current.GetProperty("terminalOwnerRetained").GetBoolean() ||
                 BridgeTransportConnector.DecodeStatus(current.GetRawText()) != originalEndpoint ||
                 record.Identity != original.Identity || record.Disposition != GmSessionRunDisposition.Running || running.IsCompleted)
                 throw new IOException("Original soak owner/status changed; raw first bad sample retained.");

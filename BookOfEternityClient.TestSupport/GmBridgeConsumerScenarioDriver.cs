@@ -23,11 +23,12 @@ internal static partial class GmBridgeConsumerScenarioDriver
         GmSessionRunRecord? original = null;
         var stopAttempted = false;
         var result = new Dictionary<string, object?> { ["Mode"] = mode };
+        if (soak) result["StopDiagnosticNonce"] = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         BridgeHost? host = null;
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 160 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -157,6 +158,26 @@ internal static partial class GmBridgeConsumerScenarioDriver
         catch (Exception error) { result["Failure"] = error.ToString(); }
         finally
         {
+            // Soak reserves 5s pin + 8s scoped stop + 5s Dispose + 5s join below the 170s guardian.
+            if (soak && pin != null)
+            {
+                try
+                {
+                    var ownedPin = pin;
+                    async Task CloseOwnedPin()
+                    {
+                        try
+                        {
+                            if (ownedPin.TerminalClose == null)
+                                await ownedPin.CompleteAsync(MainOperationOutcome.Failed, true);
+                        }
+                        finally { await ownedPin.DisposeAsync(); }
+                    }
+                    await CloseOwnedPin().WaitAsync(TimeSpan.FromSeconds(5));
+                }
+                catch (Exception error) { result["PinDisposeFailure"] = error.ToString(); exit = 1; }
+                pin = null; // One attempt on this exact owned pin, never reopen/retry.
+            }
             if (soak && !stopAttempted && status != null && original != null)
             {
                 stopAttempted = true;
@@ -167,7 +188,11 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 try { await pin.DisposeAsync(); }
                 catch (Exception error) { result["PinDisposeFailure"] = error.ToString(); exit = 1; }
             if (host != null)
-                try { host.Dispose(); }
+                try
+                {
+                    if (soak) await Task.Run(host.Dispose).WaitAsync(TimeSpan.FromSeconds(5));
+                    else host.Dispose();
+                }
                 catch (Exception error) { result["HostDisposeFailure"] = error.ToString(); exit = 1; }
             if (running != null)
                 try { await running.WaitAsync(TimeSpan.FromSeconds(5)); }
