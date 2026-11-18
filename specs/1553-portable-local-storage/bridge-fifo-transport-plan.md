@@ -972,3 +972,18 @@ any RPC; observed prompt plus absent pending work updates the safe exit state
 before fallible correlation, without granting accepted-turn qualification. Eleven
 source-only controls pass after these corrections (0.048s); official wrapper and
 live execution remain UNRUN. Production behavior is unchanged by this test change.
+
+Relay-only candidate build gate: serial offline no-restore Unit build completed
+91.24s (84 warnings, 0 errors), Integration 59.76s (124 warnings, 0 errors).
+All 3339 compiler-source/project/props/targets hashes stayed unchanged; 28 DLL/PDB
+pins were recorded and shared Client/Bridge/TestSupport copies agree. Official
+`gm-relay-phase-contract` at cb74a48c passed 1/1 Fact in 10.5950641s, containing
+11/11 Python checks (0.032s), with exit0/full streams and complete cleanup.
+Independent review accepted both corrected source gates. No live/merge acceptance.
+Next bounded composition qualification is three explicit serial groups: transport
+(FIFO/pipe grammar/Desktop/inherited terminal), lifecycle (singleton data/scripts,
+held observation, launcher and contender restart, coordinated stop), and affected
+consumers (retired registration/readmission/sticky cleanup/neighbors/watcher and
+existing main template rendering). No aggregate/default suite or hosted CI runs.
+Each group retains its category budgets and fresh owned fixtures; current compiled
+outputs are reused only with unchanged source pins. Runtime results remain UNRUN.
