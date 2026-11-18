@@ -108,6 +108,9 @@
                             This command MUST target the NPC's currently active 'currentActivity'.
                             It is not a free-form history append.
                             You MUST NOT use it for a newly created same-turn NPC, because a new NPC starts with 'currentActivity: null'.
+                            finalOutcome is mandatory and explicit: Completed accepts Success, SuccessWithComplication or Failure; Abandoned accepts only Failure. Never infer it from narrativeSummary.
+                            Do not send completionTurn: the client uses the authenticated original request turn. The client clears currentActivity and appends exactly activityName, completionTurn, finalOutcome and narrativeSummary to completedActivities, preserving prior history.
+                            Terminal completion is supported only in ordinary Mortal publication, not QTE, bootstrap, skills or specialized treatment composition.
 
                             ]]>
      </content>
@@ -120,6 +123,7 @@
                                 "NPCName": "name_of_the_target_npc",
                                 "activityName": "name_of_the_activity_that_was_completed",
                                 "finalState": "'Completed' | 'Abandoned'",
+                                "finalOutcome": "'Success' | 'SuccessWithComplication' | 'Failure'",
                                 "narrativeSummary": "A brief, one-sentence summary of the final result for the historical log."
                             }
 

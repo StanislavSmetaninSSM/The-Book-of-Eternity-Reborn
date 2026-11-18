@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-completion-source",
+      "responsibility": "#1516 T019 real issued original/lease lifetime, specialized-route refusal and preservation of unrelated current actor DATA.",
+      "excludes": "No live GM journey, full specialized route support or whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalNpcActivityCompletionSource.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.NpcCompletionSource.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_RealIssuedCaptureCannotMoveOrOutliveOperation",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_QteRouteCannotBorrowOrdinaryIssuedCapture",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_PreservesUnrelatedCurrentActorData"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-completion-refusal",
       "responsibility": "#1516 real ordinary completion refuses missing/stale/foreign original and invalid actor/history/command inputs without mutation; reintroduced command requires genuine first publication before refusal.",
       "excludes": "No isolated foreign/disposed issued-lease proof, specialized route coverage, full engine or live GM relay.",

@@ -138,6 +138,7 @@ public partial class CanonicalStateNormalizer
     private readonly GuardianPowerJournalNormalizationMode _guardianPowerJournalMode;
     private readonly AfterlifeWoundHealingPlanner.Continuation? _spiritualLocalityNormalizationOwner;
     private readonly ValidationService.NpcProgressionPublicationSource? _npcProgressionSource;
+    private readonly MortalNpcActivityCompletionSource? _npcCompletionSource;
 
     private enum GuardianPowerJournalNormalizationMode
     {
@@ -214,7 +215,8 @@ public partial class CanonicalStateNormalizer
         CanonicalNormalizationWriteAuthority normalizationWriteAuthority,
         GuardianPowerJournalNormalizationMode guardianPowerJournalMode,
         AfterlifeWoundHealingPlanner.Continuation? spiritualLocalityNormalizationOwner = null,
-        ValidationService.NpcProgressionPublicationSource? npcProgressionSource = null)
+        ValidationService.NpcProgressionPublicationSource? npcProgressionSource = null,
+        MortalNpcActivityCompletionSource? npcCompletionSource = null)
     {
         _fs = fs;
         _logger = logger;
@@ -223,6 +225,7 @@ public partial class CanonicalStateNormalizer
         _guardianPowerJournalMode = guardianPowerJournalMode;
         _spiritualLocalityNormalizationOwner = spiritualLocalityNormalizationOwner;
         _npcProgressionSource = npcProgressionSource;
+        _npcCompletionSource = npcCompletionSource;
     }
 
     internal CanonicalStateNormalizer BindTo(
@@ -235,7 +238,7 @@ public partial class CanonicalStateNormalizer
             _logger,
             writeLease,
             _normalizationWriteAuthority,
-            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, _npcProgressionSource);
+            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, _npcProgressionSource, _npcCompletionSource);
     }
 
     /// <summary>Retains source DATA only in a child bound to the caller's currently active write lease.</summary>
@@ -246,7 +249,7 @@ public partial class CanonicalStateNormalizer
         if (_writeLease is null) throw new InvalidOperationException("NPC progression source requires a held publication lease.");
         _fs.EnsureCanonicalWriteLeaseActive(_writeLease);
         return new(_fs, _logger, _writeLease, _normalizationWriteAuthority,
-            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, source);
+            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, source, _npcCompletionSource);
     }
 
     internal CanonicalStateNormalizer ForQteNormalization() =>
@@ -255,7 +258,7 @@ public partial class CanonicalStateNormalizer
             _logger,
             _writeLease,
             _normalizationWriteAuthority,
-            GuardianPowerJournalNormalizationMode.PreserveDuringQte, _spiritualLocalityNormalizationOwner, _npcProgressionSource);
+            GuardianPowerJournalNormalizationMode.PreserveDuringQte, _spiritualLocalityNormalizationOwner, _npcProgressionSource, _npcCompletionSource);
 
     private CanonicalStateNormalizer WithNoPlanWriteAuthority(
         FileSystemManager.CanonicalWriteLease writeLease)
@@ -274,7 +277,7 @@ public partial class CanonicalStateNormalizer
             _logger,
             _writeLease,
             new CanonicalNormalizationWriteAuthority.NoPlan(writeLease),
-            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, _npcProgressionSource);
+            _guardianPowerJournalMode, _spiritualLocalityNormalizationOwner, _npcProgressionSource, _npcCompletionSource);
     }
 
     public async Task NormalizeAccumulatedStateAsync(
@@ -301,6 +304,8 @@ public partial class CanonicalStateNormalizer
             }
         }
 
+        if (_npcCompletionSource is not null)
+            throw new InvalidDataException("An ordinary terminal source cannot authorize generic normalization.");
         EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority();
         await PreflightNoAcceptedBindingMortalItemsAsync();
         await WithNoPlanWriteAuthority(_writeLease).NormalizeAccumulatedStateCoreAsync(
@@ -438,7 +443,7 @@ public partial class CanonicalStateNormalizer
             // One operation-scoped child, with the SAME actual lease and validated
             // owner. No mutation authority is reconstructed from serialized DATA.
             return await new CanonicalStateNormalizer(_fs, _logger, _writeLease, _normalizationWriteAuthority,
-                _guardianPowerJournalMode, spiritualOwner, _npcProgressionSource).NormalizeAccumulatedStateCoreAsync(backups, mortalItemMode,
+                _guardianPowerJournalMode, spiritualOwner, _npcProgressionSource, _npcCompletionSource).NormalizeAccumulatedStateCoreAsync(backups, mortalItemMode,
                     acceptedMechanicsPreflight, treatmentPublicationReceipt, spiritualPublicationReceipt);
         }
         if (_spiritualLocalityNormalizationOwner is not null && !ReferenceEquals(spiritualOwner, _spiritualLocalityNormalizationOwner))
@@ -473,6 +478,9 @@ public partial class CanonicalStateNormalizer
         await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups,
             (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
+        var npcCompletionInput = await PrepareNpcActivityCompletionsAsync(mortalItemMode,
+            (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
+            treatmentPublicationReceipt);
         var npcActivityInput = await PrepareNpcActivityUpdatesAsync(backups, mortalItemMode,
             (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
             npcProgressionSource, guardianProjectInputs.CurrentRealm, treatmentPublicationReceipt);
@@ -530,6 +538,7 @@ public partial class CanonicalStateNormalizer
                 AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
             npcProgressionSource, treatmentPublicationReceipt);
         await NormalizeNpcActivityUpdatesAsync(npcActivityInput);
+        await NormalizeNpcActivityCompletionsAsync(npcCompletionInput);
         await NormalizeNpcTradeCoreAsync(
             backups,
             (acceptedMechanicsPreflight as

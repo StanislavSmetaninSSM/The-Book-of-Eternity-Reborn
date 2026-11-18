@@ -137,7 +137,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 ["NPCId"] = JourneyScoutId, ["NPCName"] = "Mira the scout",
                 ["activityName"] = before["activityName"]!.DeepClone(),
-                ["finalState"] = "Completed", ["narrativeSummary"] = "The survey is complete."
+                ["finalState"] = "Completed", ["finalOutcome"] = "Success", ["narrativeSummary"] = "The survey is complete."
             });
             await _fs.WriteFileAtomicAsync(activityPath, conflicting.ToJsonString());
             await WriteMortalLivingWorldJourneyOutputAsync(request, "Разведчица Мира завершила первый этап обследования переправы за четыре часа.",

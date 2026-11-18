@@ -474,11 +474,9 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
         assert not all((q/'execution.json').exists() for q in queue.glob('request-*'))
     print(json.dumps({'InertTurnAndDifferentRepairEvidence':True,'WrongRevisionRefused':True,'PendingDrainNotReady':True,'GameProcesses':0}));sys.exit(0)
 
-def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, action_text, story_before, story):
+def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, action_text, story_before, story, ledger_witness, ledger_binding):
     # The same actual raw queue validator checks bytes, dispatch, identities,
     # hashes and drained execution. No ledger/boolean alone certifies rejection.
-    # Missing captured ledger remains unqualified, including fresh-initial rejection;
-    # never infer an empty baseline from absent evidence.
     def terminal_keys(path):
         value=strict_settings(path.read_bytes())
         if type(value.get('schemaVersion')) is not int or value['schemaVersion']!=1:raise ValueError('Terminal key schema')
@@ -488,12 +486,14 @@ def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, 
         'ready/turn_complete.json','ready/turn_error.json',
         'game_state/control/validation_repair_request.json','output/validation_repair_request.json',
         'game_state/control/validation_repair_ready.json']
+    keys_before=phase_evidence.terminal_ledger_witness_keys(ledger_witness,ledger_binding,session,request_bytes)
+    if keys_before is None:return False
     rows=relay_response_evidence(queue,request_bytes,binding,session,None,baseline)
     request=json.loads(request_bytes)
     observation={'RequestIdentity':{k:request[k] for k in ('sessionId','requestId','turnNumber')},
                  'ValidatedOriginalQueue':True,'Executions':[row['Execution'] for row in rows]}
     relative='game_state/control/gm_observed_terminal_requests.json'
-    return phase_evidence.rejected_restored_for_cleanup(request,terminal_keys(baseline/relative),
+    return phase_evidence.rejected_restored_for_cleanup(request,keys_before,
         terminal_keys(session/relative),action_text,story_before,story.read_bytes(),
         [p for p in pending if (session/p).exists()],observation)
 
@@ -901,6 +901,7 @@ def exit_client(client):
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
 client=bridge=daemon=None;client_wait=False;client_prompt=False
+ledger_witness=ledger_binding=None
 try:
     client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'],captured_output=True)
     fresh(client,'Продолжить',0)
@@ -933,12 +934,16 @@ try:
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)
+    ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
+    (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
     offset=len(client.capture);action_cut=offset;client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
     request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
     assert request['playerAction']==action and request['turnNumber']==expected_turn
     assert request['sessionId']==seed['sessionId']
     assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
+    ledger_binding=phase_evidence.bind_terminal_ledger_witness(ledger_witness,request_bytes)
+    (out/'terminal-ledger-request-binding.json').write_bytes(ledger_binding)
     (out/'actual-turn-request.json').write_bytes(request_bytes)
     for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json','pending_turn_snapshot'):
         source=session/'game_state/control'/name;target=baseline/'game_state/control'/name
@@ -968,7 +973,7 @@ try:
             try:
                 rejected=observed_rejected_cleanup(request_bytes,relay_queue,
                     result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
-                    client.text(action_cut),story_before,story)
+                    client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
             except (OSError,ValueError,KeyError,TypeError):rejected=False
             if rejected:
                 result['RejectedRestoredForCleanup']=True
@@ -1056,7 +1061,7 @@ finally:
                 try:
                     rejected=observed_rejected_cleanup(request_bytes,relay_queue,
                         result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
-                        client.text(action_cut),story_before,story)
+                        client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
                 except (OSError,ValueError,KeyError,TypeError):rejected=False
                 if rejected:
                     result['RejectedRestoredForCleanup']=True

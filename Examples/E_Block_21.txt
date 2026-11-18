@@ -1989,3 +1989,11 @@ A bounded repair replaces only the rejected `sections.resources` disposition and
 # living-world report/narrative. Never rewrite npc_core, completed history or the
 # original snapshot. This example does not establish terminal completion support.
 {"NPCActivityUpdates":[{"NPCId":"scout","NPCName":"Mira","activityUpdate":{"timeSpentMinutes":240,"currentStepNumber":1}}],"completeNPCActivities":[]}
+
+
+<!-- #1516 ordinary terminal activity example: use this command family alone. -->
+<!-- Existing original NPC Mira ends Survey; no NPCActivityUpdates in this sidecar.
+     completionTurn is deliberately absent and supplied only by the client. -->
+<!-- {"completeNPCActivities":[{"NPCId":"existing-scout-id","NPCName":"Mira",
+      "activityName":"Survey","finalState":"Completed","finalOutcome":"SuccessWithComplication",
+      "narrativeSummary":"The crossing is mapped, but unsafe."}]} -->

@@ -70,6 +70,10 @@ class ProducerWiringTests(unittest.TestCase):
             for folder,keys in [(baseline,[]),(session,['session|request|43'])]:
                 path=folder/'game_state/control/gm_observed_terminal_requests.json'
                 path.parent.mkdir(parents=True);path.write_text(json.dumps({'schemaVersion':1,'keys':keys}))
+            ledger=session/evidence.TERMINAL_LEDGER_PATH;after=ledger.read_bytes()
+            ledger.write_text(json.dumps({'schemaVersion':1,'keys':[]}))
+            witness=evidence.capture_terminal_ledger_witness(session);ledger.write_bytes(after)
+            request_bytes=json.dumps(request).encode();binding=evidence.bind_terminal_ledger_witness(witness,request_bytes)
             story=session/'story';story.write_bytes(b'original')
             ready=session/'game_state/control/validation_repair_ready.json';ready.write_text('{}')
             scope=dict(NS,json=json,strict_settings=evidence.strict_settings,phase_evidence=evidence,
@@ -77,7 +81,7 @@ class ProducerWiringTests(unittest.TestCase):
             producer=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='observed_rejected_cleanup')
             exec(compile(ast.Module(body=[producer],type_ignores=[]),str(SOURCE),'exec'),scope)
             text='↩ Изменения мира не были приняты; состояние до хода восстановлено.\nВаш ход\n >  '
-            self.assertFalse(scope['observed_rejected_cleanup'](json.dumps(request).encode(),None,None,session,baseline,text,b'original',story))
+            self.assertFalse(scope['observed_rejected_cleanup'](request_bytes,None,None,session,baseline,text,b'original',story,witness,binding))
 
     def test_raw_queue_refusal_never_reaches_cleanup_join(self):
         reached=[]
@@ -85,11 +89,15 @@ class ProducerWiringTests(unittest.TestCase):
             reached.append('raw-validator')
             raise ValueError('raw original queue mismatch')
         scope=dict(NS, relay_response_evidence=refused,
-                   phase_evidence=type('Evidence', (), {'rejected_restored_for_cleanup':lambda *args: reached.append('join')})())
+                   phase_evidence=evidence)
         producer=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='observed_rejected_cleanup')
         exec(compile(ast.Module(body=[producer],type_ignores=[]),str(SOURCE),'exec'),scope)
-        with self.assertRaisesRegex(ValueError,'raw original queue mismatch'):
-            scope['observed_rejected_cleanup'](b'{}',None,None,None,None,'',b'',None)
+        with tempfile.TemporaryDirectory() as directory:
+            session=Path(directory);request=b'{"sessionId":"s","requestId":"r","turnNumber":43}'
+            witness=evidence.capture_terminal_ledger_witness(session)
+            binding=evidence.bind_terminal_ledger_witness(witness,request)
+            with self.assertRaisesRegex(ValueError,'raw original queue mismatch'):
+                scope['observed_rejected_cleanup'](request,None,None,session,None,'',b'',None,witness,binding)
         self.assertEqual(reached,['raw-validator'])
 
 
@@ -191,7 +199,30 @@ class LedgerWitnessTests(unittest.TestCase):
         for args in mutations:
             with self.subTest(args=args):self.assertIsNone(evidence.terminal_ledger_witness_keys(*args))
 
+    def test_late_witness_replacement_refused_by_actual_producer_before_queue(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session=Path(directory);request=self.request()
+            original=evidence.capture_terminal_ledger_witness(session)
+            binding=evidence.bind_terminal_ledger_witness(original,request)
+            ledger=session/evidence.TERMINAL_LEDGER_PATH;ledger.parent.mkdir(parents=True)
+            ledger.write_text(json.dumps({'schemaVersion':1,'keys':['session|request|43']}))
+            replacement=evidence.capture_terminal_ledger_witness(session)
+            scope=dict(NS,phase_evidence=evidence)
+            calls=[]
+            def no_queue(*args):
+                calls.append(args);raise AssertionError('Invalid replacement reached raw queue')
+            scope['relay_response_evidence']=no_queue
+            producer=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='observed_rejected_cleanup')
+            exec(compile(ast.Module(body=[producer],type_ignores=[]),str(SOURCE),'exec'),scope)
+            self.assertFalse(scope['observed_rejected_cleanup'](request,None,None,session,None,'',b'',None,replacement,binding))
+            self.assertEqual(calls,[])
+            self.assertEqual(evidence.terminal_ledger_witness_keys(original,binding,session,request),[])
+
     def test_actual_driver_capture_precedes_send_binding_follows_request(self):
+        producer_calls=[n for n in ast.walk(TREE) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='observed_rejected_cleanup']
+        self.assertEqual(len(producer_calls),2)
+        for call in producer_calls:
+            self.assertEqual([ast.unparse(a) for a in call.args[-2:]],['ledger_witness','ledger_binding'])
         calls={}
         for n in ast.walk(TREE):
             if isinstance(n,ast.Call):

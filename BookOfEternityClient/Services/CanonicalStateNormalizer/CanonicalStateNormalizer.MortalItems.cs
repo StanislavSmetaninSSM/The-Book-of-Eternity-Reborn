@@ -1866,6 +1866,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 }
                 else if (treatmentPreflight is null)
                 {
+                    boundNormalizer = await boundNormalizer.WithOrdinaryNpcCompletionSourceAsync();
                     mechanicsPlan = await boundNormalizer
                         .NormalizeAccumulatedStateWithPlanAsync(backups);
                 }

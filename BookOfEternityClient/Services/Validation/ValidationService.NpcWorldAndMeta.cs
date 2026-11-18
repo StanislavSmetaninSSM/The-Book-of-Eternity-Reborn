@@ -8046,9 +8046,25 @@ public partial class ValidationService
             RequireString(item, itemContext, issues, "activityName");
             var finalState = RequireString(item, itemContext, issues, "finalState");
             RequireString(item, itemContext, issues, "narrativeSummary");
+            var outcome = item.TryGetProperty("finalOutcome", out var outcomeNode) && outcomeNode.ValueKind == JsonValueKind.String
+                ? outcomeNode.GetString() : null;
+            string? outcomeCode = outcome is null ? "npc_complete_activity_outcome_required" :
+                outcome is not ("Success" or "SuccessWithComplication" or "Failure") ? "npc_complete_activity_outcome_invalid" :
+                finalState == "Abandoned" && outcome != "Failure" ? "npc_complete_activity_outcome_state_conflict" : null;
+            if (outcomeCode is not null)
+                issues.Add(new ValidationIssue($"{itemContext}.finalOutcome", IssueSeverity.Error,
+                    "Terminal NPC activity needs an explicit compatible finalOutcome.", code: outcomeCode,
+                    section: "NPCActivities", expected: "Completed: Success|SuccessWithComplication|Failure; Abandoned: Failure",
+                    actual: outcome, repairHint: "Укажи явный finalOutcome; для Abandoned только Failure. Не выводи исход из narrativeSummary."));
+            if (item.TryGetProperty("completionTurn", out _))
+                issues.Add(new ValidationIssue($"{itemContext}.completionTurn", IssueSeverity.Error,
+                    "Completion turn is supplied by the authenticated client original, not the GM command.",
+                    code: "npc_complete_activity_turn_client_owned", section: "NPCActivities",
+                    repairHint: "Убери completionTurn из команды: клиент запишет номер исходного хода."));
+
             if (!string.IsNullOrWhiteSpace(finalState) &&
-                !string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(finalState, "Abandoned", StringComparison.OrdinalIgnoreCase))
+                !string.Equals(finalState, "Completed", StringComparison.Ordinal) &&
+                !string.Equals(finalState, "Abandoned", StringComparison.Ordinal))
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.finalState",

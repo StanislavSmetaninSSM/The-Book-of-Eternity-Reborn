@@ -46,7 +46,7 @@ public sealed class NpcActivityCommandCompositionTests : IDisposable
             commands["completeNPCActivities"] = new JsonArray(new JsonObject
             {
                 ["NPCId"] = scenario == "both-different" ? "other" : "scout", ["NPCName"] = scenario == "both-different" ? "Other" : "Mira",
-                ["activityName"] = "Scout crossing", ["finalState"] = "Completed", ["narrativeSummary"] = "The crossing was surveyed."
+                ["activityName"] = "Scout crossing", ["finalState"] = "Completed", ["finalOutcome"] = "Success", ["narrativeSummary"] = "The crossing was surveyed."
             });
         if (scenario == "update-empty-complete") commands["completeNPCActivities"] = new JsonArray();
         if (scenario == "complete-empty-update") commands["NPCActivityUpdates"] = new JsonArray();

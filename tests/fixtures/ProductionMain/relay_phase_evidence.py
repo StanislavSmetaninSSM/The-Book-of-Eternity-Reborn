@@ -168,16 +168,52 @@ def rejected_restored_for_cleanup(request, keys_before, keys_after, action_text,
     except (KeyError,TypeError,ValueError):return False
 
 
+TERMINAL_LEDGER_PATH = 'game_state/control/gm_observed_terminal_requests.json'
+
+
+def _terminal_ledger_keys(raw):
+    value=strict_settings(raw)
+    if (type(value.get('schemaVersion')) is not int or value['schemaVersion']!=1 or
+        type(value.get('keys')) is not list or any(type(k) is not str for k in value['keys']) or
+        len(set(value['keys']))!=len(value['keys'])):raise ValueError('Invalid terminal ledger DATA')
+    return value['keys']
+
+
 def capture_terminal_ledger_witness(session):
-    """RED-only unused capture seam; no absence inferred and no filesystem change."""
-    return None
+    # Exactly one pre-action source read. Permission/other I/O errors propagate.
+    session=str(Path(session).resolve())
+    try:raw=(Path(session)/TERMINAL_LEDGER_PATH).read_bytes()
+    except FileNotFoundError:raw=None
+    if raw is not None:_terminal_ledger_keys(raw)
+    return json.dumps({'SessionPath':session,'RelativePath':TERMINAL_LEDGER_PATH,
+        'Present':raw is not None,'RawHex':raw.hex() if raw is not None else None,
+        'SHA256':sha(raw) if raw is not None else None},sort_keys=True).encode('utf-8')
 
 
 def bind_terminal_ledger_witness(witness_bytes, request_bytes):
-    """RED-only unused exact-request binding seam."""
-    return None
+    if type(witness_bytes) is not bytes or type(request_bytes) is not bytes:raise ValueError('Missing immutable capture bytes')
+    request=strict_settings(request_bytes)
+    identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
+    if (type(identity['turnNumber']) is not int or identity['turnNumber']<0 or
+        any(type(identity[k]) is not str or not identity[k] or '|' in identity[k] for k in ('sessionId','requestId'))):raise ValueError('Invalid original request identity')
+    return json.dumps({'WitnessSHA256':sha(witness_bytes),'RequestSHA256':sha(request_bytes),
+                       'RequestIdentity':identity},sort_keys=True).encode('utf-8')
 
 
 def terminal_ledger_witness_keys(witness_bytes, binding_bytes, session, request_bytes):
-    """RED-only fail-closed DATA reader. None is refusal, not an empty ledger."""
-    return None
+    # Detached DATA only. Original immutable bytes are retained by the driver;
+    # the binding does not prove when an arbitrary caller constructed its data.
+    try:
+        if any(type(x) is not bytes for x in (witness_bytes,binding_bytes,request_bytes)):return None
+        binding=strict_settings(binding_bytes)
+        if binding!=strict_settings(bind_terminal_ledger_witness(witness_bytes,request_bytes)):return None
+        value=strict_settings(witness_bytes)
+        if set(value)!={'SessionPath','RelativePath','Present','RawHex','SHA256'}:return None
+        if value['SessionPath']!=str(Path(session).resolve()) or value['RelativePath']!=TERMINAL_LEDGER_PATH:return None
+        if value['Present'] is False:
+            return [] if value['RawHex'] is None and value['SHA256'] is None else None
+        if value['Present'] is not True or type(value['RawHex']) is not str:return None
+        raw=bytes.fromhex(value['RawHex'])
+        if sha(raw)!=value['SHA256']:return None
+        return _terminal_ledger_keys(raw)
+    except (ValueError,KeyError,TypeError,UnicodeError):return None
