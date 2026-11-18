@@ -2491,3 +2491,22 @@ within each exclusively admitted validation; current binding/source/map/index
 proof remains fresh at both ends. No new registry or cache of authority. Costs
 and source-read reductions remain unmeasured pending tests. Independent source
 review and bounded cheap tests precede the full candidate and live relay.
+Independent GPT-6 Astra High source review of904ee386: NOT READY. The16 hashes
+matched. Integration build126.46s/177warnings/0errors,3439sourcepins unchanged,
+20outputs pinned; PlanOnly/tests deliberately NOT executed after a confirmed
+source blocker, so no GREEN. Raw build remains in mortal-t022/green-cheap.
+Confirmed blockers: raw-byte JsonDocument.Parse fails canonical UTF8 BOM;
+capture+Complete can seal arbitrary current map/index without actual publication
+and can reseal, despite the constructor key; selected CrossReferences-only
+controls do not qualify All/NpcStateFiles, actual repeated repairs or Browser.
+The changed ambient-lease route also bypasses existing pending-snapshot lookup
+and GameState DATA reuse: routing difference confirmed, cost not measured.
+Fix issuance using genuine publication/expected-image proof and existing read
+architecture; add direct nonpublication/reseal controls, nonempty topology and
+mismatch, then genuine engine two-repair/changed-map rollback and Browser controls.
+Automatic continuation is qualified only by an actually applicable scenario;
+do not introduce unrelated spiritual behavior. Reconcile ordinary selection
+before integration, not run a broad suite. An initially suspected musings nested
+lease issue was WITHDRAWN: valid Mortal coexistence was not demonstrated and
+that command is afterlife-only. Membership parsing reuse is useful but no speedup
+is claimed; qualify actual All-route source reads before acceptance.
