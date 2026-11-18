@@ -2330,3 +2330,14 @@ the collector order. Cheap typed empty/nonempty/malformed/stable-owner controls
 precede it. Empty definitions grant no source authority; real definitions must
 retain exact owner resolution. No new cache is justified for an array-count
 check; real full-path mutable owners and original snapshots stay independent.
+
+T021 causal RED is executed on published test sourcec662efaab7e11eef77f7369df77af5c8d993ee85:
+category mortal-empty-effect-source-owner completed4 cases,3PASS/1FAIL. The empty
+new-location case passed no-authority fingerprint/no-mutation assertions then
+failed exactly at owner-identity Assert.Empty; malformed, nonempty-unresolved and
+stable-owner controls passed. Fresh Unit26.54s/43warnings/0errors; official runner
+12.6648393s, full owned/runtime cleanup, no skips/duplicates/timeouts. All3433source
+pins unchanged;8current Unit outputs retained. External mortal-t021/red,
+run20261118-103328-526-5-80aa1efdb9b34faaa643791987709561-categories;
+result.log SHA256f742af860e97b7de6b92ad609608aaac10c788f1521b8e81a3e59a4479955dc2.
+Minimal fix and complete GameEngine candidate remain next; no native retry.
