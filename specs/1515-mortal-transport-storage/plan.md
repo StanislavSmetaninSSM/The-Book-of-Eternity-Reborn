@@ -3654,3 +3654,22 @@ is an operational guard, not a prediction of future archive compression.
 A future GM may legitimately create a new scene with this natural short name.
 No existing canonical location, mm13 evidence, gameplay or ownership was changed.
 This correction is UNRUN pending source review and scoped execution.
+
+T027 bounded GREEN independently accepted, 2026-11-18. At source checkpoint
+eab0a8b7ccbf54b8b70985ea59d0817723431a84 the official four-category selection
+passed 8/8 outer cases in 24.6232889 seconds. DATA20, restored18, two actual
+renderers and four shared smoke cases passed. Fresh Unit build took 9.37 seconds,
+26 warnings and zero errors. Independent review rehashed all 3,498 sources,
+eight outputs and 11 reviewed files without mismatch. Actual two-prompt capture
+proved prior close, Clear/heading, the unwrapped short-location Load row, four
+complete no-CR observations, two Down/Enter pairs, exact Back, exit0, EOF and
+termios restoration. Five guardians reached ECHILD with driver0 and no emergency,
+failure or deadline. Evidence: mortal-t027/dispatch-green-supported-shape.
+The bounded union is 11 passing outer cases across retained runs, not one run:
+these eight plus previously verified general11/routes14/Load23 adapters. Their
+unchanged contracts justified reuse; no speedup claim is made. This accepts only
+the supported finite harness shape, not generic Load layouts or live gameplay.
+Next: prepare a fresh isolated mm14 world/package, then author the equivalent new
+scene with the natural short location name Двор совета and independently review
+the entire actual GM packet before publication. Never rename or reuse mm13; it
+remains Uncertain. Old raw evidence is not uploaded, and no issue is closed.
