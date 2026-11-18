@@ -2698,3 +2698,10 @@ before fresh combined verification. Single fixture-owned scan/read per original
 is necessary to compare actual original DATA, not cached cleanup authority;
 no cross-test or mutable-owner sharing. Current correction is WIP/UNRUN, previous
 two full PASS results remain separate; native retry remains blocked on this gate.
+Independent Sol6.1 XHigh source review confirms corrected session-relative mapping
+and no Explorer overlay in this exact fixture: fresh runtime/ExplorerMode pending
+snapshot is null, seed only copies example DATA, no Explorer command executes,
+and example has no persistent local-turn artifacts. One suffix is valid here,
+not a general oracle for Explorer journeys. Existing exact-byte/absence and
+owned cleanup assertions remain. Approve fresh combined5 only; no runtime result
+yet. Optional manifest-mapping durability guard is not required for this fixture.
