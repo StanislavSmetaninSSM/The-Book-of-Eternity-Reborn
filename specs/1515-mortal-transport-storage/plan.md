@@ -2762,3 +2762,13 @@ Raw capture remains external; no daemon/bridge/game world. Guardian preparation
 is per-test bounded and isolated, no shared mutable owner/cache. No speedup claim.
 Five source files and category are WIP awaiting independent source review and
 fresh Unit build. Actual game menus and Load lineage remain UNRUN.
+T024 Load-observation RED WIP: existing operation captures only its validated
+Stop/Finish DATA; DEBUG emitter is presently a no-output stub. Eleven diagnostic
+DATA cases are prepared (expected emission failures and no-output/noninterference
+controls), UNRUN, not yet final category ownership. Real operation execution
+checks are still required: approved minimal internal connector seam may substitute
+only stream creation while keeping Stop/Finish parsing, metadata identity checks,
+current generation and disposal unchanged. Tests will not prove actual process
+ownership; the later native Load A-to-B witness remains mandatory. No new protocol,
+status-derived identity, runtime authority or legacy path. Stub source is saved
+before a separate smoke-only build; do not treat that build as observer acceptance.

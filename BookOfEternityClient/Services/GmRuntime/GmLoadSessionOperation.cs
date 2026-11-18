@@ -20,6 +20,10 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     private MainOperationReader? _reader;
     private GmLoadSessionReply? _stop;
     private bool _finished;
+#if DEBUG
+    private string? _observationNonce;
+    private GmLoadSessionObservation? _observation;
+#endif
     internal string Id {get;}
     internal string SourceKey {get;}
     internal string? ExpectedGeneration {get;private set;}
@@ -27,7 +31,13 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
     internal bool HadSession=>_stop?.State==GmLoadMainState.Stopped;
 
     private GmLoadSessionOperation(FileSystemManager files,RootState root,string id,string source,string? generation)
-    {_files=files;_root=root;Id=id;SourceKey=source;ExpectedGeneration=generation;}
+    {
+        _files=files;_root=root;Id=id;SourceKey=source;ExpectedGeneration=generation;
+#if DEBUG
+        try { _observationNonce=Environment.GetEnvironmentVariable(GmLoadSessionObservationWriter.NonceVariable); }
+        catch { /* Opt-in diagnostics cannot change reservation. */ }
+#endif
+    }
     internal static GmLoadSessionOperation Reserve(FileSystemManager files,string id,string source,string? generation)
     {
         if(!Guid.TryParseExact(id,"N",out _) || string.IsNullOrWhiteSpace(source))throw new InvalidDataException("Immutable Load identity is incomplete.");
@@ -109,16 +119,34 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
                     reply.TerminalIdentity?.RunId!=reply.MainIdentity.RunId)
                     throw new InvalidDataException("Fresh launch receipt is not bound to the installed replacement.");
             }
+#if DEBUG
+            try { _observation=new(Id,SourceKey,_files.BasePath,ExpectedGeneration,_stop,reply,
+                committed,refreshConfirmed,generation); }
+            catch { /* Receipt observation cannot change validated completion. */ }
+#endif
             return State=reply.State;
         } catch {State=GmLoadMainState.Uncertain;throw;}
     }
     public ValueTask DisposeAsync()
     {
+#if DEBUG
+        // Consume the observation before close so a failed close can never be retried
+        // into a success witness. The original disposal failure still propagates.
+        var observation=_observation;_observation=null;
+#endif
         _pipe?.Dispose();
         lock(_root) {
             if(State==GmLoadMainState.Uncertain || (_stop!=null && !_finished))_root.Uncertain=true;
             if(ReferenceEquals(_root.Active,this))_root.Active=null;
         }
+#if DEBUG
+        // Only after successful owned connection disposal AND original root release.
+        // Consume once even when the observer fails; no output replay or status adoption.
+        if(observation!=null) {
+            try { GmLoadSessionObservationWriter.Write(_observationNonce,Console.Error,observation); }
+            catch { /* Diagnostics cannot change the completed Load. */ }
+        }
+#endif
         return ValueTask.CompletedTask;
     }
 }
