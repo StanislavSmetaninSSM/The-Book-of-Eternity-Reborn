@@ -3385,3 +3385,18 @@ scope. Exacthistorical throw line remains unknown because SafeExecute stripsstac
 no PID mismatch established. Plan a single narrow existing-participation dispatch
 boundary for both calls, closing before anotherGMturn; preserve cold standalone
 Explorer behavior and current owner/source refusals. No production change yet.
+Independent Astra High T026 DESIGN accepts bounded causal RED: both console
+Explorer callsites share one typed dispatch helper, initially unchanged direct
+TryProcessCommand. Desired fix later uses existing RunParticipatingCurrentSessionAsync
+with its existing beforeCurrentGeneration callback requiring
+ReadExistingSessionGeneration(lease) under the same admitted lease, preventing
+bootstrap; ambient-bound calls retain existing RunBound generation checks. Close
+participation before pendingGM extraction/anotherturn; never retain canonicallease
+acrossmenu or change standaloneExplorer APIs. Neutral actualBridgeHost endpoint,
+not barecoordinator or ambientowner.RunOperationAsync, provides causal direct-error,
+explicitparticipation-positive and sharedhelper desiredmenuRED trio. Retain initialized
+noowner/missinggenerationnocreation/standalonecold/Stopping/foreign/nested/postreturn
+controls, exactgameplaybytes/noGMrequests and originalownedcleanup. Pure seed DATA
+and deterministicconsole avoidwholeworldcost; realneutralprotocol is necessary.
+No newcache,guardrelaxation or historicalthrow-line claim. REDsource implementation
+GO only; productionfix follows verifiedcausalRED/source review.
