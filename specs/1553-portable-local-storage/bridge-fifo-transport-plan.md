@@ -811,3 +811,29 @@ identity before any phase queue/config/process write. Malformed or missing pair
 refuses; no canonical/guard writes or status repairs occur. Immutable ml7 probe
 is not rewritten. The17 causal tests are unchanged; implementation awaits
 independent source review with the separately strengthened idle-daemon fixture.
+
+SOURCE c675ef2c bounded verification: serial no-restore unit build completed
+37.98s (wall38.344s),67 warnings,0 errors. Official daemon-settlement oracle
+completed17/17 PASS in11.2644542s, no skips/duplicates/timeout and complete
+owned cleanup. Both valid physical+logical close and unchanged continuation
+remain accepted; all15 invalid/lying predicates now refuse. Runner
+20261117-222702-064-5-5e40472e59d8423585e645305b241770-categories. Historical
+2PASS/15FAIL remains separate; diagnostic4 was unchanged and not repeated.
+
+The separately strengthened coordinated-stop attempt executed1/1 FAIL in
+43.3040282s with runner-owned cleanup complete, no timeout/skips/duplicates.
+This is a fixture preparation failure, NOT a causal daemon finalization result:
+CaptureDaemonSettlement before-stop used File.ReadAllBytes on the active
+exclusively flocked guard; SafeFileHandle.Init refused file sharing before
+Ctrl+C or the final settlement assertion. The status raw bytes were retained;
+the guard read exception was retained. Sixteen original pins were Observed.
+The subsequent host disposal and join failed; guardian recorded driver1,
+ECHILD/reaped1/no emergency/failures/deadline. Do not claim logical cleanup.
+Runner20261117-222721-397-5-a6a511805f9f4a99934359456652efc3-categories,
+scenario production-main/7a2fe8b27a9f472fa9dc524a5c6b5fe3. A separate read-only
+post-failure capture retained running/terminalSettled:false status and active
+settled:false guard with matching owner aabc42994cae49449be2fb1684a82c7e;
+it is not an original successful final observation. Raw logs and capture remain
+outside Git under relay-alternative/daemon-settlement-{green-build,
+green-official,idle-official}.log and daemon-settlement-idle-after-failure.
+No retry, live run, world alteration or production correction followed.
