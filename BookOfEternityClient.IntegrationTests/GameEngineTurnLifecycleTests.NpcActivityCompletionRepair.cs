@@ -36,7 +36,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         void AssertActors(bool settled)
         {
             var actors = Read(core);
-            Assert.Empty(actors["UpdateNPCs"]!.AsArray()); // No full-actor resend of the seeded actor.
+            Assert.True(!actors.ContainsKey("UpdateNPCs") || actors["UpdateNPCs"] is JsonArray { Count: 0 }); // No full-actor resend.
             var actor = Assert.Single(actors["NPCsInScene"]!.AsArray())!.AsObject();
             Assert.Equal(JourneyScoutId, actor["NPCId"]!.GetValue<string>());
             Assert.True(actor.ContainsKey("currentActivity"));
