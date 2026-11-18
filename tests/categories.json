@@ -9,7 +9,10 @@
         "BookOfEternityClient.IntegrationTests/RetainedNpcSceneContinuityTests.cs"
       ],
       "related": [
-        "mortal-retained-npc-scene-continuity"
+        {
+          "id": "mortal-retained-npc-scene-continuity",
+          "when": "When the retained-scene policy changes, include strict invalid-original and inspection controls."
+        }
       ],
       "requirements": {
         "frontendBuild": false,

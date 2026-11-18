@@ -2075,3 +2075,9 @@ same exact new-scene fragment with its NPC response. Canonical core and all
 assertions/negative cases remain unchanged. Narrow overlapping category
 mortal-retained-npc-scene-original selects only these2 theory leaves/1minute,
 so previously completed negatives and the doc RED are not repeated. UNRUN.
+Corrected-theory build succeeded68.26s/129warnings/0errors, but official PlanOnly
+stopped before execution: the added overlapping category mistakenly used a string
+related link instead of the catalog's {id,when} object. This is coordinator
+metadata error, not a test or product RED. Corrected only that link shape;
+retain the fresh matching integration build, refresh catalog pins, then repeat
+PlanOnly and execute the previously unrun2 cases. No test has been retried yet.
