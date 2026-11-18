@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-first-operation-failure-data",
+      "responsibility": "#1589 nonce-bound original operation failure diagnostic DATA: full frozen tuple and text, disabled/stale nonce and capture/sink isolation.",
+      "excludes": "No live fault attribution, operation retry, authority or runtime producer qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MainOperationFailureDiagnosticTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MainOperationFailureDiagnosticTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-nested-heartbeat-fifo",
       "responsibility": "#1589 original nested participation scope closes before a fresh FIFO main heartbeat on the same owner.",
       "excludes": "No game turn, materialization acceptance, production first-loss repair or broad relay qualification.",
