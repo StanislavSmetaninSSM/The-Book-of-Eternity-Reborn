@@ -137,6 +137,7 @@ public partial class GameEngine
         _acceptedTurnSpiritualOutput = null;
         _acceptedTurnSpiritualConflictValidation = null;
         _acceptedTurnGuardianMusingsValidation = null;
+        _acceptedTurnLocationComparison = null;
         _acceptedTurnCompletedTreatmentItems = null;
         var finalizedTreatmentReplayQuarantineFailure =
             await TryQuarantineFinalizedTreatmentReplayAsync(expectedTurn);
@@ -798,7 +799,8 @@ public partial class GameEngine
                             treatmentResourcePublicationTransaction is null,
                         treatmentResourcePublicationTransaction:
                             treatmentResourcePublicationTransaction,
-                        guardianMusingsForRepair: canonicalRefresh.GuardianMusingsValidation);
+                        guardianMusingsForRepair: canonicalRefresh.GuardianMusingsValidation,
+                        completedLocation: canonicalRefresh.LocationComparison);
                 if (!currentStateValid)
                 {
                     return AcceptedTurnValidationDisposition.TerminalRejected;
@@ -858,6 +860,7 @@ public partial class GameEngine
                     _acceptedTurnSpiritualOutput = canonicalRefresh.SpiritualWoundOutput;
                     _acceptedTurnSpiritualConflictValidation = canonicalRefresh.SpiritualConflictValidation;
                     _acceptedTurnGuardianMusingsValidation = canonicalRefresh.GuardianMusingsValidation;
+                    _acceptedTurnLocationComparison = canonicalRefresh.LocationComparison;
                     _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                         .Select(static value => value with
                         {

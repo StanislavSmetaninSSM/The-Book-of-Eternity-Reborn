@@ -11,7 +11,24 @@ public sealed partial class MortalLivingWorldPublicationTests
     [Fact]
     public async Task CompletedLocation_RealPublicationRecognizesAllocatedCurrentReferenceWithoutChangingOriginal()
     {
-        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var fixture = await PublishLocationComparisonFixtureAsync();
+        await using var context = fixture.Context;
+        var result = fixture.Result;
+        var backups = fixture.Backups;
+        var originalMapBytes = fixture.OriginalMap;
+        var issues = await context.Validator.ValidateCompletedLocationStateAsync(result,
+            new GameStateValidationSelection(GameStateValidationPhase.CrossReferences));
+        Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
+        Assert.Equal(originalMapBytes, await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]));
+    }
+
+    /// <summary>Publishes once through the actual ordinary owner; no synthetic completion issuer.</summary>
+    private static async Task<(EffectMaterializationTestContext Context, AcceptedTurnCanonicalStateRefresh.Result Result,
+        IReadOnlyDictionary<string, string> Backups, byte[]? OriginalMap)> PublishLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null)
+    {
+        var context = await EffectMaterializationTestContext.CreateAsync(hooks);
+        try
+        {
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             context.FileSystem.GetOrCreateSessionGeneration(lease);
         await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
@@ -55,9 +72,8 @@ public sealed partial class MortalLivingWorldPublicationTests
         Assert.NotEqual("loc_comparison_original", allocated);
         Assert.NotNull(current["materializationReceipt"]);
         Assert.Equal(originalMapBytes, await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]));
-        var issues = await context.Validator.ValidateCompletedLocationStateAsync(result,
-            new GameStateValidationSelection(GameStateValidationPhase.CrossReferences));
-        Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
-        Assert.Equal(originalMapBytes, await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]));
+        return (context, result, backups, originalMapBytes);
+        }
+        catch { await context.DisposeAsync(); throw; }
     }
 }

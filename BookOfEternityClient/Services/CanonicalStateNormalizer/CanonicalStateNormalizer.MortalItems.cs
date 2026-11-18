@@ -1535,7 +1535,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
         ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
             SpiritualConflictValidation = null,
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
-            GuardianMusingsValidation = null);
+            GuardianMusingsValidation = null,
+        ValidationService.CompletedLocationComparison? LocationComparison = null);
 
     private static Task<MortalWoundTreatmentPublicationProbeResult>
         ProbeTreatmentResourcePublicationTransactionAsync(
@@ -1805,6 +1806,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
             var selfPreparationIssues = await validator.PrepareSpiritualSelfTreatmentPublicationAsync(writeLease);
             if (selfPreparationIssues.Any(issue => issue.Severity == IssueSeverity.Error))
                 return new Result(selfPreparationIssues, null);
+            ValidationService.LocationComparisonCapture? locationCapture = null;
             var guardianMusings = await validator.CaptureGuardianMusingsPublicationAsync(writeLease);
             var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
             var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
@@ -1866,6 +1868,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 }
                 else if (treatmentPreflight is null)
                 {
+                    locationCapture = await ValidationService.CaptureLocationComparisonAsync(fs, writeLease);
                     boundNormalizer = await boundNormalizer.WithOrdinaryNpcCompletionSourceAsync();
                     mechanicsPlan = await boundNormalizer
                         .NormalizeAccumulatedStateWithPlanAsync(backups);
@@ -1968,9 +1971,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     await livingWorld.RequirePublishedAsync(fs, writeLease);
                 if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
                     await boundNormalizer.RequireNpcCompletionSourceCurrentAsync();
+                var locationComparison = issues.Any(issue => issue.Severity == IssueSeverity.Error) || locationCapture is null
+                    ? null : await locationCapture.CompleteAsync(fs, writeLease);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
-                    guardianMusingsValidation);
+                    guardianMusingsValidation, locationComparison);
             }
             catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
             {

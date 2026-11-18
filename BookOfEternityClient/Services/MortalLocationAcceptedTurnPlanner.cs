@@ -3124,7 +3124,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             ["rumorSummary"] = rumorSummary?.DeepClone()
         };
 
-    private static void RebuildDerivedCurrentTopology(
+    /// <summary>Recomputes display topology from canonical locations and links; this grants no publication authority.</summary>
+    internal static void RebuildDerivedCurrentTopology(
         JsonObject current,
         JsonArray locations,
         JsonArray links)

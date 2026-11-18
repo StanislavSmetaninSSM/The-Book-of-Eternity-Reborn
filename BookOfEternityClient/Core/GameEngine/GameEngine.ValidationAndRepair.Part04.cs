@@ -278,6 +278,7 @@ public partial class GameEngine
             ? null : _validator.UsePrevalidatedPendingTurnSnapshotScope(originalBrowserSnapshotContext.Manifest);
         var spiritualValidation = Interlocked.Exchange(ref _acceptedTurnSpiritualConflictValidation, null);
         using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
+        var locations = Interlocked.Exchange(ref _acceptedTurnLocationComparison, null);
         var guardianMusings = Interlocked.Exchange(ref _acceptedTurnGuardianMusingsValidation, null);
         using var guardianMusingsScope = _validator.UseCompletedGuardianMusingsValidationScope(guardianMusings);
         var completedItems = Interlocked.Exchange(ref _acceptedTurnCompletedTreatmentItems, null);
@@ -294,7 +295,7 @@ public partial class GameEngine
                 completedItemsScope.Invalidate();
                 return Task.CompletedTask;
             },
-            guardianMusingsForRepair: guardianMusings);
+            guardianMusingsForRepair: guardianMusings, completedLocation: locations);
 
         originalBrowserSnapshotScope?.Dispose();
 
@@ -362,7 +363,8 @@ public partial class GameEngine
                     refresh.MechanicsPlan,
                     refresh.TreatmentResourcePublicationTransaction,
                     woundNotifications,
-                    GuardianMusingsValidation: refresh.GuardianMusingsValidation);
+                    GuardianMusingsValidation: refresh.GuardianMusingsValidation,
+                    LocationComparison: refresh.LocationComparison);
             }
             catch (CompensatedTreatmentPublicationException)
             {
@@ -404,7 +406,8 @@ public partial class GameEngine
             AcceptedWoundNotifications: resourceFreeWoundNotifications,
             SpiritualWoundOutput: refresh.SpiritualWoundOutput,
             SpiritualConflictValidation: refresh.SpiritualConflictValidation,
-            GuardianMusingsValidation: refresh.GuardianMusingsValidation);
+            GuardianMusingsValidation: refresh.GuardianMusingsValidation,
+                    LocationComparison: refresh.LocationComparison);
     }
 
     private async Task<WoundAcceptedTurnOutputBindingResult>
@@ -534,7 +537,8 @@ public partial class GameEngine
             SpiritualConflictValidation = null,
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
             GuardianMusingsValidation = null,
-        MortalJointRepairCanonicalRefresh? JointPublication = null)
+        MortalJointRepairCanonicalRefresh? JointPublication = null,
+        ValidationService.CompletedLocationComparison? LocationComparison = null)
     {
         /// <summary>
         /// Gets the ordered accepted notifications, or an empty list when no presentation was supplied.

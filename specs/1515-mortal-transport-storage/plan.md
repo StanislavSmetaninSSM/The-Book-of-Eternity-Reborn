@@ -2473,3 +2473,21 @@ fb5bdf1c6ae2718895a5935d0b3bdf698e80b2b6d143754c41704ec25c59a85a.
 Together with the five earlier causal shape/seed failures, implementation of
 T022 can proceed. No combined/native retry has occurred; prior compile/setup
 failures remain separately recorded rather than counted as causal evidence.
+T022 implementation WIP, UNCOMPILED/UNRUN:16 source files add privately issued
+location completion through the existing refresh Result and engine, explicit
+invocation input rather than inheritable comparison permission, existing World
+reservation and fresh original/published opening+closing proof under actual
+owned lease. Only two membership readers consume the immutable completed DATA;
+each iteration independently revalidates the same result before any repair.
+The existing effect-definition contract and derived topology field checks are
+used; fresh seed canonical trade receipts are normalized before snapshot.
+Proposed20 cases comprise prior7, malformed projection3 and boundaries10.
+These cover source/published/generation drift, foreign/fabricated result,
+repeated non-location component recheck, reentry/overlap and closing failures.
+They do NOT yet prove actual engine two-repair execution or genuine Browser
+invocation. Those are explicit review/verification gaps, not assumed acceptance.
+Optimization: membership DATA is parsed once after real publication and reused
+within each exclusively admitted validation; current binding/source/map/index
+proof remains fresh at both ends. No new registry or cache of authority. Costs
+and source-read reductions remain unmeasured pending tests. Independent source
+review and bounded cheap tests precede the full candidate and live relay.

@@ -31,6 +31,24 @@ public sealed class MortalPublishedProjectionShapeTests
     }
 
     [Theory]
+    [InlineData("activeEffectDefinitions")]
+    [InlineData("knownExits")]
+    [InlineData("adjacencyMap")]
+    public async Task CanonicalProjection_RejectsMalformedDerivedFields(string field)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var current = MortalLocationTestFixture.CreateCurrentProjection(
+            MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_projection_bad", "Courtyard"));
+        current[field] = new JsonObject();
+        const string path = MortalLocationMaterializationContract.CurrentLocationPath;
+        await context.WriteJsonAsync(path, current);
+        var issues = await context.Validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [path]));
+        Assert.Contains(issues, issue => issue.FilePath == path + "." + field &&
+            issue.Code == (field == "activeEffectDefinitions" ? "effect_source_definition_invalid_field" : "mortal_location_derived_topology_invalid"));
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task FreshSeed_HistoricalActorAlreadyHasIdempotentCanonicalTradeReceiptShape(bool stateOnly)

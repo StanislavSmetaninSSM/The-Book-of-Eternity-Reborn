@@ -249,7 +249,10 @@ public partial class ValidationService
                 "locationStorages",
                 "currentWeather",
                 "currentInteractions",
-                "currentChronology"
+                "currentChronology",
+                "activeEffectDefinitions",
+                "knownExits",
+                "adjacencyMap"
             }),
             StringComparer.Ordinal);
 
@@ -295,6 +298,9 @@ public partial class ValidationService
                 }
                 return;
             }
+
+            if (filePath == MortalLocationMaterializationContract.CurrentLocationPath)
+                await ValidateCanonicalCurrentDerivedFieldsAsync(document.RootElement, filePath, issues);
 
             foreach (var property in properties)
             {

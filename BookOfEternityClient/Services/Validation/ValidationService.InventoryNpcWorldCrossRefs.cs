@@ -13,6 +13,7 @@ public partial class ValidationService
 {
     private async Task<HashSet<string>> ReadKnownLocationIdsAsync()
     {
+        if (ReadCompletedLocationIds() is { } completed) return completed;
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var json = await ReadPreTurnTrackedFileAsync(
             MortalLocationMaterializationContract.WorldMapPath);

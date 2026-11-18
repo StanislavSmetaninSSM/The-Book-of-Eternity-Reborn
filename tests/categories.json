@@ -4,7 +4,7 @@
     {
       "id": "mortal-published-location-comparison",
       "responsibility": "#1515 T022 genuine completed location allocation reference comparison after actual canonical publication.",
-      "excludes": "No native relay or full GameEngine acceptance; foreign/drift/repair invocation controls remain a required implementation step.",
+      "excludes": "No native relay, actual GameEngine two-repair flow or genuine Browser invocation qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/Validation/ValidationService.CompletedLocationComparison.cs",
         "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.LocationComparison.cs"
@@ -26,7 +26,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_RealPublicationRecognizesAllocatedCurrentReferenceWithoutChangingOriginal"
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_*"
           ]
         }
       ]
@@ -37,7 +37,7 @@
       "excludes": "No location completion authority, full GameEngine or native relay acceptance.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/MortalPublishedProjectionShapeTests.cs",
-        "BookOfEternityClient/Services/MortalLiveSeedBuilder.cs"
+        "BookOfEternityClient.TestSupport/MortalLiveSeedBuilder.cs"
       ],
       "related": [
         {

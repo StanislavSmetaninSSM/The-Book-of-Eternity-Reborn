@@ -51,6 +51,7 @@ public partial class GameEngine
         "output/narrative_response.json",
         "output/debug_logs.json"
     ];
+    private ValidationService.CompletedLocationComparison? _acceptedTurnLocationComparison;
     private WoundPlayerNotification[] _acceptedTurnWoundNotifications =
         Array.Empty<WoundPlayerNotification>();
     private SpiritualWoundPublishedOutput? _acceptedTurnSpiritualOutput;
@@ -244,6 +245,7 @@ public partial class GameEngine
     /// <param name="guardianMusingsForRepair">
     /// Optional completed guardian-musings proof to recheck after genuine repair completion.
     /// </param>
+    /// <param name="completedLocation">Same sealed publication rechecked by each exclusive state-validation invocation, including after repair.</param>
     /// <returns>
     /// <see langword="true"/> after validation succeeds; <see langword="false"/> on terminal rejection or declined repair.
     /// </returns>
@@ -261,7 +263,8 @@ public partial class GameEngine
         MortalWoundTreatmentResourcePublicationTransaction?
             treatmentResourcePublicationTransaction = null,
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
-            guardianMusingsForRepair = null)
+            guardianMusingsForRepair = null,
+        ValidationService.CompletedLocationComparison? completedLocation = null)
     {
         using var stateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.Total");
         var repairAttempt = 0;
@@ -291,7 +294,9 @@ public partial class GameEngine
 #endif
             {
                 using var rawStateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.GameState");
-                issues = source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
+                issues = completedLocation is not null && !_fs.HasBrowserOriginalOperation
+                    ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)
+                    : source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
                     ? await _validator.ValidatePostMaterializedGameStateAsync()
                     : await _validator.ValidateGameStateAsync();
             }

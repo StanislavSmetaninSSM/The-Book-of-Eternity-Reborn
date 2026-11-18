@@ -25,16 +25,18 @@ public partial class ValidationService
     /// <param name="pendingReserved">
     /// Whether one console pending-snapshot invocation is reserved; defaults to false.
     /// </param>
-    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false, bool gameStateSourceReserved = false)
+    private sealed class WorldValidationInvocation(bool worldReserved, bool metaReserved, bool pendingReserved = false, bool gameStateSourceReserved = false, bool completedLocationReserved = false)
     {
         internal readonly bool WorldReserved = worldReserved, MetaReserved = metaReserved;
         internal readonly bool PendingReserved = pendingReserved;
         internal readonly bool GameStateSourceReserved = gameStateSourceReserved;
+        internal readonly bool CompletedLocationReserved = completedLocationReserved;
         /// <summary>
         /// Whether this invocation exclusively reserves any validation state.
         /// </summary>
-        internal bool Reserved => WorldReserved || MetaReserved || PendingReserved || GameStateSourceReserved;
+        internal bool Reserved => WorldReserved || MetaReserved || PendingReserved || GameStateSourceReserved || CompletedLocationReserved;
         internal bool Closed;
+        internal HashSet<string>? LocationIds;
     }
 
     /// <summary>
@@ -49,9 +51,11 @@ public partial class ValidationService
     /// <returns>
     /// The invocation identity that must be released after its call.
     /// </returns>
-    private WorldValidationInvocation AdmitWorldValidation(bool gameState, GameStateValidationSelection? selection = null)
+    private WorldValidationInvocation AdmitWorldValidation(bool gameState, GameStateValidationSelection? selection = null, bool completedLocation = false)
     {
         _pendingSnapshotInvocation.Value?.RequireCurrent();
+        if (completedLocation && (!gameState || _fs.HasBrowserOriginalOperation))
+            throw new InvalidOperationException("Completed location comparison is ordinary state validation only.");
         var browser = gameState && _sameTurnOwnerInputs == null && _fs.HasBrowserOriginalOperation;
         lock (_worldReadGate)
         {
@@ -64,10 +68,10 @@ public partial class ValidationService
             var source = browser && _prevalidatedPendingTurnSnapshotOverride != null &&
                 (selection!.Phases.Includes(GameStateValidationPhase.CrossReferences) ||
                  selection.Phases.Includes(GameStateValidationPhase.MetaMiscStateFiles));
-            var reserve = world || meta || source;
+            var reserve = world || meta || source || completedLocation;
             if (reserve && (_worldValidationCalls != 0 || _worldOverrideMutations != 0))
                 throw new InvalidOperationException("World validation conflicts with an already admitted instance consumer.");
-            var invocation = new WorldValidationInvocation(world, meta, gameStateSourceReserved: source);
+            var invocation = new WorldValidationInvocation(world, meta, gameStateSourceReserved: source, completedLocationReserved: completedLocation);
             _worldValidationCalls++;
             if (reserve) _worldReservation = invocation;
             return invocation;
@@ -79,22 +83,43 @@ public partial class ValidationService
 
     private Task<List<ValidationIssue>> StartAdmittedGameStateAsync(
         GameStateValidationSelection selection, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend = null,
-        StoryService.MortalJointStoryProof? jointStoryProof = null)
+        StoryService.MortalJointStoryProof? jointStoryProof = null,
+        CompletedLocationComparison? completedLocation = null)
     {
         ArgumentNullException.ThrowIfNull(selection);
-        var invocation = AdmitWorldValidation(true, selection);
+        var invocation = AdmitWorldValidation(true, selection, completedLocation is not null);
         var previous = _worldValidationInvocation.Value;
         _worldValidationInvocation.Value = invocation;
-        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof); }
+        try { return RunAdmittedGameStateAsync(selection, invocation, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof, completedLocation); }
         catch { ReleaseWorldValidation(invocation); throw; }
         finally { _worldValidationInvocation.Value = previous; }
     }
 
     private async Task<List<ValidationIssue>> RunAdmittedGameStateAsync(
         GameStateValidationSelection selection, WorldValidationInvocation invocation, bool metaControlShapesOnly, StoryService.AcceptedStoryAppend? acceptedStoryAppend,
-        StoryService.MortalJointStoryProof? jointStoryProof)
+        StoryService.MortalJointStoryProof? jointStoryProof, CompletedLocationComparison? completedLocation)
     {
-        try { return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof); }
+        try
+        {
+            if (completedLocation is null)
+                return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof);
+            var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? failure = null;
+            try
+            {
+                await completedLocation.RequireCurrentAsync(_fs, lease);
+                invocation.LocationIds = completedLocation.CopyIds();
+                var issues = await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof);
+                await completedLocation.RequireCurrentAsync(_fs, lease);
+                return issues;
+            }
+            catch (Exception caught) { failure = caught; throw; }
+            finally
+            {
+                invocation.LocationIds = null;
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure);
+            }
+        }
         finally { ReleaseWorldValidation(invocation); }
     }
 
@@ -133,7 +158,7 @@ public partial class ValidationService
     {
         lock (_worldReadGate)
         {
-            if (_worldReservation != null && (_worldReservation.PendingReserved || _gameStateSourceReadActive || _worldReadPhase != null || _metaControlShapeReadPhase != null ||
+            if (_worldReservation != null && (_worldReservation.PendingReserved || _worldReservation.CompletedLocationReserved || _gameStateSourceReadActive || _worldReadPhase != null || _metaControlShapeReadPhase != null ||
                 !ReferenceEquals(_worldReservation, _worldValidationInvocation.Value) || _worldReservation.Closed))
             {
                 if (withdrawal)

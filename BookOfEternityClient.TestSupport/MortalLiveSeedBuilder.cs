@@ -101,6 +101,7 @@ internal static class MortalLiveSeedBuilder
                 ["relationships"] = new JsonObject { ["state"] = "populated" }
             }
         };
+        NpcTradeRequestState.NormalizeNpcTradeReceiptsShape(scout);
         await Write("game_state/npcs/npc_core.json", new JsonObject
         { ["UpdateNPCs"] = new JsonArray(), ["NPCsInScene"] = new JsonArray(scout) });
 

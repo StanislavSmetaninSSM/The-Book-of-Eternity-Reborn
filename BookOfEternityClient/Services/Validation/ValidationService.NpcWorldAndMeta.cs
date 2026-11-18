@@ -6348,6 +6348,7 @@ public partial class ValidationService
 
     private HashSet<string> ReadKnownPermanentLocationIdsSync()
     {
+        if (ReadCompletedLocationIds() is { } completed) return completed;
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var json = ReadPreTurnTrackedFileSync(
             MortalLocationMaterializationContract.WorldMapPath);
