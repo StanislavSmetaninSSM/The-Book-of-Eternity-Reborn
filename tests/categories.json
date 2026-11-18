@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-host-exit-original-fifo-soak",
+      "responsibility": "#1589 observe one real original neutral FIFO owner for 120 seconds, retain full diagnostic samples and require original scoped shutdown and guardian cleanup.",
+      "excludes": "No game/GM acceptance, injected fault, EINTR retry or historical rl2 root-cause/fix claim; requires observed FIFO capability.",
+      "changeHints": ["BookOfEternityClient.Tests/GmHostExitOriginalSoakTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHostExitOriginalSoakTests.OriginalFifoOwner_ObservedFor120SecondsThenScopedStop"]}]
+    },
+    {
       "id": "gm-host-exit-fault-diagnostics",
       "responsibility": "#1589 deterministic original pidfd observation fault retention; unchanged fail-closed classification, IN/HUP completion and held-handle lifetime.",
       "excludes": "No EINTR retry, historical rl2 cause assertion, live game or native process qualification.",

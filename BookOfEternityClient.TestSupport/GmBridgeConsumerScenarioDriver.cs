@@ -10,24 +10,31 @@ namespace BookOfEternityClient.Tests;
 
 // Real typed host and shipped independent launcher processes beneath host-guardian.
 // Neutral terminal exercises ownership/transport; it is not a live GM game claim.
-internal static class GmBridgeConsumerScenarioDriver
+internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
+        var soak = mode == "terminal-main-consumer-pidfd-soak";
+        var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
+        if (soak) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
+        string? status = null;
+        GmSessionRunRecord? original = null;
+        var stopAttempted = false;
         var result = new Dictionary<string, object?> { ["Mode"] = mode };
         BridgeHost? host = null;
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 160 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
             try { using var probe = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified); }
             catch (SocketException error) when (error.NativeErrorCode is 1 or 13) { expectedKind = "linux-fifo-v1"; }
             result["ObservedSocketCapability"] = expectedKind;
+            if (soak && expectedKind != "linux-fifo-v1") throw new IOException("Explicit FIFO soak requires observed unavailable Unix sockets; no forced transport fallback.");
             var launch = NeutralTerminalLaunch.Create(package, output);
             var root = Directory.GetParent(launch.Scratch)!.FullName;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -36,8 +43,6 @@ internal static class GmBridgeConsumerScenarioDriver
             host.ConfigureNeutral(launch);
             running = host.RunAsync();
 
-            string? status = null;
-            GmSessionRunRecord? original = null;
             using var startupDeadline = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token);
             startupDeadline.CancelAfter(TimeSpan.FromSeconds(5));
             while (status == null)
@@ -91,6 +96,8 @@ internal static class GmBridgeConsumerScenarioDriver
             await pin.DisposeAsync();
             pin = null;
 
+            if (soak) await ObserveOriginalSoakAsync(status, original, root, running, output, result, deadline.Token);
+
             if (mode == "terminal-main-consumer-load-fifo")
             {
                 // Real Load stop/finish IPC without archive replacement or restart.
@@ -122,7 +129,12 @@ internal static class GmBridgeConsumerScenarioDriver
                 finally { host.BeforeLoadReceipt = null; }
             }
 
-            using (var shutdown = await LauncherAsync("shutdown-bridge", launch.Scratch, output, deadline.Token))
+            if (soak)
+            {
+                stopAttempted = true;
+                await StopOriginalSoakAsync(status, original, output);
+            }
+            else using (var shutdown = await LauncherAsync("shutdown-bridge", launch.Scratch, output, deadline.Token))
             {
                 var reply = shutdown.RootElement;
                 if (!reply.GetProperty("ok").GetBoolean() || reply.GetProperty("fallbackUsed").GetBoolean() ||
@@ -134,6 +146,9 @@ internal static class GmBridgeConsumerScenarioDriver
             var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Stopped record missing."));
             if (stopped.Identity != original.Identity || stopped.Disposition != GmSessionRunDisposition.Stopped)
                 throw new IOException("Original terminal did not become durably Stopped.");
+            if (soak && (stopped.StopEvidence?.Identity != original.Identity ||
+                stopped.StopEvidence.Kind != GmSessionRunStopKind.OwnedScopeEmpty))
+                throw new IOException("Soak original durable stop evidence missing.");
             if (TransportEntryExists(endpoint.Address)) throw new IOException("Original transport entry survived actual host shutdown.");
             result["OriginalStoppedAndEndpointRemoved"] = true;
             result["Success"] = true;
@@ -142,6 +157,12 @@ internal static class GmBridgeConsumerScenarioDriver
         catch (Exception error) { result["Failure"] = error.ToString(); }
         finally
         {
+            if (soak && !stopAttempted && status != null && original != null)
+            {
+                stopAttempted = true;
+                try { await StopOriginalSoakAsync(status, original, output); }
+                catch (Exception error) { result["OriginalCleanupStopFailure"] = error.ToString(); exit = 1; }
+            }
             if (pin != null)
                 try { await pin.DisposeAsync(); }
                 catch (Exception error) { result["PinDisposeFailure"] = error.ToString(); exit = 1; }
@@ -151,6 +172,7 @@ internal static class GmBridgeConsumerScenarioDriver
             if (running != null)
                 try { await running.WaitAsync(TimeSpan.FromSeconds(5)); }
                 catch (Exception error) { result["HostJoinFailure"] = error.ToString(); exit = 1; }
+            if (soak) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, priorNonce);
             if (exit != 0) result["Success"] = false;
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));
         }
