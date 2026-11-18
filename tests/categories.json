@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-seed-bootstrap",
+      "responsibility": "#1515 T020 both fresh seed modes initialize production-equivalent client-owned empty materialization companions before the first original, preserving authored world DATA.",
+      "excludes": "No legacy repair, runtime absence fallback, GM receipts, game engine or native launch.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveSeedBuilder.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLiveSeedBootstrapTests.cs",
+        "BookOfEternityClient/Services/MortalBootstrapStateBuilder.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveSeedBootstrapTests.FreshSeedInitializesClientOwnedEmptyCompanionsBeforeOriginal"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-resource-template-data",
       "responsibility": "#1515 T019 compact new-NPC resource creation example and one-time guidance source DATA guard.",
       "excludes": "No live GM acceptance, resource autofill, whole placeholder NPC validity or unrelated progression examples.",
