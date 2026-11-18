@@ -2438,3 +2438,17 @@ seven-case selection. No runtime/combined/native test ran. Separately, four new
 source files at exact a27e1087 were downloaded via GitHub API into a new empty
 external directory and verified against Git blob hashes and SHA256; this proves
 only those four file recoveries, not a complete checkout/build recovery.
+
+T022 corrected preparation built successfully (Integration61.74s,130warnings,
+0errors), then the official seven-case category completed in14.8327210s with
+6FAIL/1PASS, no skips/duplicates/timeout and complete owned cleanup. All3437
+source pins remained exact;20 output pins were recorded. Five failures are
+causal: three emitted canonical projection fields rejected as unknown, and
+both fresh seed modes changed by canonical trade-receipt normalization. The
+unknown-field control passes. The publication-comparison Fact instead fails
+PREPARATION with mortal_location_storage_access_projection_mismatch during
+normalization, before the intended allocated-reference assertion. Correct its
+fixture against the existing storage contract before calling that case RED;
+do not weaken production guards or rerun combined/native yet. External evidence:
+mortal-t022/red-corrected, result.log SHA256
+59c4efda03c7848851de70da83da52fd82b2912c39a81c2d6aa04f40f4a50f44.
