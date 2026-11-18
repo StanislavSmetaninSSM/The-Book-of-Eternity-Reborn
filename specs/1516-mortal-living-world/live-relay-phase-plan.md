@@ -1136,3 +1136,19 @@ supervisors. No actual restored world or native diagnostic run exists yet.
 Optimization: tiny stateless DATA cases reuse no live authority; the existing
 pinned runtime avoids a needless rebuild, while fresh byte/owner/generation checks
 remain mandatory. No speedup or p04 exception fix is claimed.
+
+Independent official OUTCOME and mm4 PRELAUNCH reviews accepted one diagnostic
+attempt, not an ordinary continuation. Prep manifest SHA256
+f29fa2a9a3e274e566f38151f648cc0be055d0d88834d77b906e3987ebb854a9;
+descriptor92cf7dd57454e8677084713e1ab60ebe919d0f9cf019204e226fb5868e4ffb55.
+Reviewer freshly verified106 source pins,59 staged DATA/47 excluded operational
+paths,111 original inputs unchanged, runtime732/helper249/relay8/native4 exact,
+and three safe0700 supervisors. Config exactly reproduces sourcep03 hash10771d5d.
+The new destination remains empty0700: actual import occurs once inside the
+reviewed driver at launch. A fresh real root/run/generation/daemon/request must
+still be proved at runtime. Old mm3 is unchanged. One750-second guardian-owned
+attempt captures the existing opt-in DEBUG stderr exception before LogError.
+It may reproduce or fail to reproduce p04; neither outcome retroactively proves
+p04 cleanup or corrected T021 native behavior. Adapter source recovered from
+remote20e75f9 into a fresh directory has exact SHAa604ba2a; this is only that
+file's recovery, not a clean full checkout/build restore.
