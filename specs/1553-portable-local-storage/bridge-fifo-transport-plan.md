@@ -470,3 +470,25 @@ Initial readmission-test build stopped before execution: 8.49s, 25 warnings,
 2 compile errors from a missing Core namespace import in the new typed host
 fixture. Zero tests ran; this is preparation failure, not causal RED. The single
 missing import is corrected; production guard code remains unchanged.
+
+### Local-to-remote causal RED verified (production correction pending)
+
+After the import correction, serial no-restore unit build completed 37.93s,
+67 warnings, 0 errors. Official `gm-local-remote-worker-readmission` executed
+1/1 FAIL, runner 17.2829425s, no skip/duplicate, complete owned-tree cleanup.
+The fresh client first succeeded against the actual FIFO production owner with
+its original close observed. The warmed SAME client then refused with the exact
+GmWorkerRootContext.ValidateCanonical line139 disposed-registration exception,
+through AcquireCanonicalWriteLeaseCoreAsync line4833. Both config and generation
+remained byte-identical, including the failure. The refused remote operation's
+own close was observed. Original shutdown returned positive ACK with matching
+run identity; durable Stopped retained the entire original identity, host exited0,
+and the independent guardian reported ECHILD, zero emergency signals, zero
+failures and no deadline. This is causal RED, not a bootstrap or cleanup failure.
+
+Evidence is the retained official runner log `local-remote-red-official.log`
+under the shared external diagnostics directory and its test-owned scenario
+`ac50d1aa0c4b456b9e8eed4a0ea6bede`. No original live world/request was touched.
+Production guards remain unchanged. Next: independently agree the exact
+lease-local retired-registration/original-remote-pin conjunction and its negative
+controls before implementation; no broad disposed/WasRemote bypass is permitted.
