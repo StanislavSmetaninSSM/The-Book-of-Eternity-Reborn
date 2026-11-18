@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "vehicle-receipt-validation-scope",
+      "responsibility": "Relay launch prerequisite: existing vehicle receipt validation through public response and full-state APIs accepts unrelated roots while retaining exact canonical receipt checks.",
+      "excludes": "No vehicle materialization expansion, new receipt authority, gameplay or whole-state qualification; unrelated baseline validation issues are outside the receipt predicate.",
+      "changeHints": ["BookOfEternityClient.Tests/VehicleReceiptValidationScopeTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.VehicleReceiptValidationScopeTests.*"]}]
+    },
+    {
       "id": "gm-relay-phase-contract",
       "responsibility": "#1589 inert source contracts for the general relay phase continuation, original settlement and immutable evidence gates.",
       "excludes": "No actual game, daemon shutdown, native ownership or materialization qualification; Python case count is reported separately from the single adapter Fact.",

@@ -1048,3 +1048,12 @@ it is not imported wholesale. Causal tests and independent review will qualify
 only the minimum existing-validator correction needed to reach a live request.
 No vehicle gameplay, spiritual combat or other materialization feature is added.
 The original failed world is preserved; no new launch occurred during diagnosis.
+
+Test-first prerequisite source is frozen, production still unchanged. The narrow
+vehicle-receipt-validation-scope category owns11 public-API cases: three unrelated
+canonical roots, four real canonical vehicle receipt shapes, three ordinary or
+command-only responses, and invalid numeric activeVehicleChange preserving its
+own rejection. Only the spurious receipt error is excluded for unrelated inputs;
+other unrelated validation findings are not treated as whole-state acceptance.
+Official causal RED is UNRUN. Fresh tiny independent state is necessary per case;
+no authority/data cache or heavy game preparation is introduced.
