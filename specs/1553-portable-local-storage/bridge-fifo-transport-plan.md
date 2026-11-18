@@ -1031,3 +1031,20 @@ facts do not turn the failed game attempt into PASS. Original exec58553 ended;
 world and raw evidence remain untouched. A copied-state diagnostic of the exact
 pre-turn validation path is being investigated; no production fix or new launch
 is authorized by an assumed cause. Main remains unchanged and merge is blocked.
+
+Bounded post-failure diagnostic completed once: the exact deployed public
+ValidateGameStateAsync entry returned exit0 in7.914s, empty stderr, seven
+resource_owner_vehicle_receipt_invalid errors. All79 non-runtime files, including
+.boe_runtime records, were byte-identical before/after; no initializer, repair,
+new game or replay ran. The hardcoded vehicles.json.birthReceipts error path was
+misleading: vehicles.json was absent, as in the earlier ordinary Chaos fixtures.
+Source inspection found ValidateMetaMiscContract dispatches ValidateVehicleData
+for each shared meta/misc object, while ValidateVehicleData unconditionally calls
+MortalVehicleBirthReceiptState.ValidateLocal for every JsonObject. Thus unrelated
+meta roots are incorrectly required to carry vehicle receipt arrays. Exact main
+605ec71 has this same code; the relay-only partition preserved it unchanged.
+A narrow canonical-VehiclesPath scope guard exists in the excluded mixed work;
+it is not imported wholesale. Causal tests and independent review will qualify
+only the minimum existing-validator correction needed to reach a live request.
+No vehicle gameplay, spiritual combat or other materialization feature is added.
+The original failed world is preserved; no new launch occurred during diagnosis.
