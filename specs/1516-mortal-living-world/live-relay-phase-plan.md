@@ -149,3 +149,30 @@ foreground EOF/termios and logical lifecycle unconfirmed. No continuation or
 retry uses this world. Root-cause investigation is read-only before another
 controlled attempt; the first failed world/diagnostics are preserved. This does
 not invalidate the ten preparation checks or qualify any live Mortal scenario.
+
+### Fresh short-path phase: real turn and observer mismatch
+
+The new isolated short phase passed startup (native endpoint 88 bytes), ordinary
+Continue and actual request 061733a37a4843b98b1a795d512b7fee / turn42. An independent
+GM authored the four-hour scout wait from the actual prompt, not a canned fixture.
+Actual repairs corrected npc versus npcActivity effect kind, scheduler cycle count,
+and player-facing output freshness. Four relay consumer executions exited zero.
+The canonical story gained turn42 and the living-world history gained an exact
+session/request/turn receipt for480..720; scout activity advanced0..240 of480.
+
+The driver incorrectly expected requestId in a Mortal story row; this story route
+does not write that property. It therefore timed out and reports Success=false,
+AcceptedGameTurns=0. These raw findings are not rewritten. At686.101s its one
+original shutdown completed with LogicalLifecycleVerified=true; guardian reported
+ECHILD, driverExitCode1, emergencySignals0, failures0 and deadlinefalse. Final
+independent full outcome review and typed receipt verification are still pending.
+
+Before the GM response, an explicit baseline captured state/stories/lore. All283
+capture hashes match, raw snapshot manifest and authority match actual relay
+Witnesses, the authority payload digest and93 snapshot file hashes match, and
+its original manifestPayloadHash matches the newly published receipt token.
+This is retained evidence, not invented retrospective capture. A bounded read-only
+typed receipt/original-snapshot check and a corrected assessed-Mortal observer
+will preserve request correlation without requiring a nonexistent story field.
+No action is replayed and no raw driver result is promoted to PASS. GM-facing
+semantic-kind guidance is a separate confirmed defect to repair before later turns.
