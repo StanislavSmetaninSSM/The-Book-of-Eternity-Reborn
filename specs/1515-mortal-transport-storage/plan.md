@@ -2462,3 +2462,14 @@ retains the six canonical-field/seed controls. This allows the preparation retry
 without repeating their unchanged causal results. Current API has no supported
 ad-hoc category test filter. Next run remains preparation/causal verification,
 not a full candidate or native acceptance.
+The corrected single publication Fact now reaches genuine causal RED: actual
+normalization/publication succeeds, client allocation and receipt exist, signed
+original map remains exact, then line60 rejects the newly allocated current
+location as unknown. Integration62.89s/130warnings/0errors; official runner
+14.0863230s,1/1executedFAIL, no skips/duplicates/timeout, complete owned cleanup.
+All3437 source pins unchanged;20 output pins recorded. External
+mortal-t022/red-location-corrected/result.log SHA256
+fb5bdf1c6ae2718895a5935d0b3bdf698e80b2b6d143754c41704ec25c59a85a.
+Together with the five earlier causal shape/seed failures, implementation of
+T022 can proceed. No combined/native retry has occurred; prior compile/setup
+failures remain separately recorded rather than counted as causal evidence.
