@@ -35,7 +35,13 @@ public sealed class BridgeStatusContentionTests : IDisposable
             failure = (await Record.ExceptionAsync(async () => { await using var lease = await files.AcquireCanonicalWriteLeaseAsync(); }))!;
             Assert.NotNull(failure);
             // The genuine constructor control establishes the supported platform sharing code.
-            Assert.Contains((failure.InnerException ?? failure).HResult & 0xFFFF, new[] { 32, 33 });
+            var constructorFailure = failure.InnerException ?? failure;
+            if (OperatingSystem.IsLinux()) Assert.Equal(11, constructorFailure.HResult);
+            else
+            {
+                Assert.True(OperatingSystem.IsWindows(), "Sharing classification is qualified only for Linux and Windows.");
+                Assert.Contains(constructorFailure.HResult & 0xFFFF, new[] { 32, 33 });
+            }
             Assert.Equal(_before, File.ReadAllBytes(files.ResolvePath(Status)));
         }
         // Later code surfacing the original failure must not be treated as an acquisition deferral.

@@ -4,6 +4,20 @@ $ErrorActionPreference='Stop'
 $code=Join-Path $Evidence 'code';[void][IO.Directory]::CreateDirectory($code)
 [IO.File]::WriteAllText((Join-Path $code 'BookOfEternityClient.dll'),'inert test assembly locator only')
 $global:BoeMainOperationCodeRoot=$code
+# Two pure orchestration controls run once, without a process or invented grant.
+if($Mode -eq 'correct'){
+    $faulted=[Threading.Tasks.Task]::FromException[string]([IO.IOException]::new('inert late read fault'))
+    $cancelled=[Threading.Tasks.Task]::FromCanceled[string]([Threading.CancellationToken]::new($true))
+    foreach($pending in @($faulted,$cancelled)){
+        $probe=[pscustomobject]@{lost=$true;sequence=0L;lastAction='helper-ready';pendingRead=$pending}
+        Stop-GmTimedOutReadiness $probe
+        if($null -eq $probe.PSObject.Properties['readinessCleanupClock'] -or
+            $probe.readinessCleanupClock -isnot [Diagnostics.Stopwatch] -or -not $probe.readinessCleanupClock.IsRunning -or
+            $probe.lost -ne $true -or $probe.sequence -ne 0 -or $probe.lastAction -cne 'helper-ready'){
+            throw 'Late fault/cancel escaped bounded cleanup or attempted a command.'
+        }
+    }
+}
 $session=Join-Path $Evidence 'game_session';[void][IO.Directory]::CreateDirectory($session)
 $failure=$null;$context=$null;$openReturned=$false
 try {

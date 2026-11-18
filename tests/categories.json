@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-bridge-status-held-lock-provenance-data",
+      "responsibility": "#1589 genuine canonical lock sharing refusal and current-acquisition provenance; bounded RED premise recheck.",
+      "excludes": "No publisher FIFO owner, epoch, eventual delivery or live gameplay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/BridgeStatusContentionTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.RealHeldLockRefusal_IsOriginBoundAndCannotBeReusedAfterAcquisition",
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.RealHeldLock_StatusWriterReturnsNoWriteOnlyAfterOriginalAcquisitionUnwinds"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-bridge-status-prewrite-contention-data",
       "responsibility": "#1589 genuine canonical lock contention origin, current-acquisition refusal boundary, unchanged ordinary write/close failures, and diagnostic snapshot bookkeeping decisions.",
       "excludes": "No native/game launch, actual Bridge owner/epoch/first-publication or signal/seal race qualification; pure decision cases do not prove publisher lock ordering. No timeout increase or general IO suppression.",

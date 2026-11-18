@@ -11,7 +11,7 @@ function Write-GmOperationDiagnostic {
         if(-not [guid]::TryParseExact($nonce,'N',[ref]$parsed) -or $nonce -cne $env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE){return}
         $data=[ordered]@{nonce=$nonce;stage=$Stage;processId=$PID;observedAtUtc=[DateTime]::UtcNow.ToString('O');consistency='Non-atomic observations of original caller context'}
         if($null -ne $Context){
-            foreach($name in @('originalClose','terminalClose','sequence','lastAction','closed','lost','closeObserved','exitCode','diagnostic','cancellationCleanupFailures')){
+            foreach($name in @('originalClose','terminalClose','sequence','lastAction','closed','lost','closeObserved','exitCode','diagnostic','cancellationCleanupFailures','cancellationReadCleanup')){
                 if($null -ne $Context.PSObject.Properties[$name]){$data[$name]=$Context.$name}
             }
         }
@@ -154,9 +154,9 @@ function Wait-GmReadinessCleanupTask {
 function Stop-GmTimedOutReadiness {
     param($Context)
     # Cleanup only: never clear lost, install a usable context, or replay an action.
+    $Context | Add-Member -NotePropertyName readinessCleanupClock -NotePropertyValue ([Diagnostics.Stopwatch]::StartNew()) -Force
     if(-not $Context.lost -or $Context.sequence -ne 0 -or $Context.lastAction -cne 'helper-ready' -or
         $null -eq $Context.pendingRead -or $Context.pendingRead.IsFaulted -or $Context.pendingRead.IsCanceled){return}
-    $Context | Add-Member -NotePropertyName readinessCleanupClock -NotePropertyValue ([Diagnostics.Stopwatch]::StartNew()) -Force
     try {
         $Context.sequence=1L;$Context.lastAction='readiness-cancel'
         $frame=@{sequence=1L;action='close';outcome=2}|ConvertTo-Json -Compress
@@ -195,9 +195,15 @@ function Stop-GmTimedOutReadiness {
             $reply.continuationFailed -isnot [bool] -or $reply.continuationFailed -or
             ($reply.effectiveOutcome -isnot [int] -and $reply.effectiveOutcome -isnot [long]) -or $reply.effectiveOutcome -ne 2){throw 'Original cancellation receipt refused.'}
         if($null -ne $projection){
-            if($reply.completionKind -cne 'original-main' -or $reply.closeObserved -isnot [bool] -or -not $reply.closeObserved -or
+            if(($reply.terminalClose.outcome -isnot [int] -and $reply.terminalClose.outcome -isnot [long]) -or
+                $reply.completionKind -cne 'original-main' -or $reply.closeObserved -isnot [bool] -or -not $reply.closeObserved -or
                 $null -eq $reply.terminalClose -or $reply.terminalClose.outcome -ne 2 -or $reply.terminalClose.closingFailed -ne $false){throw 'Original cancellation close unconfirmed.'}
         }elseif($reply.completionKind -cne 'local'){throw 'Local cancellation scope changed.'}
+        if($null -ne $projection){
+            foreach($name in @('epoch','backend')){
+                if($reply.terminalClose.identity.$name -isnot [long] -and $reply.terminalClose.identity.$name -isnot [int]){throw 'Original cancellation owner numeric type invalid.'}
+            }
+        }
         Set-GmOperationCloseReceipt $Context $reply
         if(-not ($Context.closeObserved -or $Context.localScopeCompleted)){throw 'Original cancellation has no observed settlement.'}
         $Context.closed=$true
@@ -226,10 +232,25 @@ function Dispose-GmReadinessCancellationTransport {
     if($Context.errorRead.IsCompletedSuccessfully){$raw=$Context.errorRead.GetAwaiter().GetResult()}
     $Context | Add-Member -NotePropertyName exitCode -NotePropertyValue $code -Force
     $Context | Add-Member -NotePropertyName diagnostic -NotePropertyValue $raw -Force
+    # Process.Dispose does not own the redirected readers already handed to us.
+    # Dispose only settled readers; never race an unfinished asynchronous read.
+    $stdoutDisposed=$false;$stderrDisposed=$false
+    if($null -eq $Context.pendingRead -or $Context.pendingRead.IsCompleted){
+        try {$Context.process.StandardOutput.Dispose();$stdoutDisposed=$true}catch {$errors += $_.Exception.ToString()}
+    }
+    if($Context.errorRead.IsCompleted){
+        try {$Context.process.StandardError.Dispose();$stderrDisposed=$true}catch {$errors += $_.Exception.ToString()}
+    }
+    $Context | Add-Member -NotePropertyName cancellationReadCleanup -NotePropertyValue @{
+        stdoutReadSettled=($null -eq $Context.pendingRead -or $Context.pendingRead.IsCompleted)
+        stderrReadSettled=$Context.errorRead.IsCompleted
+        stdoutDisposed=$stdoutDisposed;stderrDisposed=$stderrDisposed
+        exitObserved=$exit.IsCompletedSuccessfully
+    } -Force
+    try {$Context.process.Dispose()}catch {$errors += $_.Exception.ToString()}
     $Context | Add-Member -NotePropertyName cancellationCleanupFailures -NotePropertyValue $errors -Force
     if($errors.Count -gt 0){Write-GmOperationDiagnostic 'readiness-cancel-cleanup-incomplete' $null $Context}
-    # Incomplete joins remain explicitly unconfirmed; never block outside the deadline.
-    $Context.process.Dispose()
+    # Incomplete joins remain explicitly unconfirmed; no unbounded reader join.
 }
 
 function Close-GmParticipatingOperation {
