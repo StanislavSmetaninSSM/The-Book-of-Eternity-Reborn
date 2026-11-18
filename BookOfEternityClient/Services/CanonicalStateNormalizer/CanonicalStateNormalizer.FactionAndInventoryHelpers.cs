@@ -730,7 +730,14 @@ public partial class CanonicalStateNormalizer
             {
                 project["projectName"] = GetNodeString(project["name"]);
             }
-            if (string.IsNullOrWhiteSpace(GetNodeString(project["projectName"])))
+            // An omitted name is not an update to an existing project's name.
+            // Keep the historical fallback for a genuinely new target.
+            var preservesExistingName = !projectUpdate.ContainsKey("projectName") &&
+                !projectUpdate.ContainsKey("name") &&
+                activeProjects.Any(existing =>
+                    MatchesByAnyIdentity(existing, project, "projectId") &&
+                    FactionEntriesShareIdentity(existing, project));
+            if (!preservesExistingName && string.IsNullOrWhiteSpace(GetNodeString(project["projectName"])))
                 project["projectName"] = GetNodeString(project["projectId"]) ?? "project";
 
             UpsertProjectByIdentity(activeProjects, project);

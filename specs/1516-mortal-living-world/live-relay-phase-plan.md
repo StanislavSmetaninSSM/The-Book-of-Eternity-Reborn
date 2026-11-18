@@ -797,3 +797,17 @@ can verify the output shape, not full request acceptance. Actual live mm2 and
 Rule19.F.2 establish the supported partial-command premise separately. This
 narrowing gives up a public-acceptance claim in this cheap fixture, not any
 project-preservation assertion. No production index or source guard changes.
+
+
+### T020 actual reducer RED established
+
+With the component fixture scope corrected, a fresh integration build completed
+in59.72s (wall60.052),129 warnings/zero errors. The exact two-case category ran
+in13.679676s: omitted-name case FAIL at the whole-result assertion, explicit
+rename control PASS. The failure contains projectName=project_completion_bridge
+instead of the original readable name while supplied progress is240/step1.
+Thus the real reducer reproduces the live defect; no public-request validation
+claim is made by this fixture. Complete owned cleanup, two executed cases, zero
+skips/duplicates/timeouts. Prior setup failures and the unavailable /usr/bin/time
+wrapper (no build launched by that wrapper) remain separate historical evidence.
+Minimal production correction and GREEN remain pending at this checkpoint.
