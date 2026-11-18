@@ -66,10 +66,12 @@ Initial 24h skip; pending cycles with no new time; short scene; absent/malformed
 
 Existing cycle configuration supplies the meaningful-time threshold (default world 240 minutes, faction 1440); no new arbitrary hourly threshold. The client checks explicit declarations and state evidence, not the truth of unstructured natural-language assertions through NLP. No-significant-change is an explicit GM decision with a bounded review of current relevant systems, not a client simulation result. Any significant autonomous state claim must be declared and evidenced.
 
-## Live-discovered NPC terminal activity contract, 2026-11-18 (implementation pending)
+## Live-discovered NPC terminal activity contract, 2026-11-18 (bounded implementation verified)
 
-The documented `completeNPCActivities` command lacks a canonical consumer in the
-current implementation. This is a bounded completion of existing Mortal activity
+Live investigation found that the documented `completeNPCActivities` command
+lacked a canonical consumer. T019 now supplies the bounded implementation,
+verified by the targeted outcome recorded in live-relay-phase-plan.md. This is
+a bounded completion of existing Mortal activity
 materialization, not a new simulation or reward system. The delegated working
 choice is explicit outcome data, never a prose-derived/default outcome:
 
@@ -96,5 +98,6 @@ choice is explicit outcome data, never a prose-derived/default outcome:
 - Current fixtures/prompts/examples migrate to the explicit field; there is no
   legacy save compatibility or automatic old-command fallback requirement.
 
-This choice does not qualify implementation, live closure, other activity/faction
-commands, NPC progression or the whole living-world feature.
+The bounded T019 implementation does not qualify other activity/faction
+commands, NPC progression or the whole living-world feature. Live outcomes and
+their exact limits are recorded separately in live-relay-phase-plan.md.

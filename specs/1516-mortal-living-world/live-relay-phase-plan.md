@@ -705,3 +705,42 @@ inventory/output join, not a portable-PDB document audit. Raw evidence remains
 external. T019 bounded implementation is accepted; fresh mm2 package/ownership
 preflight and actual GM relay acceptance are still pending. No whole-issue
 closure, spiritual combat, Windows runtime or NLP-completeness claim follows.
+
+
+## mm2 actual terminal completion and repair accepted, 2026-11-18
+
+Independent outcome review accepts one real eight-hour player action through
+GM relay, turn42/request `d69a0b07d1244be2a2d2882fb7b414a4`, in fresh labelled
+setup world mm2. Elapsed346.797s; original driver exit0. The initial GM packet
+intentionally omitted only finalOutcome; the genuine same-request repair added
+Success. A second genuine output-only repair refreshed narrative/interface
+after canonical repair. Three dispatches executed once, each exit0 and drained.
+This is not three player actions or command replay.
+
+The scout now has null currentActivity and exactly one four-field completion
+record at client-owned turn42; command is consumed and XP remains0. Successful
+inspection does not declare the damaged crossing safe. Clock480 becomes960;
+bridge conditions, faction and repair-project state remain unchanged. One typed
+living-world receipt joins the original request, prior0/current1; exact story42
+follows unchanged labelled setup41. No pending request/snapshot/repair remains.
+
+Original run `f3f453308ae64291bf3f6bf04c27e9df`, generation
+`90198be1d57e44139aaee7128bc17fb9`, epoch1 reaches one shutdown ACK and durable
+Stopped/OwnedScopeEmpty. Client, bridge and daemon exit0 with EOF/termios restored;
+RPC drains and guardian reports ECHILD, driver0, no emergency/deadline/failure.
+Independent readback rehashed106 final-world,732 runtime and249 helper files.
+Probe SHA256:
+`78b52e5ea30959f2be25a46a9a0d6e46b962bc1e35239cd907467900a143cebf`.
+
+This was NOT error-free: daemon errorCount1 retains a strict pending-file read
+refusal between repair revisions, before LastRepairRequestWrite/dispatch. The
+next exact repair and same-owner settlement prove recovery in this run. Separate
+existence/read observations and ordinary repair deletion are consistent with a
+transition race; the actual rejected kind was not captured, so Missing versus
+wrong-kind and the precise historical cause remain unproven. Do not suppress
+wrong-kind/unreadable/admission failures or claim a fix.
+
+Continuation gate is cleared only for a fresh predecessor-bound phase in this
+same retained world. No restart, council/project, storage, progressing-NPC or
+whole-issue claim follows. Missing-outcome repair does not itself satisfy T017's
+contradictory-cross-surface scenario. All raw evidence/worlds remain external.
