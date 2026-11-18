@@ -3507,3 +3507,11 @@ anomaliesnoterased. p02preparedonlyfromthisacceptedstate,manifest
 1bc339febcd2098ba7c59932d5212fafd68e2c41f59c993fa447496694aa4e9c,
 wholeplay852/p01/108pins/configunchanged,strictabsenthistoryjoin,newprivateenv/nonces,
 expected43. Independentdeltapreflightpending, no denial/permission/movement yet.
+Independent p02 delta preflight accepts the exact accepted predecessor, package,
+3515 source inputs, 20 outputs, eight Unit corroborations, full inventories and
+all 108 world pins. The chalk remains count 1 in the exact restricted council
+storage. The fixed route requires a real locked-storage selection and unchanged
+world/inventory/story/history/queue before the permission request. Fresh environment,
+nonces, modes, socket and budgets pass; no launch or owner exists. One bounded
+p02 launch is authorized next, with separate exact GM candidate review. This
+preflight is not proof of actual denial or permission publication.
