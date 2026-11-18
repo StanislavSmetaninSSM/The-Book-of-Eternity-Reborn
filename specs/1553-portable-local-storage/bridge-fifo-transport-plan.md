@@ -1176,3 +1176,32 @@ GREEN will retain original fault data and wire it to the existing nonce-bound
 stop report. Typed fault-to-report serialization plus existing healthy original
 owner/nonce controls suffice without adding native authority-injection machinery;
 this does not claim a nonnull live export. The historical rl2 errno remains unknown.
+
+### #1589 original host-exit diagnostic GREEN, 2026-11-18, bounded result
+
+Source046de4d9 retains poll failure DATA on the original exception, then captures
+only the already-faulted original RootExited task through the existing nonce-bound
+report. No retry, liveness decision, handle lifetime, ownership or cleanup rule
+changed. Independent source review found and corrected a diagnostic status/fault
+snapshot race: snapshot the task status once and capture only if that snapshot is
+Faulted. The reviewer accepted that correction. Existing finite report-size and
+text bounds remain limits; no nonnull live nonce export is claimed yet.
+
+Fresh Unit build89.88s/90.190s wall,84 warnings/0 errors. Official categories
+`gm-host-exit-fault-diagnostics` and `gm-main-stop-first-failure-diagnostics-linux`
+selected19 cases, not the initially estimated17 (one existing theory has3 cases).
+New diagnostics13/13 PASS; existing category5/6 PASS. Total18/19 in24.1604329s,
+complete owned cleanup, zero skips/duplicates/timeouts. The failed unchanged
+ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement
+fixture directly uses NamedPipeClientStream and encountered SocketException13
+at socket creation in OwnedTerminalScenarioDriver146/201. It had an original
+Running owner and then ScopedRetired=true; its guardian reported ECHILD/driver1,
+zero emergency signals/failures/deadline. This legacy socket route is not the
+new FIFO transport and is not reclassified as PASS. Both actual native nonce
+failure-report cases passed with guardian0; three cancellation cases also passed.
+
+The13 include exact poll tuples, normal IN/HUP, disposed AddRef, task-state
+controls, typed original-fault-to-real-state-JSON composition, hostile/large fault
+incompleteness and once-only pending observation. This qualifies diagnostic DATA
+capture, not rl2's unknown errno or complete live restart/settlement. Independent
+outcome review is pending. No Integration refresh or new live launch occurred.
