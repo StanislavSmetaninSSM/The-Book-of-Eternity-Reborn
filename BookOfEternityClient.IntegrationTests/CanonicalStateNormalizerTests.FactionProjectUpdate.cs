@@ -36,14 +36,14 @@ public sealed partial class CanonicalStateNormalizerTests
             ["factionName"] = "Crossing Council", ["projectUpdate"] = patch };
         var submitted = original.DeepClone().AsObject();
         submitted["factionProjectUpdates"] = new JsonArray(command);
-        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        using (var response = JsonDocument.Parse(new JsonObject {
-            ["factionProjectUpdates"] = new JsonArray(command.DeepClone()) }.ToJsonString()))
-            Assert.DoesNotContain(validator.ValidateResponse(response.RootElement), issue => issue.Severity == IssueSeverity.Error);
         var backups = new Dictionary<string, string>(StringComparer.Ordinal);
         await AddFactionBackupAsync(backups, MortalFactionProjectsPath, original);
         await _fs.WriteFileAtomicAsync(MortalFactionProjectsPath, submitted.ToJsonString());
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """{"currentRealm":"Mortal World","currentIncarnation":1}""");
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        using (var response = JsonDocument.Parse(new JsonObject {
+            ["factionProjectUpdates"] = new JsonArray(command.DeepClone()) }.ToJsonString()))
+            Assert.DoesNotContain(validator.ValidateResponse(response.RootElement), issue => issue.Severity == IssueSeverity.Error);
         var originalBytes = await _fs.ReadFileBytesAsync(backups[MortalFactionProjectsPath]);
         var expected = original.DeepClone();
         expected["activeProjects"]![0]!["timeSpentMinutes"] = 240;
