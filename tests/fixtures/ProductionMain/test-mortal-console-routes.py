@@ -42,11 +42,11 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(client,{'TERM':'xterm-256color','NONCE':'retained'})
         self.assertEqual(original,{'TERM':'dumb','NONCE':'retained'})
     def test_selected_frame_never_uses_old_or_ambiguous_selection(self):
-        self.assertEqual(selected_frame(b'Menu\n> Alpha\n  Beta\r',0,'Menu'),'Alpha')
+        self.assertEqual(selected_frame(b'Menu\n> Alpha\n  Beta\r',0,console_routes.fixed_menu('Menu',['Alpha','Beta'],20)),'Alpha')
         for raw in (b'Menu\n> Alpha\nMenu\n',b'Menu\n> Alpha\n> Beta\n',
                     b'Menu\n\x1b[8m> Alpha\n',b'Menu\n> Alpha\x1b[',b'Menu\n> Alpha\n  Alpha\n',b'Menu\n> Alpha',b'Menu\n> Alpha\n',
                     b'Menu\n> Alpha\n(Move up and down to reveal more items)\r'):
-            with self.subTest(raw=raw):self.assertIsNone(selected_frame(raw,0,'Menu'))
+            with self.subTest(raw=raw):self.assertIsNone(selected_frame(raw,0,console_routes.fixed_menu('Menu',['Alpha','Beta'],20)))
     def test_exact_item_position_cannot_accept_duplicate_or_missing(self):
         location=self.state();inventory={'items':[]}
         self.assertEqual(item_position(location,inventory,'st1','it1'),'storage')
@@ -67,10 +67,10 @@ class RouteTests(unittest.TestCase):
             if not predicate():raise TimeoutError('No fresh frame')
         peer=Peer();ns={'client':peer,'console_routes':console_routes,'until':until}
         exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),ns)
-        ns['finite_select']('Menu','Beta',0,2)
+        ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B',b'\r'])
         peer=Peer(False);ns['client']=peer
-        with self.assertRaises(TimeoutError):ns['finite_select']('Menu','Beta',0,2)
+        with self.assertRaises(TimeoutError):ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B'])
     def test_actual_local_branch_is_separate_from_genuine_gm_send(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())

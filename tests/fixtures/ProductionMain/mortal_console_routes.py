@@ -4,6 +4,7 @@ Inputs are fresh observed UI/canonical DATA, not permission to mutate. The drive
 must still use the ordinary console action and independently check its result.
 """
 import re
+import unicodedata
 
 def checked_route(value):
     if value is None:return {'Route':'birth'}
@@ -82,26 +83,88 @@ def client_environment(environment):
     """Isolated client console capability; no mutation of bridge/daemon/RPC env."""
     return dict(environment, TERM='xterm-256color')
 
-def selected_frame(raw, cut, title):
-    """Return the one selected emitted row from the newest complete fixed menu.
+def fixed_menu(header, choices, page_size):
+    """Closed, source-specific finite menu DATA; never authorizes a game mutation."""
+    if type(header) is not str or type(choices) is not list or not choices or type(page_size) is not int:
+        raise ValueError('Explicit finite menu required')
+    if len(choices)>page_size or len(set(choices))!=len(choices):raise ValueError('Pagination or duplicate choices')
+    def safe(line):
+        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=76
+    if not all(safe(line) for line in header.split('\n')) or not all(type(x) is str and safe(x) for x in choices):
+        raise ValueError('Unsupported control or wrapped menu')
+    footer=choices[-1]
+    if any(x.startswith(footer) or footer.startswith(x) for x in choices[:-1]):
+        raise ValueError('Terminal row prefix collision')
+    return {'header':header,'choices':tuple(choices),'page_size':page_size}
 
-    This is captured output, not a terminal-screen reconstruction. Pagination,
-    missing/ambiguous selected rows and incomplete output cannot select anything.
-    """
-    if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw):return None
-    try:text=raw[cut:].decode('utf-8')
-    except UnicodeError:return None
-    # Same supported non-concealing output surface as the inert pipe/xterm proof.
-    text=re.sub(r'\x1b\[(?:\?25[hl]|[0-9;]*[mABCDGHfKJ])','',text)
-    if '\x1b' in text or not text.endswith('\r'):return None
-    if 'reveal more items' in text or 'More choices' in text:return None
-    at=text.rfind(title)
-    if at<0:return None
-    rows=text[at+len(title):].replace('\r','').splitlines()
-    selected=[row.strip()[2:] for row in rows if row.strip().startswith('> ')]
-    if len(selected)!=1:return None
-    label=selected[0]
-    return label if fresh_selection(raw,cut,title,label) else None
+def inventory_menu(inventory, location, player_status):
+    """Small supported fixture inventory; unsupported canonical labels refuse before input."""
+    items=inventory.get('items');equipped=inventory.get('equippedItems',{});storages=location.get('locationStorages',[])
+    if type(items) is not list or type(equipped) is not dict or type(storages) is not list:raise ValueError('Inventory surfaces missing')
+    slots={'MainHand':'⚔️ Основная рука','OffHand':'🛡️ Вторая рука','Head':'🪖 Голова','Chest':'🛡️ Грудь','Legs':'🦵 Ноги','Feet':'👢 Ступни','Accessory1':'🔹 Аксессуар 1','Accessory2':'🔹 Аксессуар 2'}
+    rows=[]
+    for slot,identity in equipped.items():
+        if identity is None:continue
+        matches=[i for i in items if i.get('itemId')==identity]
+        if slot not in slots or len(matches)!=1:raise ValueError('Unsupported equipment shape')
+        rows.append('⚔ '+slots[slot]+': '+matches[0]['name'])
+    for i in items:
+        if not i.get('itemId') or type(i.get('name')) is not str:raise ValueError('Accepted item label missing')
+        kind=i.get('type','');count=str(i.get('count',i.get('quantity',1)))
+        if kind and (type(kind) is not str or kind.isascii()):raise ValueError('Unsupported translated item type')
+        rows.append('📦 '+i['name']+(' x'+count if count!='1' else '')+(' ['+kind+']' if kind else ''))
+    money=player_status.get('money',0)
+    if type(money) is not int:raise ValueError('Unsupported money')
+    if money<=0:money=inventory.get('money',0)
+    if type(money) is not int:raise ValueError('Unsupported money')
+    prefix=['💰 Деньги: '+str(money)] if money>0 else []
+    commodities=inventory.get('resources',{})
+    if type(commodities) is not dict:raise ValueError('Unsupported commodity shape')
+    for key,value in commodities.items():
+        if key in ('money','gold','coins'):continue
+        if type(value) not in (int,str):raise ValueError('Unsupported commodity')
+        if str(value) not in ('','0'):prefix.append('💎 '+key+': '+str(value))
+    rows=prefix+rows
+    for st in storages:
+        if type(st.get('hasFullAccess')) is not bool or type(st.get('contents')) is not list:raise ValueError('Unsupported storage')
+        n=len(st['contents'])
+        if any(not i.get('itemId') for i in st['contents']):raise ValueError('Unsupported storage item')
+        rows.append('📦 '+('' if st['hasFullAccess'] else '🔒 ')+st['name']+f' ({n} пр.)'+(' → управление' if st['hasFullAccess'] else ''))
+    weight=''
+    if 'totalWeight' in inventory:
+        weight='  (⚖ '+str(inventory['totalWeight'])+'/'+str(inventory.get('maxWeight','?'))+' кг'+(' — ПЕРЕГРУЗКА!' if inventory.get('isOverloaded') is True else '')+')'
+    return fixed_menu('🎒 📦 Инвентарь'+weight+'  (выберите для просмотра / управления)',rows+['← Назад'],20)
+
+def selected_frame(raw, cut, menu):
+    """Match a complete known sequence after a fresh cut, not a reconstructed screen."""
+    if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
+    try:
+        checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'])
+        text=raw[cut:].decode('utf-8')
+        def ansi(match):
+            args,final=match.groups()
+            if final in ('h','l') and args=='?25':return ''
+            if '?' in args or final not in 'mABCDGHfKJ':raise ValueError('Unsupported control')
+            if final=='m' and any(int(v or 0) not in (0,1,2,3,4,9,22,23,24,29) for v in args.split(';')):raise ValueError('Concealing decoration')
+            return ''
+        text=re.sub(r'\x1b\[([0-9;?]*)([A-Za-z])',ansi,text)
+    except (ValueError,KeyError,TypeError,UnicodeError):return None
+    if '\x1b' in text:return None
+    # A header starts a physical line; optional renderer padding is not arbitrary suffix text.
+    header='\n'.join(re.escape(line)+r' *' for line in checked['header'].split('\n'))
+    starts=list(re.finditer(r'(?:^|\n)\r?'+header+r'\r?\n',text))
+    if not starts:return None
+    body=text[starts[-1].end():]
+    body=re.sub(r'^(?: *\r?\n)*','',body)
+    if re.search(r'\r(?!\n|$)',body):return None
+    rows=body.replace('\r','').split('\n')
+    if len(rows)!=len(checked['choices']):return None
+    selected=[]
+    for index,(row,label) in enumerate(zip(rows,checked['choices'])):
+        match=re.fullmatch(r'(> |  )'+re.escape(label)+r' *',row)
+        if not match:return None
+        if match.group(1)=='> ':selected.append(index)
+    return checked['choices'][selected[0]] if len(selected)==1 else None
 
 def item_position(location,inventory,storage_id,item_id):
     """Exact observed target position, never permission to move an item."""

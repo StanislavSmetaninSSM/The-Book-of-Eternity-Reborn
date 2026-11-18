@@ -128,7 +128,8 @@ def main():
     inventory = mode == 'pipe-inventory'
     if inventory:
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
-        from mortal_console_routes import selected_frame
+        from mortal_console_routes import selected_frame, fixed_menu
+        menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
@@ -159,10 +160,14 @@ def main():
                 if mode=='pty' or streams[fd]=='captured':
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
-            ready=lambda choice: (selected_frame(bytes(captured),raw_cut,'🎒 📦 Инвентарь') ==
+            ready=lambda choice: (selected_frame(bytes(captured),raw_cut,menu) ==
                 ('💰 Деньги: 500' if choice=='SMOKE_ALPHA' else '← Назад')) if inventory else (
                 screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
+                if inventory:
+                    actual=bytes(captured[raw_cut:])
+                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith('← Назад'.encode())
+                    result['InitialCompleteFooterWithoutCR']=True
                 result['InitialRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 arrow=screen.down()
                 result['KeyboardAtDown']=dict(screen.keyboard)
@@ -171,6 +176,10 @@ def main():
                 result['Inputs'].append({'Key':'Down','Hex':arrow.hex()})
                 frame_cut=len(screen.plain);raw_cut=len(captured);stage=1
             elif stage==1 and ready('SMOKE_BETA'):
+                if inventory:
+                    actual=bytes(captured[raw_cut:])
+                    assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith('← Назад'.encode())
+                    result['MovedCompleteFooterWithoutCR']=True
                 result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 assert os.write(master,b'\r')==1
                 result['Inputs'].append('Enter');stage=2

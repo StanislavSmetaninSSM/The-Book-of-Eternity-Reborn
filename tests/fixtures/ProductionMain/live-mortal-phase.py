@@ -967,13 +967,13 @@ def exit_client(client):
     offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh_main(client,offset)
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
-def finite_select(title,label,cut,maximum_rows,commit=True):
+def finite_select(menu,label,cut,maximum_rows,commit=True):
     # Only callers below supply fixed source-read menus. No arbitrary key program.
     seen=set()
     for _ in range(maximum_rows):
-        until(lambda:console_routes.selected_frame(bytes(client.capture),cut,title) is not None,
+        until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
               5,'fresh fixed menu selection')
-        selected=console_routes.selected_frame(bytes(client.capture),cut,title)
+        selected=console_routes.selected_frame(bytes(client.capture),cut,menu)
         if selected in seen:raise RuntimeError('Menu wrapped before exact target; no guessing or pagination')
         seen.add(selected)
         if selected==label:
@@ -990,6 +990,11 @@ def local_observation():
         'History':phase_evidence.history_witness_at(session),
         'QueuePins':phase_evidence.relay_inventory(relay_queue)}
 
+def current_inventory_menu():
+    return console_routes.inventory_menu(strict_settings((session/'game_state/inventory/items.json').read_bytes()),
+        strict_settings((session/'game_state/world/current_location.json').read_bytes()),
+        strict_settings((session/'game_state/core/player_status.json').read_bytes()))
+
 def denied_storage_route():
     global client_prompt
     current_path=session/'game_state/world/current_location.json'
@@ -997,13 +1002,14 @@ def denied_storage_route():
     target=console_routes.storage_target(strict_settings(current),route['StorageId'],route['ItemId'],False)
     before=local_observation();inventory_path=session/'game_state/inventory/items.json'
     inventory=inventory_path.read_bytes()
+    menu=current_inventory_menu()
     cut=len(client.capture);client_prompt=False
     client.send(b'/storage_move\r','fixed denied storage route')
-    cut,selected_cut=finite_select('🎒 📦 Инвентарь',target['StorageLabel'],cut,20)
+    cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
-    until(lambda:console_routes.selected_frame(bytes(client.capture),cut,'🎒 📦 Инвентарь') is not None,
+    until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
           5,'fresh inventory after locked storage selection')
-    after,_=finite_select('🎒 📦 Инвентарь','← Назад',cut,20)
+    after,_=finite_select(current_inventory_menu(),'← Назад',cut,20)
     fresh_player(client,after,10);client_prompt=True
     console_routes.require_local_unchanged(before,local_observation())
     if current_path.read_bytes()!=current or inventory_path.read_bytes()!=inventory:
@@ -1014,6 +1020,9 @@ def denied_storage_route():
 
 def storage_local_route():
     global client_prompt,original,original_record,load_cut,load_expected
+    # This fixed local proof creates its sole Save; refuse a broader Load menu before any local action.
+    if any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
+        raise RuntimeError('Finite local proof requires no pre-existing Save choices')
     location_path=session/'game_state/world/current_location.json'
     inventory_path=session/'game_state/inventory/items.json'
     location=location_path.read_bytes();inventory=inventory_path.read_bytes()
@@ -1038,24 +1047,36 @@ def storage_local_route():
         contents=[i for i in storage[0]['contents'] if type(i) is dict and i.get('itemId')]
         inventory_items=[i for i in items['items'] if type(i) is dict and i.get('itemId')]
         label=f"📦 {target['StorageName']} ({len(contents)} пр.) → управление"
-        cut=len(client.capture);client_prompt=False
-        client.send(b'/storage_move\r','fixed local storage move')
-        cut,_=finite_select('🎒 📦 Инвентарь',label,cut,20)
-        action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
-                      f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
-        cut,_=finite_select('📦 '+target['StorageName'],action_label,cut,10)
+        inventory_menu=current_inventory_menu()
+        actions=[]
+        if inventory_items:actions.append(f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
+        if contents:actions.append(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)')
+        action_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(contents)),actions+['← Назад к инвентарю'],10)
         title='Выберите предмет для извлечения из хранилища:' if retrieve else 'Выберите предмет для перемещения в хранилище:'
         options=contents if retrieve else inventory_items
         labels=[str(i.get('name',i.get('itemName','')))+((' ×'+str(i.get('quantity',i.get('count',1)))) if str(i.get('quantity',i.get('count',1)))!='1' else '') for i in options]
         if labels.count(target['ItemLabel'])!=1:raise RuntimeError('Current exact item label unavailable/ambiguous')
-        cut,_=finite_select(title,target['ItemLabel'],cut,20)
+        picker_menu=console_routes.fixed_menu(title,labels+['← Отмена'],20)
+        cut=len(client.capture);client_prompt=False
+        client.send(b'/storage_move\r','fixed local storage move')
+        cut,_=finite_select(inventory_menu,label,cut,20)
+        action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
+                      f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
+        cut,_=finite_select(action_menu,action_label,cut,10)
+        cut,_=finite_select(picker_menu,target['ItemLabel'],cut,20)
         until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
         if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
-        cut,_=finite_select('📦 '+target['StorageName'],'← Назад к инвентарю',cut,10)
-        cut,_=finite_select('🎒 📦 Инвентарь','← Назад',cut,20)
+        post_location=strict_settings(location_path.read_bytes());post_items=strict_settings(inventory_path.read_bytes())
+        post_storage=next(st for st in post_location['locationStorages'] if st['storageId']==target['StorageId'])
+        post_actions=[]
+        if post_items['items']:post_actions.append(f"📥 Положить предмет в хранилище ({len(post_items['items'])} в инвентаре)")
+        if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
+        post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
+        cut,_=finite_select(post_menu,'← Назад к инвентарю',cut,10)
+        cut,_=finite_select(current_inventory_menu(),'← Назад',cut,20)
         fresh_player(client,cut,10);client_prompt=True
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
-    save_name='t024-'+uuid.uuid4().hex
+    save_name='t027-'+uuid.uuid4().hex[:8] # Bounded visible label; exact archive uniqueness is still checked.
     saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
     cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Save menu')
     fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'1\r','observed Save choice')
@@ -1094,12 +1115,15 @@ def storage_local_route():
                            'Guarantee':startup['terminalGuarantee'],'RootPid':startup['shellPid']}}
     result['StartupIdentityA']=identity;result['LoadExpected']=load_expected
     result['LoadArchiveSHA256']=sha(archive_bytes)
-    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
-    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
+    all_save_files=[p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')]
+    if all_save_files!=[archive]:raise RuntimeError('Finite Load fixture requires the one exact observed archive; unsupported additional saves')
     timestamp=datetime.datetime.fromisoformat(metadata['timestamp'].replace('Z','+00:00')).strftime('%d.%m.%Y %H:%M')
     load_label=f"{save_name} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
+    load_menu=console_routes.fixed_menu('Выберите сохранение:',[load_label,'↩️ Назад'],15)
+    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
+    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
     # Select the exact archive row without activating it yet; its receipt SourceKey must match.
-    load_cut=finite_select('Выберите сохранение:',load_label,cut,15,commit=False)[0]
+    load_cut=finite_select(load_menu,load_label,cut,15,commit=False)[0]
     if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
     continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
     result['LoadActionCut']=load_cut
@@ -1130,6 +1154,11 @@ def storage_local_route():
         'SaveArchiveSHA256':sha(archive_bytes),'RestoreBytesExact':True}
 
 load_cut=None;load_expected=None
+# Reject unsupported fixed UI layout before starting any owned process; refresh again at each action.
+if route['Route']!='birth':
+    current_inventory_menu()
+    if route['Route']=='storage-local-proof' and any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
+        raise RuntimeError('Finite local proof requires no pre-existing Save choices')
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
