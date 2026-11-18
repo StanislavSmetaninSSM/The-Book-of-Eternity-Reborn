@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-seed-export-coherence",
+      "responsibility": "#1515 T020 existing initial export proves validated coherent setup and refuses overwrite after empty-companion initialization.",
+      "excludes": "Other occupied-root/manifest controls, native turns, legacy migration or resource allocation to historical fixture actors.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveSeedBuilder.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLiveSeedExporterTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveSeedExporterTests.InitialExportIsValidatedCoherentSetupOnlyAndCannotOverwrite"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-seed-bootstrap",
       "responsibility": "#1515 T020 both fresh seed modes initialize production-equivalent client-owned empty materialization companions before the first original, preserving authored world DATA.",
       "excludes": "No legacy repair, runtime absence fallback, GM receipts, game engine or native launch.",
@@ -22,7 +47,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLiveSeedBootstrapTests.FreshSeedInitializesClientOwnedEmptyCompanionsBeforeOriginal"
+            "BookOfEternityClient.Tests.MortalLiveSeedBootstrapTests.FreshSeedInitializesClientOwnedEmptyCompanionsBeforeOriginal",
+            "BookOfEternityClient.Tests.MortalLiveSeedBootstrapTests.FreshSeedPreservesAlreadyPresentSelectedCompanionBytes"
           ]
         }
       ]

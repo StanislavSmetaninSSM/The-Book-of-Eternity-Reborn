@@ -8,6 +8,36 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalLiveSeedBootstrapTests
 {
+    [Fact]
+    public async Task FreshSeedPreservesAlreadyPresentSelectedCompanionBytes()
+    {
+        var root = Path.Combine(TestDiagnosticPaths.Root, "mortal-seed-bootstrap-preserve", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var example = Path.Combine(root, "example");
+            foreach (var source in Directory.GetFiles(TestRepoPaths.BaseSessionRoot, "*", SearchOption.AllDirectories))
+            {
+                var destination = Path.Combine(example, Path.GetRelativePath(TestRepoPaths.BaseSessionRoot, source));
+                Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+                File.Copy(source, destination);
+            }
+            var companion = Path.Combine(example, StorageTransportMoveService.VehiclesPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(companion)!);
+            var bytes = System.Text.Encoding.UTF8.GetBytes("{\n  \"birthReceipts\": [], \"activeVehicleId\": null, \"vehicles\": []\n}\n");
+            await File.WriteAllBytesAsync(companion, bytes);
+            var files = new FileSystemManager(Path.Combine(root, "play"), NullLogger<FileSystemManager>.Instance);
+            await MortalLiveSeedBuilder.PrepareAsync(files, example, seed: null);
+            Assert.Equal(bytes, await File.ReadAllBytesAsync(files.ResolvePath(StorageTransportMoveService.VehiclesPath)));
+            Assert.True(JsonNode.DeepEquals(MortalVehicleBirthReceiptState.CreateEmptyRoot(),
+                JsonNode.Parse((await files.ReadFileAsync(StorageTransportMoveService.VehiclesPath))!)));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+        }
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -44,6 +74,23 @@ public sealed class MortalLiveSeedBootstrapTests
                          ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
                          CanonicalResourceOwnerAuthorityComposer.AuthorityPath })
                 Assert.NotNull(await files.ReadFileAsync(path));
+            // Final canonical authority contains ledger/history-backed DATA, not a guessed
+            // birth health allocation for the already-arranged historical scout.
+            var definitions = ResourceDefinitionCatalog.ParseCanonical(
+                await files.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
+            Assert.True(definitions.IsValid);
+            var state = ResourceStateContract.ParseCanonical(
+                await files.ReadFileAsync(ResourceMaterializationContract.StatePath), definitions.Catalog!, allowMissingPristine: false);
+            var history = ResourceHistoryState.ParseCanonical(
+                await files.ReadFileAsync(ResourceMaterializationContract.HistoryPath), definitions.Catalog!, allowMissingPristine: false);
+            Assert.True(state.IsValid);
+            Assert.True(history.IsValid);
+            var recomposed = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                definitions.Catalog!, path => files.ReadFileAsync(path), state.Ledger, history.History,
+                CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage);
+            Assert.True(recomposed.IsValid, string.Join("\n", recomposed.Issues.Select(i => i.Code)));
+            Assert.Equal(await files.ReadFileAsync(CanonicalResourceOwnerAuthorityComposer.AuthorityPath),
+                recomposed.CanonicalAuthorityJson);
             var map = JsonNode.Parse((await files.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
             var storage = JsonNode.Parse((await files.ReadFileAsync(MortalStorageAccessProjection.StatePath))!)!.AsObject();
             Assert.Empty(MortalStorageAccessProjection.ValidateCanonical(map, storage));

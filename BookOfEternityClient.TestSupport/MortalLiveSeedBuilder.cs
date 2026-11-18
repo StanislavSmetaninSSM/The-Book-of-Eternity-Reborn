@@ -40,6 +40,15 @@ internal static class MortalLiveSeedBuilder
         await files.WriteFileAtomicAsync("game_state/misc/characteristics.json", JsonSerializer.Serialize(
             Characteristics.All.ToDictionary(name => name, _ => 20), SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await files.WriteFileAtomicAsync("game_state/player/experience.json", "{\"level\":1,\"experience\":0,\"experienceForNextLevel\":100}");
+        // Fresh test setup only: reuse the client's current empty companion schema.
+        // Never replace populated example DATA or repair a retained session here.
+        var bootstrap = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(
+            2, 41, null, null, null, DateTimeOffset.UnixEpoch);
+        foreach (var path in new[] { StorageTransportMoveService.VehiclesPath,
+                     "game_state/npcs/npc_skills.json", "game_state/inventory/item_bonds.json",
+                     "game_state/inventory/item_text_updates.json" })
+            if (!files.FileExists(path))
+                await files.WriteFileAtomicAsync(path, bootstrap[path].ToJsonString());
         var resources = ResourceBootstrapStateBuilder.BuildMortalPlayer(2, 41, 20, 20, 20, 20, 20);
         if (!resources.IsValid) throw new InvalidDataException(JsonSerializer.Serialize(resources.Issues));
         await files.WriteFileAtomicAsync(ResourceMaterializationContract.DefinitionsPath, resources.Definitions!.ToCanonicalJson());
