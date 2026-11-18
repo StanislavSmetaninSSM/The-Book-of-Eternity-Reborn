@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-prepared-stop-load-consumer",
+      "responsibility": "#1589 affected real FIFO Load stop/finish consumer preserves one original stream after stop-fenced prepared-grant revocation.",
+      "excludes": "No archive replacement, game materialization, full Load feature or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.ActualHost_LoadStopAndNoReplacementFinishRetainOneOriginalStream"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-prepared-grant-stop-positive",
       "responsibility": "#1589 exact FIFO prepared grant then original Stop before Activate: reject activation and preserve clean never-admitted retirement.",
       "excludes": "No live game, active lost-close relaxation or historical rl3 causality claim.",

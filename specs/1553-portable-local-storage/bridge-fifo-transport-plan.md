@@ -1379,3 +1379,27 @@ production reader or swallow/retry arbitrary metadata refusals. The exact
 historical transient entry was not captured. Output20 manifest SHA256:
 d4bb5aad3232331bd6bb8b6b83cfbba4feeb5192c5d081ab5cf5c5b4902df24d.
 Raw evidence stays external; no further game launch or merge occurred.
+
+### #1589 prepared-stop positive GREEN after observer correction
+
+The test-only Readback observer in 3cbd212b was independently reviewed. Fresh
+Unit build: 38.21 seconds / 38.434 wall, 66 warnings, zero errors. Only the
+positive Fact was rerun: 1/1 PASS in 13.0626468 seconds, complete owned cleanup,
+no skips, duplicates or timeout. Original case c6d3fb0fa591459ab8bb0e996497e967
+proves exact PreparedGrant, same-owner Stopping Readback, late activation refusal,
+two unchanged-identity RevokedBeforeActivation replies (not ClosedObserved),
+then the separate active control's true immutable close. Original run
+a125dd6a445d4594b3d792e89d387631 reaches scoped ACK, full durable Stopped with
+OwnedScopeEmpty, actual host exit 0 and endpoint removal. Guardian ECHILD,
+driver 0, reaped 1, no emergency signals, failures or deadline.
+
+Independent outcome review accepted this result. Together with the prior two
+negative passes, three distinct scenarios are qualified in two runs; no claim
+that all three ran together or that historical rl3 causality is established.
+Twenty output pins: SHA256
+4f491b52ca30aabf5c78e4319671fd5e9c9705e1fa85da2ce1928db6af532a29.
+Integration outputs remain old. Before another game, check only the existing
+actual daemon coordinated-stop case and exact FIFO Load stop/finish consumer;
+the new narrow catalog entry preserves all existing entries and avoids rerunning
+71 unrelated transport cases. Full game shutdown and same-world restart remain
+unqualified. Main unchanged; raw diagnostics external.
