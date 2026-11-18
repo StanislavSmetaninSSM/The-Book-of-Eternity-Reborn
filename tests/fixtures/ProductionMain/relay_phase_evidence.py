@@ -530,8 +530,8 @@ def local_load_route_proved(proof, final_queue_pins):
         if any(type(target[k]) is not str or not target[k] for k in target if k!='ContentsCount'):return False
         if type(target['ContentsCount']) is not int or target['ContentsCount']<1:return False
         before=proof['Before'];after=proof['After']
-        if before!=after or set(before)!={'StorySHA256','HistorySHA256','QueuePins'}:return False
-        if not all(digest(before[k]) for k in ('StorySHA256','HistorySHA256')) or not pins(before['QueuePins']) or not pins(final_queue_pins):return False
+        if before!=after or set(before)!={'StorySHA256','History','QueuePins'}:return False
+        if not digest(before['StorySHA256']) or not history_witness_valid(before['History']) or not pins(before['QueuePins']) or not pins(final_queue_pins):return False
         if any('request-' in k for k in list(before['QueuePins'])+list(final_queue_pins)):return False
         # Maintained relay_contract.request_close adds these names; execution lock
         # is coordination DATA, never a GM request. All earlier queue bytes persist.
@@ -549,3 +549,50 @@ def local_load_route_proved(proof, final_queue_pins):
             if not stages[0][key]==stages[1][key]==stages[3][key] or stages[2][key]==stages[1][key]:return False
         return True
     except (KeyError,TypeError,ValueError):return False
+
+
+def optional_history_witness(raw):
+    """Exact detached bytes/presence, never a receipt or publication authority."""
+    if raw is not None and not isinstance(raw, bytes):raise ValueError('History must be bytes or physical absence')
+    return {'present':raw is not None,'sha256':hashlib.sha256(raw).hexdigest() if raw is not None else None}
+
+
+def history_witness_valid(value):
+    return (isinstance(value,dict) and set(value)=={'present','sha256'} and type(value['present']) is bool
+        and ((value['present'] and isinstance(value['sha256'],str) and re.fullmatch('[0-9a-f]{64}',value['sha256']) is not None)
+             or (not value['present'] and value['sha256'] is None)))
+
+
+def history_witness_matches_pins(value,pins):
+    """Joins outcome DATA to independently fresh canonical inventory, including absence."""
+    path='game_state/world/mortal_living_world_history.json'
+    return history_witness_valid(value) and isinstance(pins,dict) and (pins.get(path)==value['sha256'] if value['present'] else path not in pins)
+
+
+def checked_mortal_outcome(value,request):
+    """Strict union of appended receipt and production-checked nonapplicability; no missing-field fallback."""
+    common={'valid','publicationAuthority','kind','sessionId','requestId','turn','snapshotToken','priorCount','currentCount','historyBefore','historyAfter'}
+    if not isinstance(value,dict) or value.get('valid') is not True or value.get('publicationAuthority') is not False:
+        raise ValueError('Typed outcome validation failed')
+    kind=value.get('kind');extra={'declarationFingerprint','receiptFingerprint'} if kind=='ReceiptAppended' else {'applicability'} if kind=='NotRequired' else None
+    if extra is None or set(value)!=common|extra:raise ValueError('Unknown or mixed typed outcome fields')
+    if any(value[k]!=request[k] for k in ('sessionId','requestId')) or type(value['turn']) is not int or value['turn']!=request['turnNumber']:
+        raise ValueError('Typed outcome belongs to another request')
+    if not isinstance(value['snapshotToken'],str) or not re.fullmatch('[0-9A-F]{64}',value['snapshotToken']):raise ValueError('Missing snapshot token')
+    prior=value['priorCount'];current=value['currentCount']
+    if type(prior) is not int or prior<0 or type(current) is not int or current<0:raise ValueError('Invalid receipt counts')
+    before=value['historyBefore'];after=value['historyAfter']
+    if not history_witness_valid(before) or not history_witness_valid(after):raise ValueError('Invalid history presence/hash')
+    if not before['present'] and prior!=0:raise ValueError('Absent prior history has receipts')
+    if kind=='ReceiptAppended':
+        if current!=prior+1 or not after['present'] or any(not isinstance(value[k],str) or not re.fullmatch('sha256:[0-9a-f]{64}',value[k]) for k in extra):
+            raise ValueError('Expected exactly one new typed receipt')
+    else:
+        a=value['applicability'];fields={'originalMinute','resultMinute','lastWorldMinute','lastFactionMinute','worldCycleMinutes','factionCycleMinutes'}
+        if current!=prior or before!=after or not isinstance(a,dict) or set(a)!=fields or any(type(a[k]) is not int or a[k]<0 for k in fields):
+            raise ValueError('Invalid nonapplicable outcome')
+        if (a['worldCycleMinutes']<=0 or a['factionCycleMinutes']<=0 or a['resultMinute']<a['originalMinute']
+            or a['lastWorldMinute']>a['originalMinute'] or a['lastFactionMinute']>a['originalMinute']
+            or a['resultMinute']-a['lastWorldMinute']>=a['worldCycleMinutes'] or a['resultMinute']-a['lastFactionMinute']>=a['factionCycleMinutes']):
+            raise ValueError('Nonapplicable outcome claims due/invalid clock')
+    return value

@@ -143,7 +143,7 @@ class RouteTests(unittest.TestCase):
         ns={'console_routes':console_routes,'client':Peer(),'save_result_cut':1}
         with self.assertRaises(RuntimeError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual Save result refusal','exec'),ns)
     def test_local_route_does_not_accept_story_or_queue_change(self):
-        before={'StorySHA256':'a','HistorySHA256':'b','QueuePins':{}}
+        before={'StorySHA256':'a','History':{'present':False,'sha256':None},'QueuePins':{}}
         require_local_unchanged(before,dict(before))
         for field in before:
             after=dict(before);after[field]='changed'

@@ -79,7 +79,7 @@ class MortalEvidenceTests(unittest.TestCase):
                 history=session/'game_state/world/mortal_living_world_history.json';history.write_bytes(b'[]')
                 request_bytes=json.dumps(request).encode()
                 prior.update(SeedManifestSha256=NS['sha'](seed_path.read_bytes()),StoryPath=str(story),StoryAfterSHA256=NS['sha'](story.read_bytes()),ActualRequest=request,ActualRequestSHA256=NS['sha'](request_bytes),AcceptedStory=accepted,LivingWorldHistorySHA256=NS['sha'](history.read_bytes()),PhasePackage=package,
-                    TypedReceiptEvidence=dict(valid=True,publicationAuthority=False,sessionId='s',requestId='request42',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64))
+                    TypedReceiptEvidence=dict(kind='ReceiptAppended',historyBefore=dict(present=False,sha256=None),historyAfter=dict(present=True,sha256=NS['sha'](history.read_bytes())),valid=True,publicationAuthority=False,sessionId='s',requestId='request42',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64))
                 owners=base/'.boe_runtime/gm-runs';owners.mkdir(parents=True);(owners/'main.json').write_text(json.dumps(prior['StoppedRecord']))
                 prior.update(SeedSessionId='s',BasePath=str(base),AcceptedTurnNumber=42,RuntimePins=package['RuntimePins'],ReceiptHelperPins=package['ReceiptHelperPins'],FinalConfigSHA256=NS['sha']((session/'config.json').read_bytes()))
                 proof=prior['DaemonSettlement'];proof['SessionPath']=str(session)

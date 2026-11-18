@@ -15,7 +15,27 @@ public sealed class MortalLiveOutcomeApplicabilityTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task ReadActualShortTurnWithoutDueCycleRequiresNoNewReceipt(bool priorReceipt)
+    public Task ReadActualShortTurnWithoutDueCycleRequiresNoNewReceipt(bool priorReceipt) => CheckAsync(priorReceipt, null);
+
+    [Theory]
+    [InlineData("due")]
+    [InlineData("backwards")]
+    [InlineData("clock-command")]
+    [InlineData("schedule-marker")]
+    [InlineData("living-report")]
+    [InlineData("progression-report")]
+    [InlineData("original-report")]
+    [InlineData("history-malformed")]
+    [InlineData("history-deleted")]
+    [InlineData("history-whitespace")]
+    [InlineData("request")]
+    [InlineData("hash")]
+    [InlineData("uncovered-absence")]
+    [InlineData("selected-path")]
+    public Task InvalidCapturedOrCurrentOutcomeRefusesWithoutMutation(string fault) => CheckAsync(true, fault);
+
+    /// <summary>Runs one owned detached fixture; faults are applied only after lawful production prerequisites.</summary>
+    private static async Task CheckAsync(bool priorReceipt, string? fault)
     {
         var root = Path.Combine(TestDiagnosticPaths.Root, "live-outcome-applicability", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -79,8 +99,48 @@ public sealed class MortalLiveOutcomeApplicabilityTests
                 control.WorldCycleMinutes, control.FactionCycleMinutes), null));
             ProgressionScheduleService.RequirePublishedMortalTreatmentOutcome(control, manifest.SessionId, manifest.RequestId, 42,
                 original[ProgressionScheduleService.SchedulePath]!, clock, schedule, await fs.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
+            if (fault is "due" or "backwards" or "clock-command")
+                await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, fault == "due" ? "{\"currentTimeInMinutes\":720}" :
+                    fault == "backwards" ? "{\"currentTimeInMinutes\":479}" : "{\"currentTimeInMinutes\":500,\"timeChange\":0}");
+            if (fault == "schedule-marker")
+            {
+                var node = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(schedule!))!.AsObject();
+                node["lastWorldSimulationTimeInMinutes"] = 500;
+                await fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, node.ToJsonString());
+            }
+            if (fault == "living-report") await fs.WriteFileAtomicAsync(MortalLivingWorldSource.ReportPath, "{}");
+            if (fault == "progression-report") await fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, "{}");
+            if (fault == "history-malformed") await fs.WriteFileAtomicAsync(MortalLivingWorldSource.HistoryPath, "{}");
+            if (fault == "history-deleted") File.Delete(Path.Combine(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath));
+            if (fault == "history-whitespace") await WriteAsync(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath, priorHistory!.Concat(new byte[] { 32 }).ToArray());
+            if (fault == "request") await File.WriteAllTextAsync(request, (await File.ReadAllTextAsync(request)).Replace("short-request", "foreign-request"));
+            if (fault is "hash" or "uncovered-absence" or "selected-path" or "original-report")
+            {
+                if (fault == "hash") manifest.SnapshotFileHashes[MortalLivingWorldSource.WorldTimePath] = new string('F', 64);
+                if (fault == "uncovered-absence") manifest.OriginalPathPresenceV1!.Remove(MortalLivingWorldSource.ReportPath);
+                if (fault == "selected-path") manifest.Files[MortalLivingWorldSource.WorldTimePath] = MortalLivingWorldSource.WorldTimePath;
+                if (fault == "original-report")
+                {
+                    var bytes = Encoding.UTF8.GetBytes("{}");var selected = "game_state/control/pending_turn_snapshot/" + MortalLivingWorldSource.ReportPath;
+                    manifest.OriginalPathPresenceV1![MortalLivingWorldSource.ReportPath] = true;
+                    manifest.Files[MortalLivingWorldSource.ReportPath] = selected;
+                    manifest.SnapshotFileHashes[MortalLivingWorldSource.ReportPath] = Convert.ToHexString(SHA256.HashData(bytes));
+                    await WriteAsync(baseline, selected, bytes);
+                }
+                manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
+                    LiveTurnPreparationService.ManifestHashJsonOptions, value => value.ManifestPayloadHash, (value, hash) => value.ManifestPayloadHash = hash);
+                await WriteAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    JsonSerializer.SerializeToUtf8Bytes(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+            }
             var before = Inventory(root);
+            if (fault is not null)
+            {
+                await Assert.ThrowsAsync<InvalidDataException>(() => MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request));
+                Assert.Equal(before, Inventory(root));
+                return;
+            }
             var result = await MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request);
+            Assert.Equal("NotRequired", result.Kind);
             Assert.Equal(manifest.ManifestPayloadHash, result.SnapshotToken);
             Assert.Equal(priorReceipt ? 1 : 0, result.PriorCount);
             Assert.Equal(result.PriorCount, result.CurrentCount);

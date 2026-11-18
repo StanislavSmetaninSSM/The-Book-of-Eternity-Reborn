@@ -74,7 +74,7 @@ def fresh_selection(raw,cut,title,label):
     return len(occurrences)==1 and occurrences[0]=='> '+label
 
 def require_local_unchanged(before,after):
-    for key in ('StorySHA256','HistorySHA256','QueuePins'):
+    for key in ('StorySHA256','History','QueuePins'):
         if key not in before or key not in after or before[key]!=after[key]:
             raise ValueError('Local console route changed original '+key)
 

@@ -517,16 +517,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-receipt-budget':
     sys.exit(0)
 
 def checked_typed_receipt(value,request):
-    if value.get('valid') is not True or value.get('publicationAuthority') is not False:
-        raise ValueError('Typed receipt validation failed')
-    if any(value.get(k)!=request[k] for k in ('sessionId','requestId')) or value.get('turn')!=request['turnNumber']:
-        raise ValueError('Typed receipt belongs to another request')
-    prior=value.get('priorCount');current=value.get('currentCount')
-    if type(prior) is not int or prior<0 or type(current) is not int or current!=prior+1:
-        raise ValueError('Expected exactly one new typed receipt')
-    if not re.fullmatch('[0-9A-F]{64}',value.get('snapshotToken','')) or any(not re.fullmatch('sha256:[0-9a-f]{64}',value.get(k,'')) for k in ('declarationFingerprint','receiptFingerprint')):
-        raise ValueError('Typed receipt fingerprints missing')
-    return value
+    return phase_evidence.checked_mortal_outcome(value,request)
 
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-cleanup-observation':
     # Source-order regression, not a runtime/ownership qualification.
@@ -552,7 +543,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-story-contract':
     try:checked_story_append(before,before+json.dumps(dict(row,requestId='foreign')).encode()+b'\n',request)
     except ValueError:pass
     else:raise AssertionError('Conflicting story identity accepted')
-    receipt=dict(valid=True,publicationAuthority=False,sessionId='s',requestId='r',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64)
+    receipt=dict(kind='ReceiptAppended',historyBefore=dict(present=False,sha256=None),historyAfter=dict(present=True,sha256='d'*64),valid=True,publicationAuthority=False,sessionId='s',requestId='r',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64)
     assert checked_typed_receipt(receipt,request)==receipt
     for key,value in [('requestId','other'),('sessionId','other'),('turn',43),('valid',False),('publicationAuthority',True),('currentCount',2),('snapshotToken',''),('receiptFingerprint','')]:
         try:checked_typed_receipt(dict(receipt,**{key:value}),request)
@@ -699,7 +690,7 @@ if previous:
     old=previous['AcceptedStory'];prior_rows=[json.loads(row) for row in story_before.decode('utf-8-sig').splitlines() if row.strip()]
     assert prior_rows[-1]==old and old['turn']==previous['ActualRequest']['turnNumber'] and old['player']==previous['ActualRequest']['playerAction']
     checked_typed_receipt(previous['TypedReceiptEvidence'],previous['ActualRequest'])
-    assert sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())==previous['LivingWorldHistorySHA256'], 'Prior accepted history changed'
+    assert phase_evidence.history_witness_matches_pins(previous['TypedReceiptEvidence']['historyAfter'],phase_evidence.relay_world_inventory(session)), 'Prior accepted history changed'
     current_owner=strict_settings((base/'.boe_runtime/gm-runs/main.json').read_bytes())
     assert current_owner==previous['StoppedRecord'], 'Previous complete stopped owner evidence changed'
 else:
@@ -996,7 +987,7 @@ def finite_select(title,label,cut,maximum_rows,commit=True):
 
 def local_observation():
     return {'StorySHA256':sha(story.read_bytes()),
-        'HistorySHA256':sha((session/'game_state/world/mortal_living_world_history.json').read_bytes()),
+        'History':phase_evidence.optional_history_witness((session/'game_state/world/mortal_living_world_history.json').read_bytes() if (session/'game_state/world/mortal_living_world_history.json').exists() else None),
         'QueuePins':phase_evidence.relay_inventory(relay_queue)}
 
 def denied_storage_route():
@@ -1275,7 +1266,8 @@ try:
                     result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
                     if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
                     result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
-                    result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
+                    result['LivingWorldHistory']=phase_evidence.optional_history_witness((session/'game_state/world/mortal_living_world_history.json').read_bytes() if (session/'game_state/world/mortal_living_world_history.json').exists() else None)
+                    assert result['LivingWorldHistory']==result['TypedReceiptEvidence']['historyAfter'], 'Typed outcome differs from current history bytes'
                     result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
                     result['AcceptedTurnNumber']=expected_turn
                     result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
@@ -1413,6 +1405,7 @@ finally:
             raise ValueError('Original finite route descriptor changed')
         phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
         result['FinalWorldPins']=phase_evidence.relay_world_inventory(session)
+        if result.get('AcceptedGameTurns')==1:assert phase_evidence.history_witness_matches_pins(result['TypedReceiptEvidence']['historyAfter'],result['FinalWorldPins']), 'History changed after typed outcome'
         result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
     except Exception as ex:result['PackageIntegrityFailure']=type(ex).__name__+': '+str(ex)
     result['ElapsedSeconds']=elapsed()

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -10,9 +11,9 @@ namespace BookOfEternityClient.Tests;
 [Collection("desktop-helper-console")]
 public sealed class MortalLiveEvidenceValidatorTests
 {
-    private static (string History, string Manifest, string Request, string Token) Evidence()
+    private static (string History, string Manifest, string Request, string Token) Evidence(LiveTurnPendingSnapshotManifest? supplied = null)
     {
-        var manifest = new LiveTurnPendingSnapshotManifest
+        var manifest = supplied ?? new LiveTurnPendingSnapshotManifest
         { SessionId = "session", RequestId = "request", TurnNumber = 7, PlayerAction = "Ждать четыре часа", RequestTimestamp = "2026-11-18T00:00:00Z" };
         manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
             LiveTurnPreparationService.ManifestHashJsonOptions, value => value.ManifestPayloadHash, (value, hash) => value.ManifestPayloadHash = hash);
@@ -27,7 +28,7 @@ public sealed class MortalLiveEvidenceValidatorTests
         var built = MortalLivingWorldReceipt.Build(manifest.ManifestPayloadHash,
             new("session", "request", 7, 0, 240, 0, 0, 240, 1440), report, null);
         var request = JsonSerializer.Serialize(new { sessionId = manifest.SessionId, requestId = manifest.RequestId,
-            turnNumber = manifest.TurnNumber, playerAction = manifest.PlayerAction, timestamp = manifest.RequestTimestamp });
+            turnNumber = manifest.TurnNumber, playerAction = manifest.PlayerAction, timestamp = manifest.RequestTimestamp, progressionControl = manifest.ProgressionControl });
         return (built.HistoryJson, JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions), request, manifest.ManifestPayloadHash);
     }
 
@@ -71,12 +72,12 @@ public sealed class MortalLiveEvidenceValidatorTests
     [Fact]
     public async Task ActualCliBoundaryReturnsOneRefusalForTamperedTypedEvidence()
     {
-        var evidence = Evidence();
         var root = Path.Combine(TestDiagnosticPaths.Root, "live-evidence-cli", Guid.NewGuid().ToString("N"));
         var previous = Console.Out;
         using var output = new StringWriter();
         try
         {
+            var evidence = await PrepareReadEvidenceAsync(root);
             var baseline = Path.Combine(root, "before"); var current = Path.Combine(root, "current");
             Directory.CreateDirectory(Path.Combine(baseline, "game_state/control"));
             Directory.CreateDirectory(Path.Combine(current, "game_state/world"));
@@ -100,10 +101,10 @@ public sealed class MortalLiveEvidenceValidatorTests
     [Fact]
     public async Task ExplicitCapturedInputsAreReadWithoutMutation()
     {
-        var evidence = Evidence();
         var root = Path.Combine(TestDiagnosticPaths.Root, "live-evidence-readonly", Guid.NewGuid().ToString("N"));
         try
         {
+            var evidence = await PrepareReadEvidenceAsync(root);
             var baseline = Path.Combine(root, "before"); var current = Path.Combine(root, "current");
             Directory.CreateDirectory(Path.Combine(baseline, "game_state/control"));
             Directory.CreateDirectory(Path.Combine(current, "game_state/world"));
@@ -119,4 +120,37 @@ public sealed class MortalLiveEvidenceValidatorTests
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }
+    /// <summary>Provides current selected-original coverage for the real IO boundary; pure Validate fixtures remain independent.</summary>
+    private static async Task<(string History, string Manifest, string Request, string Token)> PrepareReadEvidenceAsync(string root)
+    {
+        var fs = new FileSystemManager(Path.Combine(root, "source"), NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\"}");
+        await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":0}");
+        var service = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
+        var control = await service.BuildControlForNextTurnAsync("Mortal World");
+        var manifest = new LiveTurnPendingSnapshotManifest
+        { SessionId = "session", RequestId = "request", TurnNumber = 7, PlayerAction = "Ждать четыре часа", RequestTimestamp = "2026-11-18T00:00:00Z",
+          ProgressionControl = control, OriginalPathPresenceV1 = new(StringComparer.OrdinalIgnoreCase) };
+        foreach (var logical in new[] { "game_state/meta/soul_state.json", MortalLivingWorldSource.WorldTimePath,
+            ProgressionScheduleService.SchedulePath, MortalLivingWorldSource.HistoryPath, MortalLivingWorldSource.ReportPath })
+        {
+            var bytes = await fs.ReadFileBytesAsync(logical);
+            manifest.OriginalPathPresenceV1[logical] = bytes is not null;
+            if (bytes is null) continue;
+            var selected = "game_state/control/pending_turn_snapshot/" + logical;
+            manifest.Files[logical] = selected;manifest.SnapshotFileHashes[logical] = Convert.ToHexString(SHA256.HashData(bytes));
+            var target = Path.Combine(root, "before", selected);Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            await File.WriteAllBytesAsync(target, bytes);
+        }
+        await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":240}");
+        await service.ApplyAcceptedTurnOutcomeAsync(control);
+        foreach (var logical in new[] { MortalLivingWorldSource.WorldTimePath, ProgressionScheduleService.SchedulePath })
+        {
+            var target = Path.Combine(root, "current", logical);Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            await File.WriteAllBytesAsync(target, (await fs.ReadFileBytesAsync(logical))!);
+        }
+        return Evidence(manifest);
+    }
+
 }

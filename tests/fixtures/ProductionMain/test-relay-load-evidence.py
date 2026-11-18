@@ -52,7 +52,7 @@ def cleanup(expected,document,installed):
             continuity[prefix+name+'RawHex']=raw.hex();continuity[prefix+name+'SHA256']=evidence.sha(raw)
     value['PostLoadDaemonContinuity']=continuity
     value['LocalRouteProof']=dict(Route='storage-local-proof',Target=dict(LocationId='location',StorageId='storage',ItemId='item',StorageLabel='storage',StorageName='storage',ItemLabel='item',ContentsCount=1),
-        Before=dict(StorySHA256='a'*64,HistorySHA256='b'*64,QueuePins={}),After=dict(StorySHA256='a'*64,HistorySHA256='b'*64,QueuePins={}),
+        Before=dict(StorySHA256='a'*64,History=dict(present=True,sha256='b'*64),QueuePins={}),After=dict(StorySHA256='a'*64,History=dict(present=True,sha256='b'*64),QueuePins={}),
         Stages=[dict(Stage=name,ItemPosition=position,LocationSHA256=('d' if name=='Deposit' else 'c')*64,InventorySHA256=('f' if name=='Deposit' else 'e')*64)
             for name,position in [('Retrieve','inventory'),('Save','inventory'),('Deposit','storage'),('Load','inventory')]],
         SaveArchivePath=expected['SourceKey'],SaveArchiveSHA256='a'*64,RestoreBytesExact=True)
