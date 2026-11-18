@@ -2051,3 +2051,9 @@ scene mutation; actual public strict/raw routes are checked after inspection.
 Separate mortal-location-creation-history-guidance is1 unit source guard/1minute,
 expectedRED against current blanket prohibition. No duplicate fullworld or broad
 suite; no native test. Source-only review and remote save precede execution.
+T018 source review caught an insufficient newcomer premise: the reused historical
+actor fixture lacked current progression/birth-resource declarations, and its
+new-actor error oracle was too narrow. Corrected only the new actor to existing
+none/XP0/threshold0 plus explicit health60 resource initialization; the positive
+now rejects any Error scoped to the newcomer before testing historical-row
+scene errors. Still10 integration cases, all UNRUN, no behavior implementation.

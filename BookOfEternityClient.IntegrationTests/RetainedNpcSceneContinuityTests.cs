@@ -44,8 +44,9 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         Assert.Equal(B, scope.LocationId);
         Assert.False(LocalInteractionScopeService.IsMortalActorLocal(scope, originalActor.AsObject()));
         Assert.True(JsonNode.DeepEquals(originalActor, (await context.ReadJsonAsync(Core))!["NPCsInScene"]![0]));
-        Assert.DoesNotContain(issues, issue => IsSceneAnchorIssue(issue) &&
-            issue.FilePath.Contains("UpdateNPCs", StringComparison.Ordinal));
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error &&
+            (issue.FilePath.Contains("UpdateNPCs[0]", StringComparison.Ordinal) ||
+             issue.Actor == "mortal_npc:npc_court_steward"));
         Assert.DoesNotContain(issues, issue => IsSceneAnchorIssue(issue) &&
             issue.FilePath.Contains("NPCsInScene[0]", StringComparison.Ordinal));
     }
@@ -206,6 +207,13 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
     private static JsonObject NewActor(bool newScene)
     {
         var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor("npc_court_steward");
+        actor["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "none" };
+        actor["experience"] = 0;
+        actor["experienceForNextLevel"] = 0;
+        actor["resourceMaterialization"] = new JsonObject
+        {
+            ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "health", ["maximum"] = 60 })
+        };
         actor["currentLocationId"] = newScene ? null : B;
         actor["currentLocationName"] = "Current court";
         actor["initialLocationId"] = newScene ? InitialB : null;
