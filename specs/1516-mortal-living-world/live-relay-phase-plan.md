@@ -401,3 +401,29 @@ verified request/snapshot/response/story/receipt and all original closure eviden
 A second retained-world phase is now admitted using this exact p01 result, the
 same seed and immutable runtime, but a fresh phase/queue/nonce and GM response.
 This does not resolve the separate unknown ml3/e histories or qualify Windows.
+
+### ml5 p02 client preparation refusal, no GM action
+
+Retained-world p02 used fresh phase/queue/nonce and independently admitted p01
+evidence. Preparation manifest SHA256 is
+668d160a1ce6cbfa036ef398c6a54b0459475eee4b82b8f91fb5e9f75d111b96.
+The corrected Linux daemon actually restarted and later stopped cleanly with
+zero turns/errors and an exact guarded settled pair. Ordinary client Continue
+instead reported twice: Explicit worker admission is required before canonical
+recovery. This occurred before any actual request or GM response. The original
+phase is Success=false, zero actions/accepted turns, 30.434s. Story [41,42] and
+the sole receipt42/history remain byte-identical to p01; pending/ready are absent.
+
+One original shutdown ACK matches new run6810ecac4ac6422694ae8b514be86dcb/epoch2
+and durable Stopped/OwnedScopeEmpty. Bridge and daemon exited0 with EOF/termios.
+Client exit, EOF and restored termios were not observed. Guardian recorded
+ECHILD, driver1, reaped2, zero emergencies/failures and no deadline; physical
+descendant drain is not normal client exit. Independent outcome review confirms
+these boundaries. No continuation uses this failed result and no world/status
+or diagnostics are manually repaired. The accepted p01 remains separate.
+
+Read-only source tracing locates this exact exception at a disposed local worker
+root context. A prior local menu admission followed by a separately owned remote
+main is a candidate lifecycle explanation, not yet a causal test or fixed bug.
+Next is a cheap existing-fixture reproduction and independent admission/lifetime
+design review, without weakening ownership checks or replaying the game action.
