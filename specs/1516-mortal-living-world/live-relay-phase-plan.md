@@ -1181,3 +1181,28 @@ unchanged and remains inadmissible for ordinary continuation. No repeated run
 was made. Diagnostic success does not convert mm4 into an ordinary predecessor.
 Next: independent outcome/reassessment, then a fresh ordinary current-runtime
 world for remaining vehicle/storage/NPC journeys without reusing old authority.
+
+Independent mm4 OUTCOME accepts this bounded diagnostic result: exact probe,
+accepted story/history/typed receipt and unchanged NPC/project/faction/world/XP,
+all original-owner/terminal/RPC/queue/guardian cleanup and runtime732/helper249/
+relay8/native4/final-world106 pins were freshly verified. All111 recorded mm3
+source inputs remain unchanged. The enabled exception exporter produced no
+matching marker; its failure path was not exercised and p04 remains unexplained.
+
+Chronology correction: the daemon admission refusal precedes shutdown ACK, not
+after it. Intentional shutdown journal At268.612 precedes error evidence268.734
+and ACK268.789; inner refusal13:00:32.953267, exact Failed close receipt with
+closeObserved=true/lost=false and helper exit0 by13:00:33.037571, daemon error
+13:00:33.0460997, ACK13:00:33.0646973. No exact wall-clock shutdown-begin anchor
+exists. This is compatible with an admission fence during retirement, not a
+proved after-ACK cause. Errors1 stays recorded despite successful acceptance and
+settled cleanup. Do not replay mm3 or relax diagnostic predecessor rejection.
+
+Next ordinary1515/1538 journey uses a new baseline41 and current T021 runtime,
+not restored mm3/mm4 state. Current pinned3,420 sources/20 eligible outputs match;
+8 stale Unit outputs stay excluded. Three no-build publications and one fresh
+seed export are preparation, not repeated gameplay qualification. The first
+player action asks to see a council cart and supplies storage and understand
+ownership/access, taking nothing without permission. Independent prelaunch
+checks precede execution. T016's original retained quiet-time gap remains
+explicit; mm4 supplies real isolated evidence but is not the old continuation.
