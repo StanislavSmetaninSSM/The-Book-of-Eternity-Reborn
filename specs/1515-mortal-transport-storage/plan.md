@@ -3233,3 +3233,20 @@ official execution precede any new immutable package or native attempt. No mm11
 mutation/replay or retroactive success. Inputs remain one-read detached DATA;
 there is no new cache, authority reuse or speedup claim. Remote ref was freshly
 verified; this checkpoint does not assert a new clean full-checkout restoration.
+
+T025 complete SOURCE candidate freezes13 implementation/test files. Cheap Python
+checks passed100/100: union7, retained phase38, Load23, routes14 and fixed restored18,
+plus story-contract check. No C# compile/runtime or native execution yet. Planned
+C# applicability32 comprises2 original legal-short-turn cases,3 legal representation/
+voluntary-append controls and27 refusal cases. Existing strict10 retains its body
+contract; actual RunAsync serialized output is wired to the real Python checker
+inside positive cases, UNRUN until fresh Unit execution. Explicit raw Files/Hashes/
+Presence case and normalized-path alias guards precede dictionary construction.
+Small duplicate manifest parsing preserves independently callable validation and
+early IO-path checking; physical reads remain single, no cache framework.
+The union adapter belongs to mortal-live-outcome-applicability; retained strict
+controls belong to mortal-live-evidence-data, route/Load to mortal-console-route-data.
+Changed shared consumers also require gm-relay-phase-contract and the fixed
+mortal-restored-diagnostic-data regression. Independent SOURCE review must assess
+this bounded selection and actual-wire assertions before build/GREEN. No runtime
+contract changed, so no GM prompt/example change is required by this helper fix.

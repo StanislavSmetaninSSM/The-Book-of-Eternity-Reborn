@@ -18,6 +18,7 @@ internal static partial class MortalLiveEvidenceValidator
         IReadOnlyDictionary<string, byte[]?> originals, byte[] currentClock, byte[] currentSchedule,
         byte[]? currentHistory, byte[]? currentLivingReport, byte[]? currentProgressionReport)
     {
+        RequireNoOriginalAliases(manifest);
         var snapshot = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifest,
             LiveTurnPreparationService.ManifestJsonOptions, "Captured snapshot") ?? throw new InvalidDataException("Missing snapshot.");
         var req = Object(request, "Actual request");
@@ -75,6 +76,25 @@ internal static partial class MortalLiveEvidenceValidator
     private static readonly string[] OriginalOutcomePaths = ["game_state/meta/soul_state.json", MortalLivingWorldSource.WorldTimePath,
         ProgressionScheduleService.SchedulePath, MortalLivingWorldSource.HistoryPath, MortalLivingWorldSource.ReportPath];
 
+    /// <summary>Checks raw logical-key spelling before dictionary deserialization can collapse aliases.</summary>
+    private static void RequireNoOriginalAliases(string manifest)
+    {
+        var root = Object(manifest, "Captured snapshot");
+        foreach (var name in new[] { "files", "snapshotFileHashes", "originalPathPresenceV1" })
+        {
+            if (root[name] is not JsonObject entries) throw new InvalidDataException("Missing original source dictionary.");
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var pair in entries)
+            {
+                var key = pair.Key;
+                if (!seen.Add(key) || key.StartsWith('/') || key.Contains('\\') || key.Contains(':') ||
+                    key.Split('/').Any(segment => segment is "" or "." or "..") ||
+                    OriginalOutcomePaths.Any(logical => logical.Equals(key, StringComparison.OrdinalIgnoreCase) && logical != key))
+                    throw new InvalidDataException("Aliased original source key.");
+            }
+        }
+    }
+
     /// <summary>Requires explicit exact publisher mapping and exact byte hashes; absent DATA must be explicitly covered.</summary>
     private static void RequireOriginalMapping(LiveTurnPendingSnapshotManifest snapshot, string logical, byte[]? bytes)
     {
@@ -97,6 +117,7 @@ internal static partial class MortalLiveEvidenceValidator
     private static async Task<Outcome> ReadOutcomeAsync(string baseline, string currentSession, string actualRequest)
     {
         var manifest = Decode((await ReadOutcomeBytesAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath, false))!);
+        RequireNoOriginalAliases(manifest);
         var snapshot = StrictJsonAuthority.Deserialize<LiveTurnPendingSnapshotManifest>(manifest,
             LiveTurnPreparationService.ManifestJsonOptions, "Captured snapshot") ?? throw new InvalidDataException("Missing snapshot.");
         var inputs = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -125,6 +146,8 @@ internal static partial class MortalLiveEvidenceValidator
     private static async Task<byte[]?> ReadOutcomeBytesAsync(string root, string relative, bool optional)
     {
         var fullRoot = Path.GetFullPath(root);
+        for (DirectoryInfo? ancestor = new(fullRoot); ancestor is not null; ancestor = ancestor.Parent)
+            if ((ancestor.Attributes & FileAttributes.ReparsePoint) != 0) throw new InvalidDataException("Linked evidence root/ancestor.");
         var cursor = fullRoot;
         foreach (var segment in relative.Split('/'))
         {

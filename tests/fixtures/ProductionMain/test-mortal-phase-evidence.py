@@ -114,7 +114,7 @@ class MortalEvidenceTests(unittest.TestCase):
             last=next(i for i,n in enumerate(TREE.body[first:],first) if assign_name(n,'controlled_refusal'))
             exec(compile(ast.Module(body=TREE.body[first:last],type_ignores=[]),str(SOURCE),'exec'),scope)
             if closing:
-                result=valid();result.update(RuntimePins=package['RuntimePins'],PhasePackage=package,ReceiptHelperPins=package['ReceiptHelperPins'])
+                result=valid();result['TypedReceiptEvidence']={'historyAfter':{'present':False,'sha256':None}};result.update(RuntimePins=package['RuntimePins'],PhasePackage=package,ReceiptHelperPins=package['ReceiptHelperPins'])
                 if mutation:
                     target=helper/mutation.removeprefix('helper/') if mutation.startswith('helper/') else session/mutation
                     target.write_bytes(b'mutated')

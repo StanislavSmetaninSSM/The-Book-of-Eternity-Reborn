@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-live-outcome-applicability",
-      "responsibility": "Detached Mortal live evidence applicability through actual ReadAsync for a production-validated short turn with absent or unchanged prior history.",
+      "responsibility": "Detached Mortal outcome union: production no-receipt applicability, strict append preservation, exact captured inputs, real serialized C# to Python consumption and optional-history final-pin joins.",
       "excludes": "No native execution, gameplay publication authority or broadening of the strict appended-receipt validator.",
       "changeHints": [
         "BookOfEternityClient.TestSupport/MortalLiveEvidenceValidator.cs",
@@ -21,7 +21,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLiveOutcomeApplicabilityTests.*"
+            "BookOfEternityClient.Tests.MortalLiveOutcomeApplicabilityTests.*",
+            "BookOfEternityClient.Tests.MortalConsoleRouteTests.MortalOutcomeUnionDataContracts"
           ]
         }
       ]

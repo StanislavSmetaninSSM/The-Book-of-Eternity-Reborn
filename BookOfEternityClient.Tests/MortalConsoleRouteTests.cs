@@ -8,8 +8,11 @@ public sealed class MortalConsoleRouteTests
     [Fact]
     public Task FiniteConsoleRouteDataContracts() => RunAsync("test-mortal-console-routes.py", 14);
     [Fact]
-    public Task RetainedDaemonLoadDataContracts() => RunAsync("test-relay-load-evidence.py", 22);
-    private static async Task RunAsync(string script, int expectedMethods)
+    public Task MortalOutcomeUnionDataContracts() => RunAsync("test-mortal-outcome-evidence.py", 7);
+    [Fact]
+    public Task RetainedDaemonLoadDataContracts() => RunAsync("test-relay-load-evidence.py", 23);
+    /// <summary>Runs one bounded Python DATA consumer with retained output and complete owned cleanup.</summary>
+    internal static async Task RunAsync(string script, int expectedMethods, params string[] arguments)
     {
         Assert.True(OperatingSystem.IsLinux());
         var root=Path.Combine(TestDiagnosticPaths.Root,"mortal-console-routes",Guid.NewGuid().ToString("N"));
@@ -25,6 +28,7 @@ public sealed class MortalConsoleRouteTests
         };
         start.ArgumentList.Add(Path.Combine(TestRepoPaths.RepoRoot,
             "tests/fixtures/ProductionMain", script));
+        foreach (var argument in arguments) start.ArgumentList.Add(argument);
         int? observedExitCode = null;
         Exception? failure=null;
         var cleanupFailures=new List<string>();

@@ -987,7 +987,7 @@ def finite_select(title,label,cut,maximum_rows,commit=True):
 
 def local_observation():
     return {'StorySHA256':sha(story.read_bytes()),
-        'History':phase_evidence.optional_history_witness((session/'game_state/world/mortal_living_world_history.json').read_bytes() if (session/'game_state/world/mortal_living_world_history.json').exists() else None),
+        'History':phase_evidence.history_witness_at(session),
         'QueuePins':phase_evidence.relay_inventory(relay_queue)}
 
 def denied_storage_route():
@@ -1266,7 +1266,7 @@ try:
                     result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
                     if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
                     result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
-                    result['LivingWorldHistory']=phase_evidence.optional_history_witness((session/'game_state/world/mortal_living_world_history.json').read_bytes() if (session/'game_state/world/mortal_living_world_history.json').exists() else None)
+                    result['LivingWorldHistory']=phase_evidence.history_witness_at(session)
                     assert result['LivingWorldHistory']==result['TypedReceiptEvidence']['historyAfter'], 'Typed outcome differs from current history bytes'
                     result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
                     result['AcceptedTurnNumber']=expected_turn

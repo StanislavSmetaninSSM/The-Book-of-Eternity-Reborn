@@ -10,6 +10,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Detached captured-input evidence only. These fixtures issue no live turn or publication authority.</summary>
+[Collection("desktop-helper-console")]
 public sealed class MortalLiveOutcomeApplicabilityTests
 {
     [Theory]
@@ -18,20 +19,39 @@ public sealed class MortalLiveOutcomeApplicabilityTests
     public Task ReadActualShortTurnWithoutDueCycleRequiresNoNewReceipt(bool priorReceipt) => CheckAsync(priorReceipt, null);
 
     [Theory]
+    [InlineData("legal-serialization")]
+    [InlineData("legal-timestamp")]
+    [InlineData("legal-appended-below-cycle")]
+    public Task LegalScheduleAndVoluntaryReceiptRemainDistinct(string variant) => CheckAsync(true, variant);
+
+    [Theory]
+    [InlineData("previously-pending")]
     [InlineData("due")]
     [InlineData("backwards")]
     [InlineData("clock-command")]
     [InlineData("schedule-marker")]
+    [InlineData("schedule-cycle")]
+    [InlineData("schedule-context")]
+    [InlineData("request-control")]
     [InlineData("living-report")]
     [InlineData("progression-report")]
     [InlineData("original-report")]
     [InlineData("history-malformed")]
+    [InlineData("extra-receipt")]
+    [InlineData("history-null")]
+    [InlineData("history-bom-change")]
     [InlineData("history-deleted")]
     [InlineData("history-whitespace")]
     [InlineData("request")]
     [InlineData("hash")]
     [InlineData("uncovered-absence")]
     [InlineData("selected-path")]
+    [InlineData("case-alias")]
+    [InlineData("normalization-alias")]
+    [InlineData("case-alias-hashes")]
+    [InlineData("case-alias-presence")]
+    [InlineData("normalization-alias-hashes")]
+    [InlineData("normalization-alias-presence")]
     public Task InvalidCapturedOrCurrentOutcomeRefusesWithoutMutation(string fault) => CheckAsync(true, fault);
 
     /// <summary>Runs one owned detached fixture; faults are applied only after lawful production prerequisites.</summary>
@@ -46,10 +66,16 @@ public sealed class MortalLiveOutcomeApplicabilityTests
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{\"currentRealm\":\"Mortal World\"}");
             await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":480}");
             var scheduler = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
+            if (fault == "previously-pending")
+            {
+                await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":0}");
+                await scheduler.BuildControlForNextTurnAsync("Mortal World");
+                await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":480}");
+            }
             var control = await scheduler.BuildControlForNextTurnAsync("Mortal World");
             Assert.Equal(480, control.CurrentWorldTimeInMinutes);
-            Assert.Equal(480, control.LastWorldSimulationTimeInMinutes);
-            Assert.Equal(480, control.LastFactionSimulationTimeInMinutes);
+            Assert.Equal(fault == "previously-pending" ? 0 : 480, control.LastWorldSimulationTimeInMinutes);
+            Assert.Equal(fault == "previously-pending" ? 0 : 480, control.LastFactionSimulationTimeInMinutes);
             byte[]? priorHistory = priorReceipt ? PriorReceipt() : null;
             var original = new Dictionary<string, byte[]?>
             {
@@ -90,29 +116,65 @@ public sealed class MortalLiveOutcomeApplicabilityTests
                 playerAction = manifest.PlayerAction, timestamp = manifest.RequestTimestamp, progressionControl = control
             }));
             await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, "{\"currentTimeInMinutes\":500}");
-            await scheduler.ApplyAcceptedTurnOutcomeAsync(control);
+            if (fault != "previously-pending") await scheduler.ApplyAcceptedTurnOutcomeAsync(control);
             if (priorHistory is not null) await WriteAsync(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath, priorHistory);
             var clock = await fs.ReadFileBytesAsync(MortalLivingWorldSource.WorldTimePath);
             var schedule = await fs.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
-            Assert.Empty(MortalLivingWorldAssessment.Validate(new(manifest.SessionId, manifest.RequestId, 42,
+            var assessment = MortalLivingWorldAssessment.Validate(new(manifest.SessionId, manifest.RequestId, 42,
                 480, 500, control.LastWorldSimulationTimeInMinutes, control.LastFactionSimulationTimeInMinutes,
-                control.WorldCycleMinutes, control.FactionCycleMinutes), null));
-            ProgressionScheduleService.RequirePublishedMortalTreatmentOutcome(control, manifest.SessionId, manifest.RequestId, 42,
+                control.WorldCycleMinutes, control.FactionCycleMinutes), null);
+            if (fault == "previously-pending") Assert.NotEmpty(assessment);
+            else Assert.Empty(assessment);
+            if (fault != "previously-pending") ProgressionScheduleService.RequirePublishedMortalTreatmentOutcome(control, manifest.SessionId, manifest.RequestId, 42,
                 original[ProgressionScheduleService.SchedulePath]!, clock, schedule, await fs.ReadFileBytesAsync(ProgressionScheduleService.ReportPath));
             if (fault is "due" or "backwards" or "clock-command")
                 await fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, fault == "due" ? "{\"currentTimeInMinutes\":720}" :
                     fault == "backwards" ? "{\"currentTimeInMinutes\":479}" : "{\"currentTimeInMinutes\":500,\"timeChange\":0}");
-            if (fault == "schedule-marker")
+            if (fault is "legal-serialization" or "legal-timestamp")
             {
                 var node = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(schedule!))!.AsObject();
-                node["lastWorldSimulationTimeInMinutes"] = 500;
+                if (fault == "legal-timestamp") node["lastUpdatedUtc"] = "2026-11-19T00:00:00.0000000Z";
+                await WriteAsync(fs.GameSessionPath, ProgressionScheduleService.SchedulePath, Encoding.UTF8.GetBytes(node.ToJsonString()));
+            }
+            if (fault is "schedule-marker" or "schedule-cycle" or "schedule-context")
+            {
+                var node = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(schedule!))!.AsObject();
+                if (fault == "schedule-marker") node["lastWorldSimulationTimeInMinutes"] = 500;
+                if (fault == "schedule-cycle") node["worldCycleMinutes"] = 241;
+                if (fault == "schedule-context") node["currentRealm"] = "Other realm";
                 await fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, node.ToJsonString());
             }
+            if (fault is "legal-appended-below-cycle" or "extra-receipt")
+            {
+                var report = new JsonObject
+                {
+                    ["schemaVersion"] = 1, ["sessionId"] = manifest.SessionId, ["requestId"] = manifest.RequestId, ["turn"] = 42,
+                    ["fromMinute"] = 480, ["toMinute"] = 500, ["resolution"] = "noSignificantChange",
+                    ["audit"] = new JsonArray(new[] { "npcs", "factions", "locations", "projects", "world" }.Select(scope =>
+                        (JsonNode)new JsonObject { ["scope"] = scope, ["reason"] = "No significant bounded autonomous change." }).ToArray()),
+                    ["events"] = new JsonArray()
+                };
+                var built = MortalLivingWorldReceipt.Build(manifest.ManifestPayloadHash,
+                    new(manifest.SessionId, manifest.RequestId, 42, 480, 500, 480, 480, 240, 1440), report,
+                    priorHistory is null ? null : JsonNode.Parse(priorHistory)!.AsObject());
+                var history = JsonNode.Parse(built.HistoryJson)!.AsObject();
+                if (fault == "extra-receipt") history["entries"]!.AsArray().Add(history["entries"]!.AsArray()[^1]!.DeepClone());
+                await fs.WriteFileAtomicAsync(MortalLivingWorldSource.HistoryPath, history.ToJsonString());
+            }
+            if (fault == "history-null") await fs.WriteFileAtomicAsync(MortalLivingWorldSource.HistoryPath, "null");
+            if (fault == "history-bom-change") await WriteAsync(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath,
+                new byte[] { 0xef, 0xbb, 0xbf }.Concat(priorHistory!).ToArray());
             if (fault == "living-report") await fs.WriteFileAtomicAsync(MortalLivingWorldSource.ReportPath, "{}");
             if (fault == "progression-report") await fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, "{}");
             if (fault == "history-malformed") await fs.WriteFileAtomicAsync(MortalLivingWorldSource.HistoryPath, "{}");
             if (fault == "history-deleted") File.Delete(Path.Combine(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath));
             if (fault == "history-whitespace") await WriteAsync(fs.GameSessionPath, MortalLivingWorldSource.HistoryPath, priorHistory!.Concat(new byte[] { 32 }).ToArray());
+            if (fault == "request-control")
+            {
+                var node = JsonNode.Parse(await File.ReadAllTextAsync(request))!.AsObject();
+                node["progressionControl"]!.AsObject()["worldCycleMinutes"] = 241;
+                await File.WriteAllTextAsync(request, node.ToJsonString());
+            }
             if (fault == "request") await File.WriteAllTextAsync(request, (await File.ReadAllTextAsync(request)).Replace("short-request", "foreign-request"));
             if (fault is "hash" or "uncovered-absence" or "selected-path" or "original-report")
             {
@@ -132,19 +194,32 @@ public sealed class MortalLiveOutcomeApplicabilityTests
                 await WriteAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
                     JsonSerializer.SerializeToUtf8Bytes(manifest, LiveTurnPreparationService.ManifestJsonOptions));
             }
-            var before = Inventory(root);
-            if (fault is not null)
+            if (fault?.Contains("alias", StringComparison.Ordinal) == true)
             {
-                await Assert.ThrowsAsync<InvalidDataException>(() => MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request));
+                var raw = JsonNode.Parse(JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions))!.AsObject();
+                var name = fault.StartsWith("case-", StringComparison.Ordinal) ? MortalLivingWorldSource.WorldTimePath.ToUpperInvariant() : "./" + MortalLivingWorldSource.WorldTimePath;
+                var dictionary = fault.EndsWith("hashes", StringComparison.Ordinal) ? "snapshotFileHashes" :
+                    fault.EndsWith("presence", StringComparison.Ordinal) ? "originalPathPresenceV1" : "files";
+                raw[dictionary]!.AsObject()[name] = raw[dictionary]![MortalLivingWorldSource.WorldTimePath]!.DeepClone();
+                await WriteAsync(baseline, LiveTurnPreparationService.PendingTurnSnapshotManifestPath, Encoding.UTF8.GetBytes(raw.ToJsonString()));
+            }
+            var before = Inventory(root);
+            if (fault is not null && !fault.StartsWith("legal-", StringComparison.Ordinal))
+            {
+                var refused = await Assert.ThrowsAsync<InvalidDataException>(() => MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request));
+                if (fault?.Contains("alias", StringComparison.Ordinal) == true) Assert.Equal("Aliased original source key.", refused.Message);
                 Assert.Equal(before, Inventory(root));
                 return;
             }
             var result = await MortalLiveEvidenceValidator.ReadAsync(baseline, fs.GameSessionPath, request);
-            Assert.Equal("NotRequired", result.Kind);
+            var expectedKind = fault == "legal-appended-below-cycle" ? "ReceiptAppended" : "NotRequired";
+            Assert.Equal(expectedKind, result.Kind);
             Assert.Equal(manifest.ManifestPayloadHash, result.SnapshotToken);
             Assert.Equal(priorReceipt ? 1 : 0, result.PriorCount);
-            Assert.Equal(result.PriorCount, result.CurrentCount);
+            Assert.Equal(result.PriorCount + (expectedKind == "ReceiptAppended" ? 1 : 0), result.CurrentCount);
             Assert.False(result.PublicationAuthority);
+            Assert.Equal(before, Inventory(root));
+            await MortalLiveEvidenceValidatorTests.CheckWireAsync(baseline, fs.GameSessionPath, request, root, expectedKind);
             Assert.Equal(before, Inventory(root));
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }

@@ -115,6 +115,8 @@ public sealed class MortalLiveEvidenceValidatorTests
             var result = await MortalLiveEvidenceValidator.ReadAsync(baseline, current, request);
             Assert.Equal(evidence.Token, result.SnapshotToken); Assert.False(result.PublicationAuthority);
             Assert.Equal(before, Inventory());
+            await CheckWireAsync(baseline, current, request, root, "ReceiptAppended");
+            Assert.Equal(before, Inventory());
             string[] Inventory() => Directory.GetFiles(root, "*", SearchOption.AllDirectories).OrderBy(p => p, StringComparer.Ordinal)
                 .Select(p => p + ":" + Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p)))).ToArray();
         }
@@ -151,6 +153,24 @@ public sealed class MortalLiveEvidenceValidatorTests
             await File.WriteAllBytesAsync(target, (await fs.ReadFileBytesAsync(logical))!);
         }
         return Evidence(manifest);
+    }
+
+    /// <summary>Feeds actual CLI serialization to the real Python consumer; this is a DATA wire join, not native proof.</summary>
+    internal static async Task CheckWireAsync(string baseline, string current, string request, string root, string kind)
+    {
+        var previous = Console.Out;
+        using var output = new StringWriter();
+        int exit;
+        try { Console.SetOut(output); exit = await MortalLiveEvidenceValidator.RunAsync(baseline, current, request); }
+        finally { Console.SetOut(previous); }
+        Assert.Equal(0, exit);
+        var artifact = Path.Combine(TestDiagnosticPaths.Root, "mortal-outcome-wire", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(artifact);
+        var wire = Path.Combine(artifact, "actual-outcome-wire.json");
+        var capturedRequest = Path.Combine(artifact, "actual-request.json");
+        await File.WriteAllTextAsync(wire, output.ToString());
+        await File.WriteAllBytesAsync(capturedRequest, await File.ReadAllBytesAsync(request));
+        await MortalConsoleRouteTests.RunAsync("test-mortal-outcome-wire.py", 1, wire, capturedRequest, kind);
     }
 
 }

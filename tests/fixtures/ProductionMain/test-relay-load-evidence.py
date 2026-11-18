@@ -56,6 +56,7 @@ def cleanup(expected,document,installed):
         Stages=[dict(Stage=name,ItemPosition=position,LocationSHA256=('d' if name=='Deposit' else 'c')*64,InventorySHA256=('f' if name=='Deposit' else 'e')*64)
             for name,position in [('Retrieve','inventory'),('Save','inventory'),('Deposit','storage'),('Load','inventory')]],
         SaveArchivePath=expected['SourceKey'],SaveArchiveSHA256='a'*64,RestoreBytesExact=True)
+    value['FinalWorldPins']={'game_state/world/mortal_living_world_history.json':'b'*64}
     value['FinalQueuePins']={'close-request.json':'c'*64,'closed.json':'d'*64}
 
     value['ShutdownReceipt']=status(b['RunId'])
@@ -63,6 +64,15 @@ def cleanup(expected,document,installed):
     return value
 
 class LoadEvidenceTests(unittest.TestCase):
+    def test_optional_local_history_is_exact_and_joins_final_pins(self):
+        expected,document,installed=fixture();value=cleanup(expected,document,installed)
+        for side in ('Before','After'):value['LocalRouteProof'][side]['History']={'present':False,'sha256':None}
+        value['FinalWorldPins']={}
+        raw=wire(document)
+        self.assertTrue(evidence.relay_load_phase_cleanup_proved(value,raw,0,expected))
+        value['FinalWorldPins']['game_state/world/mortal_living_world_history.json']='b'*64
+        self.assertFalse(evidence.relay_load_phase_cleanup_proved(value,raw,0,expected))
+
     def setUp(self):self.expected,self.document,self.installed=fixture()
     def validate(self,raw=None,cut=0):return evidence.validated_load_observation(wire(self.document) if raw is None else raw,cut,self.expected,self.installed)
     def test_production_codec_backend_forms_join_without_mutating_raw(self):
@@ -209,7 +219,7 @@ class LoadEvidenceTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(LoadEvidenceTests)
-    expected_count=22
+    expected_count=23
     if suite.countTestCases()!=expected_count:raise SystemExit('Unexpected Load test count')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     ok=result.testsRun==expected_count and result.wasSuccessful() and not result.skipped

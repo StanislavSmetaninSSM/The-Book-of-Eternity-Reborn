@@ -482,6 +482,7 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
         if any(type(value[k]) is not int or value[k]!=0 for k in ('AcceptedGameTurns','GenuineActionsSent')):return False
         if not local_load_route_proved(value['LocalRouteProof'],value['FinalQueuePins']):return False
         if value['LocalRouteProof']['SaveArchivePath']!=expected['SourceKey']:return False
+        if not history_witness_matches_pins(value['LocalRouteProof']['After']['History'],value['FinalWorldPins']):return False
         return relay_owned_cleanup_proved(value,running,status)
     except (KeyError,TypeError,ValueError,UnicodeError):return False
 
@@ -557,6 +558,16 @@ def optional_history_witness(raw):
     return {'present':raw is not None,'sha256':hashlib.sha256(raw).hexdigest() if raw is not None else None}
 
 
+
+def history_witness_at(session):
+    """Fresh optional history read: only physical absence is optional; IO/JSON validity is not inferred."""
+    path=Path(session)/'game_state/world/mortal_living_world_history.json'
+    if path.is_symlink():raise ValueError('Linked history is not captured canonical DATA')
+    try:raw=path.read_bytes()
+    except FileNotFoundError:raw=None
+    return optional_history_witness(raw)
+
+
 def history_witness_valid(value):
     return (isinstance(value,dict) and set(value)=={'present','sha256'} and type(value['present']) is bool
         and ((value['present'] and isinstance(value['sha256'],str) and re.fullmatch('[0-9a-f]{64}',value['sha256']) is not None)
@@ -576,6 +587,7 @@ def checked_mortal_outcome(value,request):
         raise ValueError('Typed outcome validation failed')
     kind=value.get('kind');extra={'declarationFingerprint','receiptFingerprint'} if kind=='ReceiptAppended' else {'applicability'} if kind=='NotRequired' else None
     if extra is None or set(value)!=common|extra:raise ValueError('Unknown or mixed typed outcome fields')
+    if not isinstance(request,dict) or type(request.get('turnNumber')) is not int or any(type(request.get(k)) is not str or not request[k] for k in ('sessionId','requestId')):raise ValueError('Invalid explicit request')
     if any(value[k]!=request[k] for k in ('sessionId','requestId')) or type(value['turn']) is not int or value['turn']!=request['turnNumber']:
         raise ValueError('Typed outcome belongs to another request')
     if not isinstance(value['snapshotToken'],str) or not re.fullmatch('[0-9A-F]{64}',value['snapshotToken']):raise ValueError('Missing snapshot token')
