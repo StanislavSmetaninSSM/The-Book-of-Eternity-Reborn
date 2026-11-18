@@ -3579,3 +3579,8 @@ the previously reviewed header/footer/page-fit/prefix-collision contract togethe
 with all callers and independent negative controls. Small immutable DATA needs no
 cache; fresh capture parsing is necessary and no speedup is claimed. No game or
 GM turn was executed, and mm13 remains logically Uncertain and untouched.
+Independent T027 OUTCOME review accepted the causal RED: actual Python failures,
+789-byte complete renderer capture, zero inputs, all four control TRX results,
+original failure cleanup and all 3,498 source/eight output/seven reviewed pins
+were checked without mismatch. GO is limited to the agreed GREEN implementation;
+normal renderer exit/restoration and actual live gameplay remain unqualified.
