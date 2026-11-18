@@ -3515,3 +3515,14 @@ world/inventory/story/history/queue before the permission request. Fresh environ
 nonces, modes, socket and budgets pass; no launch or owner exists. One bounded
 p02 launch is authorized next, with separate exact GM candidate review. This
 preflight is not proof of actual denial or permission publication.
+mm13 p02 fails before any GM request: 0 actions/accepted turns, 41.73s. T026's
+actual entry now receives Active and renders inventory with the exact locked
+storage row, but the fixed menu observer times out. Probe
+4b52df0a37d1f4ae7b3355df620d482bbe6b5d764736eafb912775368d08bd11
+also records cleanup AssertionError: shutdown NACK TerminalUncertain, no confirmed
+Stopped record, original daemon guard unsettled. Client -2 and daemon 1 reached
+EOF; bridge lacks joined/EOF proof in the probe. Guardian reports ECHILD, driver1,
+reaped2, no emergency/failures/deadline; RPC and relay drained. Physical reaping
+is not logical settlement. No retry, signals, world reset or continuation.
+Separate read-only menu/retirement diagnosis and independent failure audit are
+in progress. No permission or denial proof was produced; accepted p01 birth stands.
