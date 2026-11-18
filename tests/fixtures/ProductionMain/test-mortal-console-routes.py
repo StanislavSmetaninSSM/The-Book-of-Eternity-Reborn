@@ -1,6 +1,6 @@
 """T024 pure route DATA tests, no terminal/GM/ownership fabrication."""
 import unittest
-from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged, client_environment, selected_frame
+from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged, client_environment, selected_frame, item_position
 
 class RouteTests(unittest.TestCase):
     def state(self):
@@ -45,6 +45,14 @@ class RouteTests(unittest.TestCase):
         for raw in (b'Menu\n> Alpha\nMenu\n',b'Menu\n> Alpha\n> Beta\n',
                     b'Menu\n\x1b[8m> Alpha\n',b'Menu\n> Alpha\x1b[',b'Menu\n> Alpha\n  Alpha\n'):
             with self.subTest(raw=raw):self.assertIsNone(selected_frame(raw,0,'Menu'))
+    def test_exact_item_position_cannot_accept_duplicate_or_missing(self):
+        location=self.state();inventory={'items':[]}
+        self.assertEqual(item_position(location,inventory,'st1','it1'),'storage')
+        item=location['locationStorages'][0]['contents'].pop();inventory['items'].append(item)
+        self.assertEqual(item_position(location,inventory,'st1','it1'),'inventory')
+        location['locationStorages'][0]['contents'].append(item)
+        with self.assertRaises(ValueError):item_position(location,inventory,'st1','it1')
+        with self.assertRaises(ValueError):item_position(location,inventory,'st1','wrong')
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','HistorySHA256':'b','QueuePins':{}}
         require_local_unchanged(before,dict(before))

@@ -101,3 +101,17 @@ def selected_frame(raw, cut, title):
     if len(selected)!=1:return None
     label=selected[0]
     return label if fresh_selection(raw,cut,title,label) else None
+
+def item_position(location,inventory,storage_id,item_id):
+    """Exact observed target position, never permission to move an item."""
+    storages=location.get('locationStorages') if type(location) is dict else None
+    items=inventory.get('items') if type(inventory) is dict else None
+    if type(storages) is not list or type(items) is not list:raise ValueError('Current item surfaces missing')
+    matches=[s for s in storages if type(s) is dict and s.get('storageId')==storage_id]
+    if len(matches)!=1 or matches[0].get('hasFullAccess') is not True:raise ValueError('Current storage access unavailable')
+    storage=matches[0]
+    if type(storage.get('contents')) is not list:raise ValueError('Storage contents missing')
+    def count(values):return sum(type(i) is dict and i.get('itemId')==item_id for i in values)
+    pair=(count(storage['contents']),count(items))
+    if pair not in ((1,0),(0,1)):raise ValueError('Target item duplicated or absent')
+    return 'storage' if pair==(1,0) else 'inventory'

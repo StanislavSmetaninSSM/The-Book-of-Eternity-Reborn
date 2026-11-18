@@ -710,6 +710,17 @@
       ]
     },
     {
+      "id": "mortal-console-route-data",
+      "responsibility": "#1515 T024 finite captured-console route DATA and exact Load A-to-B observation with retained original daemon and separate local-zero-GM cleanup.",
+      "excludes": "No actual menu, native owner, save/load or gameplay acceptance; no generic input script or daemon restart qualification.",
+      "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-console-routes.py", "tests/fixtures/ProductionMain/test-relay-load-evidence.py", "BookOfEternityClient.Tests/MortalConsoleRouteTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.MortalConsoleRouteTests.FiniteConsoleRouteDataContracts", "BookOfEternityClient.Tests.MortalConsoleRouteTests.RetainedDaemonLoadDataContracts"]}]
+    },
+    {
       "id": "mortal-rejected-cleanup-data",
       "responsibility": "#1516 shipped relay harness rejects stale wait Escape after newer prompt and admits only exact rejected-request cleanup DATA through actual queue validation.",
       "excludes": "No native closure, accepted-turn authority, terminal NPC completion or live relay qualification.",

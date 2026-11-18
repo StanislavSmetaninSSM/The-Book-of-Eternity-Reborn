@@ -2946,3 +2946,19 @@ GM action can be sent from this unfinished route. Current driver SHA256
 41b5575f19960e2b68671ed557171a24b95956e986e5a841c2e7e83865d648c3.
 No world, provider or native relay started. Full coherent integration review,
 category ownership and final packaging remain pending.
+T024 saved continuity baseline executed:15 methods,13PASS/2FAIL,0.006s, no errors.
+Failures are the deliberate same-daemon continuity stub and the Load cleanup
+positive that depends on it; other13 provide initial parser qualification only.
+Raw external mortal-t024/load-evidence-red/result.log; GREEN implementation next.
+Standalone local route must retain0GMactions/0accepted turns. The ordinary
+GM1-only cleanup predicate cannot be called by fabricating accepted fields or
+rewriting original A as B. A small shared mechanical-cleanup extraction is allowed
+only while preserving every ordinary admission/ownership/EOF/guardian/daemon fence
+and adding explicit local0/story/history/queue and A-to-B proof. Behavior, not
+byte-for-byte function text, is the invariant; verify existing ordinary controls.
+Native DATA official owner mortal-console-route-data now prepares two Unit Facts
+with exact Python method-count/OK/no-skip checks, actual exit and joined/drained
+capture. Current expected counts9 route/15 Load; update explicitly when source
+adds cases, never accept zero discovery. Route9PASS includes exact item position
+and duplicate/missing refusal. Wrapper/category source is UNCOMPILED/UNRUN;
+local driver still fails closed before process launch until full wiring completes.
