@@ -906,3 +906,34 @@ if infeasible. Ordinary world facts may be established by the GM without adding
 a new formal resource engine or inventing player-owned property. Success is not
 preselected. T016 remains open until actual project/consequence and quiet-time
 outcomes; T018 and other issue-specific live requirements remain open.
+
+### mm3 p03 observed acceptance and T021 discovery; independent outcome pending
+
+Original launcher exited0; the probe reports one accepted turn44 in458.146s,
+SHA256 `e4209d786266ec9c522cedafe217958147c1b2c65b67ca4ffa524f70e0a7f914`.
+Request42d620dc6d894af7898844e9efc6ab71. Initial completeFactionProjects command
+used the exact preserved name and actual turn, with faction XP80 and bounded
+threat intensity3-to1 after eight hours. No repeat scout completion or formal
+item/resource creation. Three actual dispatches: initial, canonical repair and
+output-only freshness repair. Final independent semantic/lifecycle review is
+pending; do not yet treat this note as its verdict.
+
+The first repair exposed a confirmed contract mismatch, not an invalid GM null:
+Rule21 and current examples permit/require explicit customArchetypePriorities
+null for standard archetypes. FactionCoreChangesContract requires the key in the
+complete progressionAndPower group, admits null, and copies it to canonical
+state. The final faction validator instead calls RequireObject for any present
+value and refuses null as expected_object. The actual repair removed only this
+optional canonical field, then refreshed the two requested outputs; no command
+or XP replay. This is a workaround, not the intended authoring rule.
+
+T021 tracks the minimal validator correction. First prove causal null RED on
+full and canonical declarations and a normalized complete group; preserve valid
+object behavior and malformed-type/object refusals. Then add only the missing
+null allowance, not a new schema or compatibility fallback. Existing GM docs
+and examples are already correct; no afterlife change. A cheap discriminator
+requires no cache, and existing fixture/current-source boundaries remain intact.
+No native package/world is patched; new C# work waits for the completed original
+run and has separate source/build/package qualification. The terminal archive's
+retained old progress counters are being reviewed separately against its actual
+contract; do not conflate that observation with the confirmed nullable defect.

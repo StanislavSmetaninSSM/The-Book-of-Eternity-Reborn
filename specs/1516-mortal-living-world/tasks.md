@@ -43,3 +43,6 @@ that an ordinary multi-turn player journey completed through GameEngine.
 
 ## Live-discovered faction project patch preservation, 2026-11-18
 - [x] T020 Preserve omitted existing project fields in supported partial factionProjectUpdates: reproduce mm2 p02 name-reset with a cheap typed normalizer RED, preserve exact target name/owner/siblings/history while applying explicit tracker fields, minimally fix the confirmed fallback, select affected controls and independently review. Keep accepted p02 and its original evidence unchanged; no compensating GM resend or manual world rewrite.
+
+## Live-discovered nullable faction priorities consistency, 2026-11-18
+- [ ] T021 Align full/canonical faction validation with the existing explicit-null customArchetypePriorities contract: minimal independent RED for null and unchanged object/type guards, real complete progression group normalization/final-validation proof, narrow fix, impact-selected official GREEN and independent review. Preserve accepted mm3 p03 and its actual repair as historical evidence; do not change the complete-group command to omit-only or infer priorities.
