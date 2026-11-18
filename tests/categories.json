@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-location-creation-history-guidance",
+      "responsibility": "#1515 T018 CLI guidance distinguishes empty new-location history from client-owned archive entries and existing-location updates.",
+      "excludes": "No daemon rendering, live GM authoring or runtime publication proof.",
+      "changeHints": [
+        "Rules/Block_CLI_Operations.txt",
+        "BookOfEternityClient.Tests/MortalLocationCreationHistoryGuidanceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationCreationHistoryGuidanceTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-retained-npc-scene-continuity",
+      "responsibility": "#1515 T018 genuine-original historical NPC retention across scene changes and explicit inspection versus strict declaration boundary.",
+      "excludes": "No actual GM turn, worker publication, real accepted-turn cleanup or full materialization qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/RetainedNpcSceneContinuityTests.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.RetainedNpcSceneContinuityTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-game-loop-rejection-diagnostics",
       "responsibility": "#1515 T017 DEBUG nonce-only observation of existing protected-materialization and canonical-refresh refusals; full issue/exception DATA with diagnostic noninterference.",
       "excludes": "No actual GameEngine rejection execution, mm5/mm6 root-cause proof, acceptance/rollback authority or gameplay change.",

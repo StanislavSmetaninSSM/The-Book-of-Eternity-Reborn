@@ -17,6 +17,17 @@ public partial class ValidationService
     public Task<List<ValidationIssue>> ValidateGameStateAsync()
         => ValidateGameStateInternalAsync(GameStateValidationSelection.All);
 
+    /// <summary>Inspects current state for read-only diagnostics; returned issues grant no mutation, acceptance or publication authority.</summary>
+    /// <returns>Current-state diagnostic issues. The initial test-first implementation retains strict validation behavior.</returns>
+    public Task<List<ValidationIssue>> InspectGameStateAsync()
+        => InspectGameStateAsync(GameStateValidationSelection.All);
+
+    /// <summary>Inspects only the selected existing phases and files without granting authoring authority.</summary>
+    /// <param name="selection">Exact phase and file selection for this inspection.</param>
+    /// <returns>Diagnostic issues from the existing strict pipeline until the explicit inspection policy is implemented.</returns>
+    internal Task<List<ValidationIssue>> InspectGameStateAsync(GameStateValidationSelection selection)
+        => ValidateGameStateInternalAsync(selection);
+
     internal Task<List<ValidationIssue>> ValidateGameStateAsync(
         GameStateValidationPhase phases)
         => ValidateGameStateInternalAsync(new GameStateValidationSelection(phases));

@@ -44,12 +44,17 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         Assert.Equal(B, scope.LocationId);
         Assert.False(LocalInteractionScopeService.IsMortalActorLocal(scope, originalActor.AsObject()));
         Assert.True(JsonNode.DeepEquals(originalActor, (await context.ReadJsonAsync(Core))!["NPCsInScene"]![0]));
-        Assert.DoesNotContain(issues, IsSceneAnchorIssue);
+        Assert.DoesNotContain(issues, issue => IsSceneAnchorIssue(issue) &&
+            issue.FilePath.Contains("UpdateNPCs", StringComparison.Ordinal));
+        Assert.DoesNotContain(issues, issue => IsSceneAnchorIssue(issue) &&
+            issue.FilePath.Contains("NPCsInScene[0]", StringComparison.Ordinal));
     }
 
     [Theory]
     [InlineData("changed-row")]
-    [InlineData("missing-original")]
+    [InlineData("manifest-removed-active-request")]
+    [InlineData("malformed-original")]
+    [InlineData("fully-cleared-original")]
     [InlineData("new-wrong-anchor")]
     public async Task HistoricalCarrierDoesNotExemptUnprovenOrChangedRows(string mode)
     {
@@ -58,8 +63,19 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         await SetSceneAsync(context, newScene: true);
         if (mode == "changed-row")
             currentCore["NPCsInScene"]![0]!["history"] = "A newly authored history is not exact retained DATA.";
-        if (mode == "missing-original")
+        if (mode == "manifest-removed-active-request")
             context.FileSystem.DeleteFile(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+        if (mode == "manifest-removed-active-request")
+        {
+            Assert.False(context.FileSystem.FileExists(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+            Assert.True(context.FileSystem.FileExists(LiveTurnPreparationService.TurnRequestPath));
+        }
+        if (mode == "malformed-original")
+        {
+            await context.WriteJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath, new JsonObject());
+            Assert.Equal("{}", await context.FileSystem.ReadFileAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
+        }
+        if (mode == "fully-cleared-original") await ClearOriginalAsync(context);
         if (mode == "new-wrong-anchor")
         {
             var newcomer = NewActor(newScene: true);
@@ -81,22 +97,57 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
     {
         await using var context = await PrepareAsync(includeKnownB: true);
         await InstallCanonicalBAsync(context);
-        // Explicit owned-fixture teardown, not a simulated accepted turn or permission grant.
-        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
-        {
-            foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
-                         LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
-                         PendingTurnSnapshotAuthority.AuthorityPath, PendingTurnStateService.PendingDiceStatePath })
-                context.FileSystem.DeleteFile(lease, path);
-            context.FileSystem.DeleteDirectoryTree(lease, LiveTurnPreparationService.PendingTurnSnapshotDirectory);
-        }
+        await ClearOriginalAsync(context);
         var before = File.ReadAllBytes(context.FileSystem.ResolvePath(Core));
-        var issues = await context.Validator.ValidateGameStateAsync(new GameStateValidationSelection(
-            GameStateValidationPhase.NpcStateFiles, new[] { Core }));
+        var selection = new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles, new[] { Core });
+        var issues = await context.Validator.InspectGameStateAsync(selection);
+        // Verify non-leakage before the desired inspection assertion (also reached on RED).
+        Assert.Contains(await context.Validator.ValidateGameStateAsync(selection), IsSceneAnchorIssue);
+        using var response = JsonDocument.Parse((await context.ReadJsonAsync(Core))!.ToJsonString());
+        Assert.Contains(context.Validator.ValidateResponse(response.RootElement), IsSceneAnchorIssue);
         Report(issues);
         Assert.Equal(before, File.ReadAllBytes(context.FileSystem.ResolvePath(Core)));
         Assert.False(context.FileSystem.FileExists(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
         Assert.DoesNotContain(issues, IsSceneAnchorIssue);
+    }
+
+    [Theory]
+    [InlineData("orphan-active-request")]
+    [InlineData("unknown-historical-location")]
+    public async Task InspectionDoesNotAuthorizeActiveOrUnanchoredHistoricalRows(string mode)
+    {
+        await using var context = await PrepareAsync(includeKnownB: true);
+        var request = (await context.ReadJsonAsync(LiveTurnPreparationService.TurnRequestPath))!;
+        await InstallCanonicalBAsync(context);
+        await ClearOriginalAsync(context);
+        if (mode == "orphan-active-request")
+            await context.WriteJsonAsync(LiveTurnPreparationService.TurnRequestPath, request);
+        else
+        {
+            var root = (await context.ReadJsonAsync(Core))!;
+            root["NPCsInScene"]![0]!["currentLocationId"] = "loc_not_in_current_world";
+            await context.WriteJsonAsync(Core, root);
+        }
+        var before = File.ReadAllBytes(context.FileSystem.ResolvePath(Core));
+        var issues = await context.Validator.InspectGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.NpcStateFiles, new[] { Core }));
+        Report(issues);
+        Assert.Contains(issues, IsSceneAnchorIssue);
+        Assert.Equal(before, File.ReadAllBytes(context.FileSystem.ResolvePath(Core)));
+    }
+
+    private static async Task ClearOriginalAsync(EffectMaterializationTestContext context)
+    {
+        // Explicit owned-fixture teardown, not a simulated accepted turn or permission grant.
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
+                     LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                     PendingTurnSnapshotAuthority.AuthorityPath, PendingTurnStateService.PendingDiceStatePath })
+        {
+            context.FileSystem.DeleteFile(lease, path);
+            Assert.False(context.FileSystem.FileExists(lease, path));
+        }
+        context.FileSystem.DeleteDirectoryTree(lease, LiveTurnPreparationService.PendingTurnSnapshotDirectory);
     }
 
     private static async Task<EffectMaterializationTestContext> PrepareAsync(bool includeKnownB)
@@ -143,6 +194,10 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
                 Assert.True(signed.Success, string.Join("\n", signed.Issues.Select(i => i.Message)));
                 Assert.Equal("retained-scene-turn42", signed.Snapshot!.RequestId);
             }
+            // Baseline actor/scene structure must already validate before the tested transition.
+            using var baseline = JsonDocument.Parse((await context.ReadJsonAsync(Core))!.ToJsonString());
+            var baselineIssues = context.Validator.ValidateResponse(baseline.RootElement);
+            Assert.DoesNotContain(baselineIssues, issue => issue.Severity == IssueSeverity.Error);
             return context;
         }
         catch { await context.DisposeAsync(); throw; }

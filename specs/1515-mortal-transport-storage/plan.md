@@ -2040,3 +2040,14 @@ changed/unproven rows, default publication validation, active orphan request,
 unknown location, strict raw response and restored selection lifetime. Real
 worker execution/load/native behavior remain separately stated, not inferred
 from source callsite guards or fixture teardown.
+T018 RED source frozen: InspectGameStateAsync public/internal selected overloads
+currently delegate to the unchanged strict pipeline; no purpose/exemption or UI
+wiring implemented. Integration category mortal-retained-npc-scene-continuity
+selects10 cases/2minutes:2 genuine-original positives,5 strict negatives,
+1 idle-inspection positive and2 inspection refusal controls. DesiredRED3FAIL/
+7PASS is a prediction until baseline/build/run. Source labels name actual file
+states, not an inferred private snapshot enum. Original baseline validates before
+scene mutation; actual public strict/raw routes are checked after inspection.
+Separate mortal-location-creation-history-guidance is1 unit source guard/1minute,
+expectedRED against current blanket prohibition. No duplicate fullworld or broad
+suite; no native test. Source-only review and remote save precede execution.
