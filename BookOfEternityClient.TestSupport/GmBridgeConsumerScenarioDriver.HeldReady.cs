@@ -90,6 +90,10 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if(errPump!=null)await Attempt("stderr",()=>errPump);
             await Attempt("stdout-flush",()=>stdout.FlushAsync(cleanup.Token));
             await Attempt("stderr-flush",()=>stderr.FlushAsync(cleanup.Token));
+            // The owned exclusive artifact handles must close after drained pumps,
+            // before later forensic readback. Flush alone does not release sharing.
+            if(outPump?.IsCompletedSuccessfully==true)await Attempt("stdout-dispose",()=>stdout.DisposeAsync().AsTask());
+            if(errPump?.IsCompletedSuccessfully==true)await Attempt("stderr-dispose",()=>stderr.DisposeAsync().AsTask());
             result["HeldReadyEvents"]=events;
             result["HeldReadyReleaseUtc"]=releaseAt;
             result["HeldReadyFirstStatusEntryUtc"]=firstStatusEntryAt;

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityGMBridge;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -26,17 +27,22 @@ internal static class GmBridgeStatusSealScenario
         var proceed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         BridgeHost? host = null; Task<int>? running = null; FileStream? held = null;
         Exception? expectedInitialFailure = null;
+        string? originalRoot = null;
+        GmSessionRunIdentity? initialIdentity = null;
+        var originalRootPid = 0;
         var exit = 1;
         try
         {
             var launch = NeutralTerminalLaunch.Create(package, output);
             var root = Directory.GetParent(launch.Scratch)!.FullName;
+            originalRoot = root;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             files.EnsureDirectoryStructure();
             var statusPath = files.ResolvePath("game_state/control/gm_bridge_status.json");
             var armed = initial ? 1 : 0;
             host = new BridgeHost(launch.Scratch, "status-seal-" + Guid.NewGuid().ToString("N"));
             host.ConfigureNeutral(launch);
+            host.ObserveMainHeldRoot = pid => originalRootPid = pid;
             host.BeforeStatusPublication = async () =>
             {
                 if (Interlocked.Exchange(ref armed, 0) == 0) return;
@@ -89,6 +95,7 @@ internal static class GmBridgeStatusSealScenario
             {
                 if (expectedInitialFailure == null || File.Exists(statusPath)) throw new IOException("Initial contention was deferred or published.");
                 var uncertain = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root)!);
+                initialIdentity = uncertain.Identity;
                 evidence["Original"] = uncertain.Identity;
                 evidence["InitialDisposition"] = uncertain.Disposition.ToString();
                 // NotifyUncertain is live authority state; durable disposition is recorded, not inferred.
@@ -136,7 +143,39 @@ internal static class GmBridgeStatusSealScenario
             catch (Exception failure)
             {
                 evidence["HostFailure"] = failure.ToString();
-                if (!initial || expectedInitialFailure == null || !running.IsCompleted || !OnlyOriginalFailure(failure, expectedInitialFailure)) exit = 1;
+                var qualified = false;
+                if (initial && expectedInitialFailure != null && running.IsCompleted &&
+                    initialIdentity != null && originalRoot != null)
+                {
+                    try
+                    {
+                        var report = GmSessionRunCoordinator.GetStopFailureReport(failure);
+                        evidence["ActualInitialFatalStopReport"] = report;
+                        var durable = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(originalRoot)
+                            ?? throw new IOException("Final original record missing."));
+                        evidence["FinalInitialFatalRecord"] = durable;
+                        var state = report?.CurrentFailure.State;
+                        var proof = state?.NativeProof;
+                        qualified = report != null && report.CaptureComplete && report.Nonce == nonce &&
+                            report.OriginalOwnerIdentity == initialIdentity &&
+                            ReferenceEquals(report.FirstException, expectedInitialFailure) &&
+                            ReferenceEquals(report.CurrentException, failure) &&
+                            report.FirstFailure?.Stage == "status_publication_drain" &&
+                            report.CurrentFailure.Stage == "native_scope_stop" &&
+                            report.CurrentFailure.FirstFailedPredicate == "bridge_terminal_uncertain" &&
+                            state is { Pins: 0, PinDrainCompleted: true, OwnerUncertain: true } &&
+                            state.InMemoryRecord?.Identity == initialIdentity &&
+                            proof != null && proof.Identity.RunId == initialIdentity.RunId &&
+                            initialIdentity.Backend == GmSessionRunBackend.LinuxSupervisor && proof.Identity.Backend == "native-lineage" &&
+                            originalRootPid > 0 && proof.Identity.RootPid == originalRootPid &&
+                            proof.State == GmWorkerStopState.StoppedWithinScope && proof.CleanupComplete && !proof.AuthorityRetained &&
+                            durable.Identity == initialIdentity && durable.Disposition == GmSessionRunDisposition.Uncertain &&
+                            durable.StopEvidence == null;
+                    }
+                    catch (Exception captureFailure) { evidence["FatalQualificationFailure"] = captureFailure.ToString(); }
+                }
+                evidence["TypedInitialFatalQualified"] = qualified;
+                if (!qualified) exit = 1;
             }
             evidence["DisposeTaskCompleted"] = disposing?.IsCompleted == true;
             evidence["DisposeTaskStatus"] = disposing?.Status.ToString();

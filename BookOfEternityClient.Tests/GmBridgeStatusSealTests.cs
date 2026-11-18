@@ -32,6 +32,8 @@ public sealed class GmBridgeStatusSealTests
         if (mode == "terminal-main-status-initial-contention")
         {
             Assert.Empty(records);
+            Assert.True(data.GetProperty("TypedInitialFatalQualified").GetBoolean());
+            Assert.NotEqual(JsonValueKind.Null, data.GetProperty("ActualInitialFatalStopReport").ValueKind);
             Assert.True(data.GetProperty("ExpectedInitialLogicalUncertainty").GetBoolean());
             Assert.Contains("CanonicalLockContention", data.GetProperty("OriginalFirstPublicationFailure").GetString());
         }
