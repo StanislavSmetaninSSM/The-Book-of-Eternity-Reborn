@@ -1113,3 +1113,35 @@ External manifest SHA25695c4097e0c398debba84d9cd7bff0a3c245edbc68135c85ba7a5a5ab
 A preparation-metadata missing-field error was corrected without rerunning any
 game or changing package bytes. Independent preparation review and live phases
 remain required; rl1 is not continued and main remains unchanged.
+
+### #1589 rl2 original pidfd observation failure, 2026-11-18, WIP
+
+Independent prerequisite GREEN and package review accepted the preceding bounded
+results. The pristine rl2 p01 launch then ran once using the saved 67b379 candidate
+and original guardian. It reached a real GM relay request and sent one player
+action, but accepted zero turns. Original driver completed in 126.833 seconds
+with `Original owner uncertainty`; no second phase was started. The GM authored
+no response packet or canonical writes: its later submission was refused as
+RelayClosed after the original request disappeared.
+
+The first specific ownership failure is `host-exit-observation-lost` from
+NativeLineageOwner observing the original transferred pidfd. The last healthy
+RPC and first uncertain RPC are 53 ms apart; uncertainty preceded the fixture's
+first cleanup ESC. Subsequent status-publication admission and native-stop
+failures are not proof of an earlier publication defect. The observer discards
+native errno/revents and the original exception, so EINTR is only a hypothesis,
+not the established cause. No environment restriction or fix is claimed.
+
+The independent guardian finished with ECHILD, driver exit 1, two reaped children,
+zero emergency signals/failures/deadline. This physical drain does not qualify
+logical cleanup: daemon exit 1, client/bridge exits and foreground EOF unconfirmed,
+original owner retained Uncertain, daemon settlement unconfirmed. Preserve this
+failed world and do not replay or continue it. Main remains unchanged; merge is
+blocked until genuine accepted turns, same-world restart and normal settlement.
+
+Next: inspect the original observation contract and cheaply reproduce its error
+classification, preserving exact failure diagnostics before another live run.
+No new cache is appropriate for fresh pidfd/ownership observation. Reuse existing
+immutable build evidence only where inputs match; do not cache authority. Raw
+rl2 logs, queue, request and guardian records remain outside Git. Independent
+failure/source investigation is underway; no broad tests or hosted CI ran.
