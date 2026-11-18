@@ -1076,3 +1076,20 @@ the old ordinary continuation path does not yet reject the diagnostic marker
 early. No setup/import exception; temporary-directory cleanup completed. Raw
 remains external. This is a harness-admission RED only, no copied world or native
 run. Minimal implementation and official PowerShell adapter verification are next.
+
+T022 first coherent implementation source is saved as WIPb93dc39d. It adds only
+fixture DATA admission/import and explicit diagnostic request/result handling,
+with normal seed/continuation gates retained. Direct synthetic checks report
+15/15 GREEN (13 DATA cases plus two actual producer cases), shared38 and cleanup15
+also pass; native copies/launch remain UNRUN. A thin official PowerShell adapter
+and mortal-restored-diagnostic-data category avoid an unnecessary C# rebuild.
+Independent GREEN source review is pending before official verification/prep.
+
+Independent T022 GREEN source review identified two bounded prep blockers:
+explicit fresh diagnostic root/run/generation/daemon joins were missing because
+the ordinary first-phase check saw no predecessor; and copytree could transfer
+unlisted __pycache__ bytes excluded by inventory. Add causal cheap negatives and
+separate diagnostic fresh-owner checks before action, plus exact manifest-file
+copying. Do not substitute the old source as an ordinary previous owner, change
+general relay inventory, or claim the old immutable package actually contained
+unlisted bytes. Native preparation remains blocked until corrected review.
