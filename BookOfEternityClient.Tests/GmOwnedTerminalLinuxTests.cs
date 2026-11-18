@@ -32,7 +32,7 @@ public sealed class GmOwnedTerminalLinuxTests
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
-        var race = mode is "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active";
+        var race = mode is "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat";
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var consumer = mode is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-prepared-stop-race";
         var folder = Path.Combine(TestDiagnosticPaths.Root, "native-terminal", Guid.NewGuid().ToString("N"));

@@ -14,12 +14,13 @@ internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var race = mode == "terminal-main-prepared-stop-race";
         var loss = mode is "terminal-main-loss-prepared" or "terminal-main-loss-active";
-        var diagnostic = soak || race || loss;
+        var nested = mode == "terminal-main-nested-heartbeat";
+        var diagnostic = soak || race || loss || nested;
         var expectedLossProven = false;
         var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
@@ -32,7 +33,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : race || loss ? 20 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : nested ? 30 : race || loss ? 20 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -124,6 +125,8 @@ internal static partial class GmBridgeConsumerScenarioDriver
             result["OriginalCloseObserved"] = true;
             await pin.DisposeAsync();
             pin = null;
+
+            if (nested) await VerifyNestedParticipationAsync(status, launch.Scratch, output, original, result, deadline.Token);
 
             if (soak) await ObserveOriginalSoakAsync(status, original, root, running, output, result, deadline.Token);
 

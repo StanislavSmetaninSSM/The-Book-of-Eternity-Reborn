@@ -1520,3 +1520,6 @@ New gm-stop-diagnostic-full-text-data selects4 cheap cases: separate original-fa
 Optimization: reuse already computed exception strings and the existing serializer/stderr route, no new cache or logging framework. Getter/serialization/sink errors remain isolated. No lifecycle, authority, retry, admission or first-failure decision changes are proposed. All source collection and failure constraints remain distinct from diagnostic storage policy.
 
 Coordinator text freezing is exposed internal, body unchanged, for the same two typed rows. Initial HostExit assertions fail first, so coordinator checks remain unreached until GREEN.
+
+### #1589 neutral nested-reader fixture WIP, unrun
+Six fixture/wiring sources prepare actual FIFO owner plus shipped PowerShell nested snapshots, exact original close, fresh heartbeat operation and both server ClosedObserved receipts before existing scoped stop. This covers reads, not status writes or the historical p02 initiating cause. No production first-loss instrumentation yet. No new native/game run; source review pending. Quota DATA build overlapped preparation of these sources; resulting build cannot be attributed solely to db155599. Fixture source and emitted PDB must be reconciled before its own run. No new cache: fresh ownership is the tested subject; reuse existing neutral host and shutdown infrastructure.
