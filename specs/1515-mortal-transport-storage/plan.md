@@ -2598,3 +2598,20 @@ Trace actual locality consumer and exact scheduler writer/timing before another
 run. The earlier scheduler-oracle adjustment was insufficient; do not remove
 its assertion or mislabel this as runtime rollback failure without tracing.
 No native retry, no full packet acceptance, no issue closure.
+T023 is tracked before source edits. Root causes confirmed from retained evidence
+and production call paths: all three scheduler mismatches have actual bytes but
+no expected file, because the fixture captured absence before ProcessPlayerTurn.
+System health initializes progression_schedule before CreatePreTurnBackup; rollback
+legitimately restores that initialized original. Capture exact engine-produced
+owned .rollback backup at dispatch, requiring the unique expected path, rather
+than inventing a timestamp or weakening byte comparison.
+Locality is a production dependency omission: ResolveMortalAsync reads only
+soul/current/map/index, then Planner.Build has no RawFactionCore. Canonical
+faction-owned storage is checked against an empty faction catalog and produces
+mortal_location_storage_owner_target_unknown, leaving the whole scope unresolved
+although steward's permanent currentLocationId is correct. Add genuine faction
+companion under the existing optional lease and authority snapshot collection;
+retain all planner and identity checks, no inferred owner. Cheap causal resolver
+fixtures valid/missing/mismatched faction precede runtime fix, then combined5.
+Read the companion once per scope and carry its snapshot through existing consumer
+freshness checks; no parallel cache/registry. No native retry until packet passes.
