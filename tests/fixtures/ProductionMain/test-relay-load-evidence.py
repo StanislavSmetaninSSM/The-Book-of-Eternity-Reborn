@@ -15,7 +15,10 @@ def fixture():
         SourceKey=expected['SourceKey'],RootKey='/owned',ExpectedGeneration=a['GenerationId'],OriginalStop=receipt('Stopped',a,ta),
         ReplacementFinish=receipt('Running',b,tb),Committed=True,RefreshConfirmed=True,EstablishedGeneration=b['GenerationId']))
     installed=dict(Disposition='Running',Identity=b)
-    return copy.deepcopy(expected),copy.deepcopy(document),copy.deepcopy(installed)
+    expected=copy.deepcopy(expected);installed=copy.deepcopy(installed)
+    expected['StartupIdentityA']['Backend']='LinuxSupervisor'
+    installed['Identity']['Backend']='LinuxSupervisor'
+    return expected,copy.deepcopy(document),installed
 
 def wire(value):return json.dumps(value,separators=(',',':')).encode()+b'\n'
 
@@ -34,7 +37,7 @@ def cleanup(expected,document,installed):
     value=dict(AcceptedGameTurns=0,GenuineActionsSent=0,ShutdownAttempts=1,InputQualified=True,LogicalLifecycleVerified=True,RelayExecutionClosed=True,
         RpcHelperClosure=dict(ExitCode=0,StdoutEof=True,StderrEof=True),
         Terminals={k:dict(ExitCode=0,EOF=True,TermiosRestored=True,StreamEOF=dict(stdout=True,stderr=True)) for k in ('client','bridge','daemon')},
-        DaemonSettlement=daemon('3'*32),StartupIdentityA=a,ShutdownIdentityB=b,
+        DaemonSettlement=daemon('3'*32),StartupIdentityA=a,ShutdownIdentityB=copy.deepcopy(document['observation']['ReplacementFinish']['MainIdentity']),
         OriginalRunningRecord=dict(Disposition='Running',Identity=a),OriginalRunningStatus=status(a['RunId']),
         LoadRunningRecord=installed,LoadRunningStatus=status(b['RunId']),StoppedRecord=dict(Disposition='Stopped',Identity=b,StopEvidence=dict(Identity=b,Kind='OwnedScopeEmpty')))
     continuity=dict(SessionPath='/owned/game_session',LoadActionUtc='2026-11-18T10:00:02Z',
@@ -62,6 +65,25 @@ def cleanup(expected,document,installed):
 class LoadEvidenceTests(unittest.TestCase):
     def setUp(self):self.expected,self.document,self.installed=fixture()
     def validate(self,raw=None,cut=0):return evidence.validated_load_observation(wire(self.document) if raw is None else raw,cut,self.expected,self.installed)
+    def test_production_codec_backend_forms_join_without_mutating_raw(self):
+        self.expected['StartupIdentityA']['Backend']='LinuxSupervisor'
+        self.installed['Identity']['Backend']='LinuxSupervisor'
+        before=copy.deepcopy((self.expected,self.document,self.installed))
+        self.assertEqual(self.document,self.validate())
+        self.assertEqual(before,(self.expected,self.document,self.installed))
+    def test_production_codec_backend_forms_cleanup(self):
+        self.expected['StartupIdentityA']['Backend']='LinuxSupervisor'
+        self.installed['Identity']['Backend']='LinuxSupervisor'
+        value=cleanup(self.expected,self.document,self.installed)
+        value['ShutdownIdentityB']=copy.deepcopy(self.document['observation']['ReplacementFinish']['MainIdentity'])
+        self.assertTrue(evidence.relay_load_phase_cleanup_proved(value,wire(self.document),0,self.expected))
+    def test_backend_wire_forms_are_strict_not_generic_coercion(self):
+        for field,value in [('durable',2),('durable','2'),('durable','linuxsupervisor'),('durable',True),('observation','LinuxSupervisor'),('observation','2'),('observation',True),('observation',0),('observation',3)]:
+            before=copy.deepcopy((self.expected,self.document,self.installed))
+            if field=='durable':self.expected['StartupIdentityA']['Backend']=value
+            else:self.document['observation']['OriginalStop']['MainIdentity']['Backend']=value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):self.validate()
+            self.expected,self.document,self.installed=before
     def test_complete_pair_after_fresh_cut(self):
         prior=wire(self.document)+b'old prompt '
         self.assertEqual(self.document,self.validate(prior+wire(self.document),len(prior)))
@@ -187,7 +209,7 @@ class LoadEvidenceTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(LoadEvidenceTests)
-    expected_count=19
+    expected_count=22
     if suite.countTestCases()!=expected_count:raise SystemExit('Unexpected Load test count')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     ok=result.testsRun==expected_count and result.wasSuccessful() and not result.skipped

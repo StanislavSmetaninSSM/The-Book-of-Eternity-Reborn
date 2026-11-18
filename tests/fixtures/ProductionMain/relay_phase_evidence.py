@@ -390,6 +390,17 @@ def require_restored_diagnostic_owner(identity,source,new_base,daemon_owner):
     if not isinstance(daemon_owner,str) or not daemon_owner.strip() or daemon_owner==old_daemon:raise ValueError('Diagnostic daemon owner reused or empty')
 
 
+def _load_durable_identity(value):
+    """Comparison-only copy of the existing string-enum durable wire identity.
+
+    DEBUG observation identity uses default numeric enum serialization. Do not
+    rewrite either captured record or accept arbitrary enum coercions.
+    """
+    if type(value) is not dict or type(value.get('Backend')) is not str or value['Backend'] not in ('WindowsJob','LinuxSupervisor'):
+        raise ValueError('Invalid durable main backend encoding')
+    return dict(value,Backend={'WindowsJob':1,'LinuxSupervisor':2}[value['Backend']])
+
+
 def validated_load_observation(client_output, action_cut, expected, installed_record):
     """Validate captured Load DATA, not authority. Caller owns fresh output/cut and expected tuple.
 
@@ -413,7 +424,7 @@ def validated_load_observation(client_output, action_cut, expected, installed_re
         'StartupIdentityA','StartupTerminalA'},'Incomplete expected Load tuple')
     require(all(guid(expected[k]) for k in ('Nonce','ExpectedGeneration')) and
         all(type(expected[k]) is str and expected[k] for k in ('SourceKey','RootKey')),'Invalid expected Load tuple')
-    identity(expected['StartupIdentityA']);terminal(expected['StartupTerminalA'])
+    identity(_load_durable_identity(expected['StartupIdentityA']));terminal(expected['StartupTerminalA'])
     fresh=client_output[action_cut:]
     marker=b'boe-load-session-completed'
     require(fresh.count(marker)==1,'Missing or duplicate fresh Load observation')
@@ -438,7 +449,7 @@ def validated_load_observation(client_output, action_cut, expected, installed_re
         identity(receipt['MainIdentity']);terminal(receipt['TerminalIdentity'])
         require(receipt['TerminalIdentity']['RunId']==receipt['MainIdentity']['RunId'],'Load terminal/main mismatch')
     a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
-    require(a==expected['StartupIdentityA'] and observed['OriginalStop']['TerminalIdentity']==expected['StartupTerminalA'] and
+    require(a==_load_durable_identity(expected['StartupIdentityA']) and observed['OriginalStop']['TerminalIdentity']==expected['StartupTerminalA'] and
         a['RootKey']==expected['RootKey'] and a['GenerationId']==expected['ExpectedGeneration'],'Original Load owner mismatch')
     require(b['RootKey']==a['RootKey'] and b['GenerationId']==observed['EstablishedGeneration'] and
         b['GenerationId']!=a['GenerationId'] and b['RunId']!=a['RunId'] and b['Epoch']>a['Epoch'] and
@@ -446,7 +457,7 @@ def validated_load_observation(client_output, action_cut, expected, installed_re
     # Post-action metadata is an independent consistency check, never the source
     # of B or of the internally generated operation ID.
     require(type(installed_record) is dict and installed_record.get('Disposition')=='Running' and
-        installed_record.get('Identity')==b,'Installed replacement consistency mismatch')
+        _load_durable_identity(installed_record.get('Identity'))==b,'Installed replacement consistency mismatch')
     return document
 
 
@@ -455,8 +466,8 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
     try:
         observed=validated_load_observation(client_output,action_cut,expected,value['LoadRunningRecord'])['observation']
         a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
-        if value['StartupIdentityA']!=a or value['ShutdownIdentityB']!=b:return False
-        if value['OriginalRunningRecord']['Identity']!=a or value['OriginalRunningRecord']['Disposition']!='Running':return False
+        if _load_durable_identity(value['StartupIdentityA'])!=a or value['ShutdownIdentityB']!=b:return False
+        if _load_durable_identity(value['OriginalRunningRecord']['Identity'])!=a or value['OriginalRunningRecord']['Disposition']!='Running':return False
         if value['OriginalRunningStatus']['ok'] is not True or value['OriginalRunningStatus']['status']['terminalRunId']!=a['RunId']:return False
         # Load replaces main A with B, not the retained root/session daemon.
         if not retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']):return False
@@ -464,7 +475,7 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
         if value['ShutdownReceipt']['status']['terminalStop']['identity']!={
             'runId':terminal['RunId'],'backend':terminal['Backend'],'guarantee':terminal['Guarantee'],'rootPid':terminal['RootPid']}:return False
         running=value['LoadRunningRecord'];status=value['LoadRunningStatus']
-        if running['Identity']!=b or running['Disposition']!='Running':return False
+        if _load_durable_identity(running['Identity'])!=b or running['Disposition']!='Running':return False
         if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:return False
         # The existing fixed stop proof is reused only against observed B. Original
         # caller evidence remains untouched; no process action occurs in this module.

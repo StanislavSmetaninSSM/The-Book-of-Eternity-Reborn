@@ -2991,3 +2991,13 @@ run had18 namespace setup errors, then38/38PASS0.142s after correcting fixture
 namespace. Those setup errors are not causal production RED. Raw evidence stays
 external mortal-t024/load-continuity-live-fix. Wrapper count must now be19.
 Independent coherent source review is underway; no native acceptance implied.
+T024 independent source review found a concrete pre-native wire mismatch:
+persisted main.json uses string Backend through GmSessionRunRecordCodec, while
+the DEBUG Load observation uses numeric Backend. Synthetic DATA had used numeric
+for both, so genuine Load would reject before B could be assigned. Two actual-
+shape tests gave21 methods:19PASS,1FAIL,1ValueError (0.016s). Strict comparison-only
+normalization now accepts only persisted WindowsJob/LinuxSupervisor names and
+observed numeric1/2, preserving original raw records and observed A/B authority
+boundaries. Malformed/cross-wire controls added;22/22PASS0.015s and existing
+Mortal38/38PASS0.149s. Evidence external mortal-t024/load-codec; no native retry.
+Independent correction/full-route review and official Unit build/run pending.
