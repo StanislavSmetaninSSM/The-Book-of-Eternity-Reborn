@@ -1948,3 +1948,17 @@ explicit fixture diagnostics, not GM-authored mechanics or player behavior.
 No source changes during the in-flight raw-scene Unit build; save WIP before
 RED/GREEN runs. Independent review and bounded category checks precede any use
 in another native package. The original mm5 exception remains unexplained.
+
+Raw-scene official OUTCOME independently accepted4/4 PASS, runner10.7319735s,
+all distinct, complete owned/runtime cleanup; Unit build31.97s/32.326wall,
+43warnings/0errors. Frozen3414 sources,8Unit outputs and20 earlier Integration
+outputs remain byte-equal. Exact result identity
+20261118-084251-822-5-7513ad0e1a6d4e1aa2c448f156161d39.
+Missing eventDescriptions produces the exact governed-field-missing issue;
+its unbound LocationPolicyFailClosed is true. Adding the empty array passes the
+location shape test. The NPC anchor produces the exact missing-initial-location
+issue with both item/location policies false; correct anchor removes only the
+asserted field errors. Link and item envelope shapes have no issues. None proves
+bound resource/source admission or retrospectively names mm6's actual refusal.
+No further identical DATA repetition is needed. Next is the already described
+minimal refusal-observation RED/GREEN block, not a gameplay/authority change.
