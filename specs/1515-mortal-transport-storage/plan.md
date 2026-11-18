@@ -3284,3 +3284,11 @@ output-pin manifest cefc5f7473567ea54404694a4390b4cd81ef42f8674f5492495ebaa217d1
 Independent OUTCOME verification pending. No Integration build, native game or
 mm11 replay. Automated evidence qualifies this detached helper/consumer block,
 not an accepted live journey. No performance speedup claim.
+Independent Astra High OUTCOME accepts bounded T025 GREEN without findings:
+actual54/54 TRX, exact5descriptors, inner counts, all6 serialized wire identities/
+branch shapes,9 subprocess exits/pumps/cleanup,3491source/8outputs/13reviewed pins
+freshly verified. This accepts the detached helper/consumer correction only.
+Next is prepare-only fresh mm12 from current output/source pins and new setup41,
+not failed mm11 state. Independent immutable-package preflight and exact candidate
+whole-field review remain required before one new real GM response. No native
+Load ownership, complete1515 journey or issue closure is inferred.
