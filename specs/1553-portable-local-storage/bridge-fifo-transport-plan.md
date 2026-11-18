@@ -561,3 +561,37 @@ outside Git in retired-readmission-green-build.log, retired-readmission-green-
 core-official.log and retired-readmission-green-neighbors-official.log under the
 shared external diagnostics directory. The real new scenario is a61a8da58e6b49da
 b3658c31b744a989; official neighbor run is 20261117-211546-140-6-96aea338b2424d53992206994651301c-categories.
+
+### Cleanup neighbor oracle correction, test-only WIP
+
+Independent review traced the three failures to an unchanged-source contract
+mismatch: GmWorkerQuarantinedExecution retains canonical publication uncertainty
+on its original execution authority and deliberately suppresses subsequent
+failure callbacks. The old neighbor expected a second diagnostic callback, then
+in one path restored audit bytes to force cleanup success. Neither expectation
+matches the existing sticky uncertainty contract. These neutral-main NoLaunch
+paths do not enter the new retired remote binding. No prior-version runtime
+failure is claimed and no production behavior is changed for this correction.
+
+A new cheap typed test uses the actual NoLaunch authority, quarantined execution
+and reaper, with one exact required-audit sentinel. Two passes must retain that
+same fault, invoke one append and no failure callback, and retain capacity/slot.
+It has no filesystem, main, remote client or child process. The three real
+publication-cut cases now capture the actual append exception via catch/rethrow,
+compare its reference to the original authority fault, and retain the original
+unknown audit bytes, journal, slot/capacity and absence of a receipt. Repeated
+live and post-withdrawal passes must stop at the sticky fault before another
+append. The exact original main pin is separately shown exhausted; retired mode
+also requires its actual Stopped main before that pass. No state is restored or
+fault cleared to manufacture success. Test-owned resource disposal is separate
+from logical debt retirement. Metadata and receipt-retry success paths remain.
+
+The three publication rows are split into
+`gm-main-worker-cleanup-publication-sticky-linux`; the existing cleanup category
+retains only its four previously passing controls. New tiny proof category is
+`gm-worker-quarantine-sticky-audit-data`. Next bounded execution is this one proof,
+the three corrected rows and the two still-unrun integration cleanup neighbors.
+The previous five new and fifteen unaffected passing cases are not repeated.
+Source changes are test/catalog/documentation only, currently UNBUILT/UNRUN;
+remote save and independent source review precede execution. Production guards
+and all live game worlds remain untouched.

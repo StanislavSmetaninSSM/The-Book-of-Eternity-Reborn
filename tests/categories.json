@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-worker-quarantine-sticky-audit-data",
+      "responsibility": "#1589 existing canonical audit uncertainty retains the exact NoLaunch authority fault, suppresses later diagnostic callbacks and second append, and retains the slot across two real reaper passes.",
+      "excludes": "No filesystem, main owner, remote grant, process launch or prior-version runtime claim.",
+      "changeHints": ["BookOfEternityClient.Tests/GmWorkerStickyAuditDataTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerStickyAuditDataTests.*"]}]
+    },
+    {
+      "id": "gm-main-worker-cleanup-publication-sticky-linux",
+      "responsibility": "#1589 affected original cleanup neighbors: actual audit publication cut retains the same uncertainty and unchanged evidence, no second append/callback/slot release, on live and separately withdrawn original accesses.",
+      "excludes": "No restoration to force cleanup success, repeated canonical admission after sticky failure, gameplay or prior-version execution claim.",
+      "changeHints": ["BookOfEternityClient.TestSupport/MainWorkerCleanupScenario.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_CanonicalAuditUncertaintyRemainsSticky"]}]
+    },
+    {
       "id": "gm-retired-worker-registration-data",
       "responsibility": "#1589 exact retired durable registration DATA predicates; active, uncertainty, replacement and foreign-root refusals. Predicate is not remote admission authority.",
       "excludes": "No fabricated remote grants, gameplay or live world replay.",
@@ -49652,7 +49674,7 @@
     },
     {
       "id": "gm-main-worker-cleanup-admission-linux",
-      "responsibility": "Seven actual original Linux main/guardian cases with real pool required-audit callback, detached workspace, NoLaunch cleanup owner, reaper and slot: expired/retired Access, exact receipt ACK retry, live metadata and actual publisher uncertainty, plus retained audit debt after pin exhaustion or original retirement.",
+      "responsibility": "Four original Linux main/guardian cleanup controls: expired/retired Access, exact receipt ACK retry and live metadata refusal. Publication uncertainty is separately selected by gm-main-worker-cleanup-publication-sticky-linux.",
       "excludes": "No worker process launched; no Windows Job/ConPTY qualification or whole dispatch/stop proof. Pool private production callback invoked by reflection, not fabricated audit disposition.",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
@@ -49675,7 +49697,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.*"
+            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_DeferredNoLaunchCleanupPreservesExactAuthority"
           ]
         }
       ]
