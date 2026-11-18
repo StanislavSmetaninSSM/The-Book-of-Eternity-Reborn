@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-prepared-grant-stop-race",
+      "responsibility": "#1589 exact FIFO prepared grant then original Stop before Activate: reject activation and preserve clean never-admitted retirement.",
+      "excludes": "No live game, active lost-close relaxation or historical rl3 causality claim.",
+      "changeHints": ["BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmPreparedGrantStopTests.PreparedGrant_StopBeforeActivationRefusesEffectsAndRetiresOriginal"]}]
+    },
+    {
       "id": "gm-host-exit-original-fifo-soak",
       "responsibility": "#1589 observe one real original neutral FIFO owner for 120 seconds, retain full diagnostic samples and require original scoped shutdown and guardian cleanup.",
       "excludes": "No game/GM acceptance, injected fault, EINTR retry or historical rl2 root-cause/fix claim; requires observed FIFO capability.",

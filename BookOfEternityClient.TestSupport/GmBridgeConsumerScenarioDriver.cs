@@ -14,21 +14,23 @@ internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
         var soak = mode == "terminal-main-consumer-pidfd-soak";
+        var race = mode == "terminal-main-prepared-stop-race";
+        var diagnostic = soak || race;
         var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
-        if (soak) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
+        if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
         string? status = null;
         GmSessionRunRecord? original = null;
         var stopAttempted = false;
         var result = new Dictionary<string, object?> { ["Mode"] = mode };
-        if (soak) result["StopDiagnosticNonce"] = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
+        if (diagnostic) result["StopDiagnosticNonce"] = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         BridgeHost? host = null;
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : race ? 20 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -78,6 +80,12 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (endpoint.Kind != expectedKind) throw new IOException("Actual host transport disagrees with fresh socket capability.");
             if (!TransportEntryExists(endpoint.Address)) throw new IOException("Published transport entry is absent before use.");
             result["ActualEndpoint"] = endpoint;
+            if (mode == "terminal-main-prepared-stop-race")
+            {
+                await VerifyPreparedStopRaceAsync(status, original!, root, output, result, deadline.Token);
+            }
+            else
+            {
             pin = await GmMainOperationClient.OpenAsync(files, deadline.Token, original!.Identity);
             if (pin.Identity != original.Identity) throw new IOException("Actual main grant changed original identity.");
             result["ActualMainGrantAndActivation"] = true;
@@ -143,11 +151,12 @@ internal static partial class GmBridgeConsumerScenarioDriver
                     throw new IOException("Shipped launcher did not receive original scoped shutdown receipt.");
                 result["IndependentLauncherShutdown"] = true;
             }
+            }
             if (await running.WaitAsync(deadline.Token) != 0) throw new IOException("Actual bridge returned failure.");
             var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Stopped record missing."));
             if (stopped.Identity != original.Identity || stopped.Disposition != GmSessionRunDisposition.Stopped)
                 throw new IOException("Original terminal did not become durably Stopped.");
-            if (soak && (stopped.StopEvidence?.Identity != original.Identity ||
+            if (diagnostic && (stopped.StopEvidence?.Identity != original.Identity ||
                 stopped.StopEvidence.Kind != GmSessionRunStopKind.OwnedScopeEmpty))
                 throw new IOException("Soak original durable stop evidence missing.");
             if (TransportEntryExists(endpoint.Address)) throw new IOException("Original transport entry survived actual host shutdown.");
@@ -190,14 +199,14 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (host != null)
                 try
                 {
-                    if (soak) await Task.Run(host.Dispose).WaitAsync(TimeSpan.FromSeconds(5));
+                    if (diagnostic) await Task.Run(host.Dispose).WaitAsync(TimeSpan.FromSeconds(5));
                     else host.Dispose();
                 }
                 catch (Exception error) { result["HostDisposeFailure"] = error.ToString(); exit = 1; }
             if (running != null)
                 try { await running.WaitAsync(TimeSpan.FromSeconds(5)); }
                 catch (Exception error) { result["HostJoinFailure"] = error.ToString(); exit = 1; }
-            if (soak) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, priorNonce);
+            if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, priorNonce);
             if (exit != 0) result["Success"] = false;
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));
         }
