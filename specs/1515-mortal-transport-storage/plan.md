@@ -1765,3 +1765,25 @@ replaced with old receipts. Old unsuccessful mm3p04 remains preserved; its
 exception was not reproduced by the separate accepted mm4 diagnostic, which
 cannot serve as an ordinary predecessor. Full1516 chronology is in its existing
 live-relay-phase-plan.md, not duplicated here.
+
+### mm5 p01 failed before GM response; no replay
+
+Independent prelaunch accepted the exact fresh package. Original ordinary run
+produced request4eba53be5d6e4ab1a5a7fe6f7ae12bb3/turn42, but failed before any
+GM packet was published. Probe SHA256
+`af51eaa9ca8feec267e942b91e9321b210a80589a689a96fad2786366a58d83d`
+reports Accepted0/action1/224.761s, Actual current client failure during provider
+wait. The ordinary unsafe-action panel followed roughly three minutes of waiting.
+The GM authored a local packet378e1221c1416a2078420151f6719e78da26e9cfe9d56ca4c4954d316294a439,
+but the real answer operation refused RelayClosed; no response/reply/started/
+execution artifact or canonical GM write exists. Do not describe this as a birth,
+access or packet-validation test. Story remains only setup41; request42 pending.
+
+Original shutdown/physical cleanup is reported complete, while guardian records
+driverExitCode1 and probeSuccessfalse despite outer shell0. Exit0 alone is not
+success. Exact failure/cleanup chronology awaits independent review. Diagnostic
+exception nonce was intentionally unset for this ordinary run; no exception
+capture is claimed. No automatic retry or pending-state cleanup is authorized by
+these observations. This failure cannot be caused by this unsubmitted GM packet.
+Investigate the shared provider-wait/cancellation path and original logs before
+choosing a minimal next observation. T016 remains open.
