@@ -3096,3 +3096,17 @@ separate operational error, not silently classified harmless. The independent
 packet review also traces every current nested authored field/identity before
 any next response; no automatic preparation is a live accepted turn. Prepare a
 new isolated mm11 using only immutable package DATA, never mm10 world state.
+Fresh mm11 PREPARED ONLY after verified mm10 cleanup: reuse exact declared
+immutable assets, not failed world/config/queue. Zero build/publish; one fresh
+export,53 files/setup41/zero validation issues/new session. Package remains
+byte-identical34f39515c1e6faebe0675d57980cc3e4c65b935870947d469abc54961416027e;
+new preparation manifest a480a00a296f7ea338a0fc74df4b2429b563bccd192a00ac9afdf9c187355481.
+Two preparation issues retained: missing time utility before execution, then
+strict copier rejected three post-run derived Python cache files in source relay.
+Only manifest-declared pinned files were subsequently copied; continuation ran
+the unfinished suffix, not another export. First substantive stage6.399s; total
+preparation wall time unmeasured. Fresh destination/runtime inventories and
+independent delta preflight pending. Full author-schema review is prepared before
+launch: exact actual candidate hash must pass every nested field/identity/baseline
+check, followed by explicit parent GO before one response. No automatic prep or
+DATA check counts as a live accepted turn; no mm11 launch yet.
