@@ -989,3 +989,27 @@ nonmutation assertions before final null rejection. This is causal validator
 RED, not setup failure. Result identity
 20261118-072332-835-5-eceae86a593e4852941b53884492e704-categories.
 Production still unchanged at this checkpoint; the minimal null guard is next.
+
+Independent p04 investigation confirms the error UI is current and genuine:
+its bytes were observed at116.283s and driver shutdown began only122.341s.
+The client remained alive awaiting a key; this is not a proven process crash.
+No primary exception was found in retained artifacts: ordinary file logging
+can fail silently, and the existing opt-in DEBUG stderr exception exporter was
+not enabled. Later daemon admission errors are not evidence of the earlier
+client cause. All runtime732 hashes remain exact; a concurrent source-checkout
+build does not establish immutable-runtime contamination. Preserve request45,
+queue, snapshot and world without replay. Targeted existing diagnostic-export
+and verified accepted-data recovery feasibility are being investigated read-only.
+
+T021 one-line source correction is saved at6d736a5: skip RequireObject only for
+JsonValueKind.Null. All non-null type/member checks remain. Independent source
+review accepts sole17-case GREEN selection; actual GREEN remains pending.
+
+T021 targeted GREEN now executed: fresh integration build54.75s (wall55.117),
+19 warnings,zero errors. PlanOnly17 cases/zero executions in7.2162343s. Official
+mortal-faction-null-priorities passed17/17 in13.9046681s, one completed descriptor,
+no skips/duplicates/timeouts and complete owned cleanup. Result identity
+20261118-072702-229-5-29bbb878a8b3405eb80585217b0673c0-categories.
+Source SHA256 `92dafa7cf2dd89c897b786854341f2bb2c922bbadd9ce9f0c75e605336760240`.
+Independent final outcome review and current output pins are pending. This is
+not a new native run or a diagnosis/fix of p04's unknown client exception.
