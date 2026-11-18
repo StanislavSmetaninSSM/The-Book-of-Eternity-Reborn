@@ -3437,3 +3437,13 @@ AstraHigh focusedSOURCEaccepts all10pins andno mirrorrepair/publication. Nextfre
 Unit and DATA6 then OWNER2 as separateofficialselections: proceedowner onlyafter
 intendedmissinggenerationRED+5baselinePASS, notunexpectedsetupfailure. Expected
 combined2causalFAIL/6PASS; no actualgame/nativeworldretry authorized.
+Corrected T026 actual RED completed separately: DATA5PASS/1FAIL at missinggeneration
+noexception aftercoldabsence; OWNER1PASS/1FAIL with directIOException/no menu,
+realparticipatingmenu/exactoriginalCompletedclose, then sharedhelperIOException/
+no menu reaching desiredmenu assertion. GenuineStoppingPASS. This is6PASS/2causalFAIL,
+not the priorprerequisitefailure. FreshUnit39.11s/70warnings/0errors; DATA11.8634057s,
+OWNER16.5440823s,completecounts/cleanup,no skipsdups/timeouts. Bothneutralguardians
+ECHILD/noemergency/failures/deadline,hostDispose/joincomplete;3496source/8outputs
+unchanged. Externalmortal-t026/dispatch-red-cold-corrected retainsfullcaptures.
+IndependentcausalOUTCOMEreview pending beforeproductionparticipationfix. No realgame
+retry, no exacthistoricalthrow-line inference; failedmm12p02 staysinadmissible.
