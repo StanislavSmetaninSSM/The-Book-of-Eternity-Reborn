@@ -1128,8 +1128,8 @@ The first specific ownership failure is `host-exit-observation-lost` from
 NativeLineageOwner observing the original transferred pidfd. The last healthy
 RPC and first uncertain RPC are 53 ms apart; uncertainty preceded the fixture's
 first cleanup ESC. Subsequent status-publication admission and native-stop
-failures are not proof of an earlier publication defect. The observer discards
-native errno/revents and the original exception, so EINTR is only a hypothesis,
+failures are not proof of an earlier publication defect. The saved report does not preserve
+native errno/revents or the original exception, so EINTR is only a hypothesis,
 not the established cause. No environment restriction or fix is claimed.
 
 The independent guardian finished with ECHILD, driver exit 1, two reaped children,
@@ -1205,3 +1205,34 @@ controls, typed original-fault-to-real-state-JSON composition, hostile/large fau
 incompleteness and once-only pending observation. This qualifies diagnostic DATA
 capture, not rl2's unknown errno or complete live restart/settlement. Independent
 outcome review is pending. No Integration refresh or new live launch occurred.
+
+
+Independent outcome review accepted the bounded diagnostic block: both TRX and
+all three native scenarios were checked, including actual healthy nonce reports
+with RootExitFault:null and guardian0. The legacy NamedPipe failure remains a
+distinct unavailable control, not a required fix for this diagnostic-only change.
+
+### #1589 targeted original-owner FIFO observation design, 2026-11-18
+
+Before another game, reuse the real typed consumer fixture for one explicit
+120-second original-owner observation. Fake poll tests cannot establish a real
+errno; another full game adds unrelated state and GM preparation. The chosen
+neutral FIFO path preserves the actual original owner, public operation pin,
+shipped diagnostics, scoped shutdown, durable Stopped, endpoint removal and
+independent guardian. A separate Fact/class/category avoids silently adding a
+long test to the existing FIFO wildcard. No new ownership framework is needed.
+
+Observe the same original RunId and actual FIFO status approximately every5s;
+preserve each complete reply and first failure outside Git. Never replace a lost
+owner, reuse authority, or turn a failed observation into success after cleanup.
+Attempt at most one stop of the captured original owner, never a foreign current
+owner. Keep the diagnostic nonce through that attempt. Explicit fixture budgets:
+neutral180s, driver160s, guardian170s, outer175s and category4minutes including
+native preparation. Existing modes retain their old bounds.
+
+Independent design review accepted this targeted reproduction. Source changes
+and execution are UNRUN at this checkpoint. A PASS means only no recurrence in
+this120s neutral path, not an rl2 fix, game acceptance or merge readiness. Reuse
+existing immutable native/package preparation when its full source identity
+matches; fresh owner/endpoint observations cannot be cached. No game fixture or
+additional system is introduced.
