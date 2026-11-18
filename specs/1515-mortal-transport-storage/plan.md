@@ -3545,3 +3545,13 @@ not a reason to relax ownership. Proposed parser correction uses explicit comple
 terminal rows for each fixed menu, strict fresh cuts/unique selection/ANSI/no
 pagination, with truncated/stale/ambiguous negatives and real inert Spectre redraw
 proof. Independent design review precedes source work or another live attempt.
+T027 independent Astra High design permits a minimal causal RED fixture. Before
+GREEN, prove nonpagination/page fit and exclude terminal-label prefix collisions
+(or require the complete expected row sequence). A footer prefix in a partial
+pipe chunk is not completion. Anchor actual header lines, including inventory
+weight/suffix, storage count line and Load's Russian `↩️ Назад` footer. Retain
+negative truncation, ambiguous/duplicate, stale/incidental title, wrapping,
+trailing output, UTF-8 and ANSI cases. A real inert Spectre pipe/xterm initial
+render and Down redraw must pass the shipped matcher before Back. No quiet-time
+heuristic, terminal emulator or ownership relaxation; unchanged T026 normal-close
+and lost-Active refusal evidence may be reused. No further live attempt yet.
