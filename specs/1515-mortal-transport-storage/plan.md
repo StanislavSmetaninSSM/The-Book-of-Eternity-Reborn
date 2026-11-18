@@ -3496,3 +3496,14 @@ samedaemon110/e6d8e229settledErrors0,and108worldpins/configmatch. Probe
 c10084ee81430d6dbbc0ff6bfb006939c54fb1b3f1f1c2762479f0ebd3f4902e.
 Independentsemantic/cleanupOUTCOMEpending. Olderretirementerrors remainhistorical;
 thisnewrun doesnotfix/explain them. Nextdenial/permission/movement/Load stillunrun.
+Independent mm13 p01 OUTCOME accepts boundedbirth andordinarypredecessor: exact
+candidate/request/snapshot/oneexecution/storyprefix+42, fullpermanententity/receipt/
+resourcejoins, retainedpriorstate, storagefalse/authorizedUsers[]/controllerandactive
+vehicle null/itemcount1, genuineNotRequired0→0 and108pins/config/package/allsource/
+outputs verified. Originalacbafbc3epoch1 fencedshutdown/StoppedOwnedScopeEmpty,
+terminal0/EOF/termios/RPCdrain,samedaemonturn1/errors0,guardianECHILD and15544journal
+records/4205completedRPCsverified. TwoCLRdebugFIFOsremain,noprocess/socket. Earlier
+anomaliesnoterased. p02preparedonlyfromthisacceptedstate,manifest
+1bc339febcd2098ba7c59932d5212fafd68e2c41f59c993fa447496694aa4e9c,
+wholeplay852/p01/108pins/configunchanged,strictabsenthistoryjoin,newprivateenv/nonces,
+expected43. Independentdeltapreflightpending, no denial/permission/movement yet.
