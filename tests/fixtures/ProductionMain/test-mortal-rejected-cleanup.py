@@ -8,6 +8,8 @@ import ast
 import relay_phase_evidence as evidence
 import re
 import unittest
+import tempfile
+import json
 from pathlib import Path
 
 SOURCE = Path(__file__).with_name('live-mortal-phase.py')
@@ -61,6 +63,22 @@ class GeneralCleanupTests(unittest.TestCase):
 
 
 class ProducerWiringTests(unittest.TestCase):
+    def test_actual_producer_refuses_validation_repair_ready_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);session=root/'session';baseline=root/'baseline'
+            request={'sessionId':'session','requestId':'request','turnNumber':43}
+            for folder,keys in [(baseline,[]),(session,['session|request|43'])]:
+                path=folder/'game_state/control/gm_observed_terminal_requests.json'
+                path.parent.mkdir(parents=True);path.write_text(json.dumps({'schemaVersion':1,'keys':keys}))
+            story=session/'story';story.write_bytes(b'original')
+            ready=session/'game_state/control/validation_repair_ready.json';ready.write_text('{}')
+            scope=dict(NS,json=json,strict_settings=evidence.strict_settings,phase_evidence=evidence,
+                relay_response_evidence=lambda *args:[{'Execution':{'Executed':True,'ExitCode':0,'ChildExited':True,'IoDrained':True}}])
+            producer=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='observed_rejected_cleanup')
+            exec(compile(ast.Module(body=[producer],type_ignores=[]),str(SOURCE),'exec'),scope)
+            text='↩ Изменения мира не были приняты; состояние до хода восстановлено.\nВаш ход\n >  '
+            self.assertFalse(scope['observed_rejected_cleanup'](json.dumps(request).encode(),None,None,session,baseline,text,b'original',story))
+
     def test_raw_queue_refusal_never_reaches_cleanup_join(self):
         reached=[]
         def refused(*args):
@@ -99,6 +117,7 @@ class RejectedJoinTests(unittest.TestCase):
             ('future_marker', lambda v: v.update(action_text='Состояние до хода будет восстановлено.\nВаш ход\n >  ')),
             ('incomplete_marker', lambda v: v.update(action_text='состояние до хода восстановлено.\nВаш ход\n >  ')),
             ('prompt_before_marker', lambda v: v.update(action_text='Ваш ход\n >  \n↩ Изменения мира не были приняты; состояние до хода восстановлено.')),
+            ('newer_error_pause', lambda v: v.update(action_text=v['action_text']+'\nНажмите любую клавишу для продолжения...')),
             ('newer_wait', lambda v: v.update(action_text=v['action_text']+'\nМастер игры размышляет...')),
             ('changed_story', lambda v: v.update(story_after=b'new story')),
             ('pending', lambda v: v.update(pending_paths=['input/turn_request.json'])),

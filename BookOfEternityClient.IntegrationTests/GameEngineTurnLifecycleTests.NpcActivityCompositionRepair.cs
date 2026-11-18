@@ -144,6 +144,22 @@ public sealed partial class GameEngineTurnLifecycleTests
                 [MortalLivingWorldSource.WorldTimePath, MortalLivingWorldSource.ReportPath, "game_state/npcs/npc_journals.json", "game_state/world/world_events.json", activityPath], JourneyActorReasoning(0));
         }, SeedMortalLivingWorldJourneyActorsAsync, input);
         await runtime.Engine.ProcessPlayerTurn("Ждать доклада разведчицы четыре часа.");
+        if (repairCount == 0)
+        {
+            const string failurePath = "game_state/control/validation_diagnostic_failure_report.json";
+            var diagnostic = await _fs.ReadFileAsync(failurePath);
+            var artifact = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "npc-composition-refusal", Guid.NewGuid().ToString("N") + ".json");
+            Directory.CreateDirectory(Path.GetDirectoryName(artifact)!);
+            await File.WriteAllTextAsync(artifact, diagnostic ?? "null");
+            _directGachaOutput?.WriteLine("Unrepaired canonical refusal artifact: " + artifact);
+            _directGachaOutput?.WriteLine(diagnostic ?? "No diagnostic failure report.");
+            Assert.False(string.IsNullOrWhiteSpace(diagnostic), "No repair callback and no canonical failure report.");
+            var refusal = JsonNode.Parse(diagnostic!)!;
+            var error = Assert.Single(refusal["errors"]!.AsArray())!;
+            Assert.Equal("accepted_turn_canonical_refresh_failed", error["code"]!.GetValue<string>());
+            Assert.Equal("System.IO.InvalidDataException", error["exceptionType"]!.GetValue<string>());
+            Assert.Equal("NPC activity updates cannot compose with terminal completion in this publication path.", error["message"]!.GetValue<string>());
+        }
         Assert.InRange(repairCount, 1, 2); // A second challenge, if issued, must be exact output freshness (asserted above).
         Assert.Equal(42, runtime.GameLoop.TurnNumber);
         var finalCore = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!;

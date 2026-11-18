@@ -159,6 +159,7 @@ def rejected_restored_for_cleanup(request, keys_before, keys_after, action_text,
         end=matches[0].end();heading=action_text.rfind('Ваш ход');prompt=action_text.rfind('\n >  ')
         if heading<=end or prompt<=heading:return False
         if action_text.rfind('Мастер игры размышляет...')>end:return False
+        if action_text.rfind('Нажмите любую клавишу для продолжения...')>prompt:return False
         if story_before!=story_after or pending_paths:return False
         identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
         if relay_observation['RequestIdentity']!=identity or relay_observation['ValidatedOriginalQueue'] is not True:return False

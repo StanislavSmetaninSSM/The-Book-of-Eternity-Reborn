@@ -477,6 +477,8 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
 def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, action_text, story_before, story):
     # The same actual raw queue validator checks bytes, dispatch, identities,
     # hashes and drained execution. No ledger/boolean alone certifies rejection.
+    # Missing captured ledger remains unqualified, including fresh-initial rejection;
+    # never infer an empty baseline from absent evidence.
     def terminal_keys(path):
         value=strict_settings(path.read_bytes())
         if type(value.get('schemaVersion')) is not int or value['schemaVersion']!=1:raise ValueError('Terminal key schema')
@@ -484,7 +486,8 @@ def observed_rejected_cleanup(request_bytes, queue, binding, session, baseline, 
     pending=['input/turn_request.json','game_state/control/pending_turn_snapshot.json',
         'game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot',
         'ready/turn_complete.json','ready/turn_error.json',
-        'game_state/control/validation_repair_request.json','output/validation_repair_request.json']
+        'game_state/control/validation_repair_request.json','output/validation_repair_request.json',
+        'game_state/control/validation_repair_ready.json']
     rows=relay_response_evidence(queue,request_bytes,binding,session,None,baseline)
     request=json.loads(request_bytes)
     observation={'RequestIdentity':{k:request[k] for k in ('sessionId','requestId','turnNumber')},
