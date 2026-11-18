@@ -50,7 +50,7 @@ class MortalEvidenceTests(unittest.TestCase):
     def test_actual_startup_rejects_nonincreasing_epoch(self):self.assertFalse(self.startup(epoch=1))
     def test_actual_startup_rejects_changed_generation(self):self.assertFalse(self.startup(generation='other'))
 
-    def phase(self,mutation=None,continuation=False,closing=False):
+    def phase(self,mutation=None,continuation=False,closing=False,guardian_mutant=None):
         with tempfile.TemporaryDirectory(prefix='me-',dir='/tmp') as tmp:
             root=Path(tmp);base=root/'world';session=base/'game_session';out=root/'p';out.mkdir()
             for name in ['_runtime','stories','game_state/control','game_state/world','lore']:(session/name).mkdir(parents=True,exist_ok=True)
@@ -69,7 +69,16 @@ class MortalEvidenceTests(unittest.TestCase):
             package['EvidenceModuleSHA256']=NS['sha'](module.read_bytes()) if module.exists() else 'not-created-before-green'
             (out/'relay-phase-package.json').write_text(json.dumps(package))
             if continuation:
-                prior=valid();prior.update(SeedSessionId='s',BasePath=str(base),AcceptedTurnNumber=42,RuntimePins=package['RuntimePins'],ReceiptHelperPins=package['ReceiptHelperPins'],FinalConfigSHA256=NS['sha']((session/'config.json').read_bytes()))
+                prior=valid();prior['OriginalRunningRecord']['Identity']['RootKey']=str(base)
+                request=dict(sessionId='s',requestId='request42',turnNumber=42,playerAction='Осмотреть берег')
+                accepted=dict(turn=42,realm='Mortal World',player=request['playerAction'],narrative='Берег осмотрен')
+                story.write_bytes(story.read_bytes()+json.dumps(accepted).encode()+b'\n')
+                history=session/'game_state/world/mortal_living_world_history.json';history.write_bytes(b'[]')
+                request_bytes=json.dumps(request).encode()
+                prior.update(SeedManifestSha256=NS['sha'](seed_path.read_bytes()),StoryPath=str(story),StoryAfterSHA256=NS['sha'](story.read_bytes()),ActualRequest=request,ActualRequestSHA256=NS['sha'](request_bytes),AcceptedStory=accepted,LivingWorldHistorySHA256=NS['sha'](history.read_bytes()),PhasePackage=package,
+                    TypedReceiptEvidence=dict(valid=True,publicationAuthority=False,sessionId='s',requestId='request42',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64))
+                owners=base/'.boe_runtime/gm-runs';owners.mkdir(parents=True);(owners/'main.json').write_text(json.dumps(prior['StoppedRecord']))
+                prior.update(SeedSessionId='s',BasePath=str(base),AcceptedTurnNumber=42,RuntimePins=package['RuntimePins'],ReceiptHelperPins=package['ReceiptHelperPins'],FinalConfigSHA256=NS['sha']((session/'config.json').read_bytes()))
                 proof=prior['DaemonSettlement'];proof['SessionPath']=str(session)
                 for prefix,settled in [('Original',False),('Final',True)]:
                     for name in ['Status','Guard']:
@@ -81,11 +90,16 @@ class MortalEvidenceTests(unittest.TestCase):
                     prior['FinalWorldPins'].update({name+'/'+k:v for k,v in inventory(session/name).items()})
                 if mutation:(session/mutation).write_bytes(b'mutated')
                 guardian=dict(driverExitCode=0,echild=True,emergencySignals=0,failures=0,deadline=False)
-                return NS['phase_admission'](seed,prior,42,guardian)
-            if mutation and not closing:
+                if guardian_mutant:guardian.update(guardian_mutant)
+                predecessor=root/'previous';predecessor.mkdir()
+                prior_path=predecessor/'probe-result.json';prior_path.write_text(json.dumps(prior))
+                (predecessor/'guardian.json').write_text(json.dumps(guardian))
+                (predecessor/'actual-turn-request.json').write_bytes(request_bytes)
+            if mutation and not closing and not continuation:
                 target=helper/mutation.removeprefix('helper/') if mutation.startswith('helper/') else session/mutation
                 target.write_bytes(b'mutated')
-            scope=dict(NS,sys=types.SimpleNamespace(argv=['driver',str(out),str(seed_path),str(action),str(dll)]),os=types.SimpleNamespace(environ={'TERM':'dumb'}))
+            argv=['driver',str(out),str(seed_path),str(action),str(dll)]+([str(prior_path)] if continuation else [])
+            scope=dict(NS,sys=types.SimpleNamespace(argv=argv),os=types.SimpleNamespace(environ={'TERM':'dumb'}))
             first=next(i for i,n in enumerate(TREE.body) if isinstance(n,ast.Assert) and 'len(sys.argv) in (5, 6)' in ast.unparse(n.test))
             last=next(i for i,n in enumerate(TREE.body[first:],first) if assign_name(n,'controlled_refusal'))
             exec(compile(ast.Module(body=TREE.body[first:last],type_ignores=[]),str(SOURCE),'exec'),scope)
@@ -116,5 +130,32 @@ class MortalEvidenceTests(unittest.TestCase):
         with self.assertRaises((ValueError,AssertionError)):self.phase('game_state/world/state.json',True)
     def test_predecessor_config_mutation_refused(self):
         with self.assertRaises((ValueError,AssertionError)):self.phase('config.json',True)
+
+# Each strict JSON mutant is a separate reported leaf rather than a subtest aggregate.
+def cleanup_mutant(path,value):
+    def test(self):
+        proof=valid();target=proof
+        for key in path[:-1]:target=target[key]
+        target[path[-1]]=value
+        self.assertFalse(NS['phase_cleanup_proved'](proof))
+    return test
+for label,path,value in [
+    ('epoch_bool',['OriginalRunningRecord','Identity','Epoch'],True),
+    ('actions_bool',['GenuineActionsSent'],True),('shutdown_bool',['ShutdownAttempts'],True),
+    ('terminal_exit_bool',['Terminals','client','ExitCode'],False),
+    ('terminal_eof_string',['Terminals','client','EOF'],'true'),
+    ('terminal_termios_string',['Terminals','client','TermiosRestored'],'true'),
+    ('terminal_stream_string',['Terminals','client','StreamEOF','raw'],'true'),
+    ('rpc_exit_bool',['RpcHelperClosure','ExitCode'],False),
+    ('rpc_eof_string',['RpcHelperClosure','StdoutEof'],'true'),
+    ('input_flag_string',['InputQualified'],'true'),('relay_flag_string',['RelayExecutionClosed'],'true')]:
+    setattr(MortalEvidenceTests,'test_strict_'+label,cleanup_mutant(path,value))
+def guardian_mutant(key,value):
+    def test(self):
+        with self.assertRaises((ValueError,AssertionError)):
+            self.phase(continuation=True,guardian_mutant={key:value})
+    return test
+for key,value in [('driverExitCode',False),('emergencySignals',False),('failures',False),('echild','true'),('deadline','false')]:
+    setattr(MortalEvidenceTests,'test_strict_guardian_'+key,guardian_mutant(key,value))
 
 if __name__=='__main__':unittest.main(verbosity=2)
