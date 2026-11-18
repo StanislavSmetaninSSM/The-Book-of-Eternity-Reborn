@@ -1919,3 +1919,32 @@ Category mortal-raw-scene-diagnostics selects4 unit Facts/1minute, UNRUN.
 Test SHA4121e1c6673028eda97675bf0457d6804c3c342471b5d78e3f5bcea5508bbda4.
 Unbound repair-policy diagnostics are labelled as such, not the actual live
 branch decision. Independent source review precedes build/execution.
+
+### T017 bounded refusal-observation design
+
+The enabled outer-exception diagnostic cannot observe normal false returns.
+Retained traces and reduced DATA checks cannot retrospectively identify mm6's
+exact branch. Repeating native attempts without that detail is rejected. A new
+persistent logging subsystem or filesystem-authority reads are also unnecessary.
+Chosen implementer approach: reuse the existing DEBUG opt-in nonce/stderr pattern
+at the two existing decision boundaries, with no change to acceptance or rollback.
+
+One small GameEngine partial offers two typed internal diagnostic methods:
+protected-materialization carries the existing issue list/five flags, source,
+attempt and rollback-available status; canonical-refresh carries the actual
+caught exception/source/rollback-available status. Do not invent request identity
+or claim rollback completion. Exact lowercase GuidN nonce is required. All
+getters/serialization/writer work is inside an exception-isolated sink; missing
+or invalid nonce emits nothing. No FS access, registry/cache, quota, truncation,
+new authority or mutable-game-state changes. Full output stays external.
+Callsites are #if DEBUG before current refusal bookkeeping, not new guards.
+
+Cheap typed tests first use no-output stubs, expecting real emission failures,
+then verify full fields/Unicode, invalid/missing nonce, hostile exception getter
+and throwing writer noninterference. Narrow source guards prove callsite wiring
+only, not actual GameEngine execution. Existing outer exception emitter remains
+unchanged. No GM prompt/gameplay contract update is needed: the channel is
+explicit fixture diagnostics, not GM-authored mechanics or player behavior.
+No source changes during the in-flight raw-scene Unit build; save WIP before
+RED/GREEN runs. Independent review and bounded category checks precede any use
+in another native package. The original mm5 exception remains unexplained.
