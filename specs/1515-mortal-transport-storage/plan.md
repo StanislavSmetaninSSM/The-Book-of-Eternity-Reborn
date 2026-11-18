@@ -3348,3 +3348,14 @@ GmMainOperationClient.Validate82/Update-DaemonHeartbeat4070, before shutdown ACK
 20:46:32.516172Z: retirement overlap, not a harmlessness/root-cause conclusion.
 Next prepares p02 exactlockedstorage denial then actualGM permission, takingnothing;
 retrieve/deposit/Save-Load stay separate. No failed mm11 authority is reused.
+Independent p02 delta preflight accepts same-package permission-with-denial prep:
+manifest17ebce30e79d7b5b908e07234fb34cd7ea1412c2b328945644a872abde35b69d;
+3510sources/20outputs/Unitjoins,wholeplay852files/p01exactprobe/108pins/config/story/
+typedabsenthistory/originalstoppedowner/settleddaemon/guardian unchanged. Exact
+location/storage/chalk joins remain denied. Fresh modes/nonces/socket89/budgets
+and no launch/owner/queue/request pass. Pinned driver observes locked storage and
+requires unchanged world/inventory/story/history/queue before the single GM action;
+requesting permission is not a grant or movement. Initial external prep syntax
+error occurred before execution and is preserved;0build/export/native. Full turn43
+candidate review remains mandatory. One bounded p02 launch is next, not yet proof
+of denial, permission publication, item movement or Save/Load.
