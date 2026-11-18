@@ -2802,3 +2802,24 @@ gm-load-session-observation-data owns this bounded unit slice/2min; no native
 process authority claimed. Global environment/stderr scoped to nonparallel tests
 and restored. Both writers are frozen for reviewed smoke execution; observer
 RED execution awaits its separate review. No gameplay or native retry occurred.
+T024 first actual console category:1/3 PASS (parser only),2 console FAIL,
+27.1259313s, complete3/cleanup/no runner timeout or duplicates. PTY raw begins
+ESC[?1h ESC= (application cursor/keypad mode) and the observer refused before
+input. Captured-pipe/xterm actually rendered the prompt; the expected-exception
+assumption was wrong, and the fixture sent no input before its12s deadline.
+This is not evidence that PTY or redirected output cannot operate Spectre.
+Both children joined/drained, guardian ECHILD/driver1/emergency0/failures0 and
+no deadline. Do not relabel this first console result PASS. Next bounded control
+must compare the actual old driver pipe/TERM=dumb with candidate PTY/xterm-256color,
+using real selection/return evidence, not an assumed exception or fake DSR.
+Unit build90.56s/90warnings/0errors,3446source/8outputs unchanged across bothruns.
+Same fresh build then executed observer RED20:15PASS/5causalFAIL,11.0288715s,
+complete20/cleanup/no skips/duplicates/timeout. Two DATA emission expectations,
+actual operation success/warning emissions and sink-attempt expectation failed
+because emitter is the saved no-output stub; no compile/setup failures.
+External mortal-t024/observation-red/result.log SHA256
+e258b4f14171df276e982a0fa2d91f71be96181c912714ad876512d3d6daa0d2.
+Independent AstraHigh source review accepted preserving default connector,
+actual receipt/metadata/disposal fences and no-authority DATA design. BeforeGREEN,
+strengthen emission-time root-release oracle and explicit repeated-dispose
+sink-attempt/frame-count oracle. Native load/owner replacement remains unrun.
