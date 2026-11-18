@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-linux-bridge-contender-restart",
+      "responsibility": "#1589 actual typed same-root bridge contender refusal preserves original owner/status RPC, then confirmed stop permits same-config new-run restart.",
+      "excludes": "No gameplay, legacy PID fallback, Windows qualification or broad launcher redesign.",
+      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeContenderRestartScenario.cs", "BookOfEternityClient.Tests/GmBridgeContenderRestartTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmBridgeContenderRestartTests.SameRootContenderPreservesOriginalAndSameConfigRestart"]}]
+    },
+    {
+      "id": "gm-linux-bridge-restart-dispatch",
+      "responsibility": "#1589 actual Linux PTY launcher AST dispatch with retained reused PID, hidden and redirected foreground refusals.",
+      "excludes": "The external dotnet launch leaf is inert; actual original ownership contention/restart is qualified separately. No Windows runtime claim.",
+      "changeHints": ["BookOfEternityClient/Launcher/bookofeternity.ps1", "BookOfEternityClient.Tests/LinuxBridgeRestartDispatchTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxBridgeRestartDispatchTests.*"]}]
+    },
+    {
       "id": "gm-worker-quarantine-sticky-audit-data",
       "responsibility": "#1589 existing canonical audit uncertainty retains the exact NoLaunch authority fault, suppresses later diagnostic callbacks and second append, and retains the slot across two real reaper passes.",
       "excludes": "No filesystem, main owner, remote grant, process launch or prior-version runtime claim.",

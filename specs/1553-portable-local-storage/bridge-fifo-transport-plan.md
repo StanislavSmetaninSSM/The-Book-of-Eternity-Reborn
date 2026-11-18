@@ -627,3 +627,40 @@ not a new published live runtime package. New source-check guards still require
 fresh original permission; no permission cache or skipped canonical fence was
 introduced. No live world/request was replayed, no broader suite was run, and
 independent outcome review remains the final gate before a fresh live continuation.
+
+### Linux retained bridge status restart: test-first WIP, 2026-11-18
+
+Tracked #1589. ml6 p01 was independently accepted and its original main fully
+Stopped. p02 then ended before gameplay in27.199s, zero actions/accepted turns:
+launcher printed `GM bridge already running (pid=36).` This is the Start-Bridge
+PID-only return, not an actual host owner refusal. Launcher exited0; the outer
+phase failed. Guardian ECHILD/driver1/reaped1/no emergency or failures does not
+prove normal client closure or a logical Running identity; neither was observed.
+No process is killed, status deleted or failed phase replayed to resolve this.
+
+Read-only inventory: Start-Bridge returns on retained helperPid before platform
+selection; Read-BridgeStatus/Test-BridgeHelperAlive also filter status on PID.
+Invoke-BridgeRequest and daemon Get-GmBridgeStatus have diagnostic PID filters,
+but real RPC still uses the typed endpoint. Linux daemon singleton already uses
+its held guard; start-daemon has no separate PID singleton gate. Windows window
+binding and legacy descendant/shutdown fallback are not this launch route.
+Original-main shutdown refuses fallback when its durable expectation exists.
+Client harness PID checks diagnose terminal failure, not singleton admission.
+These neighboring limitations are inventoried, not claimed fixed.
+
+Approved minimal design: Linux foreground launch reaches existing production
+GmMainOwnerGuard and strict durable main record validation instead of allowing
+an advisory PID to decide admission. Other platforms retain their current path.
+No new singleton lock, ownership cache, deletion, PID kill or ENXIO-is-free rule.
+Existing native/main ownership remains the only authority. Its fresh locked
+checks cannot be cached; repeated PID advisory reads add no trustworthy DATA.
+No performance claim before measurement.
+
+New test-first AST fixture extracts real launcher function bodies into an inert
+shipped layout, uses a real Linux PTY and retained helperPid equal to the live
+PowerShell fixture PID, and substitutes only the external dotnet leaf. Three
+cases require launch admission or exact hidden/redirected foreground refusal;
+retained status bytes must stay unchanged. Actual same-root host contention,
+original usable RPC/identity/descriptor preservation, matching stop and distinct
+same-root restart are prepared separately. All new checks remain UNRUN; causal
+RED and independent source review precede production launcher edits.

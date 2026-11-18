@@ -15,6 +15,7 @@ internal static partial class OwnedTerminalScenarioDriver
         if(mode.StartsWith("terminal-inherited-control-", StringComparison.Ordinal)) return await RunInheritedControlAsync(mode, package, output);
         if(mode is "production-main-daemon-stop" or "production-main-daemon-coordinated-stop")return await RunTypedIdleDaemonStopAsync(mode,output);
         if(mode=="production-main-local-remote-consumer")return await GmLocalRemoteConsumerScenario.RunScenarioAsync(output);
+        if(mode=="production-main-contender-restart")return await GmBridgeContenderRestartScenario.RunAsync(output);
         if(mode.StartsWith("production-main-",StringComparison.Ordinal))return await RunBridgeAsync(mode,package,output);
         if (mode is "terminal-fence" or "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
