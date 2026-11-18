@@ -2192,3 +2192,15 @@ remain exact. External mortal-t019/red; identity
 Strengthened actual exporter test remains UNRUN; no unrelated examples or native
 attempt were run. Minimal daemon example/directive correction follows, then
 exact unit1+existing-renderer1 GREEN. Existing runtime resource gates stay intact.
+T019 GREEN executed2/2PASS: exact source DATA guard and actual daemon-export
+renderer, complete2descriptors, no skips/duplicates/timeouts, owned cleanup
+complete, runner24.7746483s. Fresh incremental Unit1.97s/0warnings and
+Integration65.44s/129warnings, both0errors.3431input pins unchanged;28output
+pins captured and same-basename joins exact. All5 copied daemon scripts match
+reviewed source5d626e31fc8b92757d85a04e0e65604b02c861c8b7e412d12c09b8687bcec5ee.
+External mortal-t019/green, identity20261118-095957-566-5-e4399988d92f482f98263957064c7782-categories;
+output inventory98dac65cf67db97cf4e8c31819b505d720ea39bbbaf53ec877b0e74894ea5ac5.
+Only example/guidance changes; existing real exporter fixture reused, no new
+cache/runtime resource inference. Independent outcome verification is separate.
+No native retry yet; prepare fresh mm8 with this current script and explicit
+final GM packet birth-resource assertions before submission. T016 remains open.
