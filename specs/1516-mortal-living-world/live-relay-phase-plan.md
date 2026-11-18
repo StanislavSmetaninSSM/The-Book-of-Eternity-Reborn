@@ -744,3 +744,35 @@ Continuation gate is cleared only for a fresh predecessor-bound phase in this
 same retained world. No restart, council/project, storage, progressing-NPC or
 whole-issue claim follows. Missing-outcome repair does not itself satisfy T017's
 contradictory-cross-surface scenario. All raw evidence/worlds remain external.
+
+
+## mm2 retained-world restart and contradictory-effect repair accepted, 2026-11-18
+
+Independent outcome review accepts p02 turn43/request
+`763de175cffb4027ac7676ad9203da61`: one real four-hour council/project action,
+431.606s, original exit0. The intentional report241 versus command240 caused
+the exact mortal_living_world_effect_mismatch; real same-request repair changed
+only report after to240. A subsequent genuine repair updated only stale
+player-facing outputs. Three dispatches executed once and drained. This qualifies
+T017's contradictory-effect repair, not arbitrary repair classes.
+
+Project progress0 becomes240/480 and step0 becomes1; project remains Active.
+Clock960 becomes1200. The scout core is byte-identical to the turn43 original,
+preserving its single completion42 and XP0. Story raw prefix41/42 and earlier
+receipt are unchanged; exactly story43 and one correlated receipt are added.
+Fresh run `6a87c029fa04453f9d28ebd11d4249b6`, same generation, epoch1 to2
+reaches exact durable Stopped/OwnedScopeEmpty, one ACK and removed endpoint.
+All three terminals and RPC exit0/drain; guardian ECHILD, no emergency/deadline/
+failure. New daemon owner settles with errorCount0. Independent review rehashed
+732 runtime,249 helper and106 final-world pins. Probe SHA256:
+`7de4e8b20b9eec240ad09591991fb661f50b84adef3c4668456900b74213af88`.
+
+IMPORTANT: acceptance exposed a real semantic defect. The valid partial project
+update omitted unchanged projectName, but the reducer replaced existing
+"Repair the crossing" with project_journey_bridge. Rule19.F.2 explicitly asks
+for changed fields only, and the public validator does not require a name resend.
+ApplyFactionProjectUpdateCommands inserts this fallback before upsert. The GM
+did not compensate or rewrite canonical state; accepted p02 remains immutable
+evidence. T020 tracks a cheap causal RED, minimal preservation fix and selected
+controls. Do not call faction-project behavior clean or continue project-focused
+live qualification until that defect is resolved. No full-issue closure.

@@ -33,10 +33,13 @@ Dependencies: T003–T005 precede T006–T008; T009–T011 require actual public
 The checked tasks above describe bounded contract proofs. They are not evidence
 that an ordinary multi-turn player journey completed through GameEngine.
 
-- [ ] T015 Construct a complete current Mortal baseline and drive actual `ProcessPlayerTurn` through accepted story append and turn advance, not cancellation after validation.
+- [x] T015 Construct a complete current Mortal baseline and drive actual `ProcessPlayerTurn` through accepted story append and turn advance, not cancellation after validation.
 - [ ] T016 Simulate connected scout/threat, council/project, completion/news and bounded quiet-time outcomes in one retained world; assert actual canonical state, current request receipts and reload continuity after each turn.
-- [ ] T017 Submit one contradictory cross-surface package, observe genuine refusal without false accepted story/history, repair the same request through the supported route and verify acceptance.
+- [x] T017 Submit one contradictory cross-surface package, observe genuine refusal without false accepted story/history, repair the same request through the supported route and verify acceptance.
 - [ ] T018 Run the narrowly owned official category, review fresh evidence independently, save branch and report limitations without merging or closing.
 
 ## Live-discovered terminal command gap, 2026-11-18
 - [x] T019 Complete the existing Mortal NPC activity terminal consumer with explicit outcome and authenticated client-owned completion turn: cheap contract and original-to-canonical RED/GREEN, exact owner/source refusal, existing atomic rollback, synchronized GM instructions/examples/current fixtures, independent review and bounded official checks. Follow the terminal contract in spec.md and next-block plan in live-relay-phase-plan.md. This does not mark T016/T017 live journeys complete.
+
+## Live-discovered faction project patch preservation, 2026-11-18
+- [ ] T020 Preserve omitted existing project fields in supported partial factionProjectUpdates: reproduce mm2 p02 name-reset with a cheap typed normalizer RED, preserve exact target name/owner/siblings/history while applying explicit tracker fields, minimally fix the confirmed fallback, select affected controls and independently review. Keep accepted p02 and its original evidence unchanged; no compensating GM resend or manual world rewrite.

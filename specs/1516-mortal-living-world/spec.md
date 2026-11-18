@@ -101,3 +101,12 @@ choice is explicit outcome data, never a prose-derived/default outcome:
 The bounded T019 implementation does not qualify other activity/faction
 commands, NPC progression or the whole living-world feature. Live outcomes and
 their exact limits are recorded separately in live-relay-phase-plan.md.
+
+## Existing project partial-update preservation
+
+For a supported partial factionProjectUpdates command against an existing exact
+project, omitted fields retain their accepted values. In particular an omitted
+projectName must not synthesize projectId as a replacement name. This implements
+the existing Rule19.F.2 changed-fields-only contract; it does not add a new
+project creation or rename capability. Preserve owner identity, unrelated
+projects and completed history. The live mm2 p02 violation is tracked as T020.
