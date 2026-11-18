@@ -2402,3 +2402,19 @@ than demand their relocation into NPCsInScene. The negative oracle captured
 progression_schedule after BuildControlForNextTurn's documented staging refresh;
 rollback intentionally restores the earlier backup. Preserve exact pre-staging
 expectation and name any mismatching path, not omit scheduler or timestamps.
+
+T022 design refinement independently accepted: after non-location repair,
+revalidate the SAME originally sealed completion rather than republish consumed
+births. The existing Guardian completed-comparison pattern provides precedent.
+Each consuming WorldValidationInvocation must open/close fresh dependency proof
+under current read ownership; a precheck followed by an unprotected gap is not
+sufficient. Published map/index and original/request/source bindings must remain
+exact. No resealing changed current DATA, null/fallback, or global pre-turn read
+replacement. Invocation overlap, reentry and inherited child consumption must
+not inherit access merely from AsyncLocal. Every iteration and every repair,
+including automatic continuations and a second GM repair, closes previous access
+and freshly rechecks the immutable completion. Failure explicitly refuses through
+the ordinary rollback path. Keep diagnostic source, payload/reasoning checks and
+existing repair freshness obligations. No outer repair-disposition expansion is
+needed for unchanged membership. Location-changing repairs remain outside this
+comparison route. Code/TDD next; full and native runs remain blocked on cheap proof.
