@@ -1,10 +1,10 @@
 """T022 detached synthetic DATA admission tests. No process, world import or authority."""
-import ast, copy, hashlib, json, tempfile, unittest
+import ast, copy, hashlib, json, tempfile, unittest, shutil, sys, re
 from pathlib import Path
 import relay_phase_evidence as evidence
 SOURCE=Path(__file__).with_name('live-mortal-phase.py')
 TREE=ast.parse(SOURCE.read_text())
-NS=dict(Path=Path,json=json,hashlib=hashlib,phase_evidence=evidence)
+NS=dict(Path=Path,json=json,hashlib=hashlib,phase_evidence=evidence,shutil=shutil,re=re)
 exec(compile(ast.Module(body=[n for n in TREE.body if isinstance(n,ast.FunctionDef)],type_ignores=[]),str(SOURCE),'exec'),NS)
 validns=dict(json=json,hashlib=hashlib)
 tree=ast.parse(SOURCE.with_name('test-relay-phase-contract.py').read_text())
@@ -95,6 +95,32 @@ class RestoredDiagnosticTests(unittest.TestCase):
         request=dict(sessionId='historical-session',requestId='new-request',turnNumber=45)
         for key,value in [('requestId','failed-request'),('sessionId','foreign'),('turnNumber',44)]:
             with self.subTest(key=key):self.assertFalse(evidence.restored_diagnostic_request_proved(self.descriptor,raw(dict(request,**{key:value}))))
+    def producer_setup(self):
+        out=self.root/'phase';out.mkdir(mode=0o700);(out/'relay').mkdir();(out/'relay/relay.py').write_bytes(b'synthetic DATA')
+        runtime=self.root/'runtime';runtime.mkdir();(runtime/'client.bin').write_bytes(b'synthetic DATA, never executable')
+        helperdir=self.root/'helper';helperdir.mkdir();helper=helperdir/'helper.dll'
+        for name in ['helper.dll','helper.deps.json','helper.runtimeconfig.json']:(helperdir/name).write_bytes(b'{}')
+        package=dict(RuntimePins=evidence.relay_inventory(runtime),RelayPins=evidence.relay_inventory(out/'relay'),ReceiptHelperPins=evidence.relay_inventory(helperdir),DriverSHA256=sha(SOURCE.read_bytes()),EvidenceModuleSHA256=sha(Path(evidence.__file__).read_bytes()))
+        (out/'relay-phase-package.json').write_bytes(raw(package));self.source['PhasePackage']=package
+        self.source_raw=raw(self.source);self.descriptor['SourceProbeSHA256']=sha(self.source_raw)
+        paths={}
+        for key,value in [('Probe',self.source_raw),('Guardian',self.guard),('Request',self.request_raw),('Config',self.config)]:
+            path=self.root/(key+'.json');path.write_bytes(value);paths[key]=str(path)
+        self.descriptor.update(SourceEvidence=paths,DataPath=str(self.data),RuntimePath=str(runtime))
+        return out,helper
+    def test_actual_preparation_imports_only_bound_data_once(self):
+        out,helper=self.producer_setup()
+        base,session,ship,turn,package,_=NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
+        self.assertEqual(turn,45);self.assertEqual(base,self.base)
+        for name,value in self.files.items():self.assertEqual((session/name).read_bytes(),value)
+        self.assertEqual((session/'config.json').read_bytes(),self.config)
+        self.assertFalse((base/'.boe_runtime').exists());self.assertFalse((session/'input').exists())
+        self.assertFalse((session/'game_state/control/gm_bridge_status.json').exists())
+        with self.assertRaises(ValueError):NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
+    def test_actual_preparation_failed_hash_never_creates_session(self):
+        out,helper=self.producer_setup();self.descriptor['DataPins']['lore/codex_entries.json']='0'*64
+        with self.assertRaises(ValueError):NS['prepare_restored_diagnostic'](self.descriptor,out,helper,SOURCE,self.nonce)
+        self.assertEqual(list(self.base.iterdir()),[])
     def test_fixed_exact_names(self):
         self.assertEqual(len(evidence.RESTORED_MORTAL_DATA_PATHS),59)
         self.assertEqual(len(set(evidence.RESTORED_MORTAL_DATA_PATHS)),59)
@@ -145,4 +171,10 @@ class RestoredDiagnosticTests(unittest.TestCase):
         # Must reject the diagnostic result before any current-world/owner reads.
         with self.assertRaisesRegex(ValueError,'[Dd]iagnostic'):NS['phase_admission'](seed,previous,44,json.loads(self.guard))
 
-if __name__=='__main__':unittest.main(verbosity=2)
+if __name__=='__main__':
+    if '--category-contract' in sys.argv:
+        result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__]))
+        ok=result.wasSuccessful() and result.testsRun==15 and not result.skipped
+        print('RESTORED-DATA-RESULT '+json.dumps(dict(testsRun=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped))))
+        sys.exit(0 if ok else 1)
+    unittest.main(verbosity=2)

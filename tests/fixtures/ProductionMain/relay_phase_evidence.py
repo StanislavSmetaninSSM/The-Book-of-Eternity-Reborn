@@ -281,11 +281,91 @@ RESTORED_MORTAL_DATA_PATHS = (
     'stories/mortal_life_2.jsonl',
 )
 
+def _restored_plain_path(path, directory=False):
+    path=Path(path)
+    if not path.is_absolute() or path!=path.resolve():raise ValueError('Aliased diagnostic path')
+    for part in (path,*path.parents):
+        if part.is_symlink():raise ValueError('Linked diagnostic path')
+    if directory:
+        if not path.is_dir():raise ValueError('Missing diagnostic directory')
+    elif not path.is_file() or path.stat().st_nlink!=1:raise ValueError('Not one owned regular DATA file')
+    return path
+
 def restored_mortal_diagnostic_admission(descriptor, source_probe_bytes, source_guardian_bytes,
         source_request_bytes, source_config_bytes, data_root, new_base, nonce):
-    """RED-only fail-closed DATA seam; unused by the driver until reviewed GREEN."""
-    return None
+    """Validate detached historical DATA only. Does not acquire or transfer authority."""
+    try:
+        d=descriptor
+        if d.get('kind')!='restored-accepted-data-diagnostic' or d.get('DiagnosticOnly') is not True:return None
+        if not re.fullmatch('[0-9a-f]{32}',nonce or ''):return None
+        if d.get('RuntimeSource')!='58df9c846eb29606735c2908c38eaf1ceaa8b4ff':return None
+        if type(d.get('AcceptedTurn')) is not int or d['AcceptedTurn']!=44 or type(d.get('ExpectedTurn')) is not int or d['ExpectedTurn']!=45:return None
+        if not isinstance(d.get('ExcludedRequestId'),str) or not d['ExcludedRequestId']:return None
+        if sha(source_probe_bytes)!=d['SourceProbeSHA256'] or sha(source_guardian_bytes)!=d['SourceGuardianSHA256']:return None
+        source=strict_settings(source_probe_bytes);guardian=strict_settings(source_guardian_bytes)
+        request=strict_settings(source_request_bytes);config=strict_settings(source_config_bytes)
+        if type(config) is not dict or source.get('Success') is not True or source.get('RestoredAcceptedDataDiagnostic') is True:return None
+        if not relay_phase_cleanup_proved(source) or not guardian_proved(guardian):return None
+        old=Path(d['SourceBasePath']);base=_restored_plain_path(new_base,True);data=_restored_plain_path(data_root,True)
+        if not old.is_absolute() or old!=old.resolve() or str(base)!=d['BasePath']:return None
+        for left,right in [(base,old),(data,old),(base,data)]:
+            if left==right or left in right.parents or right in left.parents:return None
+        if base.stat().st_mode&0o777!=0o700 or any(base.iterdir()):return None
+        identity=source['OriginalRunningRecord']['Identity']
+        if identity['RootKey']!=str(old) or source['StoppedRecord']['Identity']!=identity or source['BasePath']!=str(old):return None
+        if source['DaemonSettlement']['SessionPath']!=str(old/'game_session'):return None
+        if source['SeedSessionId']!=d['SourceSessionId'] or source['ActualRequest']!=request or sha(source_request_bytes)!=source['ActualRequestSHA256']:return None
+        if request.get('sessionId')!=d['SourceSessionId'] or type(request.get('turnNumber')) is not int or request['turnNumber']!=44:return None
+        if not isinstance(request.get('requestId'),str) or not request['requestId'] or request['requestId']==d['ExcludedRequestId']:return None
+        if sha(source_config_bytes)!=source['FinalConfigSHA256']:return None
+        pins=d['DataPins'];full=source['FinalWorldPins']
+        if set(pins)!=set(RESTORED_MORTAL_DATA_PATHS) or len(full)!=106:return None
+        # The source includes historical operational evidence, but none is imported.
+        if not set(pins)<set(full):return None
+        for name in set(full)-set(pins):
+            if not name.startswith('game_state/control/') or '..' in Path(name).parts:return None
+        if any(not isinstance(v,str) or not re.fullmatch('[0-9a-f]{64}',v) for v in full.values()):return None
+        actual={}
+        for path in data.rglob('*'):
+            if path.is_symlink():return None
+            if path.is_dir():continue
+            path=_restored_plain_path(path);actual[str(path.relative_to(data))]=path.read_bytes()
+        if set(actual)!=set(pins):return None
+        if any(sha(value)!=pins[name] or pins[name]!=full[name] for name,value in actual.items()):return None
+        storyname='stories/mortal_life_2.jsonl';historyname='game_state/world/mortal_living_world_history.json'
+        if source['StoryPath']!=str(old/'game_session'/storyname) or sha(actual[storyname])!=source['StoryAfterSHA256']:return None
+        rows=[strict_settings(line) for line in actual[storyname].decode('utf-8-sig').splitlines() if line.strip()]
+        if [x.get('turn') for x in rows]!=[41,42,43,44] or rows[-1]!=source['AcceptedStory']:return None
+        if rows[-1].get('realm')!='Mortal World' or rows[-1].get('player')!=request.get('playerAction') or not rows[-1].get('narrative'):return None
+        if source['AcceptedTurnNumber']!=44 or sha(actual[historyname])!=source['LivingWorldHistorySHA256']:return None
+        history=strict_settings(actual[historyname]);entries=history['entries'];receipt=source['TypedReceiptEvidence']
+        if len(entries)!=3 or [x.get('turn') for x in entries]!=[42,43,44]:return None
+        if any(x.get('sessionId')!=d['SourceSessionId'] for x in entries):return None
+        if receipt.get('valid') is not True or receipt.get('publicationAuthority') is not False:return None
+        if type(receipt.get('priorCount')) is not int or receipt['priorCount']!=2 or type(receipt.get('currentCount')) is not int or receipt['currentCount']!=3:return None
+        for key,value in [('sessionId',request['sessionId']),('requestId',request['requestId']),('turn',44)]:
+            if receipt.get(key)!=value or entries[-1].get(key)!=value:return None
+        if not re.fullmatch('[0-9A-F]{64}',receipt.get('snapshotToken','')):return None
+        for key in ['snapshotToken','declarationFingerprint','receiptFingerprint']:
+            if entries[-1].get(key)!=receipt.get(key):return None
+            if key!='snapshotToken' and not re.fullmatch('sha256:[0-9a-f]{64}',receipt.get(key,'')):return None
+        clock=strict_settings(actual['game_state/world/world_time.json']);schedule=strict_settings(actual['game_state/control/progression_schedule.json'])
+        if type(clock.get('currentTimeInMinutes')) is not int or clock['currentTimeInMinutes']!=1440 or entries[-1].get('toMinute')!=1440:return None
+        if schedule.get('currentRealm')!='Mortal World' or schedule.get('currentWorldTimeInMinutes')!=1440 or schedule.get('hasAuthoritativeWorldTimeBaseline') is not True:return None
+        chat=strict_settings(actual['game_state/history/chat_log.json'])
+        if chat.get('sessionId')!=d['SourceSessionId']:return None
+        dice=strict_settings(actual['game_state/control/pending_dice_state.json']);ink=strict_settings(actual['game_state/control/pending_ink_actions.json'])
+        if dice.get('isFateLocked') is not False or type(dice.get('preGeneratedDices1d20')) is not list or len(dice['preGeneratedDices1d20'])!=20:return None
+        if any(type(x) is not int or not 1<=x<=20 for x in dice['preGeneratedDices1d20']):return None
+        if type(dice.get('gachaBaseResult')) is not dict or ink!={'pendingActions':[]}:return None
+        return 45
+    except (OSError,ValueError,KeyError,TypeError,AttributeError):return None
 
 def restored_diagnostic_request_proved(descriptor, request_bytes):
-    """RED-only identity DATA seam; never issues a request."""
-    return False
+    try:
+        request=strict_settings(request_bytes)
+        return (descriptor.get('kind')=='restored-accepted-data-diagnostic' and descriptor.get('DiagnosticOnly') is True and
+            request.get('sessionId')==descriptor['SourceSessionId'] and type(request.get('turnNumber')) is int and
+            request['turnNumber']==descriptor['ExpectedTurn']==45 and isinstance(request.get('requestId'),str) and
+            bool(request['requestId']) and request['requestId']!=descriptor['ExcludedRequestId'])
+    except (ValueError,KeyError,TypeError):return False

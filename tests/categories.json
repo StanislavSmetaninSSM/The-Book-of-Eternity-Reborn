@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-restored-diagnostic-data",
+      "responsibility": "#1516 T022 explicit accepted-DATA diagnostic admission, isolated fixture wiring and refusal of diagnostic results as ordinary continuation.",
+      "excludes": "No live recovery authority, native execution, production schema change or automatic replay of failed worlds.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/relay_phase_evidence.py",
+        "tests/fixtures/ProductionMain/live-mortal-phase.py",
+        "tests/fixtures/ProductionMain/test-mortal-restored-diagnostic.py",
+        "scripts/tests/mortal-restored-diagnostic.tests.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "powershell",
+          "tests": [
+            "scripts/tests/mortal-restored-diagnostic.tests.ps1"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-faction-null-priorities",
       "responsibility": "#1516 T021 public full/canonical optional nullable priorities shape and complete progression normalization through final validation.",
       "excludes": "No live owner/birth acceptance, no new faction schema or broad faction suite.",

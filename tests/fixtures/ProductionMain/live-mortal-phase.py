@@ -336,6 +336,8 @@ def phase_cleanup_proved(value):
     return phase_evidence.relay_phase_cleanup_proved(value)
 
 def phase_admission(seed, previous, current_max, guardian=None):
+    if previous and previous.get('RestoredAcceptedDataDiagnostic') is True:
+        raise ValueError('Diagnostic restored result is not ordinary continuation')
     if seed.get('kind') != 'seeded-live-mortal' or seed.get('acceptedGmTurn') is not False or seed.get('setupTurn') != 41:
         raise ValueError('Not an explicit setup-only Mortal seed')
     if previous is None:
@@ -595,27 +597,71 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
     print('PASS native bootstrap path budget: ASCII and UTF-8 107/108 boundaries')
     sys.exit(0)
 
+def prepare_restored_diagnostic(descriptor,out,receipt_helper,driver,nonce):
+    """One isolated import of proven DATA; no owner/status/pending authority copied."""
+    def exact_file(path):return phase_evidence._restored_plain_path(path).read_bytes()
+    source_paths=descriptor['SourceEvidence']
+    if set(source_paths)!={'Probe','Guardian','Request','Config'}:raise ValueError('Incomplete restored source evidence')
+    source={key:exact_file(path) for key,path in source_paths.items()}
+    base=phase_evidence._restored_plain_path(descriptor['BasePath'],True)
+    data=phase_evidence._restored_plain_path(descriptor['DataPath'],True)
+    runtime=phase_evidence._restored_plain_path(descriptor['RuntimePath'],True)
+    for path in [out,data,runtime,*[Path(x) for x in source_paths.values()]]:
+        if path==base or base in path.parents or path in base.parents:raise ValueError('Overlapping diagnostic preparation')
+    expected=phase_evidence.restored_mortal_diagnostic_admission(descriptor,source['Probe'],source['Guardian'],source['Request'],source['Config'],data,base,nonce)
+    if expected!=45:raise ValueError('Restored accepted DATA provenance refused')
+    package,package_sha=phase_evidence.relay_package_preflight(out,runtime,driver)
+    phase_evidence.receipt_package_proved(receipt_helper,package['ReceiptHelperPins'])
+    original=strict_settings(source['Probe'])['PhasePackage']
+    for key in ['RuntimePins','RelayPins','ReceiptHelperPins']:
+        if package[key]!=original[key]:raise ValueError('Diagnostic runtime changed from accepted source')
+    for path in runtime.rglob('*'):
+        if path.is_symlink():raise ValueError('Linked runtime')
+        if path.is_file():phase_evidence._restored_plain_path(path)
+    # Read/corroborate every byte before creating the destination. Historical
+    # outputs remain DATA, with no ready marker, pending request or dispatch.
+    retained={name:exact_file(data/name) for name in phase_evidence.RESTORED_MORTAL_DATA_PATHS}
+    if any(sha(value)!=descriptor['DataPins'][name] for name,value in retained.items()):raise ValueError('Restored DATA changed before import')
+    session=base/'game_session';session.mkdir()
+    for name,value in retained.items():
+        target=session/name;target.parent.mkdir(parents=True,exist_ok=True)
+        with target.open('xb') as stream:stream.write(value)
+    with (session/'config.json').open('xb') as stream:stream.write(source['Config'])
+    shutil.copytree(runtime,session/'_runtime')
+    if phase_evidence.relay_inventory(session/'_runtime')!=package['RuntimePins']:raise ValueError('Imported runtime differs')
+    # A retained one-use descriptor is not a seed or an original stopped owner.
+    return base,session,session/'_runtime',expected,package,package_sha
+
 assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-helper-dll [previous-result]'
 receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
 receipt_helper_sha=sha(receipt_helper.read_bytes())
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
 require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=strict_settings(seed_bytes)
-base=Path(seed['basePath']).resolve();session=base/'game_session';ship=session/'_runtime'
-assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
+restored_diagnostic=seed.get('kind')=='restored-accepted-data-diagnostic'
 assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
 assert os.environ.get('TERM')=='dumb'
-package_manifest,package_sha=phase_evidence.relay_package_preflight(out,ship,__file__)
-phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
 action=checked_action(Path(sys.argv[3]).read_bytes())
 previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
+if restored_diagnostic:
+    if previous is not None:raise ValueError('Diagnostic import cannot use prior owner continuation')
+    base,session,ship,expected_turn,package_manifest,package_sha=prepare_restored_diagnostic(
+        seed,out,receipt_helper,__file__,os.environ.get('BOE_TEST_GAME_LOOP_FAILURE_NONCE'))
+    historical_session=seed['SourceSessionId']
+else:
+    base=Path(seed['basePath']).resolve();session=base/'game_session';ship=session/'_runtime'
+    assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
+    package_manifest,package_sha=phase_evidence.relay_package_preflight(out,ship,__file__)
+    phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+    historical_session=seed['sessionId']
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
-assert hashlib.sha256(setup_line).hexdigest()==seed['setupStoryEntrySha256'], 'Setup marker changed'
+if not restored_diagnostic:
+    assert hashlib.sha256(setup_line).hexdigest()==seed['setupStoryEntrySha256'], 'Setup marker changed'
 all_entries=[json.loads(line) for path in (session/'stories').glob('*.jsonl') for line in path.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
 guardian=strict_settings(Path(sys.argv[5]).with_name('guardian.json').read_bytes()) if previous else None
-expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
+if not restored_diagnostic:expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
 if previous:
     assert package_manifest==previous['PhasePackage'], 'Immutable phase package changed'
     assert previous['ReceiptHelperPins']==package_manifest['ReceiptHelperPins'], 'Receipt helper changed between phases'
@@ -655,7 +701,7 @@ config_path=session/'config.json'
 if previous and not config_path.exists():raise ValueError('Continuation config disappeared')
 config_before=config_path.read_bytes() if config_path.exists() else b'{}'
 phase_settings=strict_settings(config_before)
-if not previous:
+if not previous and not restored_diagnostic:
     profile_key=next((k for k in phase_settings if k.casefold()=='gmcliinputprofile'),'GmCliInputProfile')
     profile=dict(phase_settings.get(profile_key) or {})
     for key,value in {'IdleMarker':'NEUTRAL READY','PromptPrefix':'RELAY> ','WorkingMarker':'NEUTRAL WORKING','BlockedMarkers':['RELAY ERROR'],'ObservationTimeoutMilliseconds':15000}.items():put_setting(profile,key,value)
@@ -675,7 +721,8 @@ result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswe
 result.update(RuntimePins=package_manifest['RuntimePins'],PhasePackage=package_manifest,PhasePackageSHA256=package_sha,ReceiptHelperPins=package_manifest['ReceiptHelperPins'])
 if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
-result.update(SeededLiveMortal=True,SeedSessionId=seed['sessionId'],BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
+result.update(SeededLiveMortal=not restored_diagnostic,SeedSessionId=historical_session,BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
+if restored_diagnostic:result.update(RestoredAcceptedDataDiagnostic=True,DiagnosticSourceProbeSHA256=seed['SourceProbeSHA256'],RuntimeSource=seed['RuntimeSource'],NotT021Qualification=True)
 class Terminal:
     def __init__(self,name,args,captured_output=False):
         self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
@@ -940,7 +987,8 @@ try:
     current_request(offset)
     request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
     assert request['playerAction']==action and request['turnNumber']==expected_turn
-    assert request['sessionId']==seed['sessionId']
+    assert request['sessionId']==historical_session
+    if restored_diagnostic and not phase_evidence.restored_diagnostic_request_proved(seed,request_bytes):raise ValueError('Diagnostic request identity refused')
     assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
     ledger_binding=phase_evidence.bind_terminal_ledger_witness(ledger_witness,request_bytes)
     (out/'terminal-ledger-request-binding.json').write_bytes(ledger_binding)
