@@ -2312,3 +2312,21 @@ T021 will first use a complete connected automatic candidate (new scene, NPC,
 vehicle, storage and item) and relevant adjacent rejection boundaries, before
 another costly native attempt. This must not be represented as live testing.
 Existing source/receipt/identity guarantees remain; no guessed-ID workaround.
+
+Independent mm9 outcome review confirmed the failed result and full cleanup:
+all nine authored writes restored exactly; setup41 story bytes unchanged;
+pending/snapshot/repair/ready absent; four new seed companions unchanged.
+Original owner004ade52 is Stopped/OwnedScopeEmpty, all three terminals exited0
+with EOF/termios restoration, RPC/relay drained and queue closed. Guardian
+reports driver1/ECHILD with no emergency, cleanup failure or deadline. Final
+world and runtime/helper/relay pins match. Daemon admission errorCount1 remains
+separate. This is safe source-investigation evidence, never accepted gameplay.
+T021 source tracing identifies ValidateRegisteredSourceOwners checking even an
+empty registered activeEffectDefinitions array before location allocation. The
+existing item test helper covers only item/resource and was not a complete
+ordered candidate. The new integration proof will use GameEngine SingleTurn
+with actual protected collectors and accepted canonical refresh, not reimplement
+the collector order. Cheap typed empty/nonempty/malformed/stable-owner controls
+precede it. Empty definitions grant no source authority; real definitions must
+retain exact owner resolution. No new cache is justified for an array-count
+check; real full-path mutable owners and original snapshots stay independent.
