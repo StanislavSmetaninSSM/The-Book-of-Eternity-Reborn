@@ -3427,3 +3427,13 @@ Runner11.9154527s,cleanupcomplete,no timeout/duplicates;3496source/8outputs unch
 Evidence externalmortal-t026/dispatch-red. Investigate actual fixturegeneration
 creation before constructing a genuine uninitialized control; no deletion/forgery,
 productionfix or blindrerun. No liveworld/nativegame execution.
+Cold-fixture cause confirmed: ordinary WriteFileAtomicAsync calls trusted-local
+publication/GetOrCreateGeneration during the first soulseed, before the tested
+operation. Correctedonlytwo coldcontrols atca659c2525213d4d54b016511dbf40fb3fc1f5fb:
+authorfreshconfinedDATAwithoutwriter/overwrite anduseexisting read-onlyStateManager
+refresh, leaseclosedbefore dispatch. Explicitgeneration/configabsence checked;
+initialized/realownerfixturesunchanged,no metadata deletion/forgery. Independent
+AstraHigh focusedSOURCEaccepts all10pins andno mirrorrepair/publication. Nextfresh
+Unit and DATA6 then OWNER2 as separateofficialselections: proceedowner onlyafter
+intendedmissinggenerationRED+5baselinePASS, notunexpectedsetupfailure. Expected
+combined2causalFAIL/6PASS; no actualgame/nativeworldretry authorized.
