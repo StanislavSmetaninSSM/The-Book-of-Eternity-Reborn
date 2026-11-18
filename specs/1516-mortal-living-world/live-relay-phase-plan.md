@@ -228,3 +228,26 @@ A real RunAsync test with tampered receipt confirmed causal RED: 10 executed,
 is isolated in the existing nonparallel console collection and restored in finally.
 The boundary now explicitly catches InvalidDataException and emits the flat
 exit-2 refusal. This correction is frozen awaiting combined official GREEN.
+
+### Corrected evidence/guidance verification
+
+Final unit build: 0 errors / 25 warnings, 9.58 seconds. Official two-descriptor
+run passed16/16 in13.0172528s (typed evidence10, authored guidance6), no skips,
+duplicates or timeout, complete cleanup. Subsequent fresh integration build:
+0 errors /129 warnings,64.38s. Actual daemon delivery plus example manifest
+inventory passed2/2 in15.0048176s, complete cleanup and no skips/duplicates/timeout.
+The detached CLI then checked the retained ml2 baseline/current/request in0.315s,
+exit0, valid=true/publicationAuthority=false, exact original identity/token and
+canonical declaration/receipt fingerprints, prior0/current1. This is a read-only
+verification of the applied turn, not permission to continue its failed phase.
+
+Independent review corrected two observation boundaries: observed current player
+prompt is now cleanup DATA before fallible evidence verification, while accepted
+flags remain after it; the helper time is capped by the original work deadline
+(maximum30s) so cleanup retains its reservation. The immutable helper's SHA is
+recorded before and checked around invocation; its adjacent production DLL and
+deps/runtimeconfig must also be pinned by the separate preparation manifest.
+Cheap inert checks cover the budget edges, cleanup source ordering, conflicting
+optional story identity, typed tuple/fingerprint negatives and raw snapshot tamper.
+No production state/owner/guard was relaxed and no new retained cache was added.
+Fresh live verification of the corrected observer remains outstanding.
