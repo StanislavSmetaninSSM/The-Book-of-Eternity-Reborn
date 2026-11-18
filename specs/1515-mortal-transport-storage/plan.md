@@ -1984,3 +1984,32 @@ The new diagnostic partial alone was fetched from GitHub eeca7ab into a new
 empty directory and matched blob83d7a4be896d6eab3cdf14077d1d1201a22f33d8;
 this is one-file recovery, not a clean whole-checkout restore or runtime test.
 GREEN now replaces only the two stubs with guarded observation serialization.
+GREEN independently accepted on c94feb4e source: official9/9PASS, same9 IDs as
+RED; only2 emission positives changed FAIL to PASS. Runner10.9549039s/test117ms,
+no skips/duplicates/timeouts; owned/runtime cleanup complete. Unit Debug build
+97.78s/98.055wall,90warnings/0errors. All3416 source and8output pins matched.
+Result20261118-085829-146-5-5419f8a52b51451a9f90a53c63372f8c. Actual helper
+serialization/noninterference and source call placement are verified; real
+native rejection capture remains UNRUN, mm5 exception and mm6 reason unknown.
+
+### T018 next bounded scene-continuity investigation
+
+Read-only investigation found two real guidance/contract conflicts before any
+new native run. CLI Operations forbids eventDescriptions in every raw location,
+whereas complete new-location creation requires eventDescriptions:[]; clarify
+empty creation history versus forbidden authored archive entries. More seriously,
+NPCsInScene is a canonical historical actor carrier and Rule2 permits unchanged
+retained rows, but scene validation requires every row to follow the new current
+scene. Removing Mira loses identity/history; full transfer to UpdateNPCs is not
+a neutral legal workaround under current continuity guards. Exact location,
+not section membership, determines local interaction. Independent source review
+confirmed this conflict, not the exact historical mm6 refusal branch.
+
+Investigate genuine-original typed reproduction with retained Mira in A and
+player/new actor in B (both known and new B). Reuse existing operation-level
+mortalActorPreTurnAuthority and full exact-section row equality, not a new cache,
+known-ID shortcut, envelope-only match or repeated snapshot read. Keep all
+identity/history/inventory/source guards. Before implementation resolve later
+accepted-state validation after pending cleanup: missing original cannot grant
+fresh authoring authority. No blind native repeat or new carrier-migration
+subsystem. Explicit negative cases and independent review will precede repair.
