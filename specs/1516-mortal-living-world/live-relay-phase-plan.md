@@ -1052,3 +1052,11 @@ bridge/support unchanged. This is consistency inventory, not a PDB document
 audit. Exact validator source was recovered from remote6d736a5 into a fresh
 folder with matching blob0eb8dc8372eeed493405a9f09bf21a966eb3dc7d and SHA92dafa7c.
 This proves that file recovery only, not a clean full checkout/build restore.
+
+Independent final outcome accepts bounded T021: RED14PASS/3nullFAIL to
+GREEN17PASS with preserved malformed-type/object refusals and complete cleanup.
+The reviewer rehashed3,420 source files and20 current outputs without mismatch.
+Existing GM guidance already states the correct nullable contract; no prompt,
+example or afterlife change is required. This does not qualify a corrected
+native turn or explain the unknown mm3p04 exception. T021 is checked within
+this explicit component scope; T016/T018/T022 remain open.
