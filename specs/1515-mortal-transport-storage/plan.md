@@ -2165,3 +2165,19 @@ example does not make poise universally mandatory. No packet change/replay was
 made after rollback. T019 tracks synchronization and a minimal template guard,
 not a weaker validator or automatic invented maxima. Native birth/T018 live
 acceptance remain unproven. Independent rollback/cleanup verification follows.
+Independent mm7 outcome verification: probe1c6acb8ef754922868a59f2d7ffa80c246f7a346da7b752b5b36b7477670262c
+confirms Success=false/accepted0/action1/189.936s. All9 packet writes restored
+exactly, including prior absences; setup story41 byte-identical and pending,
+snapshot, repair and ready absent. Original owner4505aa864fdc4b369259f320a50f5e5d
+is Stopped/OwnedScopeEmpty with one shutdown; queue closed, relay child0/drained,
+client/bridge/daemon0 with EOF and termios restored, RPC drained. Guardian driver1,
+ECHILD, no emergency/failure/deadline; outer launch0 is not game success.
+Daemon errorCount1 remains: admission refused while a pin was
+RevokedBeforeActivation(State5), before shutdown ACK. This is separate from the
+resource rejection; same daemon guard settled. Runtime/relay/helper/config/final
+world inventories match. This failed world is not an accepted predecessor.
+The missing NPC envelope is a confirmed authoring defect; the existing runtime
+harness detected it and preserved state. T019 must make the compact authoring
+example complete and guard that source, rather than invent maxima or weaken the
+protected gate. Fresh actual packet construction will explicitly assert every
+new owner's required resource envelope before submission. No broad suite needed.
