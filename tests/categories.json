@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-completion-contract",
+      "responsibility": "#1516 explicit terminal NPC activity state/outcome combinations and client-owned completion-turn refusal through public validation.",
+      "excludes": "No publication authority, canonical history creation or live GM relay.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/NpcActivityCompletionContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcActivityCompletionContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-activity-completion-publication",
+      "responsibility": "#1516 actual ordinary signed-original terminal NPC activity publication without progression context, generic no-grant refusal, reached consumption failure rollback and single-append retry.",
+      "excludes": "No full engine story/receipt or live relay; additional source/identity negative matrix remains separate.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.NpcCompletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_AuthenticatedOriginalWithoutProgressionPublishesOnce",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.GenericNpcCompletion_SignedFilesAndBackupsDoNotGrantPublication",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_ReachedConsumptionFailureRestoresAndRetryAppendsOnce"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-rejected-cleanup-data",
       "responsibility": "#1516 shipped relay harness rejects stale wait Escape after newer prompt and admits only exact rejected-request cleanup DATA through actual queue validation.",
       "excludes": "No native closure, accepted-turn authority, terminal NPC completion or live relay qualification.",
