@@ -51,7 +51,7 @@ class MortalEvidenceTests(unittest.TestCase):
     def test_actual_startup_rejects_nonincreasing_epoch(self):self.assertFalse(self.startup(epoch=1))
     def test_actual_startup_rejects_changed_generation(self):self.assertFalse(self.startup(generation='other'))
 
-    def phase(self,mutation=None,continuation=False,closing=False,guardian_mutant=None):
+    def phase(self,mutation=None,continuation=False,closing=False,guardian_mutant=None,owner_mutant=None):
         with tempfile.TemporaryDirectory(prefix='me-',dir='/tmp') as tmp:
             root=Path(tmp);base=root/'world';session=base/'game_session';out=root/'p';out.mkdir()
             for name in ['_runtime','stories','game_state/control','game_state/world','lore']:(session/name).mkdir(parents=True,exist_ok=True)
@@ -93,6 +93,13 @@ class MortalEvidenceTests(unittest.TestCase):
                 guardian=dict(driverExitCode=0,echild=True,emergencySignals=0,failures=0,deadline=False)
                 if guardian_mutant:guardian.update(guardian_mutant)
                 predecessor=root/'previous';predecessor.mkdir()
+                if owner_mutant:
+                    owner_path=owners/'main.json';owner=json.loads(owner_path.read_bytes())
+                    if owner_mutant=='missing':owner.pop('StopEvidence')
+                    if owner_mutant=='foreign':owner['StopEvidence']['Identity']=dict(owner['Identity'],RunId='foreign')
+                    raw=json.dumps(owner)
+                    if owner_mutant=='duplicate':raw=raw[:-1]+',"Disposition":"Stopped"}'
+                    owner_path.write_text(raw)
                 prior_path=predecessor/'probe-result.json';prior_path.write_text(json.dumps(prior))
                 (predecessor/'guardian.json').write_text(json.dumps(guardian))
                 (predecessor/'actual-turn-request.json').write_bytes(request_bytes)
@@ -158,5 +165,13 @@ def guardian_mutant(key,value):
     return test
 for key,value in [('driverExitCode',False),('emergencySignals',False),('failures',False),('echild','true'),('deadline','false')]:
     setattr(MortalEvidenceTests,'test_strict_guardian_'+key,guardian_mutant(key,value))
+
+def owner_mutant(kind):
+    def test(self):
+        with self.assertRaises((ValueError,AssertionError)):
+            self.phase(continuation=True,owner_mutant=kind)
+    return test
+for kind in ('missing','foreign','duplicate'):
+    setattr(MortalEvidenceTests,'test_current_stopped_'+kind,owner_mutant(kind))
 
 if __name__=='__main__':unittest.main(verbosity=2)

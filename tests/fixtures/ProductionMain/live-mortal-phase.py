@@ -603,8 +603,8 @@ if previous:
     assert prior_rows[-1]==old and old['turn']==previous['ActualRequest']['turnNumber'] and old['player']==previous['ActualRequest']['playerAction']
     checked_typed_receipt(previous['TypedReceiptEvidence'],previous['ActualRequest'])
     assert sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())==previous['LivingWorldHistorySHA256'], 'Prior accepted history changed'
-    current_owner=json.loads((base/'.boe_runtime/gm-runs/main.json').read_bytes())
-    assert current_owner['Disposition']=='Stopped' and current_owner['Identity']==previous['StoppedRecord']['Identity'], 'Previous original owner not durably stopped'
+    current_owner=strict_settings((base/'.boe_runtime/gm-runs/main.json').read_bytes())
+    assert current_owner==previous['StoppedRecord'], 'Previous complete stopped owner evidence changed'
 else:
     assert not (base/'.boe_runtime/gm-runs/main.json').exists(), 'Initial export unexpectedly contains main authority'
 for pending in ['input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','ready/turn_complete.json','ready/turn_error.json']:
