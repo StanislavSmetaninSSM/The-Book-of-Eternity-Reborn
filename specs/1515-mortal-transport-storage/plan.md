@@ -2293,3 +2293,22 @@ seeded_live_mortal_627f41b7e7254c98b09ddaee2b88f71c, setup41/expected42,
 config or queue. GM must preserve baseline vehicle receipt bytes/fields when
 adding commands and retain final resource preflight. Independent prelaunch gate
 pending. No raw diagnostics/world data uploaded and no native attempt yet.
+
+mm9 actual request0192182d8bac4ec0ae113ba634b8f6ee/turn42; one GM packet
+5e45ffd7e4b470ea835a4d71182362a4f1c1d300b05390f6936ff3d9b124356e.
+Vehicle baseline rootd773b0013a9c9b356f353e12e8b6c10256ff0f4baec5db5f8716980eba7806b3
+was cloned exactly, client-owned receipts/active selection preserved; all new
+resource envelopes passed final author assertions. Consumer0/drained does not
+mean acceptance. Actual protected-materialization refusal now has effect=true,
+resource=false: effect_source_authority_invalid_owner_identity at the new
+current_location.activeEffectDefinitions. Raw scene has locationId:null, exact
+initialId and empty activeEffectDefinitions/hazards; no actual effects authored.
+No repair request received; no manual permanent identity, replay or post-rollback
+write. Probe ca46b2b9bf88ce8eca9931fcc0c771aad29c76cb0da7540d424725d13558e2c7
+reports accepted0/action1/174.792s. Host reports complete original cleanup and
+rollback; independent outcome review follows. One daemon recovered heartbeat
+admission error is retained separately, not the primary rejection.
+T021 will first use a complete connected automatic candidate (new scene, NPC,
+vehicle, storage and item) and relevant adjacent rejection boundaries, before
+another costly native attempt. This must not be represented as live testing.
+Existing source/receipt/identity guarantees remain; no guessed-ID workaround.
