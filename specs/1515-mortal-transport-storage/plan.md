@@ -3683,3 +3683,29 @@ runtime/deployed732, helper249, relay8, native4 and seed53 inventories agree.
 New setup41/session and private directories contain no owner, pending queue or
 launch. No old world/authority was copied. Independent prelaunch review is pending;
 actual GM creation of the natural short location remains a candidate constraint.
+
+mm14 observation lost after one publication, 2026-11-18. Independent prelaunch
+accepted the exact prepared package and fresh identity/absence gates. Original
+exec75064 launched once; actual request d13b5a321f9043abbb67092eccaad385,
+turn42, session seeded_live_mortal_c908c616b82e47e89e514361bcd88b14, main
+435368bcb4f648199ed0d9963049ccd8 epoch1. Independent full review accepted ONLY
+candidate c521851cedce2746e36e231fb731ede8e4bf7002ffb9bd4009f97f60d1cdb694:
+all nine writes, nested mandatory/forbidden fields, complete preserved roots,
+identities/resources, first-person journal and reasoning, new natural location
+Двор совета, time480→500/08:20, no due report and no grant/take/XP. Detached
+inventory75 and worst supported Load53 cells fit. Immediate author gates verified
+actual request/prompt/three source witnesses/nine target hashes/open unanswered
+queue. The candidate was published exactly once. Last observed provider state was
+Published=true, Executed=false; this is not acceptance or a final execution result.
+The execution environment disconnected before consumer/acceptance/cleanup could
+be read. Reattachment reached a different boot (8a076780-7e68-4951-a54b-998e6554afca
+versus original 34f2178c...), with prior checkout and mm14 absent. Original handle
+could not resume. No repeated publication, relaunch, mutation or cleanup claim
+was made. Original outcome remains UNKNOWN, not PASS or an inferred gameplay FAIL.
+All implementation sources and accepted bounded T027 findings remain on this
+remote branch; raw/world evidence from the former environment is unavailable in
+the newly attached environment. The attempted local preflight-note append failed
+before process creation. This recovery note is saved directly through GitHub API.
+Next work must first restore the exact remote source and allowed toolchain into
+a writable environment, and must never promote the unknown mm14 run to accepted
+predecessor or replay its action. A future fresh isolated journey is separate.
