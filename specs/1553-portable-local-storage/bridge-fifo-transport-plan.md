@@ -847,3 +847,17 @@ status-reader callback both before and after observation. The explicit normal
 MarkSettled operation remains separate from observation. No production lock or
 authority behavior changes. The prior coordinated-stop preparation failure
 remains recorded; source review and selected verification are still pending.
+
+SOURCE de2ba039 shared-reader candidate was built serially with no restore:
+36.85s (wall37.191s),67 warnings,0 errors. The official one-case
+ gm-daemon-settlement-observation proof executed1/1 FAIL in11.8538620s,
+with complete owned cleanup and no timeout/skips/duplicates. FileShare.ReadWrite
+still refused the active flock at FileStream construction (SafeFileHandle.Init),
+ReadDaemonObservationBytes line11, first observation at test line27. Thus the
+proposed managed sharing-mode correction is disproved on this runtime; it is
+not a successful observational proof. No ownership unlock, fallback or retry
+was attempted. The strengthened coordinated-stop case was NOT rerun because
+its prerequisite failed; oracle17 and diagnostic4 were also not repeated.
+Runner20261117-223642-889-6-be1e2e8cbfd8464c8db99ab4b25f373d-categories;
+raw daemon-observation-green-{build,official}.log remains outside Git.
+Production and all live worlds remain unchanged; no live run occurred.
