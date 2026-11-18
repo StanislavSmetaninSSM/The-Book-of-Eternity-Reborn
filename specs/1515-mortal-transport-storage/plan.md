@@ -2204,3 +2204,15 @@ Only example/guidance changes; existing real exporter fixture reused, no new
 cache/runtime resource inference. Independent outcome verification is separate.
 No native retry yet; prepare fresh mm8 with this current script and explicit
 final GM packet birth-resource assertions before submission. T016 remains open.
+Independent T019 outcome accepted: all3431 inputs and28outputs rehashed exact;
+actual renderer4.0532421s. Guidance/export qualification only, not a live birth.
+Fresh mm8 prepared-only from08bfc79 source with current corrected daemon:
+manifest46d7075e6c71cde6089604f60f3f5c6f15e520ceb63d78564d0ae9734a712c3a,
+package08db09cece7d860d61d44d22c8edcfacbf2bf85ae27041daa359294c2ea5e113.
+New session seeded_live_mortal_1cfa1a9a1a434a7f8fd9c0d18f9e7a39, setup41
+notaccepted/expected42,49seed files; runtime732/helper249/relay8/native4.
+Source/output pins unchanged through serial no-build publishes and seed export.
+No predecessor or copied failed-world state; both diagnostic markers retained.
+Actual corrected GM response requires fresh request bindings and a final exact
+birth-resource envelope assertion before relay submission, not an invented
+canonical receipt. Independent prelaunch gate pending; no native launch yet.
