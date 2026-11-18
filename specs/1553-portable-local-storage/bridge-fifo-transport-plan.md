@@ -718,3 +718,15 @@ No broad suite, live action, failed-world replay, status deletion or PID kill wa
 performed. This bounded startup correction still requires independent outcome
 acceptance and exact packaged-script delivery before a fresh live continuation.
 Source and build outputs are frozen at this checkpoint.
+
+Qualification boundary: the three BridgeHost instances in the contender test
+share one managed test process; the owned native roots are actual. This is not
+cross-process bridge contention qualification. Historical AST3 RED remains
+recorded above. Current22 DLL/PDB pins are refreshed in external
+bridge-restart-current-output-pins.json. The causal unit build includes the new
+test/support scenario, while retained integration output still contains the older
+helper and is not used as the next package's helper source. Production client
+and bridge DLL/PDB remain unchanged. Do not claim all helper copies identical;
+there was no integration rebuild for these test-only changes and no C# rebuild
+between the causal build and source4e1d54 GREEN4/4. Packaged launcher must be
+copied from the reviewed current source, not an older build-output script.
