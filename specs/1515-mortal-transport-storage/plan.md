@@ -2823,3 +2823,18 @@ Independent AstraHigh source review accepted preserving default connector,
 actual receipt/metadata/disposal fences and no-authority DATA design. BeforeGREEN,
 strengthen emission-time root-release oracle and explicit repeated-dispose
 sink-attempt/frame-count oracle. Native load/owner replacement remains unrun.
+T024 observer GREEN source ready, UNRUN: minimal DEBUG writer accepts captured
+lowercase Guid-N nonce and committed/refresh-confirmed validated Stopped-to-Running
+or StartedNotReady DATA, serializes the original receipts without status reads,
+and isolates serialization/sink errors from Load. Warning remains distinct from
+Running. No output-size quotas or new registry/cache. Actual operation tests now
+reserve/dispose a distinct operation on the same root at emission to prove root
+release; callback failures are retained outside the diagnostic-swallow boundary.
+Sink failure repeats Dispose and checks exactly one attempt/release check,
+unchanged Running outcome, two frames and one connection. Twenty cases unchanged.
+Observation source SHA256
+80e35b709ecd301189cbaddfd16011d6463926118e63c9b9b0c6011fa2da200c;
+operation-test SHA256
+30bdb9aa4a0ac69944636e4a839b731ec0ebefd34b34987be4365465be6a55e0.
+Independent correction review and fresh Unit execution next; native evidence
+still required and no external harness may adopt a current status as lineage.

@@ -52,6 +52,17 @@ public sealed class GmLoadSessionObservationOperationTests
         try
         {
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            output.BeforeWrite = () =>
+            {
+                // This callback runs at emission, not after DisposeAsync returns. It
+                // proves the same root reservation is already released without transport.
+                var probe = GmLoadSessionOperation.Reserve(files, Guid.NewGuid().ToString("N"),
+                    "release-observation-only", replacement.GenerationId,
+                    (_, _) => throw new InvalidOperationException("Release probe must never connect."));
+                var close = probe.DisposeAsync();
+                Assert.True(close.IsCompletedSuccessfully);
+                close.GetAwaiter().GetResult();
+            };
             var statusPath = files.ResolvePath("game_state/control/gm_bridge_status.json");
             Directory.CreateDirectory(Path.GetDirectoryName(statusPath)!);
             var endpoint = new BridgeTransportEndpoint(1, "named-pipe-v1",
@@ -108,7 +119,20 @@ public sealed class GmLoadSessionObservationOperationTests
                 var once = output.ToString(); await operation.DisposeAsync(); Assert.Equal(once, output.ToString());
             }
             else Assert.Equal("", output.ToString());
-            if (mode == "sink-failure") { Assert.Equal(1, output.Attempts); Assert.Equal(GmLoadMainState.Running, operation.State); }
+            if (mode is "success" or "warning" or "sink-failure")
+            {
+                Assert.Equal(1, output.ReleaseChecks);
+                Assert.Null(output.ReleaseFailure);
+            }
+            if (mode == "sink-failure")
+            {
+                await operation.DisposeAsync();
+                Assert.Equal(1, output.Attempts);
+                Assert.Equal(1, output.ReleaseChecks);
+                Assert.Equal(GmLoadMainState.Running, operation.State);
+                Assert.Equal(2, transport.WrittenFrames.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length);
+                Assert.Equal(1, connects);
+            }
         }
         finally
         {
@@ -147,9 +171,14 @@ public sealed class GmLoadSessionObservationOperationTests
     {
         internal bool WroteBeforeDisposal { get; private set; }
         internal int Attempts { get; private set; }
+        internal Action? BeforeWrite { get; set; }
+        internal int ReleaseChecks { get; private set; }
+        internal Exception? ReleaseFailure { get; private set; }
         public override void WriteLine(string? value)
         {
             Attempts++; WroteBeforeDisposal |= !stream.DisposedSuccessfully;
+            try { BeforeWrite!(); ReleaseChecks++; }
+            catch (Exception failure) { ReleaseFailure = failure; throw; }
             if (failWrite) throw new IOException("Observation sink failed.");
             base.WriteLine(value);
         }

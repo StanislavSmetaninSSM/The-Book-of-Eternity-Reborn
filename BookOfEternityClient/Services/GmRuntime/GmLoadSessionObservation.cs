@@ -11,10 +11,24 @@ internal static class GmLoadSessionObservationWriter
 {
     internal const string NonceVariable = "BOE_TEST_LOAD_OBSERVATION_NONCE";
 
-    /// <summary>Emits completed/disposed Load DATA without propagating diagnostic failures; RED stub intentionally emits nothing.</summary>
+    /// <summary>Emits an eligible completed/disposed Load observation; all diagnostic failures remain isolated from Load.</summary>
     internal static void Write(string? nonce, TextWriter sink, GmLoadSessionObservation observation)
     {
-        // Test-first no-output baseline. Serialization is implemented only after causal RED.
+        try
+        {
+            if (!Guid.TryParseExact(nonce, "N", out var parsed) || parsed.ToString("N") != nonce ||
+                !observation.Committed || !observation.RefreshConfirmed ||
+                observation.OriginalStop is not { Ok: true, State: GmLoadMainState.Stopped } ||
+                observation.ReplacementFinish is not { Ok: true, State: GmLoadMainState.Running or GmLoadMainState.StartedNotReady })
+                return;
+            // These are the original validated records, not a new status read or an
+            // authorization decision. Native consumers must still correlate the full pair.
+            sink.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "boe-load-session-completed", nonce, observation
+            }));
+        }
+        catch { /* Observation cannot change, retry or replay the completed operation. */ }
     }
 }
 #endif
