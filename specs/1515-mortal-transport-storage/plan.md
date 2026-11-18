@@ -2353,3 +2353,15 @@ no authored receipts, permanent IDs or fake accepted candidate. Source review an
 fresh unit4/integration2 execution are next. This automatic journey is not GM-relay
 acceptance. No GM-facing contract changes: empty definitions were already legal,
 confer no authority, and real definitions still require exact source ownership.
+
+T021 unit GREEN4/4 is verified on composer22e7b749a01e8d6328dfa07d2cac26551973a48462cbe3f86714496492c61384:
+Unit55.75s/19warnings/0errors; official10.6984368s, complete cleanup and counts,
+all3434source pins unchanged. External mortal-t021/green-unit, result.log
+22a79ed46c283e35f441b43f8f74066e687c00e756bed93c2de9c5fd5e7a8961.
+Independent source review accepted the production line but requested two
+combined-fixture corrections before integration: submit links through actual
+worldMapUpdates.newLinks rather than mutating signed canonical links, and prove
+the engine's own effect refusal instead of separately prevalidating then accepting
+any rollback. Generic actor characteristic names also need current-world fidelity.
+No combined run occurred, so these are source review findings, not runtime fails.
+All corrections remain test-only; no native retry or accepted-turn claim.
