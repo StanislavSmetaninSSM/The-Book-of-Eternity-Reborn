@@ -2265,3 +2265,18 @@ Existing exporter scenario is the affected real consumer; no repeated broad birt
 suite. A separate cheap final resource-authority recomposition comparison will
 check the suspected seed ordering risk instead of inferring staleness or inventing
 health for the setup-only historical scout. No health/birth claim for that actor.
+T020 GREEN4 passed: both seed modes now have current empty companions, preserved
+existing bytes control passes, and existing export remains coherent/validated and
+refuses overwrite. Crucially the actual final resource-authority recomposition
+is valid and exactly equals persisted JSON in both modes: the suspected ordering
+staleness is not present for this setup. No historical Mira health was inferred.
+Fresh Integration70.01s/155warnings/0errors; official26.6516164s, complete2descriptors/
+4cases, no skips/duplicates/timeouts, owned cleanup complete. All3432source pins
+unchanged,20current outputs and shared joins exact. Unit was not rebuilt or run.
+External mortal-t020/green, identity20261118-101912-868-5-320fd32c178e40d29904bc8876d0c798-categories;
+output inventoryb8261e2c667a1a6eba4e3177f7c3fdfdf0e7cd2d172a1f9e0b41949973fccc04.
+One pure production bootstrap DATA construction is reused for the four paths;
+no cache/retained-world repair/runtime migration. Independent outcome review is
+separate. Prepare fresh mm9 from this seed after review; actual GM will clone
+its existing vehicles root and preserve exact client-owned empty receipts,
+not recreate the file or manually create receipts. No native retry yet.
