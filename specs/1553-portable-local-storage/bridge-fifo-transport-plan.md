@@ -1099,3 +1099,17 @@ validation dispatch correction. Updated output-manifest SHA256
 compiler-input manifest85370efbfa582964cdf8e1af86a4406d4a28dfb8e636c1a3e94c22b77411aed1.
 Original rl1 runtime/world remain unchanged. Independent outcome review and
 fresh actual relay turns are still required; main has not changed.
+
+A second single public-validator diagnostic used the corrected candidate DLL on
+unchanged settled rl1 data without replacing its runtime. It returned [] (zero
+issues), exit0/empty stderr in7.807s; all79 state/ownership files were unchanged.
+The first seven-error capture is retained separately. This confirms the exact
+observed pre-turn blocker on the same data, not a replay or accepted game turn.
+Fresh rl2 preparation from corrected outputs is UNLAUNCHED:729 runtime files,
+8 maintained relay files,4 matched native files,3340 source and28 output joins;
+Client827c786e is consistent in all published copies. Package preflight passes,
+world contains only _runtime, private environment0700 and native path88 bytes.
+External manifest SHA25695c4097e0c398debba84d9cd7bff0a3c245edbc68135c85ba7a5a5abb7f1f305.
+A preparation-metadata missing-field error was corrected without rerunning any
+game or changing package bytes. Independent preparation review and live phases
+remain required; rl1 is not continued and main remains unchanged.
