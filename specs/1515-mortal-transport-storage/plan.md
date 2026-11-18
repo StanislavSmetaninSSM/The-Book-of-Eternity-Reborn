@@ -2341,3 +2341,15 @@ pins unchanged;8current Unit outputs retained. External mortal-t021/red,
 run20261118-103328-526-5-80aa1efdb9b34faaa643791987709561-categories;
 result.log SHA256f742af860e97b7de6b92ad609608aaac10c788f1521b8e81a3e59a4479955dc2.
 Minimal fix and complete GameEngine candidate remain next; no native retry.
+
+T021 implementation WIP/UNRUN: registered-source owner validation now skips
+only an empty JsonArray; nonempty owners and separate malformed-definition
+validation are unchanged. New combined GameEngineTurnLifecycleTests candidate
+uses a genuine ProcessPlayerTurn request/snapshot, retained Mira, new scene/two
+links, restricted faction storage with one chalk, new steward and parked cart.
+Positive/negative Theory leaves cover empty definitions versus a real unresolved
+effect definition, all ordinary protected collectors and canonical refresh;
+no authored receipts, permanent IDs or fake accepted candidate. Source review and
+fresh unit4/integration2 execution are next. This automatic journey is not GM-relay
+acceptance. No GM-facing contract changes: empty definitions were already legal,
+confer no authority, and real definitions still require exact source ownership.

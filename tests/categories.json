@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-combined-birth-engine",
+      "responsibility": "#1515 T021 full ordinary pending-turn location/link, retained NPC, new NPC, cart, restricted storage and chalk birth; unresolved effect candidate rolls back without creation publication.",
+      "excludes": "No native relay, legacy source migration, authored receipt or direct accepted-refresh shortcut.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalBirth.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-empty-effect-source-owner",
+          "when": "Empty registered effect definition owner admission changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_RealTurnPreservesHistoricalActorAndPublishesOnlyAdmittedCandidate"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-empty-effect-source-owner",
       "responsibility": "#1515 T021 empty registered new-location definition DATA neither demands nor grants effect source authority; nonempty unresolved and malformed definitions remain refusing.",
       "excludes": "No location allocation, whole candidate acceptance, native run or mutation authority; combined engine candidate is separate.",

@@ -1408,7 +1408,7 @@ internal static partial class EffectAcceptedTurnInputComposer
                          root.Key,
                          InferRealm(root.Key)))
             {
-                if (candidate.Owner["activeEffectDefinitions"] is not JsonArray)
+                if (candidate.Owner["activeEffectDefinitions"] is not JsonArray definitions || definitions.Count == 0)
                     continue;
                 if (TryResolveSourceDescriptor(candidate, out _, out _))
                     continue;
