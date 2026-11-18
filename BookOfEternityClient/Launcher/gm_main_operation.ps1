@@ -64,10 +64,12 @@ function Open-GmParticipatingOperation {
         $context.originalClose=$ready.originalClose
         return $context
     } catch {
+        $originalOpenFailure=$_
+        Write-GmOperationDiagnostic 'helper-open-failure-before-dispose' $originalOpenFailure $context
         Dispose-GmOperationTransport $context
         $code=$context.exitCode
         $diagnostic=$context.diagnostic
-        Write-GmOperationDiagnostic 'helper-open-failure' $_ $context
+        Write-GmOperationDiagnostic 'helper-open-completion-after-dispose' $originalOpenFailure $context
         $kind=Get-GmOperationFailureKind $diagnostic
         throw "Original participating admission unavailable (helper exit $code, $kind)."
     }

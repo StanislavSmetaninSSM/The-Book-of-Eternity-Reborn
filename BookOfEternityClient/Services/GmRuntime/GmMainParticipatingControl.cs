@@ -109,7 +109,7 @@ internal static partial class GmMainParticipatingControl
                             }
                         }
                         catch (Exception failure) { result.Failure = failure;
-                            MainOperationFailureDiagnostic.Report(diagnosticNonce,"command",null,failure,close:originalProjection,sequence:sequence,action:command.Action,owner:originalProjection?.Identity);
+                            MainOperationFailureDiagnostic.Report(diagnosticNonce,"command",null,failure,projection:originalProjection,sequence:sequence,action:command.Action,owner:originalProjection?.Identity);
                         }
                         publicationUncertain = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Uncertain;
                     }
@@ -129,7 +129,7 @@ internal static partial class GmMainParticipatingControl
                 }
                 finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }
             }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; },
-                beforeCurrentGeneration: _ => { MainOperationFailureDiagnostic.Mark(diagnosticNonce,"canonical-current-generation-lease-acquired"); return Task.CompletedTask; });
+                beforeCurrentGeneration: diagnosticNonce==null ? null : _ => { MainOperationFailureDiagnostic.Mark(diagnosticNonce,"canonical-current-generation-lease-acquired"); return Task.CompletedTask; });
             // Successful return includes actual bound finalization and scoped
             // disposal. A guarded local scope does not invent a remote receipt.
             localScopeCompleted = !remoteAdmission;
@@ -138,7 +138,7 @@ internal static partial class GmMainParticipatingControl
         }
         catch(Exception failure)
         {
-            MainOperationFailureDiagnostic.Report(diagnosticNonce,"participating-body-or-finalization",null,failure,close:terminalClose??originalProjection,sequence:sequence,owner:originalProjection?.Identity);
+            MainOperationFailureDiagnostic.Report(diagnosticNonce,"participating-body-or-finalization",null,failure,close:terminalClose,projection:originalProjection,sequence:sequence,owner:originalProjection?.Identity);
             // SessionOperationContext marks transport loss below before finalization.
             // A reply loss after explicit close cannot reverse an owner receipt.
             if (!explicitClose) files.MarkMainOperationUnresolved();

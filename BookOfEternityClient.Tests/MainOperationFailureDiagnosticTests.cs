@@ -22,10 +22,19 @@ public sealed class MainOperationFailureDiagnosticTests
         var owner=new GmSessionRunIdentity("/original","run","generation",2,GmSessionRunBackend.LinuxSupervisor,"host","boot");
         var pin=new MainOperationReply(true,MainOperationState.Active,"pin","close","operation",owner);
         var close=new MainOperationClose("pin","close","operation",owner,MainOperationOutcome.Failed,true);
+        var projection=close with {Outcome=MainOperationOutcome.Completed,ClosingFailed=false};
         Exception error;
         try {throw new IOException(new string('界',40000));} catch(Exception original){error=original;}
-        var capture=MainOperationFailureDiagnostic.Capture(Nonce,Nonce,stage,pin,error,close:close,closing:true,sequence:7,action:"daemon-request-end",owner:owner);
-        Assert.NotNull(capture);Assert.Same(pin,capture.OriginalPin);Assert.Equal(stage,capture.Stage);
+        var before=DateTimeOffset.UtcNow;var beforeTicks=System.Diagnostics.Stopwatch.GetTimestamp();
+        var capture=MainOperationFailureDiagnostic.Capture(Nonce,Nonce,stage,pin,error,close:close,closing:true,sequence:7,action:"daemon-request-end",owner:owner,projection:projection);
+        Assert.NotNull(capture);
+        Assert.InRange(capture.CapturedAtUtc,before,DateTimeOffset.UtcNow);
+        Assert.Equal(TimeSpan.Zero,capture.CapturedAtUtc.Offset);
+        Assert.InRange(capture.CaptureMonotonicTimestamp,beforeTicks,System.Diagnostics.Stopwatch.GetTimestamp());
+        Assert.Same(projection,capture.OriginalCloseProjection);Assert.NotEqual(capture.OriginalCloseProjection,capture.TerminalClose);
+        var beforeClose=MainOperationFailureDiagnostic.Capture(Nonce,Nonce,stage,pin,error,owner:owner,projection:projection);
+        Assert.NotNull(beforeClose);Assert.Same(projection,beforeClose.OriginalCloseProjection);Assert.Null(beforeClose.TerminalClose);
+        Assert.Same(pin,capture.OriginalPin);Assert.Equal(stage,capture.Stage);
         Assert.Same(owner,capture.OriginalOwner);Assert.Same(close,capture.TerminalClose);Assert.True(capture.Closing);
         Assert.NotEmpty(error.StackTrace!);Assert.Equal(error.StackTrace,capture.StackText);
         Assert.Equal(error.Message,capture.Message);Assert.Equal(error.ToString(),capture.ExceptionText);

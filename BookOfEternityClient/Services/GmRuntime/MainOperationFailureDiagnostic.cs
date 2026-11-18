@@ -1,14 +1,15 @@
 using System.Text.Json;
+using System.Diagnostics;
 namespace BookOfEternityClient.Services.GmRuntime;
 
 // Observational DATA only. Never used for admission, retirement, retry or cleanup.
 internal static class MainOperationFailureDiagnostic
 {
-    internal sealed record Observation(string Nonce,string Stage,GmSessionRunIdentity? OriginalOwner,MainOperationReply? OriginalPin,
-        MainOperationClose? TerminalClose,bool? Closing,long? Sequence,string? Action,
+    internal sealed record Observation(string Nonce,string Stage,DateTimeOffset CapturedAtUtc,long CaptureMonotonicTimestamp,GmSessionRunIdentity? OriginalOwner,MainOperationReply? OriginalPin,
+        MainOperationClose? OriginalCloseProjection,MainOperationClose? TerminalClose,bool? Closing,long? Sequence,string? Action,
         string ExceptionType,string? Message,string? StackText,string? ExceptionText,
         bool CaptureComplete,string? CaptureFailure,
-        string Consistency="Caller-supplied immutable observations; stage identifies capture site");
+        string Consistency="Caller-supplied immutable observations; timestamp is DATA capture entry before text extraction, not event or authority time");
     internal static string? ReadNonce()
     {
 #if DEBUG
@@ -20,20 +21,21 @@ internal static class MainOperationFailureDiagnostic
     }
     internal static Observation? Capture(string? capturedNonce,string? currentNonce,string stage,
         MainOperationReply? pin,Exception failure,MainOperationClose? close=null,bool? closing=null,
-        long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null)
+        long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null,MainOperationClose? projection=null)
     {
+        var capturedAt=DateTimeOffset.UtcNow;var monotonic=Stopwatch.GetTimestamp();
         if(capturedNonce!=currentNonce || !Guid.TryParseExact(capturedNonce,"N",out _))return null;
         string? message=null,stack=null,text=null,captureFailure=null;
         try {message=failure.Message;}catch(Exception error){captureFailure=error.GetType().FullName;}
         try {stack=failure.StackTrace;}catch(Exception error){captureFailure??=error.GetType().FullName;}
         try {text=failure.ToString();}catch(Exception error){captureFailure??=error.GetType().FullName;}
-        return new(capturedNonce!,stage,owner,pin,close,closing,sequence,action,
+        return new(capturedNonce!,stage,capturedAt,monotonic,owner,pin,projection,close,closing,sequence,action,
             failure.GetType().FullName!,message,stack,text,captureFailure==null,captureFailure);
     }
     internal static void Report(string? nonce,string stage,MainOperationReply? pin,Exception failure,
-        MainOperationClose? close=null,bool? closing=null,long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null)
+        MainOperationClose? close=null,bool? closing=null,long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null,MainOperationClose? projection=null)
     {
-        try {Write(Capture(nonce,ReadNonce(),stage,pin,failure,close,closing,sequence,action,owner),Console.Error,ReadNonce());}
+        try {Write(Capture(nonce,ReadNonce(),stage,pin,failure,close,closing,sequence,action,owner,projection),Console.Error,ReadNonce());}
         catch { /* Observation must not replace the original failure. */ }
     }
     internal static void Mark(string? nonce,string stage,MainOperationReply? pin=null,MainOperationClose? close=null)
