@@ -1256,3 +1256,27 @@ Adding only `using BookOfEternityClient.Core;` fixes name resolution; independen
 review verified removing that line reproduces the exact previously reviewed
 source hash. This is a preparation correction, not a causal runtime RED. The
 failed build is retained outside Git; the one actual soak remains UNRUN.
+
+### #1589 original FIFO observation: one PASS, 2026-11-18
+
+Corrected source2f9bf11 built Unit successfully in39.50s/39.756s wall,
+65 warnings/0 errors. The sole official `gm-host-exit-original-fifo-soak` case
+passed1/1 in133.1912340s with complete owned cleanup, zero skips/duplicates/timeout.
+The actual idle observation lasted120.0623264s and retained25 full status replies
+for the same original run7613a6757ffd46f2ab8ac9cd9d4a1494, generation
+ff09ab46c0024038b494f85a57a2f5d0, epoch1. All observed the actual FIFO endpoint,
+retained owner and no uncertainty. The operation pin had already closed.
+
+Direct connector shutdown addressed that original identity and returned the
+original scoped-stop acknowledgement, stopped-within-scope/stop-requested,
+cleanupComplete=true and authorityRetained=false. Durable original Stopped and
+endpoint removal passed. Independent guardian reported ECHILD, driver0, reaped1,
+zero emergency signals/failures/deadline. This is a neutral-process result, not
+a game turn, a reproduction of rl2's unknown fault, or proof of its repair.
+
+Twenty current output pins and seven source/checkpoint pins were rechecked;
+external manifest SHA256e9706bb675b287108d47b218af8c5a9008cabed216fef3280253b427add28556.
+No Integration refresh had occurred at this result. Independent outcome review
+is pending; next prepare fresh matched game outputs and a new isolated world
+with the diagnostic-enabled original observer. Never continue rl2 or infer that
+its failure was caused by a timeout merely because this longer observation passed.
