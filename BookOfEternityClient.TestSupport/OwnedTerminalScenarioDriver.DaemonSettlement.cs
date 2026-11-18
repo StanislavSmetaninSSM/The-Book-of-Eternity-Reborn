@@ -5,6 +5,14 @@ namespace BookOfEternityClient.Tests;
 internal static partial class OwnedTerminalScenarioDriver
 {
     // Test-only observation. These persisted bytes never grant ownership or authorize recovery.
+    internal static byte[] ReadDaemonObservationBytes(string path)
+    {
+        // Observation only: permit the owner's existing open handle; never acquire or release its lock.
+        using var input = new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
+        using var copy = new MemoryStream();
+        input.CopyTo(copy);
+        return copy.ToArray();
+    }
     private sealed record DaemonSettlementSnapshot(string Owner, JsonElement Status, JsonElement Guard);
     private static DaemonSettlementSnapshot CaptureDaemonSettlement(string folder, string phase,
         Dictionary<string,object?> evidence)
@@ -21,7 +29,7 @@ internal static partial class OwnedTerminalScenarioDriver
             var destination = Path.Combine(folder,$"daemon-{phase}-{(i==0?"status":"guard")}.raw.json");
             try
             {
-                var raw = File.ReadAllBytes(paths[i]);
+                var raw = ReadDaemonObservationBytes(paths[i]);
                 File.WriteAllBytes(destination,raw);
                 captured[i] = raw;
                 capture.Add(new { Path=paths[i], RawPath=destination,

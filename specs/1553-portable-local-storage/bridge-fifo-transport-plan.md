@@ -837,3 +837,13 @@ it is not an original successful final observation. Raw logs and capture remain
 outside Git under relay-alternative/daemon-settlement-{green-build,
 green-official,idle-official}.log and daemon-settlement-idle-after-failure.
 No retry, live run, world alteration or production correction followed.
+
+A bounded test-only reader correction is prepared and UNRUN: FileAccess.Read
+with FileShare.ReadWrite observes the held daemon guard without requesting the
+conflicting managed shared lock. New gm-daemon-settlement-observation selects
+one exact Fact (one-minute category): real guard acquisition, exact record and
+unchanged-byte reads, original validation, and contender refusal before its
+status-reader callback both before and after observation. The explicit normal
+MarkSettled operation remains separate from observation. No production lock or
+authority behavior changes. The prior coordinated-stop preparation failure
+remains recorded; source review and selected verification are still pending.

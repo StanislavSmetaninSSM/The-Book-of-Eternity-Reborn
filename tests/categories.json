@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-daemon-settlement-observation",
+      "responsibility": "#1589 test-only shared observation of a genuinely held daemon guard preserves original validation, unchanged bytes and contender exclusion before status reading.",
+      "excludes": "No live daemon shutdown, cross-process qualification, gameplay or new publication authority.",
+      "changeHints": ["BookOfEternityClient.Tests/DaemonSettlementObservationTests.cs", "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DaemonSettlement.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.DaemonSettlementObservationTests.SharedReadObservesHeldGuardWithoutReleasingOriginalOwnership"]}]
+    },
+    {
       "id": "gm-linux-powershell-finally-diagnostics",
       "responsibility": "#1589 inert actual foreground PowerShell direct/nested cooperative/Ctrl+C finally marker diagnostics, with one shared native guardian preparation.",
       "excludes": "No gameplay, actual daemon terminal settlement, publication authority, or asserted universal Ctrl+C finally behavior.",
