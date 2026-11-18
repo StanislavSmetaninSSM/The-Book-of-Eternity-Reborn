@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-faction-project-partial-update",
+      "responsibility": "#1516 T020 actual normalizer preserves omitted existing faction project fields, exact owner/siblings/history and consumes only supplied partial update; explicit rename control.",
+      "excludes": "No live relay, new project creation, or terminal completion qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.FactionProjectUpdate.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_FactionProjectPartialUpdatePreservesOmittedFields"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-completion-guidance",
       "responsibility": "#1516 terminal NPC rule and worked example agree with explicit outcome and client-owned turn.",
       "excludes": "Response-fragment DATA only; no whole-response, world, publication or live qualification.",
