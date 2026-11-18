@@ -3400,3 +3400,14 @@ controls, exactgameplaybytes/noGMrequests and originalownedcleanup. Pure seed DA
 and deterministicconsole avoidwholeworldcost; realneutralprotocol is necessary.
 No newcache,guardrelaxation or historicalthrow-line claim. REDsource implementation
 GO only; productionfix follows verifiedcausalRED/source review.
+T026 RED source saved169287f852200281e4cc58254b02af2613deff18:10paths,
+sharedhelper remains directdelegation andbothrealcallsitesawaitit; noactualscopefix.
+Typed seed/menu fixture and existingBridgeHost/guardian scenario cover6cheap+2owner
+cases; newcategories mortal-explorer-participation-data(2min) and -owner(3min).
+ExpectedREDleaves are missinggenerationhelper notthrowing and actualRunninghelper
+failing menusuccess AFTER directIOException and existingparticipationmenu/exactclose
+controls pass. Other6 expectedbaselinePASS; compilation/seed/hostfailure is not
+causalRED. GenuineStopping uses heldpin/readback/ownedclose, not fabricatedmetadata.
+IndependentSOURCEreview pending before freshUnit/two-categoryexecution. No tests,
+nativegame or mm12change occurred in this checkpoint. Actual neutralprotocol cost
+is necessary; deterministicseed/menu avoidwholeworldsetup andnewcache.
