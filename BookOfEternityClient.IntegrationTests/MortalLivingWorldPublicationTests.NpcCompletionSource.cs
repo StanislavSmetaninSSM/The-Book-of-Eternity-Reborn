@@ -130,7 +130,7 @@ public sealed partial class MortalLivingWorldPublicationTests
         await context.WriteJsonAsync(CompletionCore, current);
         await SubmitCompletionAsync(context);
         var result = await PublishAsync(context, backups);
-        Assert.DoesNotContain(result.Issues, issue => issue.Severity == BookOfEternityClient.Core.IssueSeverity.Error);
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
         await AssertCompletionAsync(context, current);
     }
 }
