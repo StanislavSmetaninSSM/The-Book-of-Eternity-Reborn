@@ -3129,3 +3129,19 @@ Final reviewed SHA30815b671370f2cc67e3b62839e51442fc6b40a10610e46578a395b919a7e0
 received explicit parent GO, immediate fresh checks and one relay publication.
 No unreviewed edit, fabricated receipt or second action. Execution/acceptance and
 original-owner cleanup remain pending; static preflight is not live success.
+
+mm11 original launch ended with harness FAIL,481.214s,one action/one response:
+production-typed receipt helper exited2 with typed_evidence_invalid, so probe
+retains accepted0/Successfalse. This does NOT establish game rejection: client
+has no rejection/exception marker, story42 exists and new permanent location is
+published. Prior/current living-world history file is absent; actual elapsed
+clock480→500 crosses no due cycle. Current detached helper unconditionally reads
+that history and requires one receipt append. Applicability mismatch is being
+investigated against production contracts, not worked around or called fixed.
+Original shutdown ACK/Stopped/OwnedScopeEmpty, all3terminal exit0/EOF/termios,
+RPC/relay drain and guardian ECHILD/driver1/noemergency/failures/deadline verified
+by executor. Same daemon settled/errorCount1 retained;106 finalpins match.
+Probe SHA2569b7c96d5c6e06a6e960faa2300562faa6f740258b6e58c91e78cd30aec4c509d.
+Independent actual commit/state/cleanup audit pending. No helper rerun, no replay,
+no failed-probe rewrite, no ordinary-continuation token inferred. Investigate all
+fixed-route evidence consumers together before another native attempt.
