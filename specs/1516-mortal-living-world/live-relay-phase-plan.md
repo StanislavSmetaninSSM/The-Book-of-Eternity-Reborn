@@ -954,3 +954,26 @@ stamping terminal fields. Do not report them as measured final work, infer new
 progress writes or expand this task to change that contract. Next retained
 continuation asks for four hours of quiet rest and actual relevant news, without
 forcing a no-change answer. The known nullable bug remains tracked separately.
+
+### mm3 p04 quiet attempt failed before acceptance; do not replay
+
+The intended quiet-time turn45/request15762ed4756c474e9ab89b1510c13388 was not
+accepted. Probe reports0 accepted/1 action in135.303s with genuine current client
+failure during provider wait; client displayed its safe-failure message. The
+packet was sent once, but execution/child/I-O closure was not confirmed.
+Current submitted after-images are absent/different; that observation does not
+prove they were never applied or that rollback completed. No automatic repeat.
+
+Do not confuse the wrapper's exit0 with a passing game: guardian records original
+driverExitCode1 and ECHILD/reaped1 without emergency/failure/deadline. The probe
+records client ExitCode unknown/EOFfalse/terminal restoration false, relay close
+unconfirmed and foreground EOF timeout. Bridge/daemon closed, but logical client
+cleanup and canonical restoration are not qualified. Daemon reported a recovered
+participating canonical mutation/original-close refusal. Root-cause tracing and
+exact retained state investigation are underway; no guard weakening, world
+rewriting or new live launch. Earlier accepted42-44 evidence remains separate.
+
+Independent T021 source review has meanwhile cleared the17-case field/component
+fixture (not whole faction validity or live-owner qualification). Fresh build and
+causal RED are separate from the unchanged mm3 native package. No raw logs or
+game saves are published; the failed quiet attempt is not T016 completion.
