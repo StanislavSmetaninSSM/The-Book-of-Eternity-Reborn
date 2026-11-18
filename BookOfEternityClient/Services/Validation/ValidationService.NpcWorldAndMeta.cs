@@ -5096,8 +5096,8 @@ public partial class ValidationService
         var currentSceneInitialId = currentSceneAnchor.InitialId;
         var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
         var mortalActorPreTurnAuthority = ReadValidatedMortalActorMaterializationPreTurnAuthoritySync();
-        var idleHistoricalLocations = ReadIdleInspectionHistoricalLocations(
-            mortalActorPreTurnAuthority, isResponseCreationValidation);
+        IReadOnlySet<string>? idleHistoricalLocations = null;
+        var idleHistoricalLocationsRead = false;
         if (!skipManifestedCompanionSourceValidation)
             ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
 
@@ -5168,6 +5168,22 @@ public partial class ValidationService
                 }
                 var initialLocationId = GetFirstNonEmptyString(item, "initialLocationId");
                 var currentLocationId = GetFirstNonEmptyString(item, "currentLocationId");
+                // Other NPC sidecars and already-local rows do not need idle marker/map reads.
+                // One relevant root retains this DATA for its candidate rows only.
+                if (!idleHistoricalLocationsRead &&
+                    string.Equals(sectionName, "NPCsInScene", StringComparison.Ordinal) &&
+                    hasEffectiveNpcId && !usesSameTurnInitialId &&
+                    item.TryGetProperty("materialization", out var historicalEnvelope) &&
+                    historicalEnvelope.ValueKind == JsonValueKind.Object &&
+                    !string.IsNullOrWhiteSpace(currentLocationId) &&
+                    ((!string.IsNullOrWhiteSpace(currentSceneLocationId) &&
+                      !string.Equals(currentLocationId, currentSceneLocationId, StringComparison.Ordinal)) ||
+                     !string.IsNullOrWhiteSpace(currentSceneInitialId)))
+                {
+                    idleHistoricalLocationsRead = true;
+                    idleHistoricalLocations = ReadIdleInspectionHistoricalLocations(
+                        mortalActorPreTurnAuthority, isResponseCreationValidation);
+                }
                 var retainedHistoricalRow = IsRetainedHistoricalSceneRow(
                     item, sectionName, mortalActorPreTurnAuthority, idleHistoricalLocations);
                 var isNewUpdateNpc =

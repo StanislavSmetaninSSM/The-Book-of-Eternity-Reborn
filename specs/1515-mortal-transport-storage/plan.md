@@ -2110,3 +2110,11 @@ existing creation-history guard checks the clarified CLI rule. Total18 planned
 GREEN cases, none executed yet. These additions are controls, not claimed prior
 causal RED cases. Independent source review underway; real native capture,
 worker publication and whole-task acceptance remain unproven.
+Independent GREEN source review found avoidable repeated marker/map reads on
+unrelated NPC sidecars. Corrected the preparation to be lazy: only a permanent
+historical NPCsInScene candidate needing the exception triggers it, once per
+relevant root and reused across rows. Added a cheap typed read-hook control for
+unrelated sidecar0 versus relevant historical core1 marker read. These counts
+are expected assertions, not measured results yet. Integration now17 +routing1
++guidance1 =19 planned GREEN cases. No broad cache, authority reuse or source
+read fallback. Default worker path and all existing hard checks remain intact.

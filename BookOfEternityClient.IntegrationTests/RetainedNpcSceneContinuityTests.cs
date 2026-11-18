@@ -152,6 +152,33 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         Assert.Equal(before, File.ReadAllBytes(context.FileSystem.ResolvePath(Core)));
     }
 
+    [Fact]
+    public async Task UnrelatedNpcSidecarInspectionDoesNotReadIdleHistoricalDependencies()
+    {
+        var armed = false;
+        var markerReads = 0;
+        await using var context = await PrepareAsync(true, new FileSystemManagerHooks
+        {
+            AfterCanonicalReadAttemptAsync = path =>
+            {
+                if (armed && path == "game_state/control/validation_repair_ready.json") markerReads++;
+                return Task.CompletedTask;
+            }
+        });
+        await InstallCanonicalBAsync(context);
+        await ClearOriginalAsync(context);
+        const string inventory = "game_state/npcs/npc_inventory.json";
+        await context.WriteJsonAsync(inventory, new JsonObject());
+        armed = true;
+        await context.Validator.InspectGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.NpcStateFiles, new[] { inventory }));
+        Assert.Equal(0, markerReads);
+        // The same original root's actual historical carrier does reach the read once.
+        Assert.DoesNotContain(await context.Validator.InspectGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.NpcStateFiles, new[] { Core })), IsSceneAnchorIssue);
+        Assert.Equal(1, markerReads);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
