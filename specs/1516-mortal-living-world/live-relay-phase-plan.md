@@ -176,3 +176,10 @@ typed receipt/original-snapshot check and a corrected assessed-Mortal observer
 will preserve request correlation without requiring a nonexistent story field.
 No action is replayed and no raw driver result is promoted to PASS. GM-facing
 semantic-kind guidance is a separate confirmed defect to repair before later turns.
+
+Independent outcome review confirms one applied turn, but not a clean phase:
+client exit/EOF/termios were not established (No observable phase progress45s);
+bridge and daemon exited0 with EOF/termios, original owner Stopped. Guardian
+physical drain does not substitute for client normal exit. No continuation is
+admitted from this failed result. The actual partial scout inspection is not
+completion, public news, XP, or whole-issue qualification.

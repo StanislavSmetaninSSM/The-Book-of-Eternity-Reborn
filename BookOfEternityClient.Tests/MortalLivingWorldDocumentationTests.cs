@@ -11,6 +11,49 @@ public sealed class MortalLivingWorldDocumentationTests
     private const string TemplateName = "MORTAL_LIVING_WORLD_TEMPLATE.md";
 
     [Fact]
+    public void AuthoredNpcActivityUsesSemanticKindAndRejectsNpcFieldAlias()
+    {
+        var example = ReadExample("mortal_living_world_npc_activity_update_v1");
+        var report = example["report"]!.AsObject();
+        var original = Documents(example, "original");
+        var accepted = Documents(example, "accepted");
+        Assert.Empty(MortalLivingWorldAssessment.Validate(Context(), report));
+        Assert.Empty(MortalLivingWorldEvents.Validate(report, original, accepted));
+        var effect = report["events"]![0]!["effects"]![0]!;
+        Assert.Equal("npcActivity", effect["target"]!["kind"]!.GetValue<string>());
+        Assert.Equal("currentActivity", effect["field"]!.GetValue<string>());
+        var wrong = report.DeepClone().AsObject();
+        wrong["events"]![0]!["targets"]![0]!["kind"] = "npc";
+        wrong["events"]![0]!["effects"]![0]!["target"]!["kind"] = "npc";
+        Assert.Contains(MortalLivingWorldEvents.Validate(wrong, original, accepted),
+            issue => issue.Code == "mortal_living_world_event_invalid");
+        Assert.Contains(MortalLivingWorldEvents.Validate(report, original, original),
+            issue => issue.Code == "mortal_living_world_effect_mismatch");
+    }
+
+    [Fact]
+    public void SemanticReferenceTableIsDeliveredWithoutSourceLookup()
+    {
+        var daemon = Read("BookOfEternityClient/game_master_daemon.ps1");
+        var template = Between(daemon, "-RelativePath \"Templates\\" + TemplateName + "\"", "\n'@");
+        foreach (var text in new[] { template, Read("OtherGuides/CLI_World_Logic_Guide.txt"), Read(ExamplePath) })
+        {
+            foreach (var row in new[] {
+                "| npc | NPCId | currentLocationId, level, experience, characteristics, factionAffiliations |",
+                "| npcActivity | NPCId | currentActivity, completedActivities |",
+                "| faction | factionId | currentAgenda, principles, level, experience, powerProfile, governance, leadership, relations |",
+                "| factionProject | projectId; ownerId=factionId | activeState, finalState, resourcesSpent, timeSpentMinutes, currentStep, completionTurn |",
+                "| location | locationId | factionControl, actorBindings, locationStorages, activeThreats, customStates |",
+                "| locationLink | linkId | access |",
+                "| threat | threatId; ownerId=locationId | intensity, longTermGoal, currentActivity |",
+                "| worldFlag | flagId | value |" })
+                Assert.Contains(row, text, StringComparison.Ordinal);
+            Assert.Contains("npc.currentActivity is invalid", text, StringComparison.Ordinal);
+            Assert.Contains("mortal_living_world_npc_activity_update_v1", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AuthoredAutonomousUpdateHasCompleteAssessmentAndActualCanonicalEffect()
     {
         var example = ReadExample("mortal_living_world_autonomous_update_v1");
