@@ -664,3 +664,18 @@ retained status bytes must stay unchanged. Actual same-root host contention,
 original usable RPC/identity/descriptor preservation, matching stop and distinct
 same-root restart are prepared separately. All new checks remain UNRUN; causal
 RED and independent source review precede production launcher edits.
+
+Causal AST RED on reviewed source84b1: serial unit build39.84s (wall40.230s),
+67 warnings, zero errors. An initial `/usr/bin/time` wrapper was unavailable and
+stopped before dotnet, zero builds/cases; shell timing then ran the actual build.
+Official gm-linux-bridge-restart-dispatch completed3/3 cases: zero PASS, three
+FAIL,12.9975617s, no timeout/skips/duplicates, complete owned-tree cleanup.
+Lexical fixture-root and actual-terminal preconditions passed. The stale-pid
+case printed the original already-running message and failed the explicit
+launch-admission assertion. Hidden and redirected cases likewise returned at
+that PID gate instead of refusing the missing foreground prerequisite. Thus
+these are behavior failures, not parsing/bootstrap failures. Raw evidence is
+bridge-restart-red-build-actual.log and bridge-restart-red-official.log outside
+Git; runner20261117-215302-137-5-11f4cb0343ec416396e70521d31d3e8c-categories.
+The separately prepared actual contender/restart case remains UNRUN, and the
+production launcher is unchanged at this checkpoint.
