@@ -45,18 +45,25 @@ def daemon_settlement_proved(evidence):
 
 def relay_phase_cleanup_proved(value):
     try:
+        if any(type(value[k]) is not int or value[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent')):return False
+        return value['InputQualified'] is True and relay_owned_cleanup_proved(value,value['OriginalRunningRecord'],value['OriginalRunningStatus'])
+    except (KeyError,TypeError):return False
+
+def relay_owned_cleanup_proved(value, running, started):
+    """Mechanical closure of the explicitly supplied original main; no acceptance or adoption."""
+    try:
         if any(k.endswith('Failure') for k in value):return False
         if not daemon_settlement_proved(value.get('DaemonSettlement')):return False
-        if any(type(value[k]) is not int or value[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent','ShutdownAttempts')):return False
-        if any(value[k] is not True for k in ('InputQualified','LogicalLifecycleVerified','RelayExecutionClosed')) or not rpc_helper_closed(value):return False
+        if type(value['ShutdownAttempts']) is not int or value['ShutdownAttempts']!=1:return False
+        if any(value[k] is not True for k in ('LogicalLifecycleVerified','RelayExecutionClosed')) or not rpc_helper_closed(value):return False
         terminals=value['Terminals']
         if set(terminals)!={'client','bridge','daemon'}:return False
         if not all(type(v['ExitCode']) is int and v['ExitCode']==0 and v['EOF'] is True and v['TermiosRestored'] is True and type(v['StreamEOF']) is dict and bool(v['StreamEOF']) and all(x is True for x in v['StreamEOF'].values()) for v in terminals.values()):return False
-        running=value['OriginalRunningRecord'];stopped=value['StoppedRecord'];identity=running['Identity']
+        stopped=value['StoppedRecord'];identity=running['Identity']
         if type(identity.get('Epoch')) is not int or identity['Epoch']<1:return False
         if running['Disposition']!='Running' or stopped['Disposition']!='Stopped' or stopped['Identity']!=identity:return False
         if stopped['StopEvidence']['Identity']!=identity or stopped['StopEvidence']['Kind']!='OwnedScopeEmpty':return False
-        ack=value['ShutdownReceipt'];proof=ack['status']['terminalStop'];started=value['OriginalRunningStatus']
+        ack=value['ShutdownReceipt'];proof=ack['status']['terminalStop']
         return (ack['ok'] is True and started['ok'] is True and started['status']['terminalRunId']==identity['RunId'] and
             ack['status']['terminalRunId']==identity['RunId'] and ack['status']['inputBindingId']==started['status']['inputBindingId'] and
             proof['identity']['runId']==identity['RunId'] and proof['state']=='stopped-within-scope' and
@@ -86,6 +93,7 @@ def relay_package_preflight(out,ship,driver):
     if manifest['RelayPins']!=relay_inventory(out/'relay') or not manifest['RelayPins']:raise ValueError('Prepared relay pins mismatch')
     if manifest['DriverSHA256']!=sha(Path(driver).read_bytes()):raise ValueError('Prepared driver pin mismatch')
     if manifest.get('EvidenceModuleSHA256')!=sha(Path(__file__).read_bytes()):raise ValueError('Prepared evidence module pin mismatch')
+    if manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(__file__).with_name('mortal_console_routes.py').read_bytes()):raise ValueError('Prepared console route module pin mismatch')
     return manifest,sha(raw)
 
 def relay_published_owner_join(record,status,pipe,previous):
@@ -460,16 +468,70 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
         if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:return False
         # The existing fixed stop proof is reused only against observed B. Original
         # caller evidence remains untouched; no process action occurs in this module.
-        closing=dict(value,OriginalRunningRecord=running,OriginalRunningStatus=status)
-        return relay_phase_cleanup_proved(closing)
+        if any(type(value[k]) is not int or value[k]!=0 for k in ('AcceptedGameTurns','GenuineActionsSent')):return False
+        if not local_load_route_proved(value['LocalRouteProof'],value['FinalQueuePins']):return False
+        if value['LocalRouteProof']['SaveArchivePath']!=expected['SourceKey']:return False
+        return relay_owned_cleanup_proved(value,running,status)
     except (KeyError,TypeError,ValueError,UnicodeError):return False
 
 
 def retained_daemon_load_continuity_proved(settlement, continuity):
-    """Fail-closed RED seam for actual retained-daemon captures; never creates a daemon B.
+    """Fresh captured continuity DATA for the same daemon, not process authority."""
+    from datetime import datetime
+    def timestamp(value):
+        if type(value) is not str:raise ValueError('Invalid heartbeat')
+        parsed=datetime.fromisoformat(value.replace('Z','+00:00'))
+        if parsed.tzinfo is None:raise ValueError('Missing heartbeat timezone')
+        return parsed
+    def process(value):
+        return type(value) is dict and set(value)=={'Pid','StartTicks'} and all(type(value[k]) is int and value[k]>0 for k in value)
+    def status(prefix,source):return strict_settings(bytes.fromhex(source[prefix+'StatusRawHex']))
+    try:
+        if not daemon_settlement_proved(settlement):return False
+        if continuity['SessionPath']!=settlement['SessionPath']:return False
+        owner=daemon_pair_decode(settlement,'Original',False)
+        if any(daemon_pair_decode(continuity,prefix,False)!=owner for prefix in ('Original','PostLoad')):return False
+        initial=status('Original',settlement);before=status('Original',continuity);after=status('PostLoad',continuity)
+        if any(type(x['pid']) is not int or x['pid']<=0 for x in (initial,before,after)):return False
+        if not initial['pid']==before['pid']==after['pid']:return False
+        if not initial['startedAtUtc']==before['startedAtUtc']==after['startedAtUtc']:return False
+        timestamp(initial['startedAtUtc'])
+        if not timestamp(after['heartbeatAtUtc'])>max(timestamp(before['heartbeatAtUtc']),timestamp(continuity['LoadActionUtc'])):return False
+        for kind in ('Process','Launcher'):
+            old=continuity['Original'+kind+'Identity'];new=continuity['PostLoad'+kind+'Identity']
+            if not process(old) or not process(new) or old!=new:return False
+        if continuity['OriginalProcessIdentity']['Pid']!=initial['pid']:return False
+        return continuity['OriginalLauncherPoll'] is None and continuity['PostLoadLauncherPoll'] is None
+    except (KeyError,TypeError,ValueError,UnicodeError):return False
 
-    Continuity must join fresh pre/post-Load status/guard bytes, original managed
-    process and launcher PID/start-ticks, live retained launcher handles, and a
-    post-action heartbeat to the original daemon's eventual settlement.
-    """
-    return False
+
+def local_load_route_proved(proof, final_queue_pins):
+    """Fixed retrieve/save/deposit/Load DATA, with no GM request or accepted turn."""
+    def digest(value):return type(value) is str and re.fullmatch('[0-9a-f]{64}',value) is not None
+    def pins(value):return type(value) is dict and all(type(k) is str and digest(v) for k,v in value.items())
+    try:
+        if proof['Route']!='storage-local-proof' or proof['RestoreBytesExact'] is not True:return False
+        target=proof['Target']
+        if set(target)!={'LocationId','StorageId','ItemId','StorageLabel','StorageName','ItemLabel','ContentsCount'}:return False
+        if any(type(target[k]) is not str or not target[k] for k in target if k!='ContentsCount'):return False
+        if type(target['ContentsCount']) is not int or target['ContentsCount']<1:return False
+        before=proof['Before'];after=proof['After']
+        if before!=after or set(before)!={'StorySHA256','HistorySHA256','QueuePins'}:return False
+        if not all(digest(before[k]) for k in ('StorySHA256','HistorySHA256')) or not pins(before['QueuePins']) or not pins(final_queue_pins):return False
+        if any('request-' in k for k in list(before['QueuePins'])+list(final_queue_pins)):return False
+        # Maintained relay_contract.request_close adds these names; execution lock
+        # is coordination DATA, never a GM request. All earlier queue bytes persist.
+        added=set(final_queue_pins)-set(before['QueuePins'])
+        if not {'close-request.json','closed.json'}.issubset(final_queue_pins):return False
+        if not added.issubset({'close-request.json','closed.json','.execution.lock'}):return False
+        if any(final_queue_pins.get(k)!=v for k,v in before['QueuePins'].items()):return False
+        if type(proof['SaveArchivePath']) is not str or not Path(proof['SaveArchivePath']).is_absolute() or not digest(proof['SaveArchiveSHA256']):return False
+        stages=proof['Stages']
+        if type(stages) is not list or len(stages)!=4:return False
+        for stage,name,position in zip(stages,('Retrieve','Save','Deposit','Load'),('inventory','inventory','storage','inventory')):
+            if set(stage)!={'Stage','ItemPosition','LocationSHA256','InventorySHA256'} or stage['Stage']!=name or stage['ItemPosition']!=position:return False
+            if not all(digest(stage[k]) for k in ('LocationSHA256','InventorySHA256')):return False
+        for key in ('LocationSHA256','InventorySHA256'):
+            if not stages[0][key]==stages[1][key]==stages[3][key] or stages[2][key]==stages[1][key]:return False
+        return True
+    except (KeyError,TypeError,ValueError):return False

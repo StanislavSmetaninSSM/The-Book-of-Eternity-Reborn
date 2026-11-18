@@ -1,5 +1,6 @@
 """Independent inert Load observation DATA controls, not native ownership proof."""
-import copy, json, unittest
+import copy, json, unittest, tempfile, sys
+from pathlib import Path
 import relay_phase_evidence as evidence
 
 def fixture():
@@ -7,7 +8,7 @@ def fixture():
     b=dict(a,RunId='b'*32,GenerationId='2'*32,Epoch=2)
     ta=dict(RunId=a['RunId'],Backend='LinuxSupervisor',Guarantee='owned',RootPid=101)
     tb=dict(ta,RunId=b['RunId'],RootPid=102)
-    expected=dict(Nonce='d'*32,SourceKey='selected-save',RootKey='/owned',ExpectedGeneration=a['GenerationId'],StartupIdentityA=a,StartupTerminalA=ta)
+    expected=dict(Nonce='d'*32,SourceKey='/owned/save.zip',RootKey='/owned',ExpectedGeneration=a['GenerationId'],StartupIdentityA=a,StartupTerminalA=ta)
     operation='e'*32
     def receipt(state,main,terminal):return dict(Ok=True,OperationId=operation,State=state,MainIdentity=main,TerminalIdentity=terminal,Error=None)
     document=dict(kind='boe-load-session-completed',nonce=expected['Nonce'],observation=dict(OperationId=operation,
@@ -30,7 +31,7 @@ def daemon(owner):
 def cleanup(expected,document,installed):
     a=expected['StartupIdentityA'];b=installed['Identity'];t=document['observation']['ReplacementFinish']['TerminalIdentity']
     status=lambda run:dict(ok=True,status=dict(terminalRunId=run,inputBindingId='binding'))
-    value=dict(AcceptedGameTurns=1,GenuineActionsSent=1,ShutdownAttempts=1,InputQualified=True,LogicalLifecycleVerified=True,RelayExecutionClosed=True,
+    value=dict(AcceptedGameTurns=0,GenuineActionsSent=0,ShutdownAttempts=1,InputQualified=True,LogicalLifecycleVerified=True,RelayExecutionClosed=True,
         RpcHelperClosure=dict(ExitCode=0,StdoutEof=True,StderrEof=True),
         Terminals={k:dict(ExitCode=0,EOF=True,TermiosRestored=True,StreamEOF=dict(stdout=True,stderr=True)) for k in ('client','bridge','daemon')},
         DaemonSettlement=daemon('3'*32),StartupIdentityA=a,ShutdownIdentityB=b,
@@ -47,6 +48,13 @@ def cleanup(expected,document,installed):
                 data=json.loads(raw);data['heartbeatAtUtc']='2026-11-18T10:00:03Z';raw=wire(data)
             continuity[prefix+name+'RawHex']=raw.hex();continuity[prefix+name+'SHA256']=evidence.sha(raw)
     value['PostLoadDaemonContinuity']=continuity
+    value['LocalRouteProof']=dict(Route='storage-local-proof',Target=dict(LocationId='location',StorageId='storage',ItemId='item',StorageLabel='storage',StorageName='storage',ItemLabel='item',ContentsCount=1),
+        Before=dict(StorySHA256='a'*64,HistorySHA256='b'*64,QueuePins={}),After=dict(StorySHA256='a'*64,HistorySHA256='b'*64,QueuePins={}),
+        Stages=[dict(Stage=name,ItemPosition=position,LocationSHA256=('d' if name=='Deposit' else 'c')*64,InventorySHA256=('f' if name=='Deposit' else 'e')*64)
+            for name,position in [('Retrieve','inventory'),('Save','inventory'),('Deposit','storage'),('Load','inventory')]],
+        SaveArchivePath=expected['SourceKey'],SaveArchiveSHA256='a'*64,RestoreBytesExact=True)
+    value['FinalQueuePins']={'close-request.json':'c'*64,'closed.json':'d'*64}
+
     value['ShutdownReceipt']=status(b['RunId'])
     value['ShutdownReceipt']['status']['terminalStop']=dict(identity={k[0].lower()+k[1:]:v for k,v in t.items()},state='stopped-within-scope',cleanupComplete=True,authorityRetained=False)
     return value
@@ -117,6 +125,7 @@ class LoadEvidenceTests(unittest.TestCase):
             with self.subTest(mutation=mutation):self.assertFalse(evidence.relay_load_phase_cleanup_proved(value,wire(self.document),0,self.expected))
     def test_ordinary_no_load_contract_remains_unchanged(self):
         value=cleanup(self.expected,self.document,self.installed)
+        value['AcceptedGameTurns']=1;value['GenuineActionsSent']=1
         value['OriginalRunningRecord']=value['LoadRunningRecord'];value['OriginalRunningStatus']=value['LoadRunningStatus']
         for key in ['LoadRunningRecord','LoadRunningStatus','PostLoadDaemonContinuity','StartupIdentityA','ShutdownIdentityB']:del value[key]
         self.assertTrue(evidence.relay_phase_cleanup_proved(value))
@@ -140,4 +149,42 @@ class LoadEvidenceTests(unittest.TestCase):
                 raw=wire(status);continuity['PostLoadStatusRawHex']=raw.hex();continuity['PostLoadStatusSHA256']=evidence.sha(raw)
             with self.subTest(mutation=mutation):self.assertFalse(evidence.retained_daemon_load_continuity_proved(value['DaemonSettlement'],continuity))
 
-if __name__=='__main__':unittest.main()
+    def test_local_zero_GM_and_route_mutations_refuse(self):
+        original=cleanup(self.expected,self.document,self.installed)
+        for mutation in ('gm','story','queue','stage','restore','save-source','final-request'):
+            value=copy.deepcopy(original);proof=value['LocalRouteProof']
+            if mutation=='gm':value['AcceptedGameTurns']=1
+            elif mutation=='story':proof['After']['StorySHA256']='0'*64
+            elif mutation=='queue':proof['After']['QueuePins']['request-1.json']='0'*64
+            elif mutation=='stage':proof['Stages'][3]['InventorySHA256']='0'*64
+            elif mutation=='restore':proof['RestoreBytesExact']=1
+            elif mutation=='save-source':proof['SaveArchivePath']='/foreign/save.zip'
+            else:value['FinalQueuePins']['request-1.json']='0'*64
+            with self.subTest(mutation=mutation):self.assertFalse(evidence.relay_load_phase_cleanup_proved(value,wire(self.document),0,self.expected))
+    def test_ordinary_mechanical_negative_fences_preserved(self):
+        value=cleanup(self.expected,self.document,self.installed)
+        value.update(AcceptedGameTurns=1,GenuineActionsSent=1,OriginalRunningRecord=value['LoadRunningRecord'],OriginalRunningStatus=value['LoadRunningStatus'])
+        for key,replacement in [('AcceptedGameTurns',True),('GenuineActionsSent',0),('InputQualified',False),('ShutdownAttempts',2),('LogicalLifecycleVerified',False),('RelayExecutionClosed',False),('RpcHelperClosure',{}),('Terminals',{}),('DaemonSettlement',{}),('StoppedRecord',{}),('ShutdownReceipt',{}),('CleanupFailure','failed')]:
+            changed=copy.deepcopy(value);changed[key]=replacement
+            with self.subTest(key=key):self.assertFalse(evidence.relay_phase_cleanup_proved(changed))
+    def test_package_route_module_hash_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);ship=root/'runtime';ship.mkdir();(ship/'client').write_bytes(b'client')
+            (root/'relay').mkdir();(root/'relay'/'source').write_bytes(b'relay')
+            driver=root/'driver.py';driver.write_bytes(b'driver')
+            manifest=dict(RuntimePins=evidence.relay_inventory(ship),RelayPins=evidence.relay_inventory(root/'relay'),DriverSHA256=evidence.sha(driver.read_bytes()),
+                EvidenceModuleSHA256=evidence.sha(Path(evidence.__file__).read_bytes()),ConsoleRouteModuleSHA256=evidence.sha(Path(evidence.__file__).with_name('mortal_console_routes.py').read_bytes()))
+            package=root/'relay-phase-package.json';package.write_text(json.dumps(manifest))
+            self.assertEqual(manifest,evidence.relay_package_preflight(root,ship,driver)[0])
+            manifest['ConsoleRouteModuleSHA256']='0'*64;package.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError,'console route module pin'):evidence.relay_package_preflight(root,ship,driver)
+
+if __name__=='__main__':
+    suite=unittest.defaultTestLoader.loadTestsFromTestCase(LoadEvidenceTests)
+    expected_count=18
+    if suite.countTestCases()!=expected_count:raise SystemExit('Unexpected Load test count')
+    result=unittest.TextTestRunner(verbosity=2).run(suite)
+    ok=result.testsRun==expected_count and result.wasSuccessful() and not result.skipped
+    print(json.dumps({'Suite':'relay-load-evidence','Expected':expected_count,'Executed':result.testsRun,'Failures':len(result.failures),'Errors':len(result.errors),'Skipped':len(result.skipped),'Success':ok}))
+    raise SystemExit(0 if ok else 1)
+
