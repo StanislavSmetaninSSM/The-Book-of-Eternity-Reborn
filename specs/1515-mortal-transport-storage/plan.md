@@ -3250,3 +3250,15 @@ Changed shared consumers also require gm-relay-phase-contract and the fixed
 mortal-restored-diagnostic-data regression. Independent SOURCE review must assess
 this bounded selection and actual-wire assertions before build/GREEN. No runtime
 contract changed, so no GM prompt/example change is required by this helper fix.
+Independent Astra High SOURCE review found three Important blockers before GREEN:
+missing Core namespace import in the strict IO fixture; manifest control compared
+only after DTO default/unknown-field reconstruction; explicit false original
+presence not checked against the physical captured member. Correct raw control
+correspondence and physical absence with targeted contradiction controls, retaining
+no fallback or new framework. The review otherwise accepts append-first proof,
+production complete schedule reuse, actual serialized-wire design and all outcome
+consumers. Five proposed categories are appropriately bounded; Mortal phase38 is
+separate cheap evidence, not supplied by the general relay category. No build or
+native work authorized until focused correction review. No Critical finding or
+production gameplay change; prior cheap100 passes remain evidence of their scope,
+not a waiver of these newly identified gaps.
