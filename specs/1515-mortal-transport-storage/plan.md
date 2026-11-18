@@ -2510,3 +2510,15 @@ before integration, not run a broad suite. An initially suspected musings nested
 lease issue was WITHDRAWN: valid Mortal coexistence was not demonstrated and
 that command is afterlife-only. Membership parsing reuse is useful but no speedup
 is claimed; qualify actual All-route source reads before acceptance.
+T022 review-correction early WIP19 source files: BOM-aware decode retains raw
+hashes; private success-site issuance sentinel and single-use capture; completed
+comparison now runs through the existing PendingSnapshot invocation's borrowed
+physical owner and authenticated lookup DATA rather than standalone All reads.
+Browser rejection/default-equivalence, source-count, topology and combined repair
+controls are drafted. All remain UNCOMPILED/UNRUN. Known remaining correction:
+bind expected map/index bytes immediately after actual normalization before later
+awaited validators/fences, then require exact match at completion, so the private
+sentinel cannot bless later drift. Source-count control also needs actual All
+measurement beyond None and CrossReferences|NpcStateFiles. Preserve this coherent
+WIP before completing those changes; category ownership and exact counts will be
+updated before discovery. No additional native run or successful acceptance.

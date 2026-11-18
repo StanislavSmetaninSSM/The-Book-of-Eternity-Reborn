@@ -12,6 +12,27 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Actual browser originals; the manual reservation is an independent equal-work control.</summary>
 public sealed class BrowserGameStateReadReservationTests(ITestOutputHelper output)
 {
+    [Fact]
+    public async Task CompletedLocationComparisonCannotEnterActualBrowserOriginal()
+    {
+        var published = await MortalLivingWorldPublicationTests.PublishLocationComparisonFixtureAsync();
+        await using var publishedContext = published.Context;
+        await using var fixture = await Fixture.CreateAsync();
+        await fixture.WithOriginalAsync(async manifest =>
+        {
+            var validator = new ValidationService(fixture.Files, NullLogger<ValidationService>.Instance);
+            using var snapshot = validator.UsePrevalidatedPendingTurnSnapshotScope(manifest);
+            var selection = new GameStateValidationSelection(GameStateValidationPhase.CrossReferences);
+            var before = await validator.ValidateGameStateAsync(selection);
+            var refusal = Assert.Throws<InvalidOperationException>(() =>
+            { _ = validator.ValidateCompletedLocationStateAsync(published.Result, selection); });
+            Assert.Equal("Completed location comparison is ordinary state validation only.", refusal.Message);
+            var after = await validator.ValidateGameStateAsync(selection);
+            Assert.Equal(before.Select(issue => (issue.Code, issue.FilePath, issue.Message)),
+                after.Select(issue => (issue.Code, issue.FilePath, issue.Message)));
+        });
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

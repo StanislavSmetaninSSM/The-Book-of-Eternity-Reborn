@@ -1508,6 +1508,11 @@ public partial class CanonicalStateNormalizer
 
 internal static class AcceptedTurnCanonicalStateRefresh
 {
+    private static readonly object LocationPublicationIssuer = new();
+
+    /// <summary>Authenticates the private successful-publication callsite; never exposes an issuer.</summary>
+    internal static bool IsLocationPublicationIssuer(object candidate) => ReferenceEquals(candidate, LocationPublicationIssuer);
+
     /// <summary>
     /// Reports canonical refresh diagnostics and the completed publication's detached handoffs.
     /// </summary>
@@ -1972,7 +1977,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
                     await boundNormalizer.RequireNpcCompletionSourceCurrentAsync();
                 var locationComparison = issues.Any(issue => issue.Severity == IssueSeverity.Error) || locationCapture is null
-                    ? null : await locationCapture.CompleteAsync(fs, writeLease);
+                    ? null : await locationCapture.CompleteAsync(fs, writeLease, LocationPublicationIssuer);
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation, locationComparison);

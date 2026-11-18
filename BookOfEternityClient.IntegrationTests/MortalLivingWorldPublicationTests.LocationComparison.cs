@@ -23,7 +23,7 @@ public sealed partial class MortalLivingWorldPublicationTests
     }
 
     /// <summary>Publishes once through the actual ordinary owner; no synthetic completion issuer.</summary>
-    private static async Task<(EffectMaterializationTestContext Context, AcceptedTurnCanonicalStateRefresh.Result Result,
+    internal static async Task<(EffectMaterializationTestContext Context, AcceptedTurnCanonicalStateRefresh.Result Result,
         IReadOnlyDictionary<string, string> Backups, byte[]? OriginalMap)> PublishLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null)
     {
         var context = await EffectMaterializationTestContext.CreateAsync(hooks);

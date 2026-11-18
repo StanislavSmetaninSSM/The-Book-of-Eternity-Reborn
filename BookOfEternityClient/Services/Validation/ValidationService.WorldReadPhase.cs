@@ -107,11 +107,11 @@ public partial class ValidationService
             Exception? failure = null;
             try
             {
-                await completedLocation.RequireCurrentAsync(_fs, lease);
-                invocation.LocationIds = completedLocation.CopyIds();
-                var issues = await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof);
-                await completedLocation.RequireCurrentAsync(_fs, lease);
-                return issues;
+                // Reuse the existing borrowed pending-original read owner and its per-invocation
+                // source evidence, rather than making every original lookup authenticate again.
+                return await RunPendingSnapshotValidationCoreAsync(
+                    () => ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof),
+                    () => _fs.BeginBorrowedPendingSnapshotValidationRead(lease), invocation, completedLocation);
             }
             catch (Exception caught) { failure = caught; throw; }
             finally

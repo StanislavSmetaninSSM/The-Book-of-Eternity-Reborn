@@ -13,7 +13,18 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task CombinedMortalBirth_RealTurnPreservesHistoricalActorAndPublishesOnlyAdmittedCandidate(bool unresolvedEffect)
+    public Task CombinedMortalBirth_RealTurnPreservesHistoricalActorAndPublishesOnlyAdmittedCandidate(bool unresolvedEffect)
+        => RunCombinedMortalBirthAsync(unresolvedEffect, null);
+
+    [Theory]
+    [InlineData("two-nonlocation")]
+    [InlineData("map-drift")]
+    [InlineData("index-drift")]
+    public Task CombinedMortalBirth_CompletedPublicationRechecksEveryRepair(string repairMode)
+        => RunCombinedMortalBirthAsync(false, repairMode);
+
+    /// <summary>Runs the same full ordinary candidate, optionally correcting only journal/output DATA after publication.</summary>
+    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string currentPath = "game_state/world/current_location.json";
@@ -29,6 +40,57 @@ public sealed partial class GameEngineTurnLifecycleTests
         TurnRequest? dispatched = null;
         string? snapshot = null;
         var calls = 0;
+        var repairs = 0;
+        string? handledRepair = null;
+        byte[]? publishedMap = null, publishedIndex = null;
+        Exception? repairFailure = null;
+        const string repairPath = "game_state/control/validation_repair_request.json";
+        var repairInput = repairMode is null ? null : new LivingWorldRepairInput(() => _fs.FileExists(repairPath), () =>
+        {
+            var rawRepair = File.ReadAllText(_fs.ResolvePath(repairPath));
+            if (rawRepair == handledRepair) return;
+            handledRepair = rawRepair;
+            try
+            {
+                Assert.InRange(++repairs, 1, repairMode == "two-nonlocation" ? 2 : 1);
+                var request = JsonNode.Parse(rawRepair)!;
+                Assert.Equal(dispatched!.RequestId, request["requestId"]!.GetValue<string>());
+                Assert.Equal(dispatched.SessionId, request["sessionId"]!.GetValue<string>());
+                Assert.Equal(42, request["turnNumber"]!.GetValue<int>());
+                Assert.Contains(request["errors"]!.AsArray(), issue =>
+                    issue!["code"]?.GetValue<string>() == "actor_thought_journal_not_first_person");
+                byte[] Bytes(string path) => File.ReadAllBytes(_fs.ResolvePath(path));
+                var mapNow = Bytes(mapPath);
+                var indexNow = Bytes(MortalLocationIdentityState.StatePath);
+                var acceptedCurrent = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(currentPath)))!;
+                Assert.NotNull(acceptedCurrent["materializationReceipt"]);
+                Assert.StartsWith("loc_", acceptedCurrent["locationId"]!.GetValue<string>());
+                Assert.False(JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(mapPath)))!.AsObject().ContainsKey("worldMapUpdates"));
+                if (publishedMap is null) { publishedMap = mapNow; publishedIndex = indexNow; }
+                else { Assert.Equal(publishedMap, mapNow); Assert.Equal(publishedIndex, indexNow); }
+                // This is a genuine canonical mutation under a fresh ordinary lease. It
+                // must fail if a validation read reservation leaked across the repair wait.
+                var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+                try
+                {
+                    var journals = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(journalsPath)))!;
+                    var journal = journals["NPCJournals"]!.AsArray().Last()!["journalEntries"]!.AsArray().Last()!;
+                    journal["description"] = repairMode == "two-nonlocation" && repairs == 1
+                        ? "The visitor still waits beside the chest."
+                        : "I heard the visitor ask permission before touching our supplies.";
+                    _fs.WriteFileAtomicAsync(lease, journalsPath, journals.ToJsonString()).GetAwaiter().GetResult();
+                }
+                finally { lease.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+                if (repairMode != "two-nonlocation")
+                    File.AppendAllText(_fs.ResolvePath(repairMode == "map-drift" ? mapPath : MortalLocationIdentityState.StatePath), "\n ");
+                foreach (var output in new[] { "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" })
+                    File.WriteAllBytes(_fs.ResolvePath(output), Bytes(output));
+                File.WriteAllText(_fs.ResolvePath("game_state/control/validation_repair_ready.json"),
+                    new JsonObject { ["sessionId"] = dispatched.SessionId, ["requestId"] = dispatched.RequestId,
+                        ["turnNumber"] = 42, ["updatedAtUtc"] = DateTime.UtcNow.ToString("O"), ["status"] = "success" }.ToJsonString());
+            }
+            catch (Exception error) { repairFailure = error; throw; }
+        });
         GameEngineTestRuntime? runtime = null;
         runtime = await CreateMortalLivingWorldJourneyAsync(async request =>
         {
@@ -109,7 +171,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 ["npcId"] = actorRef, ["npcName"] = "Council supply steward", ["lastJournalNote"] = "I explained council ownership without granting access.",
                 ["journalEntries"] = new JsonArray(new JsonObject { ["entryId"] = "steward_inspection_42", ["timestamp"] = DateTime.UtcNow.ToString("O"),
-                    ["event"] = "Supply inspection", ["description"] = "I heard the visitor ask permission before touching our supplies.", ["emotionalImpact"] = "cautious trust", ["relationshipChange"] = "0" })
+                    ["event"] = "Supply inspection", ["description"] = repairMode is null ? "I heard the visitor ask permission before touching our supplies." : "The visitor asked permission before touching the supplies.", ["emotionalImpact"] = "cautious trust", ["relationshipChange"] = "0" })
             });
             await _fs.WriteFileAtomicAsync(journalsPath, journals.ToJsonString());
             var time = await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath);
@@ -142,7 +204,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 - Actions: Show the cart and locked chest; no item movement or access grant.
                 - State changes: Only NPCJournals[].journalEntries[] receives my first observation; no relationship, skill or activity change.
                 """);
-        }, SeedMortalLivingWorldJourneyActorsAsync);
+        }, SeedMortalLivingWorldJourneyActorsAsync, repairInput);
         // Ordinary rollback restores the image before staging, not the scheduler image
         // signed later at TerminalWaitStarted. Keep that exact byte expectation separately.
         var preStagingSchedule = await _fs.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
@@ -177,8 +239,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             .Select(line => JsonNode.Parse(line)!)
             .Where(record => record["kind"]?.GetValue<string>() == "boe-game-loop-fixture-rejection" &&
                              record["nonce"]?.GetValue<string>() == nonce).ToArray();
-        if (unresolvedEffect)
+        Assert.Null(repairFailure);
+        if (repairMode is not null) Assert.Equal(repairMode == "two-nonlocation" ? 2 : 1, repairs);
+        if (unresolvedEffect || repairMode is "map-drift" or "index-drift")
         {
+            if (unresolvedEffect)
+            {
             var refusal = Assert.Single(refusalRecords);
             Assert.Equal("protected-materialization", refusal["stage"]!.GetValue<string>());
             Assert.True(refusal["flags"]!["effect"]!.GetValue<bool>());
@@ -186,6 +252,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Contains(refusal["errors"]!.AsArray(), issue =>
                 issue!["code"]?.GetValue<string>() == "effect_source_authority_invalid_owner_identity" &&
                 issue["filePath"]?.GetValue<string>() == currentPath + ".activeEffectDefinitions");
+            }
+            else Assert.Contains("mortal_location_completed_comparison_refused", _journeyLogger.Describe());
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
             foreach (var pair in before)
             {
@@ -207,6 +275,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(runtime.GameLoop.TurnNumber == 42, _journeyLogger.Describe());
         var current = await ReadCombinedJsonAsync(currentPath);
         var mapAfter = await ReadCombinedJsonAsync(mapPath);
+        if (repairMode == "two-nonlocation")
+        {
+            Assert.Equal(publishedMap, await _fs.ReadFileBytesAsync(mapPath));
+            Assert.Equal(publishedIndex, await _fs.ReadFileBytesAsync(MortalLocationIdentityState.StatePath));
+        }
         var locationId = current["locationId"]!.GetValue<string>();
         var location = Assert.Single(mapAfter["locations"]!.AsArray(), row => row!["locationId"]?.GetValue<string>() == locationId)!;
         Assert.Equal(42, location["materializationReceipt"]!["sourceTurn"]!.GetValue<int>());

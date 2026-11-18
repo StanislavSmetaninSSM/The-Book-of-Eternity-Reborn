@@ -73,18 +73,25 @@ public partial class ValidationService
     /// Ordered issues after proof and close, preserving the primary failure when either fails.
     /// </returns>
     private async Task<List<ValidationIssue>> RunPendingSnapshotValidationCoreAsync(
-        Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead)
+        Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead,
+        WorldValidationInvocation? existingAdmission = null, CompletedLocationComparison? completedLocation = null)
     {
         ArgumentNullException.ThrowIfNull(validate);
         _pendingSnapshotInvocation.Value?.RequireCurrent();
-        var admitted = new WorldValidationInvocation(false, false, pendingReserved: true);
+        var admitted = existingAdmission ?? new WorldValidationInvocation(false, false, pendingReserved: true);
         var invocation = new PendingSnapshotValidationInvocation(this, admitted);
         lock (_worldReadGate)
         {
-            if (_worldReservation != null || _worldValidationCalls != 0 || _worldOverrideMutations != 0 ||
-                _pendingSnapshotReservation != null || _prevalidatedPendingTurnSnapshotOverride != null || _sameTurnOwnerInputs != null)
+            var completedAdmission = existingAdmission is not null && completedLocation is not null &&
+                existingAdmission.CompletedLocationReserved && !existingAdmission.Closed &&
+                ReferenceEquals(_worldReservation, existingAdmission) &&
+                ReferenceEquals(_worldValidationInvocation.Value, existingAdmission) && _worldValidationCalls == 1;
+            if ((!completedAdmission && (_worldReservation != null || _worldValidationCalls != 0 ||
+                    _prevalidatedPendingTurnSnapshotOverride != null)) || _worldOverrideMutations != 0 ||
+                _pendingSnapshotReservation != null || _sameTurnOwnerInputs != null ||
+                (existingAdmission is not null && !completedAdmission))
                 throw new InvalidOperationException("Pending snapshot validation conflicts with another validator consumer.");
-            _worldValidationCalls++;
+            if (existingAdmission is null) _worldValidationCalls++;
             _worldReservation = admitted;
             _pendingSnapshotReservation = invocation;
         }
@@ -102,10 +109,17 @@ public partial class ValidationService
             invocation.Evidence = CapturePendingSnapshotEvidence(invocation.Physical);
             invocation.Active = true;
             invocation.RequireCurrent();
+            if (completedLocation is not null)
+            {
+                await completedLocation.RequireCurrentAsync(_fs, invocation.Physical.Lease!);
+                admitted.LocationIds = completedLocation.CopyIds();
+            }
             issues = await validate();
             await CompareCompletedTreatmentItemsAsync(invocation, issues);
             invocation.RequireCurrent();
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
+            if (completedLocation is not null)
+                await completedLocation.RequireCurrentAsync(_fs, invocation.Physical.Lease!);
             invocation.RequireCurrent();
         }
         catch (Exception error) { primary = error; }
@@ -113,6 +127,7 @@ public partial class ValidationService
         {
             invocation.Closed = true;
             invocation.Active = false;
+            admitted.LocationIds = null;
             try { if (invocation.Physical != null) await invocation.Physical.DisposeAsync(); }
             catch (Exception close)
             {
@@ -123,7 +138,7 @@ public partial class ValidationService
             {
                 lock (_worldReadGate)
                     if (ReferenceEquals(_pendingSnapshotReservation, invocation)) _pendingSnapshotReservation = null;
-                ReleaseWorldValidation(admitted);
+                if (existingAdmission is null) ReleaseWorldValidation(admitted);
                 _pendingSnapshotInvocation.Value = previous;
                 _worldValidationInvocation.Value = previousWorld;
             }

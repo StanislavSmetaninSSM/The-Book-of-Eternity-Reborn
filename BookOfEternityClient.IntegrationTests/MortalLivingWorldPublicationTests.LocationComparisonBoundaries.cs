@@ -7,6 +7,24 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalLivingWorldPublicationTests
 {
+    [Fact]
+    public async Task CompletedLocation_CaptureCannotMintOrResealEditedStateWithoutPublicationIssuer()
+    {
+        var fixture = await PublishLocationComparisonFixtureAsync();
+        await using var context = fixture.Context;
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var capture = await ValidationService.CaptureLocationComparisonAsync(context.FileSystem, lease);
+        Assert.NotNull(capture);
+        var mapPath = context.FileSystem.ResolvePath(MortalLocationMaterializationContract.WorldMapPath);
+        File.AppendAllText(mapPath, "\n ");
+        for (var i = 0; i < 2; i++)
+        {
+            var refusal = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                capture!.CompleteAsync(context.FileSystem, lease, new object()));
+            Assert.Equal("Only successful ordinary publication can issue location comparison.", refusal.Message);
+        }
+    }
+
     [Theory]
     [InlineData("request")]
     [InlineData("map")]
@@ -43,7 +61,7 @@ public sealed partial class MortalLivingWorldPublicationTests
         await using var context = fixture.Context;
         await using var foreign = await EffectMaterializationTestContext.CreateAsync();
         var selection = new GameStateValidationSelection(GameStateValidationPhase.CrossReferences);
-        await Assert.ThrowsAsync<InvalidDataException>(() => foreign.Validator.ValidateCompletedLocationStateAsync(fixture.Result, selection));
+        await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(() => foreign.Validator.ValidateCompletedLocationStateAsync(fixture.Result, selection));
         await Assert.ThrowsAsync<InvalidDataException>(() => context.Validator.ValidateCompletedLocationStateAsync(
             new AcceptedTurnCanonicalStateRefresh.Result([], null), selection));
     }
@@ -132,11 +150,36 @@ public sealed partial class MortalLivingWorldPublicationTests
         await using var context = fixture.Context;
         current = context; armed = true;
         // No consumer reads: the two live-map reads belong to opening/closing evidence.
-        var error = await Assert.ThrowsAsync<InvalidDataException>(() => context.Validator.ValidateCompletedLocationStateAsync(
+        var error = await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(() => context.Validator.ValidateCompletedLocationStateAsync(
             fixture.Result, new GameStateValidationSelection(GameStateValidationPhase.None)));
         armed = false;
         Assert.Equal(2, reads);
         Assert.Equal("Completed location published image changed.", error.Message);
+    }
+
+    [Fact]
+    public async Task CompletedLocation_ExistingPendingEvidenceAvoidsPerConsumerOriginalAuthentication()
+    {
+        var armed = false;
+        var manifestReads = 0;
+        var hooks = new FileSystemManagerHooks { BeforeCanonicalReadOpenAsync = path =>
+        {
+            if (armed && path == LiveTurnPreparationService.PendingTurnSnapshotManifestPath) manifestReads++;
+            return Task.CompletedTask;
+        } };
+        var fixture = await PublishLocationComparisonFixtureAsync(hooks);
+        await using var context = fixture.Context;
+        armed = true;
+        await context.Validator.ValidateCompletedLocationStateAsync(fixture.Result,
+            new GameStateValidationSelection(GameStateValidationPhase.None));
+        var proofReads = manifestReads;
+        Assert.True(proofReads > 0);
+        manifestReads = 0;
+        var issues = await context.Validator.ValidateCompletedLocationStateAsync(fixture.Result,
+            new GameStateValidationSelection(GameStateValidationPhase.CrossReferences | GameStateValidationPhase.NpcStateFiles));
+        armed = false;
+        Assert.Equal(proofReads, manifestReads);
+        Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
     }
 
     /// <summary>Injected close failure for the actual lease, not a fabricated owner.</summary>

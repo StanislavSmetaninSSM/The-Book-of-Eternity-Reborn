@@ -294,11 +294,32 @@ public partial class GameEngine
 #endif
             {
                 using var rawStateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.GameState");
-                issues = completedLocation is not null && !_fs.HasBrowserOriginalOperation
-                    ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)
-                    : source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
-                    ? await _validator.ValidatePostMaterializedGameStateAsync()
-                    : await _validator.ValidateGameStateAsync();
+                try
+                {
+                    issues = completedLocation is not null && !_fs.HasBrowserOriginalOperation
+                        ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)
+                        : source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
+                        ? await _validator.ValidatePostMaterializedGameStateAsync()
+                        : await _validator.ValidateGameStateAsync();
+                }
+                catch (ValidationService.CompletedLocationComparisonRefusedException refused)
+                {
+                    // A repair cannot redefine the already consumed allocation. Close the
+                    // ordinary rollback path instead of validating against a new baseline.
+                    if (beforeTerminalRepairReturn is not null) await beforeTerminalRepairReturn();
+                    if (HasRollbackCapability(rollbackSnapshot))
+                    {
+                        await RestorePreTurnBackup(rollbackSnapshot!);
+                        CleanupBackup(rollbackSnapshot!);
+                    }
+                    await _progressionSchedule.DeleteTransientReportAsync();
+                    _logger.LogError(refused, "mortal_location_completed_comparison_refused");
+                    ShowContractValidationErrors(source, [new ValidationIssue(
+                        MortalLocationMaterializationContract.WorldMapPath, IssueSeverity.Error,
+                        "Published location comparison changed after materialization.",
+                        code: "mortal_location_completed_comparison_refused")]);
+                    return false;
+                }
             }
             if (RequiresAcceptedTurnPayloadValidation(source))
             {

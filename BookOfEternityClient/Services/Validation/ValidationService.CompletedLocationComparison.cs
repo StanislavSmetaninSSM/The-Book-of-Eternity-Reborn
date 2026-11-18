@@ -40,6 +40,9 @@ public partial class ValidationService
         return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings);
     }
 
+    /// <summary>Exact previously published comparison lost its original or published binding; never repair by resealing.</summary>
+    internal sealed class CompletedLocationComparisonRefusedException(string message) : IOException(message);
+
     private static readonly object LocationComparisonKey = new();
     private static readonly string[] LocationOriginalPaths = [MortalLocationMaterializationContract.WorldMapPath,
         MortalLocationIdentityState.StatePath, "game_state/meta/soul_state.json"];
@@ -58,6 +61,7 @@ public partial class ValidationService
         private readonly string _generation;
         private readonly PendingTurnSnapshotReadAuthority _original;
         private readonly IReadOnlyDictionary<string, string> _bindings;
+        private int _completionTaken;
         internal LocationComparisonCapture(object key, FileSystemManager files, string generation,
             PendingTurnSnapshotReadAuthority original, IReadOnlyDictionary<string, string> bindings)
         {
@@ -70,28 +74,32 @@ public partial class ValidationService
         {
             using var fresh = FileSystemManager.SuppressValidationReuse();
             if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, _generation))
-                throw new InvalidDataException("Completed location original owner changed.");
+                throw new CompletedLocationComparisonRefusedException("Completed location original owner changed.");
             var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, LocationOriginalPaths);
             if (!read.Success || read.Snapshot is not { } current || current.SessionId != _original.SessionId ||
                 current.RequestId != _original.RequestId || current.TurnNumber != _original.TurnNumber ||
                 current.SnapshotToken != _original.SnapshotToken || current.Realm != _original.Realm)
-                throw new InvalidDataException("Completed location original binding changed.");
+                throw new CompletedLocationComparisonRefusedException("Completed location original binding changed.");
             foreach (var path in LocationOriginalPaths)
                 if (!current.ReadRequiredBytes(path).AsSpan().SequenceEqual(_original.ReadRequiredBytes(path)))
-                    throw new InvalidDataException("Completed location original bytes changed.");
+                    throw new CompletedLocationComparisonRefusedException("Completed location original bytes changed.");
             foreach (var pair in _bindings)
                 if (LocationHash(await files.ReadFileBytesAsync(lease, pair.Key)) != pair.Value)
-                    throw new InvalidDataException("Completed location request binding changed.");
+                    throw new CompletedLocationComparisonRefusedException("Completed location request binding changed.");
         }
 
         /// <summary>Seals only after the ordinary refresh has validated its actual published image.</summary>
         internal async Task<CompletedLocationComparison> CompleteAsync(FileSystemManager files,
-            FileSystemManager.CanonicalWriteLease lease)
+            FileSystemManager.CanonicalWriteLease lease, object publicationIssuer)
         {
+            if (!AcceptedTurnCanonicalStateRefresh.IsLocationPublicationIssuer(publicationIssuer))
+                throw new InvalidOperationException("Only successful ordinary publication can issue location comparison.");
+            if (Interlocked.Exchange(ref _completionTaken, 1) != 0)
+                throw new InvalidOperationException("Location publication comparison was already completed.");
             await RequireCurrentAsync(files, lease);
             var map = await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath);
             var index = await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath);
-            using var doc = JsonDocument.Parse(map!);
+            using var doc = JsonDocument.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(map!));
             var ids = ReadExactCanonicalWorldMapLocationIds(doc.RootElement).ToHashSet(StringComparer.Ordinal);
             return new CompletedLocationComparison(LocationComparisonKey, this, LocationHash(map), LocationHash(index), ids);
         }
@@ -116,7 +124,7 @@ public partial class ValidationService
             await _original.RequireCurrentAsync(files, lease);
             if (LocationHash(await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath)) != _mapHash ||
                 LocationHash(await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath)) != _indexHash)
-                throw new InvalidDataException("Completed location published image changed.");
+                throw new CompletedLocationComparisonRefusedException("Completed location published image changed.");
         }
         /// <summary>Returns detached membership after fresh opening proof, not an authority token.</summary>
         internal HashSet<string> CopyIds() => new(_ids, StringComparer.Ordinal);

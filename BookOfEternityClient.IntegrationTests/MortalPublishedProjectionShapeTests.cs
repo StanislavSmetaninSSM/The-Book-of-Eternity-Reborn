@@ -51,6 +51,31 @@ public sealed class MortalPublishedProjectionShapeTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public async Task CanonicalProjection_NonemptyTopologyMatchesActualCanonicalProducer(bool corrupt)
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var first = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_topology_a", "First court");
+        var second = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_topology_b", "Second court", x: 1);
+        var map = MortalLocationTestFixture.CreateWorldMap(first, second);
+        map["links"]!.AsArray().Add(MortalLocationTestFixture.CreateCanonicalLink("loc_topology_a", "loc_topology_b"));
+        var current = MortalLocationTestFixture.CreateCurrentProjection(first);
+        MortalLocationAcceptedTurnPlanner.RebuildDerivedCurrentTopology(current, map["locations"]!.AsArray(), map["links"]!.AsArray());
+        Assert.Single(current["knownExits"]!.AsArray());
+        Assert.Single(current["adjacencyMap"]!.AsArray());
+        if (corrupt) current["adjacencyMap"]![0]!["targetLocationId"] = "loc_unpublished_forgery";
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, map);
+        const string path = MortalLocationMaterializationContract.CurrentLocationPath;
+        await context.WriteJsonAsync(path, current);
+        var issues = await context.Validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [path]));
+        var topology = issues.Where(issue => issue.Code == "mortal_location_derived_topology_invalid").ToArray();
+        if (corrupt) Assert.Single(topology);
+        else Assert.Empty(topology);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public async Task FreshSeed_HistoricalActorAlreadyHasIdempotentCanonicalTradeReceiptShape(bool stateOnly)
     {
         var root = Path.Combine(TestDiagnosticPaths.Root, "mortal-seed-receipt-shape", Guid.NewGuid().ToString("N"));
