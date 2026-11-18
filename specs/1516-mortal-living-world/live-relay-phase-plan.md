@@ -251,3 +251,50 @@ Cheap inert checks cover the budget edges, cleanup source ordering, conflicting
 optional story identity, typed tuple/fingerprint negatives and raw snapshot tamper.
 No production state/owner/guard was relaxed and no new retained cache was added.
 Fresh live verification of the corrected observer remains outstanding.
+
+### ml3 interrupted observation: WIP, 2026-11-18
+
+Source checkpoint 9f78941b2cd83374be610fd2d5c3899aa3e5dc3a was used for a fresh
+isolated seed and one actual four-hour scout-wait submission. This is not a
+continuation of failed ml2. Preparation pinned 481 runtime files, 248 evidence
+helper files and eight relay files; no source/runtime build changed during the
+attempt. The new session is seeded_live_mortal_391d601491e141f89b6a0ab113a33b67,
+request 1a708f66a9fc48ed8b57781188feae1c, turn42. The GM read its real prompt and
+published one independently authored response, with no inferred calendar hour,
+no scout completion and no XP claim.
+
+After execution-session recovery, the original command handle was unavailable.
+There is no final probe result and the guardian output is empty. Last retained
+client bytes are at monotonic77.251s; last completed status RPC at78.114s, followed
+by an attempted status at78.136s without a result. This does not establish why
+or exactly when observation/execution stopped. Current command-local process
+visibility cannot prove that the original processes exited.
+
+Independent read-only review verified original request and snapshot/authority
+against queue Witnesses and the single published reply hash. No consumer start,
+executing-response or execution receipt is present. No narrative output, ready
+signal, story42 or living-world receipt is present. Canonical clock and NPC bytes
+still equal the captured baseline; the story remains the seed41 marker with its
+original manifest hash. The original request/snapshot remain pending. Durable
+owner state remains Running without StopEvidence, which is neither liveness nor
+cleanup proof. No shutdown attempt is in the retained journal. Do not replay this
+action, reuse this world, promote the result or delete its evidence.
+
+This checkpoint changes documentation only. Existing 16 unit and two delivery
+checks are not rerun. Stable prepared runtime is retained; no new cache or owner
+reuse is introduced. Independent review has assessed the recorded artifacts;
+actual downstream execution, physical/logical closure and full live qualification
+remain unverified. First establish the original run's state using supported
+bounded status-only diagnostics; do not start another game run on uncertainty.
+
+One supported status-only diagnostic subsequently used the immutable client DLL
+and existing helper with a 10-second RPC bound. It completed in0.595s, helper
+exit0 with stdout/stderr EOF, returning ok=false: Bridge FIFO openat failed
+(errno6), before status dispatch. This proves that this endpoint could not be
+opened for writing with a current reader; it does not prove process death or
+cleanup. No game start, stop, ownership recovery or second submission occurred.
+The original guardian/result channel remains unavailable. The safe next step is
+to restore that original observation channel or obtain explicit orchestration
+termination evidence; no fabricated Stopped record, deletion of locks, forced
+pending cleanup or replay is permitted. The cause remains unknown, not a proven
+product defect or repaired infrastructure failure.
