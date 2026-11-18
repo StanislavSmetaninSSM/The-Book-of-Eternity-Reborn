@@ -276,3 +276,22 @@ Verification costs and exact category IDs will be recorded with actual results.
 Use cheap typed/AST cases and existing harness rather than a whole game for lock
 semantics. Rebuild changed owned outputs once after cheap RED; reuse immutable
 verified output for the actual live path. No broad suite and no speedup claim.
+
+First RED source checkpoint: explicit refusal facade stub plus11 typed cases and
+one actual AST/pwsh singleton case, in new gm-linux-daemon-singleton-data/script
+categories. Source is compile-ready but build/execution has not yet occurred;
+this is not GREEN, concurrency/lifetime qualification or fixed daemon behavior.
+Production daemon remains unchanged at this point.
+
+Source review corrected an important platform assumption: the generic
+PhysicalFileAuthority.EnsureHandleMatchesExpectedPath is a Linux no-op; it cannot
+supply Linux handle identity proof. The implementation must reuse actual existing
+LinuxBridgeFifoNative openat/NOFOLLOW/CLOEXEC directory walk and statx device/inode
+identity primitives, with narrow regular-file exclusive creation/flock support,
+or expose the existing WorkerRunLedgerPersistence equivalent. Reopen and compare
+retained root/parent identities; require a private single-link ordinary guard,
+not mode0700 on all historical runtime directories. Preserve trusted same-UID
+local scope without claiming hostile-owner or power-loss guarantees. Partial
+owner-token write refuses without repair; an error before the first written byte
+may leave the old clean pair intact because no new work began. Strict raw status
+parsing must reject duplicate/case-colliding keys and wrong types before use.

@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-linux-daemon-singleton-data",
+      "responsibility": "#1589 Linux in-process singleton exclusion and fail-closed restart; no canonical authority.",
+      "excludes": "No Windows qualification, live gameplay or distributed filesystem guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxDaemonInstanceGuard.cs",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxDaemonInstanceGuardTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-linux-daemon-singleton-script",
+      "responsibility": "#1589 Linux in-process singleton exclusion and fail-closed restart; no canonical authority.",
+      "excludes": "No Windows qualification, live gameplay or distributed filesystem guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxDaemonInstanceGuard.cs",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxDaemonSingletonScriptTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-evidence-data",
       "responsibility": "Read-only detached production-typed Mortal living-world history and captured snapshot payload correlation; no publication authority.",
       "excludes": "No physical source authentication, domain-effect/story acceptance, live GM execution or ownership admission.",
