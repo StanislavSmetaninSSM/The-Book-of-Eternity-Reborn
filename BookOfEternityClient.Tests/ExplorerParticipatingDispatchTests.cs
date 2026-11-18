@@ -17,7 +17,7 @@ public sealed class ExplorerParticipatingDispatchTests
             Assert.True(ExplorerParticipationFixture.MenuObserved(menu.Console));
             Assert.False(File.Exists(fixture.Files.SessionGenerationPath));
             Assert.Equal(before, fixture.GameInventory());
-        });
+        }, uninitialized: true);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class ExplorerParticipatingDispatchTests
             Assert.False(File.Exists(fixture.Files.SessionGenerationPath));
             Assert.False(File.Exists(fixture.Files.ResolvePath("config.json")));
             Assert.Equal(before, fixture.GameInventory());
-        });
+        }, uninitialized: true);
     }
 
     [Fact]
@@ -100,13 +100,13 @@ public sealed class ExplorerParticipatingDispatchTests
     }
 
     /// <summary>Owns a minimal DATA root and removes it after every bounded component case.</summary>
-    private static async Task WithFixture(Func<ExplorerParticipationFixture, Task> test)
+    private static async Task WithFixture(Func<ExplorerParticipationFixture, Task> test, bool uninitialized = false)
     {
         var root = Path.Combine(TestDiagnosticPaths.Root, "explorer-participation-data", Guid.NewGuid().ToString("N"));
         try
         {
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
-            await test(await ExplorerParticipationFixture.CreateAsync(files));
+            await test(await ExplorerParticipationFixture.CreateAsync(files, uninitialized));
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }
