@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Text.Json;
-using System.Text;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
 
@@ -19,7 +18,6 @@ internal static class MainStopDiagnosticScenarioAssertions
     {
         var lines=output.Split('\n').Where(line=>line.StartsWith(Prefix,StringComparison.Ordinal)).ToArray();
         Require(lines.Length==1,"Missing exactly one first Stop failure diagnostic from the actual RPC boundary.");
-        Require(Encoding.UTF8.GetByteCount(lines[0]+Environment.NewLine)<=32768,"Stop failure diagnostic exceeded its finite output bound.");
         using var parsed=JsonDocument.Parse(lines[0][Prefix.Length..]);
         var report=parsed.RootElement;
         Require(report.GetProperty("SchemaVersion").GetInt32()==1 && report.GetProperty("Nonce").GetString()==nonce,"Diagnostic version/nonce mismatch.");
@@ -34,15 +32,17 @@ internal static class MainStopDiagnosticScenarioAssertions
 
     internal static void CaptureFailureCannotReplaceRefusal(Exception actualRefusal)
     {
-        var method=typeof(GmSessionRunCoordinator).GetMethod("TryFreezeStopFailureText",BindingFlags.Static|BindingFlags.NonPublic)
-            ?? throw new InvalidOperationException("Bounded failure text capture missing.");
         var originalStack=actualRefusal.StackTrace;var first=actualRefusal.Data[FirstExceptionKey];
-        Exception[] controls=[new GetterFailure(true),new GetterFailure(false),new LargeTextFailure(true),new LargeTextFailure(false)];
-        foreach(var hostile in controls) {
-            var capture=method.Invoke(null,[hostile])!;var type=capture.GetType();
-            Require(!(bool)type.GetProperty("CaptureComplete")!.GetValue(capture)! &&
-                type.GetProperty("CaptureFailure")!.GetValue(capture)!=null &&
-                ReferenceEquals(type.GetProperty("Exception")!.GetValue(capture),hostile),"Virtual getter capture fault was not contained honestly.");
+        foreach(var hostile in new Exception[]{new GetterFailure(true),new GetterFailure(false)}) {
+            var capture=GmSessionRunCoordinator.TryFreezeStopFailureText(hostile);
+            Require(!capture.CaptureComplete && capture.CaptureFailure!=null &&
+                ReferenceEquals(capture.Exception,hostile),"Virtual getter capture fault was not contained honestly.");
+        }
+        foreach(var large in new Exception[]{new LargeTextFailure(true),new LargeTextFailure(false)}) {
+            var capture=GmSessionRunCoordinator.TryFreezeStopFailureText(large);
+            Require(capture.CaptureComplete && capture.CaptureFailure==null &&
+                capture.Message==large.Message && capture.StackText==large.StackTrace &&
+                ReferenceEquals(capture.Exception,large),"Full diagnostic text or original provenance was lost.");
         }
         Require(actualRefusal.StackTrace==originalStack && ReferenceEquals(first,actualRefusal.Data[FirstExceptionKey]),"Text capture fault replaced actual Stop provenance.");
     }
@@ -55,6 +55,7 @@ internal static class MainStopDiagnosticScenarioAssertions
         Require(first.GetProperty("StackText").ValueKind is JsonValueKind.String or JsonValueKind.Null,"First-cause stack absence was hidden.");
         foreach(var entry in new[]{first,current}) {
             var state=entry.GetProperty("State");
+            Require(state.GetProperty("RootExitFault").ValueKind==JsonValueKind.Null,"Healthy original exit task acquired invented fault evidence.");
             Require(state.GetProperty("Pins").GetInt32()==1 && !state.GetProperty("PinDrainCompleted").GetBoolean() &&
                 !state.GetProperty("LifecyclePresent").GetBoolean() && !state.GetProperty("LifecycleActive").GetBoolean() &&
                 state.GetProperty("OwnerClosed").GetBoolean() && !state.GetProperty("OwnerRetired").GetBoolean() &&
@@ -75,6 +76,7 @@ internal static class MainStopDiagnosticScenarioAssertions
     internal static void NonPrimaryRefusalState(JsonElement report,GmSessionRunIdentity identity)
     {
         var state=report.GetProperty("CurrentFailure").GetProperty("State");
+        Require(state.GetProperty("RootExitFault").ValueKind==JsonValueKind.Null,"Live original exit task acquired invented fault evidence.");
         var record=JsonSerializer.Deserialize<GmSessionRunRecord>(state.GetProperty("InMemoryRecord").GetRawText());
         Require(record?.Identity==identity && record.Disposition==GmSessionRunDisposition.Stopping &&
             state.GetProperty("LifecycleActive").GetBoolean() && !state.GetProperty("InputDrainCompleted").GetBoolean() &&

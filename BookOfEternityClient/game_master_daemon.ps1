@@ -64,6 +64,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "Launcher/gm_main_operation.ps1")
+. (Join-Path $PSScriptRoot "Launcher/gm_daemon_instance.ps1")
+$script:LinuxDaemonGuard = $null
+$script:DaemonTerminalSettled = $false
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -155,6 +158,9 @@ $script:DaemonFatalError = $null
 $script:DaemonLastLoopError = $null
 $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
+
+try {
+Start-LinuxGmDaemonInstance
 
 Invoke-GmParticipatingConsumer $GameSessionPath {
     foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
@@ -3790,6 +3796,10 @@ function Write-Log {
     $logLine = "[$timestamp][$Level] $Message"
     Write-Host $logLine -ForegroundColor $Color
     if ($LogFile) {
+        if ($script:LinuxDaemonGuard) {
+            try { $script:LinuxDaemonGuard.Validate() }
+            catch { [Console]::Error.WriteLine($logLine); return }
+        }
         try {
             $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
             if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
@@ -3885,6 +3895,11 @@ function Write-DaemonFatalReport {
         [string]$Phase = "fatal"
     )
 
+    if ($script:LinuxDaemonGuard) {
+        try { $script:LinuxDaemonGuard.Validate() }
+        catch { [Console]::Error.WriteLine('Daemon singleton ownership lost; fatal diagnostic retained on stderr only.'); return }
+    }
+
     $payload = [ordered]@{
         status = "failed"
         pid = $PID
@@ -3939,10 +3954,12 @@ function Write-DaemonStatus {
         $payload.fatalError = New-DaemonErrorPayload -ErrorRecord $FatalError -Phase "fatal"
     }
 
+    if ($script:LinuxDaemonGuard) { Write-LinuxGmDaemonStatus $payload; return }
     [void](Write-DaemonJsonFileBestEffort -Path $DaemonStatusFile -Payload $payload -Depth 8)
 }
 
 function Assert-SingleDaemonInstance {
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate(); return }
     $status = Read-DaemonStatus
     if ($null -ne $status -and $null -ne $status.pid) {
         $pidValue = 0
@@ -5777,6 +5794,7 @@ function Read-QteDaemonEligibility {
 
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
 }
 
@@ -5893,6 +5911,7 @@ function Process-QteEffectResolutionRequestCore {
 
 function Process-Turn {
     param([string]$RequestPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath }
 }
 
@@ -6257,6 +6276,7 @@ function Process-TurnCore {
 
 function Process-RepairRequest {
     param([string]$RepairPath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-RepairRequestCore -RepairPath $RepairPath }
 }
 
@@ -6514,6 +6534,7 @@ function Test-ProtocolRequestUsesDiagnosticOnlyMetadata {
 
 function Process-TerminalProtocolFailureRequest {
     param([string]$FailurePath)
+    if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-TerminalProtocolFailureRequestCore -FailurePath $FailurePath }
 }
 
@@ -6740,8 +6761,39 @@ function Resolve-DaemonTimeoutTerminalConflict {
 # FileSystemWatcher & Main Loop
 # ═══════════════════════════════════════════════
 
+function Stop-GmDaemonWatcherResources {
+    param($Watchers, $Subscriptions, $Signal)
+    $failures = [Collections.Generic.List[string]]::new()
+    foreach ($producer in $Watchers) {
+        if ($null -ne $producer) {
+            try { $producer.EnableRaisingEvents = $false } catch { $failures.Add("disable watcher: $($_.Exception.Message)") }
+        }
+    }
+    foreach ($subscription in $Subscriptions) {
+        try {
+            Get-EventSubscriber -SourceIdentifier $subscription.SourceId -ErrorAction SilentlyContinue |
+                ForEach-Object { Unregister-Event -SubscriptionId $_.SubscriptionId -ErrorAction Stop }
+        } catch { $failures.Add("unregister $($subscription.SourceId): $($_.Exception.Message)") }
+        try { Remove-Job -Job $subscription.Job -Force -ErrorAction Stop }
+        catch { $failures.Add("remove job $($subscription.SourceId): $($_.Exception.Message)") }
+    }
+    foreach ($producer in $Watchers) {
+        if ($null -ne $producer) {
+            try { $producer.Dispose() } catch { $failures.Add("dispose watcher: $($_.Exception.Message)") }
+        }
+    }
+    if ($null -ne $Signal) {
+        try { $Signal.Dispose() } catch { $failures.Add("dispose signal: $($_.Exception.Message)") }
+    }
+    return $failures.ToArray()
+}
+
 Assert-SingleDaemonInstance
 
+$qteEffectResolutionWatcher = $watcher = $repairWatcher = $terminalProtocolFailureWatcher = $null
+$daemonWorkSignal = $null
+$daemonWatcherSubscriptions = [Collections.Generic.List[object]]::new()
+try {
 $qteEffectResolutionWatcher = New-Object System.IO.FileSystemWatcher
 $qteEffectResolutionWatcher.Path = $InputDir
 $qteEffectResolutionWatcher.Filter = "qte_effect_resolution_request.json"
@@ -6770,46 +6822,33 @@ $terminalProtocolFailureWatcher.IncludeSubdirectories = $false
 $terminalProtocolFailureWatcher.NotifyFilter = [System.IO.NotifyFilters]::FileName -bor [System.IO.NotifyFilters]::CreationTime -bor [System.IO.NotifyFilters]::LastWrite
 $terminalProtocolFailureWatcher.EnableRaisingEvents = $true
 
-$qteEffectResolutionAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-QteEffectResolutionRequest -RequestPath $path
-    }
+# Watcher callbacks may interrupt a PowerShell command while the shared
+# participating helper still owns its reply/sequence. Never enter consumers
+# from an event action: startup and the serial polling loop own all work.
+$daemonWorkSignal = [Threading.AutoResetEvent]::new($false)
+$qteEffectResolutionAction = { [void]$Event.MessageData.Set()
+}
+$action = { [void]$Event.MessageData.Set()
+}
+$repairAction = { [void]$Event.MessageData.Set()
+}
+$terminalProtocolFailureAction = { [void]$Event.MessageData.Set()
 }
 
-$action = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-Turn -RequestPath $path
+    foreach ($registration in @(
+        @($qteEffectResolutionWatcher, $qteEffectResolutionAction),
+        @($watcher, $action),
+        @($repairWatcher, $repairAction),
+        @($terminalProtocolFailureWatcher, $terminalProtocolFailureAction)
+    )) {
+        foreach ($eventName in @('Created', 'Changed')) {
+            $sourceId = 'boe-daemon-' + [guid]::NewGuid().ToString('N')
+            $job = Register-ObjectEvent $registration[0] $eventName -SourceIdentifier $sourceId -MessageData $daemonWorkSignal -Action $registration[1]
+            $daemonWatcherSubscriptions.Add([pscustomobject]@{ SourceId = $sourceId; Job = $job })
+        }
     }
-}
-
-$repairAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-RepairRequest -RepairPath $path
-    }
-}
-
-$terminalProtocolFailureAction = {
-    $path = $Event.SourceEventArgs.FullPath
-    if ($Event.SourceEventArgs.ChangeType -eq "Created" -or $Event.SourceEventArgs.ChangeType -eq "Changed") {
-        Process-TerminalProtocolFailureRequest -FailurePath $path
-    }
-}
-
-Register-ObjectEvent $qteEffectResolutionWatcher "Created" -Action $qteEffectResolutionAction | Out-Null
-Register-ObjectEvent $qteEffectResolutionWatcher "Changed" -Action $qteEffectResolutionAction | Out-Null
-Register-ObjectEvent $watcher "Created" -Action $action | Out-Null
-Register-ObjectEvent $watcher "Changed" -Action $action | Out-Null
-Register-ObjectEvent $repairWatcher "Created" -Action $repairAction | Out-Null
-Register-ObjectEvent $repairWatcher "Changed" -Action $repairAction | Out-Null
-Register-ObjectEvent $terminalProtocolFailureWatcher "Created" -Action $terminalProtocolFailureAction | Out-Null
-Register-ObjectEvent $terminalProtocolFailureWatcher "Changed" -Action $terminalProtocolFailureAction | Out-Null
 
 Write-Log "Watching: $InputDir" -Color DarkGray
-
-try {
     if (-not $CliWindowTitle -and -not ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal'))) {
         Write-Host ""
         Write-Host "  +-------------------------------------------------+" -ForegroundColor Yellow
@@ -6847,8 +6886,12 @@ try {
     # Main loop
     $statusTimer = 0
     while ($true) {
+        if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
         try {
             Start-Sleep -Milliseconds $PollingInterval
+            # Coalesce hints without reducing the existing polling delay.
+            # Event delivery is not a latency guarantee; polling also sees missed hints.
+            [void]$daemonWorkSignal.WaitOne(0)
             Update-DaemonHeartbeat
 
             if ((Test-Path $QteEffectResolutionRequestFile) -and !$script:IsProcessing) {
@@ -6874,6 +6917,7 @@ try {
             }
         }
         catch {
+            Write-GmOperationDiagnostic 'daemon-main-loop-original-failure' $_
             $script:ErrorCount++
             $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
             Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red
@@ -6889,20 +6933,34 @@ catch {
     Write-DaemonFatalReport -ErrorRecord $_ -Phase "fatal"
 }
 finally {
-    $qteEffectResolutionWatcher.EnableRaisingEvents = $false
-    $qteEffectResolutionWatcher.Dispose()
-    $watcher.EnableRaisingEvents = $false
-    $watcher.Dispose()
-    $repairWatcher.EnableRaisingEvents = $false
-    $repairWatcher.Dispose()
-    $terminalProtocolFailureWatcher.EnableRaisingEvents = $false
-    $terminalProtocolFailureWatcher.Dispose()
+    $script:DaemonWatcherCleanupFailures = @(Stop-GmDaemonWatcherResources -Watchers @(
+        $qteEffectResolutionWatcher, $watcher, $repairWatcher, $terminalProtocolFailureWatcher
+    ) -Subscriptions $daemonWatcherSubscriptions -Signal $daemonWorkSignal)
+    foreach ($cleanupFailure in $script:DaemonWatcherCleanupFailures) {
+        [Console]::Error.WriteLine("Daemon watcher cleanup failure: $cleanupFailure")
+    }
+    if ($script:DaemonWatcherCleanupFailures.Count -gt 0 -and $null -eq $script:DaemonFatalError) {
+        # Cleanup is not confirmed. Preserve an earlier fatal cause if present;
+        # otherwise publish the retained cleanup failures instead of clean stopped.
+        $script:ErrorCount++
+        $cleanupException = [IO.IOException]::new(($script:DaemonWatcherCleanupFailures -join '; '))
+        $script:DaemonFatalError = [Management.Automation.ErrorRecord]::new(
+            $cleanupException, 'DaemonWatcherCleanupFailed', [Management.Automation.ErrorCategory]::CloseError, $null)
+    }
     if ($null -ne $script:DaemonFatalError) {
         Write-DaemonStatus -Status "failed" -FatalError $script:DaemonFatalError
     }
     else {
+        $script:DaemonTerminalSettled = $true
         Write-DaemonStatus -Status "stopped"
     }
     Write-Host ""
-    Write-Log "Daemon stopped. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
+    $shutdownLabel = if ($null -ne $script:DaemonFatalError) { 'failed' } else { 'stopped' }
+    Write-Log "Daemon $shutdownLabel. Turns: $($script:TurnCount), Errors: $($script:ErrorCount)" -Level "SHUTDOWN" -Color Yellow
+}
+
+} finally {
+    if ($script:LinuxDaemonGuard) {
+        try { $script:LinuxDaemonGuard.Dispose() } finally { $script:LinuxDaemonGuard = $null }
+    }
 }

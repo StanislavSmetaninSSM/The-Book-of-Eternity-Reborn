@@ -2,10 +2,50 @@
 # no canonical file handles. The original C# operation is the sole writer.
 $global:BoeMainOperationCodeRoot = Split-Path $PSScriptRoot -Parent
 
+# Diagnostics are stderr-only observations, not authority or a reconnect mechanism.
+$script:BoeOperationDiagnosticNonce=$env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE
+function Write-GmOperationDiagnostic {
+    param([string]$Stage,$ErrorRecord=$null,$Context=$null)
+    try {
+        $nonce=$script:BoeOperationDiagnosticNonce;$parsed=[guid]::Empty
+        if(-not [guid]::TryParseExact($nonce,'N',[ref]$parsed) -or $nonce -cne $env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE){return}
+        $data=[ordered]@{nonce=$nonce;stage=$Stage;processId=$PID;observedAtUtc=[DateTime]::UtcNow.ToString('O');consistency='Non-atomic observations of original caller context'}
+        if($null -ne $Context){
+            foreach($name in @('originalClose','terminalClose','sequence','lastAction','closed','lost','closeObserved','exitCode','diagnostic','cancellationCleanupFailures','cancellationReadCleanup')){
+                if($null -ne $Context.PSObject.Properties[$name]){$data[$name]=$Context.$name}
+            }
+        }
+        if($null -ne $ErrorRecord){
+            $data.exception=$ErrorRecord.Exception.ToString();$data.scriptStackTrace=$ErrorRecord.ScriptStackTrace
+            foreach($key in @('OriginalOperationClose','OriginalOperationCloseObserved','OriginalOperationTransportLost','EstablishedOperationOutcome')){
+                if($ErrorRecord.Exception.Data.Contains($key)){$data[$key]=$ErrorRecord.Exception.Data[$key]}
+            }
+        }
+        [Console]::Error.WriteLine('BOE_MAIN_OPERATION_PS '+($data|ConvertTo-Json -Depth 20 -Compress))
+    }catch { } # A diagnostic failure never replaces the original ErrorRecord.
+}
+function Get-GmOperationFailureKind {
+    param([string]$Raw)
+    $found=@()
+    foreach($line in ($Raw -split '\r?\n')) {
+        if($line -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+; (original-connection|local-admission|read-record|read-endpoint); (Validate|AcquireAsync|EnsureMainBeforeRecovery|Read|ReadBounded|unspecified))\)\.\s*$'){$found += $Matches[1]}
+    }
+    if($found.Count -eq 1){return $found[0]}
+    return 'Unspecified'
+}
+
 function Read-GmOperationReply {
     param($Context)
     $read = $Context.process.StandardOutput.ReadLineAsync(); $Context.pendingRead=$read
-    if (-not $read.Wait(10000)) { $Context.lost = $true; throw 'Original operation reply unavailable; no replay.' }
+    if (-not $read.Wait(10000)) {
+        $Context.lost = $true
+        # Optional observation metadata must never replace the transport failure.
+        try {
+            if($Context.sequence -eq 0 -and $Context.PSObject.Properties['lastAction'] -and $Context.lastAction -ceq 'helper-ready'){
+                $Context | Add-Member -NotePropertyName readyTimedOut -NotePropertyValue $true -Force -ErrorAction Stop
+            }
+        } catch { }
+        Write-GmOperationDiagnostic 'reply-timeout' $null $Context; throw 'Original operation reply unavailable; no replay.' }
     $line = $read.Result
     if ($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
     return ($line | ConvertFrom-Json -ErrorAction Stop)
@@ -25,18 +65,23 @@ function Open-GmParticipatingOperation {
     $start.RedirectStandardInput = $true; $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
     foreach ($arg in @($assembly,'--gm-main-operation','--root',$root)) { [void]$start.ArgumentList.Add($arg) }
     $process = [Diagnostics.Process]::Start($start)
-    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null; lastCommandReply=$null; publicationUncertain=$false; uncertainCommandReply=$null; localScopeCompleted=$false }
+    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; lastAction='helper-ready'; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null; lastCommandReply=$null; publicationUncertain=$false; uncertainCommandReply=$null; localScopeCompleted=$false }
     try {
         $ready = Read-GmOperationReply $context
         if (-not $ready.ok -or $ready.state -cne 'active' -or $ready.sequence -ne 0) { throw 'Participating admission refused.' }
         $context.originalClose=$ready.originalClose
         return $context
     } catch {
-        Dispose-GmOperationTransport $context
+        $originalOpenFailure=$_
+        Write-GmOperationDiagnostic 'helper-open-failure-before-dispose' $originalOpenFailure $context
+        if($context.PSObject.Properties['readyTimedOut'] -and $context.readyTimedOut){Stop-GmTimedOutReadiness $context}
+        if($context.PSObject.Properties['readinessCleanupClock']){
+            try {Dispose-GmOperationTransport $context}catch {Write-GmOperationDiagnostic 'readiness-cancel-dispose-failure' $_ $context}
+        }else {Dispose-GmOperationTransport $context}
         $code=$context.exitCode
         $diagnostic=$context.diagnostic
-        $kind='Unspecified'
-        if ($diagnostic -match '^Original participating operation refused or continuation unconfirmed \(([A-Za-z0-9]+; (original-connection|local-admission|read-record|read-endpoint); (Validate|AcquireAsync|EnsureMainBeforeRecovery|Read|ReadBounded|unspecified))\)\.\s*$') { $kind=$Matches[1] }
+        Write-GmOperationDiagnostic 'helper-open-completion-after-dispose' $originalOpenFailure $context
+        $kind=Get-GmOperationFailureKind $diagnostic
         throw "Original participating admission unavailable (helper exit $code, $kind)."
     }
 }
@@ -45,6 +90,8 @@ function Send-GmOperationCommand {
     param($Context,[hashtable]$Command)
     if ($Context.closed -or $Context.lost) { throw 'Original operation is closed or lost; no reconnect.' }
     if ($Context.publicationUncertain -and $Command.action -cne 'close') { throw 'Original command publication is uncertain; later mutation refused before admission.' }
+    # Shared callers may omit or reject this optional diagnostic slot.
+    try { $Context.lastAction=$Command.action } catch { }
     $nextSequence = $Context.sequence + 1
     $Command.sequence = $nextSequence
     $frame = $Command | ConvertTo-Json -Depth 8 -Compress
@@ -63,6 +110,17 @@ function Send-GmOperationCommand {
         if(-not $Context.uncertainCommandReply){$Context.uncertainCommandReply=$reply}
     }
     if($Command.action -ceq 'close') {
+        Set-GmOperationCloseReceipt $Context $reply
+    }
+    if (-not $reply.ok) {
+        if($reply.daemonReadRefused -eq $true){throw (New-GmDaemonReadFailure 'Original admitted daemon read refused.' $null)}
+        throw 'Participating canonical mutation or original close refused.'
+    }
+    return $reply
+}
+
+function Set-GmOperationCloseReceipt {
+    param($Context,$reply)
         # Only the original C# closing boundary supplies this attempted close.
         # The active originalClose remains the retained grant used by Stop.
         if($reply.completionKind -ceq 'local') {
@@ -87,12 +145,119 @@ function Send-GmOperationCommand {
             $Context.closeOutcome=[int]$close.outcome
             $Context.closeObserved=$reply.closeObserved
         }
+}
+
+function Wait-GmReadinessCleanupTask {
+    param($Context,$Task,[switch]$FinalJoin)
+    # One total 10s cancellation+teardown budget; reserve 1s for owned joins.
+    $limit=10000
+    if(-not $FinalJoin){$limit=9000}
+    if($FinalJoin -and $Task.IsCompleted){return $Task.GetAwaiter().GetResult()}
+    $remaining=$limit-[int]$Context.readinessCleanupClock.ElapsedMilliseconds
+    if($remaining -le 0 -or -not $Task.Wait($remaining)){throw 'Original readiness cancellation cleanup deadline expired.'}
+    $Task.GetAwaiter().GetResult()
+}
+
+function Stop-GmTimedOutReadiness {
+    param($Context)
+    # Cleanup only: never clear lost, install a usable context, or replay an action.
+    $Context | Add-Member -NotePropertyName readinessCleanupClock -NotePropertyValue ([Diagnostics.Stopwatch]::StartNew()) -Force
+    if(-not $Context.lost -or $Context.sequence -ne 0 -or $Context.lastAction -cne 'helper-ready' -or
+        $null -eq $Context.pendingRead -or $Context.pendingRead.IsFaulted -or $Context.pendingRead.IsCanceled){return}
+    try {
+        $Context.sequence=1L;$Context.lastAction='readiness-cancel'
+        $frame=@{sequence=1L;action='close';outcome=2}|ConvertTo-Json -Compress
+        $null=Wait-GmReadinessCleanupTask $Context ($Context.process.StandardInput.WriteLineAsync($frame))
+        $null=Wait-GmReadinessCleanupTask $Context ($Context.process.StandardInput.FlushAsync())
+        Write-GmOperationDiagnostic 'readiness-cancel-sent' $null $Context
+        # Consume the original ready reader exactly once. No second read while pending.
+        $line=Wait-GmReadinessCleanupTask $Context $Context.pendingRead
+        if($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536){throw 'Original late ready unavailable.'}
+        $ready=$line|ConvertFrom-Json -ErrorAction Stop
+        if($ready.ok -isnot [bool] -or -not $ready.ok -or $ready.state -cne 'active' -or ($ready.sequence -isnot [long] -and $ready.sequence -isnot [int]) -or $ready.sequence -ne 0 -or
+            $null -eq $ready.PSObject.Properties['originalClose']){throw 'Original late ready refused.'}
+        $projection=$ready.originalClose
+        if($null -ne $projection){
+            foreach($name in @('pinId','closeId','operationId')){
+                $parsed=[guid]::Empty
+                if(-not [guid]::TryParseExact($projection.$name,'N',[ref]$parsed)){throw 'Original late ready pin invalid.'}
+            }
+            foreach($name in @('rootKey','runId','generationId','hostInstanceId','bootId')){
+                if($projection.identity.$name -isnot [string] -or [string]::IsNullOrWhiteSpace($projection.identity.$name)){throw 'Original late ready owner invalid.'}
+            }
+            foreach($name in @('runId','generationId','hostInstanceId')){
+                $parsed=[guid]::Empty
+                if(-not [guid]::TryParseExact($projection.identity.$name,'N',[ref]$parsed)){throw 'Original late ready owner token invalid.'}
+            }
+            foreach($name in @('epoch','backend')){if($projection.identity.$name -isnot [long] -and $projection.identity.$name -isnot [int]){throw 'Original late ready owner incomplete.'}}
+            if($projection.identity.epoch -lt 1 -or $projection.closingFailed -isnot [bool] -or $projection.closingFailed -or
+                ($projection.outcome -isnot [int] -and $projection.outcome -isnot [long]) -or $projection.outcome -ne 0){throw 'Original late ready projection invalid.'}
+        }
+        $Context.originalClose=$projection
+        $Context.pendingRead=$Context.process.StandardOutput.ReadLineAsync()
+        $line=Wait-GmReadinessCleanupTask $Context $Context.pendingRead
+        if($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536){throw 'Original cancellation receipt unavailable.'}
+        $reply=$line|ConvertFrom-Json -ErrorAction Stop
+        if(($reply.sequence -isnot [long] -and $reply.sequence -isnot [int]) -or $reply.sequence -ne 1 -or $reply.ok -isnot [bool] -or -not $reply.ok -or $reply.state -cne 'closed-observed' -or
+            $reply.continuationFailed -isnot [bool] -or $reply.continuationFailed -or
+            ($reply.effectiveOutcome -isnot [int] -and $reply.effectiveOutcome -isnot [long]) -or $reply.effectiveOutcome -ne 2){throw 'Original cancellation receipt refused.'}
+        if($null -ne $projection){
+            if(($reply.terminalClose.outcome -isnot [int] -and $reply.terminalClose.outcome -isnot [long]) -or
+                $reply.completionKind -cne 'original-main' -or $reply.closeObserved -isnot [bool] -or -not $reply.closeObserved -or
+                $null -eq $reply.terminalClose -or $reply.terminalClose.outcome -ne 2 -or $reply.terminalClose.closingFailed -ne $false){throw 'Original cancellation close unconfirmed.'}
+        }elseif($reply.completionKind -cne 'local'){throw 'Local cancellation scope changed.'}
+        if($null -ne $projection){
+            foreach($name in @('epoch','backend')){
+                if($reply.terminalClose.identity.$name -isnot [long] -and $reply.terminalClose.identity.$name -isnot [int]){throw 'Original cancellation owner numeric type invalid.'}
+            }
+        }
+        Set-GmOperationCloseReceipt $Context $reply
+        if(-not ($Context.closeObserved -or $Context.localScopeCompleted)){throw 'Original cancellation has no observed settlement.'}
+        $Context.closed=$true
+        Write-GmOperationDiagnostic 'readiness-cancel-observed' $null $Context
+    }catch {Write-GmOperationDiagnostic 'readiness-cancel-unconfirmed' $_ $Context}
+}
+
+function Dispose-GmReadinessCancellationTransport {
+    param($Context)
+    $Context.disposed=$true
+    $errors=@()
+    try {
+        $null=Wait-GmReadinessCleanupTask $Context ($Context.process.StandardInput.DisposeAsync().AsTask()) -FinalJoin
+        Write-GmOperationDiagnostic 'helper-stdin-closed' $null $Context
+    }catch {$errors += $_.Exception.ToString()}
+    $exit=$Context.process.WaitForExitAsync()
+    try {$null=Wait-GmReadinessCleanupTask $Context $exit}catch {
+        $errors += $_.Exception.ToString()
+        try {if(-not $Context.process.HasExited){Write-GmOperationDiagnostic 'helper-before-kill' $null $Context;$Context.process.Kill()}}catch {$errors += $_.Exception.ToString()}
     }
-    if (-not $reply.ok) {
-        if($reply.daemonReadRefused -eq $true){throw (New-GmDaemonReadFailure 'Original admitted daemon read refused.' $null)}
-        throw 'Participating canonical mutation or original close refused.'
+    foreach($task in @($exit,$Context.pendingRead,$Context.errorRead)){
+        if($null -ne $task){try {$null=Wait-GmReadinessCleanupTask $Context $task -FinalJoin}catch {$errors += $_.Exception.ToString()}}
     }
-    return $reply
+    $code=$null;$raw=$null
+    if($exit.IsCompletedSuccessfully){$code=$Context.process.ExitCode}
+    if($Context.errorRead.IsCompletedSuccessfully){$raw=$Context.errorRead.GetAwaiter().GetResult()}
+    $Context | Add-Member -NotePropertyName exitCode -NotePropertyValue $code -Force
+    $Context | Add-Member -NotePropertyName diagnostic -NotePropertyValue $raw -Force
+    # Process.Dispose does not own the redirected readers already handed to us.
+    # Dispose only settled readers; never race an unfinished asynchronous read.
+    $stdoutDisposed=$false;$stderrDisposed=$false
+    if($null -eq $Context.pendingRead -or $Context.pendingRead.IsCompleted){
+        try {$Context.process.StandardOutput.Dispose();$stdoutDisposed=$true}catch {$errors += $_.Exception.ToString()}
+    }
+    if($Context.errorRead.IsCompleted){
+        try {$Context.process.StandardError.Dispose();$stderrDisposed=$true}catch {$errors += $_.Exception.ToString()}
+    }
+    $Context | Add-Member -NotePropertyName cancellationReadCleanup -NotePropertyValue @{
+        stdoutReadSettled=($null -eq $Context.pendingRead -or $Context.pendingRead.IsCompleted)
+        stderrReadSettled=$Context.errorRead.IsCompleted
+        stdoutDisposed=$stdoutDisposed;stderrDisposed=$stderrDisposed
+        exitObserved=$exit.IsCompletedSuccessfully
+    } -Force
+    try {$Context.process.Dispose()}catch {$errors += $_.Exception.ToString()}
+    $Context | Add-Member -NotePropertyName cancellationCleanupFailures -NotePropertyValue $errors -Force
+    if($errors.Count -gt 0){Write-GmOperationDiagnostic 'readiness-cancel-cleanup-incomplete' $null $Context}
+    # Incomplete joins remain explicitly unconfirmed; no unbounded reader join.
 }
 
 function Close-GmParticipatingOperation {
@@ -110,9 +275,10 @@ function Close-GmParticipatingOperation {
 function Dispose-GmOperationTransport {
     param($Context)
     if($Context.disposed){return}
+    if($Context.PSObject.Properties['readinessCleanupClock']){Dispose-GmReadinessCancellationTransport $Context;return}
     $Context.disposed=$true
-    try {$Context.process.StandardInput.Dispose()}catch{}
-    if (-not $Context.process.WaitForExit(4000)) { $Context.process.Kill(); $Context.process.WaitForExit() }
+    try {$Context.process.StandardInput.Dispose(); Write-GmOperationDiagnostic 'helper-stdin-closed' $null $Context}catch{}
+    if (-not $Context.process.WaitForExit(4000)) { Write-GmOperationDiagnostic 'helper-before-kill' $null $Context; $Context.process.Kill(); $Context.process.WaitForExit() }
     # Join actual stdout/stderr tasks before disposing the owned helper process.
     if($Context.pendingRead){try {[void]$Context.pendingRead.GetAwaiter().GetResult()}catch{}}
     $Context | Add-Member -NotePropertyName exitCode -NotePropertyValue $Context.process.ExitCode -Force
@@ -131,11 +297,12 @@ function Invoke-GmParticipatingConsumer {
     $global:BoeMainOperationContext = $context
     $failure = $null; $result = $null
     try { $result = & $Body }
-    catch { $failure=$_ }
+    catch { $failure=$_; Write-GmOperationDiagnostic 'consumer-body-failure' $failure $context }
     finally {
         try {
             if (-not $context.closed -and -not $context.lost) { Close-GmParticipatingOperation $context $(if($failure){1}else{0}) }
         } catch {
+            Write-GmOperationDiagnostic 'consumer-close-failure' $_ $context
             if (-not $failure) {
                 $message=if($context.closeObserved){'Original operation established a result, but finalization requires follow-up; no replay.'}else{'Original operation established a result but continuation is unconfirmed; no replay.'}
                 $continuation=[IO.IOException]::new($message,$_.Exception)
@@ -183,7 +350,7 @@ function Invoke-GmParticipatingConsumer {
         $failure.Exception.Data['OriginalOperationCloseObserved']=$context.closeObserved
         $failure.Exception.Data['OriginalOperationTransportLost']=$context.lost
     }
-    if ($failure) { throw $failure }
+    if ($failure) { Write-GmOperationDiagnostic 'consumer-original-failure' $failure $context; throw $failure }
     return $result
 }
 

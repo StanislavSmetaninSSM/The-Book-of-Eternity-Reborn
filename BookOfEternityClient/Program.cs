@@ -16,6 +16,13 @@ using BookOfEternityClient.WebUi;
 // 📖 The Book of Eternity: Reborn - C# Client
 // ═══════════════════════════════════════════════════
 
+var bridgeRequestExitCode = await BookOfEternityClient.Services.GmRuntime.GmBridgeRequestControl.TryRunAsync(args);
+if (bridgeRequestExitCode.HasValue)
+{
+    Environment.ExitCode = bridgeRequestExitCode.Value;
+    return;
+}
+
 var helperExitCode = await BookOfEternityClient.Services.GmRuntime.GmTurnHelperControl.TryRunAsync(args);
 if (helperExitCode.HasValue)
 {

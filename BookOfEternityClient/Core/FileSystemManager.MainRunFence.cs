@@ -386,6 +386,7 @@ public partial class FileSystemManager
         internal void Validate(CanonicalWriteLease? lease, IReadPathObservations? readPathPhase = null)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
+            lease?.RetiredWorkerAdmission?.RequireLocalPair(_files, lease);
             if(lease!=null && !ReferenceEquals(lease.WorkerPurpose,_workerPurpose))throw GmSessionRunPersistence.Invalid();
             if(lease?.Purpose==CanonicalWritePurpose.SessionFinalization && !BoundClosing)
                 throw GmSessionRunPersistence.Invalid();
@@ -407,6 +408,7 @@ public partial class FileSystemManager
                 if(lease!=null)
                     using (_files.MeasureOperation("MainAdmission.Validate.GenerationRead"))
                         if(_files.ReadLocalGenerationSnapshotBelowWorkerFence(lease).Binding.Id!=remote.Identity.GenerationId)throw GmSessionRunPersistence.Invalid();
+                lease?.RetiredWorkerAdmission?.RequireLocalPair(_files, lease);
                 return;
             }
             if(_access.Original is { } a)

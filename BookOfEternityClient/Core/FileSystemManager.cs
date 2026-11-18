@@ -410,6 +410,7 @@ public partial class FileSystemManager
         internal CanonicalWritePurpose Purpose { get; }
         internal GmWorkerCanonicalPurpose? WorkerPurpose { get; set; }
         internal IDisposable? WorkerRootPin { get; set; }
+        internal RetiredWorkerRemoteAdmission? RetiredWorkerAdmission { get; set; }
         internal object? ExternalPublicationContext { get; set; }
         internal object? PendingLocalDecision { get; set; }
         internal void EnsureNoPendingLocalDecision()
@@ -489,7 +490,7 @@ public partial class FileSystemManager
             catch (Exception ex) { RetainFailure(ex); }
             try { MainAdmission?.Dispose(); MainAdmission=null; }
             catch (Exception ex) { RetainFailure(ex); }
-            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; }
+            try { WorkerRootPin?.Dispose(); WorkerRootPin = null; RetiredWorkerAdmission = null; }
             catch (Exception ex) { RetainFailure(ex); }
             try { Owner.ReleaseAmbientCanonicalLease(_ambientRegistration); }
             catch (Exception ex) { RetainFailure(ex); }
@@ -1086,9 +1087,28 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
+        await WriteOrdinaryFileAtomicBytesAsync(relativePath, content, observation, deferOriginalContention: false);
+    }
+
+    private async Task<bool> WriteOrdinaryFileAtomicBytesAsync(
+        string relativePath, byte[] content, NarrativeWriteObservation? observation, bool deferOriginalContention)
+    {
         var contextFactory = _hooks?.OrdinaryWriteLeaseCloseContextFactory;
         using var freshHookData = contextFactory is null ? null : SuppressValidationReuse();
-        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        var occurrence = new object();
+        CanonicalWriteLease writeLock;
+        try
+        {
+            writeLock = await AcquireCanonicalWriteLeaseWithAmbientAsync(
+                CanonicalWritePurpose.SessionMutation, default, acquisitionOccurrence: occurrence);
+        }
+        catch (CanonicalLockContention failure) when (deferOriginalContention &&
+            ReferenceEquals(failure.Manager, this) && ReferenceEquals(failure.Occurrence, occurrence))
+        {
+            // CompleteCanonicalWriteLeaseAcquisitionAsync has already unwound admission.
+            // No acquired lease, writer body or release path is reclassified here.
+            return false;
+        }
         IDisposable? hookMutation = null;
         Exception? publicationUncertainty = null;
         try
@@ -1117,6 +1137,7 @@ public partial class FileSystemManager
             finally { hookMutation?.Dispose(); }
         }
         observation?.PublicReturned();
+        return true;
     }
 
     /// <summary>
@@ -4698,7 +4719,7 @@ public partial class FileSystemManager
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null, object? acquisitionOccurrence = null)
     {
         var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);
         var registration = new AmbientCanonicalLeaseRegistration(
@@ -4707,21 +4728,21 @@ public partial class FileSystemManager
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
             purpose,
-            cancellationToken, workerPurpose, mainAdmission);
+            cancellationToken, workerPurpose, mainAdmission, acquisitionOccurrence ?? new object());
     }
 
     private async Task<CanonicalWriteLease>
         CompleteCanonicalWriteLeaseAcquisitionAsync(
             AmbientCanonicalLeaseRegistration registration,
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission, object acquisitionOccurrence)
     {
         try
         {
             await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
-                cancellationToken, workerPurpose);
+                cancellationToken, workerPurpose, acquisitionOccurrence);
             writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
@@ -4753,7 +4774,7 @@ public partial class FileSystemManager
     /// </returns>
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
-        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
+        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, object acquisitionOccurrence)
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
@@ -4789,6 +4810,11 @@ public partial class FileSystemManager
                     await InvokeRecoveryValidationCallbackAsync(_hooks.CanonicalWriteLockContendedAsync);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
+            }
+            catch (IOException failure) when (IsSupportedConstructorSharingFailure(failure))
+            {
+                parentAuthority.Dispose();
+                throw new CanonicalLockContention(this, acquisitionOccurrence, failure);
             }
             catch
             {
@@ -4830,9 +4856,12 @@ public partial class FileSystemManager
                 }
                 workerPurpose?.ValidateRoot(this);
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
-                workerContext?.ValidateCanonical(this, writeLease);
-                workerContext?.ValidateBeforeRecovery();
-                writeLease.WorkerRootPin = workerContext?.PinCanonical();
+                if (workerContext == null || !writeLease.MainAdmission!.TryBindRetiredWorker(writeLease, workerContext))
+                {
+                    workerContext?.ValidateCanonical(this, writeLease);
+                    workerContext?.ValidateBeforeRecovery();
+                    writeLease.WorkerRootPin = workerContext?.PinCanonical();
+                }
                 if(purpose==CanonicalWritePurpose.SessionFinalization) {
                     // Closing verifies the current generation without replaying
                     // publication recovery or granting mutation authority.
@@ -5082,7 +5111,9 @@ public partial class FileSystemManager
         if (writeLease.WorkerPurpose is { } workerPurpose)
             using (MeasureOperation("Lease.Validate.WorkerPurpose"))
                 workerPurpose.ValidateRoot(this);
-        if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
+        if (writeLease.RetiredWorkerAdmission is { } retired)
+            retired.RequireLocalPair(this, writeLease);
+        else if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
             using (MeasureOperation("Lease.Validate.WorkerContext"))
                 workerContext.ValidateCanonical(this, writeLease);
     }
@@ -5097,7 +5128,13 @@ public partial class FileSystemManager
     internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease, string diagnosticOrigin = "worker-other")
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
+        if (writeLease.RetiredWorkerAdmission is { } retired)
+        {
+            if (writeLease.Purpose == CanonicalWritePurpose.SessionFinalization)
+                throw new InvalidOperationException("Closing finalization cannot perform canonical recovery.");
+            retired.RequireLocalPair(this, writeLease);
+        }
+        else CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
         EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }
 

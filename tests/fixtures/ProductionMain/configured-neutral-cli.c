@@ -9,6 +9,10 @@
 #include <termios.h>
 #include <unistd.h>
 
+#ifndef BOE_NEUTRAL_LIFETIME_SECONDS
+#define BOE_NEUTRAL_LIFETIME_SECONDS 20
+#endif
+
 /* Configured descendant CLI, not the terminal session leader. Fixed inert CLI: input is text, never a shell command/GM/save operation. */
 static volatile sig_atomic_t resized;
 static void winch(int unused) { (void)unused; resized = 1; }
@@ -16,7 +20,7 @@ static void view(const char *draft) { dprintf(1, "\033[2J\033[HNEUTRAL READY\r\n
 int main(int argc, char **argv) {
     bool driver_refusal = argc == 2 && !strcmp(argv[1], "--driver-refusal-fixture");
     bool denial_emitted = false;
-    alarm(driver_refusal ? 90 : 20);
+    alarm(driver_refusal ? 90 : BOE_NEUTRAL_LIFETIME_SECONDS);
     if (!isatty(0) || !isatty(1) || !isatty(2) || tcgetsid(0) != getsid(0) || tcgetpgrp(0) != getpgrp()) return 78;
     char cwd[4096]; if (!getcwd(cwd, sizeof cwd)) return 94;
     dprintf(1, "CONFIGURED_CWD:%s\r\n", cwd);

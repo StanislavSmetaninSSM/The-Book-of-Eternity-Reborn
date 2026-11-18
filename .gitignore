@@ -64,3 +64,6 @@
 !/specs/1553-portable-local-storage/recovery/evidence/opencode-q1/**
 !/specs/1553-portable-local-storage/recovery/journal-fresh-cloud-20261011/performance-current-c5-baseline/chain/gc-bd38c05c2df3/**
 !/specs/1553-portable-local-storage/recovery/fixtures/**
+
+/tests/fixtures/GmBridgeFifoPeerHost/bin/
+/tests/fixtures/GmBridgeFifoPeerHost/obj/

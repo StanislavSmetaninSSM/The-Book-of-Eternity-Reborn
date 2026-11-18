@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Services.GmRuntime;
 
@@ -28,10 +27,18 @@ internal sealed partial class BridgeHost
         try {
             var report=GmSessionRunCoordinator.GetStopFailureReport(failure);
             if(report==null)return;
+            WriteStopFailureReport(report,Console.Error);
+        } catch { /* A sink/capture fault cannot replace error reply, Stop error or cleanup failure. */ }
+#endif
+    }
+    // Diagnostic DATA export only. The production caller validates nonce/original owner first.
+    internal static void WriteStopFailureReport(GmSessionRunCoordinator.StopFailureReport report,TextWriter sink)
+    {
+#if DEBUG
+        try {
             const string prefix="BOE_MAIN_STOP_FAILURE ";
             var line=prefix+JsonSerializer.Serialize(report);
-            if(Encoding.UTF8.GetByteCount(line+Environment.NewLine)>32768)return;
-            Console.Error.WriteLine(line);
+            sink.WriteLine(line);
         } catch { /* A sink/capture fault cannot replace error reply, Stop error or cleanup failure. */ }
 #endif
     }

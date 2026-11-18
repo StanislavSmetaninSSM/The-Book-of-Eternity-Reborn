@@ -12,6 +12,7 @@ internal sealed partial class BridgeHost
     private TaskCompletionSource _firstStatus = SettledStatus();
     private Task _statusPublisher = Task.CompletedTask;
     private bool _statusSealed = true;
+    private bool _statusActuallyPublished;
     private SemaphoreSlim? _statusSignal;
     private TaskCompletionSource _statusSettlement = SettledStatus();
     private static TaskCompletionSource SettledStatus()
@@ -26,6 +27,7 @@ internal sealed partial class BridgeHost
         {
             if (!_statusPublisher.IsCompleted || _pendingStatus != null) throw new InvalidOperationException("Original status publication remains retained.");
             _statusSealed = false;
+            _statusActuallyPublished = false;
             _firstStatus = new(TaskCreationOptions.RunContinuationsAsynchronously);
             _statusSettlement = new(TaskCreationOptions.RunContinuationsAsynchronously);
             var signal = new SemaphoreSlim(0, 1);
@@ -49,6 +51,7 @@ internal sealed partial class BridgeHost
 
     private async Task PublishOriginalStatusAsync(SemaphoreSlim signal)
     {
+        GmSessionRunCoordinator? originalPublicationOwner=null;
         try
         {
             while (true)
@@ -61,14 +64,37 @@ internal sealed partial class BridgeHost
                     if (_statusSealed) return;
                     if (publication == null) continue;
                 }
+                originalPublicationOwner=publication.Owner;
                 try
                 {
-                await publication.Owner.RunOperationAsync(async () =>
+                bool mayDefer;
+                lock (_sync) mayDefer = _statusActuallyPublished;
+                var published = await publication.Owner.RunOperationAsync(async () =>
                 {
                     if (BeforeStatusPublication != null) await BeforeStatusPublication();
+                    if (mayDefer) return await _neutralFiles!.TryPublishGmBridgeStatusAsync(publication.Bytes);
                     await _neutralFiles!.WriteFileAtomicBytesAsync("game_state/control/gm_bridge_status.json", publication.Bytes);
                     return true;
                 });
+                StatusBackpressureDecision? deferredDecision = null;
+                lock (_sync)
+                {
+                    if (!ReferenceEquals(_mainRun, publication.Owner))
+                        throw new InvalidOperationException("Original status publication owner changed.");
+                    if (published) _statusActuallyPublished = true;
+                    else
+                    {
+                        var decision = DecideStatusBackpressure(_statusActuallyPublished, _statusSealed, _pendingStatus != null);
+                        if (decision == StatusBackpressureDecision.Refuse)
+                            throw new InvalidOperationException("Initial status publication cannot be deferred.");
+                        deferredDecision = decision;
+                        if (decision == StatusBackpressureDecision.RestoreRefused) _pendingStatus = publication;
+                        // No self-signal: best-effort status waits for the next real Queue or Seal.
+                    }
+                }
+                // DATA only, after original operation unwind and outside the bridge lock.
+                publication.Owner.ReportStatusPublicationData(publication.Bytes, published,
+                    mayDefer, deferredDecision?.ToString());
                 }
                 catch (Exception failure) when (_neutralFiles!.IsOriginalBrowserPhaseRefusal(failure))
                 {
@@ -96,11 +122,12 @@ internal sealed partial class BridgeHost
                 _statusSettlement.TrySetException(failure);
                 _firstStatus.TrySetException(failure);
             }
+            originalPublicationOwner?.ReportOperationFailure(failure,"status-publication");
             throw;
         }
     }
 
-    private async Task SealOriginalStatusPublicationAsync()
+    internal async Task SealOriginalStatusPublicationAsync()
     {
         Task actual;
         lock (_sync)

@@ -2,6 +2,623 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-diagnostic-context-compatibility",
+      "responsibility": "#1589 optional observation fields cannot prevent original shared PS close or replace transport timeout across exact main and dedicated helper context shapes.",
+      "excludes": "Inert protocol replies; no real admission, native host, gameplay or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmDiagnosticContextTests.cs",
+        "tests/fixtures/GmDiagnosticContext/check.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDiagnosticContextTests.OptionalDiagnosticContextCannotPreventOriginalProtocol"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-status-initial-and-seal-fifo",
+      "responsibility": "#1589 genuine original publisher first-contention failure and in-flight seal/discard with independent public shutdown.",
+      "excludes": "No game/GM, no automatic deferred delivery guarantee; initial failure preserves logical uncertainty.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/GmBridgeStatusSealScenario.cs",
+        "BookOfEternityClient.Tests/GmBridgeStatusSealTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeStatusSealTests.ActualOriginalPublisherContentionRespectsInitialAndSealBoundaries"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-status-held-lock-provenance-data",
+      "responsibility": "#1589 genuine canonical lock sharing refusal and current-acquisition provenance; bounded RED premise recheck.",
+      "excludes": "No publisher FIFO owner, epoch, eventual delivery or live gameplay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/BridgeStatusContentionTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.RealHeldLockRefusal_IsOriginBoundAndCannotBeReusedAfterAcquisition",
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.RealHeldLock_StatusWriterReturnsNoWriteOnlyAfterOriginalAcquisitionUnwinds"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-status-prewrite-contention-data",
+      "responsibility": "#1589 genuine canonical lock contention origin, current-acquisition refusal boundary, unchanged ordinary write/close failures, and diagnostic snapshot bookkeeping decisions.",
+      "excludes": "No native/game launch, actual Bridge owner/epoch/first-publication or signal/seal race qualification; pure decision cases do not prove publisher lock ordering. No timeout increase or general IO suppression.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BridgeStatusContention.cs",
+        "BookOfEternityGMBridge/BridgeHost.StatusBackpressure.cs",
+        "BookOfEternityClient.Tests/BridgeStatusContentionTests.cs",
+        "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BridgeStatusContentionTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-ready-cancellation-coordination",
+      "responsibility": "#1589 original PowerShell readiness timeout cancellation orchestration: one original stream, retained caller failure, exact receipt and non-ready timeout guard, five inert peer cases.",
+      "excludes": "Inert stdio receipts are not native owner authority or game qualification; canonical status publication is separate.",
+      "changeHints": ["BookOfEternityClient/Launcher/gm_main_operation.ps1"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.ReadyCancellationCoordinationTests.OriginalReadinessCancellationRetainsCallerFailureAndExactReceipt"]}]
+    },
+    {
+      "id": "gm-main-held-ready-fifo",
+      "responsibility": "#1589 combined genuine held canonical lease, actual original readiness cancellation and status deferral: dual-event release, newest snapshot publication and full owned shutdown; not historical game causality.",
+      "excludes": "No game acceptance, timeout changes, retries or authority changes; unproved acquisition ordering fails rather than qualifying a leak.",
+      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.HeldReady.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHeldReadyDiagnosticTests.OriginalCanonicalHoldReleasedByActualHelperStdinClose"]}]
+    },
+    {
+      "id": "gm-main-first-operation-failure-data",
+      "responsibility": "#1589 nonce-bound original operation failure diagnostic DATA: full frozen tuple and text, disabled/stale nonce and capture/sink isolation.",
+      "excludes": "No live fault attribution, operation retry, authority or runtime producer qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MainOperationFailureDiagnosticTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MainOperationFailureDiagnosticTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-nested-heartbeat-fifo",
+      "responsibility": "#1589 original nested participation scope closes before a fresh FIFO main heartbeat on the same owner.",
+      "excludes": "No game turn, materialization acceptance, production first-loss repair or broad relay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmNestedParticipationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmNestedParticipationTests.OriginalNestedScopeClosesBeforeFreshHeartbeat"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-stop-diagnostic-full-text-data",
+      "responsibility": "#1589 complete existing Unicode exception text and failure-report export without diagnostic collection quotas; isolated sink failure.",
+      "excludes": "Diagnostic DATA only. No native/game launch, nonce or owner admission qualification, stop repair, retry or lifecycle authority.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/HostExitFaultCapture.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.StopDiagnostics.cs",
+        "BookOfEternityGMBridge/BridgeHost.StopDiagnostics.cs",
+        "BookOfEternityClient.Tests/StopDiagnosticFullTextTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.StopDiagnosticFullTextTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-stop-diagnostic-fifo-neighbors",
+      "responsibility": "#1589 supported original-stop diagnostic neighbors: actual pin-timeout and non-primary refusal provenance plus three original RPC cancellation/error boundaries.",
+      "excludes": "Legacy hardcoded NamedPipe success fixture is not selected or requalified here; its existing category remains unchanged. Actual FIFO clean stop/restart is covered separately. No lifecycle repair or historical root-cause claim.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainStopDiagnosticScenarioAssertions.cs",
+        "BookOfEternityClient.TestSupport/MainRunPinTimeoutObservation.cs",
+        "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_PinTimeoutPreservesFirstRefusalEvidence",
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_RefusalWithoutPrimaryStopFailureKeepsActualPredicate",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-prepared-stop-load-consumer",
+      "responsibility": "#1589 affected real FIFO Load stop/finish consumer preserves one original stream after stop-fenced prepared-grant revocation.",
+      "excludes": "No archive replacement, game materialization, full Load feature or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.ActualHost_LoadStopAndNoReplacementFinishRetainOneOriginalStream"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-prepared-grant-stop-positive",
+      "responsibility": "#1589 exact FIFO prepared grant then original Stop before Activate: reject activation and preserve clean never-admitted retirement.",
+      "excludes": "No live game, active lost-close relaxation or historical rl3 causality claim.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmPreparedGrantStopTests.PreparedGrant_StopBeforeActivationRefusesEffectsAndRetiresOriginal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-prepared-grant-stop-race",
+      "responsibility": "#1589 exact FIFO prepared grant then original Stop before Activate: reject activation and preserve clean never-admitted retirement.",
+      "excludes": "No live game, active lost-close relaxation or historical rl3 causality claim.",
+      "changeHints": ["BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmPreparedGrantStopTests.*"]}]
+    },
+    {
+      "id": "gm-host-exit-original-fifo-soak",
+      "responsibility": "#1589 observe one real original neutral FIFO owner for 120 seconds, retain full diagnostic samples and require original scoped shutdown and guardian cleanup.",
+      "excludes": "No game/GM acceptance, injected fault, EINTR retry or historical rl2 root-cause/fix claim; requires observed FIFO capability.",
+      "changeHints": ["BookOfEternityClient.Tests/GmHostExitOriginalSoakTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHostExitOriginalSoakTests.OriginalFifoOwner_ObservedFor120SecondsThenScopedStop"]}]
+    },
+    {
+      "id": "gm-host-exit-fault-diagnostics",
+      "responsibility": "#1589 deterministic original pidfd observation fault retention; unchanged fail-closed classification, IN/HUP completion and held-handle lifetime.",
+      "excludes": "No EINTR retry, historical rl2 cause assertion, live game or native process qualification.",
+      "changeHints": ["BookOfEternityClient.Tests/HostExitObservationDiagnosticTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.HostExitObservationDiagnosticTests.*"]}]
+    },
+    {
+      "id": "vehicle-receipt-validation-scope",
+      "responsibility": "Relay launch prerequisite: existing vehicle receipt validation through public response and full-state APIs accepts unrelated roots while retaining exact canonical receipt checks.",
+      "excludes": "No vehicle materialization expansion, new receipt authority, gameplay or whole-state qualification; unrelated baseline validation issues are outside the receipt predicate.",
+      "changeHints": ["BookOfEternityClient.Tests/VehicleReceiptValidationScopeTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.VehicleReceiptValidationScopeTests.*"]}]
+    },
+    {
+      "id": "gm-relay-phase-contract",
+      "responsibility": "#1589 inert source contracts for the general relay phase continuation, original settlement and immutable evidence gates.",
+      "excludes": "No actual game, daemon shutdown, native ownership or materialization qualification; Python case count is reported separately from the single adapter Fact.",
+      "changeHints": ["BookOfEternityClient.Tests/LinuxRelayPhaseContractTests.cs", "tests/fixtures/ProductionMain/test-relay-phase-contract.py", "tests/fixtures/ProductionMain/live-game-one-turn.py"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxRelayPhaseContractTests.GeneralRelayContinuationAndSettlementSourceContracts"]}]
+    },
+    {
+      "id": "gm-daemon-settlement-observation",
+      "responsibility": "#1589 test-only shared observation of a genuinely held daemon guard preserves original validation, unchanged bytes and contender exclusion before status reading.",
+      "excludes": "No live daemon shutdown, cross-process qualification, gameplay or new publication authority.",
+      "changeHints": ["BookOfEternityClient.Tests/DaemonSettlementObservationTests.cs", "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DaemonSettlement.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.DaemonSettlementObservationTests.SharedReadObservesHeldGuardWithoutReleasingOriginalOwnership"]}]
+    },
+    {
+      "id": "gm-linux-powershell-finally-diagnostics",
+      "responsibility": "#1589 inert actual foreground PowerShell direct/nested cooperative/Ctrl+C finally marker diagnostics, with one shared native guardian preparation.",
+      "excludes": "No gameplay, actual daemon terminal settlement, publication authority, or asserted universal Ctrl+C finally behavior.",
+      "changeHints": ["BookOfEternityClient.Tests/LinuxPowerShellFinallyDiagnosticsTests.cs", "tests/fixtures/PowerShellFinally"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxPowerShellFinallyDiagnosticsTests.OwnedForegroundFinallyMarkers"]}]
+    },
+    {
+      "id": "gm-linux-bridge-contender-restart",
+      "responsibility": "#1589 actual typed same-root bridge contender refusal preserves original owner/status RPC, then confirmed stop permits same-config new-run restart.",
+      "excludes": "No gameplay, legacy PID fallback, Windows qualification or broad launcher redesign.",
+      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeContenderRestartScenario.cs", "BookOfEternityClient.Tests/GmBridgeContenderRestartTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmBridgeContenderRestartTests.SameRootContenderPreservesOriginalAndSameConfigRestart"]}]
+    },
+    {
+      "id": "gm-linux-bridge-restart-dispatch",
+      "responsibility": "#1589 actual Linux PTY launcher AST dispatch with retained reused PID, hidden and redirected foreground refusals.",
+      "excludes": "The external dotnet launch leaf is inert; actual original ownership contention/restart is qualified separately. No Windows runtime claim.",
+      "changeHints": ["BookOfEternityClient/Launcher/bookofeternity.ps1", "BookOfEternityClient.Tests/LinuxBridgeRestartDispatchTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxBridgeRestartDispatchTests.*"]}]
+    },
+    {
+      "id": "gm-worker-quarantine-sticky-audit-data",
+      "responsibility": "#1589 existing canonical audit uncertainty retains the exact NoLaunch authority fault, suppresses later diagnostic callbacks and second append, and retains the slot across two real reaper passes.",
+      "excludes": "No filesystem, main owner, remote grant, process launch or prior-version runtime claim.",
+      "changeHints": ["BookOfEternityClient.Tests/GmWorkerStickyAuditDataTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerStickyAuditDataTests.*"]}]
+    },
+    {
+      "id": "gm-main-worker-cleanup-publication-sticky-linux",
+      "responsibility": "#1589 affected original cleanup neighbors: actual audit publication cut retains the same uncertainty and unchanged evidence, no second append/callback/slot release, on live and separately withdrawn original accesses.",
+      "excludes": "No restoration to force cleanup success, repeated canonical admission after sticky failure, gameplay or prior-version execution claim.",
+      "changeHints": ["BookOfEternityClient.TestSupport/MainWorkerCleanupScenario.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_CanonicalAuditUncertaintyRemainsSticky"]}]
+    },
+    {
+      "id": "gm-retired-worker-registration-data",
+      "responsibility": "#1589 exact retired durable registration DATA predicates; active, uncertainty, replacement and foreign-root refusals. Predicate is not remote admission authority.",
+      "excludes": "No fabricated remote grants, gameplay or live world replay.",
+      "changeHints": ["BookOfEternityClient.Tests/RetiredWorkerRegistrationTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.RetiredWorkerRegistrationTests.*"]}]
+    },
+    {
+      "id": "gm-local-remote-worker-readmission",
+      "responsibility": "#1589 same client local current-session admission retires quiescent worker context, then enters through a real external production main and closes its original remote pin.",
+      "excludes": "No actual Continue UI, gameplay, GM response, worker task execution or live-world replay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.SameClient_LocalMenuAdmissionThenRemoteOwner_ReentersCurrentSession"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-linux-daemon-singleton-data",
+      "responsibility": "#1589 Linux in-process singleton exclusion and fail-closed restart; no canonical authority.",
+      "excludes": "No Windows qualification, live gameplay or distributed filesystem guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxDaemonInstanceGuard.cs",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxDaemonInstanceGuardTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-linux-daemon-singleton-script",
+      "responsibility": "#1589 Linux in-process singleton exclusion and fail-closed restart; no canonical authority.",
+      "excludes": "No Windows qualification, live gameplay or distributed filesystem guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxDaemonInstanceGuard.cs",
+        "BookOfEternityClient/game_master_daemon.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxDaemonSingletonScriptTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-desktop-control",
+      "responsibility": "#1589 Desktop external .NET8 control boundary: strict request envelope, original FIFO request, cancellation/EOF and joined child I/O; Linux executes external branch explicitly.",
+      "excludes": "No actual Windows PowerShell 5.1 runtime qualification or whole Windows daemon support; existing unrelated Desktop incompatibilities remain outside this boundary.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmBridgeRequestControl.cs",
+        "BookOfEternityClient/Launcher/gm_bridge_request_transport.ps1",
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeDesktopControlTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-pipe-name-grammar",
+      "responsibility": "#1589 simple named-pipe grammar preserves valid dotted Windows overrides while rejecting path forms and oversized names.",
+      "excludes": "No Windows named-pipe execution or whole transport/runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/BridgeTransportConnector.cs",
+        "BookOfEternityClient.Tests/GmBridgeFifoTransportTests.Connector.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.SimpleNamedPipeName_PreservesDottedOverridesWithoutPaths",
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.SimpleNamedPipeName_PreservesExistingLengthBound"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-daemon-watcher-serialization",
+      "responsibility": "#1589 daemon watcher serialization source guards: signal-only callbacks, retained startup/poll consumers, heartbeat and turn counting.",
+      "excludes": "Source contracts only; actual event/stdio regression is separately verified through tests/fixtures/GmDaemonWatcher. No live GM acceptance or exact prior stall-cause claim.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "tests/fixtures/GmDaemonWatcher/reentry.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonWatchers_SignalOnlyAndRetainStartupAndPollingConsumers",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonLifecycle_PreservesWatcherAndReportsFatalDiagnostics",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonStatus_RefreshesWhileWaitingForGmTurnResponse",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnCounter_IncrementsOnlyForAcceptedTurnProcessing"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-bridge-fifo-linux",
+      "responsibility": "#1589 real Linux per-peer FIFO bridge transport: duplex bytes, EOF, cancellation and owned cleanup; no game preparation.",
+      "excludes": "Bridge dispatcher/launcher integration, worker PID authentication, Windows, hostile same-UID protection and live GM acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/LinuxBridgeFifoTransport.cs",
+        "BookOfEternityClient.Tests/GmBridgeFifoTransportTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeFifoTransportTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-inherited-terminal-linux",
+      "responsibility": "#1589 actual inherited owner bootstrap, terminal I/O and scoped cleanup; bounded L/A gate cancellation/expiry and actual full-pipe cancellation/nonflushing abort.",
+      "excludes": "Bridge FIFO, live GM/game acceptance, Windows, and positive old Unix-socket qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmInheritedTerminalLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-storage-offscreen-birth-data",
       "responsibility": "#1515 direct noncurrent storage birth: prepared/completed DATA, exact route and repair identities, empty measurement/alternate route refusals, borrowed-catalog read counts and fresh authority checks.",
       "excludes": "No legacy promotion, new transfer engine, spiritual semantics or whole issue acceptance.",
@@ -48500,7 +49117,7 @@
     },
     {
       "id": "gm-main-worker-cleanup-admission-linux",
-      "responsibility": "Seven actual original Linux main/guardian cases with real pool required-audit callback, detached workspace, NoLaunch cleanup owner, reaper and slot: expired/retired Access, exact receipt ACK retry, live metadata and actual publisher uncertainty, plus retained audit debt after pin exhaustion or original retirement.",
+      "responsibility": "Four original Linux main/guardian cleanup controls: expired/retired Access, exact receipt ACK retry and live metadata refusal. Publication uncertainty is separately selected by gm-main-worker-cleanup-publication-sticky-linux.",
       "excludes": "No worker process launched; no Windows Job/ConPTY qualification or whole dispatch/stop proof. Pool private production callback invoked by reflection, not fabricated audit disposition.",
       "changeHints": [
         "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
@@ -48523,7 +49140,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.*"
+            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_DeferredNoLaunchCleanupPreservesExactAuthority"
           ]
         }
       ]

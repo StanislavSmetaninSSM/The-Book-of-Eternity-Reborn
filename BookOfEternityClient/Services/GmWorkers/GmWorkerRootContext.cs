@@ -119,6 +119,19 @@ internal sealed class GmWorkerRootContext
             throw new InvalidOperationException("Worker purpose belongs to another original canonical root.");
     }
 
+    // This predicate is DATA about the retained registration, never a grant.
+    internal bool IsRetired { get { lock (_root.WorkerContextGate) return _disposed; } }
+    internal void RequireRetiredRemoteCandidate(FileSystemManager files)
+    {
+        lock (_root.WorkerContextGate)
+        {
+            RequireCanonicalRoot(files);
+            if (!Durable || !_disposed || Volatile.Read(ref _closed) != 0 ||
+                _clients != 0 || _executions != 0 || _pending.Count != 0 || _cleanupDeferred.Count != 0)
+                throw new InvalidOperationException("Original retired worker registration is not quiescent.");
+        }
+    }
+
     internal void ValidateBeforeRecovery()
     {
         lock (_root.WorkerContextGate)

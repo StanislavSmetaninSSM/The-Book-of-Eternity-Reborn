@@ -79,6 +79,8 @@ internal static class MainWorkerCleanupScenario
         var failures = new List<Exception>();
         var appendCalls = 0;
         var firstCleanup = true;
+        var authority = GmWorkerExecutionAuthority.NoLaunch(task);
+        CoordinatedStatePublicationUncertainException? actualAuditFault = null;
         var reaper = new GmWorkerQuarantineReaper(1, [], runInBackground: false);
         var resume = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         Task? deferred = null;
@@ -86,8 +88,9 @@ internal static class MainWorkerCleanupScenario
         {
             await main.RunOperationAsync(async () =>
             {
+                var originalAccess = GmSessionRunCoordinator.Current ?? throw new InvalidOperationException("Missing original operation access.");
                 workspace = await GmWorkerExecutionWorkspace.CreateAsync(files, task, CancellationToken.None, hooks, runtimeBase);
-                var cleanup = new GmWorkerQuarantinedExecution("original-main/no-launch", GmWorkerExecutionAuthority.NoLaunch(task),
+                var cleanup = new GmWorkerQuarantinedExecution("original-main/no-launch", authority,
                     null, null, workspace, slot, null,
                     _ =>
                     {
@@ -97,7 +100,8 @@ internal static class MainWorkerCleanupScenario
                     async () =>
                     {
                         appendCalls++;
-                        return await (Task<GmWorkerAuditAppendDisposition>)append.Invoke(pool, [generation, auditEvent, null])!;
+                        try { return await (Task<GmWorkerAuditAppendDisposition>)append.Invoke(pool, [generation, auditEvent, null])!; }
+                        catch (CoordinatedStatePublicationUncertainException failure) { actualAuditFault ??= failure; throw; }
                     }, failure => { failures.Add(failure); return Task.CompletedTask; });
                 using var reservation = reaper.TryReserve() ?? throw new InvalidOperationException("Fixture quarantine capacity unavailable.");
                 reservation.Transfer(cleanup);
@@ -114,40 +118,50 @@ internal static class MainWorkerCleanupScenario
                     result["LiveFaultRetainedSlot"] = slot.Disposals == 0 && reaper.EntryCount == 1 && reaper.OwnedCapacity == 1;
                     result["LiveFaultReceiptAbsent"] = !File.Exists(receipt);
                     result["LiveFaultFailure"] = failures.LastOrDefault()?.ToString();
-                    Require(appendCalls == 1 && failures.Count == 2 && slot.Disposals == 0 && reaper.EntryCount == 1 &&
-                        reaper.OwnedCapacity == 1 && !File.Exists(receipt), "Live original storage failure was converted to successful local cleanup.");
                     if (publicationFault)
                     {
-                        Require(publicationCuts == 1 && failures[^1] is CoordinatedStatePublicationUncertainException &&
-                            File.ReadAllBytes(files.ResolvePath(GmWorkerAuditLog.AuditLogPath)).AsSpan().SequenceEqual(unknown) &&
-                            File.ReadAllBytes(journalPath).AsSpan().SequenceEqual(journal), "Actual audit uncertainty/evidence was lost.");
+                        void RequireStickyEvidence()
+                        {
+                            Require(actualAuditFault != null && ReferenceEquals(actualAuditFault, authority.CanonicalPublicationFailure),
+                                "Original required-audit fault identity was lost.");
+                            Require(publicationCuts == 1 && appendCalls == 1 && failures.Count == 1 && slot.Disposals == 0 &&
+                                reaper.EntryCount == 1 && reaper.OwnedCapacity == 1 && !File.Exists(receipt) &&
+                                File.ReadAllBytes(files.ResolvePath(GmWorkerAuditLog.AuditLogPath)).AsSpan().SequenceEqual(unknown) &&
+                                File.ReadAllBytes(journalPath).AsSpan().SequenceEqual(journal),
+                                "Sticky audit uncertainty changed evidence, appended again, or released original debt.");
+                        }
+                        RequireStickyEvidence();
+                        result["ActualAuditUncertainty"] = actualAuditFault!.ToString();
+                        result["FailureCallbackSuppressedAfterLatch"] = true;
+                        await reaper.RunPassAsync(); // same live original, no repeated append
+                        RequireStickyEvidence();
+                        result["LiveStickyPassRetained"] = true;
                         if (debtAfterWithdrawal)
                         {
-                            var established = failures[^1];
                             deferred = Task.Run(async () =>
                             {
                                 await resume.Task;
+                                Exception? withdrawal = null;
+                                try { main.ValidateAccess(originalAccess, finalization: false); }
+                                catch (IOException failure) { withdrawal = failure; }
+                                Require(withdrawal != null && GmSessionRunCoordinator.IsOriginalOperationPinExpired(withdrawal),
+                                    "Original operation access was not actually withdrawn by pin exhaustion.");
+                                result["OriginalAccessWithdrawal"] = withdrawal!.ToString();
                                 await reaper.RunPassAsync();
-                                result["PriorAuditUncertainty"] = established.ToString();
-                                result["PostWithdrawalFailure"] = failures.LastOrDefault()?.ToString();
-                                result["PostWithdrawalOwnerRetained"] = slot.Disposals == 0 && reaper.EntryCount == 1 && reaper.OwnedCapacity == 1;
-                                result["PostWithdrawalReceiptAbsent"] = !File.Exists(receipt);
-                                Require(publicationCuts == 1 && appendCalls == 2 && slot.Disposals == 0 && reaper.EntryCount == 1 &&
-                                    reaper.OwnedCapacity == 1 && !File.Exists(receipt) &&
-                                    File.ReadAllBytes(files.ResolvePath(GmWorkerAuditLog.AuditLogPath)).AsSpan().SequenceEqual(unknown) &&
-                                    File.ReadAllBytes(journalPath).AsSpan().SequenceEqual(journal),
-                                    "Expired/retired main admission erased retained canonical audit debt.");
-                                Require(ReferenceEquals(established, failures[^1]),
-                                    "Original required-audit uncertainty was replaced after main pin withdrawal.");
+                                RequireStickyEvidence();
+                                result["PostWithdrawalSameAuditFault"] = ReferenceEquals(actualAuditFault, authority.CanonicalPublicationFailure);
+                                result["PostWithdrawalOwnerRetained"] = true;
+                                result["PostWithdrawalReceiptAbsent"] = true;
+                                result["PostWithdrawalAppendCalls"] = appendCalls;
                             });
-                            return 0;
                         }
-                        // Fixture restores the recorded known after-image only after
-                        // refusal assertions, allowing original recovery and teardown.
-                        cutEnabled = false;
-                        File.WriteAllBytes(files.ResolvePath(GmWorkerAuditLog.AuditLogPath), published!);
+                        // Never restore canonical bytes or clear sticky authority
+                        // to turn this original uncertainty into cleanup success.
+                        return 0;
                     }
-                    else File.WriteAllBytes(recordPath, originalRecord);
+                    Require(appendCalls == 1 && failures.Count == 2 && slot.Disposals == 0 && reaper.EntryCount == 1 &&
+                        reaper.OwnedCapacity == 1 && !File.Exists(receipt), "Live original storage failure was converted to successful local cleanup.");
+                    File.WriteAllBytes(recordPath, originalRecord);
                     await reaper.RunPassAsync();
                     Require(slot.Disposals == 1 && reaper.EntryCount == 0 && reaper.OwnedCapacity == 0 && !File.Exists(receipt),
                         "Live original retry did not use canonical audit and release once.");

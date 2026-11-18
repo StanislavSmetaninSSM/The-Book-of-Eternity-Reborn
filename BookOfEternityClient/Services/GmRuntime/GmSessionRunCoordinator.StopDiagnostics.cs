@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Services.GmRuntime;
 
@@ -26,11 +27,23 @@ internal sealed partial class GmSessionRunCoordinator
         bool LifecycleActive,bool OwnerUncertain,bool OwnerRetired,bool OwnerClosed,bool MetadataDebt,
         GmSessionRunRecord? InMemoryRecord,bool InputDrainCompleted,string[] RegisteredLoopStatuses,
         string? RootExitStatus,string? AuthorityLostStatus,TerminalStopEvidence? NativeProof,
+        HostExitFaultCapture.Fault? RootExitFault=null,
         string SnapshotConsistency="non-atomic memory observations; native proof only from already-completed original Bridge stop task");
     internal sealed record StopFailureReport(int SchemaVersion,string Nonce,GmSessionRunIdentity OriginalOwnerIdentity,
         StopFailure? FirstFailure,StopFailure CurrentFailure,int DistinctFailureCount,bool CaptureComplete,
         [property:JsonIgnore] GmSessionRunCoordinator Owner,[property:JsonIgnore] Exception FirstException,
         [property:JsonIgnore] Exception CurrentException);
+
+    internal static bool StopCaptureComplete(bool textComplete,StopFailureState? state) =>
+        textComplete && state?.RootExitFault?.CaptureComplete != false;
+
+    internal static (string? Status,HostExitFaultCapture.Fault? Fault) CaptureOriginalRootExit(IOwnedTerminalSession? original)
+    {
+        var task=original?.RootExited; // Read the trusted original task once, outside owner locks.
+        var status=task?.Status;
+        // A pending snapshot must not acquire a later fault and mislabel its provenance.
+        return (status?.ToString(),status==TaskStatus.Faulted ? HostExitFaultCapture.Capture(task) : null);
+    }
 
     private static string? ReadStopDiagnosticNonce()
     {
@@ -46,14 +59,11 @@ internal sealed partial class GmSessionRunCoordinator
         if(_stopDiagnosticNonce!=null)lock(_sync)_stopDiagnosticIdentity??=identity;
 #endif
     }
-    private static string? BoundStopText(string? value,int limit)=>value?.Length>limit?value[..limit]:value;
-    private static FrozenStopText TryFreezeStopFailureText(Exception failure)
+    internal static FrozenStopText TryFreezeStopFailureText(Exception failure)
     {
         try {
             var message=failure.Message;var stack=failure.StackTrace;
-            var overflow=message?.Length>2048 || stack?.Length>4096;
-            return new(failure,failure.GetType().FullName!,BoundStopText(message,2048),BoundStopText(stack,4096),
-                !overflow,overflow?"exception_text_limit_exceeded":null);
+            return new(failure,failure.GetType().FullName!,message,stack,true,null);
         }
         catch(Exception captureFailure) {return new(failure,failure.GetType().FullName!,null,null,false,captureFailure.GetType().FullName);}
     }
@@ -101,7 +111,8 @@ internal sealed partial class GmSessionRunCoordinator
                     .ToDictionary(item=>item.name,item=>item.value);
             }
             var current=new StopFailure(previous?.Stage??stage,previous?.FirstFailedPredicate??predicate,evaluations,
-                text.ExceptionType,text.Message,text.StackText,state,text.CaptureComplete,text.CaptureFailure);
+                text.ExceptionType,text.Message,text.StackText,state,StopCaptureComplete(text.CaptureComplete,state),
+                text.CaptureFailure??state.RootExitFault?.CaptureFailure);
             StopFailure? original;Exception firstException;
             lock(_sync)
             {
@@ -126,10 +137,11 @@ internal sealed partial class GmSessionRunCoordinator
             uncertain=_uncertain;retired=_retired;closed=_closed;debt=_persistence.HasDebt;
             record=_record;original=_terminal;loops=_retirement?.Loops??[];
         }
+        var rootExit=CaptureOriginalRootExit(original);
         // Trusted original adapter/tasks only, not caller-supplied original/proof or an InputDrain callback.
         return new(pins,pinDrain,lifecyclePresent,lifecycleActive,uncertain,retired,closed,debt,record,
             inputDrain?.IsCompleted==true,loops.Select(task=>task.Status.ToString()).ToArray(),
-            original?.RootExited.Status.ToString(),original?.AuthorityLost.Status.ToString(),actualBridgeProof);
+            rootExit.Status,original?.AuthorityLost.Status.ToString(),actualBridgeProof,rootExit.Fault);
     }
 #endif
     internal static StopFailureReport? GetStopFailureReport(Exception failure)

@@ -10,6 +10,40 @@ sessions and tests with a **separately authorized** AI adapter.
 It contains no model client, credentials, network request or provider integration.
 It cannot proxy a forbidden endpoint or qualify arbitrary APIs.
 
+## Current Linux support boundary (#1589)
+
+Use the explicit **NativeLineage** owned-terminal route. In the qualified Linux
+environment the original helper can retain its own incarnation, hold the root
+before release, and transfer the original root pidfd and PTY through inherited
+channels. Required kernel/runtime permissions include pidfd operations and
+`pidfd_getfd`, PTYs and private local FIFO creation. A fresh AF_UNIX construction
+denial (`EPERM` or `EACCES`) may select the inherited/FIFO paths. Later socket
+bind/listen failures do not trigger fallback. Clients use the shipped connector
+and the original endpoint; they do not reconnect to another owner on failure.
+Use a short writable temporary parent: NativeLineage still requires the UTF-8
+`<temp>/boe-native-<run>/owner` path to fit 107 bytes before the transport probe,
+including when inherited/FIFO transport will be selected.
+
+This is a trusted local launch boundary, not authentication against hostile
+same-user/same-process code. Unsupported kernels or security policies must refuse
+launch/transfer without releasing an unverified payload. Do not change security
+settings, borrow an old PID/status, or treat physical cleanup as a successful
+logical stop. SystemdUser/Auto and other unqualified launch environments remain
+unavailable under this support claim.
+
+The #1589 Linux verification includes a real independently reviewed, authored GM
+turn and complete original shutdown through the ordinary launcher. Its precise
+scope and preserved failures are in the
+[inherited-channel/integration record](../../specs/1553-portable-local-storage/linux-inherited-fd-stand.md).
+A previous run accepted its turn but refused logical shutdown; that result is
+preserved as unexplained, not claimed fixed by the later successful run.
+
+The existing Windows ConPTY/named-pipe route is separate: fallback selection is
+Linux-only. #1589 ran no Windows runtime qualification and no positive Linux
+named-pipe run on a socket-capable host. Source preservation review is not a
+replacement for those runtime results. Historical Windows evidence below remains
+scoped to its original qualified revision.
+
 ## Install and configure for a developer test
 
 Copy the **whole folder** to an absolute path, including the fixed PowerShell

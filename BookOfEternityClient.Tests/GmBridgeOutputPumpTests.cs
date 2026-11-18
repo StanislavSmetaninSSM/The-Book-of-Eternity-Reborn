@@ -335,7 +335,13 @@ public sealed class GmBridgeOutputPumpTests
     public void ProductionStartAndDiagnosticsConsumeTheTestedMethods()
     {
         var source = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge", "Program.cs"));
-        Assert.Contains("AttachOwnedTerminal(pty, outputWriter)", source, StringComparison.Ordinal);
+        var linuxStart = source[source.IndexOf("if (!OperatingSystem.IsWindows()) {", source.IndexOf("private async Task StartShellCoreAsync", StringComparison.Ordinal), StringComparison.Ordinal)..source.IndexOf("await StartWindowsShellAsync(expectedGeneration);", StringComparison.Ordinal)];
+        Assert.Contains("LaunchProductionAsync", linuxStart, StringComparison.Ordinal);
+        Assert.Contains("OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());", linuxStart, StringComparison.Ordinal);
+        var windowsStart = File.ReadAllText(Path.Combine(HostFixture.RepoRoot, "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs"));
+        Assert.Contains("LaunchWindowsPreparedAsync", windowsStart, StringComparison.Ordinal);
+        Assert.Contains("var input=AttachOwnedTerminal(session,Console.OpenStandardOutput());", windowsStart, StringComparison.Ordinal);
+        Assert.Contains("AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)=>AttachOwnedTerminalCore(session,output,true)", source, StringComparison.Ordinal);
         Assert.Contains("PumpOutputAsync(session.OutputReader, output, CancellationToken.None)", source, StringComparison.Ordinal);
         var start = source.IndexOf("private BridgeDiagnostics SnapshotDiagnostics()", StringComparison.Ordinal);
         var end = source.IndexOf("private string GetRecentOutputTail()", start, StringComparison.Ordinal);

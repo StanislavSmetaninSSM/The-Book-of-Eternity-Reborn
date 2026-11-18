@@ -23,6 +23,7 @@ internal static class NativeHostScenarioDriver
     /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==3 && args[0]=="local-remote-consumer" && args[2] is "warm" or "fresh") return await GmLocalRemoteConsumerScenario.RunChildAsync(args[1],args[2]=="fresh");
         if (args.Length == 3 && args[0].StartsWith("finite-pipe-", StringComparison.Ordinal))
             return await NativeFinitePipeScenarioDriver.RunAsync(args[0]["finite-pipe-".Length..], args[1], args[2]);
         if (args.Length == 3 && args[0] == "engine-rollback-cold-read")
@@ -81,6 +82,8 @@ internal static class NativeHostScenarioDriver
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-crash-",StringComparison.Ordinal))return await MainRunCrashScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-operation-",StringComparison.Ordinal))return await MainOperationScenarioDriver.RunAsync(args[0],args[1],args[2]);
+        if(args.Length==3 && args[0] is "terminal-main-status-initial-contention" or "terminal-main-status-seal-contention")return await GmBridgeStatusSealScenario.RunAsync(args[0],args[1],args[2]);
+        if(args.Length==3 && args[0] is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready")return await GmBridgeConsumerScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-",StringComparison.Ordinal))return await MainRunFenceScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if (args.Length == 3 && args[0].StartsWith("terminal-", StringComparison.Ordinal))
             return await OwnedTerminalScenarioDriver.RunAsync(args[0], args[1], args[2]);
