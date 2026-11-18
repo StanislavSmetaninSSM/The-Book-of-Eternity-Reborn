@@ -811,3 +811,32 @@ claim is made by this fixture. Complete owned cleanup, two executed cases, zero
 skips/duplicates/timeouts. Prior setup failures and the unavailable /usr/bin/time
 wrapper (no build launched by that wrapper) remain separate historical evidence.
 Minimal production correction and GREEN remain pending at this checkpoint.
+
+
+### T020 targeted GREEN after minimal preservation fix
+
+Fresh integration build:122.14s (wall122.420),176 warnings,zero errors. PlanOnly
+selected exactly two descriptors/11 cases and executed none. The official run
+then passed11/11 in17.0326332s: two partial-update cases and nine neighboring
+project-completion controls, no skip/duplicate/timeout, complete owned cleanup.
+The original omitted-name regression now passes while explicit rename and
+terminal integer/invalid-turn/history controls remain intact. Production helper
+SHA256 `8b31eee5545eba33697a4c1a2ecd8feac78eeb8c0b3dfceb7a5560145be4c511`.
+
+The change omits the ID-name fallback only for an existing exact owner/project
+when both name keys are absent; explicit-name and new-target branches remain
+unchanged. It adds one bounded existing-list lookup, not an authority cache.
+Existing Rule19.F.2 and its changed-fields-only example already describe the
+correct behavior; no GM field/capability or afterlife contract was added.
+
+Fresh immutable native package and live name-preservation verification remain
+pending. Do not patch mm2 runtime or accepted world, or claim its past wrong
+name retroactively fixed. Unused stale Unit outputs must be excluded explicitly
+from the new native manifest, not silently claimed fresh.
+
+Independent T020 outcome review accepted the bounded GREEN. Current source/output
+manifest SHA256:
+`e84f244d40730e8a77bfe400adbe82ebed56b212351382c17df451985d1fda0e`
+contains3,418 source files and20 coherent current outputs; eight unused Unit
+outputs are explicitly excluded/stale. This is not a PDB compiled-document audit.
+Fresh mm3 preparation may proceed; its live outcome remains unqualified.
