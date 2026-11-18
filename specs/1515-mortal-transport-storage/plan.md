@@ -3612,3 +3612,23 @@ Load draws without a final CR. DATA controls cover split padding, incomplete
 newest draws, wrong close counts, trailing erase, and entry-prefix boundaries.
 This checkpoint is source-only and UNRUN; no live world or ownership policy was
 changed, and no renderer width/transition capability is claimed until execution.
+
+T027 execution boundary, 2026-11-18: fresh Unit build passed in 38.56 seconds
+(70 warnings, zero errors). First GREEN stopped at a DATA fixture missing its
+required positive locationId, not a parser defect: general11, routes14 and Load23
+passed; DATA was 19 PASS plus one setup error. The one-field fixture correction
+is saved at 9a2a9027ec3e1a44e4f7c65c3824c4ecfed519cd and independently reviewed.
+All other 3,497 inputs and eight outputs matched, so the corrected run reused
+the fresh build instead of rebuilding unchanged compiler inputs. DATA20 passed.
+The genuine inventory renderer also passed, with exact Back, exit0, EOF, restored
+termios and both complete-footer/no-final-CR assertions. The new two-menu Load
+renderer failed: Spectre actually wrapped the long-location worst-size label,
+placing 99999KB on a second line. The matcher correctly sent no second Down.
+Failure cleanup joined the original child, drained streams and reached guardian
+ECHILD with no emergency or cleanup failures. Official corrected run completed
+2 PASS / 1 FAIL before failfast, 28.2615 seconds. Restored18 and shared smoke4
+remain UNRUN for this revision. No live run or source fix is inferred. External
+evidence is mortal-t027/dispatch-green and dispatch-green-fixture-corrected.
+Investigate the observed display-width boundary before another renderer run;
+prefer a genuinely supported narrow fixture/normal route over relaxing matching
+or changing canonical data. All failed worlds remain untouched.
