@@ -1,4 +1,3 @@
-using System.IO.Pipes;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 
@@ -8,7 +7,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 // is an expectation/refusal condition, never the constructor for a live pin.
 internal sealed class GmMainOperationClient : IAsyncDisposable
 {
-    private readonly NamedPipeClientStream _pipe;
+    private readonly Stream _pipe;
     private readonly MainOperationReader _reader;
     private readonly CancellationTokenSource _reading=new();
     private readonly MainOperationReply _grant;
@@ -19,7 +18,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     internal GmSessionRunIdentity Identity=>_grant.Identity!;
     internal MainOperationClose? TerminalClose {get;private set;}
     internal bool CloseObserved=>_closedReply.Task.IsCompletedSuccessfully;
-    private GmMainOperationClient(NamedPipeClientStream pipe,MainOperationReader reader,MainOperationReply grant){_pipe=pipe;_reader=reader;_grant=grant;}
+    private GmMainOperationClient(Stream pipe,MainOperationReader reader,MainOperationReply grant){_pipe=pipe;_reader=reader;_grant=grant;}
     internal static async Task<GmMainOperationClient> OpenAsync(FileSystemManager files,CancellationToken token,GmSessionRunIdentity? originalExpectation=null)
     {
         GmSessionRunRecord expected;
@@ -33,12 +32,11 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
         try {status=await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json")??throw GmSessionRunPersistence.Invalid();}
         catch(Exception failure){failure.Data["ParticipatingAdmissionPhase"]="read-endpoint";throw;}
         using var doc=JsonDocument.Parse(status);
-        var name=doc.RootElement.GetProperty("pipeName").GetString();
-        if(string.IsNullOrWhiteSpace(name) || name.Length>128)throw GmSessionRunPersistence.Invalid();
-        var pipe=new NamedPipeClientStream(".",name,PipeDirection.InOut,PipeOptions.Asynchronous);
+        var endpoint=BridgeTransportConnector.DecodeStatus(doc.RootElement);
+        Stream? pipe=null;
         try {
             using var bounded=CancellationTokenSource.CreateLinkedTokenSource(token);bounded.CancelAfter(TimeSpan.FromSeconds(3));
-            await pipe.ConnectAsync(bounded.Token);var reader=new MainOperationReader(pipe);var operation=Guid.NewGuid().ToString("N");
+            pipe=await BridgeTransportConnector.ConnectAsync(endpoint,bounded.Token);var reader=new MainOperationReader(pipe);var operation=Guid.NewGuid().ToString("N");
             await MainOperationReader.WriteAsync(pipe,new{command="beginMainOperation",rootKey=files.BasePath,operationId=operation,expectedMainIdentity=originalExpectation??expected.Identity},bounded.Token);
             var grant=await reader.ReadAsync<MainOperationReply>(bounded.Token)??throw GmSessionRunPersistence.Invalid();
             if(!grant.Ok || grant.State!=MainOperationState.PreparedGrant || grant.OperationId!=operation ||
@@ -48,7 +46,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             var active=await reader.ReadAsync<MainOperationReply>(bounded.Token)??throw GmSessionRunPersistence.Invalid();
             if(active!=(grant with{State=MainOperationState.Active}))throw GmSessionRunPersistence.Invalid();
             var client=new GmMainOperationClient(pipe,reader,active);client._readTask=client.ReadRepliesAsync();return client;
-        } catch(Exception failure) {failure.Data["ParticipatingAdmissionPhase"]="original-connection";pipe.Dispose();throw;}
+        } catch(Exception failure) {failure.Data["ParticipatingAdmissionPhase"]="original-connection";pipe?.Dispose();throw;}
     }
     private async Task ReadRepliesAsync()
     {

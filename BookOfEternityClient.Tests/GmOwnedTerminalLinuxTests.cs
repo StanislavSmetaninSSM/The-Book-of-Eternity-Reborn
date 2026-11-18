@@ -32,12 +32,14 @@ public sealed class GmOwnedTerminalLinuxTests
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
+        var consumer = mode is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo";
         var folder = Path.Combine(TestDiagnosticPaths.Root, "native-terminal", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(folder);
         observeOwnFolder?.Invoke(folder);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(root, "scripts/build-linux-supervisor.ps1"),
             "-OutputDirectory", folder, "-IncludeHostGuardian", "-IncludeTerminalFixture" }) build.ArgumentList.Add(arg);
+        if (consumer) { build.ArgumentList.Add("-TerminalFixtureLifetimeSeconds"); build.ArgumentList.Add("25"); }
         using (var compiler = Process.Start(build)!)
         {
             var log = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(compiler, TimeSpan.FromSeconds(40), Path.Combine(folder, "build.log"));
@@ -47,12 +49,12 @@ public sealed class GmOwnedTerminalLinuxTests
         var start = new ProcessStartInfo(foreground?"python3":Path.Combine(folder, "host-guardian")) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
         var arguments=foreground ? new[] {Path.Combine(root,"tests/fixtures/LinuxTerminal/foreground.py"),root,folder,
-            Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(root,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")} : new[] { Path.Combine(folder, "guardian.json"), "15000",
+            Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(root,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll")} : new[] { Path.Combine(folder, "guardian.json"), consumer ? "30000" : "15000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"),
             typeof(NativeHostScenarioDriver).Assembly.Location, mode, folder, folder };
         foreach (var arg in arguments) start.ArgumentList.Add(arg);
         using var guardian = Process.Start(start)!;
-        await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian, TimeSpan.FromSeconds(20), Path.Combine(folder, "guardian.log"));
+        await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian, TimeSpan.FromSeconds(consumer ? 35 : 20), Path.Combine(folder, "guardian.log"));
         using var report = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());
         Assert.Equal(0, report.RootElement.GetProperty("emergencySignals").GetInt32());
@@ -61,6 +63,7 @@ public sealed class GmOwnedTerminalLinuxTests
         Assert.Equal(0, guardian.ExitCode);
         Assert.Equal(0, report.RootElement.GetProperty("driverExitCode").GetInt32());
         using var scenario = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(folder, "scenario.json")));
+        if(mode.StartsWith("terminal-inherited-control-", StringComparison.Ordinal)) { Assert.True(scenario.RootElement.GetProperty("Success").GetBoolean()); return; }
         if(foreground) {
             foreach(var proof in new[]{"Success","TwoActualConsoleInputsOneSession","ActualConsoleResize","CanonicalEofRootAlive","ActualScopedStop","OuterInputModeRestored"})Assert.True(scenario.RootElement.GetProperty(proof).GetBoolean());return;
         }

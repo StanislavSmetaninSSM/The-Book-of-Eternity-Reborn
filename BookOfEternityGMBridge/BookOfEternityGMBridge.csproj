@@ -13,4 +13,8 @@
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BookOfEternityClient.Tests" />
+    <InternalsVisibleTo Include="BookOfEternityClient.TestSupport" />
+  </ItemGroup>
 </Project>

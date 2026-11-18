@@ -12,6 +12,10 @@ internal static partial class OwnedTerminalScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
+        if(mode.StartsWith("terminal-inherited-control-", StringComparison.Ordinal)) return await RunInheritedControlAsync(mode, package, output);
+        if(mode is "production-main-daemon-stop" or "production-main-daemon-coordinated-stop")return await RunTypedIdleDaemonStopAsync(mode,output);
+        if(mode=="production-main-local-remote-consumer")return await GmLocalRemoteConsumerScenario.RunScenarioAsync(output);
+        if(mode=="production-main-contender-restart")return await GmBridgeContenderRestartScenario.RunAsync(output);
         if(mode.StartsWith("production-main-",StringComparison.Ordinal))return await RunBridgeAsync(mode,package,output);
         if (mode is "terminal-fence" or "terminal-bridge" or "terminal-uncertain" or "terminal-authority-loss" or "terminal-partial-start" or "terminal-root-exit-admission") return await RunBridgeAsync(mode, package, output);
         var result = new Dictionary<string, object?>();
@@ -41,6 +45,11 @@ internal static partial class OwnedTerminalScenarioDriver
                     result["HeldRootHasNoHelperChannels"] = !descriptors.Any(d=>d is "0" or "1" or "2");
                     if(descriptors.Any(d=>d is "0" or "1" or "2")) throw new InvalidOperationException("Gated terminal root still inherits helper control/status stdio.");
                 } : null);
+            if (mode == "terminal-inherited") {
+                if (session is not LinuxOwnedTerminalSession { UsesInheritedBootstrap: true })
+                    throw new InvalidOperationException("Inherited bootstrap was not exercised.");
+                result["InheritedBootstrap"] = true;
+            }
             var text = new StringBuilder();
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(6));
             var decoder = Encoding.UTF8.GetDecoder();
@@ -230,10 +239,6 @@ internal static partial class OwnedTerminalScenarioDriver
                     await RunOriginalOwnerHttpReadsAsync(folder,host!,type,Rpc,result);result["Success"]=true;return 0;
                 }
                 await RunReusableRelayAsync(mode,folder,host!,type,Rpc,result);result["Success"]=true;return 0;
-            }
-            if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal)) {
-                await RunIdleDaemonStopAsync(folder,host!,type,Rpc,result,mode=="production-main-daemon-coordinated-stop");
-                result["Success"]=true;return 0;
             }
             if(mode=="production-main-console-pending-availability") {
                 await RunPendingAvailabilityAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);

@@ -12,6 +12,7 @@ internal sealed class LinuxOwnedTerminalSession : IOwnedTerminalSession
     private readonly TaskCompletionSource _retiring=new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly object _gate = new();
     private bool _disposed;
+    internal bool UsesInheritedBootstrap => _owner.UsesInheritedTerminalBootstrap;
     public TerminalIdentity Identity { get; }
     public Stream InputWriter { get; }
     public Stream OutputReader { get; }

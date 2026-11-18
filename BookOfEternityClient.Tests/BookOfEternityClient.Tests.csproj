@@ -28,9 +28,10 @@
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
     <!-- Build the real consumer; output-pump tests load its managed assembly without native startup. -->
     <ProjectReference Include="..\BookOfEternityGMBridge\BookOfEternityGMBridge.csproj"
-                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+                      ReferenceOutputAssembly="true" SkipGetTargetFrameworkProperties="true" />
     <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
     <ProjectReference Include="..\tests\fixtures\PortableStorageCrashHost\PortableStorageCrashHost.csproj" />
+    <ProjectReference Include="..\tests\fixtures\GmBridgeFifoPeerHost\GmBridgeFifoPeerHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -182,6 +182,16 @@ internal sealed partial class BridgeHost : IDisposable
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
     private BridgeStatus _status;
+    private BridgeTransportListener? _bridgeTransport;
+    private volatile bool _controlLoopOwnsTransport;
+    private BridgeTransportListener EnsureBridgeTransport()
+    {
+        lock(_sync) {
+            _bridgeTransport ??= BridgeTransportListener.Create(_pipeName,Path.GetFullPath(Path.GetTempPath()));
+            _status.TransportEndpoint=_bridgeTransport.Endpoint;
+            return _bridgeTransport;
+        }
+    }
 
     public BridgeHost(string sessionPath, string pipeName)
     {
@@ -222,19 +232,30 @@ internal sealed partial class BridgeHost : IDisposable
         UpdateConsoleTitle();
         PrintBanner();
 
-        try { await StartShellAsync(); }
-        catch(StartupObservationUnavailableException ex) { ReportDiagnosticStartupException(ex); /* Pre-Prepared original probe is still owned by this host. */ }
-        catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); /* Original owner retained; keep diagnostics/control alive. */ }
-        catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
-        var serverTask = RunServerLoopAsync(_cts.Token);
+        Task? serverTask=null;
+        Task? preparedFailureWatch=null;
+        var errors=new List<Exception>();
         var controlKeys=!Console.IsInputRedirected;
         var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
-        if(controlKeys)Console.TreatControlCAsInput=true;
-
+        _controlLoopOwnsTransport=true;
         try
         {
+            var transport=EnsureBridgeTransport(); // Freeze coordinates before any child environment is constructed.
+            preparedFailureWatch=ObservePreparedTransportFailureAsync(transport,_cts.Token);
+            try { await StartShellAsync(); }
+            catch(StartupObservationUnavailableException ex) { ReportDiagnosticStartupException(ex); }
+            catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); }
+            catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); }
+            // Queued transport peers cannot reach application dispatch before this startup boundary.
+            serverTask = RunServerLoopAsync(_cts.Token);
+            if(controlKeys)Console.TreatControlCAsInput=true;
             while (!_cts.IsCancellationRequested)
             {
+                if(serverTask.IsCompleted) {
+                    await serverTask;
+                    if(!_cts.IsCancellationRequested)throw new IOException("Bridge listener ended unexpectedly.");
+                    break;
+                }
                 IOwnedTerminalSession? exited;
                 InputLifetime? observedInput;
                 lock (_sync)
@@ -242,27 +263,42 @@ internal sealed partial class BridgeHost : IDisposable
                     exited = _pty?.RootExited.IsCompletedSuccessfully == true ? _pty : null;
                     observedInput = _inputLifetime;
                 }
-                if (exited != null)
-                    await HandlePtyExitedAsync(exited, observedInput);
-
+                if (exited != null) await HandlePtyExitedAsync(exited, observedInput);
                 await RefreshBridgeAutomationStateAsync();
                 await Task.Delay(250, _cts.Token);
             }
         }
-        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
-        {
-            // normal shutdown
-        }
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested) { }
+        catch(Exception ex){errors.Add(ex);}
         finally
         {
-            await CloseStartupObservationAdmissionAndDrainAsync();
-            _cts.Cancel();
-            try { await serverTask; } catch { /* ignored */ }
-            try { await StopShellAsync(); } finally { if(controlKeys)Console.TreatControlCAsInput=previousControlKeys; }
+            try{_cts.Cancel();}catch(Exception ex){errors.Add(ex);}
+            try{await CloseStartupObservationAdmissionAndDrainAsync();}catch(Exception ex){errors.Add(ex);}
+            // Dispatcher is the sole active listener disposer. Prepared-only startup
+            // failure still owns its listener and must close it before returning.
+            if(serverTask!=null){try{await serverTask;}catch(Exception ex){errors.Add(ex);}}
+            else if(_bridgeTransport!=null){try{await _bridgeTransport.DisposeAsync();}catch(Exception ex){errors.Add(ex);}}
+            if(preparedFailureWatch!=null){try{await preparedFailureWatch;}catch(Exception ex){errors.Add(ex);}}
+            try{await StopShellAsync();}catch(Exception ex){errors.Add(ex);}
+            try{if(controlKeys)Console.TreatControlCAsInput=previousControlKeys;}catch(Exception ex){errors.Add(ex);}
+            _controlLoopOwnsTransport=false;
             SafeDeleteStatusFile();
         }
-
+        var distinct=errors.SelectMany(e=>e is AggregateException aggregate?aggregate.Flatten().InnerExceptions:(IEnumerable<Exception>)new[]{e}).Distinct().ToArray();
+        if(distinct.Length==1)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(distinct[0]).Throw();
+        if(distinct.Length>1)throw new AggregateException(distinct);
         return 0;
+    }
+
+    private async Task ObservePreparedTransportFailureAsync(BridgeTransportListener transport,CancellationToken token)
+    {
+        Exception failure;
+        try {failure=await transport.Failure.WaitAsync(token);}
+        catch(OperationCanceledException) when(token.IsCancellationRequested){return;}
+        // This watcher runs before startup, independent of dispatcher admission or joins.
+        // Revoke the host waits as well as transport waits; original stop is still joined.
+        try{_cts.Cancel();}catch(Exception cancellation){throw new AggregateException(failure,cancellation);}
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
     }
 
     private static void ReportDiagnosticStartupException(Exception error)
@@ -296,32 +332,12 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task RunServerLoopAsync(CancellationToken cancellationToken)
     {
-        var peers = new List<Task>();
-        using var capacity = new SemaphoreSlim(48, 48);
         using var shortCapacity = new SemaphoreSlim(16,16);
-        NamedPipeServerStream NewListener() => new(_pipeName,PipeDirection.InOut,NamedPipeServerStream.MaxAllowedServerInstances,PipeTransmissionMode.Byte,PipeOptions.Asynchronous);
-        var listener=NewListener();
-        try
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await capacity.WaitAsync(cancellationToken);
-                var server=listener;
-                try { await server.WaitForConnectionAsync(cancellationToken); }
-                catch { server.Dispose(); capacity.Release(); throw; }
-                // Keep the Unix pipe listener alive before a completed handler can dispose its peer.
-                listener=NewListener();
-                peers.RemoveAll(t => t.IsCompleted);
-                peers.Add(ServePeerAsync(server));
-            }
-        }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
-        finally { listener.Dispose(); await Task.WhenAll(peers); }
+        await BridgePeerDispatcher.RunAsync(EnsureBridgeTransport(),ServePeerAsync,cancellationToken,onFatal:_=>_cts.Cancel());
 
-        async Task ServePeerAsync(NamedPipeServerStream server)
+        async Task ServePeerAsync(Stream server,CancellationToken peerToken)
         {
-            using (server)
-            using (var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            using (var deadline = CancellationTokenSource.CreateLinkedTokenSource(peerToken))
             {
                 // Bound incomplete reads independently of dispatch; every accepted peer is joined.
                 deadline.CancelAfter(TimeSpan.FromSeconds(3));
@@ -331,15 +347,15 @@ internal sealed partial class BridgeHost : IDisposable
                     var request = await reader.ReadAsync<BridgeRequest>(deadline.Token,int.MaxValue) ?? new BridgeRequest();
                     if(string.Equals(request.Command,"beginMainOperation",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation begin exceeds bound.");
-                        await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
+                        await ServeMainOperationAsync(server,reader,request,peerToken);return;
                     }
                     if(string.Equals(request.Command,"beginLoadSession",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Load begin exceeds bound.");
-                        await ServeLoadSessionAsync(server,reader,request,cancellationToken);return;
+                        await ServeLoadSessionAsync(server,reader,request,peerToken);return;
                     }
                     if(string.Equals(request.Command,"observeDraft",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Draft begin exceeds bound.");
-                        await ServeDraftObservationAsync(server,reader,request,cancellationToken);return;
+                        await ServeDraftObservationAsync(server,reader,request,peerToken);return;
                     }
                     if(string.Equals(request.Command,"mainOperationStatus",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation lookup exceeds bound.");
@@ -357,7 +373,6 @@ internal sealed partial class BridgeHost : IDisposable
                     }, deadline.Token); } finally { shortCapacity.Release(); }
                 }
                 catch (Exception) { /* The accepted peer owns a bounded read/response; no second unbounded write. */ }
-                finally { capacity.Release(); }
             }
         }
     }
@@ -461,6 +476,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task StartShellAsync()
     {
+        EnsureBridgeTransport();
         await _shellLifecycleLock.WaitAsync(_cts.Token);
         try
         {
@@ -1825,6 +1841,7 @@ internal sealed partial class BridgeHost : IDisposable
                 _writeGateDisposed = true;
             }
         }
+        if(!_controlLoopOwnsTransport && _bridgeTransport!=null)_bridgeTransport.DisposeAsync().AsTask().GetAwaiter().GetResult();
         SafeDeleteStatusFile();
     }
 
@@ -1962,6 +1979,7 @@ internal sealed record BridgeStatus
     public int? ShellPid { get; set; }
     public int? CliProcessId { get; set; }
     public string PipeName { get; set; } = string.Empty;
+    public BridgeTransportEndpoint? TransportEndpoint { get; set; }
     public string CliLaunchCommand { get; set; } = string.Empty;
     public string ShellWorkingDirectory { get; set; } = string.Empty;
     public string LastPromptDispatchState { get; set; } = "None";

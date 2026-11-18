@@ -1,14 +1,268 @@
 """Owner-authorized one genuine turn in an ordinary disposable console game.
 
-Run only beneath the independently compiled guardian --live-turn (300s).
+Run only beneath the independently compiled guardian: --live-turn (300s),
+or --relay-turn (750s) for the explicit maintained developer relay.
 Package is already deployed below fresh base/game_session/_runtime. No scripted
 GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 """
-import errno, fcntl, hashlib, json, os, pty, re, select, socket, struct, subprocess, sys, termios, time, uuid
+import errno, fcntl, hashlib, json, os, pty, re, select, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 
+class IncrementalEvidence:
+    """Each observed chunk survives loss of the driver before finally.
+
+    Flush/close gives process-loss persistence, not a power-loss durability claim.
+    No diagnostic quota or final rewrite. Protocol reply bounds stay separate.
+    """
+    def __init__(self, root): self.root=Path(root)
+    def raw(self, name, data):
+        with (self.root/(name+'.raw')).open('ab') as stream:
+            stream.write(data);stream.flush()
+    def event(self, entry):
+        with (self.root/'rpc-journal.jsonl').open('a',encoding='utf-8') as stream:
+            stream.write(json.dumps(entry,ensure_ascii=False)+'\n');stream.flush()
+
+class EvidenceJournal(list):
+    def __init__(self, evidence): super().__init__();self.evidence=evidence
+    def append(self, entry):
+        self.evidence.event(entry);super().append(entry)
+
+def observed_rpc(journal, payload, invoke, now):
+    identity=uuid.uuid4().hex
+    entry={'At':now(),'RPC':payload,'Attempted':True,'RequestId':identity};journal.append(entry)
+    try:response=invoke(identity)
+    except Exception as failure:
+        journal.append({'At':now(),'RequestId':identity,'RPCOutcome':'failed-or-unknown',
+            'Failure':type(failure).__name__+': '+str(failure)})
+        raise
+    journal.append({'At':now(),'RequestId':identity,'RPCOutcome':'completed','Response':response})
+    return response
+
+class OwnedProcessSnapshots:
+    """Read-only sample, never exit/cleanup authority; no argv or environment.
+
+    Roots are Popen identities; descendants must have a freshly checked parent.
+    A racing observation is explicitly incomplete, not an exit.
+    """
+    def __init__(self, proc_root=Path('/proc')): self.proc=Path(proc_root)
+    def _read(self, pid):
+        text=(self.proc/str(pid)/'stat').read_text()
+        fields=text[text.rindex(')')+2:].split()
+        if int(text.split(' ',1)[0])!=pid:raise ValueError('PID changed')
+        return {'Pid':pid,'ParentPid':int(fields[1]),'StartTicks':int(fields[19]),'State':fields[0]}
+    def register(self, pid):
+        try:return {'Pid':pid,'StartTicks':self._read(pid)['StartTicks']}
+        except (OSError,ValueError,IndexError):return {'Pid':pid,'StartTicks':None}
+    def collect(self, roots):
+        result={'Processes':[],'Unavailable':[],'Incomplete':False}
+        pending=list(roots);seen=set()
+        def unavailable(identity,reason):
+            result['Incomplete']=True;result['Unavailable'].append(dict(identity,Reason=reason))
+        while pending:
+            identity=pending.pop(0);pid=identity['Pid']
+            if pid in seen:continue
+            seen.add(pid)
+            try:
+                current=self._read(pid)
+                if identity['StartTicks'] is None:
+                    unavailable(identity,'unavailable');continue
+                if current['StartTicks']!=identity['StartTicks']:
+                    unavailable(identity,'identity-changed');continue
+                if 'ExpectedParent' in identity and (current['ParentPid']!=identity['ExpectedParent'] or
+                        self._read(identity['ExpectedParent'])['StartTicks']!=identity['ExpectedParentStartTicks']):
+                    unavailable(identity,'parent-changed');continue
+                try:current['WaitChannel']=(self.proc/str(pid)/'wchan').read_text().strip()
+                except OSError:current['WaitChannel']=None
+                children=set();children_errors=[]
+                try:tasks=sorted((self.proc/str(pid)/'task').iterdir())
+                except OSError as error:
+                    tasks=[];children_errors.append(dict(identity,Stage='task-enumeration',Errno=error.errno))
+                for task in tasks:
+                    if not task.name.isdecimal():continue
+                    try:children.update(int(c) for c in (task/'children').read_text().split())
+                    except (OSError,ValueError) as error:
+                        children_errors.append(dict(identity,Stage='task-children',Tid=int(task.name),Errno=getattr(error,'errno',None)))
+                final=self._read(pid)
+                if final['StartTicks']!=identity['StartTicks']:
+                    unavailable(identity,'identity-changed');continue
+                if final['ParentPid']!=current['ParentPid'] or ('ExpectedParent' in identity and
+                        self._read(identity['ExpectedParent'])['StartTicks']!=identity['ExpectedParentStartTicks']):
+                    unavailable(identity,'parent-changed');continue
+                result['Processes'].append(current)
+                for error in children_errors:unavailable(error,'children-unavailable')
+                for child in sorted(children):
+                    candidate=self.register(child)
+                    candidate['ExpectedParent']=pid;candidate['ExpectedParentStartTicks']=current['StartTicks'];pending.append(candidate)
+            except (OSError,ValueError,IndexError):unavailable(identity,'unavailable')
+        return result
+
+if len(sys.argv)==2 and sys.argv[1] in ('--check-incremental-evidence','--check-owned-process-snapshots'):
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='boe-driver-inert-') as directory:
+        root=Path(directory)
+        if sys.argv[1]=='--check-incremental-evidence':
+            evidence=IncrementalEvidence(root);events=EvidenceJournal(evidence)
+            evidence.raw('client',b'first\x00');events.append({'Phase':'first'})
+            assert (root/'client.raw').exists(), 'Raw evidence must exist before final cleanup'
+            assert (root/'client.raw').read_bytes()==b'first\x00'
+            assert json.loads((root/'rpc-journal.jsonl').read_text())=={'Phase':'first'}
+            evidence.raw('client',b'next');evidence.raw('client-echo',b'echo')
+            events.append({'Phase':'next'})
+            assert len(events)==2
+            assert (root/'client.raw').read_bytes()==b'first\x00next'
+            assert (root/'client-echo.raw').read_bytes()==b'echo'
+            assert [json.loads(x)['Phase'] for x in (root/'rpc-journal.jsonl').read_text().splitlines()]==['first','next']
+        else:
+            def proc(pid,ppid,start,children=''):
+                target=root/str(pid);(target/'task'/str(pid)).mkdir(parents=True,exist_ok=True)
+                fields=['S',str(ppid)]+['0']*17+[str(start)]
+                (target/'stat').write_text(str(pid)+' (name with ) paren) '+' '.join(fields))
+                (target/'wchan').write_text('pipe_read')
+                (target/'task'/str(pid)/'children').write_text(children)
+            proc(10,1,100,'11 12');proc(11,10,110,'13');proc(12,99,120);proc(13,11,130)
+            snapshot=OwnedProcessSnapshots(root);identity=snapshot.register(10)
+            observed=snapshot.collect([identity])
+            assert [r['Pid'] for r in observed['Processes']]==[10,11,13], 'Only original roots and verified descendants'
+            assert observed['Processes'][0]['StartTicks']==100
+            assert observed['Processes'][0]['WaitChannel']=='pipe_read'
+            (root/'10'/'task'/'99').mkdir()
+            siblings=snapshot.collect([identity])
+            assert [r['Pid'] for r in siblings['Processes']]==[10,11,13]
+            assert siblings['Incomplete'] and siblings['Unavailable'][0]['Tid']==99
+            assert siblings['Unavailable'][0]['Stage']=='task-children' and siblings['Unavailable'][0]['Errno']==2
+            (root/'10'/'task'/'99').rmdir()
+            (root/'10'/'task'/'10'/'children').unlink()
+            limited=snapshot.collect([identity])
+            assert [r['Pid'] for r in limited['Processes']]==[10], 'Missing children interface must not erase verified root observation'
+            assert limited['Incomplete'] and limited['Unavailable'][0]['Reason']=='children-unavailable'
+            proc(10,1,999,'11')
+            reused=snapshot.collect([identity])
+            assert not reused['Processes'] and reused['Incomplete']
+            assert reused['Unavailable'][0]['Reason']=='identity-changed'
+            (root/'10'/'stat').unlink()
+            missing=snapshot.collect([identity])
+            assert not missing['Processes'] and missing['Unavailable'][0]['Reason']=='unavailable'
+    print(json.dumps({'InertEvidenceChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-incremental-rpc':
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix='boe-rpc-evidence-') as directory:
+        events=EvidenceJournal(IncrementalEvidence(directory));seen=[]
+        def success(identity):seen.append(identity);return {'ok':True}
+        assert observed_rpc(events,{'command':'status'},success,lambda:1)=={'ok':True}
+        rows=[json.loads(x) for x in (Path(directory)/'rpc-journal.jsonl').read_text().splitlines()]
+        assert len(rows)==2, 'Completed RPC must persist separately before final cleanup'
+        assert rows[0]['RequestId']==rows[1]['RequestId']==seen[0]
+        assert rows[1]['RPCOutcome']=='completed' and rows[1]['Response']=={'ok':True}
+        def failure(identity):seen.append(identity);raise TimeoutError('original reply unknown')
+        try:observed_rpc(events,{'command':'shutdown'},failure,lambda:2)
+        except TimeoutError as error:assert str(error)=='original reply unknown'
+        else:raise AssertionError('Lost response must remain a failure')
+        rows=[json.loads(x) for x in (Path(directory)/'rpc-journal.jsonl').read_text().splitlines()]
+        assert len(rows)==4 and len(seen)==2, 'No retry or missing failure evidence'
+        assert rows[2]['RequestId']==rows[3]['RequestId']==seen[1] and seen[0]!=seen[1]
+        assert rows[3]['RPCOutcome']=='failed-or-unknown' and 'Response' not in rows[3]
+        assert 'Response' not in rows[0], 'Attempt evidence stays immutable'
+    print(json.dumps({'InertRpcEvidenceChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-driver-evidence-integration':
+    # Execute the real module assignment, real provider artifact loop and real
+    # pump in ONE namespace. Actual pipe bytes, no package/game/subprocess.
+    import ast, tempfile, types
+    tree=ast.parse(Path(__file__).read_text())
+    setup=next(n for n in tree.body if isinstance(n,ast.Assign) and isinstance(n.value,ast.Call)
+               and isinstance(n.value.func,ast.Name) and n.value.func.id=='IncrementalEvidence')
+    artifact_loop=next(n for n in ast.walk(tree) if isinstance(n,ast.For) and isinstance(n.iter,ast.List)
+                      and n.iter.elts and isinstance(n.iter.elts[0],ast.Constant) and n.iter.elts[0].value=='error_log.txt')
+    actual_pump=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='pump')
+    with tempfile.TemporaryDirectory(prefix='boe-driver-integration-') as directory:
+        root=Path(directory);read_fd,write_fd=os.pipe()
+        try:
+            peer=types.SimpleNamespace(master=read_fd,streams={read_fd:'output'},closed_streams=set(),
+                name='actual-pump',capture=bytearray(),echo=bytearray(),eof=False)
+            scope=dict(globals(),out=root,session=root,peers=[peer],elapsed=lambda:0,last_process_sample=0,
+                total_seconds=100,journal=[])
+            exec(compile(ast.Module(body=[setup,artifact_loop,actual_pump],type_ignores=[]),__file__,'exec'),scope)
+            os.write(write_fd,b'actual pump after artifact loop')
+            try:scope['pump'](0)
+            except AttributeError as failure:raise AssertionError('Artifact loop must not replace the live evidence sink') from failure
+            assert (root/'actual-pump.raw').read_bytes()==b'actual pump after artifact loop'
+            assert peer.capture==b'actual pump after artifact loop'
+            assert scope['journal'][0]['ByteEnd']==len(peer.capture)
+        finally:os.close(read_fd);os.close(write_fd)
+    print(json.dumps({'InertActualPumpChecks':'passed','ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+def rpc_helper_arguments(script, shipped, current_session):
+    # All code locations derive from the source fixture and explicit shipped package.
+    return ['pwsh','-NoLogo','-NoProfile','-File',str(Path(script).with_name('bridge-request.ps1')),
+            '-ClientAssembly',str(Path(shipped)/'BookOfEternityClient/BookOfEternityClient.dll'),
+            '-StatusPath',str(Path(current_session)/'game_state/control/gm_bridge_status.json')]
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-arguments':
+    args=rpc_helper_arguments('/source/with space/live-game-one-turn.py','/shipped/with space','/own/game_session')
+    assert args[:4]==['pwsh','-NoLogo','-NoProfile','-File']
+    assert args[4]=='/source/with space/bridge-request.ps1'
+    assert args[5:7]==['-ClientAssembly','/shipped/with space/BookOfEternityClient/BookOfEternityClient.dll']
+    assert args[7:]==['-StatusPath','/own/game_session/game_state/control/gm_bridge_status.json']
+    print(json.dumps({'InertRpcArgumentChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+def rpc_helper_closed(result):
+    proof=result.get('RpcHelperClosure')
+    return isinstance(proof,dict) and proof.get('ExitCode')==0 and proof.get('StdoutEof') is True and proof.get('StderrEof') is True and 'RpcHelperCleanupFailure' not in result
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-closure':
+    valid={'ExitCode':0,'StdoutEof':True,'StderrEof':True}
+    assert rpc_helper_closed({'RpcHelperClosure':valid})
+    assert not rpc_helper_closed({'RpcHelperClosure':dict(valid,ExitCode=1)})
+    assert not rpc_helper_closed({'RpcHelperClosure':dict(valid,StderrEof=False)})
+    assert not rpc_helper_closed({'RpcHelperClosure':valid,'RpcHelperCleanupFailure':'join unknown'})
+    print(json.dumps({'InertRpcClosureChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+# Oracle consumes Peer.text() with ANSI CSI already removed.
+# BrowserPlayerInput.cs PromptMarkup + TextComposer.cs appended space.
+PLAYER_PROMPT_MARKER = '\n >  '
+def current_player_prompt_at(text):
+    heading=text.rfind('Ваш ход')
+    marker=text.rfind(PLAYER_PROMPT_MARKER)
+    return marker if heading>=0 and marker>heading else -1
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-player-prompt':
+    assert current_player_prompt_at('✦ Ваш ход ✦\nhints\n >  ')>=0, 'Current cooperative prompt must be recognized'
+    assert current_player_prompt_at('✦ Ваш ход ✦\r\nhints\r\n >  ')>=0
+    assert current_player_prompt_at('✦ Ваш ход ✦\nhints')==-1
+    assert current_player_prompt_at('menu\n >  ')==-1
+    assert current_player_prompt_at('✦ Ваш ход ✦\n🌊 > ')==-1
+    assert current_player_prompt_at('\n >  \n✦ Ваш ход ✦\nhints')==-1
+    assert current_player_prompt_at('✦ Ваш ход ✦\nquoted >  text')==-1
+    print(json.dumps({'InertPlayerPromptChecks':7,'Passed':7,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
+ELYARA_PRESET_NAME = 'Элиара Последней Раны'
+def observed_elyara_choice(text):
+    # MainMenu PromptGuardianPresetChoice renders numbered exact names with
+    # optional parenthesized details, then the ordinary "> " menu prompt.
+    heading=text.rfind('Выберите извечного Хранителя:')
+    if heading<0:return None
+    menu=text[heading:]
+    prompt=re.search(r'(?m)^> ',menu)
+    if prompt is None:return None
+    choices=re.findall(r'(?m)^([1-9][0-9]*)\. '+re.escape(ELYARA_PRESET_NAME)+r'(?: \([^\r\n]*)?\r?$',menu[:prompt.start()])
+    if len(choices)>1:raise ValueError('Ambiguous exact Elyara preset in rendered menu')
+    return choices[0] if choices else None
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-guardian-preset':
+    menu='Выберите извечного Хранителя:\n1. Другой\n3. '+ELYARA_PRESET_NAME+' (домен • тон)\n4. Назад\n/tmp/presets\n> '
+    assert observed_elyara_choice(menu)=='3'
+    assert observed_elyara_choice(menu.replace('3. ', '12. '))=='12'
+    assert observed_elyara_choice(menu.replace('\n> ','')) is None
+    assert observed_elyara_choice('3. '+ELYARA_PRESET_NAME+'\n> ') is None
+    assert observed_elyara_choice(menu.replace(ELYARA_PRESET_NAME,ELYARA_PRESET_NAME+' чужая')) is None
+    try:observed_elyara_choice(menu.replace('4. Назад','4. '+ELYARA_PRESET_NAME))
+    except ValueError:pass
+    else:raise AssertionError('Ambiguous exact names must be rejected')
+    print(json.dumps({'InertGuardianPresetChecks':6,'Passed':6,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+
 def current_client_failure(text):
-    return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', '❌ Ошибка:'])
+    return any(marker in text for marker in ['Мир не смог безопасно завершить действие.', 'Ход прервался', 'Ход не принят', '❌ Ошибка:'])
 
 class PhaseWait:
     """Progress can renew an idle bound, never the original work deadline."""
@@ -33,15 +287,12 @@ def retain_turn_delivery(result,delivery,binding):
     return False
 
 def close_relay_execution(queue,seconds):
-    # Correlation/quiescence receipt only; original owner is still required for stop.
-    request=queue/'close-request.json'
-    if not request.exists():request.write_text(json.dumps({'RequestedMonotonic':time.monotonic()})+'\n')
+    # Maintained gated API, not legacy direct close-request publication.
+    from relay_contract import request_close, read_close
+    request_close(queue)
     deadline=time.monotonic()+seconds
     while time.monotonic()<deadline:
-        closed=queue/'closed.json'
-        if closed.exists():
-            proof=json.loads(closed.read_text())
-            return all(proof.get(k) is True for k in ['ExecutionDisabled','ChildExited','IoDrained'])
+        if read_close(queue) is not None:return True
         pump(.02)
     return False
 
@@ -58,7 +309,8 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     else:raise AssertionError('Idle phase had no bound')
     w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(9,'snapshot');w.observe(20,'request')
     assert current_client_failure('❌ Ошибка: Main run metadata or original owner admission is unavailable.'), 'Current main-menu error must stop preparation before a timeout'
-    print(json.dumps({'InertDriverChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+    assert current_client_failure('╭ Ход не принят ╮'), 'Pre-request rejection must fail promptly'
+    print(json.dumps({'InertDriverChecks':5,'Passed':5,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 out = Path(sys.argv[1]).resolve()
 base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime'
 assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
@@ -75,8 +327,9 @@ pipe = 'og-' + uuid.uuid4().hex[:12]
 quote = lambda v: "'" + str(v).replace("'", "''") + "'"
 command = '& ' + quote(binary) + (' --driver-refusal-fixture' if controlled_refusal else ' --mini --pure --no-replay -m opencode/ling-3.1-flash-free')
 if relay_mode:
+    sys.path.insert(0,str(out/'relay'))
     relay_queue.mkdir()
-    command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/codex-gm-relay.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model gpt-6.1-sol'
+    command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
 env = {k:v for k,v in os.environ.items() if not k.upper().startswith('OPENCODE_')}
 for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_STATE_HOME','state'),('XDG_CACHE_HOME','cache'),('TMPDIR','tmp')]:
     path=out/folder;path.mkdir();env[key]=str(path)
@@ -96,11 +349,12 @@ if controlled_refusal or relay_mode:
     settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
     if relay_mode:settings['GmCliInputProfile'].update(PromptPrefix='RELAY> ',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)
     (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
-start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
+evidence=IncrementalEvidence(out);process_observer=OwnedProcessSnapshots();observed_processes=[];last_process_sample=-5.0
+start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
-if relay_mode:result.update(ConfiguredModel='codex-agent/gpt-6.1-sol-test-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
+if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
 class Terminal:
@@ -112,6 +366,9 @@ class Terminal:
         self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,
             stdout=subprocess.PIPE if captured_output else self.slave,
             stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
+        evidence.raw(name,b'')
+        if captured_output:evidence.raw(name+'-echo',b'')
+        observed_processes.append((name,self.process,process_observer.register(self.process.pid)))
         self.streams={self.master:'echo' if captured_output else 'output'}
         if captured_output:self.streams[self.process.stdout.fileno()]='output'
         self.closed_streams=set()
@@ -126,6 +383,12 @@ class Terminal:
         return re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',self.capture[offset:].decode('utf-8',errors='replace'))
 def elapsed():return round(time.monotonic()-start,3)
 def pump(delay=.02):
+    global last_process_sample
+    if elapsed()-last_process_sample>=5:
+        last_process_sample=elapsed()
+        sample=process_observer.collect([identity for _,_,identity in observed_processes])
+        journal.append({'At':elapsed(),'OwnedProcessSnapshot':sample,'OriginalProcessPolls':[
+            {'Name':name,'Identity':identity,'ExitCode':process.poll()} for name,process,identity in observed_processes]})
     fds=[fd for p in peers for fd in p.streams if fd not in p.closed_streams]
     readable=select.select(fds,[],[],delay)[0] if fds else []
     for p in peers:
@@ -137,9 +400,10 @@ def pump(delay=.02):
                 b=b''
             if not b:p.closed_streams.add(fd)
             target=p.echo if kind=='echo' else p.capture
-            if b:journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
+            if b:
+                evidence.raw(p.name+('-echo' if kind=='echo' else ''),b)
+                journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
             target.extend(b)
-            if len(target)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
         p.eof=len(p.closed_streams)==len(p.streams)
     if elapsed()>total_seconds:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
@@ -156,22 +420,82 @@ def fresh(p,marker,offset,seconds=12):
     until(observed,seconds,p.name+': '+marker)
 def answer(p,marker,text,offset):
     fresh(p,marker,offset);offset=len(p.capture);p.send((text+'\r').encode(),'answer '+marker);return offset
-def rpc(payload,seconds=2):
-    assert payload['command'] in ['status','diagnostics','shutdown']
-    item={'At':elapsed(),'RPC':payload,'Attempted':True};journal.append(item)
-    with socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) as s:
-        s.settimeout(.5);s.connect(str(out/'tmp'/('CoreFxPipe_'+pipe)));s.sendall(json.dumps(payload).encode()+b'\n');s.setblocking(False)
-        reply=bytearray();deadline=time.monotonic()+seconds
+class ShippedRpc:
+    """One fixture process; each request uses a fresh shipped connector stream."""
+    def __init__(self):
+        args=rpc_helper_arguments(__file__,ship,session)
+        self.logs={}
+        try:
+            for kind in ['stdout','stderr']:self.logs[kind]=(out/('rpc-helper.'+kind+'.log')).open('wb')
+            self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        except BaseException:
+            for log in self.logs.values():log.close()
+            raise
+        observed_processes.append(('shipped-rpc-fixture',self.process,process_observer.register(self.process.pid)))
+        self.pending=bytearray();self.closed=set()
+        journal.append({'At':elapsed(),'Entrypoint':'shipped-rpc-fixture','Argv':args,'OriginalPid':self.process.pid})
+        try:
+            ready=self.frame(5)
+            if ready!={'fixtureReady':True}:raise RuntimeError('Shipped RPC helper readiness failed')
+        except BaseException:
+            try:self.close()
+            except Exception as failure:journal.append({'At':elapsed(),'RpcHelperStartupCleanupFailure':str(failure)})
+            raise
+    def collect(self,delay):
+        streams=[(self.process.stdout,'stdout'),(self.process.stderr,'stderr')]
+        fds=[p.fileno() for p,kind in streams if kind not in self.closed]
+        readable=select.select(fds,[],[],delay)[0] if fds else []
+        for stream,kind in streams:
+            if kind in self.closed or stream.fileno() not in readable:continue
+            data=os.read(stream.fileno(),65536)
+            if not data:self.closed.add(kind)
+            # Raw diagnostics stream directly to disk without a cumulative quota.
+            self.logs[kind].write(data);self.logs[kind].flush()
+            if kind=='stdout':self.pending.extend(data)
+        if len(self.pending)>1048576:
+            raise RuntimeError('Shipped RPC outstanding frame bound')
+    def frame(self,seconds):
+        deadline=min(start+total_seconds,time.monotonic()+seconds)
         while time.monotonic()<deadline:
-            pump()
-            if not select.select([s],[],[],0)[0]:continue
-            b=s.recv(8192)
-            if not b:raise EOFError('Original response lost; never retry an operation')
-            reply.extend(b)
-            if len(reply)>524288:raise RuntimeError('RPC bound')
-            if reply.endswith(b'\n'):
-                item['Response']=json.loads(reply);return item['Response']
-        raise TimeoutError('Original RPC outcome unknown; never replay')
+            if b'\n' in self.pending:
+                line,_,remaining=self.pending.partition(b'\n');self.pending=bytearray(remaining)
+                return json.loads(line)
+            if 'stdout' in self.closed:raise EOFError('Shipped RPC helper response lost; never replay')
+            pump(0);self.collect(.01)
+        raise TimeoutError('Original shipped RPC response unknown; never replay')
+    def request(self,payload,seconds,identity):
+        frame={'id':identity,'payload':json.dumps(payload),'timeoutMilliseconds':int(seconds*1000)}
+        self.process.stdin.write((json.dumps(frame)+'\n').encode());self.process.stdin.flush()
+        reply=self.frame(seconds+.5)
+        if reply.get('id')!=identity or not reply.get('ok'):
+            raise RuntimeError('Shipped RPC original operation failed: '+str(reply))
+        if len(reply['response'].encode('utf8'))>524288:raise RuntimeError('RPC bound')
+        return json.loads(reply['response'])
+    def close(self):
+        try:
+            if self.process.stdin and not self.process.stdin.closed:self.process.stdin.close()
+            deadline=time.monotonic()+5
+            while time.monotonic()<deadline and (self.process.poll() is None or len(self.closed)!=2):
+                pump(0);self.collect(.01)
+            if self.process.poll() is None or len(self.closed)!=2:
+                raise RuntimeError('Shipped RPC helper exit/I-O unconfirmed; guardian retains physical cleanup')
+            self.process.wait()
+            self.process.stdout.close();self.process.stderr.close()
+            if self.process.returncode!=0:raise RuntimeError('Shipped RPC helper failed')
+            return {'ExitCode':self.process.returncode,'StdoutEof':True,'StderrEof':True}
+        finally:
+            for log in self.logs.values():log.close()
+
+rpc_peer=None
+def rpc(payload,seconds=2):
+    global rpc_peer
+    assert payload['command'] in ['status','diagnostics','shutdown']
+    def send_original(identity):
+        global rpc_peer
+        if rpc_peer is None:rpc_peer=ShippedRpc()
+        return rpc_peer.request(payload,seconds,identity)
+    return observed_rpc(journal,payload,send_original,elapsed)
+
 def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def staging_signature():
     # Metadata only in this disposable game's staging namespace. Exclude live
@@ -227,7 +551,7 @@ def current_request(offset):
     while True:
         text=client.text(offset)
         if client.process.poll() is not None:raise RuntimeError('Client exited during current preparation')
-        if 'Мир не смог безопасно завершить действие.' in text or 'Ход прервался' in text:
+        if current_client_failure(text):
             client_failure_offset=offset
             journal.append({'At':elapsed(),'ObservedPhase':'client-failure-before-captured-request'})
             raise RuntimeError('Current client reported a real failure before captured request')
@@ -248,7 +572,7 @@ def fresh_main(client,offset):
     fresh(client,'Продолжить',offset)
     until(lambda:re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,8,'fresh eight-item main menu')
 def fresh_player(client,offset,seconds=12):
-    fresh(client,'Ваш ход',offset,seconds);fresh(client,'🌊 > ',offset,seconds)
+    until(lambda:current_player_prompt_at(client.text(offset))>=0,seconds,'fresh cooperative player prompt')
 def exit_client(client):
     global client_exit_attempted
     assert not client_exit_attempted, 'Do not replay an ambiguous UI close sequence'
@@ -263,8 +587,19 @@ try:
     fresh(client,'Тренировка QTE',0);offset=len(client.capture);client.send(b'\r','observed NewGame selected')
     offset=answer(client,'Введите имя вашей души:','Пробная Душа',offset)
     offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
-    offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
-    offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
+    if relay_mode:
+        # Ordinary preset avoids the separately observed freeform↔seeded-Elyara
+        # missing-network-edge defect. No canonical state or validator edits.
+        offset=answer(client,'Выберите способ создания Хранителя:','2',offset)
+        until(lambda:observed_elyara_choice(client.text(offset)) is not None,12,'rendered exact Elyara preset menu')
+        choice=observed_elyara_choice(client.text(offset))
+        result['OrdinaryGuardianPreset']={'DisplayName':ELYARA_PRESET_NAME,'ObservedMenuIndex':choice}
+        result['ExcludedSetupDefect']='Freeform guardian to seeded Elyara network edges; not qualified by this preset run'
+        offset=len(client.capture);client.send((choice+'\r').encode(),'observed exact Elyara preset menu index')
+        offset=answer(client,'Выбрать этого хранителя для новой игры?','',offset)
+    else:
+        offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
+        offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
     preparation_phase(lambda:(session/'input/turn_request.json').exists(),'ordinary initial request',client,offset=offset);client_wait=True
     result['InitialBootstrapRequest']=read_json(session/'input/turn_request.json');result['OrdinaryNewGame']=True
     # Observe the actual waiting UI, allow its cancellation listener to start.
@@ -275,8 +610,8 @@ try:
     result['BootstrapCancelledBeforeCli']=True
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
-    record_path=base/'.boe_runtime/gm-runs/main.json';socket_path=out/'tmp'/('CoreFxPipe_'+pipe)
-    until(lambda:record_path.exists() and socket_path.exists() and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running')
+    record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
+    until(lambda:record_path.exists() and status_path.exists() and bool(read_json(status_path).get('transportEndpoint')) and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running and published transport')
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
@@ -294,7 +629,7 @@ try:
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout',str(600 if relay_mode else 180),'--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
-    preparation_phase(lambda:'Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset),'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     provider_bridge_offset=len(bridge.capture)
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
@@ -310,11 +645,11 @@ try:
         pump()
         # Capture transient client rejection evidence before a later rollback can
         # delete it; each artifact is copied once, at first observation.
-        for evidence in ['error_log.txt','output/validation_repair_request.json',
+        for artifact_name in ['error_log.txt','output/validation_repair_request.json',
             'game_state/control/validation_diagnostic_failure_report.json']:
-            source_path=session/evidence
-            if source_path.exists() and not (out/('captured-'+evidence.replace('/','__'))).exists():
-                (out/('captured-'+evidence.replace('/','__'))).write_bytes(source_path.read_bytes())
+            source_path=session/artifact_name
+            if source_path.exists() and not (out/('captured-'+artifact_name.replace('/','__'))).exists():
+                (out/('captured-'+artifact_name.replace('/','__'))).write_bytes(source_path.read_bytes())
         # Observe current output before another status RPC can obscure the causal
         # failure. Old startup/turn output is outside this original action's cut.
         provider_text=bridge.text(provider_bridge_offset)
@@ -389,9 +724,9 @@ finally:
                     # An actually rendered client error pause is distinct from
                     # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
-                    fresh_screen='Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text)
+                    fresh_screen='Продолжить' in text or current_player_prompt_at(text)>=0
                     pause_at=text.rfind('Нажмите любую клавишу для продолжения...')
-                    screen_at=max(text.rfind('Продолжить'),text.rfind('🌊 > '))
+                    screen_at=max(text.rfind('Продолжить'),current_player_prompt_at(text))
                     if pause_at>=screen_at and pause_at>=0:
                         # A stale player prompt cannot settle a newer error pause.
                         return False
@@ -424,7 +759,7 @@ finally:
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)
                 client_wait=False
-                client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
+                client_prompt=current_player_prompt_at(client.text(offset))>=0
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
@@ -449,6 +784,9 @@ finally:
             daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,16,'daemon original stop')
         except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
     result['ShutdownAttempts']=shutdown_attempts
+    if rpc_peer is not None:
+        try:result['RpcHelperClosure']=rpc_peer.close()
+        except Exception as ex:result['RpcHelperCleanupFailure']=type(ex).__name__+': '+str(ex)
     for p in peers:
         if p.process.poll() is not None and p.slave>=0:os.close(p.slave);p.slave=-1
     try:until(lambda:all(p.eof for p in peers),8,'actual foreground EOF')
@@ -460,15 +798,13 @@ finally:
         result['Terminals'][p.name]={'ExitCode':p.process.poll(),'EOF':p.eof,'StreamEOF':{kind:fd in p.closed_streams for fd,kind in p.streams.items()},
             'TermiosRestored':restored,'CapturedBytes':len(p.capture),'EchoBytes':len(p.echo),
             'OutputMode':'captured-pipe' if p.captured_output else 'original-pty'}
-        (out/(p.name+'.raw')).write_bytes(p.capture)
         if p.captured_output:
-            (out/(p.name+'-echo.raw')).write_bytes(p.echo)
             p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
-    result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    result['ElapsedSeconds']=elapsed();result['Success']=rpc_helper_closed(result) and result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     if controlled_refusal:
-        result['ControlledCleanupVerified']=bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+        result['ControlledCleanupVerified']=rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))

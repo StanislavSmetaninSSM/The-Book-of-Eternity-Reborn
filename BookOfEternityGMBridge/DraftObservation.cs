@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,12 +19,11 @@ internal static class DraftObservation
             if(args.Length!=2)throw new InvalidDataException("Observer requires exactly one actual editor file.");
             var directory=Environment.GetEnvironmentVariable("BOE_DRAFT_DIRECTORY")??"";
             var binding=Environment.GetEnvironmentVariable("BOE_DRAFT_BINDING")??"";
-            var endpoint=Environment.GetEnvironmentVariable("BOE_DRAFT_PIPE")??"";
-            if(binding.Length is <1 or >128 || !Path.IsPathFullyQualified(endpoint))throw new InvalidDataException("Original observer binding/absolute endpoint unavailable.");
+            var endpoint=BridgeTransportConnector.DecodeEndpoint(Environment.GetEnvironmentVariable("BOE_DRAFT_ENDPOINT")??"");
+            if(binding.Length is <1 or >128)throw new InvalidDataException("Original observer binding/absolute endpoint unavailable.");
             var proof=Read(directory,args[1]);
             using var deadline=new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            using var pipe=new NamedPipeClientStream(".",endpoint,PipeDirection.InOut,PipeOptions.Asynchronous);
-            await pipe.ConnectAsync(deadline.Token);
+            await using var pipe=await BridgeTransportConnector.ConnectAsync(endpoint,deadline.Token);
             await MainOperationReader.WriteAsync(pipe,new {command="observeDraft",binding,path=proof.Path},deadline.Token);
             var reader=new MainOperationReader(pipe);
             var hello=await reader.ReadAsync<ObserverAck>(deadline.Token)??throw new IOException("Original operation connection closed.");

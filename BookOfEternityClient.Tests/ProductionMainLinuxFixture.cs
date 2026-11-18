@@ -14,6 +14,7 @@ internal static class ProductionMainLinuxFixture
     {
         Assert.True(OperatingSystem.IsLinux(),"M1 requires actual Linux execution.");
         var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(repo,"TestResults/production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        var daemonStopControl=mode is "production-main-daemon-stop" or "production-main-daemon-coordinated-stop";
         var reusableRelay=mode.StartsWith("production-main-relay-",StringComparison.Ordinal);
         if(reusableRelay) {
             var own=Path.Combine("/tmp","reusable-relay-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);
@@ -36,9 +37,12 @@ internal static class ProductionMainLinuxFixture
         var fixture=Path.Combine(package,"configured-neutral-cli");var source=Path.Combine(repo,"tests/fixtures/ProductionMain/configured-neutral-cli.c");
         var compiler=(Environment.GetEnvironmentVariable("PATH")??"").Split(Path.PathSeparator).Select(d=>Path.Combine(d,"cc")).First(File.Exists);
         await Prepare(compiler,["--version"],"fixture-compiler-version");
-        await Prepare(compiler,["-std=c11","-O2","-g","-Wall","-Wextra","-Werror",source,"-o",fixture],"fixture-build");
+        var fixtureCompileArgs=new[]{"-std=c11","-O2","-g","-Wall","-Wextra","-Werror"}
+            .Concat(daemonStopControl?new[]{"-DBOE_NEUTRAL_LIFETIME_SECONDS=65"}:Array.Empty<string>())
+            .Concat(new[]{source,"-o",fixture}).ToArray();
+        await Prepare(compiler,fixtureCompileArgs,"fixture-build");
         foreach(var name in new[]{"BookOfEternityClient","BookOfEternityGMBridge"}.Concat(mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{"BookOfEternityClient.TestSupport"}:Array.Empty<string>()))
-            await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
+            await Prepare("dotnet",["publish",Path.Combine(repo,name,name+".csproj"),"--no-build","--no-restore","-m:1","-c",new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"-o",Path.Combine(ship,name),"-p:BoeNativePackageDirectory="+package,"-p:BoeRequireNativePackage=true"],"publish-"+name);
         if(mode=="package-layout") {
             var resources=Path.Combine(ship,"BookOfEternityClient/operational-resources");
             foreach(var relative in new[]{"CLI_Agent_Daemon_Specification.md","TaskGuides/CLI_Step_Main.txt","Examples/E_CLI_Step_Main.txt","Examples/E_CLI_Mortal_Item_Materialization.txt","Examples/E_CLI_Mortal_Resources.txt","OtherGuides/Effect_Materialization_Contract.md","Examples/E_CLI_Effect_Materialization.txt","OtherGuides/Wound_Materialization_Contract.md","Examples/E_CLI_Wound_Materialization.txt","Examples/E_CLI_Afterlife_Turns.txt","Examples/E_CLI_Training_Showcases.txt","OtherGuides/Afterlife_Contract_Matrix.md","OtherGuides/Afterlife_Combat_Terminology_Glossary.md","Examples/E_CLI_Ink_Feather_Actions.txt"})
@@ -151,8 +155,11 @@ internal static class ProductionMainLinuxFixture
         var start=new ProcessStartInfo(Path.Combine(package,"host-guardian")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=ship};
         start.Environment["PATH"]=playerBin;
         var scenarioArgs=mode.StartsWith("production-main-",StringComparison.Ordinal)?new[]{Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet"),Path.Combine(ship,"BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.dll"),mode,package,folder}:new[]{"/usr/bin/python3",Path.Combine(repo,"tests/fixtures/ProductionMain/ordinary.py"),mode,folder,ship,files.GameSessionPath};
-        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);
-        using var guardian=Process.Start(start)!;await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian,TimeSpan.FromSeconds(35),Path.Combine(folder,"guardian.log"));
+        // --live-turn selects only the native guardian budget range here. These
+        // two idle controls execute zero game turns and provide no GM qualification.
+        if(daemonStopControl)start.ArgumentList.Add("--live-turn");
+        foreach(var a in new[]{Path.Combine(folder,"guardian.json"),daemonStopControl?"70000":"30000"}.Concat(scenarioArgs))start.ArgumentList.Add(a);
+        using var guardian=Process.Start(start)!;await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(guardian,TimeSpan.FromSeconds(daemonStopControl?75:35),Path.Combine(folder,"guardian.log"));
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,report.RootElement.GetProperty("emergencySignals").GetInt32());Assert.Equal(0,report.RootElement.GetProperty("failures").GetInt32());Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
         using var result=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"scenario.json")));
@@ -161,6 +168,15 @@ internal static class ProductionMainLinuxFixture
             Assert.True(result.RootElement.TryGetProperty("ScopedRetired",out var retired) && retired.GetBoolean(),result.RootElement.ToString());
             if(mode.EndsWith("rollback",StringComparison.Ordinal))
                 Assert.True(result.RootElement.TryGetProperty("OriginalConfigRunStopped",out var stopped) && stopped.GetBoolean(),result.RootElement.ToString());
+        }
+        if(mode=="production-main-local-remote-consumer") {
+            foreach(var failure in new[]{"CleanupFailure","ConsumerCleanupFailure","HostDisposeFailure","HostJoinFailure"})
+                Assert.False(result.RootElement.TryGetProperty(failure,out _),result.RootElement.ToString());
+            Assert.True(result.RootElement.GetProperty("ScopedRetired").GetBoolean(),result.RootElement.ToString());
+            Assert.Equal(0,result.RootElement.GetProperty("HostExit").GetInt32());
+            Assert.True(result.RootElement.GetProperty("FreshControlPassedBeforeWarm").GetBoolean(),result.RootElement.ToString());
+            Assert.True(result.RootElement.GetProperty("SameClientLocalThenRemote").GetProperty("configAndGenerationUnchanged").GetBoolean(),result.RootElement.ToString());
+            Assert.Equal(7,result.RootElement.GetProperty("SameClientLocalThenRemote").GetProperty("refusalControls").GetArrayLength());
         }
         Assert.True(result.RootElement.TryGetProperty("Success",out var succeeded) && succeeded.GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
         if(mode=="production-main-uncertain") {
