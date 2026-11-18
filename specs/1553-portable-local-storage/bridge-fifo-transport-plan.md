@@ -455,3 +455,13 @@ server worker authority, fresh refusal and special closing semantics. No global
 fence deletion, new worker coordinator under the external owner, broad
 WasRemote/disposed bypass or cached permission is approved. One tiny empty
 inventory avoids costly game setup; mutable authority cannot be cached.
+
+Test-source review corrected the preparation route before execution: the new
+mode uses typed BridgeHost.RunAsync and the published transport descriptor,
+not the legacy named-pipe-only fixture path. A separate fresh client must succeed
+before the warmed client's second entry. Both report exact config/generation
+preservation, including the expected refusal path. Original shutdown ACK identity,
+durable Stopped identity, host exit0 and owned cleanup are mandatory even on RED.
+The retired-context premise is observed as a known-quiescent local entry followed
+by RequireOpen refusal, not private-field proof of disposal. No new reflection
+or production changes. These test corrections are still unbuilt/unrun.

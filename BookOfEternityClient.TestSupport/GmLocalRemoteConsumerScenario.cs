@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using BookOfEternityGMBridge;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
@@ -9,7 +10,7 @@ namespace BookOfEternityClient.Tests;
 
 // Test-only same-process consumer across local admission and another process's
 // original main. No game action, supplied authority, reflection or recovery bypass.
-internal sealed class GmLocalRemoteConsumerScenario : IAsyncDisposable
+internal sealed partial class GmLocalRemoteConsumerScenario : IAsyncDisposable
 {
     private readonly Process child;
     private readonly Task<string> errors;
@@ -35,8 +36,9 @@ internal sealed class GmLocalRemoteConsumerScenario : IAsyncDisposable
         await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(8));
         var text=await output;var error=await errors;
         await File.WriteAllTextAsync(Path.Combine(folder,fresh?"fresh-remote-consumer.log":"local-remote-consumer.log"),text+"\n"+error);
-        if(child.ExitCode!=0)throw new InvalidOperationException("Same client local-to-remote admission failed: "+error);
         using var result=JsonDocument.Parse(text);
+        evidence[fresh?"FreshClientRemoteControl":"SameClientLocalThenRemote"]=result.RootElement.Clone();
+        if(child.ExitCode!=0)throw new InvalidOperationException("Same client local-to-remote admission failed: "+error);
         if(!result.RootElement.GetProperty("remote").GetBoolean() || !result.RootElement.GetProperty("closed").GetBoolean())
             throw new InvalidOperationException("Original remote close was not observed.");
         evidence[fresh?"FreshClientRemoteControl":"SameClientLocalThenRemote"]=result.RootElement.Clone();
@@ -70,12 +72,19 @@ internal sealed class GmLocalRemoteConsumerScenario : IAsyncDisposable
             var configBefore=File.ReadAllBytes(files.ResolvePath("config.json"));
             var generationBefore=File.ReadAllBytes(files.SessionGenerationPath);
             bool remoteObserved=false,closed=false;MainOperationClose? close=null;
-            await SessionOperationContext.RunParticipatingCurrentSessionAsync(files,()=>Task.FromResult(true),
-                observeOriginalClose:(reply,observed,remote)=>{close=reply;closed=observed;remoteObserved=remote;});
-            if(!configBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.ResolvePath("config.json"))) ||
-               !generationBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath)))
-                throw new InvalidOperationException("Readmission changed canonical config or generation.");
-            Console.WriteLine(JsonSerializer.Serialize(new{remote=remoteObserved,closed,close,configAndGenerationUnchanged=true}));
+            Exception? failure=null;
+            try {
+                await SessionOperationContext.RunParticipatingCurrentSessionAsync(files,()=>Task.FromResult(true),
+                    observeOriginalClose:(reply,observed,remote)=>{close=reply;closed=observed;remoteObserved=remote;});
+            } catch(Exception error) {failure=error;}
+            finally {
+                var unchanged=configBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.ResolvePath("config.json"))) &&
+                    generationBefore.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath));
+                Console.WriteLine(JsonSerializer.Serialize(new{remote=remoteObserved,closed,close,configAndGenerationUnchanged=unchanged,
+                    stage=failure==null?"remote-completed":"remote-refused",failure=failure?.ToString()}));
+                if(!unchanged)throw new InvalidOperationException("Readmission changed canonical config or generation.");
+            }
+            if(failure!=null)throw new InvalidOperationException("Original remote entry refused.",failure);
             return 0;
         } catch(Exception failure) {Console.Error.WriteLine(failure.ToString());return 2;}
     }

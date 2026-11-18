@@ -169,6 +169,14 @@ internal static class ProductionMainLinuxFixture
             if(mode.EndsWith("rollback",StringComparison.Ordinal))
                 Assert.True(result.RootElement.TryGetProperty("OriginalConfigRunStopped",out var stopped) && stopped.GetBoolean(),result.RootElement.ToString());
         }
+        if(mode=="production-main-local-remote-consumer") {
+            foreach(var failure in new[]{"CleanupFailure","ConsumerCleanupFailure","HostDisposeFailure","HostJoinFailure"})
+                Assert.False(result.RootElement.TryGetProperty(failure,out _),result.RootElement.ToString());
+            Assert.True(result.RootElement.GetProperty("ScopedRetired").GetBoolean(),result.RootElement.ToString());
+            Assert.Equal(0,result.RootElement.GetProperty("HostExit").GetInt32());
+            Assert.True(result.RootElement.GetProperty("FreshControlPassedBeforeWarm").GetBoolean(),result.RootElement.ToString());
+            Assert.True(result.RootElement.GetProperty("SameClientLocalThenRemote").GetProperty("configAndGenerationUnchanged").GetBoolean(),result.RootElement.ToString());
+        }
         Assert.True(result.RootElement.TryGetProperty("Success",out var succeeded) && succeeded.GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
         if(mode=="production-main-uncertain") {
             var cold=Path.Combine(folder,"cold-check");Directory.CreateDirectory(cold);
