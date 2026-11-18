@@ -23,6 +23,8 @@ internal static class NativeHostScenarioDriver
     /// </returns>
     internal static async Task<int> Main(string[] args)
     {
+        if (args.Length == 4 && args[0] == "mortal-live-evidence")
+            return await MortalLiveEvidenceValidator.RunAsync(args[1], args[2], args[3]);
         if (args.Length == 4 && args[0] == "mortal-live-seed-export")
         {
             await MortalLiveSeedExporter.ExportAsync(args[1], args[2], args[3]);

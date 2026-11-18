@@ -449,6 +449,15 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
         assert not all((q/'execution.json').exists() for q in queue.glob('request-*'))
     print(json.dumps({'InertTurnAndDifferentRepairEvidence':True,'WrongRevisionRefused':True,'PendingDrainNotReady':True,'GameProcesses':0}));sys.exit(0)
 
+if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-story-contract':
+    request={'sessionId':'s','requestId':'r','turnNumber':42,'playerAction':'a'}
+    before=b'{"turn":41}\n'
+    row={'turn':42,'realm':'Mortal World','player':'a','narrative':'GM'}
+    after=before+json.dumps(row).encode()+b'\n'
+    assert checked_story_append(before,after,request)==row
+    print('PASS actual Mortal story contract without nonexistent requestId')
+    sys.exit(0)
+
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-evidence':
     assert checked_action('Осматриваю берег'.encode())=='Осматриваю берег'
     for code in list(range(32))+[127]:

@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-evidence-data",
+      "responsibility": "Read-only detached production-typed Mortal living-world history and captured snapshot payload correlation; no publication authority.",
+      "excludes": "No physical source authentication, domain-effect/story acceptance, live GM execution or ownership admission.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveEvidenceValidator.cs",
+        "BookOfEternityClient.Tests/MortalLiveEvidenceValidatorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveEvidenceValidatorTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-seed-export",
       "responsibility": "Initial test-only Mortal seed through current reviewed builders, complete validator, coherent ordinary Continue story/session and fail-closed no-overwrite.",
       "excludes": "No accepted GM turn, incarnation, live relay or whole feature qualification.",
