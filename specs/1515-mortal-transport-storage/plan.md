@@ -2150,3 +2150,18 @@ rejection diagnostics, verified marker/method identities in the actual DLL.
 No previous phase, no copied failed-world state, no native launch yet. Actual
 cart/storage action unchanged; its GM response will bind to the real new request.
 Package/prelaunch independent review is separate from GREEN acceptance.
+
+mm7 live p01 rejected, not accepted: actual request7f52942f7374456eb8774123a9e5f744
+turn42, GM packet1860c29ad20a0ee7dcd865032c77b101d8128abc37eebb55138c2724eeaafc15.
+The new opt-in diagnostic captured protected-materialization/attempt1 with
+rollbackAvailable=true and only resource flag true. Exact issue is
+resource_owner_materialization_required at npc_core.UpdateNPCs[0].resourceMaterialization.
+The submitted GM packet actually omitted that author-required envelope; it was
+not lost by a consumer or expected as a client-generated receipt. This is my GM
+omission. Vehicle health and item durability envelopes are present; retained Mira
+must not resubmit one. A compact new-NPC template omitted this required field
+although the detailed resource contract requires health. Health+poise in another
+example does not make poise universally mandatory. No packet change/replay was
+made after rollback. T019 tracks synchronization and a minimal template guard,
+not a weaker validator or automatic invented maxima. Native birth/T018 live
+acceptance remain unproven. Independent rollback/cleanup verification follows.
