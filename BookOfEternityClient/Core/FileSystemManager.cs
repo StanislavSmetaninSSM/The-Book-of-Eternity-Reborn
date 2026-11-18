@@ -5102,10 +5102,13 @@ public partial class FileSystemManager
 
     internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease, string diagnosticOrigin = "worker-other")
     {
-        if (writeLease.Purpose == CanonicalWritePurpose.SessionFinalization)
-            throw new InvalidOperationException("Closing finalization cannot perform canonical recovery.");
         EnsureValidCanonicalWriteLease(writeLease);
-        if (writeLease.RetiredWorkerAdmission is { } retired) retired.RequireLocalPair(this, writeLease);
+        if (writeLease.RetiredWorkerAdmission is { } retired)
+        {
+            if (writeLease.Purpose == CanonicalWritePurpose.SessionFinalization)
+                throw new InvalidOperationException("Closing finalization cannot perform canonical recovery.");
+            retired.RequireLocalPair(this, writeLease);
+        }
         else CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
         EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }

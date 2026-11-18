@@ -42,10 +42,9 @@ public partial class FileSystemManager
             RequireRetiredRemoteAccess(lease, access, remote, remote.Identity.GenerationId);
             var binding = new RetiredWorkerRemoteAdmission(lease, registration, this, access, remote);
             lease.RetiredWorkerAdmission = binding;
-            // Existing positive original grant, generation, and fresh inventory
-            // validation; registration is checked again after this I/O.
-            Validate(lease);
-            binding.RequireLocalPair(_files, lease);
+            // Identity registration is not a grant. The immediately following
+            // ordinary recovery/finalization checkpoint performs the existing
+            // fresh Validate, including both registration checks, before effects.
             return true;
         }
         internal void RequireRetiredRemoteAccess(CanonicalWriteLease lease, object access,
