@@ -2,11 +2,11 @@
 
 Sibling of the qualified one-turn fixture; its original file is unchanged.
 Run under --relay-turn guardian (750s). Arguments: phase-root seed-manifest
-UTF-8 action-file [previous-phase-result]. Initial setup is not an accepted GM
+UTF-8 action-file immutable-evidence-helper-dll [previous-phase-result]. Initial setup is not an accepted GM
 turn. Later phases preserve the same canonical world and require complete prior
 logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
-import errno, fcntl, hashlib, json, os, pty, re, select, struct, subprocess, sys, termios, time, uuid
+import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 
 class IncrementalEvidence:
@@ -391,11 +391,12 @@ def checked_story_append(before,after,request):
     rows=[json.loads(row) for row in after[len(before):].decode('utf-8-sig').splitlines() if row.strip()]
     if len(rows)!=1:raise ValueError('Expected exactly one appended story row')
     row=rows[0]
-    if row.get('turn')!=request['turnNumber'] or row.get('requestId')!=request['requestId'] or row.get('player')!=request['playerAction'] or not row.get('narrative','').strip():
+    if row.get('turn')!=request['turnNumber'] or row.get('realm')!='Mortal World' or row.get('player')!=request['playerAction'] or not row.get('narrative','').strip():
         raise ValueError('Story does not match actual request')
+    if 'requestId' in row and row['requestId']!=request['requestId']:raise ValueError('Conflicting optional story identity')
     return row
 
-def relay_response_evidence(queue,request_bytes,binding,session_path,narrative):
+def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,baseline=None):
     request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
     rows=[];narratives=[]
     for folder in sorted(queue.glob('request-*'),key=lambda p:int(p.name.split('-')[1])):
@@ -406,6 +407,10 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative):
         source_path='input/turn_request.json' if meta['Kind']=='turn' else 'game_state/control/validation_repair_request.json'
         if meta['RequestPath']!=source_path or sha(source_bytes)!=meta['RequestSHA256'] or meta['Witnesses'][source_path]!=sha(source_bytes) or meta['Witnesses']['input/turn_request.json']!=sha(request_bytes):raise ValueError('Relay raw source mismatch')
         if meta['Kind']=='turn' and source_bytes!=request_bytes:raise ValueError('Relay raw turn request changed')
+        if meta['Kind']=='turn' and baseline is not None:
+            for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json'):
+                path='game_state/control/'+name
+                if sha((baseline/path).read_bytes())!=meta['Witnesses'].get(path):raise ValueError('Captured original snapshot differs from relay witness')
         prompt=(folder/'prompt.txt').read_bytes();dispatch=read('dispatch.json')
         if meta['QueueId']!=folder.name or meta['PromptSHA256']!=sha(prompt):raise ValueError('Relay prompt mismatch')
         if dispatch['disposition']!='submission-observed' or dispatch['inputBindingId']!=binding or dispatch['contentHash']!=sha(b'1\n'+prompt).upper():raise ValueError('Relay original submission mismatch')
@@ -440,6 +445,18 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
             dispatch=dict(disposition='submission-observed',inputBindingId='binding',contentHash=sha(b'1\n'+prompt).upper(),operationKind=kind,operationRevision='live' if kind=='turn' else '2')
             for name,data in [('request.json',meta),('dispatch.json',dispatch),('reply.json',dict(QueueId=folder.name,PromptSHA256=sha(prompt),RequestSHA256=sha(source),TurnRequestSHA256=sha(raw),ResponseSHA256=sha(response))),('started.json',dict(ResponseSHA256=sha(response))),('execution.json',dict(Executed=True,ExitCode=0,ChildExited=True,IoDrained=True))]: (folder/name).write_text(json.dumps(data))
         assert len(relay_response_evidence(queue,raw,'binding',session_path,'repair GM'))==2
+        baseline=queue/'baseline';(baseline/'game_state/control').mkdir(parents=True)
+        first=queue/'request-1-inert';first_meta=json.loads((first/'request.json').read_bytes())
+        for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json'):
+            path='game_state/control/'+name;(baseline/path).write_bytes(name.encode())
+            first_meta['Witnesses'][path]=sha(name.encode())
+        (first/'request.json').write_text(json.dumps(first_meta))
+        assert len(relay_response_evidence(queue,raw,'binding',session_path,'repair GM',baseline))==2
+        target=baseline/'game_state/control/pending_turn_snapshot.json';target.write_bytes(b'changed')
+        try:relay_response_evidence(queue,raw,'binding',session_path,'repair GM',baseline)
+        except ValueError:pass
+        else:raise AssertionError('Tampered captured original accepted')
+        target.write_bytes(b'pending_turn_snapshot.json')
         dispatch['operationRevision']='3';(folder/'dispatch.json').write_text(json.dumps(dispatch))
         try:relay_response_evidence(queue,raw,'binding',session_path,'repair GM')
         except ValueError:pass
@@ -449,13 +466,34 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
         assert not all((q/'execution.json').exists() for q in queue.glob('request-*'))
     print(json.dumps({'InertTurnAndDifferentRepairEvidence':True,'WrongRevisionRefused':True,'PendingDrainNotReady':True,'GameProcesses':0}));sys.exit(0)
 
+def checked_typed_receipt(value,request):
+    if value.get('valid') is not True or value.get('publicationAuthority') is not False:
+        raise ValueError('Typed receipt validation failed')
+    if any(value.get(k)!=request[k] for k in ('sessionId','requestId')) or value.get('turn')!=request['turnNumber']:
+        raise ValueError('Typed receipt belongs to another request')
+    prior=value.get('priorCount');current=value.get('currentCount')
+    if type(prior) is not int or prior<0 or type(current) is not int or current!=prior+1:
+        raise ValueError('Expected exactly one new typed receipt')
+    if not re.fullmatch('[0-9A-F]{64}',value.get('snapshotToken','')) or any(not re.fullmatch('sha256:[0-9a-f]{64}',value.get(k,'')) for k in ('declarationFingerprint','receiptFingerprint')):
+        raise ValueError('Typed receipt fingerprints missing')
+    return value
+
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-story-contract':
     request={'sessionId':'s','requestId':'r','turnNumber':42,'playerAction':'a'}
     before=b'{"turn":41}\n'
     row={'turn':42,'realm':'Mortal World','player':'a','narrative':'GM'}
     after=before+json.dumps(row).encode()+b'\n'
     assert checked_story_append(before,after,request)==row
-    print('PASS actual Mortal story contract without nonexistent requestId')
+    try:checked_story_append(before,before+json.dumps(dict(row,requestId='foreign')).encode()+b'\n',request)
+    except ValueError:pass
+    else:raise AssertionError('Conflicting story identity accepted')
+    receipt=dict(valid=True,publicationAuthority=False,sessionId='s',requestId='r',turn=42,priorCount=0,currentCount=1,snapshotToken='A'*64,declarationFingerprint='sha256:'+'b'*64,receiptFingerprint='sha256:'+'c'*64)
+    assert checked_typed_receipt(receipt,request)==receipt
+    for key,value in [('requestId','other'),('sessionId','other'),('turn',43),('valid',False),('publicationAuthority',True),('currentCount',2),('snapshotToken',''),('receiptFingerprint','')]:
+        try:checked_typed_receipt(dict(receipt,**{key:value}),request)
+        except ValueError:pass
+        else:raise AssertionError('Bad typed receipt admitted: '+key)
+    print('PASS actual Mortal story + separate exact typed receipt; 8 negative correlations')
     sys.exit(0)
 
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-evidence':
@@ -465,7 +503,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-evidence':
         except ValueError:pass
         else:raise AssertionError('Control admitted')
     request={'turnNumber':42,'requestId':'r','playerAction':'a'}
-    prefix=b'{"turn":41}\n';row={'turn':42,'requestId':'r','player':'a','narrative':'GM'}
+    prefix=b'{"turn":41}\n';row={'turn':42,'realm':'Mortal World','player':'a','narrative':'GM'}
     suffix=json.dumps(row).encode()+b'\n'
     assert checked_story_append(prefix,prefix+suffix,request)==row
     for invalid in [b'changed'+suffix,prefix+suffix+suffix,prefix]:
@@ -496,7 +534,8 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
     print('PASS native bootstrap path budget: ASCII and UTF-8 107/108 boundaries')
     sys.exit(0)
 
-assert len(sys.argv) in (4,5), 'phase-root seed-manifest action-file [previous-result]'
+assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-helper-dll [previous-result]'
+receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
 require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=json.loads(seed_bytes)
@@ -505,21 +544,23 @@ assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
 assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
 assert os.environ.get('TERM')=='dumb'
 action=checked_action(Path(sys.argv[3]).read_bytes())
-previous=json.loads(Path(sys.argv[4]).read_bytes()) if len(sys.argv)==5 else None
+previous=json.loads(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
 assert hashlib.sha256(setup_line).hexdigest()==seed['setupStoryEntrySha256'], 'Setup marker changed'
 all_entries=[json.loads(line) for path in (session/'stories').glob('*.jsonl') for line in path.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
-guardian=json.loads(Path(sys.argv[4]).with_name('guardian.json').read_bytes()) if previous else None
+guardian=json.loads(Path(sys.argv[5]).with_name('guardian.json').read_bytes()) if previous else None
 expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
 if previous:
     assert previous['SeedManifestSha256']==hashlib.sha256(seed_bytes).hexdigest()
     assert previous['StoryPath']==str(story) and previous['StoryAfterSHA256']==sha(story_before), 'Prior exact story file changed'
-    prior_request_bytes=Path(sys.argv[4]).with_name('actual-turn-request.json').read_bytes()
+    prior_request_bytes=Path(sys.argv[5]).with_name('actual-turn-request.json').read_bytes()
     assert sha(prior_request_bytes)==previous['ActualRequestSHA256'] and json.loads(prior_request_bytes)==previous['ActualRequest']
     old=previous['AcceptedStory'];prior_rows=[json.loads(row) for row in story_before.decode('utf-8-sig').splitlines() if row.strip()]
-    assert prior_rows[-1]==old and old['requestId']==previous['ActualRequest']['requestId'] and old['turn']==previous['ActualRequest']['turnNumber'] and old['player']==previous['ActualRequest']['playerAction']
+    assert prior_rows[-1]==old and old['turn']==previous['ActualRequest']['turnNumber'] and old['player']==previous['ActualRequest']['playerAction']
+    checked_typed_receipt(previous['TypedReceiptEvidence'],previous['ActualRequest'])
+    assert sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())==previous['LivingWorldHistorySHA256'], 'Prior accepted history changed'
     current_owner=json.loads((base/'.boe_runtime/gm-runs/main.json').read_bytes())
     assert current_owner['Disposition']=='Stopped' and current_owner['Identity']==previous['StoppedRecord']['Identity'], 'Previous original owner not durably stopped'
 else:
@@ -530,6 +571,8 @@ controlled_refusal=False;relay_mode=True
 total_seconds,work_seconds,client_cleanup_seconds,provider_seconds=720,660,680,600
 relay_contract=load_relay_contract(out/'relay')
 relay_queue=out/'queue';relay_queue.mkdir()
+baseline=out/'original-baseline';baseline.mkdir()
+shutil.copytree(session/'game_state',baseline/'game_state') # One pre-action DATA capture; no live authority reuse.
 pipe='og-'+uuid.uuid4().hex[:12]
 quote=lambda v:"'"+str(v).replace("'","''")+"'"
 command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
@@ -824,6 +867,11 @@ try:
     assert request['sessionId']==seed['sessionId']
     assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
     (out/'actual-turn-request.json').write_bytes(request_bytes)
+    for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json','pending_turn_snapshot'):
+        source=session/'game_state/control'/name;target=baseline/'game_state/control'/name
+        assert not target.exists(), 'Pre-action baseline unexpectedly had pending state'
+        if source.is_dir():shutil.copytree(source,target)
+        else:shutil.copy2(source,target)
     if controlled_refusal:
         # Own fixed fixture emits only a denial, never an accepted GM response.
         (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
@@ -869,7 +917,7 @@ try:
             raise RuntimeError('Actual original automatic input refused; no manual reconstruction or replay')
         if story.exists():
             entries=[json.loads(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
-            accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('requestId')==request['requestId'] and e.get('player')==action and e.get('narrative','').strip()]
+            accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('realm')=='Mortal World' and e.get('player')==action and e.get('narrative','').strip()]
             if accepted:
                 fresh_player(client,offset,10)
                 assert not (session/'input/turn_request.json').exists()
@@ -880,7 +928,13 @@ try:
                 story_after=story.read_bytes();accepted_row=checked_story_append(story_before,story_after,request)
                 assert accepted_row==accepted[0]
                 until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
-                result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'])
+                result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
+                helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=30,env=env)
+                (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
+                result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':sha(receipt_helper.read_bytes()),'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
+                if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
+                result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
+                result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
                 result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
                 result['AcceptedTurnNumber']=expected_turn
                 result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True

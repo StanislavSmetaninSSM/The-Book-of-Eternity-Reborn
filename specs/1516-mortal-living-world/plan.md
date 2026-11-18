@@ -4,6 +4,32 @@
 
 Source: [#1516](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1516). Spec: [spec.md](spec.md).
 
+## Live-discovered GM semantic-reference guidance gap, 2026-11-18
+
+The fresh short-root Mortal run reached actual GM packets and repair for original
+turn 42. The GM used npc/currentActivity from the NPC storage shape; the report
+contract correctly refused that pair because activity effects require npcActivity.
+The delivered template described typed references generically but omitted the
+kind/field whitelist, so source lookup was needed during real authoring. This is
+a guidance gap, not grounds to weaken the existing validation contract.
+
+Two new documentation tests were added first. Official RED: unit build 0 errors /
+41 warnings / 31.82 seconds; guidance 6 executed, 4 PASS and the two exact new tests
+FAIL (missing example/table), runner 10.815539 seconds, complete cleanup.
+The bounded documentation correction now adds all eight semantic kinds, exact
+identity/composite owner rules, actor/cause-only system references, and complete
+update field evidence to the delivered template, world guide and example intro.
+A new detached npcActivity example and manifest entry exercise valid progress,
+wrong npc-kind rejection and unchanged-result rejection through existing typed
+validators. Production validation and existing tests remain unchanged. GREEN and
+independent review are pending; no broad feature completion is claimed.
+
+The actual live run ended after 686.101 seconds with logical stop verified and
+guardian ECHILD/no emergency, but its observer expected requestId on ordinary
+Mortal story rows and therefore did not report acceptance. Separate preserved
+baseline/queue/receipt evidence must establish that turn's exact provenance;
+this guidance fix does not retrospectively change that raw failed observer result.
+
 ## Mortal live phase01 startup failure and bounded fixture correction, 2026-11-17
 
 The first genuine-relay attempt stopped before any player action or GM request:

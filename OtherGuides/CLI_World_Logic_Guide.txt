@@ -68,6 +68,34 @@ effects, consequences and knowledge. Typed references use kind/id and ownerId
 for composite identities. Effects must match actual original and settled canonical
 semantic values; pending commands, filesModified, prose or news alone are not proof.
 Existing domain owners/reducers remain authoritative; the report is no mutation API.
+Semantic effect reference contract (exact case; no field aliases):
+References are closed objects {"kind":"...","id":"..."}; only factionProject
+and threat additionally REQUIRE ownerId. Do not add ownerId to other kinds.
+The id column below names the canonical identity value, not an extra JSON key.
+
+| kind | id and composite owner | allowed effect field |
+| --- | --- | --- |
+| npc | NPCId | currentLocationId, level, experience, characteristics, factionAffiliations |
+| npcActivity | NPCId | currentActivity, completedActivities |
+| faction | factionId | currentAgenda, principles, level, experience, powerProfile, governance, leadership, relations |
+| factionProject | projectId; ownerId=factionId | activeState, finalState, resourcesSpent, timeSpentMinutes, currentStep, completionTurn |
+| location | locationId | factionControl, actorBindings, locationStorages, activeThreats, customStates |
+| locationLink | linkId | access |
+| threat | threatId; ownerId=locationId | intensity, longTermGoal, currentActivity |
+| worldFlag | flagId | value |
+
+npc.currentActivity is invalid: use target {"kind":"npcActivity","id":"<exact NPCId>"}
+in BOTH event targets and the effect target, even though activity is stored in
+npc_core.json alongside the NPC. Actor references may still use kind npc.
+System references {"kind":"system","id":"worldCycle"} or factionCycle are
+allowed only in actors and cause.references, never targets or effect targets.
+For an update, before/after are {"present":true,"value":<complete field value>}
+when present, or {"present":false} when absent; do not submit only changed subfields.
+Actual original and accepted semantic values must differ. Activity labels alone,
+cosmetic edits and array reordering are not progress. Preserve unrelated fields.
+See mortal_living_world_npc_activity_update_v1 in Examples/E_CLI_Mortal_Living_World.txt
+for a complete source-local NPC activity update, not a full NPC creation packet.
+
 Owner-route boundaries:
 Diagnosis supports noSignificantChange only, against the actual planned diagnosis
 duration. Autonomous changes need an ordinary assessed turn; do not relabel real
