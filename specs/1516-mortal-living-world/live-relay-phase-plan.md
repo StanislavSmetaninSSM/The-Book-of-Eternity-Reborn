@@ -1093,3 +1093,46 @@ separate diagnostic fresh-owner checks before action, plus exact manifest-file
 copying. Do not substitute the old source as an ordinary previous owner, change
 general relay inventory, or claim the old immutable package actually contained
 unlisted bytes. Native preparation remains blocked until corrected review.
+
+T022 review corrections are saved at e05f7ab8. New cheap negatives first failed
+two methods (eight assertions/subtests), with15 other methods passing: stale or
+foreign diagnostic owner joins were admitted, and unpinned cache bytes copied.
+An earlier test used the wrong fixture key Generation; it was corrected to the
+actual GenerationId before this causal RED, and is not counted as product failure.
+Minimal correction adds a separate fresh diagnostic root/run/generation/daemon
+join before Continue and copies only exact pinned runtime files/bytes. No old
+source is passed as the new root's previous owner. Direct17/17 GREEN in0.142s;
+source review and official adapter remain pending, actual preparation UNRUN.
+
+After those corrections,64 affected pure controls pass: shared38, rejected
+cleanup15 and general phase11. Independent re-review cleared the two original
+findings but found a preparation defect introduced by exact-file copying:
+executable mode was not preserved for the pinned native supervisor. Byte hashes
+alone cannot qualify launchability. Add a pinned synthetic executable RED and
+copy only required safe execute bits, never privileged mode bits or general
+copytree. Actual diagnostic preparation/launch remains blocked until this is
+verified. This is a fixture copy correction, not a production host change.
+
+Executable-copy causal RED executed18 methods:17PASS/1FAIL because target mode
+was0644 instead of required0700. The minimal correction in817103c8 retains only
+source owner-execute, explicitly writes0700 for executables and0600 otherwise,
+and checks mode after copying. Synthetic source04755 proves privileged bits are
+not transferred while pinned bytes are preserved. Direct18/18 GREEN in0.191s.
+The real old runtime's three native supervisors are0755; no actual runtime was
+copied/launched during this test. Independent correction review remains pending.
+
+Independent correction review accepts817103c8 source: exact manifest copying,
+byte readback and safe executable modes are verified. One official PowerShell
+category mortal-restored-diagnostic-data then passed: PlanOnly selected one
+adapter; execution completed1/1 adapter with18/18 inner tests, no failures,
+errors, skips or duplicates. Inner time0.205s; runner1.5332270s, exit0, no timeout,
+owned-tree cleanup complete. Commands used test-csharp.ps1 -Category
+mortal-restored-diagnostic-data -NoBuild -Parallelism1, with -PlanOnly first and
+external BOE_TEST_DIAGNOSTIC_ROOT. No C# build was needed for this Python-only
+fixture block. Actual result identity20261118-075121-532-5-652caa6fe25e4c75a30cf05dda866967.
+Four source hashes remain frozen. Independent official outcome review is pending;
+next is prepare-only validation of exact accepted DATA and all three executable
+supervisors. No actual restored world or native diagnostic run exists yet.
+Optimization: tiny stateless DATA cases reuse no live authority; the existing
+pinned runtime avoids a needless rebuild, while fresh byte/owner/generation checks
+remain mandatory. No speedup or p04 exception fix is claimed.
