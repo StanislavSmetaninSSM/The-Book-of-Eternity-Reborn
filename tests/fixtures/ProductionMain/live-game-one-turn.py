@@ -9,6 +9,7 @@ GM, Ready override, query/gate answer, prompt replay, auth/config/history copy.
 """
 import errno, fcntl, hashlib, json, os, pty, re, select, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
+import relay_phase_evidence as phase_evidence
 
 class IncrementalEvidence:
     """Each observed chunk survives loss of the driver before finally.
@@ -209,8 +210,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-arguments':
     print(json.dumps({'InertRpcArgumentChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
 def rpc_helper_closed(result):
-    proof=result.get('RpcHelperClosure')
-    return isinstance(proof,dict) and proof.get('ExitCode')==0 and proof.get('StdoutEof') is True and proof.get('StderrEof') is True and 'RpcHelperCleanupFailure' not in result
+    return phase_evidence.rpc_helper_closed(result)
 
 if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-closure':
     valid={'ExitCode':0,'StdoutEof':True,'StderrEof':True}
@@ -327,74 +327,23 @@ def daemon_pair_capture(session, evidence, prefix):
             evidence[key+'ReadError']=type(failure).__name__+': '+str(failure)
     return evidence
 
-def daemon_pair_decode(evidence, prefix, settled):
-    def unique(pairs):
-        value={};seen=set()
-        for key,item in pairs:
-            if key.casefold() in seen:raise ValueError('Duplicate daemon JSON field')
-            seen.add(key.casefold());value[key]=item
-        return value
-    def decode(name):
-        key=prefix+name
-        raw=bytes.fromhex(evidence[key+'RawHex'])
-        if hashlib.sha256(raw).hexdigest()!=evidence[key+'SHA256']:raise ValueError('Daemon evidence hash mismatch')
-        result=json.loads(raw.decode('utf-8-sig'),object_pairs_hook=unique,
-            parse_constant=lambda value:(_ for _ in ()).throw(ValueError('Non-JSON constant')))
-        if type(result) is not dict:raise ValueError('Daemon evidence is not an object')
-        return result
-    status=decode('Status');guard=decode('Guard');session=evidence['SessionPath']
-    if type(session) is not str or not session:raise ValueError('Missing exact daemon session')
-    owner=status.get('daemonGuardOwnerId')
-    if type(owner) is not str or re.fullmatch('[0-9a-f]{32}',owner) is None:raise ValueError('Invalid daemon owner')
-    if (type(status.get('daemonGuardVersion')) is not int or status['daemonGuardVersion']!=1 or
-        type(guard.get('version')) is not int or guard['version']!=1):raise ValueError('Invalid daemon version')
-    if set(guard)!={'version','sessionPath','ownerId','settled'}:raise ValueError('Invalid guard shape')
-    if status.get('sessionPath')!=session or guard.get('sessionPath')!=session or guard.get('ownerId')!=owner:
-        raise ValueError('Daemon owner/session mismatch')
-    if (status.get('status')!=('stopped' if settled else 'running') or
-        status.get('terminalSettled') is not settled or guard.get('settled') is not settled):
-        raise ValueError('Daemon lifecycle is not exact')
-    return owner
+def daemon_pair_decode(evidence,prefix,settled):
+    return phase_evidence.daemon_pair_decode(evidence,prefix,settled)
 
 def daemon_settlement_proved(evidence):
-    try:return daemon_pair_decode(evidence,'Original',False)==daemon_pair_decode(evidence,'Final',True)
-    except (KeyError,TypeError,ValueError,UnicodeError):return False
+    return phase_evidence.daemon_settlement_proved(evidence)
 
 def relay_phase_cleanup_proved(value):
-    try:
-        if any(k.endswith('Failure') for k in value):return False
-        if not daemon_settlement_proved(value.get('DaemonSettlement')):return False
-        if any(type(value[k]) is not int or value[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent','ShutdownAttempts')):return False
-        if any(value[k] is not True for k in ('InputQualified','LogicalLifecycleVerified','RelayExecutionClosed')) or not rpc_helper_closed(value):return False
-        terminals=value['Terminals']
-        if set(terminals)!={'client','bridge','daemon'}:return False
-        if not all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] and v['StreamEOF'] and all(v['StreamEOF'].values()) for v in terminals.values()):return False
-        running=value['OriginalRunningRecord'];stopped=value['StoppedRecord'];identity=running['Identity']
-        if running['Disposition']!='Running' or stopped['Disposition']!='Stopped' or stopped['Identity']!=identity:return False
-        if stopped['StopEvidence']['Identity']!=identity or stopped['StopEvidence']['Kind']!='OwnedScopeEmpty':return False
-        ack=value['ShutdownReceipt'];proof=ack['status']['terminalStop'];started=value['OriginalRunningStatus']
-        return (ack['ok'] is True and started['ok'] is True and started['status']['terminalRunId']==identity['RunId'] and
-            ack['status']['terminalRunId']==identity['RunId'] and ack['status']['inputBindingId']==started['status']['inputBindingId'] and
-            proof['identity']['runId']==identity['RunId'] and proof['state']=='stopped-within-scope' and
-            proof['cleanupComplete'] is True and proof['authorityRetained'] is False)
-    except (KeyError,TypeError):return False
+    return phase_evidence.relay_phase_cleanup_proved(value)
 
-def sha(data):return hashlib.sha256(data).hexdigest()
+def sha(data):
+    return phase_evidence.sha(data)
 
 def strict_settings(raw):
-    def pairs(items):
-        result={};seen=set()
-        for key,value in items:
-            if key.casefold() in seen:raise ValueError('Duplicate config key')
-            seen.add(key.casefold());result[key]=value
-        return result
-    value=json.loads(raw,object_pairs_hook=pairs)
-    if not isinstance(value,dict):raise ValueError('Config must be object')
-    return value
+    return phase_evidence.strict_settings(raw)
 
 def put_setting(settings,key,value):
-    existing=next((k for k in settings if k.casefold()==key.casefold()),key)
-    settings[existing]=value
+    return phase_evidence.put_setting(settings,key,value)
 
 def checked_relay_story_append(before,after,request):
     if not after.startswith(before):raise ValueError('Prior story bytes changed')
@@ -410,7 +359,7 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
     request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
     rows=[];narratives=[]
     for folder in sorted(queue.glob('request-*'),key=lambda p:int(p.name.split('-')[1])):
-        def read(name):return json.loads((folder/name).read_bytes().decode('utf-8-sig'))
+        def read(name):return strict_settings((folder/name).read_bytes().decode('utf-8-sig'))
         meta=read('request.json')
         if meta['TurnIdentity']!=identity or meta['TurnRequestSHA256']!=sha(request_bytes) or meta['SessionPath']!=str(session_path):raise ValueError('Foreign relay request')
         source_bytes=(folder/'game-request.json').read_bytes()
@@ -429,7 +378,7 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
         response=(folder/'executing-response.json').read_bytes();reply=read('reply.json');started=read('started.json');execution=read('execution.json')
         if reply['QueueId']!=folder.name or reply['PromptSHA256']!=meta['PromptSHA256'] or reply['RequestSHA256']!=meta['RequestSHA256'] or reply['TurnRequestSHA256']!=sha(request_bytes):raise ValueError('Relay reply correlation mismatch')
         if reply['ResponseSHA256']!=sha(response) or started['ResponseSHA256']!=sha(response):raise ValueError('Executed response hash mismatch')
-        if execution!={'Executed':True,'ExitCode':0,'ChildExited':True,'IoDrained':True}:raise ValueError('Relay consumer not settled')
+        if not phase_evidence.execution_closed(execution):raise ValueError('Relay consumer not settled')
         packet=json.loads(response)
         for write in packet['Writes']:
             if write['Path']=='output/narrative_response.json':narratives.append(write['Data']['response'])
@@ -445,39 +394,23 @@ def load_relay_contract(folder):
     return relay_contract
 
 def relay_package_preflight(out,ship,driver):
-    raw=(out/'relay-phase-package.json').read_bytes();manifest=strict_settings(raw)
-    if manifest['RuntimePins']!=relay_inventory(ship) or not manifest['RuntimePins']:raise ValueError('Prepared runtime pins mismatch')
-    if manifest['RelayPins']!=relay_inventory(out/'relay') or not manifest['RelayPins']:raise ValueError('Prepared relay pins mismatch')
-    if manifest['DriverSHA256']!=sha(Path(driver).read_bytes()):raise ValueError('Prepared driver pin mismatch')
-    return manifest,sha(raw)
+    return phase_evidence.relay_package_preflight(out,ship,driver)
 
 def relay_published_owner_join(record,status,pipe,previous):
-    identity=record.get('Identity',{})
-    run=identity.get('RunId')
-    predecessor=previous['StoppedRecord']['Identity']['RunId'] if previous else None
-    return (record.get('Disposition')=='Running' and isinstance(run,str) and bool(run) and run!=predecessor and
-        status.get('terminalRunId')==run and status.get('pipeName')==pipe and
-        isinstance(status.get('transportEndpoint'),dict) and bool(status['transportEndpoint']))
+    return phase_evidence.relay_published_owner_join(record,status,pipe,previous)
 
 def relay_inventory(root):
-    root=Path(root)
-    return {str(p.relative_to(root)):sha(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file() and '__pycache__' not in p.parts}
+    return phase_evidence.relay_inventory(root)
 
 def relay_world_inventory(session):
-    # Includes exact final status/control/story bytes. No cached authority or semantic reconstruction.
-    result={}
-    for name in ('game_state','stories','lore','input','output','ready'):
-        for relative,digest in relay_inventory(Path(session)/name).items():result[name+'/'+relative]=digest
-    return result
+    return phase_evidence.relay_world_inventory(session)
 
 def relay_continuation_settings(raw,pipe,command,session):
-    value=strict_settings(raw)
-    for key,item in [('GmBridgePipeNameOverride',pipe),('GmCliLaunchCommand',command),('GmBridgeShellWorkingDirectory',session)]:put_setting(value,key,item)
-    return value
+    return phase_evidence.relay_continuation_settings(raw,pipe,command,session)
 
 def relay_continuation_preflight(base,previous,guardian):
     if previous.get('Success') is not True or not relay_phase_cleanup_proved(previous):raise ValueError('Prior relay phase cleanup incomplete')
-    if not (guardian.get('driverExitCode')==0 and guardian.get('echild') is True and guardian.get('emergencySignals')==0 and guardian.get('failures')==0 and guardian.get('deadline') is False):raise ValueError('Prior guardian closure incomplete')
+    if not phase_evidence.guardian_proved(guardian):raise ValueError('Prior guardian closure incomplete')
     base=Path(base).resolve();session=base/'game_session';story=session/'stories/chaos_sea.jsonl'
     if previous.get('BasePath')!=str(base) or previous.get('StoryPath')!=str(story):raise ValueError('Wrong retained world')
     if relay_inventory(session/'_runtime')!=previous['RuntimePins']:raise ValueError('Retained immutable runtime changed')
@@ -719,7 +652,7 @@ def rpc(payload,seconds=2):
         return rpc_peer.request(payload,seconds,identity)
     return observed_rpc(journal,payload,send_original,elapsed)
 
-def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def read_json(p):return strict_settings(p.read_text(encoding='utf-8-sig'))
 def staging_signature():
     # Metadata only in this disposable game's staging namespace. Exclude live
     # daemon/bridge health files and all CLI XDG/auth/session state.
@@ -1054,7 +987,7 @@ finally:
             if not daemon_settlement_proved(result['DaemonSettlement']):raise ValueError('Original daemon settlement unconfirmed')
             result['FinalWorldPins']=relay_world_inventory(session)
             result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
-            if relay_inventory(ship)!=result['RuntimePins']:raise ValueError('Runtime changed during phase')
+            if relay_package_preflight(out,ship,__file__)[0]!=package_manifest:raise ValueError('Phase package changed during phase')
         except Exception as ex:result['DaemonSettlementFailure']=type(ex).__name__+': '+str(ex)
     result['ElapsedSeconds']=elapsed();result['Success']=relay_phase_cleanup_proved(result) if relay_mode else rpc_helper_closed(result) and result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     if controlled_refusal:

@@ -1,6 +1,6 @@
 """Seeded-live Mortal phase: one real player action through the ordinary CLI and GM relay.
 
-Sibling of the qualified one-turn fixture; its original file is unchanged.
+Mortal-specific orchestration shares stateless evidence checks with the general fixture.
 Run under --relay-turn guardian (750s). Arguments: phase-root seed-manifest
 UTF-8 action-file immutable-evidence-helper-dll [previous-phase-result]. Initial setup is not an accepted GM
 turn. Later phases preserve the same canonical world and require complete prior
@@ -8,6 +8,7 @@ logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
 import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
+import relay_phase_evidence as phase_evidence
 
 class IncrementalEvidence:
     """Each observed chunk survives loss of the driver before finally.
@@ -208,8 +209,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-arguments':
     print(json.dumps({'InertRpcArgumentChecks':4,'Passed':4,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
 
 def rpc_helper_closed(result):
-    proof=result.get('RpcHelperClosure')
-    return isinstance(proof,dict) and proof.get('ExitCode')==0 and proof.get('StdoutEof') is True and proof.get('StderrEof') is True and 'RpcHelperCleanupFailure' not in result
+    return phase_evidence.rpc_helper_closed(result)
 
 if len(sys.argv)==2 and sys.argv[1]=='--check-shipped-rpc-closure':
     valid={'ExitCode':0,'StdoutEof':True,'StderrEof':True}
@@ -326,57 +326,14 @@ def daemon_pair_capture(session, evidence, prefix):
             evidence[key+'ReadError']=type(failure).__name__+': '+str(failure)
     return evidence
 
-def daemon_pair_decode(evidence, prefix, settled):
-    def unique(pairs):
-        value={};seen=set()
-        for key,item in pairs:
-            if key.casefold() in seen:raise ValueError('Duplicate daemon JSON field')
-            seen.add(key.casefold());value[key]=item
-        return value
-    def decode(name):
-        key=prefix+name
-        raw=bytes.fromhex(evidence[key+'RawHex'])
-        if hashlib.sha256(raw).hexdigest()!=evidence[key+'SHA256']:raise ValueError('Daemon evidence hash mismatch')
-        result=json.loads(raw.decode('utf-8-sig'),object_pairs_hook=unique,
-            parse_constant=lambda value:(_ for _ in ()).throw(ValueError('Non-JSON constant')))
-        if type(result) is not dict:raise ValueError('Daemon evidence is not an object')
-        return result
-    status=decode('Status');guard=decode('Guard');session=evidence['SessionPath']
-    if type(session) is not str or not session:raise ValueError('Missing exact daemon session')
-    owner=status.get('daemonGuardOwnerId')
-    if type(owner) is not str or re.fullmatch('[0-9a-f]{32}',owner) is None:raise ValueError('Invalid daemon owner')
-    if (type(status.get('daemonGuardVersion')) is not int or status['daemonGuardVersion']!=1 or
-        type(guard.get('version')) is not int or guard['version']!=1):raise ValueError('Invalid daemon version')
-    if set(guard)!={'version','sessionPath','ownerId','settled'}:raise ValueError('Invalid guard shape')
-    if status.get('sessionPath')!=session or guard.get('sessionPath')!=session or guard.get('ownerId')!=owner:
-        raise ValueError('Daemon owner/session mismatch')
-    if (status.get('status')!=('stopped' if settled else 'running') or
-        status.get('terminalSettled') is not settled or guard.get('settled') is not settled):
-        raise ValueError('Daemon lifecycle is not exact')
-    return owner
+def daemon_pair_decode(evidence,prefix,settled):
+    return phase_evidence.daemon_pair_decode(evidence,prefix,settled)
 
 def daemon_settlement_proved(evidence):
-    try:return daemon_pair_decode(evidence,'Original',False)==daemon_pair_decode(evidence,'Final',True)
-    except (KeyError,TypeError,ValueError,UnicodeError):return False
+    return phase_evidence.daemon_settlement_proved(evidence)
 
 def phase_cleanup_proved(value):
-    try:
-        if any(k.endswith('Failure') for k in value):return False
-        if not daemon_settlement_proved(value.get('DaemonSettlement')):return False
-        if value['AcceptedGameTurns']!=1 or value['GenuineActionsSent']!=1 or value['ShutdownAttempts']!=1:return False
-        if not value['InputQualified'] or not value['LogicalLifecycleVerified'] or not value['RelayExecutionClosed'] or not rpc_helper_closed(value):return False
-        terminals=value['Terminals']
-        if set(terminals)!={'client','bridge','daemon'}:return False
-        if not all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] and v['StreamEOF'] and all(v['StreamEOF'].values()) for v in terminals.values()):return False
-        running=value['OriginalRunningRecord'];stopped=value['StoppedRecord'];identity=running['Identity']
-        if running['Disposition']!='Running' or stopped['Disposition']!='Stopped' or stopped['Identity']!=identity:return False
-        if stopped['StopEvidence']['Identity']!=identity or stopped['StopEvidence']['Kind']!='OwnedScopeEmpty':return False
-        ack=value['ShutdownReceipt'];proof=ack['status']['terminalStop'];started=value['OriginalRunningStatus']
-        return (ack['ok'] is True and started['ok'] is True and started['status']['terminalRunId']==identity['RunId'] and
-            ack['status']['terminalRunId']==identity['RunId'] and ack['status']['inputBindingId']==started['status']['inputBindingId'] and
-            proof['identity']['runId']==identity['RunId'] and proof['state']=='stopped-within-scope' and
-            proof['cleanupComplete'] is True and proof['authorityRetained'] is False)
-    except (KeyError,TypeError):return False
+    return phase_evidence.relay_phase_cleanup_proved(value)
 
 def phase_admission(seed, previous, current_max, guardian=None):
     if seed.get('kind') != 'seeded-live-mortal' or seed.get('acceptedGmTurn') is not False or seed.get('setupTurn') != 41:
@@ -384,12 +341,13 @@ def phase_admission(seed, previous, current_max, guardian=None):
     if previous is None:
         if current_max != 41:raise ValueError('First phase requires unchanged setup turn')
     else:
-        if not previous.get('Success') or not phase_cleanup_proved(previous):raise ValueError('Prior phase outcome/cleanup incomplete')
-        if not guardian or not (guardian.get('driverExitCode')==0 and guardian.get('echild') is True and guardian.get('emergencySignals')==0 and guardian.get('failures')==0 and guardian.get('deadline') is False):
+        if previous.get('Success') is not True or not phase_cleanup_proved(previous):raise ValueError('Prior phase outcome/cleanup incomplete')
+        if not phase_evidence.guardian_proved(guardian):
             raise ValueError('Prior independent guardian cleanup is not complete')
         if previous.get('SeedSessionId') != seed['sessionId'] or previous.get('BasePath') != seed['basePath']:
             raise ValueError('Prior phase belongs to a different seeded world')
         if previous.get('AcceptedTurnNumber') != current_max:raise ValueError('Prior story turn does not match current world')
+        phase_evidence.retained_bytes_proved(Path(seed['basePath'])/'game_session',previous)
         prior=previous['DaemonSettlement']
         session=str(Path(seed['basePath'])/'game_session')
         if prior.get('SessionPath')!=session:raise ValueError('Prior daemon belongs to another exact session')
@@ -421,7 +379,8 @@ if len(sys.argv)==3 and sys.argv[1]=='--check-mortal-relay-import':
     assert callable(module.request_close) and callable(module.read_close)
     print(json.dumps({'MaintainedRelayImported':True,'GameProcesses':0}));sys.exit(0)
 
-def sha(data):return hashlib.sha256(data).hexdigest()
+def sha(data):
+    return phase_evidence.sha(data)
 
 def checked_action(raw):
     value=raw.decode('utf-8')
@@ -430,19 +389,10 @@ def checked_action(raw):
     return value
 
 def strict_settings(raw):
-    def pairs(items):
-        result={};seen=set()
-        for key,value in items:
-            if key.casefold() in seen:raise ValueError('Duplicate config key')
-            seen.add(key.casefold());result[key]=value
-        return result
-    value=json.loads(raw,object_pairs_hook=pairs)
-    if not isinstance(value,dict):raise ValueError('Config must be object')
-    return value
+    return phase_evidence.strict_settings(raw)
 
 def put_setting(settings,key,value):
-    existing=next((k for k in settings if k.casefold()==key.casefold()),key)
-    settings[existing]=value
+    return phase_evidence.put_setting(settings,key,value)
 
 def checked_story_append(before,after,request):
     if not after.startswith(before):raise ValueError('Prior story bytes changed')
@@ -458,7 +408,7 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
     request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
     rows=[];narratives=[]
     for folder in sorted(queue.glob('request-*'),key=lambda p:int(p.name.split('-')[1])):
-        def read(name):return json.loads((folder/name).read_bytes().decode('utf-8-sig'))
+        def read(name):return strict_settings((folder/name).read_bytes().decode('utf-8-sig'))
         meta=read('request.json')
         if meta['TurnIdentity']!=identity or meta['TurnRequestSHA256']!=sha(request_bytes) or meta['SessionPath']!=str(session_path):raise ValueError('Foreign relay request')
         source_bytes=(folder/'game-request.json').read_bytes()
@@ -477,7 +427,7 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
         response=(folder/'executing-response.json').read_bytes();reply=read('reply.json');started=read('started.json');execution=read('execution.json')
         if reply['QueueId']!=folder.name or reply['PromptSHA256']!=meta['PromptSHA256'] or reply['RequestSHA256']!=meta['RequestSHA256'] or reply['TurnRequestSHA256']!=sha(request_bytes):raise ValueError('Relay reply correlation mismatch')
         if reply['ResponseSHA256']!=sha(response) or started['ResponseSHA256']!=sha(response):raise ValueError('Executed response hash mismatch')
-        if execution!={'Executed':True,'ExitCode':0,'ChildExited':True,'IoDrained':True}:raise ValueError('Relay consumer not settled')
+        if not phase_evidence.execution_closed(execution):raise ValueError('Relay consumer not settled')
         packet=json.loads(response)
         for write in packet['Writes']:
             if write['Path']=='output/narrative_response.json':narratives.append(write['Data']['response'])
@@ -623,24 +573,28 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
 
 assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-helper-dll [previous-result]'
 receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
-receipt_helper_sha=sha(receipt_helper.read_bytes()) # Preparation manifest separately pins adjacent dependencies.
+receipt_helper_sha=sha(receipt_helper.read_bytes())
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
 require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
-seed_bytes=seed_path.read_bytes();seed=json.loads(seed_bytes)
+seed_bytes=seed_path.read_bytes();seed=strict_settings(seed_bytes)
 base=Path(seed['basePath']).resolve();session=base/'game_session';ship=session/'_runtime'
 assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
 assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
 assert os.environ.get('TERM')=='dumb'
+package_manifest,package_sha=phase_evidence.relay_package_preflight(out,ship,__file__)
+phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
 action=checked_action(Path(sys.argv[3]).read_bytes())
-previous=json.loads(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
+previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
 assert hashlib.sha256(setup_line).hexdigest()==seed['setupStoryEntrySha256'], 'Setup marker changed'
 all_entries=[json.loads(line) for path in (session/'stories').glob('*.jsonl') for line in path.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
-guardian=json.loads(Path(sys.argv[5]).with_name('guardian.json').read_bytes()) if previous else None
+guardian=strict_settings(Path(sys.argv[5]).with_name('guardian.json').read_bytes()) if previous else None
 expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
 if previous:
+    assert package_manifest==previous['PhasePackage'], 'Immutable phase package changed'
+    assert previous['ReceiptHelperPins']==package_manifest['ReceiptHelperPins'], 'Receipt helper changed between phases'
     assert previous['SeedManifestSha256']==hashlib.sha256(seed_bytes).hexdigest()
     assert previous['StoryPath']==str(story) and previous['StoryAfterSHA256']==sha(story_before), 'Prior exact story file changed'
     prior_request_bytes=Path(sys.argv[5]).with_name('actual-turn-request.json').read_bytes()
@@ -694,6 +648,7 @@ start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=No
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
+result.update(RuntimePins=package_manifest['RuntimePins'],PhasePackage=package_manifest,PhasePackageSHA256=package_sha,ReceiptHelperPins=package_manifest['ReceiptHelperPins'])
 if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 result.update(SeededLiveMortal=True,SeedSessionId=seed['sessionId'],BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
@@ -836,7 +791,7 @@ def rpc(payload,seconds=2):
         return rpc_peer.request(payload,seconds,identity)
     return observed_rpc(journal,payload,send_original,elapsed)
 
-def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def read_json(p):return strict_settings(p.read_text(encoding='utf-8-sig'))
 def staging_signature():
     # Metadata only in this disposable game's staging namespace. Exclude live
     # daemon/bridge health files and all CLI XDG/auth/session state.
@@ -928,9 +883,10 @@ try:
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
     record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
-    until(lambda:record_path.exists() and status_path.exists() and bool(read_json(status_path).get('transportEndpoint')) and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running and published transport')
+    until(lambda:record_path.exists() and status_path.exists() and phase_evidence.relay_published_owner_join(read_json(record_path),read_json(status_path),pipe,previous),10,'original Running and published transport')
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
+    phase_evidence.require_fresh_owner(record['Identity'],previous)
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
     result['ObservedStartupRecord']=record;result['OriginalRunningStatus']=status
     if record['Disposition']!='Running' or status['status']['terminalUncertain']:
@@ -1024,10 +980,10 @@ try:
                 assert accepted_row==accepted[0]
                 until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
                 result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
-                if sha(receipt_helper.read_bytes())!=receipt_helper_sha:raise ValueError('Immutable evidence helper changed before invocation')
+                phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
                 helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
                 (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
-                if sha(receipt_helper.read_bytes())!=receipt_helper_sha:raise ValueError('Evidence helper changed during invocation')
+                phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
                 result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
                 if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
                 result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
@@ -1151,6 +1107,13 @@ finally:
     daemon_pair_capture(session,daemon_evidence,'Final')
     journal.append({'At':elapsed(),'FinalDaemonEvidence':dict(daemon_evidence)})
     if not daemon_settlement_proved(daemon_evidence):result['DaemonSettlementFailure']='Original daemon terminal settlement unconfirmed'
+    try:
+        closing_package,_=phase_evidence.relay_package_preflight(out,ship,__file__)
+        if closing_package!=package_manifest:raise ValueError('Phase package manifest changed')
+        phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+        result['FinalWorldPins']=phase_evidence.relay_world_inventory(session)
+        result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
+    except Exception as ex:result['PackageIntegrityFailure']=type(ex).__name__+': '+str(ex)
     result['ElapsedSeconds']=elapsed();result['Success']=phase_cleanup_proved(result)
     if controlled_refusal:
         result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())

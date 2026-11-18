@@ -1,8 +1,9 @@
 """#1589 source-only relay lifecycle/continuation contract; no process or game startup."""
 import ast, copy, hashlib, json, pathlib, re, tempfile, unittest
 from pathlib import Path
+import relay_phase_evidence as phase_evidence
 SOURCE=Path(__file__).with_name('live-game-one-turn.py')
-ns=dict(Path=Path,json=json,hashlib=hashlib,re=re)
+ns=dict(phase_evidence=phase_evidence,Path=Path,json=json,hashlib=hashlib,re=re)
 module=ast.parse(SOURCE.read_text())
 exec(compile(ast.Module(body=[n for n in module.body if isinstance(n,ast.FunctionDef)],type_ignores=[]),str(SOURCE),'exec'),ns)
 
