@@ -1057,3 +1057,32 @@ own rejection. Only the spurious receipt error is excluded for unrelated inputs;
 other unrelated validation findings are not treated as whole-state acceptance.
 Official causal RED is UNRUN. Fresh tiny independent state is necessary per case;
 no authority/data cache or heavy game preparation is introduced.
+
+
+### #1589 launch prerequisite: canonical vehicle receipt dispatch scope, 2026-11-18
+
+The pristine rl1 attempt stopped before a GM request. A single authorized public
+validator diagnostic on the settled world returned seven identical
+`resource_owner_vehicle_receipt_invalid` errors; all 79 non-runtime files,
+including `.boe_runtime`, stayed byte-identical. This is an inherited main
+`605ec71` defect: the shared meta validator required vehicle receipt arrays on
+unrelated objects. An absent vehicle root is not itself invalid in Chaos Sea.
+
+Official causal RED at `42b179`: 11 cases, 4 PASS / 7 FAIL, 18.2176326 seconds,
+complete cleanup, no skips, duplicates or timeout. Four canonical vehicle shape
+controls passed; three unrelated state objects and four response controls failed
+only the unwanted receipt requirement. The invalid response command still
+produced its own `active_vehicle_change_invalid_type` error.
+
+WIP source fix restricts only `ValidateLocal` to the exact canonical
+`StorageTransportMoveService.VehiclesPath` dispatch context. It does not return
+from the surrounding method, change command validation, add realm/field guesses,
+rewrite bootstrap state, or expand vehicle gameplay. The dispatcher supplies the
+actual canonical path for file objects and `response` for response commands.
+The unchanged 11 tests are awaiting GREEN; no new live attempt has run.
+
+Optimization: avoid redundant receipt parsing/checks on unrelated meta objects.
+This trivial dispatch predicate needs no new cache; mutable validation authority
+is still checked by the existing path. No speedup measurement or broader feature
+acceptance is claimed. The original rl1 failure and diagnostic evidence remain
+outside Git and are not erased by this candidate fix.
