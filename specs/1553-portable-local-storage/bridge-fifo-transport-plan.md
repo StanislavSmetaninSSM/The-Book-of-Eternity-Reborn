@@ -1351,3 +1351,31 @@ Only the same owner lock may order revocation versus activation. No fabricated
 ClosedObserved receipt, active lost-close relaxation, retry or authority cache.
 Independent RED outcome review and source review of any correction remain
 separate gates; no further game launch or main merge has occurred.
+
+### #1589 stop-fenced revocation candidate: two controls PASS, positive unqualified
+
+Source 15f04630 appends RevokedBeforeActivation without renumbering prior states.
+The original BeginStop lock revokes only reservations still PreparedGrant; its
+snapshot avoids dictionary mutation during bounded terminal-history pruning.
+Active and already Unresolved operations keep their original obligations. Lost
+without an actual stop-fenced revocation still fails closed; no client admission
+comparison was relaxed. Independent source review accepted this narrow change.
+
+Fresh Unit build: 87.02 seconds / 87.365 wall, 85 warnings, zero errors. The sole
+three-case official run completed 2 PASS / 1 FAIL in 47.9790236 seconds with
+complete runner-owned cleanup and no skips, duplicates or timeout. Both negative
+controls passed: pre-stop loss of PreparedGrant or Active retains Unresolved,
+original shutdown NACK and durable Uncertain without StopEvidence, while the
+original native scoped physical cleanup is proven. Both managed teardown tasks
+completed under the shared 18-second bound; no external wait timeout was accepted.
+
+The positive case 7a459f19ea4c439ea3479b0e2953a270 failed its strict metadata
+read before establishing the Stopping/late-activation gate. Cleanup did observe
+the control close and positive original scoped stop ACK, but this is NOT a
+positive GREEN result. The polling observer can overlap the strict namespace
+publication interval, which permits only the publisher's own staging file.
+Use the existing typed Readback observation boundary instead; do not loosen the
+production reader or swallow/retry arbitrary metadata refusals. The exact
+historical transient entry was not captured. Output20 manifest SHA256:
+d4bb5aad3232331bd6bb8b6b83cfbba4feeb5192c5d081ab5cf5c5b4902df24d.
+Raw evidence stays external; no further game launch or merge occurred.
