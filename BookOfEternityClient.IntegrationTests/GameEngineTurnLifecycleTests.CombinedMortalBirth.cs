@@ -35,6 +35,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         const string storageId = "storage_council_materials";
         const string actorRef = "npc_council_store_representative";
         var before = new Dictionary<string, byte[]?>();
+        var artifact = Path.Combine(TestDiagnosticPaths.Root, "combined-mortal-birth", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(artifact);
         JsonNode? mira = null;
         JsonNode? originalMap = null;
         TurnRequest? dispatched = null;
@@ -102,6 +104,21 @@ public sealed partial class GameEngineTurnLifecycleTests
                      { currentPath, mapPath, npcPath, journalsPath, StorageTransportMoveService.VehiclesPath,
                          MortalLivingWorldSource.WorldTimePath, "game_state/inventory/items.json", "game_state/factions/faction_core.json", "game_state/factions/faction_projects.json" }).Distinct(StringComparer.Ordinal))
                 before[path] = await _fs.ReadFileBytesAsync(path);
+            // Read the actual ordinary rollback producer's one owned member, not the later
+            // signed validation snapshot or the pre-entry state before health initialization.
+            var rollbackPath = Assert.Single(Directory.GetFiles(
+                Path.GetDirectoryName(_fs.ResolvePath(ProgressionScheduleService.SchedulePath))!,
+                "progression_schedule.json.rollback.*", SearchOption.TopDirectoryOnly));
+            var relativeRollback = Path.GetRelativePath(_rootPath, rollbackPath);
+            Assert.False(Path.IsPathRooted(relativeRollback) || relativeRollback.StartsWith("..", StringComparison.Ordinal));
+            var rollbackSchedule = await File.ReadAllBytesAsync(rollbackPath);
+            Assert.NotEmpty(rollbackSchedule);
+            before[ProgressionScheduleService.SchedulePath] = rollbackSchedule;
+            await File.WriteAllBytesAsync(Path.Combine(artifact, "schedule-owned-rollback.bin"), rollbackSchedule);
+            await File.WriteAllTextAsync(Path.Combine(artifact, "schedule-owned-rollback.json"),
+                System.Text.Json.JsonSerializer.Serialize(new { path = relativeRollback,
+                    sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(rollbackSchedule)),
+                    reason = "Actual engine rollback member captured at TerminalWaitStarted, after health initialization and before GM writes." }));
             var core = (await ReadCombinedJsonAsync(npcPath)).AsObject();
             mira = core["NPCsInScene"]![0]!.DeepClone();
             originalMap = await ReadCombinedJsonAsync(mapPath);
@@ -205,13 +222,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 - State changes: Only NPCJournals[].journalEntries[] receives my first observation; no relationship, skill or activity change.
                 """);
         }, SeedMortalLivingWorldJourneyActorsAsync, repairInput);
-        // Ordinary rollback restores the image before staging, not the scheduler image
-        // signed later at TerminalWaitStarted. Keep that exact byte expectation separately.
-        var preStagingSchedule = await _fs.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath);
-        // This existing collection has DisableParallelization=true: no other test in this
-        // process overlaps the temporary diagnostic sink/nonce. Restore both even on failure.
-        var artifact = Path.Combine(TestDiagnosticPaths.Root, "combined-mortal-birth", Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(artifact);
+        // Existing collection excludes parallel tests while the diagnostic sink/nonce is owned.
         var nonce = Guid.NewGuid().ToString("N");
         const string nonceVariable = "BOE_TEST_GAME_LOOP_FAILURE_NONCE";
         var originalNonce = Environment.GetEnvironmentVariable(nonceVariable);
@@ -262,7 +273,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
             foreach (var pair in before)
             {
-                var expected = pair.Key == ProgressionScheduleService.SchedulePath ? preStagingSchedule : pair.Value;
+                var expected = pair.Value;
                 var actual = await _fs.ReadFileBytesAsync(pair.Key);
                 if (!(expected is null ? actual is null : actual is not null && expected.AsSpan().SequenceEqual(actual)))
                 {
@@ -309,6 +320,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         var retained = finalCore["NPCsInScene"]!.AsArray().Single(row => row!["NPCId"]?.GetValue<string>() == JourneyScoutId)!;
         Assert.True(JsonNode.DeepEquals(mira, retained));
         var scope = await new LocalInteractionScopeService(_fs).ResolveAsync("Mortal World");
+        var finalIndex = await ReadCombinedJsonAsync(MortalLocationIdentityState.StatePath);
+        var finalFactions = await ReadCombinedJsonAsync("game_state/factions/faction_core.json");
+        var resolverPlanning = MortalLocationAcceptedTurnPlanner.Build(new MortalLocationAcceptedTurnInput(
+            mapAfter.AsObject(), current.AsObject(), finalIndex.AsObject(),
+            RawCurrentLocationData: null, RawWorldMapUpdates: null, Turn: 1));
+        var companionPlanning = MortalLocationAcceptedTurnPlanner.Build(new MortalLocationAcceptedTurnInput(
+            mapAfter.AsObject(), current.AsObject(), finalIndex.AsObject(),
+            RawCurrentLocationData: null, RawWorldMapUpdates: null, Turn: 1, RawFactionCore: finalFactions.AsObject()));
+        await File.WriteAllTextAsync(Path.Combine(artifact, "local-scope.json"), System.Text.Json.JsonSerializer.Serialize(new
+        {
+            scope, plannerWithoutFactionIssues = resolverPlanning.Issues, plannerWithCurrentFactionIssues = companionPlanning.Issues
+        }));
+        foreach (var pair in new[] { ("current", current), ("map", mapAfter), ("index", finalIndex),
+                     ("factions", finalFactions), ("npcs", finalCore) })
+            await File.WriteAllTextAsync(Path.Combine(artifact, "accepted-" + pair.Item1 + ".json"), pair.Item2.ToJsonString());
+        Assert.True(scope.IsResolved, $"Actual local scope unresolved: {scope.UnavailableReason}; full evidence: {artifact}");
         Assert.False(LocalInteractionScopeService.IsMortalActorLocal(scope, retained.AsObject()));
         // Full actors may remain in either canonical carrier; only creation commands
         // and one-time envelopes are consumed, not the canonical UpdateNPCs array.

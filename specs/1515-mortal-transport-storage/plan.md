@@ -2615,3 +2615,12 @@ retain all planner and identity checks, no inferred owner. Cheap causal resolver
 fixtures valid/missing/mismatched faction precede runtime fix, then combined5.
 Read the companion once per scope and carry its snapshot through existing consumer
 freshness checks; no parallel cache/registry. No native retry until packet passes.
+T023 RED source: real LocalInteractionScopeService resolver Theory with3 current
+faction companion states (matching/missing/foreign), expected1causalFAIL/2PASS.
+Production unchanged. New category mortal-local-scope-faction-storage, unit1min.
+Combined fixture now captures the unique real owned scheduler rollback file at
+TerminalWaitStarted; records path/hash and exact bytes externally. Locality
+inputs, scope reason and planner diagnostics are exported before assertions.
+Existing CoordinatedStateWriteHelper authority guard writes already consume all
+Scope.AuthoritySnapshots; future faction companion must join that collection.
+No owner inference/cache/fallback. RED source and fixture corrections UNRUN.

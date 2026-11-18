@@ -19,6 +19,48 @@ public sealed class LocalInteractionScopeServiceTests : IDisposable
         _fs.EnsureDirectoryStructure();
     }
 
+    [Theory]
+    [InlineData("matching", true)]
+    [InlineData("missing", false)]
+    [InlineData("foreign", false)]
+    public async Task ResolveAsync_FactionStorageRequiresActualCurrentFactionCompanion(string companion, bool expectedResolved)
+    {
+        const string factionId = "faction_scope_council";
+        const string factionPath = "game_state/factions/faction_core.json";
+        var faction = EffectMaterializationTestFixture.CreateSameTurnMortalFaction("faction_scope_seed");
+        faction.Remove("initialId"); faction.Remove("isNewFaction");
+        faction["activeEffectDefinitions"] = new JsonArray();
+        faction["factionId"] = companion == "foreign" ? "faction_scope_other" : factionId;
+        faction["materialization"]!["factionId"] = faction["factionId"]!.DeepClone();
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var storage = MortalLocationTestFixture.CreateStorageMetadata("storage_scope_council", "Council chest", false);
+        storage["owner"] = new JsonObject { ["ownerType"] = "Faction", ["ownerId"] = factionId,
+            ["ownerName"] = faction["name"]!.DeepClone() };
+        location["locationStorages"] = new JsonArray(storage);
+        location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject
+            { ["disposition"] = "populated", ["reason"] = null };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+        await _fs.WriteFileAtomicAsync(MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(MortalLocationMaterializationContract.CurrentLocationPath,
+            MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+        await _fs.WriteFileAtomicAsync(MortalLocationIdentityState.StatePath,
+            MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
+        if (companion != "missing")
+            await _fs.WriteFileAtomicAsync(factionPath, new JsonObject { ["factions"] = new JsonArray(faction) }.ToJsonString());
+        var before = await _fs.ReadFileBytesAsync(factionPath);
+        var scope = await new LocalInteractionScopeService(_fs).ResolveAsync("Mortal World");
+        Assert.True(scope.IsResolved == expectedResolved, $"companion={companion}; reason={scope.UnavailableReason}");
+        Assert.Equal(before, await _fs.ReadFileBytesAsync(factionPath));
+        if (expectedResolved)
+        {
+            Assert.Equal(MortalLocationTestFixture.LocationId, scope.LocationId);
+            Assert.Contains(scope.AuthoritySnapshots, entry => entry.Path == factionPath && entry.Json is not null);
+            Assert.True(LocalInteractionScopeService.IsMortalActorLocal(scope,
+                new JsonObject { ["currentLocationId"] = scope.LocationId }));
+        }
+    }
+
     [Fact]
     public async Task ResolveAsync_MortalRequiresReceiptBearingMapCurrentAndIndex()
     {
