@@ -1,6 +1,11 @@
 param([Parameter(Mandatory=$true)][string]$GameSessionPath,[Parameter(Mandatory=$true)][string]$Helper)
 $ErrorActionPreference='Stop'
 . $Helper
+$summary='Original participating operation refused or continuation unconfirmed (IOException; original-connection; AcquireAsync).'
+if((Get-GmOperationFailureKind ("BOE_MAIN_OPERATION_FAILURE {}`n"+$summary)) -cne 'IOException; original-connection; AcquireAsync'){throw 'Separate diagnostics changed original summary classification.'}
+foreach($invalid in @("prefix $summary", "$summary`n$summary",'Original participating operation refused or continuation unconfirmed (IOException; arbitrary; AcquireAsync).')){
+    if((Get-GmOperationFailureKind $invalid) -cne 'Unspecified'){throw 'Diagnostic summary allowlist was broadened.'}
+}
 $script:held=@()
 $script:nestedOriginal=$null
 Invoke-GmParticipatingConsumer $GameSessionPath {

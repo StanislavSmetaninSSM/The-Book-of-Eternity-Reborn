@@ -52,6 +52,21 @@ internal sealed partial class GmSessionRunCoordinator
             pin.Dispose();State=MainOperationState.RevokedBeforeActivation;
             RememberTerminal();
         }
+        internal void LostWithDiagnostic(Exception failure,string stage)
+        {
+#if DEBUG
+            string? nonce=null;MainOperationReply? snapshot=null;
+            lock(owner._sync)
+            {
+                try {nonce=owner._stopDiagnosticNonce;snapshot=Reply;}
+                catch { }
+                finally {Lost();}
+            }
+            MainOperationFailureDiagnostic.Report(nonce,stage,snapshot,failure,owner:snapshot?.Identity);
+#else
+            Lost();
+#endif
+        }
         internal void Lost()
         {
             lock(owner._sync) {

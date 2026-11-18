@@ -6917,6 +6917,7 @@ Write-Log "Watching: $InputDir" -Color DarkGray
             }
         }
         catch {
+            Write-GmOperationDiagnostic 'daemon-main-loop-original-failure' $_
             $script:ErrorCount++
             $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
             Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red

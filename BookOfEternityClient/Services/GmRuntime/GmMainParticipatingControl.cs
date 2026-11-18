@@ -53,6 +53,8 @@ internal static partial class GmMainParticipatingControl
 
     internal static async Task<int> RunAsync(FileSystemManager files, Stream input, Stream output)
     {
+        var diagnosticNonce=MainOperationFailureDiagnostic.ReadNonce();
+        MainOperationClose? originalProjection=null;
         var reader = new MainOperationReader(input);
         using var daemon = new DaemonExchange();
         var explicitClose = false;
@@ -78,7 +80,10 @@ internal static partial class GmMainParticipatingControl
             {
                 try
                 {
-                await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence, originalClose = files.DescribeMainOperationClose(MainOperationOutcome.Completed,false) }, CancellationToken.None);
+                originalProjection=files.DescribeMainOperationClose(MainOperationOutcome.Completed,false);
+                MainOperationFailureDiagnostic.Mark(diagnosticNonce,"helper-before-ready",close:originalProjection);
+                await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence, originalClose = originalProjection }, CancellationToken.None);
+                MainOperationFailureDiagnostic.Mark(diagnosticNonce,"helper-ready-written",close:originalProjection);
                 while (true)
                 {
                     var command = await reader.ReadAsync<Command>(CancellationToken.None, FrameLimit)
@@ -103,7 +108,9 @@ internal static partial class GmMainParticipatingControl
                                 await MutateAsync(files, command, result);
                             }
                         }
-                        catch (Exception failure) { result.Failure = failure; }
+                        catch (Exception failure) { result.Failure = failure;
+                            MainOperationFailureDiagnostic.Report(diagnosticNonce,"command",null,failure,close:originalProjection,sequence:sequence,action:command.Action,owner:originalProjection?.Identity);
+                        }
                         publicationUncertain = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Uncertain;
                     }
                     // Capture belongs to this command, not the whole body. A valid
@@ -121,15 +128,17 @@ internal static partial class GmMainParticipatingControl
                 }
                 }
                 finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }
-            }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; });
+            }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; },
+                beforeCurrentGeneration: _ => { MainOperationFailureDiagnostic.Mark(diagnosticNonce,"canonical-current-generation-lease-acquired"); return Task.CompletedTask; });
             // Successful return includes actual bound finalization and scoped
             // disposal. A guarded local scope does not invent a remote receipt.
             localScopeCompleted = !remoteAdmission;
             await ReplyCloseAsync(false);
             return 0;
         }
-        catch
+        catch(Exception failure)
         {
+            MainOperationFailureDiagnostic.Report(diagnosticNonce,"participating-body-or-finalization",null,failure,close:terminalClose??originalProjection,sequence:sequence,owner:originalProjection?.Identity);
             // SessionOperationContext marks transport loss below before finalization.
             // A reply loss after explicit close cannot reverse an owner receipt.
             if (!explicitClose) files.MarkMainOperationUnresolved();

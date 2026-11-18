@@ -22,8 +22,26 @@ internal static class MainOperationFailureDiagnostic
         MainOperationReply? pin,Exception failure,MainOperationClose? close=null,bool? closing=null,
         long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null)
     {
-        // Test-first observability baseline: existing runtime discarded this failure.
-        return null;
+        if(capturedNonce!=currentNonce || !Guid.TryParseExact(capturedNonce,"N",out _))return null;
+        string? message=null,stack=null,text=null,captureFailure=null;
+        try {message=failure.Message;}catch(Exception error){captureFailure=error.GetType().FullName;}
+        try {stack=failure.StackTrace;}catch(Exception error){captureFailure??=error.GetType().FullName;}
+        try {text=failure.ToString();}catch(Exception error){captureFailure??=error.GetType().FullName;}
+        return new(capturedNonce!,stage,owner,pin,close,closing,sequence,action,
+            failure.GetType().FullName!,message,stack,text,captureFailure==null,captureFailure);
+    }
+    internal static void Report(string? nonce,string stage,MainOperationReply? pin,Exception failure,
+        MainOperationClose? close=null,bool? closing=null,long? sequence=null,string? action=null,GmSessionRunIdentity? owner=null)
+    {
+        try {Write(Capture(nonce,ReadNonce(),stage,pin,failure,close,closing,sequence,action,owner),Console.Error,ReadNonce());}
+        catch { /* Observation must not replace the original failure. */ }
+    }
+    internal static void Mark(string? nonce,string stage,MainOperationReply? pin=null,MainOperationClose? close=null)
+    {
+        try {
+            if(nonce==null || nonce!=ReadNonce())return;
+            Console.Error.WriteLine("BOE_MAIN_OPERATION_MARKER "+JsonSerializer.Serialize(new{Nonce=nonce,Stage=stage,ProcessId=Environment.ProcessId,ObservedAtUtc=DateTime.UtcNow,OriginalPin=pin,OriginalClose=close}));
+        }catch { }
     }
     internal static void Write(Observation? observation,TextWriter sink,string? currentNonce)
     {

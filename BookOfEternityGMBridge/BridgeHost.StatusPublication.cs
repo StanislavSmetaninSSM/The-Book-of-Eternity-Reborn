@@ -49,6 +49,7 @@ internal sealed partial class BridgeHost
 
     private async Task PublishOriginalStatusAsync(SemaphoreSlim signal)
     {
+        GmSessionRunCoordinator? originalPublicationOwner=null;
         try
         {
             while (true)
@@ -61,6 +62,7 @@ internal sealed partial class BridgeHost
                     if (_statusSealed) return;
                     if (publication == null) continue;
                 }
+                originalPublicationOwner=publication.Owner;
                 try
                 {
                 await publication.Owner.RunOperationAsync(async () =>
@@ -96,6 +98,7 @@ internal sealed partial class BridgeHost
                 _statusSettlement.TrySetException(failure);
                 _firstStatus.TrySetException(failure);
             }
+            originalPublicationOwner?.ReportOperationFailure(failure,"status-publication");
             throw;
         }
     }
