@@ -2564,3 +2564,16 @@ deadlock. External mortal-t022/green-corrected/result.log SHA256
 Trace and correct these fixture entry/hook lifetimes without loosening production
 selection, ownership, exact failure or reached-boundary requirements. Combined5
 and native remain UNRUN;22passes do not compensate for the five missing proofs.
+Five failed boundary fixtures corrected in two test files only: None replaced by
+supported selected world_flags validation; the writer-only close hook replaced
+with an actual participating-session continuation close failure; absent live
+history made the prior read latch unreachable, so those two fixtures now seed a
+valid empty history before signing the original. Exact exception and reached
+stages remain mandatory. No production changes. Manifest fixture-owner-correction
+SHA256315a004c588bb4f47130e61b51ae591ecbda168cd3ec127603ba479ee69e0c16.
+The renamed OriginalSessionCloseFailure test is NOT a physical-lease-disposal
+injection. Existing pending-snapshot-qte-custody controls cover borrowed lease
+survival and premature-close refusal; owned-mode close-injection tests are not
+claimed as this wrapper's physical disposal. That injection remains unqualified.
+Rerun the16 completed-location/Browser controls after source review; unchanged
+shape11 PASS is retained, not rerun for count. Combined5/native still pending.

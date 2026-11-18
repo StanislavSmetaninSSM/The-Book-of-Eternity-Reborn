@@ -45,7 +45,7 @@ public sealed partial class MortalLivingWorldPublicationTests
     }
     /// <summary>Creates an actual signed original and raw command, without publishing or issuing comparison DATA.</summary>
     private static async Task<(EffectMaterializationTestContext Context, IReadOnlyDictionary<string, string> Backups,
-        byte[]? OriginalMap)> PrepareLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null)
+        byte[]? OriginalMap)> PrepareLocationComparisonFixtureAsync(FileSystemManagerHooks? hooks = null, bool existingHistory = false)
     {
         var context = await EffectMaterializationTestContext.CreateAsync(hooks);
         try
@@ -54,6 +54,10 @@ public sealed partial class MortalLivingWorldPublicationTests
             context.FileSystem.GetOrCreateSessionGeneration(lease);
         await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
         await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 0 });
+        // An actual existing history file is required for physical read hooks; observed
+        // absence returns before those hooks. Sign this lawful empty DATA with the original.
+        if (existingHistory)
+            await context.WriteJsonAsync(MortalLivingWorldSource.HistoryPath, MortalLivingWorldReceipt.ValidateHistory(null));
         await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
         var originalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_comparison_original", "Original courtyard");
         var originalMap = MortalLocationTestFixture.CreateWorldMap(originalLocation);

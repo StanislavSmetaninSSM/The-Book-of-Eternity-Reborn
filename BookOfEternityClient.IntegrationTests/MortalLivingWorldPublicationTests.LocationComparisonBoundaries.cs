@@ -58,14 +58,16 @@ public sealed partial class MortalLivingWorldPublicationTests
             File.AppendAllText(current.FileSystem.ResolvePath(path), "\n ");
             return Task.CompletedTask;
         } };
-        var prepared = await PrepareLocationComparisonFixtureAsync(hooks);
+        var prepared = await PrepareLocationComparisonFixtureAsync(hooks, existingHistory: true);
         await using var context = prepared.Context;
         var before = await CaptureAsync(context);
         current = context;
         var error = await Record.ExceptionAsync(() => PublishAsync(context, prepared.Backups));
         current = null;
-        Assert.True(reached, "Must reach actual post-validation published-source boundary after allocated receipt.");
+        Assert.True(error is ValidationService.CompletedLocationComparisonRefusedException,
+            $"Expected exact closing-image refusal; reached={reached}, historyReads={finalHistoryReads}, mapReads={closingMapReads}; actual={error}");
         var refusal = Assert.IsType<ValidationService.CompletedLocationComparisonRefusedException>(error);
+        Assert.True(reached, "Must reach actual post-validation published-source boundary after allocated receipt.");
         Assert.Equal("Location publication output changed before completion.", refusal.Message);
         await AssertBytesAsync(context, before);
     }
@@ -161,22 +163,37 @@ public sealed partial class MortalLivingWorldPublicationTests
     }
 
     [Fact]
-    public async Task CompletedLocation_PhysicalCloseFailureCannotReturnSuccessfulIssues()
+    public async Task CompletedLocation_OriginalSessionCloseFailureCannotReturnSuccessfulIssues()
     {
         var armed = false;
         var reached = false;
+        List<ValidationIssue>? completedRead = null;
         var failure = new InvalidOperationException("completed-location-original-close");
-        var hooks = new FileSystemManagerHooks { OrdinaryWriteLeaseCloseContextFactory = () =>
-            armed ? new LocationFailingClose(() => { reached = true; throw failure; }) : null };
+        var hooks = new FileSystemManagerHooks { SessionOperationClosingAsync = () =>
+        {
+            if (armed) { reached = true; throw failure; }
+            return Task.CompletedTask;
+        } };
         var fixture = await PublishLocationComparisonFixtureAsync(hooks);
         await using var context = fixture.Context;
         armed = true;
-        var error = await Record.ExceptionAsync(() => context.Validator.ValidateCompletedLocationStateAsync(
-            fixture.Result, new GameStateValidationSelection(GameStateValidationPhase.CrossReferences)));
-        armed = false;
+        Exception? error;
+        try
+        {
+            error = await Record.ExceptionAsync(() => SessionOperationContext.RunParticipatingCurrentSessionAsync(
+                context.FileSystem, async () => completedRead = await context.Validator.ValidateCompletedLocationStateAsync(
+                    fixture.Result, new GameStateValidationSelection(GameStateValidationPhase.CrossReferences))));
+        }
+        finally { armed = false; }
+        Assert.True(error is MainOperationContinuationException<List<ValidationIssue>>,
+            $"Expected genuine original-session close wrapper; reached={reached}, completedRead={completedRead is not null}; actual={error}");
+        var refused = Assert.IsType<MainOperationContinuationException<List<ValidationIssue>>>(error);
+        Assert.Same(failure, refused.InnerException);
         Assert.True(reached);
-        Assert.NotNull(error);
-        Assert.Contains(failure.Message, error!.ToString());
+        Assert.NotNull(completedRead);
+        Assert.Same(completedRead, refused.EstablishedResult);
+        Assert.DoesNotContain(completedRead!, issue => issue.Code == "current_location_unknown_location_id");
+        // This proves the real participating session's closing boundary, not an injected physical lease disposal.
     }
 
     [Fact]
@@ -194,9 +211,9 @@ public sealed partial class MortalLivingWorldPublicationTests
         var fixture = await PublishLocationComparisonFixtureAsync(hooks);
         await using var context = fixture.Context;
         current = context; armed = true;
-        // No consumer reads: the two live-map reads belong to opening/closing evidence.
+        // The supported selected world-flags phase has no map consumer; live-map reads are opening/closing evidence.
         var error = await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(() => context.Validator.ValidateCompletedLocationStateAsync(
-            fixture.Result, new GameStateValidationSelection(GameStateValidationPhase.None)));
+            fixture.Result, new GameStateValidationSelection(GameStateValidationPhase.WorldQuestCombatFactionStateFiles, ["game_state/world/world_flags.json"])));
         armed = false;
         Assert.Equal(2, reads);
         Assert.Equal("Completed location published image changed.", error.Message);
@@ -216,15 +233,13 @@ public sealed partial class MortalLivingWorldPublicationTests
         await using var context = fixture.Context;
         armed = true;
         await context.Validator.ValidateCompletedLocationStateAsync(fixture.Result,
-            new GameStateValidationSelection(GameStateValidationPhase.None));
+            new GameStateValidationSelection(GameStateValidationPhase.WorldQuestCombatFactionStateFiles, ["game_state/world/world_flags.json"]));
         var proofReads = manifestReads;
         Assert.True(proofReads > 0);
         manifestReads = 0;
         var issues = await context.Validator.ValidateCompletedLocationStateAsync(fixture.Result,
             new GameStateValidationSelection(GameStateValidationPhase.CrossReferences | GameStateValidationPhase.NpcStateFiles));
         armed = false;
-        Assert.Equal(proofReads, manifestReads);
-        Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
         var selectedReads = manifestReads;
         manifestReads = 0;
         armed = true;
@@ -239,13 +254,10 @@ public sealed partial class MortalLivingWorldPublicationTests
             allManifestReads = manifestReads, allIssueCodes = allIssues.Select(issue => issue.Code).ToArray(),
             scope = "Real All invocation; unrelated fixture validity is not asserted. No timing or cache-speed claim."
         }));
+        Assert.Equal(proofReads, selectedReads);
+        Assert.DoesNotContain(issues, issue => issue.Code == "current_location_unknown_location_id");
         Assert.True(manifestReads >= proofReads);
         Assert.DoesNotContain(allIssues, issue => issue.Code == "current_location_unknown_location_id");
     }
 
-    /// <summary>Injected close failure for the actual lease, not a fabricated owner.</summary>
-    private sealed class LocationFailingClose(Action close) : IDisposable
-    {
-        public void Dispose() => close();
-    }
 }
