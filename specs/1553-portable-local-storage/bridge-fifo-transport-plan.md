@@ -691,3 +691,30 @@ Optimization: this removes untrusted advisory reads from Linux startup; it does
 not cache or skip any locked main-owner/durable-state check. No speedup claim.
 AST3 plus actual contender/restart1 await post-patch source review/execution;
 no broader tests or live game were run for this source checkpoint.
+
+Reviewed source4e1d54 bounded GREEN: official two categories completed4/4 PASS
+in23.3187738s, no timeout/skips/duplicate IDs, complete owned-tree cleanup.
+The runner serialized exclusive actual-host1 before AST3. C# source/binaries
+were unchanged since the causal build, so no unnecessary rebuild was performed;
+AST tests explicitly read the current repository launcher source, SHA256
+c4ab8244b2b939b78df955ae0656ae15dc588358c82815c6a9890df22f62d6aa.
+Host1 is first-run positive coverage, not a claimed prior causal RED.
+
+Actual scenario8c60ce96c8ad4ff1997aded3a01b395a observed39 main-guard contention
+callbacks and held-native-root counts [1,0,1]. The refused contender preserved
+the original durable Running identity, published descriptor and identity fields;
+original status RPC remained usable. Original runc185fe34e9c24c20875dce2e74be34fa,
+epoch1, stopped through its exact expected-identity request and matching ACK/full
+Stopped proof. Same-config restart established run76bbf104e2f14bc7a8e38bbe7584985b,
+epoch2 in the same generation40d95ae925124082b96e56e31c3ac1f0, then independently
+closed through its own matching ACK/full Stopped proof. Both host exits were0;
+config bytes remained unchanged. The intended contender IOException is retained,
+not hidden or claimed an error-free trace. Guardian: driver0, ECHILD, reaped1,
+zero emergency signals/failures, no deadline.
+
+Raw bridge-restart-green-official.log and scenario evidence remain outside Git;
+runner20261117-215643-834-6-1fb40e9f6fe44b3992db287a69a5afb6-categories.
+No broad suite, live action, failed-world replay, status deletion or PID kill was
+performed. This bounded startup correction still requires independent outcome
+acceptance and exact packaged-script delivery before a fresh live continuation.
+Source and build outputs are frozen at this checkpoint.
