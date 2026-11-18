@@ -120,7 +120,7 @@ public sealed class BridgeStatusContentionTests : IDisposable
     private static bool ContainsOriginal(Exception? error, Exception original) =>
         ReferenceEquals(error, original) || error is AggregateException aggregate && aggregate.InnerExceptions.Any(item => ContainsOriginal(item, original)) ||
         error?.InnerException != null && ContainsOriginal(error.InnerException, original);
-    private sealed class SharingShapedFailure : IOException { internal SharingShapedFailure() : base("non-acquisition sentinel") { HResult = unchecked((int)0x80070020); } }
+    private sealed class SharingShapedFailure : IOException { internal SharingShapedFailure() : base("non-acquisition sentinel") { HResult = OperatingSystem.IsLinux() ? 11 : unchecked((int)0x80070020); } }
     private sealed class ThrowingClose(Exception failure) : IDisposable { internal int Calls; public void Dispose() { Calls++; throw failure; } }
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, true); }
 }

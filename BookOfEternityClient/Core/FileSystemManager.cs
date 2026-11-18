@@ -1087,9 +1087,28 @@ public partial class FileSystemManager
     /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
+        await WriteOrdinaryFileAtomicBytesAsync(relativePath, content, observation, deferOriginalContention: false);
+    }
+
+    private async Task<bool> WriteOrdinaryFileAtomicBytesAsync(
+        string relativePath, byte[] content, NarrativeWriteObservation? observation, bool deferOriginalContention)
+    {
         var contextFactory = _hooks?.OrdinaryWriteLeaseCloseContextFactory;
         using var freshHookData = contextFactory is null ? null : SuppressValidationReuse();
-        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        var occurrence = new object();
+        CanonicalWriteLease writeLock;
+        try
+        {
+            writeLock = await AcquireCanonicalWriteLeaseWithAmbientAsync(
+                CanonicalWritePurpose.SessionMutation, default, acquisitionOccurrence: occurrence);
+        }
+        catch (CanonicalLockContention failure) when (deferOriginalContention &&
+            ReferenceEquals(failure.Manager, this) && ReferenceEquals(failure.Occurrence, occurrence))
+        {
+            // CompleteCanonicalWriteLeaseAcquisitionAsync has already unwound admission.
+            // No acquired lease, writer body or release path is reclassified here.
+            return false;
+        }
         IDisposable? hookMutation = null;
         Exception? publicationUncertainty = null;
         try
@@ -1118,6 +1137,7 @@ public partial class FileSystemManager
             finally { hookMutation?.Dispose(); }
         }
         observation?.PublicReturned();
+        return true;
     }
 
     /// <summary>
@@ -4699,7 +4719,7 @@ public partial class FileSystemManager
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null, object? acquisitionOccurrence = null)
     {
         var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);
         var registration = new AmbientCanonicalLeaseRegistration(
@@ -4708,21 +4728,21 @@ public partial class FileSystemManager
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
             purpose,
-            cancellationToken, workerPurpose, mainAdmission);
+            cancellationToken, workerPurpose, mainAdmission, acquisitionOccurrence ?? new object());
     }
 
     private async Task<CanonicalWriteLease>
         CompleteCanonicalWriteLeaseAcquisitionAsync(
             AmbientCanonicalLeaseRegistration registration,
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission, object acquisitionOccurrence)
     {
         try
         {
             await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
-                cancellationToken, workerPurpose);
+                cancellationToken, workerPurpose, acquisitionOccurrence);
             writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
@@ -4754,7 +4774,7 @@ public partial class FileSystemManager
     /// </returns>
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
-        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
+        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, object acquisitionOccurrence)
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
@@ -4790,6 +4810,11 @@ public partial class FileSystemManager
                     await InvokeRecoveryValidationCallbackAsync(_hooks.CanonicalWriteLockContendedAsync);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
+            }
+            catch (IOException failure) when (IsSupportedConstructorSharingFailure(failure))
+            {
+                parentAuthority.Dispose();
+                throw new CanonicalLockContention(this, acquisitionOccurrence, failure);
             }
             catch
             {
