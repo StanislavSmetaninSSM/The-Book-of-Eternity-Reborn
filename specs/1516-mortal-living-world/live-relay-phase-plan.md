@@ -977,3 +977,15 @@ Independent T021 source review has meanwhile cleared the17-case field/component
 fixture (not whole faction validity or live-owner qualification). Fresh build and
 causal RED are separate from the unchanged mm3 native package. No raw logs or
 game saves are published; the failed quiet attempt is not T016 completion.
+
+T021 causal RED is confirmed against published test source2a0a316: fresh
+integration build68.35s (wall68.777),129 warnings,zero errors. PlanOnly selected
+exactly17 cases, executed none in7.5432222s. Official category
+mortal-faction-null-priorities then executed17:14 PASS/3 FAIL in14.2176257s,
+complete owned cleanup, no skips/duplicates/timeouts. Both public declaration
+and selected canonical null fail at expected_object; complete-group normalization
+reaches consumed-command, copied group/null, sibling/backup preservation and
+nonmutation assertions before final null rejection. This is causal validator
+RED, not setup failure. Result identity
+20261118-072332-835-5-eceae86a593e4852941b53884492e704-categories.
+Production still unchanged at this checkpoint; the minimal null guard is next.
