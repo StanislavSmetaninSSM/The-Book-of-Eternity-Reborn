@@ -183,3 +183,41 @@ bridge and daemon exited0 with EOF/termios, original owner Stopped. Guardian
 physical drain does not substitute for client normal exit. No continuation is
 admitted from this failed result. The actual partial scout inspection is not
 completion, public news, XP, or whole-issue qualification.
+
+### Detached live evidence checker: causal RED and implementation awaiting GREEN
+
+The narrow `mortal-live-evidence-data` category completed 9 cases: 7 PASS and
+2 expected refusal-stub FAIL, official runner 9.9625758 seconds with complete
+cleanup. Owning build completed in 39.57 seconds, 0 errors / 66 warnings.
+The two positives cover production receipt/manifest correlation and explicit
+captured-file reads without mutation. Negative cases cover fingerprint/payload,
+request/action/duplicate-property mismatch and extra/missing append.
+
+The test-support-only implementation now uses the existing strict JSON parser,
+production snapshot payload hash and production revision-2 receipt validator.
+It requires exactly one appended receipt, an unchanged prior history prefix and
+exact original request/snapshot correlation. The CLI emits detached DATA only,
+never publication authority; missing current receipt is refusal. UTF8 inputs are
+read once each, with at most one leading UTF8 BOM. No runtime owner, lease,
+FileSystemManager, source mutation or retained cache is introduced. Fresh reads
+are required for this one-shot observation; stable parsed DATA stays local to
+one call. No speedup is claimed. Raw file authentication, current ownership,
+actual domain effects and accepted story/GM output are separate driver checks.
+Implementation is unbuilt/unrun pending independent review and official GREEN;
+this does not reclassify the earlier failed live phase or authorize its replay.
+
+Observer correction is restricted to assessed Mortal phases with a mandatory
+living-world receipt. CLI now requires an immutable evidence-helper DLL after the
+action-file argument, before optional prior-result. It captures one pre-action
+state baseline, then original pending manifest/authority/snapshot at the actual
+request. First relay Witnesses must match those raw records. Story matching uses
+actual Mortal turn/player/realm plus immutable prefix and one append, rejects a
+conflicting optional requestId, and separately binds exact session/request/turn
+through the production-typed receipt checker and hash-bound final GM narrative.
+Missing or mismatched receipt refuses. Earlier accepted living-history bytes
+must remain exact at continuation. Failure and cleanup admission are unchanged;
+no previous failed result can become a continuation token. The checker is invoked
+once after acceptance candidate, never in the polling loop. Original absent
+requestId was causal inert RED; corrected story/receipt checks pass with eight
+negative tuple/fingerprint cases plus raw-snapshot tamper refusal. Actual live
+verification of this revised observer is still UNRUN.

@@ -478,6 +478,21 @@ def checked_typed_receipt(value,request):
         raise ValueError('Typed receipt fingerprints missing')
     return value
 
+if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-cleanup-observation':
+    # Source-order regression, not a runtime/ownership qualification.
+    import ast
+    tree=ast.parse(Path(__file__).read_text())
+    branch=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and isinstance(n.test,ast.Name) and n.test.id=='accepted')
+    lines={}
+    for n in branch.body:
+        if isinstance(n,ast.Assign):
+            for target in n.targets:
+                if isinstance(target,ast.Name) and target.id in ('client_wait','client_prompt','helper'):lines[target.id]=n.lineno
+                if isinstance(target,ast.Subscript) and isinstance(target.slice,ast.Constant) and target.slice.value=='AcceptedGameTurns':lines['accepted']=n.lineno
+    assert lines['client_wait']<lines['helper'] and lines['client_prompt']<lines['helper']<lines['accepted']
+    print('PASS observed UI cleanup state precedes fallible verifier; accepted evidence remains later')
+    sys.exit(0)
+
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-story-contract':
     request={'sessionId':'s','requestId':'r','turnNumber':42,'playerAction':'a'}
     before=b'{"turn":41}\n'
@@ -924,6 +939,8 @@ try:
                 assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
                 assert not (session/'game_state/control/pending_turn_snapshot.authority.json').exists()
                 assert not (session/'ready/turn_complete.json').exists() and not (session/'ready/turn_error.json').exists()
+                # Observed UI state is cleanup DATA, not accepted-game evidence.
+                client_wait=False;client_prompt=True
                 assert len(accepted)==1
                 story_after=story.read_bytes();accepted_row=checked_story_append(story_before,story_after,request)
                 assert accepted_row==accepted[0]
@@ -937,7 +954,7 @@ try:
                 result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
                 result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
                 result['AcceptedTurnNumber']=expected_turn
-                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True
+                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
                 delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
                 result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
                     delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and

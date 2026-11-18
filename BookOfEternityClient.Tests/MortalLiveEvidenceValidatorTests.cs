@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Collection("desktop-helper-console")]
 public sealed class MortalLiveEvidenceValidatorTests
 {
     private static (string History, string Manifest, string Request, string Token) Evidence()
@@ -65,6 +66,35 @@ public sealed class MortalLiveEvidenceValidatorTests
         }
         if (fault == "no-append") prior = history;
         Assert.Throws<InvalidDataException>(() => MortalLiveEvidenceValidator.Validate(prior, history, manifest, request));
+    }
+
+    [Fact]
+    public async Task ActualCliBoundaryReturnsOneRefusalForTamperedTypedEvidence()
+    {
+        var evidence = Evidence();
+        var root = Path.Combine(TestDiagnosticPaths.Root, "live-evidence-cli", Guid.NewGuid().ToString("N"));
+        var previous = Console.Out;
+        using var output = new StringWriter();
+        try
+        {
+            var baseline = Path.Combine(root, "before"); var current = Path.Combine(root, "current");
+            Directory.CreateDirectory(Path.Combine(baseline, "game_state/control"));
+            Directory.CreateDirectory(Path.Combine(current, "game_state/world"));
+            await File.WriteAllTextAsync(Path.Combine(baseline, "game_state/control/pending_turn_snapshot.json"), evidence.Manifest);
+            await File.WriteAllTextAsync(Path.Combine(current, MortalLivingWorldSource.HistoryPath), evidence.History.Replace("sha256:", "bad:"));
+            var request = Path.Combine(root, "actual-request.json");
+            await File.WriteAllTextAsync(request, evidence.Request);
+            Console.SetOut(output);
+            var exit = await MortalLiveEvidenceValidator.RunAsync(baseline, current, request);
+            Assert.Equal(2, exit);
+            Assert.Equal("{\"valid\":false,\"publicationAuthority\":false,\"errorCode\":\"typed_evidence_invalid\"}" + Environment.NewLine,
+                output.ToString());
+        }
+        finally
+        {
+            Console.SetOut(previous);
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
     }
 
     [Fact]
