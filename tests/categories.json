@@ -2,6 +2,58 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-explorer-participation-data",
+      "responsibility": "#1515 T026 shared actual GameEngine Explorer dispatch source route and initialized/cold/foreign/nested session DATA boundaries.",
+      "excludes": "No actual main-process owner or live storage movement; missing-generation refusal is causal RED on direct dispatch.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ExplorerDispatch.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.Explorer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerParticipatingDispatchTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-explorer-participation-owner",
+      "responsibility": "#1515 T026 actual neutral BridgeHost begin/activate/close endpoint with real Explorer inventory/resource projection, original Running/Stopping owner and owned cleanup.",
+      "excludes": "No live GM, game turn, storage mutation, legacy save adaptation or production acceptance claim.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ExplorerDispatch.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.Explorer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerParticipatingOwnerTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-outcome-applicability",
       "responsibility": "Detached Mortal outcome union: production no-receipt applicability, strict append preservation, exact captured inputs, real serialized C# to Python consumption and optional-history final-pin joins.",
       "excludes": "No native execution, gameplay publication authority or broadening of the strict appended-receipt validator.",

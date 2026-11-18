@@ -14,13 +14,14 @@ internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready" or "terminal-main-explorer-dispatch" or "terminal-main-explorer-stopping"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var race = mode == "terminal-main-prepared-stop-race";
         var loss = mode is "terminal-main-loss-prepared" or "terminal-main-loss-active";
         var nested = mode == "terminal-main-nested-heartbeat";
         var heldReady = mode == "terminal-main-held-ready";
+        var explorer = mode is "terminal-main-explorer-dispatch" or "terminal-main-explorer-stopping";
         var diagnostic = soak || race || loss || nested || heldReady;
         var expectedLossProven = false;
         var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
@@ -34,7 +35,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : nested || heldReady ? 30 : race || loss ? 20 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : nested || heldReady || explorer ? 30 : race || loss ? 20 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -46,6 +47,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             var root = Directory.GetParent(launch.Scratch)!.FullName;
             var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             files.EnsureDirectoryStructure();
+            var explorerFixture = explorer ? await ExplorerParticipationFixture.CreateAsync(files) : null;
             host = new BridgeHost(launch.Scratch, "consumer-" + Guid.NewGuid().ToString("N"));
             host.ConfigureNeutral(launch);
             var stoppingReadback = new TaskCompletionSource<GmSessionRunRecord>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -97,7 +99,19 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (endpoint.Kind != expectedKind) throw new IOException("Actual host transport disagrees with fresh socket capability.");
             if (!TransportEntryExists(endpoint.Address)) throw new IOException("Published transport entry is absent before use.");
             result["ActualEndpoint"] = endpoint;
-            if (heldReady)
+            if (explorer)
+            {
+                if (mode == "terminal-main-explorer-stopping")
+                    await VerifyExplorerStoppingAsync(explorerFixture!, host, original!, output, result, deadline.Token);
+                else
+                {
+                    await VerifyExplorerDispatchAsync(explorerFixture!, original!, result, deadline.Token);
+                    using var shutdown = await LauncherAsync("shutdown-bridge", launch.Scratch, output, deadline.Token);
+                    if (!shutdown.RootElement.GetProperty("ok").GetBoolean() || shutdown.RootElement.GetProperty("fallbackUsed").GetBoolean() ||
+                        shutdown.RootElement.GetProperty("status").GetString() != "original-scoped-stopped") throw new IOException("Original Explorer shutdown receipt missing.");
+                }
+            }
+            else if (heldReady)
             {
                 if(endpoint.Kind!="linux-fifo-v1")throw new IOException("Held-ready control requires actual FIFO.");
                 var directory=new DirectoryInfo(AppContext.BaseDirectory);
@@ -237,7 +251,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (pin != null)
                 try { await pin.DisposeAsync(); }
                 catch (Exception error) { result["PinDisposeFailure"] = error.ToString(); exit = 1; }
-            if (loss && host != null && running != null)
+            if ((loss || explorer) && host != null && running != null)
             {
                 // Two serialized original stop attempts each retain the production 5s
                 // pin drain. One 18s observation budget leaves reserve under guardian50.

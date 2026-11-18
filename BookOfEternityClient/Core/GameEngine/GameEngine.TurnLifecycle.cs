@@ -1381,7 +1381,7 @@ public partial class GameEngine
             // Check for local explorer commands
             if (_explorer.IsCommand(input))
             {
-                var result = await _explorer.TryProcessCommand(input);
+                var result = await DispatchExplorerForCurrentSessionAsync(_fs, _explorer, input);
                 if (result != null)
                 {
                     var inPlaceGmRequest = _explorer.ConsumePendingInPlaceGmRequest();
@@ -1463,7 +1463,7 @@ public partial class GameEngine
             waitingText: request.WaitingMessage,
             playerFacingTurn: false);
 
-        var refreshResult = await _explorer.TryProcessCommand(request.OriginalCommand);
+        var refreshResult = await DispatchExplorerForCurrentSessionAsync(_fs, _explorer, request.OriginalCommand);
         var repeatedInPlaceRequest = _explorer.ConsumePendingInPlaceGmRequest();
         if (repeatedInPlaceRequest != null)
         {
