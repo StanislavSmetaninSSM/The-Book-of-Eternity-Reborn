@@ -3200,3 +3200,11 @@ Manifest consistency remains DATA, not signature authentication. Explicit GO for
 causal RED/source checkpoint, complete consumer implementation, independent SOURCE
 review and narrow official GREEN. mm11 stays immutable/failed as harness and is
 not a continuation source. Fresh package/native work waits for this complete gate.
+T025 first causal RED source saved: two actual ReadAsync cases (absent history,
+unchanged valid prior receipt) establish real scheduler/assessment/full-schedule
+legal480→500 prerequisites before the old helper. Independent Astra High SOURCE
+review accepted exact test3e0abe7c and narrow2-minute category; expected failures
+are missing current history and strict+1 refusal, not malformed fixture/setup.
+Strict old helper unchanged. Fresh Unit build/official two-case RED authorized;
+actual exception sites must confirm causality. Successful-return inventory assert
+cannot prove exception-path immutability, so no such RED claim is made.
