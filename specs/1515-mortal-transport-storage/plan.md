@@ -2428,3 +2428,13 @@ setup/compile failure is not causal RED. Foreign/drift/repair/invocation proofs
 remain required for the actual privately issued implementation. Combined fixture
 prose, original scheduler before-image and canonical actor-carrier oracles are
 corrected but unrun. No production after-image permission has been implemented.
+
+The first T022 preparation build failed before discovery/execution: the new
+projection test omitted the Core namespace for FileSystemManager (CS0246 twice
+on line41). Integration109.31s/177warnings/2errors;3437source pins unchanged.
+This is a test-source compile error, NOT causal RED. Add the missing using only,
+preserve the failed build externally at mortal-t022/red, then rebuild the same
+seven-case selection. No runtime/combined/native test ran. Separately, four new
+source files at exact a27e1087 were downloaded via GitHub API into a new empty
+external directory and verified against Git blob hashes and SHA256; this proves
+only those four file recoveries, not a complete checkout/build recovery.
