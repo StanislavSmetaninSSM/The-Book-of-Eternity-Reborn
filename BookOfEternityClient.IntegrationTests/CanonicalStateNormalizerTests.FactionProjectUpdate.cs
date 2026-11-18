@@ -1,7 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -40,10 +38,8 @@ public sealed partial class CanonicalStateNormalizerTests
         await AddFactionBackupAsync(backups, MortalFactionProjectsPath, original);
         await _fs.WriteFileAtomicAsync(MortalFactionProjectsPath, submitted.ToJsonString());
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """{"currentRealm":"Mortal World","currentIncarnation":1}""");
-        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        using (var response = JsonDocument.Parse(new JsonObject {
-            ["factionProjectUpdates"] = new JsonArray(command.DeepClone()) }.ToJsonString()))
-            Assert.DoesNotContain(validator.ValidateResponse(response.RootElement), issue => issue.Severity == IssueSeverity.Error);
+        // This fixture qualifies the component transform, not public command acceptance.
+        // ValidateResponse requires an authenticated pre-turn index, independent of reducer backups.
         var originalBytes = await _fs.ReadFileBytesAsync(backups[MortalFactionProjectsPath]);
         var expected = original.DeepClone();
         expected["activeProjects"]![0]!["timeSpentMinutes"] = 240;
@@ -56,5 +52,11 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.False(actual.ContainsKey("factionProjectUpdates"));
         Assert.True(JsonNode.DeepEquals(expected, actual), actual.ToJsonString());
         Assert.Equal(originalBytes, await _fs.ReadFileBytesAsync(backups[MortalFactionProjectsPath]));
+
+        var validator = new ValidationService(_fs,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalFactionProjectsPath]));
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
     }
 }

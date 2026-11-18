@@ -776,3 +776,24 @@ did not compensate or rewrite canonical state; accepted p02 remains immutable
 evidence. T020 tracks a cheap causal RED, minimal preservation fix and selected
 controls. Do not call faction-project behavior clean or continue project-focused
 live qualification until that defect is resolved. No full-issue closure.
+
+
+### T020 fixture scope correction before causal RED
+
+Two preliminary two-case runs failed before the reducer at an orthogonal raw
+response-validation assertion: its faction-project index requires authenticated
+pre-turn originals, and current flat tracker files/normalizer backup entries are
+not that authority. Merely moving the assertion after current seed writes did
+not satisfy that contract. These are fixture failures, not the preservation RED.
+Production and accepted mm2 remain unchanged.
+
+Ruling: keep this regression at the real normalizer component boundary rather
+than fabricate authority or add a complete signed-owner journey just to satisfy
+an unrelated validation prerequisite. Remove only that extra raw-response
+assertion; retain the causal whole-project expected state, supplied time/step,
+omitted name, explicit rename control, siblings, other owner, immutable history,
+backup bytes and command consumption. A selected persisted-project post-check
+can verify the output shape, not full request acceptance. Actual live mm2 and
+Rule19.F.2 establish the supported partial-command premise separately. This
+narrowing gives up a public-acceptance claim in this cheap fixture, not any
+project-preservation assertion. No production index or source guard changes.
