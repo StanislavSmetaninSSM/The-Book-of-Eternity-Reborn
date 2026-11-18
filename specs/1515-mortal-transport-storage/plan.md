@@ -3456,3 +3456,12 @@ retainedacrossmenu. All8testsunchanged. FocusedSOURCEreview/freshGREEN pending.
 No newGM-authoredcontract/field or capability, so no prompt/example schema change.
 Cost isexistingadmission/finalization plusoneunboundtypedgenerationread; nonewcache,
 newauthority orclaimed speedup. Livegameconsumer remainsunqualified untilnewrun.
+T026 minimalfix SOURCE independentlyaccepted,all10pins/existingoverload/leaseclose/
+finalizationchecked; two boundedcategories sufficient. FreshofficialGREEN8/8PASS,
+2descriptors,22.5057196s runner(24.654wall),completecleanup/noskipsdups/timeouts.
+Build90.67s(90.922wall),91warnings/0errors;3496source/8outputs unchanged. Actual
+neutralRunning sharedmenu reached withfreshpostreturnoperation/originalclose/Stopped/
+endpointgone; genuineStoppingrefusalretained. BothhostDispose/join andguardian0/
+ECHILD/noemergency/failures complete. Externalmortal-t026/dispatch-green contains
+fullcaptures. IndependentOUTCOMEaudit pending; no livegame ormm12retry. Neutral
+protocolGREEN provesboundedcorrection, not realpermission/movement/Save-Load.
