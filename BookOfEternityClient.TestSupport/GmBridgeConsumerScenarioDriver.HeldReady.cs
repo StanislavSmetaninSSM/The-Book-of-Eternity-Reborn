@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
+using BookOfEternityGMBridge;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -6,12 +9,15 @@ using BookOfEternityClient.Services.GmRuntime;
 namespace BookOfEternityClient.Tests;
 internal static partial class GmBridgeConsumerScenarioDriver
 {
-    // DRAFT: called only after actual initial Running status publication, with no
-    // intervening launcher status mutations. No arbitrary sleep or new authority hook.
-    private static async Task<bool> VerifyHeldReadyAsync(FileSystemManager files, string status, string session,
+    // Real original owner, one cooperative cancellation, no authority/retry hook.
+    private static async Task<bool> VerifyHeldReadyAsync(FileSystemManager files, string status, string session, BridgeHost host,
         string repo, string output, GmSessionRunRecord original,
         Dictionary<string,object?> result, CancellationToken token)
     {
+        result["HeldReadyInitialStatusSHA256"]=Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(status))).ToLowerInvariant();
+        var statusEntered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var oldStatusObserver=host.BeforeStatusPublication;
+        var gate=new object();var statusEntries=0;DateTimeOffset? firstStatusEntryAt=null,secondStatusEntryAt=null;
         var held=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         MainOperationClose? holderClose=null;bool holderObserved=false;
@@ -26,10 +32,36 @@ internal static partial class GmBridgeConsumerScenarioDriver
         Exception? primary=null;var cleanupFailures=new List<string>();
         var events=new List<JsonElement>();
         var nonce=Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
-        DateTimeOffset? timeoutAt=null,stdinAt=null,releaseAt=null;
+        DateTimeOffset? timeoutAt=null,cancelAt=null,releaseAt=null;
         try
         {
-            await held.Task.WaitAsync(token);
+            await Task.WhenAny(held.Task,holder).WaitAsync(token);
+            if(!held.Task.IsCompletedSuccessfully){await holder;throw new IOException("Holder ended before acquisition.");}
+            host.BeforeStatusPublication=()=>{
+                lock(gate){
+                    statusEntries++;
+                    if(statusEntries==1){firstStatusEntryAt=DateTimeOffset.UtcNow;statusEntered.TrySetResult();}
+                    if(statusEntries==2){secondStatusEntryAt=DateTimeOffset.UtcNow;ReleaseIfBothObserved();}
+                }
+                return Task.CompletedTask;
+            };
+            var heldStatus=await BridgeTransportConnector.RequestAsync(status,JsonSerializer.Serialize(new{command="setready",ready=false}),3000,token);
+            await File.WriteAllTextAsync(Path.Combine(output,"held-ready-status-queued.json"),heldStatus,token);
+            using(var queued=JsonDocument.Parse(heldStatus)){
+                if(!queued.RootElement.GetProperty("ok").GetBoolean()||queued.RootElement.GetProperty("status").GetProperty("terminalRunId").GetString()!=original.Identity.RunId)
+                    throw new IOException("Real original status queue refused.");
+                result["HeldReadyQueuedStatusUpdatedAt"]=queued.RootElement.GetProperty("status").GetProperty("updatedAtUtc").GetString();
+            }
+            await statusEntered.Task.WaitAsync(token);
+            // First callback follows pending dequeue. This second REAL queue retains
+            // newer DATA and a real signal, not a diagnostic retry/self-signal.
+            var newerRaw=await BridgeTransportConnector.RequestAsync(status,JsonSerializer.Serialize(new{command="setready",ready=false}),3000,token);
+            await File.WriteAllTextAsync(Path.Combine(output,"held-ready-newer-status-queued.json"),newerRaw,token);
+            using(var newer=JsonDocument.Parse(newerRaw)){
+                if(!newer.RootElement.GetProperty("ok").GetBoolean())throw new IOException("Newer status queue refused.");
+                result["HeldReadyNewerStatusUpdatedAt"]=newer.RootElement.GetProperty("status").GetProperty("updatedAtUtc").GetString();
+                if(Equals(result["HeldReadyQueuedStatusUpdatedAt"],result["HeldReadyNewerStatusUpdatedAt"]))throw new IOException("Two distinct queue snapshots not established.");
+            }
             var start=new ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardInput=true,
                 RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=repo};
             foreach(var arg in new[]{"-NoProfile","-File",Path.Combine(repo,"tests/fixtures/ProductionMain/held-ready.ps1"),
@@ -40,14 +72,15 @@ internal static partial class GmBridgeConsumerScenarioDriver
             errPump=ObserveErrorAsync(child);
             exited=child.WaitForExitAsync();
             await exited.WaitAsync(token);await Task.WhenAll(outPump,errPump).WaitAsync(token);
-            if(timeoutAt==null||stdinAt==null||releaseAt==null)
-                throw new IOException("Required timeout/stdin-close causal boundaries were not reached; no retry.");
+            if(timeoutAt==null||cancelAt==null||releaseAt==null)
+                throw new IOException("Required timeout/cancellation-send causal boundaries were not reached; no retry.");
         }
         catch(Exception failure){primary=failure;}
         finally
         {
             // Even malformed marker, early process exit or timeout releases OUR lease.
             release.TrySetResult();
+            host.BeforeStatusPublication=oldStatusObserver;
             using var cleanup=new CancellationTokenSource(TimeSpan.FromSeconds(8));
             async Task Attempt(string name,Func<Task> action){try{await action().WaitAsync(cleanup.Token);}catch(Exception e){cleanupFailures.Add(name+": "+e);}}
             await Attempt("holder",()=>holder);
@@ -59,6 +92,9 @@ internal static partial class GmBridgeConsumerScenarioDriver
             await Attempt("stderr-flush",()=>stderr.FlushAsync(cleanup.Token));
             result["HeldReadyEvents"]=events;
             result["HeldReadyReleaseUtc"]=releaseAt;
+            result["HeldReadyFirstStatusEntryUtc"]=firstStatusEntryAt;
+            result["HeldReadySecondStatusEntryUtc"]=secondStatusEntryAt;
+            result["HeldReadyCancellationSentUtc"]=cancelAt;
             result["HeldReadyHolderClose"]=holderClose;
             result["HeldReadyHolderCloseObserved"]=holderObserved;
             result["HeldReadyExitObserved"]=exited?.IsCompletedSuccessfully==true;
@@ -70,9 +106,17 @@ internal static partial class GmBridgeConsumerScenarioDriver
             child?.Dispose();
         }
         if(primary!=null)ExceptionDispatchInfo.Capture(primary).Throw();
+        if(secondStatusEntryAt==null||releaseAt<secondStatusEntryAt||releaseAt<cancelAt)
+            throw new IOException("Release did not follow both original cancellation and second publication entry.");
         if(cleanupFailures.Count!=0||exited?.IsCompletedSuccessfully!=true||outPump?.IsCompletedSuccessfully!=true||errPump?.IsCompletedSuccessfully!=true||!holderObserved||holderClose?.Identity!=original.Identity)
             throw new IOException("Held-ready owned cleanup incomplete.");
         if(!result.TryGetValue("HeldReadyExit",out var childExit)||!Equals(childExit,0))throw new IOException("Diagnostic PS did not finish its expected refusal capture.");
+        using(var observed=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(output,"held-ready.stdout.log"),token))){
+            var row=observed.RootElement;
+            if(row.GetProperty("bodyEntered").GetBoolean()||row.GetProperty("returned").GetBoolean()||
+                !row.GetProperty("refusal").GetString()!.Contains("Original participating admission unavailable",StringComparison.Ordinal))
+                throw new IOException("Readiness timeout returned or executed a body.");
+        }
         var completion=events.Single(e=>e.GetProperty("stage").GetString()=="helper-open-completion-after-dispose");
         var raw=completion.GetProperty("diagnostic").GetString()??throw new IOException("Original helper diagnostics absent.");
         var markers=new List<JsonElement>();
@@ -99,15 +143,54 @@ internal static partial class GmBridgeConsumerScenarioDriver
             result["HeldReadyClassification"]="Acquisition expired/refused before proved post-release acquisition; inconclusive";
             throw new IOException("Canonical acquisition ordering not established; no replay.");
         }
-        var projection=new MainOperationClose(grant.PinId!,grant.CloseId!,grant.OperationId!,original.Identity,MainOperationOutcome.Completed,false);
-        var replyRaw=await BridgeTransportConnector.RequestAsync(status,JsonSerializer.Serialize(new{command="mainOperationStatus",mainOperationClose=projection}),3000,token);
+        var terminal=JsonSerializer.Deserialize<MainOperationClose>(completion.GetProperty("terminalClose"),MainOperationReader.Json)
+            ??throw new IOException("Actual cancellation close absent.");
+        var expected=new MainOperationClose(grant.PinId!,grant.CloseId!,grant.OperationId!,original.Identity,MainOperationOutcome.Cancelled,false);
+        if(terminal!=expected||!completion.GetProperty("closeObserved").GetBoolean()||!completion.GetProperty("lost").GetBoolean()||
+            completion.GetProperty("exitCode").GetInt32()!=0||completion.GetProperty("cancellationCleanupFailures").GetArrayLength()!=0)
+            throw new IOException("Actual cancellation receipt or helper cleanup not qualified.");
+        var readCleanup=completion.GetProperty("cancellationReadCleanup");
+        foreach(var key in new[]{"stdoutReadSettled","stderrReadSettled","stdoutDisposed","stderrDisposed","exitObserved"})
+            if(!readCleanup.GetProperty(key).GetBoolean())throw new IOException("Cancellation reader cleanup incomplete: "+key);
+        var replyRaw=await BridgeTransportConnector.RequestAsync(status,JsonSerializer.Serialize(new{command="mainOperationStatus",mainOperationClose=terminal}),3000,token);
         await File.WriteAllTextAsync(Path.Combine(output,"held-ready-original-pin.json"),replyRaw,token);
         var reply=JsonSerializer.Deserialize<MainOperationReply>(replyRaw,MainOperationReader.Json)??throw new IOException("Original pin status absent.");
-        if(reply != (grant with {State=reply.State}) || reply.State is not (MainOperationState.ClosedObserved or MainOperationState.Unresolved))
-            throw new IOException("Original pin has no proved terminal close/loss outcome.");
-        result["HeldReadyClassification"]=reply.State==MainOperationState.ClosedObserved?"CleanCloseAfterTimeout":"UnresolvedActiveAfterTimeout";
-        result["HeldReadyOriginalPinOutcome"]=reply;
-        return reply.State==MainOperationState.Unresolved;
+        if(reply != (grant with {State=MainOperationState.ClosedObserved}))
+            throw new IOException("Original cancellation was not actually ClosedObserved.");
+        result["HeldReadyClassification"]="CancelledClosedObservedAfterTimeout";
+        result["HeldReadyOriginalPinOutcome"]=reply;result["HeldReadyActualTerminalClose"]=terminal;
+        // A real later queue supplies fresh DATA, not a read of the unchanged old JSON.
+        var latestRaw=await BridgeTransportConnector.RequestAsync(status,JsonSerializer.Serialize(new{command="setready",ready=false}),3000,token);
+        await File.WriteAllTextAsync(Path.Combine(output,"held-ready-latest-status-queued.json"),latestRaw,token);
+        using var latest=JsonDocument.Parse(latestRaw);
+        if(!latest.RootElement.GetProperty("ok").GetBoolean())throw new IOException("Latest real status queue refused.");
+        var updated=latest.RootElement.GetProperty("status").GetProperty("updatedAtUtc").GetString();
+        if(updated==null||updated==(result["HeldReadyQueuedStatusUpdatedAt"] as string))throw new IOException("Latest queue did not supply fresh snapshot.");
+        using var publicationDeadline=CancellationTokenSource.CreateLinkedTokenSource(token);
+        publicationDeadline.CancelAfter(TimeSpan.FromSeconds(3));
+        while(true){
+            publicationDeadline.Token.ThrowIfCancellationRequested();
+            var published=await files.ReadDiagnosticStatusAsync("game_state/control/gm_bridge_status.json");
+            if(published!=null){using var document=JsonDocument.Parse(published);var snapshot=document.RootElement;
+                if(snapshot.GetProperty("updatedAtUtc").GetString()==updated){
+                    if(snapshot.GetProperty("terminalRunId").GetString()!=original.Identity.RunId||snapshot.GetProperty("terminalUncertain").GetBoolean()||
+                        (snapshot.TryGetProperty("lastError",out var statusError)&&statusError.ValueKind is not JsonValueKind.Null))
+                        throw new IOException("Latest original status is uncertain or failed.");
+                    var bytes=Encoding.UTF8.GetBytes(published);
+                    await File.WriteAllBytesAsync(Path.Combine(output,"held-ready-latest-status.json"),bytes,token);
+                    result["HeldReadyLatestStatusSHA256"]=Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+                    result["HeldReadyLatestStatusUpdatedAt"]=updated;break;
+                }
+            }
+            await Task.Delay(10,publicationDeadline.Token);
+        }
+        return false; // Only clean cancellation qualifies; unresolved is no longer expected success.
+
+        void ReleaseIfBothObserved()
+        {
+            // Called only with gate held. Continuations are never inline under it.
+            if(cancelAt!=null&&secondStatusEntryAt!=null&&releaseAt==null){releaseAt=DateTimeOffset.UtcNow;release.TrySetResult();}
+        }
 
         async Task ObserveErrorAsync(Process process)
         {
@@ -122,14 +205,17 @@ internal static partial class GmBridgeConsumerScenarioDriver
                     throw new IOException("Diagnostic marker identity changed.");
                 events.Add(row.Clone());
                 var stage=row.GetProperty("stage").GetString();
-                if(stage is not ("reply-timeout" or "helper-stdin-closed"))continue;
-                if(row.GetProperty("lastAction").GetString()!="helper-ready")throw new IOException("Wrong participating phase.");
+                if(stage is not ("reply-timeout" or "readiness-cancel-sent"))continue;
+                var expectedAction=stage=="reply-timeout"?"helper-ready":"readiness-cancel";
+                var expectedSequence=stage=="reply-timeout"?0:1;
+                if(row.GetProperty("lastAction").GetString()!=expectedAction||row.GetProperty("sequence").GetInt64()!=expectedSequence)
+                    throw new IOException("Wrong original participating cancellation phase.");
                 var observed=row.GetProperty("observedAtUtc").GetDateTimeOffset();
                 if(stage=="reply-timeout") {if(timeoutAt!=null)throw new IOException("Repeated timeout marker.");timeoutAt=observed;}
                 else
                 {
-                    if(timeoutAt==null||stdinAt!=null||observed<timeoutAt)throw new IOException("Missing/reordered timeout witness.");
-                    stdinAt=observed;releaseAt=DateTimeOffset.UtcNow;release.TrySetResult();
+                    if(timeoutAt==null||cancelAt!=null||observed<timeoutAt)throw new IOException("Missing/reordered timeout witness.");
+                    lock(gate){cancelAt=observed;ReleaseIfBothObserved();}
                 }
             }
         }

@@ -103,7 +103,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 var directory=new DirectoryInfo(AppContext.BaseDirectory);
                 while(directory!=null&&!File.Exists(Path.Combine(directory.FullName,"AGENTS.md")))directory=directory.Parent;
                 var repo=directory?.FullName??throw new IOException("Source root missing.");
-                loss=await VerifyHeldReadyAsync(files,status,launch.Scratch,repo,output,original!,result,deadline.Token);
+                loss=await VerifyHeldReadyAsync(files,status,launch.Scratch,host,repo,output,original!,result,deadline.Token);
                 if(loss)
                 {
                     await VerifyOriginalUnresolvedStopAsync(status,original!,root,output,result,deadline.Token);

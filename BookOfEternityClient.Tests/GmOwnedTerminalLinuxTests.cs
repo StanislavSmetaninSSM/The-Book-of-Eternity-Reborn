@@ -32,7 +32,7 @@ public sealed class GmOwnedTerminalLinuxTests
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
-        var race = mode is "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready";
+        var race = mode is "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready" or "terminal-main-status-initial-contention" or "terminal-main-status-seal-contention";
         var heldReady = mode == "terminal-main-held-ready";
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var consumer = mode is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-prepared-stop-race";

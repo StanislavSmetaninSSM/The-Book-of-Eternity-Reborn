@@ -76,6 +76,7 @@ internal sealed partial class BridgeHost
                     await _neutralFiles!.WriteFileAtomicBytesAsync("game_state/control/gm_bridge_status.json", publication.Bytes);
                     return true;
                 });
+                StatusBackpressureDecision? deferredDecision = null;
                 lock (_sync)
                 {
                     if (!ReferenceEquals(_mainRun, publication.Owner))
@@ -86,10 +87,14 @@ internal sealed partial class BridgeHost
                         var decision = DecideStatusBackpressure(_statusActuallyPublished, _statusSealed, _pendingStatus != null);
                         if (decision == StatusBackpressureDecision.Refuse)
                             throw new InvalidOperationException("Initial status publication cannot be deferred.");
+                        deferredDecision = decision;
                         if (decision == StatusBackpressureDecision.RestoreRefused) _pendingStatus = publication;
                         // No self-signal: best-effort status waits for the next real Queue or Seal.
                     }
                 }
+                // DATA only, after original operation unwind and outside the bridge lock.
+                publication.Owner.ReportStatusPublicationData(publication.Bytes, published,
+                    mayDefer, deferredDecision?.ToString());
                 }
                 catch (Exception failure) when (_neutralFiles!.IsOriginalBrowserPhaseRefusal(failure))
                 {
@@ -122,7 +127,7 @@ internal sealed partial class BridgeHost
         }
     }
 
-    private async Task SealOriginalStatusPublicationAsync()
+    internal async Task SealOriginalStatusPublicationAsync()
     {
         Task actual;
         lock (_sync)

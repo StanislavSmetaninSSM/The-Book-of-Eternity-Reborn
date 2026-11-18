@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-bridge-status-initial-and-seal-fifo",
+      "responsibility": "#1589 genuine original publisher first-contention failure and in-flight seal/discard with independent public shutdown.",
+      "excludes": "No game/GM, no automatic deferred delivery guarantee; initial failure preserves logical uncertainty.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/GmBridgeStatusSealScenario.cs",
+        "BookOfEternityClient.Tests/GmBridgeStatusSealTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeStatusSealTests.ActualOriginalPublisherContentionRespectsInitialAndSealBoundaries"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-bridge-status-held-lock-provenance-data",
       "responsibility": "#1589 genuine canonical lock sharing refusal and current-acquisition provenance; bounded RED premise recheck.",
       "excludes": "No publisher FIFO owner, epoch, eventual delivery or live gameplay qualification.",
@@ -67,7 +92,7 @@
     },
     {
       "id": "gm-main-held-ready-fifo",
-      "responsibility": "#1589 controlled genuine canonical lease contention: release only on original PowerShell timeout/stdin-close, exact target pin outcome and owned cleanup; not historical game causality.",
+      "responsibility": "#1589 combined genuine held canonical lease, actual original readiness cancellation and status deferral: dual-event release, newest snapshot publication and full owned shutdown; not historical game causality.",
       "excludes": "No game acceptance, timeout changes, retries or authority changes; unproved acquisition ordering fails rather than qualifying a leak.",
       "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.HeldReady.cs"],
       "related": [],
