@@ -1974,3 +1974,13 @@ fixture tests (Debug-only methods called unconditionally). The test class is now
 Debug-only too; Release does not gain an emitter. The same9 Debug cases remain.
 The source guard now checks the first matching closing directive and exact
 original issue/flag/exception arguments. No serializer or test run yet.
+RED verified on eeca7ab source: official category executed9/9,7PASS/2FAIL,
+zero skips/duplicates/timeouts, complete owned/runtime cleanup. Both positive
+emission tests fail parsing empty JSON from no-output stubs, not setup/build.
+Unit Debug build94.33s/94.677wall,90warnings/0errors; runner11.4832064s/test38ms.
+3416 source/catalog pins unchanged;8Unit output pins retained externally.
+Result identity20261118-085336-074-5-baec8c3b46864c219c06387fe96ce6a2.
+The new diagnostic partial alone was fetched from GitHub eeca7ab into a new
+empty directory and matched blob83d7a4be896d6eab3cdf14077d1d1201a22f33d8;
+this is one-file recovery, not a clean whole-checkout restore or runtime test.
+GREEN now replaces only the two stubs with guarded observation serialization.

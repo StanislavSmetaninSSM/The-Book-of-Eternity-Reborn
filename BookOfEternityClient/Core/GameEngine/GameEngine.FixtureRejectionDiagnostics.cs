@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Core;
 
@@ -22,7 +23,19 @@ public partial class GameEngine
         bool effect, bool resource, bool wound, string source, int attempt,
         bool rollbackAvailable, string? nonce, TextWriter sink)
     {
-        // Causal RED stub: existing production behavior emits no rejection observation.
+        WriteFixtureRejection(nonce, sink, () => new
+        {
+            kind = "boe-game-loop-fixture-rejection", stage = "protected-materialization",
+            nonce, pid = Environment.ProcessId, source, attempt, rollbackAvailable,
+            flags = new { mortalItem, mortalLocation, effect, resource, wound },
+            errors = errors.Select(issue => new
+            {
+                code = issue.Code, filePath = issue.FilePath, message = issue.Message,
+                severity = issue.Severity.ToString(), category = issue.Category.ToString(),
+                actor = issue.Actor, section = issue.Section, expected = issue.Expected,
+                actual = issue.Actual, repairHint = issue.RepairHint
+            }).ToArray()
+        });
     }
 
     /// <summary>Observes the original caught canonical-refresh failure without replacing it or claiming completed rollback.</summary>
@@ -34,7 +47,24 @@ public partial class GameEngine
     internal static void EmitCanonicalRefreshFixtureRejection(Exception failure,
         string source, bool rollbackAvailable, string? nonce, TextWriter sink)
     {
-        // Causal RED stub: no serialization, filesystem access, or authority change.
+        WriteFixtureRejection(nonce, sink, () => new
+        {
+            kind = "boe-game-loop-fixture-rejection", stage = "canonical-refresh-failed",
+            nonce, pid = Environment.ProcessId, source, rollbackAvailable,
+            exceptionType = failure.GetType().FullName, exception = failure.ToString()
+        });
+    }
+    // Construct diagnostic DATA inside the protected boundary too: exception getters,
+    // issue enumeration, serialization and the sink must not replace a refusal.
+    private static void WriteFixtureRejection(string? nonce, TextWriter sink, Func<object> capture)
+    {
+        try
+        {
+            if (!Guid.TryParseExact(nonce, "N", out var parsed) || parsed.ToString("N") != nonce)
+                return;
+            sink.WriteLine("\n" + JsonSerializer.Serialize(capture()));
+        }
+        catch { /* Diagnostics never alter the original validation/publication outcome. */ }
     }
 #endif
 }
