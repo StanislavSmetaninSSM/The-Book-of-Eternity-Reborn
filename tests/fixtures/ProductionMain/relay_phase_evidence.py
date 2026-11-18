@@ -217,3 +217,75 @@ def terminal_ledger_witness_keys(witness_bytes, binding_bytes, session, request_
         if sha(raw)!=value['SHA256']:return None
         return _terminal_ledger_keys(raw)
     except (ValueError,KeyError,TypeError,UnicodeError):return None
+
+# T022 fixed reviewed gameplay DATA names, never runtime ownership.
+RESTORED_MORTAL_DATA_PATHS = (
+    'game_state/afterlife/afterlife_active_threats.json',
+    'game_state/afterlife/afterlife_chronicles.json',
+    'game_state/afterlife/afterlife_global_flags.json',
+    'game_state/afterlife/afterlife_story_outline.json',
+    'game_state/afterlife/entity_profiles/guardian_mirror.json',
+    'game_state/afterlife/entity_profiles/shining_senator_mirel.json',
+    'game_state/chaos_sea/guardian_politics.json',
+    'game_state/control/pending_dice_state.json',
+    'game_state/control/pending_ink_actions.json',
+    'game_state/control/progression_schedule.json',
+    'game_state/core/game_settings.json',
+    'game_state/core/player_status.json',
+    'game_state/core/system_mods.json',
+    'game_state/factions/faction_chronicles.json',
+    'game_state/factions/faction_core.json',
+    'game_state/factions/faction_custom.json',
+    'game_state/factions/faction_projects.json',
+    'game_state/factions/faction_resources.json',
+    'game_state/factions/faction_structure.json',
+    'game_state/history/chat_log.json',
+    'game_state/inventory/item_identity_index.json',
+    'game_state/inventory/items.json',
+    'game_state/meta/achievements.json',
+    'game_state/meta/character_chronicle.json',
+    'game_state/meta/guardians.json',
+    'game_state/meta/soul_state.json',
+    'game_state/misc/characteristics.json',
+    'game_state/misc/storage_access.json',
+    'game_state/npcs/item_journals.json',
+    'game_state/npcs/npc_activities.json',
+    'game_state/npcs/npc_core.json',
+    'game_state/npcs/npc_journals.json',
+    'game_state/player/computed_characteristics.json',
+    'game_state/player/experience.json',
+    'game_state/player/player_status.json',
+    'game_state/player/stat_points.json',
+    'game_state/player/transformation.json',
+    'game_state/quests/quest_history.json',
+    'game_state/resources/resource_definitions.json',
+    'game_state/resources/resource_history.json',
+    'game_state/resources/resource_owner_authority.json',
+    'game_state/resources/resource_state.json',
+    'game_state/shining_abode/faction_chronicles.json',
+    'game_state/world/current_location.json',
+    'game_state/world/location_identity_index.json',
+    'game_state/world/mortal_living_world_history.json',
+    'game_state/world/world_events.json',
+    'game_state/world/world_map.json',
+    'game_state/world/world_time.json',
+    'lore/codex_entries.json',
+    'lore/current_world/cultures.json',
+    'lore/current_world/geography.json',
+    'lore/current_world/history.json',
+    'lore/current_world/threats.json',
+    'lore/current_world/world_setting.json',
+    'output/debug_logs.json',
+    'output/interface_updates.json',
+    'output/narrative_response.json',
+    'stories/mortal_life_2.jsonl',
+)
+
+def restored_mortal_diagnostic_admission(descriptor, source_probe_bytes, source_guardian_bytes,
+        source_request_bytes, source_config_bytes, data_root, new_base, nonce):
+    """RED-only fail-closed DATA seam; unused by the driver until reviewed GREEN."""
+    return None
+
+def restored_diagnostic_request_proved(descriptor, request_bytes):
+    """RED-only identity DATA seam; never issues a request."""
+    return False
