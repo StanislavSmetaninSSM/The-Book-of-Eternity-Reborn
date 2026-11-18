@@ -3145,3 +3145,21 @@ Probe SHA2569b7c96d5c6e06a6e960faa2300562faa6f740258b6e58c91e78cd30aec4c509d.
 Independent actual commit/state/cleanup audit pending. No helper rerun, no replay,
 no failed-probe rewrite, no ordinary-continuation token inferred. Investigate all
 fixed-route evidence consumers together before another native attempt.
+Read-only cause confirmed: production MortalLivingWorldAssessment.Validate with
+null report allows neither-cycle-due; Publication constructs/publishes a receipt
+only with a report. mm11 signed/request controls agree at480/last markers480,
+cycle240/1440; settled500 creates no due cycle. The fixture's unconditional
+history read/+1 expectation is wrong, not evidence that the game rejected birth.
+Full consumer inventory also found unconditional history in predecessor admission,
+accepted-turn hash and local0GM observation; correct them coherently, not by
+successive native failures. Fixed historical restored-diagnostic three-receipt
+contract remains strict. Proposed detached DATA discriminant ReceiptAppended vs
+NotRequired preserves strict appended proof; NotRequired requires request and
+captured manifest controls, hash-bound manifest-selected original clock/schedule,
+production applicability check, unchanged optional history bytes/absence and no
+residual report. A new receipt below-cycle still takes strict appended route;
+consumed final report absence does not prove what GM authored. Baseline flat
+schedule is absent; only actual captured snapshot member is admissible, no flat
+fallback. Cheap actual ReadAsync RED plus due/pending/drift/malformed negatives
+precedes implementation after independent design review. No code/world changes,
+helper replay or failed-probe upgrade have occurred.
