@@ -2013,3 +2013,13 @@ identity/history/inventory/source guards. Before implementation resolve later
 accepted-state validation after pending cleanup: missing original cannot grant
 fresh authoring authority. No blind native repeat or new carrier-migration
 subsystem. Explicit negative cases and independent review will precede repair.
+T018 WIP test source has6 proposed integration cases plus1 separate CLI-rule
+source guard, all UNRUN. Independent route tracing found GmWorkerApplyGate also
+uses public ValidateGameStateAsync to validate staged writes before commit,
+without universally requiring a pending turn snapshot. Thus Missing cannot mean
+idle/read-only and must not suppress default scene validation. Real SaveLoad
+itself does not call these anchors; browser/Explorer validation views do. The
+idle test currently targets default validation and needs correction to an
+explicit inspection boundary before execution. No production exemption exists.
+Next resolve the narrow inspection-versus-publication API; preserve default
+worker checks and genuine-original strictness. No build or native run yet.
