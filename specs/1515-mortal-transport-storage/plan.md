@@ -3359,3 +3359,14 @@ requesting permission is not a grant or movement. Initial external prep syntax
 error occurred before execution and is preserved;0build/export/native. Full turn43
 candidate review remains mandatory. One bounded p02 launch is next, not yet proof
 of denial, permission publication, item movement or Save/Load.
+mm12 p02 failed before any GM action/request: actual /storage_move reports
+IOException "Main run metadata or original owner admission is unavailable", then
+fixed-menu wait times out. Probe63a855d83084e0d7669c90b8e47858c846478fb28a3d8bd0cb549000ab8a38d3
+retainsSuccessfalse/actions0/accepted0,30.699s; noDeniedStorageProof/request43.
+Executor reports exactnewRun/Epoch2 ACK/Stopped/OwnedScopeEmpty,bridge/daemon0,
+client-2 (not normal exit),allEOF/termios,RPCdrain,guardianECHILDdriver1/noemergency,
+samedaemonsettledErrors0. Story unchanged; prior108pins differ only six operational/
+context files, current108pins exact. Independent failure/cleanup audit pending.
+No permission/denial success or ordinary predecessor asserted; no retry. Trace
+actual storage-command originalowner/read/lease context before proposing a narrow
+causal reproduction. Accepted p01 birth stands; subsequent consumer path is open.
