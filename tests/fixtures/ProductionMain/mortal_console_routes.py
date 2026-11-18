@@ -93,7 +93,8 @@ def selected_frame(raw, cut, title):
     except UnicodeError:return None
     # Same supported non-concealing output surface as the inert pipe/xterm proof.
     text=re.sub(r'\x1b\[(?:\?25[hl]|[0-9;]*[mABCDGHfKJ])','',text)
-    if '\x1b' in text:return None
+    if '\x1b' in text or not text.endswith('\r'):return None
+    if 'reveal more items' in text or 'More choices' in text:return None
     at=text.rfind(title)
     if at<0:return None
     rows=text[at+len(title):].replace('\r','').splitlines()

@@ -6,6 +6,7 @@ UTF-8 action-file immutable-evidence-helper-dll [previous-phase-result]. Initial
 turn. Later phases preserve the same canonical world and require complete prior
 logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
+import datetime, io, zipfile
 import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
@@ -676,8 +677,9 @@ if package_manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(console_routes.__f
     raise ValueError('Finite console module differs from prepared package')
 if route['Route']!='birth' and (previous is None or restored_diagnostic):
     raise ValueError('Finite storage routes require an ordinary accepted predecessor')
-# Local Load wiring is the next source checkpoint; never accidentally send a GM turn.
-if route['Route']=='storage-local-proof':raise ValueError('Local Load route not yet wired; no processes or action started')
+load_nonce=os.environ.get('BOE_TEST_LOAD_OBSERVATION_NONCE')
+if route['Route']=='storage-local-proof' and (type(load_nonce) is not str or re.fullmatch('[0-9a-f]{32}',load_nonce) is None):
+    raise ValueError('Local Load requires a fresh prepared diagnostic nonce')
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
@@ -973,7 +975,7 @@ def exit_client(client):
     offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh_main(client,offset)
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
-def finite_select(title,label,cut,maximum_rows):
+def finite_select(title,label,cut,maximum_rows,commit=True):
     # Only callers below supply fixed source-read menus. No arbitrary key program.
     seen=set()
     for _ in range(maximum_rows):
@@ -984,7 +986,7 @@ def finite_select(title,label,cut,maximum_rows):
         seen.add(selected)
         if selected==label:
             selected_cut=cut;after=len(client.capture)
-            client.send(b'\r','fixed menu exact selected row: '+label)
+            if commit:client.send(b'\r','fixed menu exact selected row: '+label)
             return after,selected_cut
         cut=len(client.capture)
         # Captured pipe/xterm emits normal CSI arrows, independently smoke-qualified.
@@ -1018,6 +1020,117 @@ def denied_storage_route():
         'ReturnedPromptCut':after,'Before':before,'After':local_observation(),
         'CurrentLocationSHA256':sha(current),'InventorySHA256':sha(inventory)}
 
+def storage_local_route():
+    global client_prompt,original,original_record,load_cut,load_expected
+    location_path=session/'game_state/world/current_location.json'
+    inventory_path=session/'game_state/inventory/items.json'
+    location=location_path.read_bytes();inventory=inventory_path.read_bytes()
+    target=console_routes.storage_target(strict_settings(location),route['StorageId'],route['ItemId'],True)
+    before=local_observation();stages=[]
+    def stage(name,expected):
+        current=location_path.read_bytes();items=inventory_path.read_bytes()
+        if console_routes.item_position(strict_settings(current),strict_settings(items),route['StorageId'],route['ItemId'])!=expected:
+            raise RuntimeError('Actual local item position mismatch: '+name)
+        stages.append({'Stage':name,'ItemPosition':expected,'LocationSHA256':sha(current),'InventorySHA256':sha(items)})
+        console_routes.require_local_unchanged(before,local_observation())
+        return current,items
+    def move(retrieve):
+        global client_prompt
+        current=strict_settings(location_path.read_bytes());items=strict_settings(inventory_path.read_bytes())
+        expected='storage' if retrieve else 'inventory'
+        if console_routes.item_position(current,items,route['StorageId'],route['ItemId'])!=expected:
+            raise RuntimeError('Current item position changed before local move')
+        storage=[s for s in current['locationStorages'] if s.get('storageId')==route['StorageId']]
+        if len(storage)!=1 or storage[0]['name']!=target['StorageName']:raise RuntimeError('Current exact storage changed')
+        if sum(s.get('name')==target['StorageName'] for s in current['locationStorages'])!=1:raise RuntimeError('Current storage label ambiguous')
+        contents=[i for i in storage[0]['contents'] if type(i) is dict and i.get('itemId')]
+        inventory_items=[i for i in items['items'] if type(i) is dict and i.get('itemId')]
+        label=f"📦 {target['StorageName']} ({len(contents)} пр.) → управление"
+        cut=len(client.capture);client_prompt=False
+        client.send(b'/storage_move\r','fixed local storage move')
+        cut,_=finite_select('🎒 📦 Инвентарь',label,cut,20)
+        action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
+                      f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
+        cut,_=finite_select('📦 '+target['StorageName'],action_label,cut,10)
+        title='Выберите предмет для извлечения из хранилища:' if retrieve else 'Выберите предмет для перемещения в хранилище:'
+        options=contents if retrieve else inventory_items
+        labels=[str(i.get('name',i.get('itemName','')))+((' ×'+str(i.get('quantity',i.get('count',1)))) if str(i.get('quantity',i.get('count',1)))!='1' else '') for i in options]
+        if labels.count(target['ItemLabel'])!=1:raise RuntimeError('Current exact item label unavailable/ambiguous')
+        cut,_=finite_select(title,target['ItemLabel'],cut,20)
+        until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
+        if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
+        cut,_=finite_select('📦 '+target['StorageName'],'← Назад к инвентарю',cut,10)
+        cut,_=finite_select('🎒 📦 Инвентарь','← Назад',cut,20)
+        fresh_player(client,cut,10);client_prompt=True
+    move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
+    save_name='t024-'+uuid.uuid4().hex
+    saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
+    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Save menu')
+    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'1\r','observed Save choice')
+    fresh(client,'Название сохранения:',cut);cut=len(client.capture);client.send((save_name+'\r').encode(),'fresh unique Save name')
+    fresh(client,'Описание (необязательно):',cut);cut=len(client.capture);client.send(b'\r','empty optional Save description')
+    fresh(client,'✅ Игра сохранена',cut)
+    new_saves=set(saves.glob('*.zip'))-old_saves
+    if len(new_saves)!=1:raise RuntimeError('Actual Save did not produce one distinct archive')
+    archive=new_saves.pop()
+    if archive.is_symlink() or not archive.is_file():raise RuntimeError('Save archive is not ordinary file')
+    archive_bytes=archive.read_bytes()
+    with zipfile.ZipFile(io.BytesIO(archive_bytes)) as saved:
+        if saved.namelist().count('save_metadata.json')!=1:raise RuntimeError('Save metadata ambiguous')
+        metadata=strict_settings(saved.read('save_metadata.json'))
+    if metadata['saveName']!=save_name or metadata['turnNumber']!=expected_turn-1:raise RuntimeError('Save metadata differs from actual local phase')
+    cut=len(client.capture);client.send(b'\r','acknowledge actual Save result');fresh_player(client,cut,10);client_prompt=True
+    save_location,save_inventory=stage('Save','inventory')
+    if (save_location,save_inventory)!=(saved_location,saved_inventory):raise RuntimeError('Save changed local item bytes')
+    move(False);stage('Deposit','storage')
+    # The same live daemon is retained; nested daemon PID is not its pwsh launcher PID.
+    continuity=daemon_pair_capture(session,{},'Original')
+    status_raw=strict_settings(bytes.fromhex(continuity['OriginalStatusRawHex']))
+    continuity.update(OriginalProcessIdentity=process_observer.register(status_raw['pid']),
+        OriginalLauncherIdentity=process_observer.register(daemon.process.pid),OriginalLauncherPoll=daemon.process.poll())
+    startup=result['OriginalRunningStatus']['status'];identity=result['OriginalRunningRecord']['Identity']
+    load_expected={'Nonce':load_nonce,'SourceKey':str(archive.resolve()),'RootKey':str(base),
+        'ExpectedGeneration':identity['GenerationId'],'StartupIdentityA':identity,
+        'StartupTerminalA':{'RunId':startup['terminalRunId'],'Backend':startup['backend'],
+                           'Guarantee':startup['terminalGuarantee'],'RootPid':startup['shellPid']}}
+    result['StartupIdentityA']=identity;result['LoadExpected']=load_expected
+    result['LoadArchiveSHA256']=sha(archive_bytes)
+    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
+    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
+    timestamp=datetime.datetime.fromisoformat(metadata['timestamp'].replace('Z','+00:00')).strftime('%d.%m.%Y %H:%M')
+    load_label=f"{save_name} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
+    # Select the exact archive row without activating it yet; its receipt SourceKey must match.
+    load_cut=finite_select('Выберите сохранение:',load_label,cut,15,commit=False)[0]
+    if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
+    continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+    result['LoadActionCut']=load_cut
+    original=None;original_record=None # An unconfirmed replacement is not permission to stop A or adopt status B.
+    client.send(b'\r','one actual Load of original unique archive')
+    until(lambda:b'boe-load-session-completed' in bytes(client.capture[load_cut:]),30,'actual completed Load observation')
+    fresh_player(client,load_cut,15);client_prompt=True
+    installed=read_json(record_path)
+    observed=phase_evidence.validated_load_observation(bytes(client.capture),load_cut,load_expected,installed)
+    b=observed['observation']['ReplacementFinish']['MainIdentity']
+    result['LoadObservation']=observed;result['LoadRunningRecord']=installed;result['ShutdownIdentityB']=b
+    original_record=b;original={k[0].lower()+k[1:]:v for k,v in b.items()};original['backend']=2
+    loaded_status=rpc({'command':'status'});result['LoadRunningStatus']=loaded_status
+    if not loaded_status['ok'] or loaded_status['status']['terminalRunId']!=b['RunId'] or loaded_status['status']['terminalUncertain'] or not loaded_status['status']['terminalOwnerRetained']:
+        raise RuntimeError('Validated B has inconsistent current status')
+    def retained_heartbeat():
+        daemon_pair_capture(session,continuity,'PostLoad')
+        post=strict_settings(bytes.fromhex(continuity['PostLoadStatusRawHex']))
+        continuity.update(PostLoadProcessIdentity=process_observer.register(post['pid']),
+            PostLoadLauncherIdentity=process_observer.register(daemon.process.pid),PostLoadLauncherPoll=daemon.process.poll())
+        return phase_evidence.retained_daemon_load_continuity_proved(result['DaemonSettlement'],continuity)
+    until(retained_heartbeat,15,'same original daemon fresh post-Load heartbeat')
+    result['PostLoadDaemonContinuity']=continuity
+    restored_location,restored_inventory=stage('Load','inventory')
+    if (restored_location,restored_inventory)!=(save_location,save_inventory):raise RuntimeError('Load did not restore exact Save item bytes')
+    result['LocalRouteProof']={'Route':'storage-local-proof','Target':target,'Stages':stages,
+        'Before':before,'After':local_observation(),'SaveArchivePath':str(archive.resolve()),
+        'SaveArchiveSHA256':sha(archive_bytes),'RestoreBytesExact':True}
+
+load_cut=None;load_expected=None
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
@@ -1057,114 +1170,117 @@ try:
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     if route['Route']=='permission-with-denial':denied_storage_route()
-    provider_bridge_offset=len(bridge.capture)
-    ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
-    (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
-    offset=len(client.capture);action_cut=offset;client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
-    current_request(offset)
-    request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
-    assert request['playerAction']==action and request['turnNumber']==expected_turn
-    assert request['sessionId']==historical_session
-    if restored_diagnostic and not phase_evidence.restored_diagnostic_request_proved(seed,request_bytes):raise ValueError('Diagnostic request identity refused')
-    assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
-    ledger_binding=phase_evidence.bind_terminal_ledger_witness(ledger_witness,request_bytes)
-    (out/'terminal-ledger-request-binding.json').write_bytes(ledger_binding)
-    (out/'actual-turn-request.json').write_bytes(request_bytes)
-    for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json','pending_turn_snapshot'):
-        source=session/'game_state/control'/name;target=baseline/'game_state/control'/name
-        assert not target.exists(), 'Pre-action baseline unexpectedly had pending state'
-        if source.is_dir():shutil.copytree(source,target)
-        else:shutil.copy2(source,target)
-    if controlled_refusal:
-        # Own fixed fixture emits only a denial, never an accepted GM response.
-        (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
-    provider_deadline=min(start+work_seconds,time.monotonic()+provider_seconds)
-    while time.monotonic()<provider_deadline:
-        pump()
-        # Capture transient client rejection evidence before a later rollback can
-        # delete it; each artifact is copied once, at first observation.
-        for artifact_name in ['error_log.txt','output/validation_repair_request.json',
-            'game_state/control/validation_diagnostic_failure_report.json']:
-            source_path=session/artifact_name
-            if source_path.exists() and not (out/('captured-'+artifact_name.replace('/','__'))).exists():
-                (out/('captured-'+artifact_name.replace('/','__'))).write_bytes(source_path.read_bytes())
-        # Observe current output before another status RPC can obscure the causal
-        # failure. Old startup/turn output is outside this original action's cut.
-        provider_text=bridge.text(provider_bridge_offset)
-        if re.search(r'(?m)^\s*Forbidden: Domain forbidden[ \r]*$',provider_text):
-            result['ObservedProviderFailure']={'Text':'Forbidden: Domain forbidden','At':elapsed(),'BridgeCut':provider_bridge_offset}
-            raise RuntimeError('Actual current provider refusal; no automatic retry')
-        if current_player_prompt_at(client.text(action_cut))>=0:
-            try:
-                rejected=observed_rejected_cleanup(request_bytes,relay_queue,
-                    result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
-                    client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
-            except (OSError,ValueError,KeyError,TypeError):rejected=False
-            if rejected:
-                result['RejectedRestoredForCleanup']=True
-                client_wait=False;client_prompt=True
-                raise RuntimeError('Original turn rejected; completed rollback observed for cleanup only')
-        if current_client_failure(client.text(offset)):
-            client_failure_offset=offset
-            result['ObservedCurrentClientFailureAt']=elapsed()
-            raise RuntimeError('Actual current client failure during provider wait')
-        for peer in [client,bridge,daemon]:
-            if peer is not None and peer.process.poll() is not None:
-                raise RuntimeError(peer.name+' exited during current provider wait')
-        current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
-        if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
-        refused=current.get('promptDelivery')
-        retain_turn_delivery(result,refused,result['OriginalRunningStatus']['status']['inputBindingId'])
-        if relay_mode:
-            for queued in relay_queue.glob('request-*'):
-                if not (queued/'request.json').exists() or not (queued/'prompt.txt').exists():continue
-                prompt=(queued/'prompt.txt').read_bytes()
-                expected=hashlib.sha256(b'1\n'+prompt).hexdigest().upper()
-                if refused and refused.get('disposition')=='submission-observed' and refused.get('contentHash')==expected and not (queued/'dispatch.json').exists():
-                    (queued/'dispatch.json').write_text(json.dumps(refused,indent=2)+'\n')
-            if (relay_queue/'failure.json').exists() or 'RELAY ERROR' in provider_text:
-                raise RuntimeError('Actual relay consumer/transport failure; no retry')
-        if refused and (refused.get('disposition')=='draft-uncertain' or
-            (refused.get('disposition')=='not-written' and refused.get('reason')=='unsupported-draft-shape')):
-            result['OriginalPromptDelivery']=refused
-            raise RuntimeError('Actual original automatic input refused; no manual reconstruction or replay')
-        if story.exists():
-            entries=[json.loads(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
-            accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('realm')=='Mortal World' and e.get('player')==action and e.get('narrative','').strip()]
-            if accepted:
-                fresh_player(client,offset,10)
-                assert not (session/'input/turn_request.json').exists()
-                assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
-                assert not (session/'game_state/control/pending_turn_snapshot.authority.json').exists()
-                assert not (session/'ready/turn_complete.json').exists() and not (session/'ready/turn_error.json').exists()
-                # Observed UI state is cleanup DATA, not accepted-game evidence.
-                client_wait=False;client_prompt=True
-                assert len(accepted)==1
-                story_after=story.read_bytes();accepted_row=checked_story_append(story_before,story_after,request)
-                assert accepted_row==accepted[0]
-                until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
-                result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
-                phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
-                helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
-                (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
-                phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
-                result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
-                if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
-                result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
-                result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
-                result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
-                result['AcceptedTurnNumber']=expected_turn
-                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
-                delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
-                result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
-                    delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and
-                    delivery.get('operationKind')=='turn' and delivery.get('operationRevision')=='live')
-                break
-        if any(marker in bridge.text()[-4000:].lower() for marker in ['permission required','allow this','trust this','sign in','authorize access']):
-            raise RuntimeError('Unexpected CLI access/auth gate; no answer supplied')
-        if (session/'ready/turn_error.json').exists():
-            result['ActualTerminalError']=read_json(session/'ready/turn_error.json');raise RuntimeError('Actual game terminal error; no automatic replay')
-    if result['AcceptedGameTurns']!=1:raise TimeoutError('One-turn phase ended without actual game acceptance')
+    if route['Route']=='storage-local-proof':
+        storage_local_route()
+    else:
+        provider_bridge_offset=len(bridge.capture)
+        ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
+        (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
+        offset=len(client.capture);action_cut=offset;client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
+        current_request(offset)
+        request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
+        assert request['playerAction']==action and request['turnNumber']==expected_turn
+        assert request['sessionId']==historical_session
+        if restored_diagnostic and not phase_evidence.restored_diagnostic_request_proved(seed,request_bytes):raise ValueError('Diagnostic request identity refused')
+        assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
+        ledger_binding=phase_evidence.bind_terminal_ledger_witness(ledger_witness,request_bytes)
+        (out/'terminal-ledger-request-binding.json').write_bytes(ledger_binding)
+        (out/'actual-turn-request.json').write_bytes(request_bytes)
+        for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json','pending_turn_snapshot'):
+            source=session/'game_state/control'/name;target=baseline/'game_state/control'/name
+            assert not target.exists(), 'Pre-action baseline unexpectedly had pending state'
+            if source.is_dir():shutil.copytree(source,target)
+            else:shutil.copy2(source,target)
+        if controlled_refusal:
+            # Own fixed fixture emits only a denial, never an accepted GM response.
+            (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
+        provider_deadline=min(start+work_seconds,time.monotonic()+provider_seconds)
+        while time.monotonic()<provider_deadline:
+            pump()
+            # Capture transient client rejection evidence before a later rollback can
+            # delete it; each artifact is copied once, at first observation.
+            for artifact_name in ['error_log.txt','output/validation_repair_request.json',
+                'game_state/control/validation_diagnostic_failure_report.json']:
+                source_path=session/artifact_name
+                if source_path.exists() and not (out/('captured-'+artifact_name.replace('/','__'))).exists():
+                    (out/('captured-'+artifact_name.replace('/','__'))).write_bytes(source_path.read_bytes())
+            # Observe current output before another status RPC can obscure the causal
+            # failure. Old startup/turn output is outside this original action's cut.
+            provider_text=bridge.text(provider_bridge_offset)
+            if re.search(r'(?m)^\s*Forbidden: Domain forbidden[ \r]*$',provider_text):
+                result['ObservedProviderFailure']={'Text':'Forbidden: Domain forbidden','At':elapsed(),'BridgeCut':provider_bridge_offset}
+                raise RuntimeError('Actual current provider refusal; no automatic retry')
+            if current_player_prompt_at(client.text(action_cut))>=0:
+                try:
+                    rejected=observed_rejected_cleanup(request_bytes,relay_queue,
+                        result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
+                        client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
+                except (OSError,ValueError,KeyError,TypeError):rejected=False
+                if rejected:
+                    result['RejectedRestoredForCleanup']=True
+                    client_wait=False;client_prompt=True
+                    raise RuntimeError('Original turn rejected; completed rollback observed for cleanup only')
+            if current_client_failure(client.text(offset)):
+                client_failure_offset=offset
+                result['ObservedCurrentClientFailureAt']=elapsed()
+                raise RuntimeError('Actual current client failure during provider wait')
+            for peer in [client,bridge,daemon]:
+                if peer is not None and peer.process.poll() is not None:
+                    raise RuntimeError(peer.name+' exited during current provider wait')
+            current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
+            if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
+            refused=current.get('promptDelivery')
+            retain_turn_delivery(result,refused,result['OriginalRunningStatus']['status']['inputBindingId'])
+            if relay_mode:
+                for queued in relay_queue.glob('request-*'):
+                    if not (queued/'request.json').exists() or not (queued/'prompt.txt').exists():continue
+                    prompt=(queued/'prompt.txt').read_bytes()
+                    expected=hashlib.sha256(b'1\n'+prompt).hexdigest().upper()
+                    if refused and refused.get('disposition')=='submission-observed' and refused.get('contentHash')==expected and not (queued/'dispatch.json').exists():
+                        (queued/'dispatch.json').write_text(json.dumps(refused,indent=2)+'\n')
+                if (relay_queue/'failure.json').exists() or 'RELAY ERROR' in provider_text:
+                    raise RuntimeError('Actual relay consumer/transport failure; no retry')
+            if refused and (refused.get('disposition')=='draft-uncertain' or
+                (refused.get('disposition')=='not-written' and refused.get('reason')=='unsupported-draft-shape')):
+                result['OriginalPromptDelivery']=refused
+                raise RuntimeError('Actual original automatic input refused; no manual reconstruction or replay')
+            if story.exists():
+                entries=[json.loads(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
+                accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('realm')=='Mortal World' and e.get('player')==action and e.get('narrative','').strip()]
+                if accepted:
+                    fresh_player(client,offset,10)
+                    assert not (session/'input/turn_request.json').exists()
+                    assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
+                    assert not (session/'game_state/control/pending_turn_snapshot.authority.json').exists()
+                    assert not (session/'ready/turn_complete.json').exists() and not (session/'ready/turn_error.json').exists()
+                    # Observed UI state is cleanup DATA, not accepted-game evidence.
+                    client_wait=False;client_prompt=True
+                    assert len(accepted)==1
+                    story_after=story.read_bytes();accepted_row=checked_story_append(story_before,story_after,request)
+                    assert accepted_row==accepted[0]
+                    until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
+                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
+                    phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+                    helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
+                    (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
+                    phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+                    result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
+                    if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
+                    result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
+                    result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
+                    result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
+                    result['AcceptedTurnNumber']=expected_turn
+                    result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
+                    delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
+                    result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
+                        delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and
+                        delivery.get('operationKind')=='turn' and delivery.get('operationRevision')=='live')
+                    break
+            if any(marker in bridge.text()[-4000:].lower() for marker in ['permission required','allow this','trust this','sign in','authorize access']):
+                raise RuntimeError('Unexpected CLI access/auth gate; no answer supplied')
+            if (session/'ready/turn_error.json').exists():
+                result['ActualTerminalError']=read_json(session/'ready/turn_error.json');raise RuntimeError('Actual game terminal error; no automatic replay')
+        if result['AcceptedGameTurns']!=1:raise TimeoutError('One-turn phase ended without actual game acceptance')
     # The shared finally performs client exit under its reserved cleanup bound.
 except Exception as ex:
     result['Failure']=type(ex).__name__+': '+str(ex)
@@ -1176,6 +1292,8 @@ finally:
         try:relay_closed=close_relay_execution(relay_queue,6)
         except Exception as ex:relay_closed=False;result['RelayCloseFailure']=type(ex).__name__+': '+str(ex)
         result['RelayExecutionClosed']=relay_closed
+        if route['Route']=='storage-local-proof':
+            result['FinalQueuePins']=phase_evidence.relay_inventory(relay_queue)
         if not relay_closed:result['RelayCloseFailure']='Execution/child/I-O closure unconfirmed; skip client cancellation/rollback'
     if client is not None and client.process.poll() is None and relay_closed:
         # Reserve bounded cleanup room within the relay720s cap for the sole original shutdown12s,
@@ -1287,7 +1405,10 @@ finally:
         result['FinalWorldPins']=phase_evidence.relay_world_inventory(session)
         result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
     except Exception as ex:result['PackageIntegrityFailure']=type(ex).__name__+': '+str(ex)
-    result['ElapsedSeconds']=elapsed();result['Success']=phase_cleanup_proved(result)
+    result['ElapsedSeconds']=elapsed()
+    result['Success']=(phase_evidence.relay_load_phase_cleanup_proved(result,bytes(client.capture),load_cut,load_expected)
+        if route['Route']=='storage-local-proof' and client is not None and load_cut is not None and load_expected is not None
+        else phase_cleanup_proved(result) if route['Route']!='storage-local-proof' else False)
     if controlled_refusal:
         result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
