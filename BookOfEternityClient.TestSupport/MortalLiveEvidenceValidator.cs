@@ -7,7 +7,7 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.Tests;
 
 // Read-only detached DATA check, never admission, source authentication or publication authority.
-internal static class MortalLiveEvidenceValidator
+internal static partial class MortalLiveEvidenceValidator
 {
     internal sealed record Observation(string SessionId, string RequestId, int Turn, string SnapshotToken,
         int PriorCount, int CurrentCount, string DeclarationFingerprint, string ReceiptFingerprint,
@@ -62,19 +62,9 @@ internal static class MortalLiveEvidenceValidator
         obj[name] is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text)
             ? text : throw new InvalidDataException($"Missing explicit {name} string.");
 
-    internal static async Task<Observation> ReadAsync(string baseline, string currentSession, string actualRequest)
-    {
-        // One read per input per invocation. No retained cache and no runtime owners/leases are created.
-        var priorPath = Path.Combine(baseline, MortalLivingWorldSource.HistoryPath);
-        string? prior;
-        try { prior = await ReadUtf8Async(priorPath); }
-        catch (FileNotFoundException) { prior = null; }
-        catch (DirectoryNotFoundException) { prior = null; }
-        var current = await ReadUtf8Async(Path.Combine(currentSession, MortalLivingWorldSource.HistoryPath));
-        var manifest = await ReadUtf8Async(Path.Combine(baseline, "game_state/control/pending_turn_snapshot.json"));
-        var request = await ReadUtf8Async(actualRequest);
-        return Validate(prior, current, manifest, request);
-    }
+    /// <summary>Loads detached outcome DATA; no runtime ownership or signature authentication is inferred.</summary>
+    internal static Task<Outcome> ReadAsync(string baseline, string currentSession, string actualRequest) =>
+        ReadOutcomeAsync(baseline, currentSession, actualRequest);
 
     private static async Task<string> ReadUtf8Async(string path)
     {
@@ -88,10 +78,24 @@ internal static class MortalLiveEvidenceValidator
         try
         {
             var result = await ReadAsync(baseline, currentSession, actualRequest);
-            Console.WriteLine(JsonSerializer.Serialize(new { valid = true, publicationAuthority = false,
-                sessionId = result.SessionId, requestId = result.RequestId, turn = result.Turn,
-                snapshotToken = result.SnapshotToken, priorCount = result.PriorCount, currentCount = result.CurrentCount,
-                declarationFingerprint = result.DeclarationFingerprint, receiptFingerprint = result.ReceiptFingerprint }));
+            var wire = new Dictionary<string, object?>
+            {
+                ["valid"] = true, ["publicationAuthority"] = false, ["kind"] = result.Kind,
+                ["sessionId"] = result.SessionId, ["requestId"] = result.RequestId, ["turn"] = result.Turn,
+                ["snapshotToken"] = result.SnapshotToken, ["priorCount"] = result.PriorCount, ["currentCount"] = result.CurrentCount,
+                ["historyBefore"] = new { present = result.HistoryBefore.Present, sha256 = result.HistoryBefore.Sha256 },
+                ["historyAfter"] = new { present = result.HistoryAfter.Present, sha256 = result.HistoryAfter.Sha256 }
+            };
+            if (result.Receipt is { } receipt)
+            {
+                wire["declarationFingerprint"] = receipt.DeclarationFingerprint;
+                wire["receiptFingerprint"] = receipt.ReceiptFingerprint;
+            }
+            else if (result.Applicability is { } context)
+                wire["applicability"] = new { originalMinute = context.OriginalMinute, resultMinute = context.ResultMinute,
+                    lastWorldMinute = context.LastWorldMinute, lastFactionMinute = context.LastFactionMinute,
+                    worldCycleMinutes = context.WorldCycleMinutes, factionCycleMinutes = context.FactionCycleMinutes };
+            Console.WriteLine(JsonSerializer.Serialize(wire));
             return 0;
         }
         catch (Exception error) when (error is InvalidDataException or IOException or UnauthorizedAccessException or ArgumentException or JsonException or InvalidOperationException or System.Security.SecurityException)
