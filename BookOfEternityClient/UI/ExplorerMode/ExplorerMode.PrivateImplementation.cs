@@ -1758,7 +1758,7 @@ public partial class ExplorerMode
         }
 
         MarkupLine("[dim]Проверка целостности игровых файлов...[/]");
-        var issues = await _validator.ValidateGameStateAsync();
+        var issues = await _validator.InspectGameStateAsync();
 
         if (issues.Count == 0)
         {

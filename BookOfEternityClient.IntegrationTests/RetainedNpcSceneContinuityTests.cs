@@ -120,6 +120,10 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
     [Theory]
     [InlineData("orphan-active-request")]
     [InlineData("unknown-historical-location")]
+    [InlineData("repair-active")]
+    [InlineData("ready-active")]
+    [InlineData("invalid-history-envelope")]
+    [InlineData("invalid-map")]
     public async Task InspectionDoesNotAuthorizeActiveOrUnanchoredHistoricalRows(string mode)
     {
         await using var context = await PrepareAsync(includeKnownB: true);
@@ -128,10 +132,16 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         await ClearOriginalAsync(context);
         if (mode == "orphan-active-request")
             await context.WriteJsonAsync(LiveTurnPreparationService.TurnRequestPath, request);
+        else if (mode == "repair-active" || mode == "ready-active")
+            await context.WriteJsonAsync(mode == "repair-active"
+                ? "game_state/control/validation_repair_request.json" : "ready/turn_complete.json", new JsonObject());
+        else if (mode == "invalid-map")
+            await context.WriteJsonAsync(Map, new JsonObject());
         else
         {
             var root = (await context.ReadJsonAsync(Core))!;
-            root["NPCsInScene"]![0]!["currentLocationId"] = "loc_not_in_current_world";
+            if (mode == "invalid-history-envelope") root["NPCsInScene"]![0]!["materialization"] = new JsonObject();
+            else root["NPCsInScene"]![0]!["currentLocationId"] = "loc_not_in_current_world";
             await context.WriteJsonAsync(Core, root);
         }
         var before = File.ReadAllBytes(context.FileSystem.ResolvePath(Core));
@@ -140,6 +150,46 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         Report(issues);
         Assert.Contains(issues, IsSceneAnchorIssue);
         Assert.Equal(before, File.ReadAllBytes(context.FileSystem.ResolvePath(Core)));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task InspectionPurposeDoesNotAuthorizeNestedResponseOrSurviveReadFailure(bool failRead)
+    {
+        var armed = false;
+        var reached = false;
+        EffectMaterializationTestContext? current = null;
+        JsonElement response = default;
+        var sentinel = new InvalidOperationException("Inspection marker read failed.");
+        await using var context = await PrepareAsync(true, new FileSystemManagerHooks
+        {
+            AfterCanonicalReadAttemptAsync = path =>
+            {
+                if (armed && !reached && path == "game_state/control/validation_repair_request.json")
+                {
+                    reached = true;
+                    if (failRead) throw sentinel;
+                    Assert.Contains(current!.Validator.ValidateResponse(response), IsSceneAnchorIssue);
+                }
+                return Task.CompletedTask;
+            }
+        });
+        current = context;
+        await InstallCanonicalBAsync(context);
+        await ClearOriginalAsync(context);
+        using var document = JsonDocument.Parse((await context.ReadJsonAsync(Core))!.ToJsonString());
+        response = document.RootElement;
+        armed = true;
+        var selection = new GameStateValidationSelection(GameStateValidationPhase.NpcStateFiles, new[] { Core });
+        if (failRead)
+            Assert.Same(sentinel, await Assert.ThrowsAsync<InvalidOperationException>(
+                () => context.Validator.InspectGameStateAsync(selection)));
+        else
+            Assert.DoesNotContain(await context.Validator.InspectGameStateAsync(selection), IsSceneAnchorIssue);
+        Assert.True(reached);
+        Assert.Contains(await context.Validator.ValidateGameStateAsync(selection), IsSceneAnchorIssue);
+        Assert.Contains(context.Validator.ValidateResponse(response), IsSceneAnchorIssue);
     }
 
     private static async Task ClearOriginalAsync(EffectMaterializationTestContext context)
@@ -156,9 +206,9 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         context.FileSystem.DeleteDirectoryTree(lease, LiveTurnPreparationService.PendingTurnSnapshotDirectory);
     }
 
-    private static async Task<EffectMaterializationTestContext> PrepareAsync(bool includeKnownB)
+    private static async Task<EffectMaterializationTestContext> PrepareAsync(bool includeKnownB, FileSystemManagerHooks? hooks = null)
     {
-        var context = await EffectMaterializationTestContext.CreateAsync();
+        var context = await EffectMaterializationTestContext.CreateAsync(hooks);
         try
         {
             await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())

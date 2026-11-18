@@ -143,7 +143,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
         ValidationService validationService)
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
-        var issues = await validationService.ValidateGameStateAsync();
+        var issues = await validationService.InspectGameStateAsync();
         var blocks = new List<UiBlock> { localTurn.Panel };
 
         if (issues.Count == 0)

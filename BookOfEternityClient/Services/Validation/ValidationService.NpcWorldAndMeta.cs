@@ -5096,6 +5096,8 @@ public partial class ValidationService
         var currentSceneInitialId = currentSceneAnchor.InitialId;
         var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
         var mortalActorPreTurnAuthority = ReadValidatedMortalActorMaterializationPreTurnAuthoritySync();
+        var idleHistoricalLocations = ReadIdleInspectionHistoricalLocations(
+            mortalActorPreTurnAuthority, isResponseCreationValidation);
         if (!skipManifestedCompanionSourceValidation)
             ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
 
@@ -5166,6 +5168,8 @@ public partial class ValidationService
                 }
                 var initialLocationId = GetFirstNonEmptyString(item, "initialLocationId");
                 var currentLocationId = GetFirstNonEmptyString(item, "currentLocationId");
+                var retainedHistoricalRow = IsRetainedHistoricalSceneRow(
+                    item, sectionName, mortalActorPreTurnAuthority, idleHistoricalLocations);
                 var isNewUpdateNpc =
                     validateCurrentMaterializationPersonality &&
                     string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
@@ -5204,6 +5208,7 @@ public partial class ValidationService
                         repairHint: "Используй exact существующий locationId из валидированного snapshot либо создай location в этом ходу и свяжи NPC через initialLocationId."));
                 }
                 if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !retainedHistoricalRow &&
                     !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
                     string.IsNullOrWhiteSpace(currentLocationId))
                 {
@@ -5218,6 +5223,7 @@ public partial class ValidationService
                         repairHint: "Если NPC реально присутствует в текущей сцене известной локации, передай его currentLocationId равным currentLocationData.locationId. Если NPC не в сцене, убери его из NPCsInScene."));
                 }
                 else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !retainedHistoricalRow &&
                          !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
                          !string.IsNullOrWhiteSpace(currentLocationId) &&
                          !string.Equals(currentLocationId, currentSceneLocationId, StringComparison.Ordinal))
@@ -5233,6 +5239,7 @@ public partial class ValidationService
                         repairHint: "Если NPC действительно находится в текущей сцене, синхронизируй его currentLocationId с currentLocationData.locationId. Если он не в сцене, убери его из NPCsInScene."));
                 }
                 if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !retainedHistoricalRow &&
                     !string.IsNullOrWhiteSpace(currentSceneInitialId) &&
                     string.IsNullOrWhiteSpace(initialLocationId))
                 {
@@ -5247,6 +5254,7 @@ public partial class ValidationService
                         repairHint: "Если текущая сцена сама является same-turn новой локацией, для NPC из NPCsInScene передай exact currentLocationData.initialId в initialLocationId и оставь currentLocationId = null."));
                 }
                 else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !retainedHistoricalRow &&
                          !string.IsNullOrWhiteSpace(currentSceneInitialId) &&
                          !string.IsNullOrWhiteSpace(initialLocationId) &&
                          !string.Equals(initialLocationId, currentSceneInitialId, StringComparison.Ordinal))

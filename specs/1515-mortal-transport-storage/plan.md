@@ -2092,3 +2092,21 @@ SHA97de2c9043faf4bf0318b820a960d006c6e4fd951f65addd8eeb4fd6e87834ca
 and8outputs remained exact. Original incomplete fail-fast and fixture-premise
 failure remain separate. Minimal GREEN implementation may now begin under the
 explicit inspection/intake design; no live acceptance is claimed.
+T018 GREEN source frozen, UNRUN: existing immutable selection carries inspection
+purpose; only3 UI consumers opt in, worker/default publication route unchanged.
+Exact usable-original full-row/same-section retention applies to raw responses
+as well as files. Raw responses NEVER inherit the idle inspection exception;
+this clarifies prior shorthand 'raw remains strict', not a change of authority.
+Idle inspection requires Missing plus no active request/authority/repair/ready,
+valid canonical actor/history and exact current-world location membership.
+Existing original DATA is reused once; separate current-map DATA is parsed once
+per inspection with an invocation-local ordinal set, not an authority/cache.
+No original reader fallback. Unknown/malformed active markers are not absence.
+
+16 integration cases now cover retained positives/strict negatives and explicit
+inspection lifecycle/nested-response/read-failure controls. A new unit routing
+category checks immutable phase/file selection and3UI/worker source wiring;
+existing creation-history guard checks the clarified CLI rule. Total18 planned
+GREEN cases, none executed yet. These additions are controls, not claimed prior
+causal RED cases. Independent source review underway; real native capture,
+worker publication and whole-task acceptance remain unproven.

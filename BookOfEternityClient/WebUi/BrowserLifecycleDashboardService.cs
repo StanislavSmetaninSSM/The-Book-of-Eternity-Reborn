@@ -72,7 +72,7 @@ public sealed class BrowserLifecycleDashboardService
         List<ValidationIssue> issues;
         try
         {
-            issues = await _validation.ValidateGameStateAsync();
+            issues = await _validation.InspectGameStateAsync();
         }
         catch (Exception ex)
         {

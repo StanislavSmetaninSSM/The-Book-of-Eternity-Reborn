@@ -224,7 +224,7 @@
                     - Every new location/link candidate has turn-unique initialId, exact source authority, state complete, and complete materialization.sections. Existing movement carries no coordinates, names, placement, difficulty, envelope, receipt, or derived exits.
                     - Exact permanent locationId and exact permanent linkId are case-sensitive and Unicode-exact. Names, coordinates, ordinals, aliases, case folding, and Unicode normalization are never identity.
                     - Fresh Mortal bootstrap reads client-owned mortal_bootstrap_scaffold.json unchanged and creates the exact reserved start plus neighbor/directed link, or a narrative-only unresolved exit with no canonical identity claim.
-                    - eventDescriptions is a read-only location archive: read it from context if present, but do NOT emit it inside currentLocationData or worldMapUpdates; write only lastEventsDescription for current-turn history
+                    - eventDescriptions is a client-managed location archive. For complete new-location creation, include exactly eventDescriptions: []. Never author archive entries. For existing-location selection or updates, omit this field and write only lastEventsDescription
                     - rival_soul_arcs.json stores life-scoped milestone arcs for OTHER souls, not player quests; keep at most 1 active major arc and 1 active minor arc
 
                     **QUEST SYSTEM:**

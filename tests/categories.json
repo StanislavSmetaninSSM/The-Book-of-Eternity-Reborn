@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-retained-npc-inspection-routing",
+      "responsibility": "#1515 T018 immutable inspection selection preserves phases/files; three UI routes select inspection while worker validation stays strict.",
+      "excludes": "Source routing guard is not executed UI or worker publication proof; runtime retention has a separate integration category.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/RetainedNpcInspectionRoutingTests.cs",
+        "BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.RetainedNpcInspectionRoutingTests.InspectionPreservesSelectionAndDoesNotReplaceWorkerValidation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-retained-npc-scene-original",
       "responsibility": "#1515 T018 genuine-original retained NPC scene transition positives with a coherent same-turn new actor and exact response scene context.",
       "excludes": "No idle inspection, invalid-original controls, publication or native GM turn.",

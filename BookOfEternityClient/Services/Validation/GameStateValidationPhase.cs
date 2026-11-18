@@ -102,6 +102,13 @@ internal sealed class GameStateValidationSelection
 
     public GameStateValidationPhase Phases { get; }
 
+    /// <summary>Diagnostic inspection only; never grants permission to publish or accept state.</summary>
+    internal bool IsReadOnlyInspection { get; private init; }
+
+    /// <summary>Copies the exact phase/file selection for one read-only inspection invocation.</summary>
+    internal GameStateValidationSelection ForReadOnlyInspection() =>
+        new(Phases, _stateFiles) { IsReadOnlyInspection = true };
+
 #if DEBUG
     internal bool SelectsOnlyStateFiles(IReadOnlySet<string> allowedPaths) =>
         _stateFiles != null && _stateFiles.All(allowedPaths.Contains);
