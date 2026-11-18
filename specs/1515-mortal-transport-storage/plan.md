@@ -3221,3 +3221,15 @@ file hashes/sizes and then originals removed; no other directories touched or
 runs repeated. Future runs set the external variable explicitly. No raw in Git.
 Implementation GO now covers the coherent agreed helper/consumer/test change;
 SOURCE review and narrow GREEN remain gates before any new package/native work.
+T025 coordinated implementation WIP saved at13789f15974c179db23853aa1d9a72f8520e4283:
+11 helper/test/Python consumer files, not production gameplay. Explicit outcome
+union now reaches acceptance, predecessor and optional-history local/final-pin
+checks; old strict receipt validation and fixed restored-diagnostic contract
+remain. This is UNRUN WIP, not SOURCE acceptance or GREEN. Remaining source work
+includes raw alias negatives, legal schedule representations, fixture migrations
+and an actual C# serialized-result-to-Python-consumer proof for both outcomes,
+rather than separately invented dictionaries. Complete SOURCE review and bounded
+official execution precede any new immutable package or native attempt. No mm11
+mutation/replay or retroactive success. Inputs remain one-read detached DATA;
+there is no new cache, authority reuse or speedup claim. Remote ref was freshly
+verified; this checkpoint does not assert a new clean full-checkout restoration.
