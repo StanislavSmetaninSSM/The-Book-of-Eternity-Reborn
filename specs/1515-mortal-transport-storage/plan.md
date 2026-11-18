@@ -2664,3 +2664,18 @@ rollback. Do not simply drop assertions. All5 fixture roots removed without erro
 d6d3ddd07acb45e2fa308d1d1f7db213c85660ef0776479a0a714d05f75d9af9.
 No native retry or complete negative-path qualification; retain both full PASS
 results separately from the three unfinished refusal checks.
+Post-refusal output mismatch traced completely: all three debug_logs.actual files
+exactly equal the existing source fixture output (SHA256
+7226637bf2e51fcc11486e8e01168b63b7b2358dab0e17d4f986a28f9e408b14).
+Backup precedes ClearTransientOutputFiles; the former callback oracle observed
+post-clear absence. This was restored prior output, not leaked GM data or a new
+diagnostic writer. The same timing affects other preexisting output files.
+Single fixture correction now derives ALL checked expectations from one genuine
+owned rollback suffix/inventory, checks exact root/logical identity/duplicates and
+actual tracked-path contract before inferring absence, retains every exact-byte
+assertion, and exports all mismatches before one assertion. Request/ready/repair,
+turn/story and typed idle cleanup remain separate. No production edit.
+CombinedMortalBirth source SHA256
+45264233a4ae2279a4404affbadfa092fac45704e4752315852530a1d80513cb.
+Source-only, awaiting narrow independent oracle review then fresh combined5;
+previous full positive/two-repair PASS remain historical results, not a new run.

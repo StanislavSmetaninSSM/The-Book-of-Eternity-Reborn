@@ -100,25 +100,50 @@ public sealed partial class GameEngineTurnLifecycleTests
             dispatched = request;
             Assert.Equal(42, request.TurnNumber);
             snapshot = (await ReadCombinedJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))["manifestPayloadHash"]!.GetValue<string>();
-            foreach (var path in CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(new[]
-                     { currentPath, mapPath, npcPath, journalsPath, StorageTransportMoveService.VehiclesPath,
-                         MortalLivingWorldSource.WorldTimePath, "game_state/inventory/items.json", "game_state/factions/faction_core.json", "game_state/factions/faction_projects.json" }).Distinct(StringComparer.Ordinal))
-                before[path] = await _fs.ReadFileBytesAsync(path);
-            // Read the actual ordinary rollback producer's one owned member, not the later
-            // signed validation snapshot or the pre-entry state before health initialization.
-            var rollbackPath = Assert.Single(Directory.GetFiles(
+            var checkedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(new[]
+                { currentPath, mapPath, npcPath, journalsPath, StorageTransportMoveService.VehiclesPath,
+                    MortalLivingWorldSource.WorldTimePath, "game_state/inventory/items.json", "game_state/factions/faction_core.json",
+                    "game_state/factions/faction_projects.json" }).Distinct(StringComparer.Ordinal).ToArray();
+            // The real engine backs up BEFORE staging clears outputs and updates the schedule.
+            // Use that single owned generation for every oracle path, not the later request image.
+            var scheduleBackup = Assert.Single(Directory.GetFiles(
                 Path.GetDirectoryName(_fs.ResolvePath(ProgressionScheduleService.SchedulePath))!,
                 "progression_schedule.json.rollback.*", SearchOption.TopDirectoryOnly));
-            var relativeRollback = Path.GetRelativePath(_rootPath, rollbackPath);
-            Assert.False(Path.IsPathRooted(relativeRollback) || relativeRollback.StartsWith("..", StringComparison.Ordinal));
-            var rollbackSchedule = await File.ReadAllBytesAsync(rollbackPath);
-            Assert.NotEmpty(rollbackSchedule);
-            before[ProgressionScheduleService.SchedulePath] = rollbackSchedule;
-            await File.WriteAllBytesAsync(Path.Combine(artifact, "schedule-owned-rollback.bin"), rollbackSchedule);
-            await File.WriteAllTextAsync(Path.Combine(artifact, "schedule-owned-rollback.json"),
-                System.Text.Json.JsonSerializer.Serialize(new { path = relativeRollback,
-                    sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(rollbackSchedule)),
-                    reason = "Actual engine rollback member captured at TerminalWaitStarted, after health initialization and before GM writes." }));
+            var suffix = scheduleBackup[_fs.ResolvePath(ProgressionScheduleService.SchedulePath).Length..];
+            Assert.StartsWith(".rollback.", suffix);
+            Assert.True(suffix.Length > ".rollback.".Length);
+            var members = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+            var inventory = new JsonArray();
+            foreach (var member in Directory.GetFiles(_rootPath, "*", SearchOption.AllDirectories)
+                         .Where(path => path.EndsWith(suffix, StringComparison.Ordinal)))
+            {
+                var relative = Path.GetRelativePath(_rootPath, member).Replace(Path.DirectorySeparatorChar, '/');
+                Assert.False(Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal));
+                var original = relative[..^suffix.Length];
+                // Ask the actual producer's typed inventory contract, including its exclusions.
+                Assert.Equal(original, Assert.Single(GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(new[] { original })));
+                Assert.Equal(Path.GetFullPath(_fs.ResolvePath(original) + suffix), Path.GetFullPath(member));
+                var bytes = await File.ReadAllBytesAsync(member);
+                Assert.True(members.TryAdd(original, bytes), "Duplicate owned rollback member: " + original);
+                var evidencePath = Path.Combine(artifact, "owned-rollback", original);
+                Directory.CreateDirectory(Path.GetDirectoryName(evidencePath)!);
+                await File.WriteAllBytesAsync(evidencePath, bytes);
+                inventory.Add(new JsonObject { ["path"] = original, ["backupPath"] = relative,
+                    ["sha256"] = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)) });
+            }
+            Assert.True(members.ContainsKey(ProgressionScheduleService.SchedulePath));
+            foreach (var path in checkedPaths)
+            {
+                // Supplying a logical candidate proves it belongs to the real tracked contract;
+                // only then does its absence from this complete backup mean original absence.
+                Assert.Equal(path, Assert.Single(GameEngine.EnumerateOriginalBrowserRollbackTrackedFiles(new[] { path })));
+                before[path] = members.TryGetValue(path, out var bytes) ? bytes : null;
+            }
+            await File.WriteAllTextAsync(Path.Combine(artifact, "owned-rollback-inventory.json"),
+                new JsonObject { ["suffix"] = suffix, ["members"] = inventory,
+                    ["checkedPaths"] = new JsonArray(checkedPaths.Select(path => (JsonNode)new JsonObject
+                    { ["path"] = path, ["originalPresent"] = members.ContainsKey(path) }).ToArray()),
+                    ["reason"] = "Actual owned engine rollback generation captured before GM writes; not the post-staging validation image." }.ToJsonString());
             var core = (await ReadCombinedJsonAsync(npcPath)).AsObject();
             mira = core["NPCsInScene"]![0]!.DeepClone();
             originalMap = await ReadCombinedJsonAsync(mapPath);
@@ -271,6 +296,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Null(await _fs.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json"));
             }
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
+            var mismatches = new JsonArray();
             foreach (var pair in before)
             {
                 var expected = pair.Value;
@@ -280,9 +306,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var stem = pair.Key.Replace('/', '_');
                     if (expected is not null) await File.WriteAllBytesAsync(Path.Combine(artifact, stem + ".expected"), expected);
                     if (actual is not null) await File.WriteAllBytesAsync(Path.Combine(artifact, stem + ".actual"), actual);
-                    Assert.Fail("Rollback bytes differ: " + pair.Key + "; full images retained at " + artifact);
+                    mismatches.Add(new JsonObject { ["path"] = pair.Key,
+                        ["expectedPresent"] = expected is not null, ["actualPresent"] = actual is not null,
+                        ["expectedSha256"] = expected is null ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(expected)),
+                        ["actualSha256"] = actual is null ? null : Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(actual)) });
                 }
             }
+            await File.WriteAllTextAsync(Path.Combine(artifact, "rollback-mismatches.json"), mismatches.ToJsonString());
+            Assert.True(mismatches.Count == 0, "Rollback bytes differ: " + mismatches.ToJsonString() + "; full images retained at " + artifact);
             var rejectedStory = await _fs.ReadFileAsync("stories/mortal_life_2.jsonl");
             Assert.True(string.IsNullOrWhiteSpace(rejectedStory));
             if (repairMode is "map-drift" or "index-drift")
