@@ -6,6 +6,8 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+// The negative oracle consumes the existing DEBUG-only protected-rejection diagnostic.
+#if DEBUG
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Theory]
@@ -59,6 +61,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 scene["materialization"]!["sections"]![section] = new JsonObject { ["disposition"] = "populated", ["reason"] = null };
             await _fs.WriteFileAtomicAsync(currentPath, new JsonObject { ["currentLocationData"] = scene }.ToJsonString());
             var map = originalMap.DeepClone();
+            var newLinks = new JsonArray();
             for (var direction = 0; direction != 2; ++direction)
             {
                 var link = MortalLocationTestFixture.CreateRawLink(JourneyLocationId, JourneyLocationId);
@@ -68,8 +71,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 link["materialization"]!["materializationId"] = "mat_council_supply_link_" + direction;
                 link[direction == 0 ? "targetLocationId" : "sourceLocationId"] = null;
                 link[direction == 0 ? "targetInitialId" : "sourceInitialId"] = sceneRef;
-                map["links"]!.AsArray().Add(link);
+                newLinks.Add(link);
             }
+            map["worldMapUpdates"] = new JsonObject { ["newLinks"] = newLinks };
+            Assert.True(JsonNode.DeepEquals(originalMap["links"], map["links"]));
             await _fs.WriteFileAtomicAsync(mapPath, map.ToJsonString());
             var vehicles = await ReadCombinedJsonAsync(StorageTransportMoveService.VehiclesPath);
             Assert.Empty(vehicles["birthReceipts"]!.AsArray());
@@ -85,6 +90,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             await _fs.WriteFileAtomicAsync(StorageTransportMoveService.VehiclesPath, vehicles.ToJsonString());
             var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor(actorRef);
             actor["name"] = "Council supply steward";
+            // Same characteristic vocabulary as the actual seed; values are explicit authored
+            // steward DATA, not copied player values or a change to world's definitions.
+            var worldCharacteristics = (await ReadCombinedJsonAsync("game_state/misc/characteristics.json")).AsObject();
+            Assert.Equal(12, worldCharacteristics.Count);
+            actor["characteristics"] = new JsonObject(worldCharacteristics.Select(pair =>
+                new KeyValuePair<string, JsonNode?>(pair.Key, JsonValue.Create(5))));
             actor["progressionProfile"] = new JsonObject { ["schemaVersion"] = 1, ["mode"] = "none" };
             actor["experience"] = 0; actor["experienceForNextLevel"] = 0;
             actor["teacherProfile"] = new JsonObject { ["canTeach"] = false, ["skills"] = new JsonArray() };
@@ -104,13 +115,6 @@ public sealed partial class GameEngineTurnLifecycleTests
             var time = await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath);
             time["currentTimeInMinutes"] = 500; time["timeOfDay"] = "08:20";
             await _fs.WriteFileAtomicAsync(MortalLivingWorldSource.WorldTimePath, time.ToJsonString());
-            if (unresolvedEffect)
-            {
-                // Diagnostic validation of this genuine pending candidate, not a grant. The
-                // engine below independently executes its complete ordered validation again.
-                var issues = await runtime!.ValidationService.ValidateAcceptedTurnRawEffectMaterializationAsync();
-                Assert.Contains(issues, issue => issue.Code == "effect_source_authority_invalid_owner_identity");
-            }
             await WriteMortalLivingWorldJourneyOutputAsync(request,
                 "Вы осматриваете двор, телегу и закрытый ящик совета. Распорядитель объясняет порядок выдачи. Вы ничего не берёте.",
                 [currentPath, mapPath, npcPath, journalsPath, StorageTransportMoveService.VehiclesPath, MortalLivingWorldSource.WorldTimePath],
@@ -139,22 +143,53 @@ public sealed partial class GameEngineTurnLifecycleTests
                 - State changes: Only the new actor's first journal observation is authored; no relationship, skill or activity change.
                 """);
         }, SeedMortalLivingWorldJourneyActorsAsync);
-        await runtime.Engine.ProcessPlayerTurn("Осмотреть двор, телегу и кладовую совета с распорядителем, ничего не брать без разрешения.");
-        Assert.Equal(1, calls);
+        // This existing collection has DisableParallelization=true: no other test in this
+        // process overlaps the temporary diagnostic sink/nonce. Restore both even on failure.
         var artifact = Path.Combine(TestDiagnosticPaths.Root, "combined-mortal-birth", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(artifact);
+        var nonce = Guid.NewGuid().ToString("N");
+        const string nonceVariable = "BOE_TEST_GAME_LOOP_FAILURE_NONCE";
+        var originalNonce = Environment.GetEnvironmentVariable(nonceVariable);
+        var originalError = Console.Error;
+        using var capturedError = new StringWriter(System.Globalization.CultureInfo.InvariantCulture);
+        try
+        {
+            Environment.SetEnvironmentVariable(nonceVariable, nonce);
+            Console.SetError(TextWriter.Synchronized(new CombinedBirthDiagnosticTee(originalError, capturedError)));
+            await runtime.Engine.ProcessPlayerTurn("Осмотреть двор, телегу и кладовую совета с распорядителем, ничего не брать без разрешения.");
+        }
+        finally
+        {
+            Console.SetError(originalError);
+            Environment.SetEnvironmentVariable(nonceVariable, originalNonce);
+            await File.WriteAllTextAsync(Path.Combine(artifact, "stderr.txt"), capturedError.ToString());
+        }
+        Assert.Equal(1, calls);
         await File.WriteAllTextAsync(Path.Combine(artifact, "logger.txt"), _journeyLogger.Describe());
         await File.WriteAllTextAsync(Path.Combine(artifact, "canonical-failure.json"),
             await _fs.ReadFileAsync("game_state/control/validation_diagnostic_failure_report.json") ?? "null");
         _directGachaOutput?.WriteLine("Combined candidate evidence: " + artifact);
+        var refusalRecords = capturedError.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Trim()).Where(line => line.StartsWith("{", StringComparison.Ordinal))
+            .Select(line => JsonNode.Parse(line)!)
+            .Where(record => record["kind"]?.GetValue<string>() == "boe-game-loop-fixture-rejection" &&
+                             record["nonce"]?.GetValue<string>() == nonce).ToArray();
         if (unresolvedEffect)
         {
+            var refusal = Assert.Single(refusalRecords);
+            Assert.Equal("protected-materialization", refusal["stage"]!.GetValue<string>());
+            Assert.True(refusal["flags"]!["effect"]!.GetValue<bool>());
+            Assert.True(refusal["rollbackAvailable"]!.GetValue<bool>());
+            Assert.Contains(refusal["errors"]!.AsArray(), issue =>
+                issue!["code"]?.GetValue<string>() == "effect_source_authority_invalid_owner_identity" &&
+                issue["filePath"]?.GetValue<string>() == currentPath + ".activeEffectDefinitions");
             Assert.Equal(41, runtime.GameLoop.TurnNumber);
             foreach (var pair in before) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
             var rejectedStory = await _fs.ReadFileAsync("stories/mortal_life_2.jsonl");
             Assert.True(string.IsNullOrWhiteSpace(rejectedStory));
             return;
         }
+        Assert.Empty(refusalRecords);
         Assert.True(runtime.GameLoop.TurnNumber == 42, _journeyLogger.Describe());
         var current = await ReadCombinedJsonAsync(currentPath);
         var mapAfter = await ReadCombinedJsonAsync(mapPath);
@@ -207,7 +242,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         foreach (var path in new[] { "game_state/inventory/items.json", "game_state/factions/faction_core.json", "game_state/factions/faction_projects.json" })
             if (before.TryGetValue(path, out var original)) Assert.Equal(original, await _fs.ReadFileBytesAsync(path));
-        foreach (var link in mapAfter["links"]!.AsArray().Skip(originalMap["links"]!.AsArray().Count))
+        Assert.Null(mapAfter["worldMapUpdates"]);
+        foreach (var oldLink in originalMap["links"]!.AsArray())
+            Assert.True(JsonNode.DeepEquals(oldLink, mapAfter["links"]!.AsArray().Single(row =>
+                row!["linkId"]!.GetValue<string>() == oldLink!["linkId"]!.GetValue<string>())));
+        var createdLinks = mapAfter["links"]!.AsArray().Where(row =>
+            row!["materializationReceipt"]?["initialId"]?.GetValue<string>()?.StartsWith("linkref_council_supply_", StringComparison.Ordinal) == true).ToArray();
+        Assert.Equal(2, createdLinks.Length);
+        Assert.Single(createdLinks, row => row!["sourceLocationId"]!.GetValue<string>() == JourneyLocationId &&
+            row["targetLocationId"]!.GetValue<string>() == locationId);
+        Assert.Single(createdLinks, row => row!["sourceLocationId"]!.GetValue<string>() == locationId &&
+            row["targetLocationId"]!.GetValue<string>() == JourneyLocationId);
+        foreach (var link in createdLinks)
         {
             Assert.NotNull(link!["linkId"]);
             Assert.Equal(42, link["materializationReceipt"]!["sourceTurn"]!.GetValue<int>());
@@ -222,6 +268,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(_fs.FileExists("game_state/control/validation_diagnostic_failure_report.json"));
     }
 
+    /// <summary>Tees the existing diagnostic stream without replacing the production emitter or limiting captured evidence.</summary>
+    private sealed class CombinedBirthDiagnosticTee(TextWriter original, TextWriter captured) : TextWriter
+    {
+        /// <inheritdoc/>
+        public override System.Text.Encoding Encoding => original.Encoding;
+        /// <inheritdoc/>
+        public override void Write(char value) { original.Write(value); captured.Write(value); }
+        /// <inheritdoc/>
+        public override void Write(string? value) { original.Write(value); captured.Write(value); }
+        /// <inheritdoc/>
+        public override void WriteLine(string? value) { original.WriteLine(value); captured.WriteLine(value); }
+        /// <inheritdoc/>
+        public override void Flush() { original.Flush(); captured.Flush(); }
+    }
+
     /// <summary>Creates authored birth capacity only; current values and receipts remain client-owned.</summary>
     private static JsonObject CombinedResource(string key) => new()
     { ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = key, ["maximum"] = 100 }) };
@@ -229,3 +290,5 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <summary>Reads current fixture DATA without manufacturing a pending source or publication permission.</summary>
     private async Task<JsonNode> ReadCombinedJsonAsync(string path) => JsonNode.Parse((await _fs.ReadFileAsync(path))!)!;
 }
+
+#endif
