@@ -29,7 +29,12 @@ public sealed class RetainedNpcSceneContinuityTests(ITestOutputHelper output)
         currentCore["UpdateNPCs"] = new JsonArray(NewActor(newScene));
         await context.WriteJsonAsync(Core, currentCore);
         var before = File.ReadAllBytes(context.FileSystem.ResolvePath(Core));
-        using var document = JsonDocument.Parse(currentCore.ToJsonString());
+        // Same-turn location references are resolved from this response envelope,
+        // not from the separately written current-location fixture.
+        var response = currentCore.DeepClone().AsObject();
+        if (newScene)
+            response["currentLocationData"] = (await context.ReadJsonAsync(Current))!["currentLocationData"]!.DeepClone();
+        using var document = JsonDocument.Parse(response.ToJsonString());
         var issues = context.Validator.ValidateResponse(document.RootElement);
         Report(issues);
         Assert.Equal(before, File.ReadAllBytes(context.FileSystem.ResolvePath(Core)));

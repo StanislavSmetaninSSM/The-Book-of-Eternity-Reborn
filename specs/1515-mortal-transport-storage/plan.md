@@ -2068,3 +2068,10 @@ newcomer premise: npc_initial_location_same_turn_target_unknown for the new
 initialId; it is NOT qualified causal RED yet. Preserve the strict assertion,
 inspect missing raw-response scene context, fix only that fixture before GREEN.
 3427source pins and16output pins remain exact. No product exception implemented.
+T018 new-scene fixture correction confirmed in source: the response-level
+same-turn location collector reads currentLocationData from the response root,
+not the separately staged current_location file. Positive theory now submits the
+same exact new-scene fragment with its NPC response. Canonical core and all
+assertions/negative cases remain unchanged. Narrow overlapping category
+mortal-retained-npc-scene-original selects only these2 theory leaves/1minute,
+so previously completed negatives and the doc RED are not repeated. UNRUN.

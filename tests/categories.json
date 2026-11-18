@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-retained-npc-scene-original",
+      "responsibility": "#1515 T018 genuine-original retained NPC scene transition positives with a coherent same-turn new actor and exact response scene context.",
+      "excludes": "No idle inspection, invalid-original controls, publication or native GM turn.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/RetainedNpcSceneContinuityTests.cs"
+      ],
+      "related": [
+        "mortal-retained-npc-scene-continuity"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.RetainedNpcSceneContinuityTests.GenuineOriginalRetainedActorRemainsOffscreenAcrossSceneChange"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-location-creation-history-guidance",
       "responsibility": "#1515 T018 CLI guidance distinguishes empty new-location history from client-owned archive entries and existing-location updates.",
       "excludes": "No daemon rendering, live GM authoring or runtime publication proof.",
