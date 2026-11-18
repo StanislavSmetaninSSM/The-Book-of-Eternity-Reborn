@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 internal static partial class GmBridgeConsumerScenarioDriver
 {
     private static async Task VerifyPreparedStopRaceAsync(string status, GmSessionRunRecord original,
-        string root, string output, Dictionary<string, object?> result, CancellationToken token)
+        string root, string output, Dictionary<string, object?> result, Task<GmSessionRunRecord> stoppingReadback, CancellationToken token)
     {
         var endpoint = BridgeTransportConnector.DecodeStatus(status);
         if (endpoint.Kind != "linux-fifo-v1") throw new IOException("This causal fixture requires actual FIFO transport.");
@@ -33,15 +33,13 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 command = "shutdown", rootKey = root, expectedMainIdentity = original.Identity }), 10000, CancellationToken.None);
             using var gate = CancellationTokenSource.CreateLinkedTokenSource(token);
             gate.CancelAfter(TimeSpan.FromSeconds(2));
-            while (true)
-            {
-                gate.Token.ThrowIfCancellationRequested();
-                var record = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Original record missing."));
-                if (record.Identity != original.Identity) throw new IOException("Original owner changed.");
-                if (record.Disposition == GmSessionRunDisposition.Stopping) break;
-                if (stopping.IsCompleted) throw new IOException("Shutdown finished before controlled activation.");
-                await Task.Delay(5, gate.Token);
-            }
+            // Observe the writer's validated durable boundary, never poll its staging namespace.
+            var stoppedAdmission = await stoppingReadback.WaitAsync(gate.Token);
+            if (stoppedAdmission.Identity != original.Identity ||
+                stoppedAdmission.Disposition != GmSessionRunDisposition.Stopping)
+                throw new IOException("Stopping readback changed the original owner.");
+            if (stopping.IsCompleted) throw new IOException("Shutdown finished before controlled activation.");
+            result["StoppingReadback"] = stoppedAdmission;
             result["StopAdmissionClosedBeforeActivation"] = true;
             await MainOperationReader.WriteAsync(stream, new MainOperationFrame { Command = "activateMainOperation",
                 PinId = grant.PinId, CloseId = grant.CloseId, OperationId = operation, Identity = original.Identity }, token);

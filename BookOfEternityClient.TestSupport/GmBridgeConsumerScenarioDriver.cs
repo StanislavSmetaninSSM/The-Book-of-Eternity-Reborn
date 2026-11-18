@@ -46,6 +46,19 @@ internal static partial class GmBridgeConsumerScenarioDriver
             files.EnsureDirectoryStructure();
             host = new BridgeHost(launch.Scratch, "consumer-" + Guid.NewGuid().ToString("N"));
             host.ConfigureNeutral(launch);
+            var stoppingReadback = new TaskCompletionSource<GmSessionRunRecord>(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (race) host.ObserveMainMetadata = stage =>
+            {
+                if (stage != MainRunIoStage.Readback) return;
+                try
+                {
+                    var observed = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root)
+                        ?? throw new IOException("Original metadata absent at writer readback."));
+                    if (observed.Disposition == GmSessionRunDisposition.Stopping)
+                        stoppingReadback.TrySetResult(observed);
+                }
+                catch (Exception error) { stoppingReadback.TrySetException(error); }
+            };
             running = host.RunAsync();
 
             using var startupDeadline = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token);
@@ -89,7 +102,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
             }
             else if (mode == "terminal-main-prepared-stop-race")
             {
-                await VerifyPreparedStopRaceAsync(status, original!, root, output, result, deadline.Token);
+                await VerifyPreparedStopRaceAsync(status, original!, root, output, result, stoppingReadback.Task, deadline.Token);
             }
             else
             {
