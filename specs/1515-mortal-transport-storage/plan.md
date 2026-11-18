@@ -2872,3 +2872,14 @@ pipe and cleanup; bridge/daemon/RPC environment remains untouched. Neither
 transport result proves gameplay menus. Convert old configuration to an explicit
 expected-refusal regression control only after this causal observation; unrelated
 exceptions/incomplete cleanup must still fail. Keep prior3/1 result unchanged.
+T024 independent console outcome review confirms the three actual transport
+observations and full owned cleanup. PTY moved-screen contains an echoed arrow
+suffix, so it is not echo-free; selected return is independently verified. Pipe
+frame evidence and echo are separate. Smaller client-only TERM correction is
+supported for this inert prompt, not gameplay. Expected-refusal regression now
+prepared in Python only: exact Spectre ANSI NotSupportedException first line,
+exit1, no input/choice, original EOF/termios/join/drain and no cleanup failures;
+Success assigned only after cleanup. Wrong exception/exit, choice/input or missing
+cleanup must fail. Cheap controls11PASS/1causalFAIL then12/12PASS0.002s; no C#,
+driver, category or selection change. Fresh official4 awaits focused review;
+existing compiled outputs may be reused only after full matching compiled pins.

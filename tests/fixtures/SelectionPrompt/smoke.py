@@ -110,6 +110,18 @@ class Screen:
         other_label='SMOKE_BETA' if choice=='SMOKE_ALPHA' else 'SMOKE_ALPHA'
         return bool(prefix) and not other.split(other_label)[0].strip()
 
+def expected_dumb_refusal(result):
+    receipt=result.get('Choice') or {}
+    failure=receipt.get('Failure')
+    expected=('System.NotSupportedException: Cannot show selection prompt since '
+              'the current terminal does not support ANSI escape sequences.')
+    return (result.get('Mode')=='pipe-dumb' and result.get('ExitCode')==1
+            and result.get('Inputs')==[] and receipt.get('Selected') is None
+            and isinstance(failure,str) and failure.partition('\n')[0]==expected
+            and all(result.get(k) is True for k in
+                    ('EOF','TermiosRestored','Joined','CleanupDrained'))
+            and result.get('CleanupFailures')==[])
+
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
     assert mode in ('pty','pipe-dumb','pipe-xterm')
@@ -167,12 +179,13 @@ def main():
         result['Choice']=receipt
         assert result['TermiosRestored'] and not receipt['InputRedirected']
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
-        assert stage==2 and result['ExitCode']==0 and receipt['Selected']=='SMOKE_BETA' and receipt['Failure'] is None
+        if mode!='pipe-dumb':
+            assert stage==2 and result['ExitCode']==0 and receipt['Selected']=='SMOKE_BETA' and receipt['Failure'] is None
         if mode=='pty':
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:
             assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
-        result['Success']=True
+        result['Success']=mode!='pipe-dumb'
     except BaseException as error:
         result['Failure']=type(error).__name__+': '+str(error)
     finally:
@@ -199,6 +212,10 @@ def main():
         for fd in (slave,master):
             if fd>=0:os.close(fd)
         if process is not None and process.stdout is not None:process.stdout.close()
+        if mode=='pipe-dumb' and 'Failure' not in result:
+            result['ExpectedAnsiRefusal']=expected_dumb_refusal(result)
+            result['Success']=result['ExpectedAnsiRefusal']
+            if not result['Success']:result['Failure']='Expected ANSI refusal/complete cleanup not proved'
         result['ElapsedSeconds']=time.monotonic()-start
         (root/'result.json').write_text(json.dumps(result,indent=2))
     return 0 if result['Success'] and not result['CleanupFailures'] else 1

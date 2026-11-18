@@ -1,6 +1,6 @@
 """Pure parser controls, no PTY, process, or terminal authority."""
 import unittest
-from smoke import Screen
+from smoke import Screen, expected_dumb_refusal
 
 ALPHA=b'> SMOKE_ALPHA\r\n  SMOKE_BETA'
 BETA=b'  SMOKE_ALPHA\r\n> SMOKE_BETA'
@@ -73,6 +73,25 @@ class KeyboardAndFrameTests(unittest.TestCase):
         self.assertTrue(s.frame('SMOKE_BETA',cut))
         s.feed(b'\rjunk')
         self.assertFalse(s.frame('SMOKE_BETA',cut))
+
+class DumbRefusalTests(unittest.TestCase):
+    def test_only_exact_ansi_refusal_with_complete_cleanup(self):
+        receipt={'Selected':None,'Failure':'System.NotSupportedException: Cannot show selection prompt since the current terminal does not support ANSI escape sequences.\n   at Spectre.Console.ListPrompt'}
+        good={'Mode':'pipe-dumb','Choice':receipt,'ExitCode':1,'Inputs':[],
+              'EOF':True,'TermiosRestored':True,'Joined':True,'CleanupDrained':True,'CleanupFailures':[]}
+        self.assertTrue(expected_dumb_refusal(good))
+        for key,value in [('ExitCode',2),('Inputs',['Down']),('EOF',False),
+                          ('TermiosRestored',False),('Joined',False),
+                          ('CleanupDrained',False),('CleanupFailures',['failed'])]:
+            with self.subTest(key=key):
+                self.assertFalse(expected_dumb_refusal(dict(good,**{key:value})))
+        for receipt in [{'Selected':'SMOKE_BETA','Failure':good['Choice']['Failure']},
+                        {'Selected':None,'Failure':'System.IOException: unrelated'},
+                        {'Selected':None,'Failure':'System.NotSupportedException: unrelated ANSI'},
+                        {'Selected':None,'Failure':''},
+                        {'Selected':None,'Failure':None}]:
+            with self.subTest(receipt=receipt):
+                self.assertFalse(expected_dumb_refusal(dict(good,Choice=receipt)))
 
 if __name__=='__main__':
     unittest.main()
