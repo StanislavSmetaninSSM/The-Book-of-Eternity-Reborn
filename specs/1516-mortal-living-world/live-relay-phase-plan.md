@@ -369,3 +369,35 @@ cause. Do not delete the status/lock or relax admission to retry. Establish the
 specific source identity failure with a cheap test before changing code. The
 accepted p01 turn remains separate evidence; p02 did not run the proposed next
 game action. No broad suite or extra game run has been performed.
+
+### Guarded ml5 first live turn, 2026-11-18
+
+The ml4 startup defect was causally reproduced and corrected under #1589; see
+bridge-fifo-transport-plan.md for the independently accepted 112 narrow results,
+failed intermediate probes and exact O_NONBLOCK correction. Fresh ml5 uses the
+published c2f40beb checkpoint (production91513a7), not the intentionally stale
+local HEAD. Its immutable preparation manifest SHA256 is
+c7d42644e55d14bc0a32d38b9875a77645806c494f0007cc92db5157d580357f;
+483 runtime files,249 helper files,4 native and8 relay files were verified.
+No ml3/ml4 state or pending response was reused or changed.
+
+Actual request6063bf9cf3d648d68cea968dda28804c/turn42 belongs to fresh session
+seeded_live_mortal_0b704a2f0a1947e99ab21ced597a2e05. The independent GM authored
+seven actual response writes; one relay execution exited0 and drained without
+repair. Ordinary Continue accepted exactly one action/story after the unchanged
+setup41 prefix. The production-typed receipt has publicationAuthority=false,
+prior0/current1 and fingerprint
+sha256:b359684f44f00d98c08663bc5e5831f3fc46f9e5f39bf0624823fa4023d800fa.
+Time480..720 and scout Active0..240/480, step0..1 remain partial progress, not
+completion, XP, storage/transport materialization or whole-issue qualification.
+
+The original phase succeeded in267.721s. One original shutdown ACK matches run
+f905ec3f8dcd4fee966392e0c0f8d2cb/epoch1 and durable Stopped/OwnedScopeEmpty.
+Client, bridge and daemon exited0 with EOF and restored termios; RPC helper
+exited0 with both EOF. Guardian confirmed ECHILD, driver0, no emergency signals,
+failures or deadline. Daemon errorCount0 and terminalSettled=true match retained
+guard ownerb31d156dbbe9483a972374d986384fa2/settled=true. Independent outcome review
+verified request/snapshot/response/story/receipt and all original closure evidence.
+A second retained-world phase is now admitted using this exact p01 result, the
+same seed and immutable runtime, but a fresh phase/queue/nonce and GM response.
+This does not resolve the separate unknown ml3/e histories or qualify Windows.
