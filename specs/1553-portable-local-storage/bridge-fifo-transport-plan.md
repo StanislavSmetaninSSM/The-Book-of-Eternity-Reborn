@@ -465,3 +465,8 @@ durable Stopped identity, host exit0 and owned cleanup are mandatory even on RED
 The retired-context premise is observed as a known-quiescent local entry followed
 by RequireOpen refusal, not private-field proof of disposal. No new reflection
 or production changes. These test corrections are still unbuilt/unrun.
+
+Initial readmission-test build stopped before execution: 8.49s, 25 warnings,
+2 compile errors from a missing Core namespace import in the new typed host
+fixture. Zero tests ran; this is preparation failure, not causal RED. The single
+missing import is corrected; production guard code remains unchanged.

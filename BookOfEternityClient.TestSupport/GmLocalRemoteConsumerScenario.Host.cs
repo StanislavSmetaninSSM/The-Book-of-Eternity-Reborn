@@ -1,4 +1,5 @@
 using System.Text.Json;
+using BookOfEternityClient.Core;
 using BookOfEternityGMBridge;
 using BookOfEternityClient.Services.GmRuntime;
 
