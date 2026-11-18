@@ -135,7 +135,7 @@ public partial class GameEngine
         MortalQteRejectedRepairInput? MortalQteInput = null,
         MortalJointRepairCheckpoint? JointCheckpoint = null);
 
-    private sealed record RepairResubmissionPathObligation(
+    internal sealed record RepairResubmissionPathObligation(
         string Path,
         bool RejectedExists);
 

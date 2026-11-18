@@ -826,8 +826,13 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(treatmentSkillBaselines.Keys);
             if (treatmentCurrentTimeInMinutes is not null)
                 requiredPaths.UnionWith(TreatmentOrdinaryGuardPaths);
-            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation)
+            if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosisPaths)
             {
+                if (diagnosisPaths.LivingWorld is not null)
+                {
+                    requiredPaths.Add(MortalLivingWorldSource.ReportPath);
+                    requiredPaths.Add(MortalLivingWorldSource.HistoryPath);
+                }
                 requiredPaths.Add(ProgressionScheduleService.SchedulePath);
                 requiredPaths.Add(ProgressionScheduleService.ReportPath);
             }
@@ -902,6 +907,12 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
             if (treatmentContinuationAuthority is WoundAcceptedTurnPlanner.MortalDiagnosisContinuation diagnosed)
             {
                 var progression = diagnosed.Progression;
+                if (diagnosed.LivingWorld is { } living)
+                {
+                    living.RequireBeforeImages(CaptureBeforeImage(MortalLivingWorldSource.ReportPath),
+                        CaptureBeforeImage(MortalLivingWorldSource.HistoryPath));
+                    companionImages.Add(MortalLivingWorldSource.HistoryPath, living.HistoryAfter);
+                }
                 var scheduleBefore = CaptureBeforeImage(ProgressionScheduleService.SchedulePath);
                 var reportBefore = CaptureBeforeImage(ProgressionScheduleService.ReportPath);
                 static bool Equal(CanonicalBeforeImage left, CanonicalBeforeImage right) => left.Existed == right.Existed &&

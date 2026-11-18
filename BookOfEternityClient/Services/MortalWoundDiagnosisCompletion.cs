@@ -71,6 +71,27 @@ internal static class MortalWoundDiagnosisCompletion
             bytes[ResourceMaterializationContract.CommandPath] is not null || bytes[EffectAcceptedTurnPlan.CommandPath] is not null)
             throw Invalid("Clock/schedule/report changed or consumed diagnosis work reappeared.");
 
+        var finalMinute = clock["after"]?["currentTimeInMinutes"]?.GetValue<long>()
+            ?? throw Invalid("Missing final numeric diagnosis minute.");
+        var livingContext = new MortalLivingWorldAssessmentContext(original.SessionId, original.RequestId, original.TurnNumber,
+            control.CurrentWorldTimeInMinutes, finalMinute, control.LastWorldSimulationTimeInMinutes,
+            control.LastFactionSimulationTimeInMinutes, control.WorldCycleMinutes, control.FactionCycleMinutes);
+        if (result.LivingWorldComparison is { } livingRoot)
+        {
+            var living = MortalLivingWorldDiagnosisContribution.ParseComparison(livingRoot);
+            if (living.Context != livingContext || living.SnapshotToken != snapshotToken)
+                throw Invalid("Living-world declarations belong to another original or planned window.");
+            if (await read(MortalLivingWorldSource.ReportPath) is not null)
+                throw Invalid("Consumed living-world report reappeared.");
+            var historyBytes = await read(MortalLivingWorldSource.HistoryPath);
+            var livingHistory = historyBytes is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(
+                CanonicalJsonUtf8.DecodeOneOptionalBom(historyBytes), new JsonSerializerOptions(), MortalLivingWorldSource.HistoryPath);
+            if (!JsonNode.DeepEquals(livingHistory, JsonNode.Parse(living.Receipt.HistoryJson)))
+                throw Invalid("Living-world private history no longer equals the exact composed receipt.");
+        }
+        else if (MortalLivingWorldAssessment.Validate(livingContext, null).Count != 0)
+            throw Invalid("Meaningful diagnosis elapsed time is missing its living-world comparison witness.");
+
         await MortalWoundTreatmentCompletion.RequireCanonicalSettlementAsync(bytes, nodes, result.Request,
             result.Resolution.ResultFingerprint, result.Binding.Turn, finalization, semantic);
         return result;

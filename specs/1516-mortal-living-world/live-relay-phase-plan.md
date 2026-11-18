@@ -559,3 +559,7 @@ Independent forensic review is pending. p02 is BLOCKED, not admitted from this
 candidate probe; no retries, world edits, owner-status repair or response replay
 are authorized by this checkpoint. Historical ml5/ml6 failures, separate e
 history, semantic audit and remaining issue requirements stay open.
+
+## Main-based source restoration WIP
+
+Restored the exact curated feature/test surfaces from remote3af76e7 over main1efd1bfd; the historical fa5d5ec8 Mortal joint/diagnosis/QTE dependencies were independently traced and retained because omitting them bypasses living-world validation or atomic cohort composition. They are existing Mortal integrations, not new spiritual combat or wound-system work. Shared daemon/current relay, helper contract test and catalog were composed rather than overwritten. Current MetaCodex canonical vehicle guard retained as equivalent; NativeHost adds only seed/evidence dispatch. All three project files, instructions, .specify and default selection remain current main. Catalog adds/changes36 feature entries while preserving others. New runtime build, impact selection reconciliation and source-join acceptance are pending. Old live Mortal driver is restored byte-exact as WIP and must receive the documented evidence guards before any new game. No raw data, runtime package, world, owner or independent-audit WIP imported. All new evidence claims remain UNRUN at this checkpoint.

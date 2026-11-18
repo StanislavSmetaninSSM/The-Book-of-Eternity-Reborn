@@ -50,6 +50,80 @@
         </Law>
     </FoundationalLaws>
 
+    <MortalLivingWorldAssessment>
+        <![CDATA[
+Mortal living-world assessment v1 (Mortal World only)
+For ordinary assessed Mortal turns, a cycle already due or newly due requires a complete private
+`game_state/control/mortal_living_world_report.json`, even if request-time
+mustEvaluate flags were false. Use the existing world/faction cycle configuration
+and the entire unprocessed original-to-result window, not a new arbitrary threshold.
+Copy exact current sessionId/requestId and request turnNumber into report `turn`.
+The closed report has schemaVersion:1, sessionId, requestId, turn, fromMinute,
+toMinute, resolution, audit, events. Audit contains each scope npcs, factions,
+locations, projects, world exactly once, with a nonempty bounded reason.
+`noSignificantChange` requires events:[]; it does not forbid unrelated ordinary
+player-driven changes and does not require invented actors, projects or events.
+For autonomous `changes`, declare exact eventId/window, actors, targets, cause,
+effects, consequences and knowledge. Typed references use kind/id and ownerId
+for composite identities. Effects must match actual original and settled canonical
+semantic values; pending commands, filesModified, prose or news alone are not proof.
+Existing domain owners/reducers remain authoritative; the report is no mutation API.
+Semantic effect reference contract (exact case; no field aliases):
+References are closed objects {"kind":"...","id":"..."}; only factionProject
+and threat additionally REQUIRE ownerId. Do not add ownerId to other kinds.
+The id column below names the canonical identity value, not an extra JSON key.
+
+| kind | id and composite owner | allowed effect field |
+| --- | --- | --- |
+| npc | NPCId | currentLocationId, level, experience, characteristics, factionAffiliations |
+| npcActivity | NPCId | currentActivity, completedActivities |
+| faction | factionId | currentAgenda, principles, level, experience, powerProfile, governance, leadership, relations |
+| factionProject | projectId; ownerId=factionId | activeState, finalState, resourcesSpent, timeSpentMinutes, currentStep, completionTurn |
+| location | locationId | factionControl, actorBindings, locationStorages, activeThreats, customStates |
+| locationLink | linkId | access |
+| threat | threatId; ownerId=locationId | intensity, longTermGoal, currentActivity |
+| worldFlag | flagId | value |
+
+npc.currentActivity is invalid: use target {"kind":"npcActivity","id":"<exact NPCId>"}
+in BOTH event targets and the effect target, even though activity is stored in
+npc_core.json alongside the NPC. Actor references may still use kind npc.
+System references {"kind":"system","id":"worldCycle"} or factionCycle are
+allowed only in actors and cause.references, never targets or effect targets.
+For an update, before/after are {"present":true,"value":<complete field value>}
+when present, or {"present":false} when absent; do not submit only changed subfields.
+Actual original and accepted semantic values must differ. Activity labels alone,
+cosmetic edits and array reordering are not progress. Preserve unrelated fields.
+See mortal_living_world_npc_activity_update_v1 in Examples/E_CLI_Mortal_Living_World.txt
+for a complete source-local NPC activity update, not a full NPC creation packet.
+
+Owner-route boundaries:
+Diagnosis supports noSignificantChange only, against the actual planned diagnosis
+duration. Autonomous changes need an ordinary assessed turn; do not relabel real
+changes as no-change to bypass refusal. The client composes history and report
+consumption before sealing; the GM supplies neither a receipt nor history.
+Joint continuation uses its client-owned common contribution, never a post-seal
+sidecar. Preserve frozen accepted input and do not recreate a consumed report.
+Local QTE cannot consume a living-world report or introduce an additional
+world/faction cycle. Resolve that work through an ordinary assessed turn instead.
+Existing cycle backlog alone does not forbid a short local action crossing no
+additional cycle. Preserve original scene/history; do not clear backlog, fake
+clocks or remove authority to bypass refusal.
+These worked examples qualify updates-only detached source-local ordinary DATA,
+not full feature acceptance, creation/removal, QTE or treatment integration.
+`game_state/world/mortal_living_world_history.json` is private client-owned history:
+do not write it or list it in Complete-BoeTurn -FilesModified. Never forge receipts,
+rewrite accepted history, or reuse a previous request's report. Correct only the
+reported offending package while preserving unrelated valid input.
+Keep private causes, undiscovered identities and provenance out of public news.
+Hidden events have no newsReferences. Known events reference actual safe public
+worldEventsLog rows with eventId, title, description, visibility:"public" and only
+an optional uniquely discovered/visited locationId; no audit/effects/private fields.
+Read Examples/E_CLI_Mortal_Living_World.txt for complete autonomous and no-change
+worked DATA. The client verifies declared consistency, not the causal truth of
+prose or an exhaustive forecast of every possible event.
+        ]]>
+    </MortalLivingWorldAssessment>
+
     <KeyPrinciples>
         <Title>Key Principles (Prioritized)</Title>
         <Principle id="1" name="CONSISTENCY">

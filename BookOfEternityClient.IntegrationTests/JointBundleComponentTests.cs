@@ -115,7 +115,8 @@ public sealed partial class JointBundleComponentTests
             Files = new FileSystemManager(game, NullLogger<FileSystemManager>.Instance,
                 PhysicalLoadTransactionOperations.Instance,
                 new FileSystemManagerHooks { OperationTimingObserver = passiveTimingEvents ? null : Observe,
-                    PassiveOperationTimings = _passiveTimings });
+                    PassiveOperationTimings = _passiveTimings,
+                    LocalPublicationObserver = ObserveLivingWorldPublicationForFault });
             _output.WriteLine(JsonSerializer.Serialize(new
             {
                 Name = "JointBundleFixture.AllocateNamespace", Milliseconds = Stopwatch.GetElapsedTime(started).TotalMilliseconds,

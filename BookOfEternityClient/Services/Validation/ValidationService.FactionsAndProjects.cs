@@ -96,7 +96,7 @@ public partial class ValidationService
 
     private void ValidateFullFactionObject(JsonElement item, string itemContext, List<ValidationIssue> issues,
         HashSet<string>? knownPermanentFactionIds, HashSet<string>? knownCanonicalFactionNames,
-        HashSet<string>? sameTurnFactionInitialIds)
+        HashSet<string>? sameTurnFactionInitialIds, bool canonicalMortalCore = false)
     {
         var factionId = GetFirstNonEmptyString(item, "factionId");
         var initialId = GetFirstNonEmptyString(item, "initialId");
@@ -319,8 +319,14 @@ public partial class ValidationService
         RequireString(item, itemContext, issues, "description");
         ValidateOptionalString(item, itemContext, issues, "factionColor");
         RequireObjectProperty(item, itemContext, issues, "powerProfile");
-        RequireObjectProperty(item, itemContext, issues, "resources");
-        RequireObjectProperty(item, itemContext, issues, "ranks");
+        // Canonical Mortal state owns resources/ranks in mandatory sidecars. Raw
+        // creation remains a complete embedded carrier; supplied objects are still
+        // checked below, and materialization completeness verifies the sidecars.
+        if (!canonicalMortalCore)
+        {
+            RequireObjectProperty(item, itemContext, issues, "resources");
+            RequireObjectProperty(item, itemContext, issues, "ranks");
+        }
         RequireBooleanField(item, itemContext, issues, "isPlayerFaction");
         RequireBooleanField(item, itemContext, issues, "isPlayerMember");
         RequireNumberOrString(item, itemContext, issues, "level");
@@ -328,10 +334,22 @@ public partial class ValidationService
         RequireNumberOrString(item, itemContext, issues, "experienceForNextLevel");
         RequireString(item, itemContext, issues, "developmentArchetype");
         RequireNumberOrString(item, itemContext, issues, "reputation");
-        ValidateOptionalString(item, itemContext, issues, "playerRank");
-        ValidateOptionalString(item, itemContext, issues, "playerBranch");
-        ValidateOptionalString(item, itemContext, issues, "playerStrategyDirective");
-        ValidateOptionalString(item, itemContext, issues, "reputationDescription");
+        // Both Mortal raw creation and persisted nonmembership require real nulls.
+        // This does not change the shared string validator or command completeness.
+        if (canonicalMortalCore || isMortalFullCarrier)
+        {
+            ValidateOptionalNullableStringField(item, itemContext, issues, "playerRank");
+            ValidateOptionalNullableStringField(item, itemContext, issues, "playerBranch");
+            ValidateOptionalNullableStringField(item, itemContext, issues, "playerStrategyDirective");
+            ValidateOptionalNullableStringField(item, itemContext, issues, "reputationDescription");
+        }
+        else
+        {
+            ValidateOptionalString(item, itemContext, issues, "playerRank");
+            ValidateOptionalString(item, itemContext, issues, "playerBranch");
+            ValidateOptionalString(item, itemContext, issues, "playerStrategyDirective");
+            ValidateOptionalString(item, itemContext, issues, "reputationDescription");
+        }
         ValidateOptionalString(item, itemContext, issues, "image_prompt");
 
         if (item.TryGetProperty("powerProfile", out var powerProfile) &&
@@ -786,7 +804,7 @@ public partial class ValidationService
                 var fullObjectKnownPermanentFactionIds = canonicalFactionCoreFactions
                     ? null
                     : knownPermanentFactionIds;
-                ValidateFullFactionObject(item, itemContext, issues, fullObjectKnownPermanentFactionIds, knownCanonicalFactionNames, sameTurnFactionInitialIds);
+                ValidateFullFactionObject(item, itemContext, issues, fullObjectKnownPermanentFactionIds, knownCanonicalFactionNames, sameTurnFactionInitialIds, canonicalFactionCoreFactions);
                 continue;
             }
 

@@ -29,7 +29,8 @@ public partial class GameEngine
         IReadOnlyList<WoundRepairRetryObligation>? woundRepairRetryObligations = null,
         IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null,
         bool boundedPendingResolutionResubmission = false,
-        byte[]? pendingResolutionRepairCheckpoint = null)
+        byte[]? pendingResolutionRepairCheckpoint = null,
+        IReadOnlyList<RepairResubmissionPathObligation>? livingWorldRequiredResubmissionPaths = null)
     {
         _hotRepairReady?.Fail("SubsequentRepairInvocation");
         _hotRepairReady = null;
@@ -139,7 +140,8 @@ public partial class GameEngine
         if (hasActionableMortalLocationRepair ||
             hasActionableEffectRepair ||
             hasActionableResourceRepair ||
-            hasActionableWoundRepair)
+            hasActionableWoundRepair ||
+            livingWorldRequiredResubmissionPaths is { Count: > 0 })
         {
             await RestorePreTurnBaselineForRepairSessionAsync(
                 rollbackSnapshot!,
@@ -161,7 +163,8 @@ public partial class GameEngine
             woundRepairRetryObligations,
             woundRequiredResubmissionPaths,
             effectRepairPackets,
-            isBoundedPendingResolutionResubmission);
+            isBoundedPendingResolutionResubmission,
+            livingWorldRequiredResubmissionPaths);
         ObserveHotRepairDispatch(dispatch);
         var hotWorkerRoute = dispatch.WorkerApplyAccepted || dispatch.ReadySignalCreated;
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);

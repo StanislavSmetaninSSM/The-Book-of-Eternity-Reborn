@@ -5022,6 +5022,21 @@ public sealed class GmTurnHelperContractTests
                 process.HasExited ? (await stdout) + (await stderr) : "The real daemon did not finish rendering its context pack within 20 seconds.");
 
             using var manifest = JsonDocument.Parse(File.ReadAllText(manifestPath, Encoding.UTF8));
+            var livingWorldTemplate = Assert.Single(manifest.RootElement.GetProperty("templates").EnumerateArray(),
+                item => item.GetProperty("role").GetString() == "compact_mortal_living_world_template");
+            Assert.Equal("Templates/MORTAL_LIVING_WORLD_TEMPLATE.md", livingWorldTemplate.GetProperty("relativePath").GetString());
+            var livingWorldText = File.ReadAllText(Path.Combine(contextPack, "Templates", "MORTAL_LIVING_WORLD_TEMPLATE.md"), Encoding.UTF8);
+            foreach (var token in new[] { "mortal_living_world_report.json", "noSignificantChange", "newly due",
+                         "mortal_living_world_history.json", "client-owned", "FilesModified", "not full feature acceptance",
+                         "For ordinary assessed Mortal turns", "Diagnosis supports noSignificantChange only",
+                         "do not recreate a consumed report", "Existing cycle backlog alone does not forbid",
+                         "Local QTE cannot consume a living-world report" })
+                Assert.Contains(token, livingWorldText, StringComparison.Ordinal);
+            var livingWorldExample = Assert.Single(manifest.RootElement.GetProperty("docs").EnumerateArray(),
+                item => item.GetProperty("role").GetString() == "mortal_living_world_examples");
+            Assert.Equal("Examples/E_CLI_Mortal_Living_World.txt", livingWorldExample.GetProperty("relativePath").GetString());
+            Assert.Equal(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples/E_CLI_Mortal_Living_World.txt")),
+                File.ReadAllText(livingWorldExample.GetProperty("sessionPath").GetString()!));
             var cargoDoc = Assert.Single(manifest.RootElement.GetProperty("docs").EnumerateArray(),
                 item => item.GetProperty("role").GetString() == "mortal_vehicle_birth_cargo_example");
             Assert.Equal("Examples/E_CLI_New_Vehicle_Cargo_Materialization.txt", cargoDoc.GetProperty("relativePath").GetString());

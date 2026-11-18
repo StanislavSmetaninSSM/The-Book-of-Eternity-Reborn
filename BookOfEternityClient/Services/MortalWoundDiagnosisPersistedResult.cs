@@ -32,6 +32,7 @@ internal sealed class MortalWoundDiagnosisPersistedResult : WoundTransitionResul
     }
     public override string Kind => "mortal_diagnosis";
     internal string ResultFingerprint => Text(_root, "resultFingerprint");
+    internal JsonObject? LivingWorldComparison => _publicationInputs?.LivingWorldComparison;
     internal string WorkingFingerprint => Text(_root, "workingFingerprint");
     internal WoundAcceptedTurnBinding Binding { get; }
     internal MortalWoundRecoverySourceEvidence Source { get; }

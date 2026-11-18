@@ -170,6 +170,7 @@ Invoke-GmParticipatingConsumer $GameSessionPath {
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
 $script:GmTurnHelperDirective = " GM turn helper: dot-source '$script:GmTurnHelperBootstrapPath' before writing output/state files. Use Read-BoeJson -RelativePath '<file>' for JSON reads; it returns mutable JSON-like objects that preserve arrays and tolerate missing optional fields added with `$object.newField = <value>. Use Write-BoeJson -RelativePath '<file>' -Data <object> for JSON writes, Get-BoeJsonValue -Object <jsonObject> -Names @('NPCId','npcId','id','initialId') for optional or differently cased JSON fields, Set-BoeJsonProperty -Object <jsonObject> -Name '<field>' -Value <value> to add or update optional object properties, and Add-BoeJsonArrayItem -Object <jsonObject> -PropertyName '<arrayProperty>' -Item <value> -UniqueBy '<idField>' when adding/upserting JSON array entries. For Mortal NPC trade pending stock, prefer Complete-BoeNpcTradeInventoryRequest -RequestId '<requestId>' -Items <items>; it finds NPCs by NPCId/npcId/id/initialId, validates itemData.tradeItemClass, recalculates slot prices from pricingTradeTier, writes npc.tradeInventory, and adds the matching UpdateNpcTradeInventoryReceipts entry. For Guardian trade pending stock, prefer Complete-BoeGuardianTradeInventoryRequest -RequestId '<requestId>' -Items <items>; it reads pending_guardian_trade_request.json, computes generation/pricing reputation tier and priceInFeathers from canonical rules, writes guardian.tradeInventory, syncs activeGuardian, and adds UpdateGuardianTradeInventoryReceipts. For pending teacher/mentor training showcases, prefer Complete-BoeTrainingShowcaseRequest -RequestId '<requestId>' -Offers <offers> -Summary '<player-facing summary>'; it reads pending_training_showcase_requests.json, finds Mortal teachers or afterlife mentors by their sourceActorId, validates costs/caps/duplicate offer ids, writes trainingShowcase or mentorTrainingShowcase, and leaves the fulfilled pending request for client cleanup after accepted turn/view refresh. PowerShell collapses single JSON array items into scalars, so prefer Add-BoeJsonArrayItem over manual `$array += ...` for fields such as customProperties, entries, objectives, contents, journalEntries, and similar collections. For item journalEntries specifically, pass plain non-empty player-facing strings as -Item values without technical turn anchors such as '#[3].'; item journalEntries is a string array, not an array of objects. For NPCJournals in game_state/npcs/npc_journals.json, journalEntries is different: use objects with a non-empty description field, plus optional timestamp, event, emotionalImpact, and relationshipChange. Use Complete-BoeTurn -FilesModified @('<file>') as the LAST action for successful turns, Fail-BoeTurn -ErrorMessage '<reason>' as the LAST action for terminal errors, and Complete-BoeValidationRepair as the LAST action after validation repairs. Fail-BoeTurn writes ready/turn_error.json and then fails the shell command deliberately, so do not report success after calling it. After any terminal signal for the current request exists, the helper blocks further Write-BoeJson, Complete-BoeTurn, and Fail-BoeTurn calls; stop working on that request and wait for the client rollback/cleanup cycle instead of trying to repair it in-place. These helpers copy exact sessionId/requestId/turnNumber from the current client-authored request and refuse stale missing context. Complete-BoeTurn and Fail-BoeTurn also require current game_state/control/pending_turn_snapshot.json plus game_state/control/pending_turn_snapshot.authority.json with matching sessionId/requestId/turnNumber; if that pending authority is missing, stop and do not write a terminal signal. Helper writes and filesModified reject client-owned runtime state such as input/turn_request.json, game_state/history/chat_log.json, pending_turn_snapshot files, validation_repair_request.json, validation_diagnostic_failure_report.json, terminal_protocol_failure_request.json, gm_bridge_status.json, and stories/*.jsonl; let the client maintain those surfaces. When currentRealm is Chaos Sea or Shining Abode, helper writes and filesModified reject wrong-realm Mortal World profile paths under game_state/world, game_state/npcs, game_state/factions, game_state/player, game_state/inventory, game_state/combat, and game_state/quests; Complete-BoeTurn and Complete-BoeValidationRepair also compare these paths with game_state/control/pending_turn_snapshot and block raw wrong-realm mutations before writing completion signals. Never delete or rewrite input/turn_request.json or pending_turn_snapshot files; they are client-owned authority until the client closes the wait cycle."
+$script:GmTurnHelperDirective += " Mortal living-world history game_state/world/mortal_living_world_history.json is private client-owned state; do not write it or list it in Complete-BoeTurn -FilesModified."
 $script:GmTurnHelperDirective += " Client-owned world setup files also include game_state/control/next_life_scenario_core.json and lore/current_world/world_directives.json; do not write them or list them in Complete-BoeTurn -FilesModified."
 $script:GmTurnHelperDirective += " Accepted-mechanics client-owned files are mechanically blocked too: game_state/core/system_mods.json, game_state/control/progression_schedule.json, the complete game_state/resources resource_definitions/state/history/resource_owner_authority quartet, game_state/control/pending_effect_resolutions.json, and game_state/effects/effect_identity_index.json. Author only the transient effect/resource command surfaces."
 $script:GmContextPackRoot = Join-Path $ControlDir "gm_context_pack"
@@ -180,6 +181,7 @@ $script:CompactValidationRepairTemplatePath = Join-Path $script:GmContextPackRoo
 $script:CompactOutputArtifactRepairTemplatePath = Join-Path $script:GmContextPackRoot "Templates\OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md"
 $script:CompactProgressionReportTemplatePath = Join-Path $script:GmContextPackRoot "Templates\PROGRESSION_REPORT_TEMPLATE.json"
 $script:CompactActorReasoningTemplatePath = Join-Path $script:GmContextPackRoot "Templates\ACTOR_REASONING_TEMPLATE.md"
+$script:CompactMortalLivingWorldTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_LIVING_WORLD_TEMPLATE.md"
 $script:CompactMortalNpcTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md"
 $script:CompactMortalFactionTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_FACTION_UPDATE_TEMPLATE.md"
 $script:CompactMortalItemTemplatePath = Join-Path $script:GmContextPackRoot "Templates\MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md"
@@ -1349,6 +1351,7 @@ function Write-GmContextPack {
         @("CLI_Agent_Daemon_Specification.md", "daemon_protocol"),
         @("TaskGuides\CLI_Step_Main.txt", "main_turn_guide"),
         @("Examples\E_CLI_Step_Main.txt", "main_turn_example"),
+        @("Examples\E_CLI_Mortal_Living_World.txt", "mortal_living_world_examples"),
         @("Examples\E_CLI_Mortal_Npc_Progression.txt", "mortal_npc_progression_example"),
         @("Examples\E_CLI_Mortal_Npc_Progression_Consequences.txt", "mortal_npc_progression_consequence_examples"),
         @("Examples\E_CLI_Mortal_Npc_Profile_Change.txt", "mortal_npc_profile_change_example"),
@@ -1787,6 +1790,77 @@ Direct-speaking or directly addressed Mortal actors must not be excluded only be
 '@
     $actorReasoningTemplate = $actorReasoningTemplate.Replace("__ACTOR_LOCATION_LABEL__", $script:ActorLocationLabel).Replace("__ACTOR_SITUATION_LABEL__", $script:ActorSituationLabel).Replace("__ACTOR_THOUGHTS_LABEL__", $script:ActorThoughtsLabel).Replace("__ACTOR_ACTIONS_LABEL__", $script:ActorActionsLabel)
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\ACTOR_REASONING_TEMPLATE.md" -Role "compact_actor_reasoning_template" -Content $actorReasoningTemplate
+    $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_LIVING_WORLD_TEMPLATE.md" -Role "compact_mortal_living_world_template" -Content @'
+Mortal living-world assessment v1 (Mortal World only)
+For ordinary assessed Mortal turns, a cycle already due or newly due requires a complete private
+`game_state/control/mortal_living_world_report.json`, even if request-time
+mustEvaluate flags were false. Use the existing world/faction cycle configuration
+and the entire unprocessed original-to-result window, not a new arbitrary threshold.
+Copy exact current sessionId/requestId and request turnNumber into report `turn`.
+The closed report has schemaVersion:1, sessionId, requestId, turn, fromMinute,
+toMinute, resolution, audit, events. Audit contains each scope npcs, factions,
+locations, projects, world exactly once, with a nonempty bounded reason.
+`noSignificantChange` requires events:[]; it does not forbid unrelated ordinary
+player-driven changes and does not require invented actors, projects or events.
+For autonomous `changes`, declare exact eventId/window, actors, targets, cause,
+effects, consequences and knowledge. Typed references use kind/id and ownerId
+for composite identities. Effects must match actual original and settled canonical
+semantic values; pending commands, filesModified, prose or news alone are not proof.
+Existing domain owners/reducers remain authoritative; the report is no mutation API.
+Semantic effect reference contract (exact case; no field aliases):
+References are closed objects {"kind":"...","id":"..."}; only factionProject
+and threat additionally REQUIRE ownerId. Do not add ownerId to other kinds.
+The id column below names the canonical identity value, not an extra JSON key.
+
+| kind | id and composite owner | allowed effect field |
+| --- | --- | --- |
+| npc | NPCId | currentLocationId, level, experience, characteristics, factionAffiliations |
+| npcActivity | NPCId | currentActivity, completedActivities |
+| faction | factionId | currentAgenda, principles, level, experience, powerProfile, governance, leadership, relations |
+| factionProject | projectId; ownerId=factionId | activeState, finalState, resourcesSpent, timeSpentMinutes, currentStep, completionTurn |
+| location | locationId | factionControl, actorBindings, locationStorages, activeThreats, customStates |
+| locationLink | linkId | access |
+| threat | threatId; ownerId=locationId | intensity, longTermGoal, currentActivity |
+| worldFlag | flagId | value |
+
+npc.currentActivity is invalid: use target {"kind":"npcActivity","id":"<exact NPCId>"}
+in BOTH event targets and the effect target, even though activity is stored in
+npc_core.json alongside the NPC. Actor references may still use kind npc.
+System references {"kind":"system","id":"worldCycle"} or factionCycle are
+allowed only in actors and cause.references, never targets or effect targets.
+For an update, before/after are {"present":true,"value":<complete field value>}
+when present, or {"present":false} when absent; do not submit only changed subfields.
+Actual original and accepted semantic values must differ. Activity labels alone,
+cosmetic edits and array reordering are not progress. Preserve unrelated fields.
+See mortal_living_world_npc_activity_update_v1 in Examples/E_CLI_Mortal_Living_World.txt
+for a complete source-local NPC activity update, not a full NPC creation packet.
+
+Owner-route boundaries:
+Diagnosis supports noSignificantChange only, against the actual planned diagnosis
+duration. Autonomous changes need an ordinary assessed turn; do not relabel real
+changes as no-change to bypass refusal. The client composes history and report
+consumption before sealing; the GM supplies neither a receipt nor history.
+Joint continuation uses its client-owned common contribution, never a post-seal
+sidecar. Preserve frozen accepted input and do not recreate a consumed report.
+Local QTE cannot consume a living-world report or introduce an additional
+world/faction cycle. Resolve that work through an ordinary assessed turn instead.
+Existing cycle backlog alone does not forbid a short local action crossing no
+additional cycle. Preserve original scene/history; do not clear backlog, fake
+clocks or remove authority to bypass refusal.
+These worked examples qualify updates-only detached source-local ordinary DATA,
+not full feature acceptance, creation/removal, QTE or treatment integration.
+`game_state/world/mortal_living_world_history.json` is private client-owned history:
+do not write it or list it in Complete-BoeTurn -FilesModified. Never forge receipts,
+rewrite accepted history, or reuse a previous request's report. Correct only the
+reported offending package while preserving unrelated valid input.
+Keep private causes, undiscovered identities and provenance out of public news.
+Hidden events have no newsReferences. Known events reference actual safe public
+worldEventsLog rows with eventId, title, description, visibility:"public" and only
+an optional uniquely discovered/visited locationId; no audit/effects/private fields.
+Read Examples/E_CLI_Mortal_Living_World.txt for complete autonomous and no-change
+worked DATA. The client verifies declared consistency, not the causal truth of
+prose or an exhaustive forecast of every possible event.
+'@
     $templates += Write-GmContextPackTemplate -RelativePath "Templates\MORTAL_NPC_UPDATE_TEMPLATE.md" -Role "compact_mortal_npc_update_template" -Content @'
 # Compact Mortal World NPC Update Template
 
@@ -2733,6 +2807,8 @@ Invoke-GmParticipatingConsumer $GameSessionPath {
     Write-GmTurnHelperBootstrap
     Write-GmContextPack
 }
+$script:MortalLivingWorldDirective = " Mortal living-world assessment: on ordinary assessed Mortal turns, when a world/faction cycle is already due or newly due, read '$($script:CompactMortalLivingWorldTemplatePath)' and Examples/E_CLI_Mortal_Living_World.txt. Author the private correlated report, or complete noSignificantChange assessment; never invent events to fill a cycle. History is private client-owned; do not write it or list it in FilesModified. Updates-only worked DATA is not full feature acceptance."
+$script:GmCompactTemplateDirective += $script:MortalLivingWorldDirective
 $script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."
 $script:GmCompactTemplateDirective += $script:MortalItemMaterializationDirective

@@ -722,6 +722,8 @@ public sealed partial class QteSceneService
             throw new InvalidOperationException(
                 "qte_deferred_continuation_active_scene_conflict: another QTE scene is already active.");
         }
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, offer.TerminalOutcomes.Select(outcome => outcome.ResponseFragment).OfType<JsonObject>().ToArray()));
         var capture = await QteDeferredEffectContinuation.CaptureAsync(
             _fs,
             writeLease,
@@ -1801,6 +1803,9 @@ public sealed partial class QteSceneService
             outcome.OutcomeId,
             outcome.ResponseFragment,
             outcome.PhysicalInjury);
+        // Refuse before the write-once selected continuation or a receipt wave can publish.
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, selection.ResponseFragment is { } fragment ? [fragment] : []));
         QteDeferredAcceptedMechanicsPreparation? deferredPreparation = null;
         QteDeferredEffectReceiptResume? receiptResume = null;
         if (!string.IsNullOrWhiteSpace(
@@ -2318,6 +2323,8 @@ public sealed partial class QteSceneService
         IReadOnlyDictionary<string, string> normalizerBackups)
     {
         RejectUnboundResourceSurfaces(response);
+        MortalLivingWorldQteBoundary.ThrowIfRejected(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+            _fs, writeLease, [JsonSerializer.SerializeToNode(response, JsonOpts)!.AsObject()]));
         await _stateDistributor.DistributeAsync(writeLease, response);
         // An accepted distribution can retain backup cleanup debt. Resolve it
         // before experience/normalizer work, preserving the existing uncertain

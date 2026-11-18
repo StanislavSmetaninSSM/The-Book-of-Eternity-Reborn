@@ -725,7 +725,7 @@
                                             {
                                                 "projectId": "project-siege-drills",
                                                 "projectName": "Учения Осадных Бригад",
-                                                "completionTurn": "184",
+                                                "completionTurn": 184,
                                                 "finalState": "Completed"
                                             }
                                         ],

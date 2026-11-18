@@ -45,7 +45,7 @@ internal static partial class PendingTurnSnapshotPathPresenceV1
         {
             var combat = HasCombatProjection(request.SpiritualHealing);
             return !combat && request.ProgressionControl?.CurrentRealm is "Mortal World" or "mortal_world"
-                ? MortalNpcSkillLogicalPaths
+                ? MortalLivingWorldLogicalPaths
                 : GetLogicalPaths(combat);
         }
         files.EnsureCanonicalWriteLeaseActive(lease); files.VerifyCurrentSessionOperation(lease);

@@ -72,6 +72,7 @@ public partial class CanonicalStateNormalizer
         StorageTransportMoveService.VehiclesPath,
         "game_state/factions/faction_core.json",
         "game_state/npcs/npc_core.json",
+        NpcActivitiesPath,
         MortalNpcAcceptedSkillInput.SidecarPath,
         "game_state/npcs/npc_journals.json",
         NpcInteractionJournalState.StatePath,
@@ -472,6 +473,9 @@ public partial class CanonicalStateNormalizer
         await PreflightNpcProgressionSourceAsync(npcProgressionSource, backups,
             (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
+        var npcActivityInput = await PrepareNpcActivityUpdatesAsync(backups, mortalItemMode,
+            (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
+            npcProgressionSource, guardianProjectInputs.CurrentRealm, treatmentPublicationReceipt);
 
         var normalizedLocations = await NormalizeMortalLocationsWithStorageBirthsAsync(backups, spiritualPublicationReceipt,
             (mortalItemMode as MortalItemAcceptedTurnNormalizationMode.Validated)?.Snapshot,
@@ -525,6 +529,7 @@ public partial class CanonicalStateNormalizer
             (acceptedMechanicsPreflight as
                 AcceptedMechanicsNormalizationPreflight.Validated)?.Plan,
             npcProgressionSource, treatmentPublicationReceipt);
+        await NormalizeNpcActivityUpdatesAsync(npcActivityInput);
         await NormalizeNpcTradeCoreAsync(
             backups,
             (acceptedMechanicsPreflight as

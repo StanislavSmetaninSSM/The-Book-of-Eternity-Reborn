@@ -2246,7 +2246,10 @@ public partial class GameEngine
         foreach (var file in new[]
                  {
                      ScenarioCoreService.ManifestPath,
-                     PendingTurnStateService.PendingDiceStatePath
+                     PendingTurnStateService.PendingDiceStatePath,
+                     // BuildControlForNextTurnAsync prepares this after the rollback backup.
+                     // Sign its prepared bytes without replacing the pre-turn rollback image.
+                     ProgressionScheduleService.SchedulePath
                  })
         {
             if (_fs.FileExists(file))

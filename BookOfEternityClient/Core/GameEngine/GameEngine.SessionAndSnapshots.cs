@@ -2484,7 +2484,7 @@ public partial class GameEngine
     private Task RefreshRuntimeStateAfterExactRollbackAsync() =>
         _stateManager.RefreshGameStateAfterExactRollbackAsync();
 
-    private async Task<IReadOnlyList<RepairResubmissionPathObligation>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+    internal async Task<IReadOnlyList<RepairResubmissionPathObligation>> CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
         RollbackSnapshot snapshot,
         string expectedSessionGeneration)
     {
@@ -2552,6 +2552,10 @@ public partial class GameEngine
         string.Equals(
             path,
             ProgressionScheduleService.SchedulePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            MortalLivingWorldSource.HistoryPath,
             StringComparison.OrdinalIgnoreCase) ||
         string.Equals(
             path,

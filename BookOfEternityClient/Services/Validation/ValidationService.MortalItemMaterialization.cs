@@ -662,7 +662,7 @@ public partial class ValidationService
         ValidateCanonicalCatalogAgainstIndex(current.Catalog, currentIndex, issues);
         ValidateCanonicalContainerPaths(current.Catalog, issues);
 
-        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
         if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             snapshotLookup.Manifest == null)
         {
@@ -672,7 +672,8 @@ public partial class ValidationService
         var previous = await LoadPreTurnMortalItemCatalogAsync(
             snapshotLookup,
             includeNpcInventoryCommands: false,
-            issues);
+            issues,
+            writeLease);
         if (previous == null)
         {
             if (current.Catalog.Occurrences.Count > 0 ||

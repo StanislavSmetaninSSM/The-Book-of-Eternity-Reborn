@@ -10,6 +10,30 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalNpcAcceptedMechanicsDisplayTests
 {
     [Fact]
+    public void SharedDrilldown_MixedMechanicsDoesNotLabelProfileAsSkill()
+    {
+        var actor = ProgressionActor("standard");
+        actor["activeSkills"] = Actor(false)["activeSkills"]!.DeepClone();
+        var before = actor.ToJsonString();
+        var projection = NpcDetailSectionProjection.Build(actor, new NpcDetailSectionDocuments());
+        var mechanics = Assert.Single(projection.Sections, section => section.Id == "mechanics");
+        var dossier = Assert.IsType<UiEntityDossierBlock>(Assert.Single(mechanics.Blocks));
+        var cards = dossier.Sections.SelectMany(section => section.Blocks)
+            .OfType<UiEntityDossierBlock>().ToArray();
+        var profile = Assert.Single(cards, card => card.Title == "Профиль развития");
+        var profileFacts = profile.Sections.SelectMany(section => section.Blocks)
+            .OfType<UiKeyValueGridBlock>().SelectMany(grid => grid.Items).ToArray();
+        Assert.Contains(profileFacts, fact => fact.Value == "Стандартный");
+        Assert.DoesNotContain(profileFacts, fact => fact.Key.Contains("навык", StringComparison.OrdinalIgnoreCase));
+        var skill = Assert.Single(cards, card => card.Title == "Активный навык");
+        var skillFacts = skill.Sections.SelectMany(section => section.Blocks)
+            .OfType<UiKeyValueGridBlock>().SelectMany(grid => grid.Items).ToArray();
+        Assert.Contains(skillFacts, fact => fact.Key == "Название навыка" && fact.Value == "Fireball");
+        Assert.Contains(skillFacts, fact => fact.Key == "Прогресс мастерства" && fact.Value == "23/91");
+        Assert.Equal(before, actor.ToJsonString());
+    }
+
+    [Fact]
     public void SharedDrilldown_LargeFiniteParsedCharacteristicIsNotNarrowedToFloat()
     {
         var actor = ProgressionActor("standard");

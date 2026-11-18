@@ -71,6 +71,7 @@ internal sealed class MortalJointRepairPublicationTransaction
                 throw new InvalidDataException("Joint complete readback differs at " + path);
         }
         await MortalQteDecisionPublication.ValidatePublishedJointAsync(files, lease, Receipt);
+        await Receipt.Authority.LivingWorld.ValidatePublishedAsync(files, lease);
         var probe = AcceptedTurnAuthorityRegistry.ProbeTakenJointRepairPublication(files, lease, Receipt);
         if (!probe.IsValid) throw new InvalidDataException("Joint claim/cache changed before final readback sealing: " + string.Join(";", probe.Issues.Select(row => row.Code)));
         var proof = new ReadbackProof(ReadbackIssuer, this);

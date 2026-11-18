@@ -17,7 +17,8 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
         IReadOnlyDictionary<string, CanonicalBeforeImage> before,
         ResourceDefinitionCatalog definitions, ResourceStateLedger state, ResourceHistoryState history,
         ResourceOwnerAuthority owners, IResourceRegisteredSystemOutcomeDraft registeredOutcome,
-        IReadOnlyList<ResourceOwnerKey> terminalOwners, AcceptedMechanicsIdentityFactory resourceFactory)
+        IReadOnlyList<ResourceOwnerKey> terminalOwners, AcceptedMechanicsIdentityFactory resourceFactory,
+        MortalJointLivingWorldContribution livingWorld)
     {
         using var innerTiming1 = files.MeasureOperation("JointInput.CaptureCalculationInputs");
         try
@@ -52,11 +53,14 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray()));
             var identity = bundle.Input.PreTurnEffectIdentityIndex?.DeepClone().AsObject() ??
                 throw new InvalidDataException("The authentic joint preparation lacks its original effect index.");
+            var companions = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            if (livingWorld.HistorySuccessor is { } livingHistory)
+                companions.Add(MortalLivingWorldSource.HistoryPath, livingHistory);
             return Task.FromResult(new JointCalculationInputCaptureResult(new AcceptedMechanicsCalculationInputs(
                 binding.Turn, binding.Realm, definitions, state, history, owners, sourceCatalog,
                 ResourceAcceptedTurnInputComposer.Parse(null), identity, bundle.EffectBatchPlan.EffectPlan,
                 Array.Empty<ResourceCapacityIntent>(), Array.Empty<ResourceOwnerCapacityDraft>(), terminalOwners,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal), Array.Empty<AcceptedMechanicsOwnerTransition>(),
+                companions, Array.Empty<AcceptedMechanicsOwnerTransition>(),
                 new[] { registeredOutcome }, pending.State, resourceFactory, null, 0, bundle, anchors),
                 Array.Empty<ValidationIssue>()));
         }
@@ -152,6 +156,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     ["jointCommonAuthorityFingerprint"] = authority.Fingerprint,
                     ["woundAnchorPlanFingerprint"] = authority.Anchors.Fingerprint };
                 internalInputs["jointProgressionBasisFingerprint"] = authority.Progression.Fingerprint;
+                internalInputs["jointLivingWorldContributionFingerprint"] = authority.LivingWorld.Fingerprint;
                 var effects = bundle.EffectBatchPlan.EffectPlan;
                 var effectCommands = bundle.EffectBatchPlan.EffectInput.RawCommands;
                 var effectIdentity = bundle.Input.PreTurnEffectIdentityIndex?.DeepClone().AsObject() ??

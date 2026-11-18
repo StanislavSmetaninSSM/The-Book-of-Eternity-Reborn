@@ -245,6 +245,18 @@ public sealed partial class MortalItemMaterializationValidationTests
     }
 
     [Fact]
+    public async Task CanonicalLeaseAwareEntryPoint_RejectsForeignLease()
+    {
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        await using var foreign = await MortalItemMaterializationTestContext.CreateAsync();
+        await using var foreignLease = await foreign.FileSystem.AcquireCanonicalWriteLeaseAsync();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => context.Validator
+            .ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(foreignLease));
+    }
+
+    [Fact]
     public async Task CanonicalDuplicateCarrierOccurrence_IsRejected()
     {
         await using var context = await MortalItemMaterializationTestContext.CreateAsync();

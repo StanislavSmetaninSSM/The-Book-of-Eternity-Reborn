@@ -238,6 +238,49 @@
                - MUST answer: If afterlife catch-up is required, which bounded summary outcomes were produced and which contours they affect?
                - MUST answer: Which NPC / resident / guardian / world / political consequences result from those cycles? (document changes)
 
+            **Mortal living-world private assessment:**
+               Mortal living-world assessment v1 (Mortal World only)
+               For ordinary assessed Mortal turns, a cycle already due or newly due requires a complete private
+               `game_state/control/mortal_living_world_report.json`, even if request-time
+               mustEvaluate flags were false. Use the existing world/faction cycle configuration
+               and the entire unprocessed original-to-result window, not a new arbitrary threshold.
+               Copy exact current sessionId/requestId and request turnNumber into report `turn`.
+               The closed report has schemaVersion:1, sessionId, requestId, turn, fromMinute,
+               toMinute, resolution, audit, events. Audit contains each scope npcs, factions,
+               locations, projects, world exactly once, with a nonempty bounded reason.
+               `noSignificantChange` requires events:[]; it does not forbid unrelated ordinary
+               player-driven changes and does not require invented actors, projects or events.
+               For autonomous `changes`, declare exact eventId/window, actors, targets, cause,
+               effects, consequences and knowledge. Typed references use kind/id and ownerId
+               for composite identities. Effects must match actual original and settled canonical
+               semantic values; pending commands, filesModified, prose or news alone are not proof.
+               Existing domain owners/reducers remain authoritative; the report is no mutation API.
+               Owner-route boundaries:
+               Diagnosis supports noSignificantChange only, against the actual planned diagnosis
+               duration. Autonomous changes need an ordinary assessed turn; do not relabel real
+               changes as no-change to bypass refusal. The client composes history and report
+               consumption before sealing; the GM supplies neither a receipt nor history.
+               Joint continuation uses its client-owned common contribution, never a post-seal
+               sidecar. Preserve frozen accepted input and do not recreate a consumed report.
+               Local QTE cannot consume a living-world report or introduce an additional
+               world/faction cycle. Resolve that work through an ordinary assessed turn instead.
+               Existing cycle backlog alone does not forbid a short local action crossing no
+               additional cycle. Preserve original scene/history; do not clear backlog, fake
+               clocks or remove authority to bypass refusal.
+               These worked examples qualify updates-only detached source-local ordinary DATA,
+               not full feature acceptance, creation/removal, QTE or treatment integration.
+               `game_state/world/mortal_living_world_history.json` is private client-owned history:
+               do not write it or list it in Complete-BoeTurn -FilesModified. Never forge receipts,
+               rewrite accepted history, or reuse a previous request's report. Correct only the
+               reported offending package while preserving unrelated valid input.
+               Keep private causes, undiscovered identities and provenance out of public news.
+               Hidden events have no newsReferences. Known events reference actual safe public
+               worldEventsLog rows with eventId, title, description, visibility:"public" and only
+               an optional uniquely discovered/visited locationId; no audit/effects/private fields.
+               Read Examples/E_CLI_Mortal_Living_World.txt for complete autonomous and no-change
+               worked DATA. The client verifies declared consistency, not the causal truth of
+               prose or an exhaustive forecast of every possible event.
+
             4. **MANDATORY Afterlife Living-World Checklist when currentRealm is `Chaos Sea` or `Shining Abode`:**
                - MUST read `game_state/meta/soul_state.json`, `game_state/meta/guardians.json`, `game_state/meta/guardian_projects.json`, and `game_state/meta/guardian_abode_residents.json`
                - MUST read `game_state/meta/shining_abode_state.json` when currentRealm is `Shining Abode` or Shining catch-up contours are listed

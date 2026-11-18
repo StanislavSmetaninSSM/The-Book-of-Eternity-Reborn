@@ -1397,6 +1397,148 @@ public sealed partial class FactionMaterializationValidationTests : IDisposable
             issue.Actor == "mortal_faction:temp-faction-watch");
     }
 
+    [Fact]
+    public async Task CanonicalMaterializedMortal_SplitBundle_PassesShapeAndCompleteness()
+    {
+        await WriteCanonicalMinimalMortalCreationAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        var faction = Assert.Single(root["factions"]!.AsArray())!.AsObject();
+        Assert.False(faction.ContainsKey("resources"));
+        Assert.False(faction.ContainsKey("ranks"));
+        foreach (var field in new[] { "playerRank", "playerBranch", "playerStrategyDirective", "reputationDescription" })
+        {
+            Assert.True(faction.ContainsKey(field));
+            Assert.Null(faction[field]);
+        }
+
+        // Both production phases must agree on the supported split canonical bundle.
+        // Generic shape findings have no Actor and must not disappear behind an actor filter.
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness,
+            [MortalPath, MortalStructurePath, MortalResourcesPath, MortalProjectsPath,
+                MortalCustomPath, MortalChroniclesPath]));
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath.StartsWith("game_state/factions/", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("playerRank")]
+    [InlineData("playerBranch")]
+    [InlineData("playerStrategyDirective")]
+    [InlineData("reputationDescription")]
+    public async Task CanonicalMaterializedMortal_SplitBundle_NonStringMembershipFailsShape(
+        string field)
+    {
+        await WriteCanonicalMinimalMortalCreationAsync();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        root["factions"]![0]![field] = 7;
+        await _fs.WriteFileAtomicAsync(MortalPath, root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"{MortalPath}.factions[0].{field}");
+    }
+
+    [Theory]
+    [InlineData("structure", "faction_materialization_mortal_structure_missing")]
+    [InlineData("resources", "faction_materialization_mortal_resources_missing")]
+    [InlineData("custom", "faction_materialization_mortal_custom_missing")]
+    public async Task CanonicalMaterializedMortal_SplitBundle_MissingSidecarFailsCompleteness(
+        string sidecar,
+        string expectedCode)
+    {
+        await WriteCanonicalMinimalMortalCreationAsync(missingSidecar: sidecar);
+
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.AcceptedTurnFactionMaterializationCompleteness,
+            [MortalPath, MortalStructurePath, MortalResourcesPath, MortalProjectsPath,
+                MortalCustomPath, MortalChroniclesPath]));
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Code == expectedCode &&
+            issue.Actor == "mortal_faction:temp-faction-watch");
+    }
+
+    [Fact]
+    public async Task CanonicalMaterializedMortal_SplitBundle_RawNonMember_PassesShapeRawCompletenessAndResponse()
+    {
+        await WriteMortalCreationAsync(BuildCompleteMinimalMortalCreation());
+
+        var shapeIssues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+        var rawIssues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var response = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        response["response"] = "The Wayfarer Watch forms and records its complete charter.";
+        using var responseDocument = JsonDocument.Parse(response.ToJsonString());
+        var responseIssues = _validator.ValidateResponse(responseDocument.RootElement);
+
+        // The same complete raw creation must satisfy both public shape surfaces and
+        // raw materialization. Do not hide generic type errors behind an Actor filter.
+        var errors = shapeIssues.Concat(rawIssues).Concat(responseIssues)
+            .Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
+        Assert.True(errors.Length == 0, JsonSerializer.Serialize(errors));
+    }
+
+    [Theory]
+    [InlineData("playerRank")]
+    [InlineData("playerBranch")]
+    [InlineData("playerStrategyDirective")]
+    [InlineData("reputationDescription")]
+    public async Task CanonicalMaterializedMortal_SplitBundle_RawNonMember_NonStringMembershipFailsShapeRawAndResponse(
+        string field)
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction[field] = 7;
+        await WriteMortalCreationAsync(faction);
+
+        var shapeIssues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+        var rawIssues = await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync();
+        var response = JsonNode.Parse((await _fs.ReadFileAsync(MortalPath))!)!.AsObject();
+        response["response"] = "The Wayfarer Watch forms and records its complete charter.";
+        using var responseDocument = JsonDocument.Parse(response.ToJsonString());
+        var responseIssues = _validator.ValidateResponse(responseDocument.RootElement);
+
+        Assert.Contains(shapeIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"{MortalPath}.factionDataChanges[0].{field}");
+        Assert.Contains(rawIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.Code == "faction_materialization_mortal_player_membership_incomplete" &&
+            issue.Actor == "mortal_faction:temp-faction-watch" &&
+            issue.FilePath == $"{MortalPath}.factionDataChanges[0].playerMembership");
+        Assert.Contains(responseIssues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"response.factionDataChanges[0].{field}");
+    }
+
+    [Theory]
+    [InlineData("resources")]
+    [InlineData("ranks")]
+    public async Task NewMortalFaction_RawCreationMissingEmbeddedCarrier_FailsShape(
+        string field)
+    {
+        var faction = BuildCompleteMinimalMortalCreation();
+        faction.Remove(field);
+        await WriteMortalCreationAsync(faction);
+
+        // The canonical split-state exception must not apply to a full GM creation command.
+        var issues = await _validator.ValidateGameStateAsync(new GameStateValidationSelection(
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles, [MortalPath]));
+
+        Assert.Contains(issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            issue.FilePath == $"{MortalPath}.factionDataChanges[0].{field}");
+    }
+
     [Theory]
     [InlineData("omitted", "faction_materialization_mortal_image_prompt_missing")]
     [InlineData("non_english", "faction_materialization_mortal_image_prompt_invalid")]

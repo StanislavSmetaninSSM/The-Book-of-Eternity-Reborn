@@ -525,6 +525,12 @@ internal static partial class AcceptedMechanicsPlanner
             touched.UnionWith(new[] { EffectAcceptedTurnInputComposer.WorldTimePath, ProgressionScheduleService.SchedulePath,
                 WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
             consumed.UnionWith(new[] { WoundAcceptedTurnSnapshotContract.PendingResolutionPath, AcceptedMechanicsPlan.WoundCommandPath });
+            if (diagnosisOwner.LivingWorld is not null)
+            {
+                touched.Add(MortalLivingWorldSource.HistoryPath);
+                touched.Add(MortalLivingWorldSource.ReportPath);
+                consumed.Add(MortalLivingWorldSource.ReportPath);
+            }
             var progression = diagnosisOwner.Progression;
             if (progression.ReportBefore.Existed && !progression.ReportAfter.Existed)
             { touched.Add(ProgressionScheduleService.ReportPath); consumed.Add(ProgressionScheduleService.ReportPath); }
@@ -541,6 +547,11 @@ internal static partial class AcceptedMechanicsPlanner
         {
             touched.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
             consumed.Add(WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            if (ownerCompanionAfterImages.ContainsKey(MortalLivingWorldSource.HistoryPath))
+            {
+                touched.Add(MortalLivingWorldSource.ReportPath);
+                consumed.Add(MortalLivingWorldSource.ReportPath);
+            }
         }
 
         return new(new CalculatedCommonArtifacts(definitionAfterImage, stateAfterImage, historyAfterImage,

@@ -63,7 +63,7 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         });
         var manifest = await ReadManifestAsync(context);
         var paths = manifest["originalPathPresenceV1"]!.AsObject().Select(pair => pair.Key).Order(StringComparer.Ordinal);
-        Assert.Equal((observesSkills ? PendingTurnSnapshotPathPresenceV1.MortalNpcSkillLogicalPaths :
+        Assert.Equal((observesSkills ? PendingTurnSnapshotPathPresenceV1.MortalLivingWorldLogicalPaths :
             PendingTurnSnapshotPathPresenceV1.LogicalPaths).Order(StringComparer.Ordinal), paths);
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var read = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
@@ -80,7 +80,13 @@ public sealed partial class PendingTurnSnapshotPresenceIntegrationTests
         await using var context = await CreateSeededContextAsync();
         await PrepareLiveAsync(context);
         var manifest = await ReadManifestAsync(context);
-        Assert.True(manifest["originalPathPresenceV1"]!.AsObject().Remove(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
+        var presence = manifest["originalPathPresenceV1"]!.AsObject();
+        Assert.True(presence.ContainsKey(PendingTurnSnapshotPathPresenceV1.MortalNpcSkillsPath));
+        foreach (var path in presence.Select(pair => pair.Key).Except(
+                     PendingTurnSnapshotPathPresenceV1.LogicalPaths, StringComparer.Ordinal).ToArray())
+            presence.Remove(path);
+        Assert.Equal(PendingTurnSnapshotPathPresenceV1.LogicalPaths.Order(StringComparer.Ordinal),
+            presence.Select(pair => pair.Key).Order(StringComparer.Ordinal));
         // Deliberate reader-contract reconstruction of the prior exact closed form, never gameplay evidence.
         await ResignAsync(context, manifest);
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();

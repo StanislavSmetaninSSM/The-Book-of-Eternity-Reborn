@@ -24,6 +24,13 @@ internal static class NativeHostScenarioDriver
     internal static async Task<int> Main(string[] args)
     {
         if(args.Length==3 && args[0]=="local-remote-consumer" && args[2] is "warm" or "fresh") return await GmLocalRemoteConsumerScenario.RunChildAsync(args[1],args[2]=="fresh");
+        if (args.Length == 4 && args[0] == "mortal-live-evidence")
+            return await MortalLiveEvidenceValidator.RunAsync(args[1], args[2], args[3]);
+        if (args.Length == 4 && args[0] == "mortal-live-seed-export")
+        {
+            await MortalLiveSeedExporter.ExportAsync(args[1], args[2], args[3]);
+            return 0;
+        }
         if (args.Length == 3 && args[0].StartsWith("finite-pipe-", StringComparison.Ordinal))
             return await NativeFinitePipeScenarioDriver.RunAsync(args[0]["finite-pipe-".Length..], args[1], args[2]);
         if (args.Length == 3 && args[0] == "engine-rollback-cold-read")

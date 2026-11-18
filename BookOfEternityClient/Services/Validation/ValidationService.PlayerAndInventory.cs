@@ -483,6 +483,16 @@ public partial class ValidationService
             if (chaptersEmpty || terminalOutcomesEmpty)
                 return issues;
 
+            // Check all possible terminal choices against one current clock/schedule
+            // before the player can accept an outcome this owner cannot settle.
+            var livingWorldFragments = terminalOutcomes.EnumerateArray()
+                .Where(outcome => outcome.ValueKind == JsonValueKind.Object &&
+                    outcome.TryGetProperty("responseFragment", out var fragment) && fragment.ValueKind == JsonValueKind.Object)
+                .Select(outcome => outcome.GetProperty("responseFragment").Deserialize<JsonObject>()!)
+                .ToArray();
+            issues.AddRange(await MortalLivingWorldQteBoundary.ValidateCurrentAsync(
+                path => _fs.ReadFileBytesAsync(path), livingWorldFragments));
+
             var scoreMetrics = ValidateQteScoreModel(root, issues);
             var chapterIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var outcomeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

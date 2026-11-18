@@ -108,23 +108,49 @@
       "id": "gm-ready-cancellation-coordination",
       "responsibility": "#1589 original PowerShell readiness timeout cancellation orchestration: one original stream, retained caller failure, exact receipt and non-ready timeout guard, five inert peer cases.",
       "excludes": "Inert stdio receipts are not native owner authority or game qualification; canonical status publication is separate.",
-      "changeHints": ["BookOfEternityClient/Launcher/gm_main_operation.ps1"],
+      "changeHints": [
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.ReadyCancellationCoordinationTests.OriginalReadinessCancellationRetainsCallerFailureAndExactReceipt"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ReadyCancellationCoordinationTests.OriginalReadinessCancellationRetainsCallerFailureAndExactReceipt"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-main-held-ready-fifo",
       "responsibility": "#1589 combined genuine held canonical lease, actual original readiness cancellation and status deferral: dual-event release, newest snapshot publication and full owned shutdown; not historical game causality.",
       "excludes": "No game acceptance, timeout changes, retries or authority changes; unproved acquisition ordering fails rather than qualifying a leak.",
-      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.HeldReady.cs"],
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.HeldReady.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHeldReadyDiagnosticTests.OriginalCanonicalHoldReleasedByActualHelperStdinClose"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmHeldReadyDiagnosticTests.OriginalCanonicalHoldReleasedByActualHelperStdinClose"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-main-first-operation-failure-data",
@@ -284,133 +310,295 @@
       "id": "gm-prepared-grant-stop-race",
       "responsibility": "#1589 exact FIFO prepared grant then original Stop before Activate: reject activation and preserve clean never-admitted retirement.",
       "excludes": "No live game, active lost-close relaxation or historical rl3 causality claim.",
-      "changeHints": ["BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmPreparedGrantStopTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmPreparedGrantStopTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-host-exit-original-fifo-soak",
       "responsibility": "#1589 observe one real original neutral FIFO owner for 120 seconds, retain full diagnostic samples and require original scoped shutdown and guardian cleanup.",
       "excludes": "No game/GM acceptance, injected fault, EINTR retry or historical rl2 root-cause/fix claim; requires observed FIFO capability.",
-      "changeHints": ["BookOfEternityClient.Tests/GmHostExitOriginalSoakTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmHostExitOriginalSoakTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 4,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHostExitOriginalSoakTests.OriginalFifoOwner_ObservedFor120SecondsThenScopedStop"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmHostExitOriginalSoakTests.OriginalFifoOwner_ObservedFor120SecondsThenScopedStop"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-host-exit-fault-diagnostics",
       "responsibility": "#1589 deterministic original pidfd observation fault retention; unchanged fail-closed classification, IN/HUP completion and held-handle lifetime.",
       "excludes": "No EINTR retry, historical rl2 cause assertion, live game or native process qualification.",
-      "changeHints": ["BookOfEternityClient.Tests/HostExitObservationDiagnosticTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/HostExitObservationDiagnosticTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.HostExitObservationDiagnosticTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.HostExitObservationDiagnosticTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "vehicle-receipt-validation-scope",
       "responsibility": "Relay launch prerequisite: existing vehicle receipt validation through public response and full-state APIs accepts unrelated roots while retaining exact canonical receipt checks.",
       "excludes": "No vehicle materialization expansion, new receipt authority, gameplay or whole-state qualification; unrelated baseline validation issues are outside the receipt predicate.",
-      "changeHints": ["BookOfEternityClient.Tests/VehicleReceiptValidationScopeTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/VehicleReceiptValidationScopeTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.VehicleReceiptValidationScopeTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.VehicleReceiptValidationScopeTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-relay-phase-contract",
       "responsibility": "#1589 inert source contracts for the general relay phase continuation, original settlement and immutable evidence gates.",
       "excludes": "No actual game, daemon shutdown, native ownership or materialization qualification; Python case count is reported separately from the single adapter Fact.",
-      "changeHints": ["BookOfEternityClient.Tests/LinuxRelayPhaseContractTests.cs", "tests/fixtures/ProductionMain/test-relay-phase-contract.py", "tests/fixtures/ProductionMain/live-game-one-turn.py"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxRelayPhaseContractTests.cs",
+        "tests/fixtures/ProductionMain/test-relay-phase-contract.py",
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxRelayPhaseContractTests.GeneralRelayContinuationAndSettlementSourceContracts"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxRelayPhaseContractTests.GeneralRelayContinuationAndSettlementSourceContracts"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-daemon-settlement-observation",
       "responsibility": "#1589 test-only shared observation of a genuinely held daemon guard preserves original validation, unchanged bytes and contender exclusion before status reading.",
       "excludes": "No live daemon shutdown, cross-process qualification, gameplay or new publication authority.",
-      "changeHints": ["BookOfEternityClient.Tests/DaemonSettlementObservationTests.cs", "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DaemonSettlement.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/DaemonSettlementObservationTests.cs",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DaemonSettlement.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 1,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.DaemonSettlementObservationTests.SharedReadObservesHeldGuardWithoutReleasingOriginalOwnership"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DaemonSettlementObservationTests.SharedReadObservesHeldGuardWithoutReleasingOriginalOwnership"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-linux-powershell-finally-diagnostics",
       "responsibility": "#1589 inert actual foreground PowerShell direct/nested cooperative/Ctrl+C finally marker diagnostics, with one shared native guardian preparation.",
       "excludes": "No gameplay, actual daemon terminal settlement, publication authority, or asserted universal Ctrl+C finally behavior.",
-      "changeHints": ["BookOfEternityClient.Tests/LinuxPowerShellFinallyDiagnosticsTests.cs", "tests/fixtures/PowerShellFinally"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/LinuxPowerShellFinallyDiagnosticsTests.cs",
+        "tests/fixtures/PowerShellFinally"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxPowerShellFinallyDiagnosticsTests.OwnedForegroundFinallyMarkers"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxPowerShellFinallyDiagnosticsTests.OwnedForegroundFinallyMarkers"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-linux-bridge-contender-restart",
       "responsibility": "#1589 actual typed same-root bridge contender refusal preserves original owner/status RPC, then confirmed stop permits same-config new-run restart.",
       "excludes": "No gameplay, legacy PID fallback, Windows qualification or broad launcher redesign.",
-      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeContenderRestartScenario.cs", "BookOfEternityClient.Tests/GmBridgeContenderRestartTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/GmBridgeContenderRestartScenario.cs",
+        "BookOfEternityClient.Tests/GmBridgeContenderRestartTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmBridgeContenderRestartTests.SameRootContenderPreservesOriginalAndSameConfigRestart"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeContenderRestartTests.SameRootContenderPreservesOriginalAndSameConfigRestart"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-linux-bridge-restart-dispatch",
       "responsibility": "#1589 actual Linux PTY launcher AST dispatch with retained reused PID, hidden and redirected foreground refusals.",
       "excludes": "The external dotnet launch leaf is inert; actual original ownership contention/restart is qualified separately. No Windows runtime claim.",
-      "changeHints": ["BookOfEternityClient/Launcher/bookofeternity.ps1", "BookOfEternityClient.Tests/LinuxBridgeRestartDispatchTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient.Tests/LinuxBridgeRestartDispatchTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 1,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxBridgeRestartDispatchTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LinuxBridgeRestartDispatchTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-worker-quarantine-sticky-audit-data",
       "responsibility": "#1589 existing canonical audit uncertainty retains the exact NoLaunch authority fault, suppresses later diagnostic callbacks and second append, and retains the slot across two real reaper passes.",
       "excludes": "No filesystem, main owner, remote grant, process launch or prior-version runtime claim.",
-      "changeHints": ["BookOfEternityClient.Tests/GmWorkerStickyAuditDataTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmWorkerStickyAuditDataTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 1,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmWorkerStickyAuditDataTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerStickyAuditDataTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-main-worker-cleanup-publication-sticky-linux",
       "responsibility": "#1589 affected original cleanup neighbors: actual audit publication cut retains the same uncertainty and unchanged evidence, no second append/callback/slot release, on live and separately withdrawn original accesses.",
       "excludes": "No restoration to force cleanup success, repeated canonical admission after sticky failure, gameplay or prior-version execution claim.",
-      "changeHints": ["BookOfEternityClient.TestSupport/MainWorkerCleanupScenario.cs"],
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainWorkerCleanupScenario.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_CanonicalAuditUncertaintyRemainsSticky"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.OriginalMain_CanonicalAuditUncertaintyRemainsSticky"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-retired-worker-registration-data",
       "responsibility": "#1589 exact retired durable registration DATA predicates; active, uncertainty, replacement and foreign-root refusals. Predicate is not remote admission authority.",
       "excludes": "No fabricated remote grants, gameplay or live world replay.",
-      "changeHints": ["BookOfEternityClient.Tests/RetiredWorkerRegistrationTests.cs"],
+      "changeHints": [
+        "BookOfEternityClient.Tests/RetiredWorkerRegistrationTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 1,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.RetiredWorkerRegistrationTests.*"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.RetiredWorkerRegistrationTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-local-remote-worker-readmission",
@@ -56774,6 +56962,980 @@
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalUnknownActiveOfferWithCombatEffect_AddsSkillLocally",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalPracticeOfferBelowThreshold_AddsOnlyActiveMasteryProgressLocally",
             "BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_MortalOffer_BlocksWhenCurrentLevelExperienceWouldGoNegative"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-mortal-daemon-settlement-oracle",
+      "responsibility": "#1589 actual Mortal phase acceptance requires original active and exact final settled daemon owner/status evidence, beyond physical process closure.",
+      "excludes": "Inert functions only; no live daemon, gameplay, publication authority or Ctrl+C cause qualification.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/live-mortal-phase.py",
+        "BookOfEternityClient.Tests/MortalDaemonSettlementOracleTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalDaemonSettlementOracleTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-live-evidence-data",
+      "responsibility": "Read-only detached production-typed Mortal living-world history and captured snapshot payload correlation; no publication authority.",
+      "excludes": "No physical source authentication, domain-effect/story acceptance, live GM execution or ownership admission.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveEvidenceValidator.cs",
+        "BookOfEternityClient.Tests/MortalLiveEvidenceValidatorTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveEvidenceValidatorTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-live-seed-export",
+      "responsibility": "Initial test-only Mortal seed through current reviewed builders, complete validator, coherent ordinary Continue story/session and fail-closed no-overwrite.",
+      "excludes": "No accepted GM turn, incarnation, live relay or whole feature qualification.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveSeedExporter.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLiveSeedExporterTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveSeedExporterTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-progression-repair-journey",
+      "responsibility": "#1538 real ProcessPlayerTurn rejects wrong NPC XP result, emits current repair request, retries corrected pending command and accepts exactly one grant/story with fresh reload.",
+      "excludes": "Live GM relay, post-accept stale replay, merchant purchase, unrelated repair routes and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionRepairJourney.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_RejectedResultRepairsBeforeSingleAcceptedGrant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-mixed-mechanics-labels",
+      "responsibility": "#1538 mixed public NPC mechanics labels distinguish progression profiles from actual skills without changing accepted data.",
+      "excludes": "Live GM relay, browser layout and whole feature qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/NpcDetailSectionProjection.cs",
+        "BookOfEternityClient.Tests/MortalNpcAcceptedMechanicsDisplayTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcAcceptedMechanicsDisplayTests.SharedDrilldown_MixedMechanicsDoesNotLabelProfileAsSkill"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-console-skill-single-render",
+      "responsibility": "#1538 actual Explorer console renders canonical active/passive names once, preserving mastery and privacy in normal/debug modes.",
+      "excludes": "Browser rendering, live GM relay, purchases and whole issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.AcceptedNpcMechanics.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerModeCommandTests.TryProcessCommand_AcceptedSkillsWithoutSidecar_HidesPrivateMechanics"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-progression-full-journey",
+      "responsibility": "#1538 ordinary accepted XP journeys with actual turn/story/reload and result-fed merchant-slot and teacher-showcase freshness.",
+      "excludes": "No provider generation, rendered browser/console, successful new training purchase, new stock generation or whole-task qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionJourney.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcProgressionConsumers.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_OrdinaryXpGainCompletesWholeTurnAndReloads",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NpcProgressionJourney_AcceptedLevelFeedsMerchantAndTeacherFreshness"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-declared-effect-repair",
+      "responsibility": "#1516 Actual declared NPC activity effect without command refuses and repairs the same authenticated request.",
+      "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldRepair_DeclaredProgressWithoutCommandRefusesThenRepairsSameRequest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-narrative-omission",
+      "responsibility": "#1516 Desired refusal probe for concrete prose event omitted from an otherwise valid no-change report; known NLP boundary, expected RED until observed.",
+      "excludes": "No live GM relay or NLP implementation; separate from declared-effect and narrative omission sibling controls.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldNarrativeOmission.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldNarrativeOmission_ConcreteWorldEventWithoutDeclarationRefusesRealTurn"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-project-evidence-type",
+      "responsibility": "#1516 detached completed-project evidence rejects numeric-string completionTurn while a matching canonical integer transition remains valid.",
+      "excludes": "Runtime reducer, current authority, publication, resource costs and live GM qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldEvents.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldProjectCompletionTypeTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldProjectCompletionTypeTests.ProjectCompletionRejectsNumericStringCanonicalTurn",
+            "BookOfEternityClient.Tests.MortalFactionProjectCompletionGuidanceTests.MortalFactionProjectCompletionGuidance_UsesExplicitIntegerTurn"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-project-completion-type",
+      "responsibility": "#1516 actual faction completion reducer preserves canonical nonnegative Int32 completion turn, sibling projects and prior history; malformed command turns refuse without tracker mutation.",
+      "excludes": "Full live GM journey, project creation, arbitrary project targeting and afterlife systems.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.FactionProjectCompletion.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.FactionAndInventoryHelpers.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_FactionProjectCompletion_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-npc-activity-normalization",
+      "responsibility": "#1516 actual normalizer applies bounded NPC activity progress to both canonical copies while preserving existing core reduction, sibling state and receipts, consuming commands and preventing replay.",
+      "excludes": "Full accepted-turn admission, completion outcome semantics, skill/treatment composition and unrelated NPC policy.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.NpcActivities.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-real-turn-journey",
+          "when": "After the component activity reduction gate, verify real accepted-turn effect evidence and publication separately."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityProgress_PreservesCoreChangesMirrorsAndReceipts",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeAccumulatedStateAsync_NpcActivityGuard_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-canonical-faction-shape",
+      "responsibility": "#1516 canonical Mortal split faction state agrees across real shape and materialization phases; nullable membership retains type checks, sidecars remain required and raw full-creation carriers remain mandatory.",
+      "excludes": "Full GameEngine journey, faction command reduction, afterlife contracts and unrelated faction policies.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.FactionsAndProjects.cs",
+        "BookOfEternityClient.IntegrationTests/FactionMaterializationValidationTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-real-turn-journey",
+          "when": "After correcting canonical faction shape admission, verify the real retained Mortal engine journey separately."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.CanonicalMaterializedMortal_SplitBundle_*",
+            "BookOfEternityClient.Tests.FactionMaterializationValidationTests.NewMortalFaction_RawCreationMissingEmbeddedCarrier_FailsShape"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-real-turn-journey",
+      "responsibility": "#1516 real ProcessPlayerTurn elapsed-time simulation on full Mortal baseline with accepted story and private living-world history.",
+      "excludes": "Cross-surface four-turn journey is added separately; no hosted provider or UI acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldJourney.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalLivingWorldJourney_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-canonical-item-held-lease",
+      "responsibility": "#1516 impacted canonical item validator propagates its genuine held write lease through original snapshot and pre-turn catalog reads without nested acquisition.",
+      "excludes": "Whole item lifecycle, joint publication acceptance, cache-framework or lock-bypass changes.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.CanonicalLeaseAwareEntryPoint_UsesTheBoundCurrentState",
+            "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests.CanonicalLeaseAwareEntryPoint_RejectsForeignLease"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-diagnosis-representative",
+      "responsibility": "#1516 genuine diagnosis receipt publication late-cut rollback and same-original retry, selected before full completion-drift packet.",
+      "excludes": "Other diagnosis completion/tamper cases; do not select together with diagnosis-publication.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.LivingWorldDiagnosis.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-diagnosis-publication",
+          "when": "Run full packet after representative runtime fixture passes; never select both together."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.LivingWorldDiagnosis_CommonPublicationCompensatesEntireReceiptThenRetryAppendsOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-representative",
+      "responsibility": "#1516 single genuine joint valid no-change preseal receipt and both durable progression phases, with measured fixture cost before a broader packet.",
+      "excludes": "Other seven joint cases, fault/retry coverage, diagnosis and whole issue acceptance; do not select together with joint-publication.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Use the representative only for isolated runtime diagnosis before the publication bucket; never select both together."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-seeded-storage-access",
+      "responsibility": "#1516 cheap living-world joint fixture baseline: derive and validate canonical storage access from the accepted map before original capture, then prove exact map/access bytes are covered by the genuine signed original.",
+      "excludes": "Production storage-access policy changes, post-original fixture repair, common joint publication/recovery acceptance, old joint fixtures and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select real joint completion controls after this pre-original fixture baseline gate passes when living-world fixture initialization changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_SeededStorageAccessIsCanonicalAndSignedBeforeOriginal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-admission",
+      "responsibility": "#1516 genuine joint preseal missing-report and wrong-window refusal plus false-effect refusal without retained history.",
+      "excludes": "Valid completion, phase recovery, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select valid assessed publication control when joint assessment admission or common cohort composition changes."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint admission/publication or receipt-consumption behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_DueMissingReportRefusesBeforePublicationTake",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_WrongWindowRefusesBeforeCommonPublication",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_WrongEffectCannotCompleteOrRetainHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-publication",
+      "responsibility": "#1516 one genuine joint same-cohort no-change receipt and both unapplied/applied durable progression phases.",
+      "excludes": "Short no-report publication control, admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance; do not select together with joint-representative.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-rollback",
+          "when": "Select reached compensation and retry controls when common publication membership or final readback changes."
+        },
+        {
+          "id": "mortal-living-world-joint-recovery",
+          "when": "Select fresh completed-history refusal when marker declaration or progression-phase recovery changes."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint publication or receipt-consumption behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ValidNoChangeReceiptBelongsToCommonCohortAndBothPhases"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-short-publication",
+      "responsibility": "#1516 one genuine short joint turn without an autonomous report retains common publication and unapplied phase recovery without creating assessment history.",
+      "excludes": "Assessed no-change receipt publication and applied phase, admission refusals, receipt tampering, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select the assessed no-change receipt and both durable phases when shared joint publication or receipt consumption changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ShortNoReportStillPublishesWithoutAssessmentHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-rollback",
+      "responsibility": "#1516 reached common-cohort member failure and post-commit receipt drift restore exact before-images/absence; genuine owning retry appends once.",
+      "excludes": "Admission-only and successful phase controls, fresh history tamper recovery, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select valid assessed completion control when rollback or retry changes common publication or receipt consumption."
+        },
+        {
+          "id": "mortal-living-world-joint-short-publication",
+          "when": "Select the short no-report control when shared joint admission/publication or receipt-consumption behavior changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_PostCommitReceiptDriftFailsExactFenceAndRestoresWholeCohort",
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_ReachedCommonMemberFailureRestoresReceiptAndRetriesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-joint-recovery",
+      "responsibility": "#1516 fresh genuine joint phase recovery rejects individually rehashed different assessment history and accepts restored exact accepted history.",
+      "excludes": "Coordinated marker-plus-history rewrite resistance, admission-only cases, reached rollback/retry, ordinary/diagnosis/QTE owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.LivingWorld.cs",
+        "BookOfEternityClient/Services/MortalJointLivingWorldContribution.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-joint-publication",
+          "when": "Select both durable progression phases when completed marker/history reconstruction changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.JointBundleComponentTests.LivingWorldJoint_FreshPhaseRecoveryRejectsIndividuallyRehashedDifferentAssessment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-lifecycle-publication",
+      "responsibility": "#1516 real ordinary project birth/completion reducers, existing canonical flag creation route and false-evidence rollback.",
+      "excludes": "New simulation/lifecycle systems, special owners and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.Lifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryLifecycle_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-receipt-data",
+      "responsibility": "#1516 deterministic source/report/window receipt DATA, immutable history validation and duplicate source refusal.",
+      "excludes": "Actual world effect validation, publication permission and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldReceiptTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldReceiptTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-diagnosis-publication",
+      "responsibility": "#1516 genuine diagnosis planned-clock admission, pre-seal receipt cohort, compensation and retry.",
+      "excludes": "Joint repair, QTE boundary and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.LivingWorldDiagnosis.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.LivingWorldDiagnosis_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-news-privacy",
+      "responsibility": "#1516 new private report/history excluded from common player news projection, existing exact accepted and hidden location controls retained.",
+      "excludes": "General #1540 privacy redesign, live browser qualification and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/ExplorerMortalWorldNewsCommandResultBuilderTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.ExplorerMortalWorldNewsCommandResultBuilderTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-qte-clock-data",
+      "responsibility": "#1516 Strict QTE newly crossed cycle clock DATA boundary.",
+      "excludes": "Whole issue acceptance and other transaction owners.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldQteBoundaryTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldQteBoundaryTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-qte-boundary",
+      "responsibility": "#1516 Real offer, handoff and terminal refusal before mutation for unsupported meaningful-time QTE.",
+      "excludes": "Whole issue acceptance and other transaction owners.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.LivingWorldBoundary.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteSceneServiceTests.LivingWorldQte_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-engine-rollback",
+      "responsibility": "#1516 actual engine original rollback, critical-failure repair dispatch, GM resubmission obligations and repaired publication without duplicate history.",
+      "excludes": "Joint, diagnosis and local-QTE owners; live external GM/provider acceptance and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineLivingWorldRollbackTests.CriticalRepair.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.Part02.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineLivingWorldRollbackTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-guidance",
+      "responsibility": "#1516 authored autonomous/no-change examples validated through actual DATA contracts and GM source/template delivery guards.",
+      "excludes": "Runtime publication, actual daemon rendering and whole feature acceptance are separate.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/MortalLivingWorldDocumentationTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-delivery",
+          "when": "Select actual daemon context-pack delivery and shared manifest inventory when GM templates, worked examples or manifest entries change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldDocumentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-delivery",
+      "responsibility": "#1516 actual full-daemon living-world template/example delivery and shared worked-example validation-manifest inventory.",
+      "excludes": "Unrelated storage/vehicle guidance guards, runtime effect/publication qualification, external GM/provider or Windows acceptance and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "Examples/E_CLI_Mortal_Living_World.txt",
+        "Examples/example_validation_manifest.json",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-living-world-guidance",
+          "when": "Select detached authored-report/example validation and source guards when the delivered living-world contract changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalSkillProgressionTemplate",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.MortalItemMaterializationManifest_CoversCreationTransferLineageAndRejection"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-ordinary-publication",
+      "responsibility": "#1516 real ordinary canonical owner: signed original, report admission, settled faction effect, private receipt/report consumption and reached late rollback with retry.",
+      "excludes": "Joint/QTE owners, source replay registry, entity births/removals and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldPublication.cs",
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryPublication_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-original-source",
+      "responsibility": "#1516 actual live signed original capture, first-crossed elapsed time, private report correlation, history ownership and source/lease freshness.",
+      "excludes": "Ordinary receipt publication, rollback, joint/QTE/diagnosis integration, effect completion and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldSource.cs",
+        "BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.LivingWorld.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PendingTurnSnapshotPresenceIntegrationTests.LivingWorldSource_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-event-evidence",
+      "responsibility": "#1516 detached canonical before/after event update, explicit flag/project creation and project completion evidence, semantic deltas, typed identities and declared news references.",
+      "excludes": "Generic removal, source authentication, runtime wiring, receipt publication, NLP privacy and whole feature acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldEvents.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldEventsTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldEventsTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-living-world-assessment",
+      "responsibility": "#1516 admission-only elapsed Mortal time and exact bounded assessment shape, correlation and five-scope audit.",
+      "excludes": "Canonical event effects, source authentication, runtime integration, publication, privacy and whole issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalLivingWorldAssessment.cs",
+        "BookOfEternityClient.Tests/MortalLivingWorldAssessmentTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldAssessmentTests.*"
           ]
         }
       ]
