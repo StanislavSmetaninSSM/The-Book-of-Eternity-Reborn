@@ -2452,3 +2452,13 @@ fixture against the existing storage contract before calling that case RED;
 do not weaken production guards or rerun combined/native yet. External evidence:
 mortal-t022/red-corrected, result.log SHA256
 59c4efda03c7848851de70da83da52fd82b2912c39a81c2d6aa04f40f4a50f44.
+The fixture preparation is corrected using the existing storage projection
+builder before signing, with continuity assertions; no runtime guard changes.
+A source pass also checked the remaining raw scene, original identity/index,
+resource bootstrap, genuine request and unchanged-clock prerequisites. Split
+T022's category by contract: mortal-published-location-comparison selects the
+single actual publication comparison; mortal-canonical-projection-seed-shape
+retains the six canonical-field/seed controls. This allows the preparation retry
+without repeating their unchanged causal results. Current API has no supported
+ad-hoc category test filter. Next run remains preparation/causal verification,
+not a full candidate or native acceptance.

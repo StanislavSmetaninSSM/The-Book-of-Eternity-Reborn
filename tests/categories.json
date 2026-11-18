@@ -3,12 +3,11 @@
   "categories": [
     {
       "id": "mortal-published-location-comparison",
-      "responsibility": "#1515 T022 genuine completed location allocation reference comparison, canonical projection schema and fresh historical NPC trade receipt shape.",
+      "responsibility": "#1515 T022 genuine completed location allocation reference comparison after actual canonical publication.",
       "excludes": "No native relay or full GameEngine acceptance; foreign/drift/repair invocation controls remain a required implementation step.",
       "changeHints": [
         "BookOfEternityClient/Services/Validation/ValidationService.CompletedLocationComparison.cs",
-        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.LocationComparison.cs",
-        "BookOfEternityClient.IntegrationTests/MortalPublishedProjectionShapeTests.cs"
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.LocationComparison.cs"
       ],
       "related": [
         {
@@ -27,7 +26,36 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_RealPublicationRecognizesAllocatedCurrentReferenceWithoutChangingOriginal",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.CompletedLocation_RealPublicationRecognizesAllocatedCurrentReferenceWithoutChangingOriginal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-canonical-projection-seed-shape",
+      "responsibility": "#1515 T022 emitted canonical current-location field shape and fresh historical NPC canonical trade receipt idempotence.",
+      "excludes": "No location completion authority, full GameEngine or native relay acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalPublishedProjectionShapeTests.cs",
+        "BookOfEternityClient/Services/MortalLiveSeedBuilder.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-combined-birth-engine",
+          "when": "Completed publication reference selection or current canonical projection shape changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
             "BookOfEternityClient.Tests.MortalPublishedProjectionShapeTests.*"
           ]
         }
