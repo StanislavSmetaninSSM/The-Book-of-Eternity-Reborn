@@ -451,6 +451,14 @@ def relay_package_preflight(out,ship,driver):
     if manifest['DriverSHA256']!=sha(Path(driver).read_bytes()):raise ValueError('Prepared driver pin mismatch')
     return manifest,sha(raw)
 
+def relay_published_owner_join(record,status,pipe,previous):
+    identity=record.get('Identity',{})
+    run=identity.get('RunId')
+    predecessor=previous['StoppedRecord']['Identity']['RunId'] if previous else None
+    return (record.get('Disposition')=='Running' and isinstance(run,str) and bool(run) and run!=predecessor and
+        status.get('terminalRunId')==run and status.get('pipeName')==pipe and
+        isinstance(status.get('transportEndpoint'),dict) and bool(status['transportEndpoint']))
+
 def relay_inventory(root):
     root=Path(root)
     return {str(p.relative_to(root)):sha(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file() and '__pycache__' not in p.parts}
@@ -829,7 +837,7 @@ try:
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
     record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
-    until(lambda:record_path.exists() and status_path.exists() and bool(read_json(status_path).get('transportEndpoint')) and read_json(record_path)['Disposition'] in ['Running','Uncertain'],10,'original Running and published transport')
+    until(lambda:record_path.exists() and status_path.exists() and relay_published_owner_join(read_json(record_path),read_json(status_path),pipe,previous),10,'original Running and published transport')
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
@@ -916,17 +924,18 @@ try:
             entries=[json.loads(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
             accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('player')==action and e.get('narrative','').strip()]
             if accepted:
-                if relay_mode:
-                    story_after=story.read_bytes();accepted=[checked_relay_story_append(story_before,story_after,request)]
-                    until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'actual relay execution drain')
-                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted[0]['narrative'],baseline)
-                    result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after),AcceptedTurnNumber=expected_turn)
                 fresh_player(client,offset,10)
                 assert not (session/'input/turn_request.json').exists()
                 assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
                 assert not (session/'game_state/control/pending_turn_snapshot.authority.json').exists()
                 assert not (session/'ready/turn_complete.json').exists() and not (session/'ready/turn_error.json').exists()
-                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True
+                client_wait=False;client_prompt=True
+                if relay_mode:
+                    story_after=story.read_bytes();accepted=[checked_relay_story_append(story_before,story_after,request)]
+                    until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'actual relay execution drain')
+                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted[0]['narrative'],baseline)
+                    result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after),AcceptedTurnNumber=expected_turn)
+                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
                 delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
                 result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
                     delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and

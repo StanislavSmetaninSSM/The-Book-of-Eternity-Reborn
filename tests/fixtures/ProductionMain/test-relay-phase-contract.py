@@ -34,6 +34,34 @@ class RelayPhaseContractTests(unittest.TestCase):
         observed=eval(compile(ast.Expression(assignments[0].value),str(SOURCE),'eval'),scope)
         self.assertFalse(observed, 'Actual driver accepted EOF/exit without original daemon settlement')
 
+    def test_actual_startup_predicate_rejects_predecessor_status(self):
+        calls=[n for n in ast.walk(module) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='until' and len(n.args)>2 and isinstance(n.args[2],ast.Constant) and n.args[2].value=='original Running and published transport']
+        self.assertEqual(len(calls),1)
+        class Existing:
+            def __init__(self,name):self.name=name
+            def exists(self):return True
+        record=Existing('record');status=Existing('status')
+        scope=dict(ns,record_path=record,status_path=status,pipe='new-pipe',previous={'StoppedRecord':{'Identity':{'RunId':'old'}}},
+            read_json=lambda path: {'Disposition':'Running','Identity':{'RunId':'new'}} if path is record else {'terminalRunId':'old','pipeName':'old-pipe','transportEndpoint':{'kind':'linux-fifo-v1','address':'old'}})
+        predicate=eval(compile(ast.Expression(calls[0].args[0]),str(SOURCE),'eval'),scope)
+        self.assertFalse(predicate(), 'Actual startup admitted old status alongside new main record')
+    def test_actual_forensic_failure_preserves_observed_normal_exit(self):
+        blocks=[n for n in ast.walk(module) if isinstance(n,ast.If) and isinstance(n.test,ast.Name) and n.test.id=='accepted']
+        self.assertEqual(len(blocks),1)
+        class Absent:
+            def __truediv__(self,_):return self
+            def exists(self):return False
+        class Story:
+            def read_bytes(self):return b'row'
+        seen=[]
+        def fail(*args):raise ValueError('injected forensic mismatch')
+        scope=dict(ns,accepted=[{'narrative':'answer'}],relay_mode=True,story=Story(),story_before=b'',request={},session=Absent(),
+            client=None,offset=0,fresh_player=lambda *args:seen.append('fresh'),client_wait=True,client_prompt=False,
+            checked_relay_story_append=fail,result={'AcceptedGameTurns':0})
+        with self.assertRaises(ValueError):exec(compile(ast.Module(body=blocks[0].body[:-1],type_ignores=[]),str(SOURCE),'exec'),scope)
+        self.assertEqual(seen,['fresh'])
+        self.assertFalse(scope['client_wait']);self.assertTrue(scope['client_prompt'])
+        self.assertEqual(scope['result']['AcceptedGameTurns'],0)
     def test_old_exit_eof_success_is_not_settlement(self):
         value=valid();value.pop('DaemonSettlement')
         self.assertFalse(ns['relay_phase_cleanup_proved'](value))

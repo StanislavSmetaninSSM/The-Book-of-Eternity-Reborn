@@ -962,3 +962,13 @@ Optimization: immutable package pins are retained as DATA within a phase; curren
 world/owner inputs are freshly checked before continuation and never reused as
 admission authority. No additional game preparation, exporter or broad suite is
 introduced. Raw diagnostic output remains uncapped; old failed worlds are untouched.
+
+Independent source review found two harness defects before live use: a new durable
+main could coexist briefly with the predecessor's status endpoint, and a forensic
+correlation failure could occur before the fresh player prompt updated cleanup
+state. Two actual-AST causal controls failed on those original expressions/blocks.
+The startup bound now requires matching new main run and configured pipe before
+any RPC; observed prompt plus absent pending work updates the safe exit state
+before fallible correlation, without granting accepted-turn qualification. Eleven
+source-only controls pass after these corrections (0.048s); official wrapper and
+live execution remain UNRUN. Production behavior is unchanged by this test change.
