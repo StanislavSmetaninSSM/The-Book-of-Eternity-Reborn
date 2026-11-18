@@ -3419,3 +3419,11 @@ rather than defaultValueTuple{}serialization. Only2fixturefileschanged; independ
 AstraHigh focusedreview confirms all10pins/oldrace/cleanup andclearsbothfindings.
 FreshUnit/exact2categoryRED authorized,expected2causalFAIL+6baselinePASS. Production
 helper remainsdirect. No actualgameorfailedworldretry; rawrootmortal-t026/dispatch-red.
+T026 first official attempt is NOT causal RED. Fresh Unit93.07s(93.484wall),
+91warnings/0errors,PlanOnly8. DATA6 completed4PASS/2FAIL at generation-absence
+baseline assertions before helpercall (MissingGeneration43,StandaloneCold14).
+Official fail-fast left owner2 UNRUN; no claim of Running-owner reproduction.
+Runner11.9154527s,cleanupcomplete,no timeout/duplicates;3496source/8outputs unchanged.
+Evidence externalmortal-t026/dispatch-red. Investigate actual fixturegeneration
+creation before constructing a genuine uninitialized control; no deletion/forgery,
+productionfix or blindrerun. No liveworld/nativegame execution.
