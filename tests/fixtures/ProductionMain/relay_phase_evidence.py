@@ -138,3 +138,14 @@ def execution_closed(value):
     return (type(value) is dict and set(value)=={'Executed','ExitCode','ChildExited','IoDrained'} and
         type(value['ExitCode']) is int and value['ExitCode']==0 and
         all(value[k] is True for k in ('Executed','ChildExited','IoDrained')))
+
+
+def rejected_restored_for_cleanup(request, keys_before, keys_after, action_text,
+                                  story_before, story_after, pending_paths,
+                                  relay_observation):
+    """Read-only cleanup DATA join. RED baseline refuses every observation.
+
+    relay_observation must originate from the existing exact raw queue/dispatch/
+    response/execution validator; it is not an authorisation or accepted receipt.
+    """
+    return False
