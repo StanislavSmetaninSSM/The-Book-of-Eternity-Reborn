@@ -93,7 +93,7 @@ class MenuFrameTests(unittest.TestCase):
         with self.assertRaises(ValueError):local_load_menu('Location '*20,43,1)
     def test_whole_local_preflight_rejects_picker_page_or_prefix_before_actions(self):
         inv={'items':[{'itemId':'i','name':'Мел','type':'Материал'}],'equippedItems':{}}
-        loc={'name':'Court','locationStorages':[{'storageId':'s','name':'Council','hasFullAccess':True,'contents':[{'itemId':'target','name':'Rope','type':'Материал'}]}]}
+        loc={'locationId':'loc_court','name':'Court','locationStorages':[{'storageId':'s','name':'Council','hasFullAccess':True,'contents':[{'itemId':'target','name':'Rope','type':'Материал'}]}]}
         preflight_local_route(inv,loc,{'money':0},'s','target',43)
         self.assertEqual(len(inv['items']),1);self.assertEqual(len(loc['locationStorages'][0]['contents']),1)
         loc['locationStorages'][0]['contents'][0]['name']='← Отмена extra'
