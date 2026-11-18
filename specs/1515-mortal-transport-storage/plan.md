@@ -3163,3 +3163,16 @@ schedule is absent; only actual captured snapshot member is admissible, no flat
 fallback. Cheap actual ReadAsync RED plus due/pending/drift/malformed negatives
 precedes implementation after independent design review. No code/world changes,
 helper replay or failed-probe upgrade have occurred.
+Independent mm11 OUTCOME establishes genuine game commit, not rollback: exact
+setup story prefix plus one request/narrative-matching42 row; permanent location,
+two links, vehicle/storage/chalk carrier/birth receipts, full NPC at new location
+and three100/100 resource initializations all join. Resource history3→6; prior
+location/item identities/receipts, scout and player inventory/resources/history
+remain unchanged. Current location legitimately adds projection fields to map
+metadata; resource definitions are JSON-equal despite reserialization. These are
+not defects. Exact originalStopped/OwnedScopeEmpty/one shutdown, terminal/RPC/
+relay EOF/drain, same daemon settlement, guardianECHILD/driver1/noemergency and
+106finalpins/immutablepackage verified. TwoCLRdebugFIFOs remain. Daemon error1
+here is Process-TurnCore status write during retirement, unlike mm10 heartbeat;
+retain that distinction and do not claim harmlessness. Probe stays failed and
+inadmissible for ordinary continuation; no helper rerun or failed-probe rewrite.
