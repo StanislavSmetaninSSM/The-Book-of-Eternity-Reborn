@@ -2846,6 +2846,29 @@ normal cleanup; no expected pipe exception remains. Only observed keyboard modes
 Captured stdout uses an exact fresh title/two-row frame after the input cut, not
 an invented screen; control master/echo is separate. Alternate-buffer/conceal/DSR
 and unknown controls still fail. New cheap keyboard controls showed8 oldPASS plus
-3 missing-API errors, then11/11PASS in0.001s; actual three console cases UNRUN.
+two missing-method AttributeErrors and one unsupported-?1-mode ValueError, then11/11PASS in0.001s; actual three console cases UNRUN.
 No budget increase or live driver/gameplay changes. Independent follow-up review
 precedes fresh Unit/official4-case execution. Preserve first1/3 failed result.
+
+T024 observer GREEN independently accepted:20/20 (11 DATA plus9 real operation/
+inert transport),10.5266490s, fullcleanup/no skips/duplicates/timeout. Fresh Unit
+92.86s (93.341wall),90warnings/0errors;3446source/8output pins unchanged after
+both runs. Actual emission after connection disposal and root release, warning,
+receipt/metadata refusals and sink/disposal non-replay qualified only at this
+bounded level. External observation-green/result.log SHA256
+a9185158d93a4c06cff41d809e4c70d90c053fc64f96f1048c24f6525f3aa546.
+Corrected actual console comparison:3PASS/1FAIL,16.2824166s,complete4/cleanup.
+PTY/xterm-256color and pipe/xterm-256color both show actual Alpha-to-Beta selection,
+child Beta/exit0, EOF, termios and guardian0. PTY observes application keyboard
+mode and sends SS3 Down; pipe sends normal CSI Down. Old pipe/dumb fails with
+Spectre's concrete NotSupportedException: terminal does not support ANSI escape
+sequences. No input/choice/output; child1 but joined/drained/restored terminal and
+guardian ECHILD/emergency0/failures0/deadlinefalse. Parser11PASS is separate.
+External console-corrected/result.log SHA256
+8c56f9319f87a3ed0334cf5c6dd0752b6f75663e52d602aada1f4104bca66ee1.
+The required change is TERM, not redirected output. Prefer the smaller native
+client-only xterm-256color environment change while preserving existing captured
+pipe and cleanup; bridge/daemon/RPC environment remains untouched. Neither
+transport result proves gameplay menus. Convert old configuration to an explicit
+expected-refusal regression control only after this causal observation; unrelated
+exceptions/incomplete cleanup must still fail. Keep prior3/1 result unchanged.
