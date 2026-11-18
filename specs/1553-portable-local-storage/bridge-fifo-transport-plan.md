@@ -391,3 +391,39 @@ record-I/O alternative was discarded before build/publication. Existing actual
 peer and helper-start failures provide causal RED for this runtime boundary.
 Fresh namespace/ownership/readback checks remain mandatory; no new cache or
 performance claim. Corrected flag source awaits save, review and official GREEN.
+
+### Singleton corrected official GREEN (live continuation not yet run)
+
+Source `91513a752fd02e1358e3e472cfc420e1f7dc347a` received independent source
+acceptance after the bounded fcntl correction. Serial no-restore unit build:
+54.14s, 19 warnings, 0 errors. Official categories
+`gm-linux-daemon-singleton-data`, `gm-linux-daemon-singleton-script`,
+`gm-bridge-fifo-linux`, `gm-daemon-coordinated-stop`: 106/106 PASS, no skips,
+no duplicate IDs, complete owned-tree cleanup, runner 62.0073945s. Exact TRX
+counts: new DATA 21, new script 13, existing FIFO 71, original coordinated stop 1.
+The previously blocked actual first acquisition, peer successor, clean actual
+Start→stopped→restart and terminal-readback refusal now complete successfully.
+Independent outcome review confirmed the coordinated actual daemon's 17 original
+pins closed and its retained guard/status settled pair agreed. That scenario's
+status retains one recovered `Original admitted daemon read refused.` during
+close; this is not an error-free-log claim and did not invalidate its assertions.
+
+One subsequent serial no-restore integration build completed 61.68s, 129 warnings,
+0 errors. Official `gm-daemon-watcher-serialization` plus
+`mortal-skill-template-guidance`: 6/6 PASS across three descriptors, no skips or
+duplicate IDs, complete owned-tree cleanup, runner 28.4450367s. The source helper
+and client/unit/integration output copies are byte-identical, SHA256
+`6dcd9baf80cbb5c8db46efc1769685bfe19e78ac293b4aa5499b43179b8e584a`.
+This verifies output delivery, not a newly published runtime package.
+
+Raw build/runner/TRX evidence remains outside Git, with runner logs under
+`/workspace/shared/relay-alternative/daemon-singleton-fcntl-*` and corresponding
+runner-owned TestResults directories. Results are bounded Linux-x64 evidence;
+no Windows/ARM, legacy-status migration, powerloss atomicity, new live Mortal
+turn or whole-feature qualification is claimed. No broad suite was run. Fresh
+mutable handle and namespace validation remains uncached; only one admission's
+prior parsed DATA is reused locally. The correction removes a runtime flag
+mismatch, not measured duplicate work, so no speedup claim is made.
+Next: independent outcome review, then parent-controlled fresh published-package
+live continuation with ordinary stopped status and retained guard, never replay
+or migration of earlier failed live requests.
