@@ -1403,3 +1403,28 @@ actual daemon coordinated-stop case and exact FIFO Load stop/finish consumer;
 the new narrow catalog entry preserves all existing entries and avoids rerunning
 71 unrelated transport cases. Full game shutdown and same-world restart remain
 unqualified. Main unchanged; raw diagnostics external.
+
+### #1589 affected neighbors accepted; fresh rl4 package
+
+Only the two reviewed neighbors ran: 2/2 PASS in 41.2634243 seconds with complete
+owned cleanup, no skips, duplicates or timeout. Load case4714a96362dc4cdda82d4afc17623f0c
+retains the actual original FIFO stream through stop/finish without replacement,
+then original shutdown/Stopped/endpoint removal. Daemon case78ae0ebf69d24139a7ceae166586dc1a
+closes its actual active pin and confirms original Stopped/OwnedScopeEmpty before
+the foreground signal; same guard owner reaches stopped/terminalSettled after EOF.
+Its final errorCount is 1, not an error-free claim. Both guardians report driver0,
+ECHILD, reaped1 and no emergency signals, failures or deadline. Independent outcome
+review accepted both bounded results, not a game or same-world restart.
+
+Fresh Integration build recompiled in64.70s/64.931 wall,124 warnings/0 errors,
+zero tests. Current3347 source manifest SHA256
+fe67df142f2d88a693b4b90db676352bbdb4ad00ffdab4e6ac7b7099158802cd;
+28 output joins a08b6f9ac54597a12d82c58bf5c1f4f6181680d5cb18003b01ac241c4c29b393.
+Fresh rl4 package independently verified both runtime729 copies, relay8, native4
+source/binary provenance, private0700 environment, no symlinks, pristine daemon
+and unchanged maintained driver. World initially contained only _runtime.
+Preparation manifest37513091eb2cbf67ed6c399d35df147eb854b4c1b9ab6c17b1ae02a5958c726d;
+phase package97efb2ca6b7eda30fdec5a35f86e8a9cb3ab36775fa5611a0ccd51b2aee95d31.
+The single original guarded p01 launch is now in progress, not accepted yet.
+No p02 is permitted without full p01 success and independent guardian proof;
+all earlier worlds remain untouched. Main remains unchanged.

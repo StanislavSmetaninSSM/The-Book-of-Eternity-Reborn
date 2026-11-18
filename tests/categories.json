@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-stop-diagnostic-fifo-neighbors",
+      "responsibility": "#1589 supported original-stop diagnostic neighbors: actual pin-timeout and non-primary refusal provenance plus three original RPC cancellation/error boundaries.",
+      "excludes": "Legacy hardcoded NamedPipe success fixture is not selected or requalified here; its existing category remains unchanged. Actual FIFO clean stop/restart is covered separately. No lifecycle repair or historical root-cause claim.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MainStopDiagnosticScenarioAssertions.cs",
+        "BookOfEternityClient.TestSupport/MainRunPinTimeoutObservation.cs",
+        "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_PinTimeoutPreservesFirstRefusalEvidence",
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.OriginalOwner_RefusalWithoutPrimaryStopFailureKeepsActualPredicate",
+            "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualRequestBoundary_OnlyHostCancellationStopsServing"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-prepared-stop-load-consumer",
       "responsibility": "#1589 affected real FIFO Load stop/finish consumer preserves one original stream after stop-fenced prepared-grant revocation.",
       "excludes": "No archive replacement, game materialization, full Load feature or Windows runtime qualification.",
