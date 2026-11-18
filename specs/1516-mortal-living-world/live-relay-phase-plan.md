@@ -342,6 +342,8 @@ Client, bridge and daemon all exited0 with full EOF and restored termios; relay
 execution and RPC helper were closed. Guardian independently returned ECHILD,
 driverExitCode0, emergencySignals0, failures0, deadlinefalse. These statements
 belong only to ml4; ml2 remains failed and ml3/e closure remains unknown.
-Independent outcome review is underway before admitting a retained-world phase.
+Independent outcome review confirmed raw request/snapshot/packet/story/receipt and
+all original closure evidence; the next retained-world phase is admitted on ml4
+only, using this exact result and the unchanged seed manifest.
 No implementation changed or broad test suite ran; immutable runtime reuse
 avoided recompilation while the new original authority/seed/effects stayed fresh.
