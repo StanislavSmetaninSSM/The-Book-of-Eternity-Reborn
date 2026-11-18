@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-completion-guidance",
+      "responsibility": "#1516 terminal NPC rule and worked example agree with explicit outcome and client-owned turn.",
+      "excludes": "Response-fragment DATA only; no whole-response, world, publication or live qualification.",
+      "changeHints": [
+        "Rules/Block_19.F.txt",
+        "Examples/E_Block_21.txt",
+        "BookOfEternityClient.Tests/MortalNpcActivityCompletionGuidanceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcActivityCompletionGuidanceTests.TerminalRuleAndWorkedExampleAgreeWithNpcOutcomeValidation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-activity-completion-post-consumption",
+      "responsibility": "#1516 reached terminal command consumption followed by source mutation refuses and restores all rollback-owned bytes.",
+      "excludes": "Does not isolate the last terminal fence from earlier living-world original protection; external request mutation is not overwritten.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.NpcCompletionSource.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_AfterConsumptionRequestChangeRefusesAndRestoresOwnedBytes"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-completion-repair",
       "responsibility": "#1516 ordinary engine repairs missing terminal outcome on the same original eight-hour turn, settles both NPC activity effects and appends one story/receipt.",
       "excludes": "No live relay, net-new NPC, XP/skills, faction project completion or full activity matrix.",
@@ -48,7 +98,6 @@
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_RealIssuedCaptureCannotMoveOrOutliveOperation",
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_QteRouteCannotBorrowOrdinaryIssuedCapture",
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_PreservesUnrelatedCurrentActorData",
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_AfterConsumptionRequestChangeRefusesAndRestoresOwnedBytes",
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_SignedNonMortalSoulCannotBorrowRequestRealm"
           ]
         }

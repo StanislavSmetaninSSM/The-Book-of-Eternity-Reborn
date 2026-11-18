@@ -113,7 +113,9 @@ public sealed partial class MortalLivingWorldPublicationTests
         armed = false;
         Assert.True(reached, "Must mutate request only after actual core completion and command consumption.");
         var refused = Assert.IsType<InvalidDataException>(failure);
-        Assert.Equal("Terminal NPC original changed during publication.", refused.Message);
+        // A genuine signed Mortal turn has a living-world source even without a report.
+        // Its earlier fence proves outer refusal/rollback here, not isolated terminal closing-fence coverage.
+        Assert.Equal("Living-world authenticated original source changed.", refused.Message);
         // External request mutation is not ours to overwrite. All normalizer-owned bytes roll back.
         before[LiveTurnPreparationService.TurnRequestPath] = replacedRequest;
         await AssertBytesAsync(context, before);
