@@ -1787,3 +1787,27 @@ capture is claimed. No automatic retry or pending-state cleanup is authorized by
 these observations. This failure cannot be caused by this unsubmitted GM packet.
 Investigate the shared provider-wait/cancellation path and original logs before
 choosing a minimal next observation. T016 remains open.
+
+Independent mm5 failed-outcome review confirms failure before any GM response;
+physical and original-owner shutdown succeeded but pending42 remains unchanged.
+First unsafe client panel was observed219.912s; relay closure219.985; intentional
+shutdown222.573; daemon failure222.870 then ACK222.882. The later daemon refusal
+cannot explain the earlier client error. No error_log/exception log was found.
+Guardian C source intentionally reports driverExitCode independently and returns
+zero when its own cleanup has no failures: the shell0 never proved game success.
+
+Source investigation does not support a180-second provider timeout. Actual waiter
+resolves configured/default900s versus daemon600s+15, and ordinary timeout has a
+different message. The generic panel is the outer exception path. Candidate
+throw sites, not established causes, are fresh canonical lease polling every500ms,
+uncaught diagnostic-status read before its parse guard every5s, and presentation/
+key-task propagation. Thousands of completed status publications establish load,
+not starvation. Browser staged-owner fencing is not this ordinary route.
+
+T017 first chooses a cheap typed actual-wait/held-lock discriminator using existing
+terminal-wait test surfaces, before changing production or another game attempt.
+The original exception remains unknown. Existing DEBUG stderr export covers the
+needed catch; any next native observation must enable it. Leaving it disabled
+in mm5 lost the useful exception detail and was a diagnostic preparation mistake,
+not evidence that the game error was fixed. No timeout increase, guard weakening,
+authority cache or blind repeat is justified.
