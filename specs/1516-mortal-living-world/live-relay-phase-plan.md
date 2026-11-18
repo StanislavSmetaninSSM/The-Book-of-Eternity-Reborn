@@ -497,3 +497,49 @@ same world, with a new queue and original owner identity. It is still UNRUN at
 this checkpoint. No ml5 world, failure or raw evidence was altered or replayed.
 The separate e history, semantic audit and remaining issue requirements remain
 open; this checkpoint does not close #1515, #1516, #1538 or #1589.
+
+### ml7 p01 accepted-turn candidate, daemon settlement blocks continuation
+
+Fresh source09af50 carries the reviewed Linux launcher correction. Preparation
+manifest SHA256150fe72c883e10c52642165abb76d6712afbf75c74eb481ca046b298b87be234
+includes the current launcher rather than its older build-output copy. Original
+phase execution exited0 after208.962s; its probe reports Success=true, one action
+and one accepted turn. This is a candidate result, NOT complete independently
+accepted lifecycle evidence: final daemon settlement is missing below.
+
+Session seeded_live_mortal_6d37526b889d4acca7be694abfa0b45d issued request
+22439102ac1546d5b488d676eb2ecaeb/turn42. One actual relay execution exited0 and
+drained without repair. Typed receipt validation returned valid=true,
+publicationAuthority=false, priorCount0/currentCount1. The four-hour partial
+progress result does not claim activity completion or XP. Setup41 remains test
+preparation, not a GM-accepted turn; story[41,42] preserves its exact prefix.
+
+Immutable evidence hashes (SHA256 unless prefixed):
+
+- Probe: d065ae1c7ebb84763c809ca914a7de8278730bca2a9d532958e78db431ec459a.
+- Request: 87eb002676c02d85d2abc6270e25f16e118e63d66d8268934f7b902566a2f159.
+- Executed response: 3036162bd1dc4cf012dcb55d00fa4e158d99f736365ce782460078e1c672a93c.
+- Receipt: sha256:a1b2990267043523bada0088952d46a985ad70fc7190630beee4da92b3ed61de.
+- Living history: 929fbc41bccc99133f60930835d761da3d43c56bd97e3a5d18fea0617fcb02b4.
+- Story before: 2ba56d46359adfea609b9e1a6bae42b8a465b50137167cbd9b5ffd58c03e0ec0.
+- Story after: 11b2f776970b8cf9cf40e7c097b2a44c9cabcb560f962acce30d0970b4cfcebc.
+
+One original shutdown ACK and full durable Stopped/OwnedScopeEmpty identify
+run0b6345c3d6e4464585a1f374fa076635, generation5be87466d544405f877d9c2248661ff4,
+epoch1. Probe observes client/bridge/daemon exit0, EOF and restored termios;
+RPC helper exit0/bothEOF. Guardian records ECHILD, driver0, reaped2, zero
+emergency signals/failures and no deadline. These observations do not substitute
+for confirmed daemon terminal publication.
+
+Readback instead retains daemon status running, errorCount0,
+terminalSettled=false, and guard ownera571363f86ad4955a1feb3cdb9c30efe with
+settled=false. Raw daemon output ends after Done(116.5s) and literal Ctrl+C,
+without the SHUTDOWN log. The reason is not established: source finalization
+would clean watcher resources and confirm terminal status before guard disposal,
+but this trace does not establish where that sequence ceased. Do not infer
+error-free or complete logical cleanup from process exit0 or the probe flag.
+
+Independent forensic review is pending. p02 is BLOCKED, not admitted from this
+candidate probe; no retries, world edits, owner-status repair or response replay
+are authorized by this checkpoint. Historical ml5/ml6 failures, separate e
+history, semantic audit and remaining issue requirements stay open.
