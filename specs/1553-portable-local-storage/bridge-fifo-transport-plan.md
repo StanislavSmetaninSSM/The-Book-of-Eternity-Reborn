@@ -1161,3 +1161,18 @@ the existing nonce-bound diagnostic path. An instance-scoped typed seam will tes
 negative/error masks, pending and normal IN/HUP observations without changing
 classification, retry policy, handle lifetime or ownership. No new cache, native
 probe loop or live replay is justified. Actual implementation and tests are UNRUN.
+
+Diagnostic-only RED source `3be42070` passed independent source review. The original
+pidfd wait loop is extracted behind an immutable per-instance poll adapter with
+unchanged AddRef/finally, failure classification and delay. The capture stub is
+intentionally absent for causal RED; it is not a runtime fix. Official
+`gm-host-exit-fault-diagnostics` completed 9/9 cases: 4 PASS, 5 FAIL in11.6885700s,
+complete owned cleanup, zero skips/duplicates/timeouts. Five failures are exactly
+missing captured fault assertions (four poll failures and disposed-handle AddRef);
+three normal IN/HUP controls and nonfault task controls pass. Unit build91.01s,
+91.459s wall,84 warnings/0 errors. No Integration rebuild or live run occurred.
+
+GREEN will retain original fault data and wire it to the existing nonce-bound
+stop report. Typed fault-to-report serialization plus existing healthy original
+owner/nonce controls suffice without adding native authority-injection machinery;
+this does not claim a nonnull live export. The historical rl2 errno remains unknown.
