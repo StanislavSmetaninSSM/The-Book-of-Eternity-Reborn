@@ -3036,3 +3036,9 @@ route-official/run.log SHA256 d17615ca84f921a193daac9e3b4f90f493b43dc2d4c2134768
 3487 source/8 Unit output pins captured; final independent outcome join pending.
 No new runtime package or native world launched. Next gate: independent outcome,
 then immutable current package and genuine GM-authored initial storage birth.
+T024 independent Astra High OUTCOME accepted: freshly recomputed all3487 source
+and8 outputs, inspected all4 outer cases and inner14+22+11+18 controls, exact
+process/output settlement and full runner cleanup. No additional source blocker.
+Next is fresh immutable current runtime/helper/relay/fixture package and a new
+isolated seed; independent package preflight precedes genuine GM-relay execution.
+This acceptance does not supply the still-unrun birth/permission/local Load chain.
