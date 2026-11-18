@@ -3555,3 +3555,27 @@ trailing output, UTF-8 and ANSI cases. A real inert Spectre pipe/xterm initial
 render and Down redraw must pass the shipped matcher before Back. No quiet-time
 heuristic, terminal emulator or ownership relaxation; unchanged T026 normal-close
 and lost-Active refusal evidence may be reused. No further live attempt yet.
+
+T027 reviewed RED fixture checkpoint, 2026-11-18: seven source files are saved
+at 7873031ea16ef6f409d40b20146bc5d5d36af313. Remote ref was verified, and the
+new DATA fixture and C# adapter were independently downloaded by exact commit
+into an empty directory and matched their source hashes; this is a two-file
+restore check, not a full checkout recovery. Independent SOURCE review accepted
+the bounded causal RED, not GREEN or merge. Parser and live driver are unchanged.
+Fresh Unit build completed in 38.23 seconds, 70 warnings and zero errors. The
+official DATA selection failed its one wrapper with seven inner methods: five
+controls passed and two expected positive padded/no-final-CR frames failed.
+The separate real inert Spectre renderer failed the old matcher: complete padded
+Back footer was captured, without final CR, and no navigation input was sent.
+Its original child was joined, streams drained and guardian reached ECHILD;
+positive normal EOF/termios qualification was not reached and is not claimed.
+Existing shared smoke controls passed 4/4. Official runner times were 10.3066,
+23.2447 and 14.2443 seconds; selections were complete without skips, duplicates
+or runner timeout, with owned cleanup complete. All 3,498 source inputs and
+eight output pins remained unchanged. External evidence: mortal-t027/dispatch-red.
+Independent OUTCOME review is pending. Before GREEN, add explicit complete-footer
+and no-final-CR assertions to both accepted actual renderer draws, then implement
+the previously reviewed header/footer/page-fit/prefix-collision contract together
+with all callers and independent negative controls. Small immutable DATA needs no
+cache; fresh capture parsing is necessary and no speedup is claimed. No game or
+GM turn was executed, and mm13 remains logically Uncertain and untouched.
